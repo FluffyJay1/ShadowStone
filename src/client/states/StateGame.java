@@ -6,20 +6,40 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import cardpack.basic.*;
 import client.Game;
+import client.VisualBoard;
+import server.Board;
+import server.card.Minion;
+import server.event.Event;
+import server.event.EventMinionAttack;
 
 public class StateGame extends BasicGameState {
+	VisualBoard board;
 
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		// TODO Auto-generated method stub
-
+		board = new VisualBoard();
+		/*
+		 * Minion p1 = new Goblin(board); Minion p2 = new Goblin(board);
+		 * board.addBoardObject(p1, 2); board.addBoardObject(p2, -2);
+		 */
+		for (int i = 0; i < 3; i++) {
+			board.addBoardObjectToSide(new Goblin(board), 1);
+			board.addBoardObjectToSide(new Goblin(board), -1);
+		}
+		System.out.println(board.stateToString());
+		/*
+		 * Event e = new EventMinionAttack(p1, p2); board.eventlist.add(e);
+		 * board.resolveAll(); board.eventlist.add(e); board.resolveAll();
+		 */
 	}
 
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
 		// TODO Auto-generated method stub
-
+		board.draw(arg2);
 	}
 
 	@Override
