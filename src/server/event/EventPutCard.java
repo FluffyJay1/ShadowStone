@@ -19,7 +19,8 @@ public class EventPutCard {
 		if (!this.conditions()) {
 			return this.toString();
 		}
-		p.hand.cards.add(p.deck.cards.remove(0));
+		p.hand.cards.add(c);
+		p.deck.cards.remove(c);
 		return this.toString();
 	}
 

@@ -24,7 +24,9 @@ public class Card {
 		this.cost = cost;
 		this.name = name;
 		this.text = text;
-		this.image = Game.getImage(imagepath).getScaledCopy(192, 256);
+		if (imagepath != null) {
+			this.image = Game.getImage(imagepath).getScaledCopy(192, 256);
+		}
 		this.imagepath = imagepath;
 		this.pos = new Vector2f();
 		this.scale = 1;
