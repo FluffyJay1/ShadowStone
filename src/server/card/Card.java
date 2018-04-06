@@ -8,11 +8,13 @@ import client.Game;
 import server.Board;
 
 public class Card {
+	public static final double EPSILON = 0.0001;
 	public Board board;
 	public int id, cost;
 	public String name, text, imagepath;
-	public Vector2f pos;
-	double scale;
+	public Vector2f targetpos, pos;
+	public double scale;
+	double speed;
 	Image image;
 
 	public Card() {
@@ -28,9 +30,19 @@ public class Card {
 			this.image = Game.getImage(imagepath).getScaledCopy(192, 256);
 		}
 		this.imagepath = imagepath;
+		this.targetpos = new Vector2f();
 		this.pos = new Vector2f();
+		this.speed = 0.5;
 		this.scale = 1;
 		this.id = id;
+	}
+
+	public void update(double frametime) {
+		Vector2f delta = this.targetpos.copy().sub(this.pos);
+		if (delta.length() > EPSILON) {
+			float ratio = 1 - (float) Math.pow(1 - this.speed, frametime);
+			this.pos.add(delta.scale(ratio));
+		}
 	}
 
 	public void draw(Graphics g) {
@@ -39,10 +51,10 @@ public class Card {
 	}
 
 	public boolean isInside(Vector2f p) {
-		return p.x >= this.pos.x - this.image.getWidth() * this.scale
-				&& p.y >= this.pos.y - this.image.getHeight() * this.scale
-				&& p.x <= this.pos.x + this.image.getWidth() * this.scale
-				&& p.y <= this.pos.y + this.image.getHeight() * this.scale;
+		return p.x >= this.pos.x - this.image.getWidth() / 2 * this.scale
+				&& p.y >= this.pos.y - this.image.getHeight() / 2 * this.scale
+				&& p.x <= this.pos.x + this.image.getWidth() / 2 * this.scale
+				&& p.y <= this.pos.y + this.image.getHeight() / 2 * this.scale;
 	}
 
 	public String toString() {
