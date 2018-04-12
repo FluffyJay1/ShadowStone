@@ -8,13 +8,17 @@ import server.Board;
 public class Deck {
 	Board board;
 	public ArrayList<Card> cards;
+	public int team;
 
-	public Deck(Board board) {
+	public Deck(Board board, int team) {
 		this.board = board;
+		this.team = team;
+		this.cards = new ArrayList<Card>();
 		for (int i = 0; i < 20; i++) {
 			cards.add(new Goblin(board));
 			cards.add(new Fighter(board));
 		}
+		this.shuffle();
 	}
 
 	public void shuffle() {

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import server.Player;
 import server.card.Card;
+import server.card.CardStatus;
 
 public class EventPutCard {
 	// for effects that put specific cards in hand or just draw cards
@@ -19,6 +20,7 @@ public class EventPutCard {
 		if (!this.conditions()) {
 			return this.toString();
 		}
+		c.status = CardStatus.HAND;
 		p.hand.cards.add(c);
 		p.deck.cards.remove(c);
 		return this.toString();
@@ -29,6 +31,6 @@ public class EventPutCard {
 	}
 
 	public boolean conditions() {
-		return p.hand.cards.size() <= p.hand.maxsize;
+		return p.hand.cards.size() < p.hand.maxsize;
 	}
 }

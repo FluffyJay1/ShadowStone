@@ -10,8 +10,8 @@ public class BoardObject extends Card {
 	public int position;
 	public int team;
 
-	public BoardObject(Board b, int cost, String name, String text, String imagepath, int id) {
-		super(b, cost, name, text, imagepath, id);
+	public BoardObject(Board b, CardStatus status, int cost, String name, String text, String imagepath, int id) {
+		super(b, status, cost, name, text, imagepath, id);
 		this.alive = true;
 		this.position = 0;
 	}

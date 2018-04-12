@@ -15,44 +15,44 @@ import server.event.Event;
 import server.event.EventMinionAttack;
 
 public class StateGame extends BasicGameState {
-    VisualBoard board;
+	VisualBoard board;
 
-    @Override
-    public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-	// TODO Auto-generated method stub
-	board = new VisualBoard();
-	arg0.getInput().addMouseListener(board);
-	/*
-	 * Minion p1 = new Goblin(board); Minion p2 = new Goblin(board);
-	 * board.addBoardObject(p1, 2); board.addBoardObject(p2, -2);
-	 */
-	for (int i = 0; i < 3; i++) {
-	    board.addBoardObjectToSide(new Goblin(board), 1);
-	    board.addBoardObjectToSide(new Goblin(board), -1);
+	@Override
+	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+		// TODO Auto-generated method stub
+		board = new VisualBoard();
+		arg0.getInput().addMouseListener(board);
+		/*
+		 * Minion p1 = new Goblin(board); Minion p2 = new Goblin(board);
+		 * board.addBoardObject(p1, 2); board.addBoardObject(p2, -2);
+		 */
+		for (int i = 0; i < 10; i++) {
+			board.addBoardObjectToSide(new Goblin(board), 1);
+			board.addBoardObjectToSide(new Goblin(board), -1);
+		}
+		System.out.println(board.stateToString());
+		/*
+		 * Event e = new EventMinionAttack(p1, p2); board.eventlist.add(e);
+		 * board.resolveAll(); board.eventlist.add(e); board.resolveAll();
+		 */
 	}
-	System.out.println(board.stateToString());
-	/*
-	 * Event e = new EventMinionAttack(p1, p2); board.eventlist.add(e);
-	 * board.resolveAll(); board.eventlist.add(e); board.resolveAll();
-	 */
-    }
 
-    @Override
-    public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
-	// TODO Auto-generated method stub
-	board.draw(arg2);
-    }
+	@Override
+	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
+		// TODO Auto-generated method stub
+		board.draw(arg2);
+	}
 
-    @Override
-    public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
-	// TODO Auto-generated method stub
-	board.update(arg2 / 1000.);
-    }
+	@Override
+	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
+		// TODO Auto-generated method stub
+		board.update(arg2 / 1000.);
+	}
 
-    @Override
-    public int getID() {
-	// TODO Auto-generated method stub
-	return Game.STATE_GAME;
-    }
+	@Override
+	public int getID() {
+		// TODO Auto-generated method stub
+		return Game.STATE_GAME;
+	}
 
 }

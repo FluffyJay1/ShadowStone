@@ -21,7 +21,7 @@ public class EventDraw extends Event {
 			if (p.deck.cards.size() == 0) {
 				// lose game
 			} else {
-				if (p.hand.cards.size() <= p.hand.maxsize) {
+				if (p.hand.cards.size() < p.hand.maxsize) {
 					eventstring += (new EventPutCard(p, p.deck.cards.get(0))).resolve(eventlist, loopprotection);
 				} else {
 					eventstring += (new EventMill(p, p.deck.cards.get(0))).resolve(eventlist, loopprotection);

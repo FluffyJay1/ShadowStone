@@ -24,8 +24,7 @@ public class Event {
 	public static String resolveAll(LinkedList<Event> eventlist, boolean loopprotection) {
 		String eventstring = "";
 		while (!eventlist.isEmpty()) {
-			eventlist.getFirst().resolve(eventlist, false);
-			String str = eventlist.getFirst().toString();
+			String str = eventlist.getFirst().resolve(eventlist, false);
 			if (!str.isEmpty()) {
 				eventstring += str;
 			}
