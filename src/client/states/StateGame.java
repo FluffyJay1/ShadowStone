@@ -27,8 +27,8 @@ public class StateGame extends BasicGameState {
 		 * board.addBoardObject(p1, 2); board.addBoardObject(p2, -2);
 		 */
 		for (int i = 0; i < 3; i++) {
-			board.addBoardObjectToSide(new Goblin(board), 1);
-			board.addBoardObjectToSide(new Goblin(board), -1);
+			board.addBoardObjectToSide(new Goblin(board, 1), 1);
+			board.addBoardObjectToSide(new Goblin(board, 1), -1);
 		}
 		System.out.println(board.stateToString());
 		/*

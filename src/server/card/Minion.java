@@ -21,8 +21,8 @@ public class Minion extends BoardObject {
 	public int maxHealth;
 
 	public Minion(Board board, CardStatus status, int cost, int attack, int magic, int health, String name, String text,
-			String imagepath, int id) {
-		super(board, status, cost, name, text, imagepath, id);
+			String imagepath, int team, int id) {
+		super(board, status, cost, name, text, imagepath, team, id);
 		this.stats = new Stats(attack, magic, health);
 		this.baseStats = new Stats(attack, magic, health);
 		this.maxHealth = health;

@@ -8,10 +8,10 @@ import server.event.Event;
 public class BoardObject extends Card {
 	public boolean alive;
 	public int boardpos;
-	public int team;
 
-	public BoardObject(Board b, CardStatus status, int cost, String name, String text, String imagepath, int id) {
-		super(b, status, cost, name, text, imagepath, id);
+	public BoardObject(Board b, CardStatus status, int cost, String name, String text, String imagepath, int team,
+			int id) {
+		super(b, status, cost, name, text, imagepath, team, id);
 		this.alive = true;
 		this.boardpos = 0;
 	}

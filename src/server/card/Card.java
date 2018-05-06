@@ -18,7 +18,7 @@ public class Card {
 	public static final double EPSILON = 0.0001;
 	public static final double NAME_FONT_SIZE = 24;
 	public Board board;
-	public int id, cost, handpos;
+	public int id, cost, handpos, team;
 	public String name, text, imagepath;
 	public Vector2f targetpos, pos;
 	public double scale;
@@ -32,9 +32,11 @@ public class Card {
 		this.cost = 1;
 		this.status = CardStatus.BOARD;
 		this.targets = new LinkedList<Target>();
+		this.team = 0;
 	}
 
-	public Card(Board board, CardStatus status, int cost, String name, String text, String imagepath, int id) {
+	public Card(Board board, CardStatus status, int cost, String name, String text, String imagepath, int team,
+			int id) {
 		this.board = board;
 		this.cost = cost;
 		this.name = name;
@@ -50,6 +52,7 @@ public class Card {
 		this.id = id;
 		this.status = status;
 		this.targets = new LinkedList<Target>();
+		this.team = team;
 	}
 
 	public void update(double frametime) {

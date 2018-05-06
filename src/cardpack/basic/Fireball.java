@@ -9,14 +9,14 @@ import server.event.*;
 public class Fireball extends Spell {
 	public static final int ID = 3;
 
-	public Fireball(Board b) {
+	public Fireball(Board b, int team) {
 		super(b, CardStatus.DECK, 3, "Fireball", "Deal 2 damage to an enemy minion and 1 damage to adjacent minions",
-				"res/card/basic/fireball.png", ID);
-		Target t = new Target("Target an enemy minion.") {
+				"res/card/basic/fireball.png", team, ID);
+		Target t = new Target(this, "Target an enemy minion.") {
 			@Override
 			public boolean canTarget(Card c) {
 				return c.status == CardStatus.BOARD && c instanceof Minion && !(c instanceof Leader)
-						&& ((Minion) c).team == -1;
+						&& ((Minion) c).team != this.creator.team;
 			}
 		};
 		this.targets.add(t);
