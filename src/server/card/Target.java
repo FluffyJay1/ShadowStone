@@ -2,7 +2,7 @@ package server.card;
 
 public class Target {
 	public Card target;
-	String description;
+	public String description;
 
 	public Target(String description) {
 		target = null;

@@ -20,18 +20,23 @@ public class EventPlayCard extends Event {
 	}
 
 	public String resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-		// TODO implement
+		p.hand.cards.remove(c);
 		if (c instanceof BoardObject) {
-			p.hand.cards.remove(c);
 			p.board.addBoardObject((BoardObject) c, position);
+			c.scale = 1;
 			// c.status = CardStatus.BOARD; //happens in addboardobject
+		} else {
+			// shadows increase by one
+		}
+		for (int i = c.handpos; i < p.hand.cards.size(); i++) {
+			p.hand.cards.get(i).handpos--;
 		}
 		eventlist.addAll(c.battlecry());
 		return this.toString();
 	}
 
 	public String toString() {
-		return "playc " + p.team + c.toString();
+		return "playc " + p.team + " " + c.toString();
 	}
 
 	public boolean conditions() {

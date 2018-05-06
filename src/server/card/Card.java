@@ -18,7 +18,7 @@ public class Card {
 	public static final double EPSILON = 0.0001;
 	public static final double NAME_FONT_SIZE = 24;
 	public Board board;
-	public int id, cost;
+	public int id, cost, handpos;
 	public String name, text, imagepath;
 	public Vector2f targetpos, pos;
 	public double scale;
@@ -117,7 +117,30 @@ public class Card {
 				&& p.y <= this.pos.y + this.image.getHeight() / 2 * this.scale;
 	}
 
+	public String targetsToString() {
+		String st = "targets ";
+		for (Target t : this.targets) {
+			if (t.target != null) {
+				st += t.target.toString() + " ";
+			}
+		}
+		return st;
+	}
+
+	public String posToString() {
+		switch (this.status) {
+		case HAND:
+			return "hand " + this.handpos;
+		case BOARD:
+			return "board";
+		case DECK:
+			return "deck";
+		default:
+			return "";
+		}
+	}
+
 	public String toString() {
-		return "card " + this.id;
+		return "card " + this.id + " " + this.posToString() + " " + this.targetsToString();
 	}
 }

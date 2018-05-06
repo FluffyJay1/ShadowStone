@@ -5,6 +5,7 @@ import java.util.*;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.MouseListener;
+import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Vector2f;
 
 import server.Board;
@@ -12,6 +13,7 @@ import server.card.BoardObject;
 import server.card.Card;
 import server.card.Leader;
 import server.card.Minion;
+import server.card.Target;
 import server.event.*;
 import utils.DefaultMouseListener;
 
@@ -19,6 +21,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	public static final int BO_SPACING = 200;
 	BoardObject selectedBO;
 	Card selectedCard, draggingCard, playingCard;
+	int playingX;
 	Minion attackingMinion;
 
 	public VisualBoard() {
@@ -33,6 +36,17 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		for (BoardObject bo : player2side) {
 			bo.update(frametime);
 		}
+		if (this.playingCard != null) {
+			Target t = this.playingCard.getNextNeededTarget();
+			if (t == null) {
+				this.eventlist
+						.add(new EventPlayCard(this.player1, this.playingCard, XToBoardPos(this.playingX, 1) + 1));
+				this.playingCard = null;
+			} else {
+				this.playingCard.targetpos = new Vector2f(200, 300);
+				this.playingCard.scale = 1;
+			}
+		}
 		this.resolveAll();
 	}
 
@@ -40,11 +54,19 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		for (int i = 1; i < player1side.size(); i++) {
 			BoardObject bo = player1side.get(i);
 			bo.targetpos.set(boardPosToX(bo.boardpos, 1), 700);
+			if (this.playingCard != null && this.playingCard.getNextNeededTarget() != null
+					&& this.playingCard.getNextNeededTarget().canTarget(bo)) {
+				bo.scale = 1.2;
+			}
 			bo.draw(g);
 		}
 		for (int i = 1; i < player2side.size(); i++) {
 			BoardObject bo = player2side.get(i);
 			bo.targetpos.set(boardPosToX((bo.boardpos), -1), 400);
+			if (this.playingCard != null && this.playingCard.getNextNeededTarget() != null
+					&& this.playingCard.getNextNeededTarget().canTarget(bo)) {
+				bo.scale = 1.2;
+			}
 			bo.draw(g);
 		}
 		BoardObject player1leader = player1side.get(0);
@@ -58,9 +80,16 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 			if (c != this.playingCard && c != this.draggingCard) {
 				c.targetpos.set(
 						(int) (((i) - (player1.hand.cards.size()) / 2.) * 500 / player1.hand.cards.size() + 1500), 950);
+				c.scale = 0.75;
 			}
-			c.scale = 0.75;
+
 			c.draw(g);
+		}
+		if (this.playingCard != null && this.playingCard.getNextNeededTarget() != null) {
+			UnicodeFont font = Game.getFont("Verdana", 24, true, false);
+			font.drawString(
+					this.playingCard.pos.x - font.getWidth(this.playingCard.getNextNeededTarget().description) / 2,
+					this.playingCard.pos.y + 100, this.playingCard.getNextNeededTarget().description);
 		}
 	}
 
@@ -122,18 +151,40 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	public void mousePressed(int button, int x, int y) {
 		// TODO Auto-generated method stub
 		this.selectedBO = null;
-		BoardObject bo = BOAtPos(new Vector2f(x, y));
-		if (bo != null) {
-			if (bo instanceof Minion && bo.team == 1) {
-				this.attackingMinion = (Minion) bo;
-				bo.scale = 1.5;
+		Card c = cardInHandAtPos(new Vector2f(x, y));
+		if (c != null) {
+			this.draggingCard = c;
+			this.selectedCard = c;
+			if (this.playingCard != null && this.playingCard.getNextNeededTarget() != null) {
+				if (this.playingCard.getNextNeededTarget().canTarget(c)) {
+					this.playingCard.getNextNeededTarget().target = c;
+				} else {
+					this.playingCard.resetTargets();
+					this.playingCard = null;
+				}
 			}
-			this.selectedBO = bo;
 		} else {
-			Card c = cardInHandAtPos(new Vector2f(x, y));
-			if (c != null) {
-				this.draggingCard = c;
-				this.selectedCard = c;
+			BoardObject bo = BOAtPos(new Vector2f(x, y));
+			if (bo != null) {
+				if (this.playingCard != null && this.playingCard.getNextNeededTarget() != null) {
+					if (this.playingCard.getNextNeededTarget().canTarget(bo)) {
+						this.playingCard.getNextNeededTarget().target = bo;
+					} else {
+						this.playingCard.resetTargets();
+						this.playingCard = null;
+					}
+				} else {
+					if (bo instanceof Minion && bo.team == 1) {
+						this.attackingMinion = (Minion) bo;
+						bo.scale = 1.5;
+					}
+					this.selectedBO = bo;
+				}
+			} else { // clicked on neither handcard or boardobject
+				if (this.playingCard != null && this.playingCard.getNextNeededTarget() != null) {
+					this.playingCard.resetTargets();
+					this.playingCard = null;
+				}
 			}
 		}
 	}
@@ -150,11 +201,9 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 			this.attackingMinion.scale = 1;
 			this.attackingMinion = null;
 		} else if (this.draggingCard != null) {
-			if (y < 750) {
+			if (y < 750 && this.draggingCard.conditions()) {
 				this.playingCard = this.draggingCard;
-				if (this.playingCard instanceof Minion) {
-					this.eventlist.add(new EventPlayCard(this.player1, this.playingCard, XToBoardPos(x, 1) + 1));
-				}
+				this.playingX = x;
 			}
 			this.draggingCard = null;
 		}

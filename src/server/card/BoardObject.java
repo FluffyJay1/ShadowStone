@@ -20,7 +20,20 @@ public class BoardObject extends Card {
 		return new LinkedList<Event>();
 	}
 
+	public String posToString() {
+		switch (this.status) {
+		case HAND:
+			return "hand " + this.handpos;
+		case BOARD:
+			return "board " + this.boardpos;
+		case DECK:
+			return "deck";
+		default:
+			return "";
+		}
+	}
+
 	public String toString() {
-		return "BoardObject " + name + " cost " + cost + " position " + boardpos + " alive " + alive;
+		return "BoardObject " + name + " cost " + cost + " " + this.posToString() + " alive " + alive;
 	}
 }
