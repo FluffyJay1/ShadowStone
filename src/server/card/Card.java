@@ -1,17 +1,20 @@
 package server.card;
 
 import java.awt.Font;
+import java.util.LinkedList;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Vector2f;
 
 import client.Game;
 import server.Board;
+import server.event.Event;
 
 public class Card {
-	public static final Vector2f CARD_DIMENSIONS = new Vector2f(192, 256);
+	public static final Vector2f CARD_DIMENSIONS = new Vector2f(150, 200);
 	public static final double EPSILON = 0.0001;
 	public static final double NAME_FONT_SIZE = 24;
 	public Board board;
@@ -23,9 +26,12 @@ public class Card {
 	Image image;
 	public CardStatus status;
 
+	public LinkedList<Target> targets;
+
 	public Card() {
 		this.cost = 1;
 		this.status = CardStatus.BOARD;
+		this.targets = new LinkedList<Target>();
 	}
 
 	public Card(Board board, CardStatus status, int cost, String name, String text, String imagepath, int id) {
@@ -43,6 +49,7 @@ public class Card {
 		this.scale = 1;
 		this.id = id;
 		this.status = status;
+		this.targets = new LinkedList<Target>();
 	}
 
 	public void update(double frametime) {
@@ -62,7 +69,7 @@ public class Card {
 			this.drawOnBoard(g);
 			break;
 		case HAND:
-			TrueTypeFont font = Game.getFont("Verdana", Font.BOLD, (int) (NAME_FONT_SIZE * this.scale));
+			UnicodeFont font = Game.getFont("Verdana", (NAME_FONT_SIZE * this.scale), true, false);
 			font.drawString(this.pos.x - font.getWidth(this.name) / 2,
 					this.pos.y - CARD_DIMENSIONS.y * (float) this.scale / 2, this.name);
 			this.drawInHand(g);
@@ -78,6 +85,29 @@ public class Card {
 
 	public void drawInHand(Graphics g) {
 
+	}
+
+	public LinkedList<Event> battlecry() {
+		return new LinkedList<Event>();
+	}
+
+	public boolean conditions() { // to be able to even begin to play
+		return true;
+	}
+
+	public void resetTargets() {
+		for (Target t : this.targets) {
+			t.reset();
+		}
+	}
+
+	public Target getNextNeededTarget() {
+		for (Target t : this.targets) {
+			if (!t.ready()) {
+				return t;
+			}
+		}
+		return null;
 	}
 
 	public boolean isInside(Vector2f p) {

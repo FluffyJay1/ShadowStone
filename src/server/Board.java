@@ -27,10 +27,7 @@ public class Board {
 	}
 
 	public Player getPlayer(int team) {
-		if (team == 1) {
-			return player1;
-		}
-		return player2;
+		return team == 1 ? player1 : player2;
 	}
 
 	public BoardObject getBoardObject(int position) {
@@ -51,12 +48,12 @@ public class Board {
 		if (pos == 0) { // top notch error handling
 			pos = 1;
 		}
-		bo.position = position;
+		bo.boardpos = position;
 		bo.status = CardStatus.BOARD;
 		bo.team = position > 0 ? 1 : -1;
 		relevantSide.add(pos, bo);
 		for (int i = pos + 1; i < relevantSide.size(); i++) {
-			relevantSide.get(i).position++;
+			relevantSide.get(i).boardpos++;
 		}
 	}
 
@@ -82,17 +79,17 @@ public class Board {
 		} else {
 			bo = relevantSide.remove(pos);
 			for (int i = pos; i < relevantSide.size(); i++) {
-				relevantSide.get(i).position += position > 0 ? -1 : 1;
+				relevantSide.get(i).boardpos += position > 0 ? -1 : 1;
 			}
 		}
 	}
 
 	public void updatePositions() {
 		for (int i = 0; i < player1side.size(); i++) {
-			player1side.get(i).position = i + 1;
+			player1side.get(i).boardpos = i + 1;
 		}
 		for (int i = 0; i < player2side.size(); i++) {
-			player2side.get(i).position = -i - 1;
+			player2side.get(i).boardpos = -i - 1;
 		}
 	}
 

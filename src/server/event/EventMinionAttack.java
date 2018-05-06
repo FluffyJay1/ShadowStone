@@ -42,6 +42,6 @@ public class EventMinionAttack extends Event {
 
 	@Override
 	public String toString() {
-		return "atk " + m1.position + " " + m2.position + " " + conditions() + "\n";
+		return "atk " + m1.boardpos + " " + m2.boardpos + " " + conditions() + "\n";
 	}
 }

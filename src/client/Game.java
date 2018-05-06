@@ -1,5 +1,6 @@
 package client;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,7 +11,9 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.font.effects.ColorEffect;
+import org.newdawn.slick.font.effects.OutlineEffect;
 import org.newdawn.slick.state.StateBasedGame;
 
 import client.states.StateGame;
@@ -25,7 +28,7 @@ public class Game extends StateBasedGame {
 
 	public static Map<String, Image> images = new HashMap<String, Image>();
 
-	public static Map<String, Map<Integer, TrueTypeFont>> fonts = new HashMap<String, Map<Integer, TrueTypeFont>>();
+	public static Map<String, UnicodeFont> fonts = new HashMap<String, UnicodeFont>();
 
 	public static void main(String[] args) throws SlickException {
 		AppGameContainer app = new AppGameContainer(new Game("ShadowStone"));
@@ -65,23 +68,31 @@ public class Game extends StateBasedGame {
 		return i;
 	}
 
-	public static TrueTypeFont getFont(String font, int style, float size) {
-		TrueTypeFont f = null;
-		if (fonts.containsKey(font)) {
-			if (fonts.get(font).containsKey((int) size)) {
-				f = fonts.get(font).get((int) size);
-			} else {
-				f = new TrueTypeFont(new Font(font, style, (int) size), true);
-				fonts.get(font).put((int) size, f);
-				System.out.println("loaded new font: " + font + ", size = " + (int) size);
-			}
+	public static UnicodeFont getFont(String font, double size, boolean bold, boolean italic) {
+		String condensed = font + (int) size + bold + italic; // map lifehack
+		UnicodeFont f = null;
+		if (fonts.containsKey(condensed)) {
+			f = fonts.get(condensed);
 		} else {
+			f = new UnicodeFont(new Font(font, Font.BOLD, (int) size), (int) size, bold, italic);
 
-			f = new TrueTypeFont(new Font(font, style, (int) size), true);
-			HashMap<Integer, TrueTypeFont> map = new HashMap<Integer, TrueTypeFont>();
-			map.put((int) size, f);
-			fonts.put(font, map);
-			System.out.println("loaded new font: " + font + ", size = " + (int) size);
+			try {
+				ColorEffect e = new ColorEffect(java.awt.Color.WHITE);
+				f.getEffects().add(e);
+				f.getEffects().add(new OutlineEffect(1, Color.BLACK));
+				f.addAsciiGlyphs();
+				f.loadGlyphs();
+			} catch (SlickException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			fonts.put(condensed, f);
+			System.out.println("loaded new font: " + font + ", size = " + (int) size + (bold ? " bold" : "")
+					+ (italic ? " italic" : ""));
+
+		}
+		if (f == null) {
+			System.out.println("fuckin kil lmyself");
 		}
 		return f;
 	}

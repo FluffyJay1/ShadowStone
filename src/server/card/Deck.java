@@ -17,6 +17,7 @@ public class Deck {
 		for (int i = 0; i < 20; i++) {
 			cards.add(new Goblin(board));
 			cards.add(new Fighter(board));
+			cards.add(new Fireball(board));
 		}
 		this.shuffle();
 	}

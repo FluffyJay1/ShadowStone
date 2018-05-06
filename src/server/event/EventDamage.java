@@ -16,8 +16,11 @@ public class EventDamage extends Event {
 
 	@Override
 	public String resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-		this.m.health -= damage;
-		if (m.health <= 0) {
+		this.m.stats.h -= damage;
+		if (!loopprotection) {
+			eventlist.addAll(m.onDamaged(damage));
+		}
+		if (m.stats.h <= 0) {
 			eventlist.add(new EventDestroy(m));
 		}
 		return this.toString();
@@ -25,6 +28,6 @@ public class EventDamage extends Event {
 
 	@Override
 	public String toString() {
-		return "dmg " + m.position + " " + damage + "\n";
+		return "dmg " + m.boardpos + " " + damage + "\n";
 	}
 }

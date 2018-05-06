@@ -14,7 +14,7 @@ public class EventDestroy extends Event {
 
 	@Override
 	public String resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-		b.board.removeBoardObject(b.position);
+		b.board.removeBoardObject(b.boardpos);
 		b.alive = false;
 		if (!loopprotection) {
 			eventlist.addAll(this.b.lastWords());
@@ -24,6 +24,6 @@ public class EventDestroy extends Event {
 
 	@Override
 	public String toString() {
-		return "dstry " + b.position + "\n";
+		return "dstry " + b.boardpos + "\n";
 	}
 }

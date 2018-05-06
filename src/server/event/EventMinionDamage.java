@@ -21,11 +21,7 @@ public class EventMinionDamage extends Event {
 		if (!conditions()) {
 			return this.toString();
 		}
-		if (!loopprotection) {
-			eventlist.addAll(this.m2.takeDamage(this.damage));
-		} else {
-			eventlist.add(new EventDamage(m2, this.damage));
-		}
+		eventlist.add(new EventDamage(m2, this.damage));
 		return this.toString();
 	}
 
@@ -36,6 +32,6 @@ public class EventMinionDamage extends Event {
 
 	@Override
 	public String toString() {
-		return "mdmg " + m1.position + " " + m2.position + " " + damage + " " + conditions() + "\n";
+		return "mdmg " + m1.boardpos + " " + m2.boardpos + " " + damage + " " + conditions() + "\n";
 	}
 }

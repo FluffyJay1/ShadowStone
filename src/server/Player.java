@@ -24,14 +24,6 @@ public class Player {
 	}
 
 	public void draw(Graphics g) {
-		if (this.team == 1) {
-			for (int i = 0; i < this.hand.cards.size(); i++) {
-				Card c = this.hand.cards.get(i);
-				c.targetpos.set((int) (((i) - (this.hand.cards.size()) / 2.) * 500 / this.hand.cards.size() + 1500),
-						1000);
-				c.scale = 0.5;
-				c.draw(g);
-			}
-		}
+
 	}
 }
