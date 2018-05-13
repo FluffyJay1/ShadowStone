@@ -20,6 +20,8 @@ public class Minion extends BoardObject {
 	public Stats stats, baseStats;
 	public int maxHealth;
 
+	public LinkedList<Target> unleashTargets = new LinkedList<Target>();
+
 	public Minion(Board board, CardStatus status, int cost, int attack, int magic, int health, String name, String text,
 			String imagepath, int team, int id) {
 		super(board, status, cost, name, text, imagepath, team, id);
@@ -67,12 +69,34 @@ public class Minion extends BoardObject {
 		// return new LinkedList<Event>();
 	}
 
+	public LinkedList<Event> unleash() {
+		LinkedList<Event> list = new LinkedList<Event>();
+		list.add(new EventDraw(this.board.getPlayer(this.team), 1));
+		return list;
+		// return new LinkedList<Event>();
+	}
+
+	public void resetUnleashTargets() {
+		for (Target t : this.unleashTargets) {
+			t.reset();
+		}
+	}
+
+	public Target getNextNeededUnleashTarget() {
+		for (Target t : this.unleashTargets) {
+			if (!t.ready()) {
+				return t;
+			}
+		}
+		return null;
+	}
+
 	public LinkedList<Event> onDamaged(int damage) {
 		return new LinkedList<Event>();
 	}
 
 	public String toString() {
-		return "Minion " + name + " cost " + cost + " position " + boardpos + " alive " + alive + "\n"
+		return "Minion " + name + " cost " + cost + " " + this.posToString() + " alive " + alive + "\n"
 				+ this.stats.toString();
 	}
 }

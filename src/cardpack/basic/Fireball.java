@@ -19,17 +19,17 @@ public class Fireball extends Spell {
 						&& ((Minion) c).team != this.creator.team;
 			}
 		};
-		this.targets.add(t);
+		this.battlecryTargets.add(t);
 	}
 
 	@Override
 	public LinkedList<Event> battlecry() {
 		LinkedList<Event> list = new LinkedList<Event>();
-		int pos = ((BoardObject) this.targets.get(0).target).boardpos;
-		list.add(new EventDamage((Minion) this.targets.get(0).target, 2));
+		int pos = ((BoardObject) this.battlecryTargets.get(0).target).boardpos;
+		list.add(new EventDamage((Minion) this.battlecryTargets.get(0).target, 2));
 		for (int i = -1; i <= 1; i += 2) {
 			BoardObject b = this.board.getBoardObject(pos + i);
-			if (b != null && this.targets.get(0).canTarget(b)) {
+			if (b != null && this.battlecryTargets.get(0).canTarget(b)) {
 				list.add(new EventDamage((Minion) b, 1));
 			}
 		}

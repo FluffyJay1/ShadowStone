@@ -26,12 +26,11 @@ public class Card {
 	Image image;
 	public CardStatus status;
 
-	public LinkedList<Target> targets;
+	public LinkedList<Target> battlecryTargets = new LinkedList<Target>();
 
 	public Card() {
 		this.cost = 1;
 		this.status = CardStatus.BOARD;
-		this.targets = new LinkedList<Target>();
 		this.team = 0;
 	}
 
@@ -51,7 +50,6 @@ public class Card {
 		this.scale = 1;
 		this.id = id;
 		this.status = status;
-		this.targets = new LinkedList<Target>();
 		this.team = team;
 	}
 
@@ -98,14 +96,14 @@ public class Card {
 		return true;
 	}
 
-	public void resetTargets() {
-		for (Target t : this.targets) {
+	public void resetBattlecryTargets() {
+		for (Target t : this.battlecryTargets) {
 			t.reset();
 		}
 	}
 
-	public Target getNextNeededTarget() {
-		for (Target t : this.targets) {
+	public Target getNextNeededBattlecryTarget() {
+		for (Target t : this.battlecryTargets) {
 			if (!t.ready()) {
 				return t;
 			}
@@ -122,7 +120,7 @@ public class Card {
 
 	public String targetsToString() {
 		String st = "targets ";
-		for (Target t : this.targets) {
+		for (Target t : this.battlecryTargets) {
 			if (t.target != null) {
 				st += t.target.toString() + " ";
 			}

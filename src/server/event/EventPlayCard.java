@@ -11,7 +11,7 @@ import server.card.Minion;
 public class EventPlayCard extends Event {
 	Player p;
 	Card c;
-	int position;
+	int position, handpos;
 
 	public EventPlayCard(Player p, Card c, int position) {
 		this.p = p;
@@ -20,6 +20,7 @@ public class EventPlayCard extends Event {
 	}
 
 	public String resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+		this.handpos = c.handpos;
 		p.hand.cards.remove(c);
 		if (c instanceof BoardObject) {
 			p.board.addBoardObject((BoardObject) c, position);
@@ -36,7 +37,7 @@ public class EventPlayCard extends Event {
 	}
 
 	public String toString() {
-		return "playc " + p.team + " " + c.toString();
+		return "playc " + p.team + " " + handpos + " " + c.toString();
 	}
 
 	public boolean conditions() {

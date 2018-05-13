@@ -21,6 +21,7 @@ public class EventPutCard {
 			return this.toString();
 		}
 		c.status = CardStatus.HAND;
+		c.handpos = p.hand.cards.size();
 		p.hand.cards.add(c);
 		p.deck.cards.remove(c);
 		return this.toString();
