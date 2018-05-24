@@ -9,6 +9,6 @@ public class Leader extends Minion {
 	}
 
 	public String toString() {
-		return "Leader " + name + " alive " + alive + "\n" + this.stats.toString();
+		return "Leader " + name + " alive " + alive + "\n" + this.finalStatEffects.statsToString();
 	}
 }

@@ -11,6 +11,8 @@ import org.newdawn.slick.geom.Vector2f;
 
 import client.Game;
 import server.Board;
+import server.card.effect.Effect;
+import server.card.effect.EffectStats;
 import server.event.Event;
 
 public class Card {
@@ -18,7 +20,7 @@ public class Card {
 	public static final double EPSILON = 0.0001;
 	public static final double NAME_FONT_SIZE = 24;
 	public Board board;
-	public int id, cost, handpos, team;
+	public int id, handpos, team;
 	public String name, text, imagepath;
 	public Vector2f targetpos, pos;
 	public double scale;
@@ -26,10 +28,11 @@ public class Card {
 	Image image;
 	public CardStatus status;
 
-	public LinkedList<Target> battlecryTargets = new LinkedList<Target>();
+	public Effect finalStatEffects = new Effect(this, 0, ""), finalBasicStatEffects = new Effect(this, 0, "");
+	// basic effects cannot be muted
+	private LinkedList<Effect> effects = new LinkedList<Effect>(), basicEffects = new LinkedList<Effect>();
 
 	public Card() {
-		this.cost = 1;
 		this.status = CardStatus.BOARD;
 		this.team = 0;
 	}
@@ -37,7 +40,6 @@ public class Card {
 	public Card(Board board, CardStatus status, int cost, String name, String text, String imagepath, int team,
 			int id) {
 		this.board = board;
-		this.cost = cost;
 		this.name = name;
 		this.text = text;
 		if (imagepath != null) {
@@ -51,6 +53,7 @@ public class Card {
 		this.id = id;
 		this.status = status;
 		this.team = team;
+		this.addBasicEffect(new Effect(this, 0, "", cost));
 	}
 
 	public void update(double frametime) {
@@ -88,22 +91,80 @@ public class Card {
 
 	}
 
+	public LinkedList<Effect> getBasicEffects() {
+		return this.basicEffects;
+	}
+
+	public LinkedList<Effect> getAdditionalEffects() {
+		return this.effects;
+	}
+
+	public LinkedList<Effect> getFinalEffects() {
+		LinkedList<Effect> list = new LinkedList<Effect>();
+		list.addAll(this.getBasicEffects());
+		for (Effect e : this.getAdditionalEffects()) {
+			if (!e.mute) {
+				list.add(e);
+			}
+		}
+		return list;
+	}
+
+	public void addBasicEffect(Effect e) {
+		this.basicEffects.add(e);
+		this.updateBasicEffectStats();
+		this.updateFinalEffectStats();
+	}
+
+	public void addEffect(Effect e) {
+		this.effects.add(e);
+		this.updateFinalEffectStats();
+	}
+
+	public void updateBasicEffectStats() {
+		this.finalBasicStatEffects = new Effect(this, 0, "");
+		for (Effect e : this.getBasicEffects()) {
+			this.finalBasicStatEffects.applyEffectStats(e);
+		}
+	}
+
+	public void updateFinalEffectStats() {
+		this.finalStatEffects = new Effect(this, 0, "");
+		for (Effect e : this.getFinalEffects()) {
+			this.finalStatEffects.applyEffectStats(e);
+		}
+	}
+
 	public LinkedList<Event> battlecry() {
-		return new LinkedList<Event>();
+		LinkedList<Event> list = new LinkedList<Event>();
+		for (Effect e : this.getFinalEffects()) {
+			list.addAll(e.battlecry());
+		}
+		return list;
 	}
 
 	public boolean conditions() { // to be able to even begin to play
 		return true;
 	}
 
+	public LinkedList<Target> getBattlecryTargets() {
+		LinkedList<Target> list = new LinkedList<Target>();
+		for (Effect e : this.getFinalEffects()) {
+			for (Target t : e.battlecryTargets) {
+				list.add(t);
+			}
+		}
+		return list;
+	}
+
 	public void resetBattlecryTargets() {
-		for (Target t : this.battlecryTargets) {
+		for (Target t : this.getBattlecryTargets()) {
 			t.reset();
 		}
 	}
 
 	public Target getNextNeededBattlecryTarget() {
-		for (Target t : this.battlecryTargets) {
+		for (Target t : this.getBattlecryTargets()) {
 			if (!t.ready()) {
 				return t;
 			}
@@ -111,21 +172,21 @@ public class Card {
 		return null;
 	}
 
+	public String battlecryTargetsToString() {
+		LinkedList<Target> list = this.getBattlecryTargets();
+		String ret = "btargets " + list.size() + " ";
+		for (Target t : list) {
+			ret += t.toString() + " ";
+		}
+		return ret;
+
+	}
+
 	public boolean isInside(Vector2f p) {
 		return p.x >= this.pos.x - this.image.getWidth() / 2 * this.scale
 				&& p.y >= this.pos.y - this.image.getHeight() / 2 * this.scale
 				&& p.x <= this.pos.x + this.image.getWidth() / 2 * this.scale
 				&& p.y <= this.pos.y + this.image.getHeight() / 2 * this.scale;
-	}
-
-	public String targetsToString() {
-		String st = "targets ";
-		for (Target t : this.battlecryTargets) {
-			if (t.target != null) {
-				st += t.target.toString() + " ";
-			}
-		}
-		return st;
 	}
 
 	public String posToString() {
@@ -142,6 +203,6 @@ public class Card {
 	}
 
 	public String toString() {
-		return "card " + this.id + " " + this.posToString() + " " + this.targetsToString();
+		return "card " + this.id + " " + this.posToString();
 	}
 }

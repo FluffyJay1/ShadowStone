@@ -3,6 +3,7 @@ package server.event;
 import java.util.LinkedList;
 
 import server.card.Minion;
+import server.card.effect.EffectStats;
 
 public class EventMinionAttackDamage extends Event {
 	// damage phase of attack
@@ -18,8 +19,8 @@ public class EventMinionAttackDamage extends Event {
 		if (!conditions()) {
 			return this.toString();
 		}
-		eventlist.add(new EventDamage(m1, m2.stats.a));
-		eventlist.add(new EventDamage(m2, m1.stats.a));
+		eventlist.add(new EventDamage(m1, m2.finalStatEffects.getEffectStat(EffectStats.ATTACK_I)));
+		eventlist.add(new EventDamage(m2, m1.finalStatEffects.getEffectStat(EffectStats.ATTACK_I)));
 		return this.toString();
 	}
 

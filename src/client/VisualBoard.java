@@ -9,7 +9,8 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Vector2f;
 
 import client.ui.UI;
-import client.ui.UnleashButton;
+import client.ui.game.CardSelectPanel;
+import client.ui.game.UnleashButton;
 import server.Board;
 import server.card.BoardObject;
 import server.card.Card;
@@ -23,16 +24,17 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	public static final int BO_SPACING = 200;
 	UI ui;
 	public Card selectedCard, draggingCard, playingCard;
+	LinkedList<Card> targetableCards = new LinkedList<Card>();
 	int playingX;
 	public Minion attackingMinion, unleashingMinion;
-	UnleashButton unleashButton;
+	CardSelectPanel cardSelectPanel;
 
 	public VisualBoard() {
 		super();
 		this.ui = new UI();
-		this.unleashButton = new UnleashButton(this.ui, this);
-		this.ui.addUIElementParent(this.unleashButton);
-		this.unleashButton.hide = true;
+		this.cardSelectPanel = new CardSelectPanel(this.ui, this);
+		this.ui.addUIElementParent(this.cardSelectPanel);
+		this.cardSelectPanel.hide = true;
 	}
 
 	public void update(double frametime) {
@@ -70,19 +72,11 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		for (int i = 1; i < player1side.size(); i++) {
 			BoardObject bo = player1side.get(i);
 			bo.targetpos.set(boardPosToX(bo.boardpos, 1), 700);
-			if (this.playingCard != null && this.playingCard.getNextNeededBattlecryTarget() != null
-					&& this.playingCard.getNextNeededBattlecryTarget().canTarget(bo)) {
-				bo.scale = 1.2;
-			}
 			bo.draw(g);
 		}
 		for (int i = 1; i < player2side.size(); i++) {
 			BoardObject bo = player2side.get(i);
 			bo.targetpos.set(boardPosToX((bo.boardpos), -1), 400);
-			if (this.playingCard != null && this.playingCard.getNextNeededBattlecryTarget() != null
-					&& this.playingCard.getNextNeededBattlecryTarget().canTarget(bo)) {
-				bo.scale = 1.2;
-			}
 			bo.draw(g);
 		}
 		BoardObject player1leader = player1side.get(0);
@@ -113,11 +107,6 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 					this.unleashingMinion.pos.x
 							- font.getWidth(this.unleashingMinion.getNextNeededUnleashTarget().description) / 2,
 					this.unleashingMinion.pos.y + 100, this.unleashingMinion.getNextNeededUnleashTarget().description);
-		} else if (this.selectedCard != null) {
-			UnicodeFont font1 = Game.getFont("Verdana", 20, true, false);
-			UnicodeFont font2 = Game.getFont("Verdana", 16, true, false);
-			font1.drawString(200, 300, this.selectedCard.name);
-			font2.drawString(200, 320, this.selectedCard.text);
 		}
 		ui.draw(g);
 	}
@@ -200,33 +189,18 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 					}
 				} else { // clicked on neither handcard or boardobject
 					if (this.playingCard != null && this.playingCard.getNextNeededBattlecryTarget() != null) {
+						this.animateBattlecryTargets(false);
 						this.playingCard.resetBattlecryTargets();
 						this.playingCard = null;
+					}
+					if (this.unleashingMinion != null && this.unleashingMinion.getNextNeededUnleashTarget() != null) {
+						this.animateUnleashTargets(false);
+						this.unleashingMinion.resetUnleashTargets();
+						this.unleashingMinion = null;
 					}
 				}
 			}
 		}
-	}
-
-	private boolean handleTargeting(Card c) {
-		if (this.playingCard != null && this.playingCard.getNextNeededBattlecryTarget() != null) {
-			if (this.playingCard.getNextNeededBattlecryTarget().canTarget(c)) {
-				this.playingCard.getNextNeededBattlecryTarget().target = c;
-				return true;
-			} else {
-				this.playingCard.resetBattlecryTargets();
-				this.playingCard = null;
-			}
-		} else if (this.unleashingMinion != null && this.unleashingMinion.getNextNeededUnleashTarget() != null) {
-			if (this.unleashingMinion.getNextNeededUnleashTarget().canTarget(c)) {
-				this.unleashingMinion.getNextNeededUnleashTarget().target = c;
-				return true;
-			} else {
-				this.unleashingMinion.resetUnleashTargets();
-				this.unleashingMinion = null;
-			}
-		}
-		return false;
 	}
 
 	@Override
@@ -243,6 +217,9 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		} else if (this.draggingCard != null) {
 			if (y < 750 && this.draggingCard.conditions()) {
 				this.playingCard = this.draggingCard;
+				this.selectedCard = null;
+				this.resolveNoBattlecryTarget();
+				this.animateBattlecryTargets(true);
 				this.playingX = x;
 			}
 			this.draggingCard = null;
@@ -261,6 +238,71 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		this.ui.mouseDragged(oldx, oldy, newx, newy);
 		if (this.draggingCard != null) {
 			this.draggingCard.targetpos.add(new Vector2f(newx, newy).sub(new Vector2f(oldx, oldy)));
+		}
+	}
+
+	@Override
+	public void mouseWheelMoved(int change) {
+		this.ui.mouseWheelMoved(change);
+	}
+
+	private boolean handleTargeting(Card c) {
+		if (this.playingCard != null && this.playingCard.getNextNeededBattlecryTarget() != null) {
+			if (this.playingCard.getNextNeededBattlecryTarget().canTarget(c)) {
+				this.animateBattlecryTargets(false);
+				this.playingCard.getNextNeededBattlecryTarget().setTarget(c);
+				this.resolveNoBattlecryTarget();
+				this.animateBattlecryTargets(true);
+				return true;
+			} else {
+				this.animateBattlecryTargets(false);
+				this.playingCard.resetBattlecryTargets();
+				this.playingCard = null;
+			}
+		} else if (this.unleashingMinion != null && this.unleashingMinion.getNextNeededUnleashTarget() != null) {
+			if (this.unleashingMinion.getNextNeededUnleashTarget().canTarget(c)) {
+				this.animateUnleashTargets(false);
+				this.unleashingMinion.getNextNeededUnleashTarget().setTarget(c);
+				this.resolveNoUnleashTarget();
+				this.animateUnleashTargets(true);
+				return true;
+			} else {
+				this.animateUnleashTargets(false);
+				this.unleashingMinion.resetUnleashTargets();
+				this.unleashingMinion = null;
+			}
+		}
+		return false;
+	}
+
+	public void animateBattlecryTargets(boolean activate) {
+		LinkedList<Card> tc = this.getTargetableCards(this.playingCard.getNextNeededBattlecryTarget());
+		for (Card c : tc) {
+			c.scale = activate ? 1.25 : 1;
+		}
+	}
+
+	public void animateUnleashTargets(boolean activate) {
+		LinkedList<Card> tc = this.getTargetableCards(this.unleashingMinion.getNextNeededUnleashTarget());
+		for (Card c : tc) {
+			c.scale = activate ? 1.25 : 1;
+		}
+	}
+
+	public void resolveNoBattlecryTarget() {
+		LinkedList<Card> tc = this.getTargetableCards(this.playingCard.getNextNeededBattlecryTarget());
+		while (tc.isEmpty() && this.playingCard.getNextNeededBattlecryTarget() != null) {
+			this.playingCard.getNextNeededBattlecryTarget().setTarget(null);
+			tc = this.getTargetableCards(this.playingCard.getNextNeededBattlecryTarget());
+		}
+	}
+
+	public void resolveNoUnleashTarget() {
+		LinkedList<Card> tc = this.getTargetableCards(this.unleashingMinion.getNextNeededUnleashTarget());
+
+		while (tc.isEmpty() && this.unleashingMinion.getNextNeededUnleashTarget() != null) {
+			this.unleashingMinion.getNextNeededUnleashTarget().setTarget(null);
+			tc = this.getTargetableCards(this.unleashingMinion.getNextNeededUnleashTarget());
 		}
 	}
 }

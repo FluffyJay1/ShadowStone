@@ -1,8 +1,11 @@
-package client.ui;
+package client.ui.game;
 
 import org.newdawn.slick.geom.Vector2f;
 
 import client.VisualBoard;
+import client.ui.Text;
+import client.ui.UI;
+import client.ui.UIElement;
 import server.card.CardStatus;
 import server.card.Minion;
 
@@ -21,14 +24,9 @@ public class UnleashButton extends UIElement {
 
 	@Override
 	public void update(double frametime) {
-		this.text.setFont("Verdana", (int) (this.timey * 15) * 15);
-		this.text.lineHeight = (int) (this.timey * 15) * 15;
 		super.update(frametime);
-		this.timey += frametime;
-		timey %= 0.5;
 		if (this.b.selectedCard != null && this.b.selectedCard instanceof Minion
-				&& this.b.selectedCard.status == CardStatus.BOARD) {
-			this.setPos(new Vector2f(250, 400), 1);
+				&& this.b.selectedCard.status == CardStatus.BOARD && this.b.selectedCard.team == 1) {
 			this.hide = false;
 		} else {
 			this.hide = true;
@@ -40,6 +38,8 @@ public class UnleashButton extends UIElement {
 	public void mouseReleased(int button, int x, int y) {
 		if (this.pointIsInHitbox(new Vector2f(x, y))) {
 			this.b.unleashingMinion = (Minion) b.selectedCard;
+			this.b.resolveNoUnleashTarget();
+			this.b.animateUnleashTargets(true);
 		}
 	}
 }

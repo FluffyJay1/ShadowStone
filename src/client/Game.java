@@ -68,8 +68,9 @@ public class Game extends StateBasedGame {
 		return i;
 	}
 
-	public static UnicodeFont getFont(String font, double size, boolean bold, boolean italic) {
-		String condensed = font + (int) size + bold + italic; // map lifehack
+	public static UnicodeFont getFont(String font, double size, boolean bold, boolean italic, Color fillc, Color outc) {
+		String condensed = font + (int) size + bold + italic + fillc.toString() + outc.toString(); // map
+																									// lifehack
 		UnicodeFont f = null;
 		if (fonts.containsKey(condensed)) {
 			f = fonts.get(condensed);
@@ -77,9 +78,8 @@ public class Game extends StateBasedGame {
 			f = new UnicodeFont(new Font(font, Font.BOLD, (int) size), (int) size, bold, italic);
 
 			try {
-				ColorEffect e = new ColorEffect(java.awt.Color.WHITE);
-				f.getEffects().add(e);
-				f.getEffects().add(new OutlineEffect(1, Color.BLACK));
+				f.getEffects().add(new ColorEffect(fillc));
+				f.getEffects().add(new OutlineEffect(1, outc));
 				f.addAsciiGlyphs();
 				f.loadGlyphs();
 			} catch (SlickException e) {
@@ -91,9 +91,18 @@ public class Game extends StateBasedGame {
 					+ (italic ? " italic" : ""));
 
 		}
+
 		if (f == null) {
 			System.out.println("fuckin kil lmyself");
 		}
 		return f;
+	}
+
+	public static UnicodeFont getFont(String font, double size, boolean bold, boolean italic) {
+		return getFont(font, size, bold, italic, Color.white, Color.black);
+	}
+
+	public static UnicodeFont getFont(String font, double size) {
+		return getFont(font, size, false, false);
 	}
 }

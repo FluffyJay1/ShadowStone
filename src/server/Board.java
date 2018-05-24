@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import server.card.BoardObject;
+import server.card.Card;
 import server.card.CardStatus;
 import server.card.Leader;
 import server.card.Minion;
+import server.card.Target;
 import server.event.*;
 
 public class Board {
@@ -28,6 +30,35 @@ public class Board {
 
 	public Player getPlayer(int team) {
 		return team == 1 ? player1 : player2;
+	}
+
+	public ArrayList<Card> getTargetableCards() {
+		ArrayList<Card> ret = new ArrayList<Card>();
+		ret.addAll(this.player1side);
+		ret.addAll(this.player2side);
+		ret.addAll(this.player1.hand.cards);
+		ret.addAll(this.player2.hand.cards);
+		return ret;
+	}
+
+	public LinkedList<Card> getTargetableCards(Target t) {
+		LinkedList<Card> list = new LinkedList<Card>();
+		if (t == null) {
+			return list;
+		}
+		for (Card c : this.getTargetableCards()) {
+			if (t.canTarget(c)) {
+				list.add(c);
+			}
+		}
+		return list;
+	}
+
+	public ArrayList<BoardObject> getBoardObjects() {
+		ArrayList<BoardObject> ret = new ArrayList<BoardObject>();
+		ret.addAll(this.player1side);
+		ret.addAll(this.player2side);
+		return ret;
 	}
 
 	public BoardObject getBoardObject(int position) {

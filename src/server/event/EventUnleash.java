@@ -24,7 +24,7 @@ public class EventUnleash extends Event {
 	}
 
 	public String toString() {
-		return "unleash " + m.toString();
+		return "unleash " + m.toString() + " " + m.unleashTargetsToString();
 	}
 
 	public boolean conditions() {

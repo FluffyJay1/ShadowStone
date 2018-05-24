@@ -15,7 +15,7 @@ public class Text extends UIElement {
 	private ArrayList<ArrayList<String>> lines = new ArrayList<ArrayList<String>>();
 	private ArrayList<Double> lineWidths = new ArrayList<Double>();
 	double lineWidth, lineHeight, fontsize;
-	public int alignh, alignv;
+
 	String font;
 	// 0 = normal, 1 = bold, 2 = italics, 3 = both
 	UnicodeFont[] uFontFamily = new UnicodeFont[4];
@@ -40,63 +40,72 @@ public class Text extends UIElement {
 			this.uFontFamily[i] = Game.getFont(font, fontsize, (i & 1) > 0, (i & 2) > 0);
 		}
 		if (this.text != null) {
-			this.setText(this.text);
+			this.updateText();
 		}
 	}
 
 	public void setText(String text) {
-		int flags = 0; // bold and italics
-
+		if (this.text.equals(text)) { // optimization lul
+			return;
+		}
 		this.text = text;
+		this.updateText();
+	}
+
+	public void updateText() {
+		int flags = 0; // bold and italics
 		this.lines.clear();
 		this.lineWidths.clear();
-		StringTokenizer st = new StringTokenizer(text);
-		ArrayList<String> line = new ArrayList<String>();
-		double currlinewidth = 0;
+		StringTokenizer stlines = new StringTokenizer(text, "\n");
+		while (stlines.hasMoreTokens()) {
+			StringTokenizer st = new StringTokenizer(stlines.nextToken(), " ");
+			ArrayList<String> line = new ArrayList<String>();
+			double currlinewidth = 0;
 
-		while (st.hasMoreTokens()) { // why do i do this
-			String token = st.nextToken();
-			if (token.equals("<b>")) {
-				flags = flags | 1;
-				line.add(token);
-			} else if (token.equals("</b>")) {
-				flags = flags & ~1;
-				line.add(token);
-			} else if (token.equals("<i>")) {
-				flags = flags | 2;
-				line.add(token);
-			} else if (token.equals("</i>")) {
-				flags = flags & ~2;
-				line.add(token);
-			} else {
-				if (currlinewidth == 0) { // first word
+			while (st.hasMoreTokens()) { // why do i do this
+				String token = st.nextToken();
+				if (token.equals("<b>")) {
+					flags = flags | 1;
 					line.add(token);
-					currlinewidth += this.uFontFamily[flags].getWidth(token);
-				} else if (currlinewidth + this.uFontFamily[flags].getWidth(" " + token) > this.lineWidth) {
-					this.lines.add(line);
-					this.lineWidths.add(currlinewidth);
-					line = new ArrayList<String>();
+				} else if (token.equals("</b>")) {
+					flags = flags & ~1;
 					line.add(token);
-					currlinewidth = this.uFontFamily[flags].getWidth(token);
+				} else if (token.equals("<i>")) {
+					flags = flags | 2;
+					line.add(token);
+				} else if (token.equals("</i>")) {
+					flags = flags & ~2;
+					line.add(token);
 				} else {
-					line.add(token);
-					currlinewidth += this.uFontFamily[flags].getWidth(" " + token);
+					if (currlinewidth == 0) { // first word
+						line.add(token);
+						currlinewidth += this.uFontFamily[flags].getWidth(token);
+					} else if (currlinewidth + this.uFontFamily[flags].getWidth(" " + token) > this.lineWidth) { // newline
+						this.lines.add(line);
+						this.lineWidths.add(currlinewidth);
+						line = new ArrayList<String>();
+						line.add(token);
+						currlinewidth = this.uFontFamily[flags].getWidth(token);
+					} else {
+						line.add(token);
+						currlinewidth += this.uFontFamily[flags].getWidth(" " + token);
 
+					}
 				}
 			}
+			this.lines.add(line);
+			this.lineWidths.add(currlinewidth);
 		}
-		this.lines.add(line);
-		this.lineWidths.add(currlinewidth);
 	}
 
 	@Override
-	public double getWidth() {
+	public double getWidth(boolean margin) {
 		return this.lineWidth;
 	}
 
 	@Override
-	public double getHeight() {
-		return this.lines.size() == 0 ? 0 : this.lineHeight * (this.lines.size() - 1) + this.fontsize;
+	public double getHeight(boolean margin) {
+		return this.lines.size() == 0 ? 0 : this.lineHeight * (this.lines.size() - 1) + this.fontsize * 1.5; // HELP
 	}
 
 	@Override
@@ -116,14 +125,15 @@ public class Text extends UIElement {
 				} else {
 					float drawx = (float) (this.getFinalPos().x + currlinewidth
 							- this.lineWidths.get(i) * (this.alignh + 1) / 2.);
-					float drawy = (float) (this.getFinalPos().y + this.lineHeight * i
-							- this.getHeight() * (this.alignv + 1) / 2);
-					this.uFontFamily[flags].drawString(drawx, drawy, token);
+					float drawy = (float) (this.getFinalPos().y + this.lineHeight * i - this.getVOff());
+					g.setFont(this.uFontFamily[flags]);
+					g.drawString(token, drawx, drawy);
+					// this.uFontFamily[flags].drawString(drawx, drawy, token);
 
 					currlinewidth += this.uFontFamily[flags].getWidth(token + " ");
-
 				}
 			}
 		}
+		this.drawChildren(g);// why not
 	}
 }

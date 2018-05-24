@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
 import client.Game;
@@ -17,12 +18,14 @@ public class UIElement implements DefaultMouseListener {
 	ArrayList<UIElement> children = new ArrayList<UIElement>();
 	ArrayList<UIElement> childrenAddBuffer = new ArrayList<UIElement>();
 	ArrayList<UIElement> childrenRemoveBuffer = new ArrayList<UIElement>();
-
-	public boolean remove = false, hide = false, draggable = false, ignorehitbox = false;
-	private Vector2f targetpos = new Vector2f(), pos = new Vector2f(); // private
-																		// cuz
-																		// fuck
-																		// you
+	public int alignh = 0, alignv = 0;
+	public boolean remove = false, hide = false, draggable = false, ignorehitbox = false, hitcircle = false,
+			clip = false, scrollable = false;
+	public Vector2f childoffset = new Vector2f(), margins = new Vector2f(); // public
+																			// cuz
+																			// fuck
+																			// u
+	private Vector2f targetpos = new Vector2f(), pos = new Vector2f();
 	public double scale = 1, speed = 1, angle = 0;
 	Image image, finalImage;
 
@@ -36,6 +39,7 @@ public class UIElement implements DefaultMouseListener {
 	public void setImage(String imagepath) {
 		if (imagepath != null && !imagepath.isEmpty()) {
 			this.image = Game.getImage(imagepath);
+			this.finalImage = image.getScaledCopy((float) this.scale);
 		}
 	}
 
@@ -55,29 +59,115 @@ public class UIElement implements DefaultMouseListener {
 	}
 
 	public Vector2f getPos() {
-		return this.pos;
+		return this.pos.copy();
 	}
 
 	public Vector2f getFinalPos() {
 		if (this.parent != null) {
-			return this.parent.getFinalPos().copy().add(this.pos);
+			return this.parent.getFinalPos().copy().add(this.parent.childoffset).add(this.pos);
 		}
-		return this.pos;
+		return this.getPos();
 	}
 
-	public double getWidth() {
-		return this.finalImage.getWidth();
+	public Vector2f getDim(boolean margin) {
+		return new Vector2f((float) this.getWidth(margin), (float) this.getHeight(margin));
 	}
 
-	public double getHeight() {
-		return this.finalImage.getHeight();
+	public double getWidth(boolean margin) {
+		return this.finalImage.getWidth() - (margin ? this.margins.x * 2 : 0);
+	}
+
+	public double getHeight(boolean margin) {
+		return this.finalImage.getHeight() - (margin ? this.margins.y * 2 : 0);
+	}
+
+	// defined as distance from pos to left edge
+	public double getHOff() {
+		return this.getWidth(false) * (this.alignh + 1) / 2;
+	}
+
+	// defined as distance from pos to top edge
+	public double getVOff() {
+		return this.getHeight(false) * (this.alignv + 1) / 2;
+	}
+
+	public double getLeft(boolean abs, boolean margin) {
+		return (abs ? this.getFinalPos().x : this.getPos().x) - this.getHOff() + (margin ? this.margins.x : 0);
+	}
+
+	public double getRight(boolean abs, boolean margin) {
+		return (abs ? this.getFinalPos().x : this.getPos().x) - this.getHOff() + this.getWidth(false)
+				- (margin ? this.margins.x : 0);
+	}
+
+	public double getTop(boolean abs, boolean margin) {
+		return (abs ? this.getFinalPos().y : this.getPos().y) - this.getVOff() + (margin ? this.margins.y : 0);
+	}
+
+	public double getBottom(boolean abs, boolean margin) {
+		return (abs ? this.getFinalPos().y : this.getPos().y) - this.getVOff() + this.getHeight(false)
+				- (margin ? this.margins.y : 0);
+	}
+
+	public double getLocalLeft(boolean margin) {
+		return -this.getHOff() + (margin ? this.margins.x : 0);
+	}
+
+	public double getLocalRight(boolean margin) {
+		return -this.getHOff() + this.getWidth(false) - (margin ? this.margins.x : 0);
+	}
+
+	public double getLocalTop(boolean margin) {
+		return -this.getVOff() + (margin ? this.margins.y : 0);
+	}
+
+	public double getLocalBottom(boolean margin) {
+		return -this.getVOff() + this.getHeight(false) - (margin ? this.margins.y : 0);
+	}
+
+	// topmost point relative to parent before childoffset
+	public double getChildLocalTop(double offset) {
+		double y = this.getLocalTop(false) + offset;
+		for (UIElement u : this.getChildren()) {
+			y = Math.min(y, u.getChildLocalTop(u.pos.y));
+		}
+		return y;
+	}
+
+	public double getChildLocalBottom(double offset) {
+		double y = this.getLocalBottom(false) + offset;
+		for (UIElement u : this.getChildren()) {
+			y = Math.max(y, u.getChildLocalBottom(u.pos.y));
+		}
+		return y;
 	}
 
 	public boolean pointIsInHitbox(Vector2f pos) {
-		return pos.getX() >= this.getFinalPos().getX() - this.getWidth() / 2
-				&& pos.getX() <= this.getFinalPos().getX() + this.getWidth() / 2
-				&& pos.getY() >= this.getFinalPos().getY() - this.getHeight() / 2
-				&& pos.getY() <= this.getFinalPos().getY() + this.getHeight() / 2;
+		if (this.hitcircle) {
+			return (new Vector2f(
+					(float) ((pos.x - this.getFinalPos().x + this.getWidth(false) / 2 - this.getHOff())
+							/ this.getWidth(false)),
+					(float) ((pos.y - this.getFinalPos().y + this.getHeight(false) / 2 - this.getVOff())
+							/ this.getHeight(false))).length()) < 0.25;
+		}
+		return pos.getX() >= this.getLeft(true, false) && pos.getX() <= this.getRight(true, false)
+				&& pos.getY() >= this.getTop(true, false) && pos.getY() <= this.getBottom(true, false);
+	}
+
+	public void fitInParent() {
+		double x = this.pos.getX(), y = this.pos.getY();
+		if (this.parent == null) { // is parent
+			x = Math.max(x, this.getHOff());
+			x = Math.min(x, Game.WINDOW_WIDTH - this.getHOff() + this.getWidth(false));
+			y = Math.max(y, this.getVOff());
+			y = Math.min(y, Game.WINDOW_HEIGHT - this.getVOff() + this.getHeight(false));
+		} else { // has parent
+			x = Math.max(x, -this.parent.getLocalLeft(true) + this.getHOff());
+			x = Math.min(x, this.parent.getLocalRight(true) - this.getHOff() + this.getWidth(false));
+			y = Math.max(y, -this.parent.getLocalTop(true) + this.getVOff());
+			y = Math.min(y, this.parent.getLocalBottom(true) - this.getVOff() + this.getHeight(false));
+		}
+		this.setPos(new Vector2f((float) x, (float) y), 1);
 	}
 
 	public void update(double frametime) {
@@ -97,27 +187,43 @@ public class UIElement implements DefaultMouseListener {
 			this.finalImage = this.image.getScaledCopy((float) this.scale);
 			this.finalImage.rotate((float) this.angle);
 			if (!this.hide) {
-				g.drawImage(this.finalImage, (float) (this.getFinalPos().x - this.finalImage.getWidth() / 2),
-						(float) (this.getFinalPos().y - this.finalImage.getHeight() / 2));
-				for (UIElement u : this.getChildren()) {
-					u.draw(g);
-				}
+				g.drawImage(this.finalImage, (float) (this.getLeft(true, false)), (float) (this.getTop(true, false)));
 			}
+		}
+		if (!this.hide) {
+			this.drawChildren(g);
 		}
 	}
 
+	public void drawChildren(Graphics g) {
+		Rectangle prevClip = g.getClip();
+		if (this.clip) {
+			g.setClip((int) (this.getLeft(true, true)), (int) (this.getTop(true, true)), (int) this.getWidth(true),
+					(int) this.getHeight(true));
+		}
+		for (UIElement u : this.getChildren()) {
+			u.draw(g);
+
+		}
+		g.setClip(prevClip);
+	}
+
 	// returns the uielement that is top (prioritizes children)
-	public UIElement topChildAtPos(Vector2f pos) {
+	public UIElement topChildAtPos(Vector2f pos, boolean requirehitbox, boolean requirescrollable) {
 		if (this.hide) {
 			return null;
 		}
 		UIElement u = null;
 
-		if (!this.ignorehitbox && this.pointIsInHitbox(pos)) {
-			u = this;
+		if ((!this.ignorehitbox || !requirehitbox) && (this.scrollable || !requirescrollable)) {
+			if (this.pointIsInHitbox(pos)) {
+				u = this;
+			} else if (this.clip) { // not in hitbox and we are clipping
+				return u; // sucks to suck
+			}
 		}
 		for (UIElement child : this.children) {
-			UIElement thing = child.topChildAtPos(pos);
+			UIElement thing = child.topChildAtPos(pos, requirehitbox, requirescrollable);
 			if (thing != null) {
 				u = thing;
 			}

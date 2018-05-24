@@ -34,6 +34,6 @@ public class BoardObject extends Card {
 	}
 
 	public String toString() {
-		return "BoardObject " + name + " cost " + cost + " " + this.posToString() + " alive " + alive;
+		return "BoardObject " + name + " " + this.posToString() + " alive " + alive;
 	}
 }

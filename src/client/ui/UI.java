@@ -17,6 +17,7 @@ public class UI { // lets do this right this time
 	ArrayList<UIElement> parentListAddBuffer = new ArrayList<UIElement>();
 	ArrayList<UIElement> parentListRemoveBuffer = new ArrayList<UIElement>();
 	UIElement pressedElement = null;
+	Vector2f lastmousepos = new Vector2f();
 
 	public UI() {
 
@@ -45,10 +46,10 @@ public class UI { // lets do this right this time
 		this.parentListAddBuffer.add(u);
 	}
 
-	public UIElement getTopUIElement(Vector2f pos) {
+	public UIElement getTopUIElement(Vector2f pos, boolean requirehitbox, boolean requirescrollable) {
 		UIElement ret = null;
 		for (UIElement u : this.parentList) {
-			UIElement test = u.topChildAtPos(pos);
+			UIElement test = u.topChildAtPos(pos, requirehitbox, requirescrollable);
 			if (test != null) {
 				ret = test;
 			}
@@ -57,7 +58,7 @@ public class UI { // lets do this right this time
 	}
 
 	public boolean mousePressed(int button, int x, int y) {
-		UIElement top = this.getTopUIElement(new Vector2f(x, y));
+		UIElement top = this.getTopUIElement(new Vector2f(x, y), true, false);
 		if (top != null) {
 			this.pressedElement = top;
 			top.mousePressed(button, x, y);
@@ -82,6 +83,7 @@ public class UI { // lets do this right this time
 			temp.addAll(temp.getFirst().getChildren());
 			temp.removeFirst();
 		}
+		this.lastmousepos.set(newx, newy);
 	}
 
 	public void mouseDragged(int oldx, int oldy, int newx, int newy) {
@@ -92,6 +94,13 @@ public class UI { // lets do this right this time
 			}
 			this.pressedElement.mouseDragged(oldx, oldy, newx, newy);
 
+		}
+	}
+
+	public void mouseWheelMoved(int change) {
+		UIElement top = this.getTopUIElement(this.lastmousepos, true, true);
+		if (top != null) {
+			top.mouseWheelMoved(change);
 		}
 	}
 }

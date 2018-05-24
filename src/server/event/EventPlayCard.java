@@ -37,7 +37,7 @@ public class EventPlayCard extends Event {
 	}
 
 	public String toString() {
-		return "playc " + p.team + " " + handpos + " " + c.toString();
+		return "playc " + p.team + " " + handpos + " " + c.toString() + " " + c.battlecryTargetsToString();
 	}
 
 	public boolean conditions() {

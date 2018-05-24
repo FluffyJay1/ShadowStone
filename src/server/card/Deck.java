@@ -16,7 +16,7 @@ public class Deck {
 		this.cards = new ArrayList<Card>();
 		for (int i = 0; i < 20; i++) {
 			cards.add(new Goblin(board, team));
-			cards.add(new Fighter(board, team));
+			cards.add(new Tiny(board, team));
 			cards.add(new Fireball(board, team));
 		}
 		this.shuffle();
