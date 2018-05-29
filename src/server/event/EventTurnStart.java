@@ -16,7 +16,7 @@ public class EventTurnStart extends Event {
 	public String resolve(LinkedList<Event> eventlist, boolean loopprotection) {
 		this.p.unleashedThisTurn = false;
 		eventlist.add(new EventManaChange(this.p, 1, true, false));
-		eventlist.add(new EventManaChange(this.p, this.p.maxmana, false, true));
+		eventlist.add(new EventManaChange(this.p, this.p.maxmana + 1, false, true));
 		Minion leader = (Minion) this.p.board.getBoardObject(this.p.team, 0);
 		eventlist.addAll(leader.onTurnStart());
 		for (BoardObject b : this.p.board.getBoardObjects(this.p.team)) {
