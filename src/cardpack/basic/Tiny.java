@@ -22,8 +22,9 @@ public class Tiny extends Minion {
 			public LinkedList<Event> unleash() {
 				LinkedList<Event> list = new LinkedList<Event>();
 				EffectStatChange ef = new EffectStatChange(this.owner, "Gained +2/+0/+2 from Unleash");
-				ef.change.setStat(EffectStats.ATTACK_I, 2);
-				ef.change.setStat(EffectStats.HEALTH_I, 2);
+				ef.change.setStat(EffectStats.ATTACK, 2);
+				ef.change.setStat(EffectStats.HEALTH, 2);
+				ef.set.setStat(EffectStats.STORM, 1);
 				list.add(new EventAddEffect(this.owner, ef));
 				return list;
 			}

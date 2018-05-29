@@ -1,5 +1,6 @@
 package server.card;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.util.LinkedList;
 
@@ -19,7 +20,9 @@ public class Card {
 	public static final Vector2f CARD_DIMENSIONS = new Vector2f(150, 200);
 	public static final double EPSILON = 0.0001;
 	public static final double NAME_FONT_SIZE = 24;
+	public static final double STAT_DEFAULT_SIZE = 24;
 	public Board board;
+	public boolean alive = true;
 	public int id, handpos, team;
 	public String name, text, imagepath;
 	public Vector2f targetpos, pos;
@@ -88,7 +91,38 @@ public class Card {
 	}
 
 	public void drawInHand(Graphics g) {
+		if (this.board.getPlayer(this.team).canPlayCard(this)) {
+			g.setColor(org.newdawn.slick.Color.cyan);
+			g.drawRect((float) (this.pos.x - CARD_DIMENSIONS.x * this.scale / 2),
+					(float) (this.pos.y - CARD_DIMENSIONS.y * this.scale / 2), (float) (CARD_DIMENSIONS.x * this.scale),
+					(float) (CARD_DIMENSIONS.y * this.scale));
+			g.setColor(org.newdawn.slick.Color.white);
+		}
+		this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.COST),
+				this.finalBasicStatEffects.getStat(EffectStats.COST), false, new Vector2f(-0.5f, -0.5f),
+				new Vector2f(0.5f, 0.5f));
+	}
 
+	public void drawStatNumber(Graphics g, int stat, int basestat, boolean damaged, Vector2f relpos,
+			Vector2f textoffset) {
+		Color c = Color.white;
+		if (damaged) {
+			c = Color.red;
+		} else {
+			if (stat > basestat) {
+				c = Color.green;
+			}
+			if (stat < basestat) {
+				c = Color.orange;
+			}
+		}
+		UnicodeFont font = Game.getFont("Verdana", STAT_DEFAULT_SIZE * this.scale, true, false, c, Color.BLACK);
+		font.drawString(
+				this.pos.x + CARD_DIMENSIONS.x * relpos.x * (float) this.scale
+						+ font.getWidth("" + stat) * (textoffset.x - 0.5f),
+				this.pos.y + CARD_DIMENSIONS.y * relpos.y * (float) this.scale
+						+ font.getHeight("" + stat) * (textoffset.y - 0.5f),
+				"" + stat);
 	}
 
 	public LinkedList<Effect> getBasicEffects() {

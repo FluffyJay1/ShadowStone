@@ -16,7 +16,7 @@ public class UI { // lets do this right this time
 	ArrayList<UIElement> parentList = new ArrayList<UIElement>();
 	ArrayList<UIElement> parentListAddBuffer = new ArrayList<UIElement>();
 	ArrayList<UIElement> parentListRemoveBuffer = new ArrayList<UIElement>();
-	UIElement pressedElement = null;
+	UIElement pressedElement = null, draggingElement = null;
 	Vector2f lastmousepos = new Vector2f();
 
 	public UI() {
@@ -46,10 +46,11 @@ public class UI { // lets do this right this time
 		this.parentListAddBuffer.add(u);
 	}
 
-	public UIElement getTopUIElement(Vector2f pos, boolean requirehitbox, boolean requirescrollable) {
+	public UIElement getTopUIElement(Vector2f pos, boolean requirehitbox, boolean requirescrollable,
+			boolean requiredraggable) {
 		UIElement ret = null;
 		for (UIElement u : this.parentList) {
-			UIElement test = u.topChildAtPos(pos, requirehitbox, requirescrollable);
+			UIElement test = u.topChildAtPos(pos, requirehitbox, requirescrollable, requiredraggable);
 			if (test != null) {
 				ret = test;
 			}
@@ -58,13 +59,16 @@ public class UI { // lets do this right this time
 	}
 
 	public boolean mousePressed(int button, int x, int y) {
-		UIElement top = this.getTopUIElement(new Vector2f(x, y), true, false);
+		UIElement top = this.getTopUIElement(new Vector2f(x, y), true, false, false);
 		if (top != null) {
 			this.pressedElement = top;
 			top.mousePressed(button, x, y);
-			return true;
 		}
-		return false;
+		UIElement dragging = this.getTopUIElement(new Vector2f(x, y), true, false, true);
+		if (dragging != null) {
+			this.draggingElement = dragging;
+		}
+		return top != null;
 	}
 
 	public void mouseReleased(int button, int x, int y) {
@@ -72,6 +76,7 @@ public class UI { // lets do this right this time
 			this.pressedElement.mouseReleased(button, x, y);
 			this.pressedElement = null;
 		}
+		this.draggingElement = null;
 
 	}
 
@@ -88,17 +93,20 @@ public class UI { // lets do this right this time
 
 	public void mouseDragged(int oldx, int oldy, int newx, int newy) {
 		if (this.pressedElement != null) {
-			if (this.pressedElement.draggable) {
-				this.pressedElement
-						.setPos(this.pressedElement.getPos().copy().add(new Vector2f(newx - oldx, newy - oldy)), 1);
-			}
 			this.pressedElement.mouseDragged(oldx, oldy, newx, newy);
+		}
+		if (this.draggingElement != null) {
+			if (this.draggingElement.draggable) {
+				this.draggingElement
+						.setPos(this.draggingElement.getPos().copy().add(new Vector2f(newx - oldx, newy - oldy)), 1);
+			}
+			this.draggingElement.mouseDragged(oldx, oldy, newx, newy);
 
 		}
 	}
 
 	public void mouseWheelMoved(int change) {
-		UIElement top = this.getTopUIElement(this.lastmousepos, true, true);
+		UIElement top = this.getTopUIElement(this.lastmousepos, true, true, false);
 		if (top != null) {
 			top.mouseWheelMoved(change);
 		}

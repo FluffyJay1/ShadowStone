@@ -209,13 +209,15 @@ public class UIElement implements DefaultMouseListener {
 	}
 
 	// returns the uielement that is top (prioritizes children)
-	public UIElement topChildAtPos(Vector2f pos, boolean requirehitbox, boolean requirescrollable) {
+	public UIElement topChildAtPos(Vector2f pos, boolean requirehitbox, boolean requirescrollable,
+			boolean requiredraggable) {
 		if (this.hide) {
 			return null;
 		}
 		UIElement u = null;
 
-		if ((!this.ignorehitbox || !requirehitbox) && (this.scrollable || !requirescrollable)) {
+		if ((!this.ignorehitbox || !requirehitbox) && (this.scrollable || !requirescrollable)
+				&& (this.draggable || !requiredraggable)) {
 			if (this.pointIsInHitbox(pos)) {
 				u = this;
 			} else if (this.clip) { // not in hitbox and we are clipping
@@ -223,7 +225,7 @@ public class UIElement implements DefaultMouseListener {
 			}
 		}
 		for (UIElement child : this.children) {
-			UIElement thing = child.topChildAtPos(pos, requirehitbox, requirescrollable);
+			UIElement thing = child.topChildAtPos(pos, requirehitbox, requirescrollable, requiredraggable);
 			if (thing != null) {
 				u = thing;
 			}

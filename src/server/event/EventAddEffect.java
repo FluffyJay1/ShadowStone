@@ -23,14 +23,14 @@ public class EventAddEffect extends Event {
 		this.c.addEffect(e);
 		if (c instanceof Minion) {
 			Minion m = ((Minion) c);
-			if (e.set.use[EffectStats.HEALTH_I]) {
-				m.health = e.set.stats[EffectStats.HEALTH_I];
+			if (e.set.use[EffectStats.HEALTH]) {
+				m.health = e.set.stats[EffectStats.HEALTH];
 			}
-			if (e.change.use[EffectStats.HEALTH_I] && e.change.stats[EffectStats.HEALTH_I] > 0) {
-				m.health += e.change.stats[EffectStats.HEALTH_I];
+			if (e.change.use[EffectStats.HEALTH] && e.change.stats[EffectStats.HEALTH] > 0) {
+				m.health += e.change.stats[EffectStats.HEALTH];
 			}
-			if (c.finalStatEffects.getEffectStat(EffectStats.HEALTH_I) < m.health) {
-				m.health = m.finalStatEffects.getEffectStat(EffectStats.HEALTH_I);
+			if (c.finalStatEffects.getStat(EffectStats.HEALTH) < m.health) {
+				m.health = m.finalStatEffects.getStat(EffectStats.HEALTH);
 			}
 			if (m.health <= 0) {
 				eventlist.add(new EventDestroy(m));

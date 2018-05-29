@@ -10,6 +10,7 @@ import org.newdawn.slick.geom.Vector2f;
 
 import client.ui.UI;
 import client.ui.game.CardSelectPanel;
+import client.ui.game.EndTurnButton;
 import client.ui.game.UnleashButton;
 import server.Board;
 import server.card.BoardObject;
@@ -17,6 +18,7 @@ import server.card.Card;
 import server.card.Leader;
 import server.card.Minion;
 import server.card.Target;
+import server.card.effect.EffectStats;
 import server.event.*;
 import utils.DefaultMouseListener;
 
@@ -28,6 +30,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	int playingX;
 	public Minion attackingMinion, unleashingMinion;
 	CardSelectPanel cardSelectPanel;
+	EndTurnButton endTurnButton;
 
 	public VisualBoard() {
 		super();
@@ -35,6 +38,9 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		this.cardSelectPanel = new CardSelectPanel(this.ui, this);
 		this.ui.addUIElementParent(this.cardSelectPanel);
 		this.cardSelectPanel.hide = true;
+		this.endTurnButton = new EndTurnButton(this.ui, this);
+		this.ui.addUIElementParent(this.endTurnButton);
+		// this.cardSelectPanel.draggable = true;
 	}
 
 	public void update(double frametime) {
@@ -65,6 +71,9 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				this.unleashingMinion.scale = 1.5;
 			}
 		}
+		if (this.currentplayerturn == -1) {
+			this.AIThink();
+		}
 		this.resolveAll();
 	}
 
@@ -85,6 +94,11 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		player2leader.targetpos.set(960, 100);
 		player1leader.draw(g);
 		player2leader.draw(g);
+		{
+			String manastring = this.player1.mana + "/" + this.player1.maxmana;
+			UnicodeFont font = Game.getFont("Verdana", 24, true, false);
+			font.drawString(player1leader.pos.x - font.getWidth(manastring) / 2, player1leader.pos.y - 100, manastring);
+		}
 		for (int i = 0; i < player1.hand.cards.size(); i++) {
 			Card c = player1.hand.cards.get(i);
 			if (c != this.playingCard && c != this.draggingCard) {
@@ -114,28 +128,25 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	// auxiliary function for position on board
 	private int boardPosToX(int i, int team) {
 		if (team == 1) {
-			return (int) ((i - 2 - (player1side.size() - 2) / 2.) * BO_SPACING + Game.WINDOW_WIDTH / 2);
+			return (int) ((i - 1 - (player1side.size() - 2) / 2.) * BO_SPACING + Game.WINDOW_WIDTH / 2);
 		}
-		return (int) ((-i - 2 - (player2side.size() - 2) / 2.) * BO_SPACING + Game.WINDOW_WIDTH / 2);
+		return (int) ((i - 1 - (player2side.size() - 2) / 2.) * BO_SPACING + Game.WINDOW_WIDTH / 2);
 	}
 
 	private int XToBoardPos(double x, int team) {
 		int pos = 0;
 		if (team == 1) {
-			pos = (int) (((x - Game.WINDOW_WIDTH / 2) / BO_SPACING) + ((player1side.size() - 2) / 2.) + 1) + 1;
+			pos = (int) (((x - Game.WINDOW_WIDTH / 2) / BO_SPACING) + ((player1side.size() - 2) / 2.)) + 1;
 			if (pos > player1side.size()) {
 				pos = player1side.size();
 			}
 		} else {
-			pos = (int) (((x - Game.WINDOW_WIDTH / 2) / BO_SPACING) + ((player2side.size() - 2) / 2.) + 1) + 1;
+			pos = (int) (((x - Game.WINDOW_WIDTH / 2) / BO_SPACING) + ((player2side.size() - 2) / 2.)) + 1;
 			if (pos > player2side.size()) {
 				pos = player2side.size();
 			}
 		}
-		if (pos < 1) {
-			pos = 1;
-		}
-		return team == 1 ? pos : -pos;
+		return pos;
 	}
 
 	public void playerTurnUpdate(double frametime) {
@@ -166,6 +177,12 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	}
 
 	@Override
+	public void endCurrentPlayerTurn() {
+		this.handleTargeting(null);
+		super.endCurrentPlayerTurn();
+	}
+
+	@Override
 	public void mousePressed(int button, int x, int y) {
 		// TODO Auto-generated method stub
 		if (!this.ui.mousePressed(button, x, y)) { // if we didn't click on
@@ -174,15 +191,20 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 			Card c = cardInHandAtPos(new Vector2f(x, y));
 			if (c != null) {
 				if (!this.handleTargeting(c)) {
-					this.draggingCard = c;
+					if (this.player1.canPlayCard(c)) {
+						this.draggingCard = c;
+					}
 					this.selectedCard = c;
 				}
 			} else {
 				BoardObject bo = BOAtPos(new Vector2f(x, y));
 				if (bo != null) {
 					if (!this.handleTargeting(bo)) {
-						if (bo instanceof Minion && bo.team == 1) {
+						if (bo instanceof Minion && bo.team == 1 && ((Minion) bo).canAttack()) {
 							this.attackingMinion = (Minion) bo;
+							for (BoardObject b : this.attackingMinion.getAttackableTargets()) {
+								b.scale = 1.25;
+							}
 							bo.scale = 1.5;
 						}
 						this.selectedCard = bo;
@@ -212,10 +234,13 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 			if (target != null && (target instanceof Minion) && target.team == -1) {
 				this.eventlist.add(new EventMinionAttack(this.attackingMinion, (Minion) target));
 			}
+			for (BoardObject b : this.attackingMinion.getAttackableTargets()) {
+				b.scale = 1;
+			}
 			this.attackingMinion.scale = 1;
 			this.attackingMinion = null;
 		} else if (this.draggingCard != null) {
-			if (y < 750 && this.draggingCard.conditions()) {
+			if (y < 750 && this.player1.canPlayCard(this.draggingCard)) {
 				this.playingCard = this.draggingCard;
 				this.selectedCard = null;
 				this.resolveNoBattlecryTarget();
@@ -248,7 +273,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 
 	private boolean handleTargeting(Card c) {
 		if (this.playingCard != null && this.playingCard.getNextNeededBattlecryTarget() != null) {
-			if (this.playingCard.getNextNeededBattlecryTarget().canTarget(c)) {
+			if (c != null && this.playingCard.getNextNeededBattlecryTarget().canTarget(c)) {
 				this.animateBattlecryTargets(false);
 				this.playingCard.getNextNeededBattlecryTarget().setTarget(c);
 				this.resolveNoBattlecryTarget();
@@ -260,7 +285,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				this.playingCard = null;
 			}
 		} else if (this.unleashingMinion != null && this.unleashingMinion.getNextNeededUnleashTarget() != null) {
-			if (this.unleashingMinion.getNextNeededUnleashTarget().canTarget(c)) {
+			if (c != null && this.unleashingMinion.getNextNeededUnleashTarget().canTarget(c)) {
 				this.animateUnleashTargets(false);
 				this.unleashingMinion.getNextNeededUnleashTarget().setTarget(c);
 				this.resolveNoUnleashTarget();

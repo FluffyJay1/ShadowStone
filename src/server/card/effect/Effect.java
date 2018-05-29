@@ -22,14 +22,23 @@ public class Effect {
 
 	public Effect(Card owner, int id, String description, int cost) {
 		this(owner, id, description);
-		this.set.setStat(EffectStats.COST_I, cost);
+		this.set.setStat(EffectStats.COST, cost);
 	}
 
 	public Effect(Card owner, int id, String description, int cost, int attack, int magic, int health) {
 		this(owner, id, description, cost);
-		this.set.setStat(EffectStats.ATTACK_I, attack);
-		this.set.setStat(EffectStats.MAGIC_I, magic);
-		this.set.setStat(EffectStats.HEALTH_I, health);
+		this.set.setStat(EffectStats.ATTACK, attack);
+		this.set.setStat(EffectStats.MAGIC, magic);
+		this.set.setStat(EffectStats.HEALTH, health);
+	}
+
+	public Effect(Card owner, int id, String description, int cost, int attack, int magic, int health,
+			int attacksperturn, boolean storm, boolean rush, boolean ward) {
+		this(owner, id, description, cost, attack, magic, health);
+		this.set.setStat(EffectStats.ATTACKS_PER_TURN, attacksperturn);
+		this.set.setStat(EffectStats.STORM, storm ? 1 : 0);
+		this.set.setStat(EffectStats.RUSH, rush ? 1 : 0);
+		this.set.setStat(EffectStats.WARD, ward ? 1 : 0);
 	}
 
 	public Effect applyEffectStats(Effect e) {
@@ -47,13 +56,13 @@ public class Effect {
 		return this;
 	}
 
-	public int getEffectStat(int index) {
+	public int getStat(int index) {
 		return this.set.stats[index] + this.change.stats[index];
 	}
 
 	public String statsToString() {
-		return "(" + this.getEffectStat(EffectStats.COST_I) + " " + this.getEffectStat(EffectStats.ATTACK_I) + " "
-				+ this.getEffectStat(EffectStats.MAGIC_I) + " " + this.getEffectStat(EffectStats.HEALTH_I) + ")";
+		return "(" + this.getStat(EffectStats.COST) + " " + this.getStat(EffectStats.ATTACK) + " "
+				+ this.getStat(EffectStats.MAGIC) + " " + this.getStat(EffectStats.HEALTH) + ")";
 	}
 
 	public LinkedList<Event> battlecry() {
@@ -118,10 +127,6 @@ public class Effect {
 		return ret;
 	}
 
-	public String toString() {
-		return "" + this.id;
-	}
-
 	public LinkedList<Event> onAttack(Minion target) {
 		return new LinkedList<Event>();
 	}
@@ -136,5 +141,21 @@ public class Effect {
 
 	public LinkedList<Event> onDamaged(int damage) {
 		return new LinkedList<Event>();
+	}
+
+	public LinkedList<Event> onTurnStart() {
+		return new LinkedList<Event>();
+	}
+
+	public LinkedList<Event> onTurnEnd() {
+		return new LinkedList<Event>();
+	}
+
+	public LinkedList<Event> lastWords() {
+		return new LinkedList<Event>();
+	}
+
+	public String toString() {
+		return "" + this.id;
 	}
 }

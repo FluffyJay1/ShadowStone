@@ -19,8 +19,8 @@ public class EventMinionAttackDamage extends Event {
 		if (!conditions()) {
 			return this.toString();
 		}
-		eventlist.add(new EventDamage(m1, m2.finalStatEffects.getEffectStat(EffectStats.ATTACK_I)));
-		eventlist.add(new EventDamage(m2, m1.finalStatEffects.getEffectStat(EffectStats.ATTACK_I)));
+		eventlist.add(new EventDamage(m1, m2.finalStatEffects.getStat(EffectStats.ATTACK)));
+		eventlist.add(new EventDamage(m2, m1.finalStatEffects.getStat(EffectStats.ATTACK)));
 		return this.toString();
 	}
 

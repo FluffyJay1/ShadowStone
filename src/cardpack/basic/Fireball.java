@@ -28,7 +28,7 @@ public class Fireball extends Spell {
 				int pos = ((BoardObject) this.battlecryTargets.get(0).getTarget()).boardpos;
 				list.add(new EventDamage((Minion) this.battlecryTargets.get(0).getTarget(), 2));
 				for (int i = -1; i <= 1; i += 2) {
-					BoardObject b = this.owner.board.getBoardObject(pos + i);
+					BoardObject b = this.owner.board.getBoardObject(this.owner.team * -1, pos + i);
 					if (b != null && this.battlecryTargets.get(0).canTarget(b)) {
 						list.add(new EventDamage((Minion) b, 1));
 					}

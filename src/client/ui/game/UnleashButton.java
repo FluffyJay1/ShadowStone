@@ -7,6 +7,7 @@ import client.ui.Text;
 import client.ui.UI;
 import client.ui.UIElement;
 import server.card.CardStatus;
+import server.card.Leader;
 import server.card.Minion;
 
 public class UnleashButton extends UIElement {
@@ -25,8 +26,7 @@ public class UnleashButton extends UIElement {
 	@Override
 	public void update(double frametime) {
 		super.update(frametime);
-		if (this.b.selectedCard != null && this.b.selectedCard instanceof Minion
-				&& this.b.selectedCard.status == CardStatus.BOARD && this.b.selectedCard.team == 1) {
+		if (this.b.selectedCard != null && this.b.getPlayer(1).canUnleashCard(this.b.selectedCard)) {
 			this.hide = false;
 		} else {
 			this.hide = true;

@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.LinkedList;
 
+import server.card.Leader;
 import server.card.Minion;
 
 public class EventMinionAttack extends Event {
@@ -20,10 +21,15 @@ public class EventMinionAttack extends Event {
 		}
 		String eventstring = this.toString();
 		if (!loopprotection) {
+			m1.attacksThisTurn++;
 			eventstring += Event.resolveAll(m1.onAttack(m2), loopprotection);
-			eventstring += Event.resolveAll(m1.clash(m2), loopprotection);
+			if (!(this.m2 instanceof Leader)) {
+				eventstring += Event.resolveAll(m1.clash(m2), loopprotection);
+			}
 			eventstring += Event.resolveAll(m2.onAttacked(m1), loopprotection);
-			eventstring += Event.resolveAll(m2.clash(m1), loopprotection);
+			if (!(this.m1 instanceof Leader)) {
+				eventstring += Event.resolveAll(m2.clash(m1), loopprotection);
+			}
 			/*
 			 * eventlist.addAll(m1.onAttack(m2));
 			 * eventlist.addAll(m1.clash(m2));

@@ -13,6 +13,7 @@ import server.event.*;
 
 public class Board {
 	public Player player1, player2;
+	public int currentplayerturn = 1;
 	protected ArrayList<BoardObject> player1side;
 	protected ArrayList<BoardObject> player2side;
 	public LinkedList<Event> eventlist;
@@ -23,8 +24,8 @@ public class Board {
 		player1side = new ArrayList<BoardObject>();
 		player2side = new ArrayList<BoardObject>();
 		eventlist = new LinkedList<Event>();
-		player1side.add(new Leader(this, "Rowen", "The Memer", 1));
-		player2side.add(new Leader(this, "Nower", "Remem eht", -1));
+		this.addBoardObjectToSide(new Leader(this, "Rowen", "The Memer"), 1);
+		this.addBoardObjectToSide(new Leader(this, "Nower", "Remem eht"), -1);
 		this.eventlist.add(new EventDraw(player1, 3));
 	}
 
@@ -61,66 +62,66 @@ public class Board {
 		return ret;
 	}
 
-	public BoardObject getBoardObject(int position) {
-		ArrayList<BoardObject> relevantSide = position > 0 ? player1side : player2side;
-		int pos = position > 0 ? position - 1 : -position - 1;
-		if (pos >= relevantSide.size()) {
-			return null;
-		}
-		return relevantSide.get(pos);
+	public ArrayList<BoardObject> getBoardObjects(int team) {
+		ArrayList<BoardObject> ret = new ArrayList<BoardObject>();
+		ret.addAll(team > 0 ? this.player1side : this.player2side);
+		return ret;
 	}
 
-	public void addBoardObject(BoardObject bo, int position) {
-		ArrayList<BoardObject> relevantSide = position > 0 ? player1side : player2side;
-		int pos = position > 0 ? position - 1 : -position - 1;
-		if (pos > relevantSide.size()) {
-			pos = relevantSide.size();
+	public BoardObject getBoardObject(int team, int position) {
+		ArrayList<BoardObject> relevantSide = team > 0 ? player1side : player2side;
+		if (position >= relevantSide.size()) {
+			return null;
 		}
-		if (pos == 0) { // top notch error handling
-			pos = 1;
+		return relevantSide.get(position);
+	}
+
+	public void addBoardObject(BoardObject bo, int team, int position) {
+		ArrayList<BoardObject> relevantSide = team > 0 ? player1side : player2side;
+		if (position > relevantSide.size()) {
+			position = relevantSide.size();
 		}
 		bo.boardpos = position;
 		bo.status = CardStatus.BOARD;
-		bo.team = position > 0 ? 1 : -1;
-		relevantSide.add(pos, bo);
-		for (int i = pos + 1; i < relevantSide.size(); i++) {
+		bo.team = team;
+		relevantSide.add(position, bo);
+		for (int i = position + 1; i < relevantSide.size(); i++) {
 			relevantSide.get(i).boardpos++;
 		}
 	}
 
-	public void addBoardObjectToSide(BoardObject bo, int side) {
-		bo.team = side;
-		if (side > 0) {
-			addBoardObject(bo, player1side.size() + 1);
+	public void addBoardObjectToSide(BoardObject bo, int team) {
+		bo.team = team;
+		if (team > 0) {
+			addBoardObject(bo, 1, player1side.size());
 		}
-		if (side < 0) {
-			addBoardObject(bo, -player2side.size() - 1);
+		if (team < 0) {
+			addBoardObject(bo, -1, player2side.size());
 		}
 	}
 
-	public void removeBoardObject(int position) {
+	public void removeBoardObject(int team, int position) {
 		BoardObject bo;
-		ArrayList<BoardObject> relevantSide = position > 0 ? player1side : player2side;
-		int pos = position > 0 ? position - 1 : -position - 1;
-		if (pos >= relevantSide.size()) {
+		ArrayList<BoardObject> relevantSide = team > 0 ? player1side : player2side;
+		if (position >= relevantSide.size()) {
 			return;
 		}
-		if (pos == 0) { // leader dies
+		if (position == 0) { // leader dies
 
 		} else {
-			bo = relevantSide.remove(pos);
-			for (int i = pos; i < relevantSide.size(); i++) {
-				relevantSide.get(i).boardpos += position > 0 ? -1 : 1;
+			bo = relevantSide.remove(position);
+			for (int i = position; i < relevantSide.size(); i++) {
+				relevantSide.get(i).boardpos--;
 			}
 		}
 	}
 
 	public void updatePositions() {
 		for (int i = 0; i < player1side.size(); i++) {
-			player1side.get(i).boardpos = i + 1;
+			player1side.get(i).boardpos = i;
 		}
 		for (int i = 0; i < player2side.size(); i++) {
-			player2side.get(i).boardpos = -i - 1;
+			player2side.get(i).boardpos = i;
 		}
 	}
 
@@ -146,5 +147,27 @@ public class Board {
 			}
 			eventlist.removeFirst();
 		}
+	}
+
+	public void endPlayerTurn(int team) {
+		if (team == this.currentplayerturn) { // a level security
+			this.endCurrentPlayerTurn();
+		}
+	}
+
+	public void AIThink() {
+		for (BoardObject bo : this.getBoardObjects(-1)) {
+			if (bo instanceof Minion) {
+				// smorc
+				this.eventlist.add(new EventMinionAttack((Minion) bo, (Minion) this.getBoardObject(1, 0)));
+			}
+		}
+		this.endCurrentPlayerTurn();
+	}
+
+	public void endCurrentPlayerTurn() {
+		this.eventlist.add(new EventTurnEnd(this.getPlayer(this.currentplayerturn)));
+		this.currentplayerturn *= -1;
+		this.eventlist.add(new EventTurnStart(this.getPlayer(this.currentplayerturn)));
 	}
 }

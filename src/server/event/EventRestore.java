@@ -17,8 +17,8 @@ public class EventRestore extends Event {
 	@Override
 	public String resolve(LinkedList<Event> eventlist, boolean loopprotection) {
 		this.m.health += heal;
-		if (this.m.health > this.m.finalStatEffects.getEffectStat(EffectStats.HEALTH_I)) {
-			this.m.health = this.m.finalStatEffects.getEffectStat(EffectStats.HEALTH_I);
+		if (this.m.health > this.m.finalStatEffects.getStat(EffectStats.HEALTH)) {
+			this.m.health = this.m.finalStatEffects.getStat(EffectStats.HEALTH);
 		}
 		// todo on healed
 		return this.toString();

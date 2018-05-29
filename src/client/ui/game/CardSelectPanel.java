@@ -7,6 +7,7 @@ import client.ui.*;
 import server.card.CardStatus;
 import server.card.Minion;
 import server.card.effect.Effect;
+import server.card.effect.EffectStats;
 
 public class CardSelectPanel extends UIBox {
 	VisualBoard b;
@@ -15,7 +16,7 @@ public class CardSelectPanel extends UIBox {
 	Text name, description, effects;
 
 	public CardSelectPanel(UI ui, VisualBoard b) {
-		super(ui, new Vector2f(300, 400), new Vector2f(300, 400), "src/res/ui/uiboxborder.png");
+		super(ui, new Vector2f(200, 400), new Vector2f(300, 400), "src/res/ui/uiboxborder.png");
 		this.b = b;
 		this.clip = true;
 		this.margins.set(10, 10);
@@ -41,17 +42,23 @@ public class CardSelectPanel extends UIBox {
 	public void update(double frametime) {
 		super.update(frametime);
 		if (this.b.selectedCard != null) {
-			this.setPos(new Vector2f(200, 400), 1);
+			// this.setPos(new Vector2f(200, 400), 1);
 			this.hide = false;
 			this.name.setText(this.b.selectedCard.name);
-			this.description.setText(this.b.selectedCard.text);
+			String description = "C: " + this.b.selectedCard.finalBasicStatEffects.getStat(EffectStats.COST);
+			if (this.b.selectedCard instanceof Minion) {
+				description += ", A: " + this.b.selectedCard.finalBasicStatEffects.getStat(EffectStats.ATTACK) + ", M: "
+						+ this.b.selectedCard.finalBasicStatEffects.getStat(EffectStats.MAGIC) + ", H: "
+						+ this.b.selectedCard.finalBasicStatEffects.getStat(EffectStats.HEALTH);
+			}
+			description += "\n \n" + this.b.selectedCard.text;
+			this.description.setText(description);
 			String effectstext = "Effects:\n";
 			for (Effect e : this.b.selectedCard.getAdditionalEffects()) {
 				effectstext += "- " + e.description + "\n";
 			}
 			this.effects.setText(effectstext);
-			if (this.b.selectedCard instanceof Minion && this.b.selectedCard.status == CardStatus.BOARD
-					&& this.b.selectedCard.team == 1) {
+			if (!this.ub.hide) {
 				this.ub.setPos(new Vector2f(0, (float) this.description.getBottom(false, false) + 32), 1);
 				this.effects.setPos(
 						new Vector2f((float) this.getLocalLeft(true), (float) this.ub.getBottom(false, false) + 10),

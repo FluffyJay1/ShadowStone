@@ -2,6 +2,7 @@ package server.card;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.newdawn.slick.Graphics;
@@ -18,62 +19,86 @@ import server.event.EventDamage;
 import server.event.EventDraw;
 
 public class Minion extends BoardObject {
-	public static final double STAT_DEFAULT_SIZE = 24;
-	public int health; // tempted to make damage an effect
+	public int health, attacksThisTurn = 0; // tempted to make damage an effect
+	public boolean summoningSickness = true;
 
 	public Minion(Board board, CardStatus status, int cost, int attack, int magic, int health, String name, String text,
 			String imagepath, int team, int id) {
 		super(board, status, cost, name, text, imagepath, team, id);
 		this.health = health;
-		this.addBasicEffect(new Effect(this, 0, "", cost, attack, magic, health));
+		this.addBasicEffect(new Effect(this, 0, "", cost, attack, magic, health, 1, false, false, false));
 	}
 
 	@Override
 	public void drawOnBoard(Graphics g) {
-		this.drawStatNumber(g, this.finalStatEffects.getEffectStat(EffectStats.ATTACK_I),
-				this.finalBasicStatEffects.getEffectStat(EffectStats.ATTACK_I), false, new Vector2f(-0.4f, 0.5f),
+		super.drawOnBoard(g);
+		if (this.canAttack()) {
+			g.setColor(org.newdawn.slick.Color.cyan);
+			g.drawRect((float) (this.pos.x - CARD_DIMENSIONS.x * this.scale / 2),
+					(float) (this.pos.y - CARD_DIMENSIONS.y * this.scale / 2), (float) (CARD_DIMENSIONS.x * this.scale),
+					(float) (CARD_DIMENSIONS.y * this.scale));
+			g.setColor(org.newdawn.slick.Color.white);
+		}
+		this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.ATTACK),
+				this.finalBasicStatEffects.getStat(EffectStats.ATTACK), false, new Vector2f(-0.4f, 0.5f),
 				new Vector2f(0, -0.5f));
-		this.drawStatNumber(g, this.finalStatEffects.getEffectStat(EffectStats.MAGIC_I),
-				this.finalBasicStatEffects.getEffectStat(EffectStats.MAGIC_I), false, new Vector2f(0, 0.5f),
+		this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.MAGIC),
+				this.finalBasicStatEffects.getStat(EffectStats.MAGIC), false, new Vector2f(0, 0.5f),
 				new Vector2f(0, -0.5f));
-		this.drawStatNumber(g, this.health, this.finalBasicStatEffects.getEffectStat(EffectStats.HEALTH_I),
-				this.health < this.finalStatEffects.getEffectStat(EffectStats.HEALTH_I), new Vector2f(0.4f, 0.5f),
+		this.drawStatNumber(g, this.health, this.finalBasicStatEffects.getStat(EffectStats.HEALTH),
+				this.health < this.finalStatEffects.getStat(EffectStats.HEALTH), new Vector2f(0.4f, 0.5f),
 				new Vector2f(0, -0.5f));
 	}
 
 	@Override
 	public void drawInHand(Graphics g) {
-		this.drawStatNumber(g, this.finalStatEffects.getEffectStat(EffectStats.ATTACK_I),
-				this.finalBasicStatEffects.getEffectStat(EffectStats.ATTACK_I), false, new Vector2f(-0.4f, 0f),
+		super.drawInHand(g);
+		this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.ATTACK),
+				this.finalBasicStatEffects.getStat(EffectStats.ATTACK), false, new Vector2f(-0.4f, 0f),
 				new Vector2f(0, -0.5f));
-		this.drawStatNumber(g, this.finalStatEffects.getEffectStat(EffectStats.MAGIC_I),
-				this.finalBasicStatEffects.getEffectStat(EffectStats.MAGIC_I), false, new Vector2f(-0.4f, 0.25f),
+		this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.MAGIC),
+				this.finalBasicStatEffects.getStat(EffectStats.MAGIC), false, new Vector2f(-0.4f, 0.25f),
 				new Vector2f(0, -0.5f));
-		this.drawStatNumber(g, this.health, this.finalBasicStatEffects.getEffectStat(EffectStats.HEALTH_I),
-				this.health < this.finalStatEffects.getEffectStat(EffectStats.HEALTH_I), new Vector2f(-0.4f, 0.5f),
+		this.drawStatNumber(g, this.health, this.finalBasicStatEffects.getStat(EffectStats.HEALTH),
+				this.health < this.finalStatEffects.getStat(EffectStats.HEALTH), new Vector2f(-0.4f, 0.5f),
 				new Vector2f(0, -0.5f));
 	}
 
-	private void drawStatNumber(Graphics g, int stat, int basestat, boolean damaged, Vector2f relpos,
-			Vector2f textoffset) {
-		Color c = Color.white;
-		if (damaged) {
-			c = Color.red;
-		} else {
-			if (stat > basestat) {
-				c = Color.green;
-			}
-			if (stat < basestat) {
-				c = Color.orange;
-			}
+	public ArrayList<Minion> getAttackableTargets() {
+		if (this.summoningSickness && (this.finalStatEffects.getStat(EffectStats.STORM) == 0
+				&& this.finalStatEffects.getStat(EffectStats.RUSH) == 0)) {
+			return new ArrayList<Minion>();
 		}
-		UnicodeFont font = Game.getFont("Verdana", STAT_DEFAULT_SIZE * this.scale, true, false, c, Color.BLACK);
-		font.drawString(
-				this.pos.x + CARD_DIMENSIONS.x * relpos.x * (float) this.scale
-						+ font.getWidth("" + stat) * (textoffset.x - 0.5f),
-				this.pos.y + CARD_DIMENSIONS.y * relpos.y * (float) this.scale
-						+ font.getHeight("" + stat) * (textoffset.y - 0.5f),
-				"" + stat);
+		ArrayList<Minion> list = new ArrayList<Minion>();
+		ArrayList<BoardObject> poss = this.board.getBoardObjects(this.team * -1);
+		ArrayList<Minion> wards = new ArrayList<Minion>();
+		// check for ward
+		boolean ward = false;
+		for (BoardObject b : poss) {
+			if (b instanceof Leader
+					&& (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.STORM) > 0)) {
+				list.add((Leader) b);
+			} else if (b instanceof Minion
+					&& (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.RUSH) > 0
+							|| this.finalStatEffects.getStat(EffectStats.STORM) > 0)) {
+				// TODO add if can attack this minion
+				list.add((Minion) b);
+				if (((Minion) b).finalStatEffects.getStat(EffectStats.WARD) > 0) {
+					ward = true;
+					wards.add((Minion) b);
+				}
+			}
+			// TODO add restrictions on can't attack leader
+		}
+		if (ward) {
+			return wards;
+		}
+		return list;
+	}
+
+	public boolean canAttack() {
+		return this.team == this.board.currentplayerturn && this.getAttackableTargets().size() > 0
+				&& this.attacksThisTurn < this.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN);
 	}
 
 	public LinkedList<Event> onAttack(Minion target) {
