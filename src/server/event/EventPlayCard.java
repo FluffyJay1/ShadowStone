@@ -1,7 +1,9 @@
 package server.event;
 
 import java.util.LinkedList;
+import java.util.StringTokenizer;
 
+import server.Board;
 import server.Player;
 import server.card.BoardObject;
 import server.card.Card;
@@ -10,21 +12,19 @@ import server.card.Minion;
 import server.card.effect.EffectStats;
 
 public class EventPlayCard extends Event {
+	public static final int ID = 11;
 	Player p;
 	Card c;
-	int position, handpos;
+	int position;
 
 	public EventPlayCard(Player p, Card c, int position) {
+		super(ID);
 		this.p = p;
 		this.c = c;
 		this.position = position;
 	}
 
-	public String resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-		if (!this.conditions()) {
-			return this.toString();
-		}
-		this.handpos = c.handpos;
+	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
 		p.hand.cards.remove(c);
 		p.mana -= c.finalStatEffects.getStat(EffectStats.COST);
 		if (c instanceof BoardObject) {
@@ -35,18 +35,23 @@ public class EventPlayCard extends Event {
 				((Minion) c).summoningSickness = true;
 			}
 		} else {
-			// shadows increase by one
+			// TODO shadows increase by one
 		}
-		for (int i = c.handpos; i < p.hand.cards.size(); i++) {
-			p.hand.cards.get(i).handpos--;
-		}
+		p.hand.updatePositions();
 		eventlist.addAll(c.battlecry());
-		return this.toString();
 	}
 
 	public String toString() {
-		return "playc " + p.team + " " + handpos + " " + c.toString() + " " + c.battlecryTargetsToString()
-				+ this.conditions();
+		return this.id + " " + p.team + " " + position + " " + this.c.toReference() + c.battlecryTargetsToString();
+	}
+
+	public static EventPlayCard fromString(Board b, StringTokenizer st) {
+		int team = Integer.parseInt(st.nextToken());
+		Player p = b.getPlayer(team);
+		int position = Integer.parseInt(st.nextToken());
+		Card c = Card.fromReference(b, st);
+		c.battlecryTargetsFromString(b, st);
+		return new EventPlayCard(p, c, position);
 	}
 
 	public boolean conditions() {

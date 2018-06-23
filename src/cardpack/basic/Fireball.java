@@ -1,5 +1,6 @@
 package cardpack.basic;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import server.Board;
@@ -12,7 +13,7 @@ public class Fireball extends Spell {
 	Effect e;
 
 	public Fireball(Board b, int team) {
-		super(b, CardStatus.DECK, 3, "Fireball", "Deal 2 damage to an enemy minion and 1 damage to adjacent minions",
+		super(b, CardStatus.DECK, 3, "Fireball", "Deal 2 damage to an enemy minion and 1 damage to adjacent minions.",
 				"res/card/basic/fireball.png", team, ID);
 		Target t = new Target(this, "Target an enemy minion.") {
 			@Override
@@ -25,14 +26,19 @@ public class Fireball extends Spell {
 			@Override
 			public LinkedList<Event> battlecry() {
 				LinkedList<Event> list = new LinkedList<Event>();
-				int pos = ((BoardObject) this.battlecryTargets.get(0).getTarget()).boardpos;
-				list.add(new EventDamage((Minion) this.battlecryTargets.get(0).getTarget(), 2));
+				int pos = ((BoardObject) this.battlecryTargets.get(0).getTarget()).cardpos;
+				ArrayList<Minion> m = new ArrayList<Minion>();
+				ArrayList<Integer> d = new ArrayList<Integer>();
+				m.add((Minion) this.battlecryTargets.get(0).getTarget());
+				d.add(2);
 				for (int i = -1; i <= 1; i += 2) {
 					BoardObject b = this.owner.board.getBoardObject(this.owner.team * -1, pos + i);
 					if (b != null && this.battlecryTargets.get(0).canTarget(b)) {
-						list.add(new EventDamage((Minion) b, 1));
+						m.add((Minion) b);
+						d.add(1);
 					}
 				}
+				list.add(new EventDamage(m, d));
 				return list;
 			}
 

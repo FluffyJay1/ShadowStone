@@ -14,10 +14,11 @@ public class Deck {
 		this.board = board;
 		this.team = team;
 		this.cards = new ArrayList<Card>();
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 10; i++) {
 			cards.add(new Goblin(board, team));
 			cards.add(new Tiny(board, team));
 			cards.add(new Fireball(board, team));
+			cards.add(new Fighter(board, team));
 		}
 		this.shuffle();
 	}
@@ -29,5 +30,11 @@ public class Deck {
 			newcards.add(this.cards.remove(randomindex));
 		}
 		this.cards = newcards;
+	}
+
+	public void updatePositions() {
+		for (int i = 0; i < this.cards.size(); i++) {
+			this.cards.get(i).cardpos = i;
+		}
 	}
 }

@@ -1,19 +1,24 @@
 package server.event;
 
 import java.util.LinkedList;
+import java.util.StringTokenizer;
 
+import server.Board;
 import server.Player;
 import server.card.BoardObject;
 import server.card.Minion;
 
 public class EventTurnStart extends Event {
-	Player p;
+	public static final int ID = 15;
+	public Player p;
 
 	public EventTurnStart(Player p) {
+		super(ID);
 		this.p = p;
 	}
 
-	public String resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+		this.p.board.currentplayerturn = this.p.team;
 		this.p.unleashedThisTurn = false;
 		eventlist.add(new EventManaChange(this.p, 1, true, false));
 		eventlist.add(new EventManaChange(this.p, this.p.maxmana + 1, false, true));
@@ -27,11 +32,16 @@ public class EventTurnStart extends Event {
 			}
 		}
 		eventlist.add(new EventDraw(this.p, 1));
-		return this.toString();
 	}
 
 	public String toString() {
-		return "turnstart " + this.p.toString();
+		return this.id + " " + this.p.team + " ";
+	}
+
+	public static EventTurnStart fromString(Board b, StringTokenizer st) {
+		int team = Integer.parseInt(st.nextToken());
+		Player p = b.getPlayer(team);
+		return new EventTurnStart(p);
 	}
 
 	public boolean conditions() {

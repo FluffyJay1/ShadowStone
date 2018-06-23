@@ -2,6 +2,7 @@ package client;
 
 import java.util.*;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.MouseListener;
@@ -24,6 +25,8 @@ import utils.DefaultMouseListener;
 
 public class VisualBoard extends Board implements DefaultMouseListener {
 	public static final int BO_SPACING = 200;
+	public static final double CARD_SCALE_DEFAULT = 1, CARD_SCALE_HAND = 0.75, CARD_SCALE_BOARD = 1,
+			CARD_SCALE_ABILITY = 1.5, CARD_SCALE_TARGET = 1.25, CARD_SCALE_ATTACK = 1.5;
 	UI ui;
 	public Card selectedCard, draggingCard, playingCard;
 	LinkedList<Card> targetableCards = new LinkedList<Card>();
@@ -31,6 +34,10 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	public Minion attackingMinion, unleashingMinion;
 	CardSelectPanel cardSelectPanel;
 	EndTurnButton endTurnButton;
+	double animationtimer = 0;
+	LinkedList<Event> resolvingEvents = new LinkedList<Event>();
+	LinkedList<LinkedList<Event>> resolveQueue = new LinkedList<LinkedList<Event>>();
+	Event currentEvent;
 
 	public VisualBoard() {
 		super();
@@ -41,9 +48,11 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		this.endTurnButton = new EndTurnButton(this.ui, this);
 		this.ui.addUIElementParent(this.endTurnButton);
 		// this.cardSelectPanel.draggable = true;
+		this.resolveAll();
 	}
 
 	public void update(double frametime) {
+		this.updateEventAnimation(frametime);
 		ui.update(frametime);
 		player1.update(frametime);
 		for (BoardObject bo : player1side) {
@@ -58,34 +67,33 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				this.eventlist
 						.add(new EventPlayCard(this.player1, this.playingCard, XToBoardPos(this.playingX, 1) + 1));
 				this.playingCard = null;
+				this.resolveAll();
 			} else {
 				this.playingCard.targetpos = new Vector2f(200, 300);
-				this.playingCard.scale = 1;
+				this.playingCard.scale = CARD_SCALE_ABILITY * CARD_SCALE_HAND;
 			}
 		} else if (this.unleashingMinion != null) {
 			Target t = this.unleashingMinion.getNextNeededUnleashTarget();
 			if (t == null) {
 				this.eventlist.add(new EventUnleash(this.player1, this.unleashingMinion));
+				this.unleashingMinion.scale = CARD_SCALE_BOARD;
 				this.unleashingMinion = null;
+				this.resolveAll();
 			} else {
-				this.unleashingMinion.scale = 1.5;
+				this.unleashingMinion.scale = CARD_SCALE_ABILITY;
 			}
 		}
-		if (this.currentplayerturn == -1) {
-			this.AIThink();
-		}
-		this.resolveAll();
 	}
 
 	public void draw(Graphics g) {
 		for (int i = 1; i < player1side.size(); i++) {
 			BoardObject bo = player1side.get(i);
-			bo.targetpos.set(boardPosToX(bo.boardpos, 1), 700);
+			bo.targetpos.set(boardPosToX(bo.cardpos, 1), 700);
 			bo.draw(g);
 		}
 		for (int i = 1; i < player2side.size(); i++) {
 			BoardObject bo = player2side.get(i);
-			bo.targetpos.set(boardPosToX((bo.boardpos), -1), 400);
+			bo.targetpos.set(boardPosToX((bo.cardpos), -1), 400);
 			bo.draw(g);
 		}
 		BoardObject player1leader = player1side.get(0);
@@ -104,7 +112,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 			if (c != this.playingCard && c != this.draggingCard) {
 				c.targetpos.set(
 						(int) (((i) - (player1.hand.cards.size()) / 2.) * 500 / player1.hand.cards.size() + 1500), 950);
-				c.scale = 0.75;
+				c.scale = CARD_SCALE_HAND;
 			}
 
 			c.draw(g);
@@ -123,6 +131,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 					this.unleashingMinion.pos.y + 100, this.unleashingMinion.getNextNeededUnleashTarget().description);
 		}
 		ui.draw(g);
+		this.drawEventAnimation(g);
 	}
 
 	// auxiliary function for position on board
@@ -149,8 +158,119 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		return pos;
 	}
 
-	public void playerTurnUpdate(double frametime) {
+	@Override
+	public void resolveAll(LinkedList<Event> eventlist, boolean loopprotection) {
+		if (!eventlist.isEmpty()) {
+			LinkedList<Event> list = new LinkedList<Event>();
+			list.addAll(eventlist);
+			this.resolveQueue.add(list);
+			eventlist.clear();
+		}
+	}
 
+	public void updateEventAnimation(double frametime) {
+		if (this.animationtimer > 0) {
+			this.animationtimer -= frametime;
+		}
+		if (this.resolvingEvents.isEmpty()) {
+			if (!this.resolveQueue.isEmpty()) {
+				this.resolvingEvents.addAll(this.resolveQueue.removeFirst());
+			}
+		}
+		if (this.animationtimer <= 0) {
+			if (!this.resolvingEvents.isEmpty()) {
+				do {
+					this.currentEvent = this.resolvingEvents.removeFirst();
+				} while (this.resolvingEvents.size() > 0 && !this.resolvingEvents.getFirst().conditions());
+				if (this.currentEvent != null && this.currentEvent.conditions()) {
+					System.out.println(this.currentEvent.toString());
+					this.currentEvent.resolve(this.resolvingEvents, false);
+					if (this.currentEvent instanceof EventMinionAttack) {
+						this.animationtimer = 0.2;
+					} else if (this.currentEvent instanceof EventMinionAttackDamage) {
+						this.animationtimer = 0.5;
+					} else if (this.currentEvent instanceof EventDamage) {
+						this.animationtimer = 0.5;
+					} else if (this.currentEvent instanceof EventMinionDamage) {
+						this.animationtimer = 0.25;
+					} else if (this.currentEvent instanceof EventUnleash) {
+						this.animationtimer = 1;
+					} else if (this.currentEvent instanceof EventTurnStart) {
+						this.animationtimer = 1;
+						if (((EventTurnStart) this.currentEvent).p.team == -1) {
+							this.AIThink();
+						}
+					}
+
+				} else {
+					this.currentEvent = null;
+				}
+			} else {
+				this.currentEvent = null;
+			}
+		}
+	}
+
+	public void drawEventAnimation(Graphics g) {
+		if (this.currentEvent != null) {
+			if (this.currentEvent instanceof EventMinionAttack) {
+				EventMinionAttack e = (EventMinionAttack) this.currentEvent;
+				Vector2f pos = e.m1.pos.copy().sub(e.m2.pos).scale((float) (this.animationtimer / 0.2)).add(e.m2.pos);
+				g.fillOval(pos.x - 5, pos.y - 5, 10, 10);
+			} else if (this.currentEvent instanceof EventMinionAttackDamage) {
+				EventMinionAttackDamage e = (EventMinionAttackDamage) this.currentEvent;
+				Vector2f pos = e.m1.pos.copy().sub(e.m2.pos).scale((float) (this.animationtimer / 0.5)).add(e.m2.pos);
+				Vector2f pos2 = e.m1.pos.copy().sub(e.m2.pos).scale(1 - (float) (this.animationtimer / 0.5))
+						.add(e.m2.pos);
+				g.fillOval(pos.x - 20, pos.y - 20, 40, 40);
+				g.fillOval(pos2.x - 20, pos2.y - 20, 40, 40);
+			} else if (this.currentEvent instanceof EventDamage) {
+				EventDamage e = (EventDamage) this.currentEvent;
+				g.setColor(Color.red);
+				UnicodeFont font = Game.getFont("Verdana", 80, true, false);
+				g.setFont(font);
+				float yoff = (float) (Math.pow(this.animationtimer / 0.5 - 0.5, 2) * 300) - 37.5f;
+				for (int i = 0; i < e.m.size(); i++) {
+					String dstring = e.damage.get(i) + "";
+					g.drawString(dstring, e.m.get(i).pos.x - font.getWidth(dstring) / 2,
+							e.m.get(i).pos.y - font.getHeight(dstring) + yoff);
+				}
+				g.setColor(Color.white);
+			} else if (this.currentEvent instanceof EventMinionDamage) {
+				g.setColor(Color.red);
+				EventMinionDamage e = (EventMinionDamage) this.currentEvent;
+				for (int i = 0; i < e.m2.size(); i++) {
+					Vector2f pos = e.m1.pos.copy().sub(e.m2.get(i).pos).scale((float) (this.animationtimer / 0.25))
+							.add(e.m2.get(i).pos);
+					g.fillOval(pos.x - 20, pos.y - 20, 40, 40);
+				}
+				g.setColor(Color.white);
+			} else if (this.currentEvent instanceof EventUnleash) {
+				EventUnleash e = (EventUnleash) this.currentEvent;
+				Vector2f pos = this.getBoardObject(e.p.team, 0).pos.copy().sub(e.m.pos)
+						.scale((float) (this.animationtimer / 1)).add(e.m.pos);
+				g.setColor(Color.yellow);
+				g.fillOval(pos.x - 40, pos.y - 40, 80, 80);
+				g.setColor(Color.white);
+			} else if (this.currentEvent instanceof EventTurnStart) {
+				EventTurnStart e = (EventTurnStart) this.currentEvent;
+				UnicodeFont font = Game.getFont("Verdana", 80, true, false);
+				String dstring = "TURN START";
+				switch (e.p.team) {
+				case 1:
+					g.setColor(Color.cyan);
+					dstring = "YOUR TURN";
+					break;
+				case -1:
+					g.setColor(Color.red);
+					dstring = "OPPONENT'S TURN";
+					break;
+				}
+				g.setFont(font);
+				g.drawString(dstring, Game.WINDOW_WIDTH / 2 - font.getWidth(dstring) / 2,
+						Game.WINDOW_HEIGHT / 2 - font.getHeight(dstring));
+			}
+		}
 	}
 
 	public BoardObject BOAtPos(Vector2f pos) {
@@ -203,20 +323,22 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 						if (bo instanceof Minion && bo.team == 1 && ((Minion) bo).canAttack()) {
 							this.attackingMinion = (Minion) bo;
 							for (BoardObject b : this.attackingMinion.getAttackableTargets()) {
-								b.scale = 1.25;
+								b.scale = CARD_SCALE_TARGET;
 							}
-							bo.scale = 1.5;
+							bo.scale = CARD_SCALE_ATTACK;
 						}
 						this.selectedCard = bo;
 					}
 				} else { // clicked on neither handcard or boardobject
 					if (this.playingCard != null && this.playingCard.getNextNeededBattlecryTarget() != null) {
 						this.animateBattlecryTargets(false);
+						this.playingCard.scale = CARD_SCALE_HAND;
 						this.playingCard.resetBattlecryTargets();
 						this.playingCard = null;
 					}
 					if (this.unleashingMinion != null && this.unleashingMinion.getNextNeededUnleashTarget() != null) {
 						this.animateUnleashTargets(false);
+						this.unleashingMinion.scale = CARD_SCALE_BOARD;
 						this.unleashingMinion.resetUnleashTargets();
 						this.unleashingMinion = null;
 					}
@@ -233,11 +355,12 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 			BoardObject target = BOAtPos(new Vector2f(x, y));
 			if (target != null && (target instanceof Minion) && target.team == -1) {
 				this.eventlist.add(new EventMinionAttack(this.attackingMinion, (Minion) target));
+				this.resolveAll();
 			}
 			for (BoardObject b : this.attackingMinion.getAttackableTargets()) {
-				b.scale = 1;
+				b.scale = CARD_SCALE_BOARD;
 			}
-			this.attackingMinion.scale = 1;
+			this.attackingMinion.scale = CARD_SCALE_BOARD;
 			this.attackingMinion = null;
 		} else if (this.draggingCard != null) {
 			if (y < 750 && this.player1.canPlayCard(this.draggingCard)) {
@@ -281,6 +404,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				return true;
 			} else {
 				this.animateBattlecryTargets(false);
+				this.playingCard.scale = CARD_SCALE_HAND;
 				this.playingCard.resetBattlecryTargets();
 				this.playingCard = null;
 			}
@@ -293,6 +417,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				return true;
 			} else {
 				this.animateUnleashTargets(false);
+				this.unleashingMinion.scale = CARD_SCALE_BOARD;
 				this.unleashingMinion.resetUnleashTargets();
 				this.unleashingMinion = null;
 			}

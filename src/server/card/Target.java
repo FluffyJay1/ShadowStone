@@ -1,5 +1,10 @@
 package server.card;
 
+import java.util.StringTokenizer;
+
+import client.Game;
+import server.Board;
+
 public class Target {
 	private Card creator, target;
 	public String description;
@@ -39,7 +44,17 @@ public class Target {
 	}
 
 	public String toString() {
-		return "target " + this.creator.toString() + " " + (this.target == null ? "null" : this.target.toString());
+		return "target " + this.creator.toReference() + this.description + Game.STRING_END
+				+ (this.target == null ? "null" : this.target.toReference() + " ");
+	}
+
+	public static Target fromString(Board b, StringTokenizer st) {
+		Card creator = Card.fromReference(b, st);
+		String description = st.nextToken(Game.STRING_END);
+		Card target = Card.fromReference(b, st);
+		Target t = new Target(creator, description);
+		t.setTarget(target);
+		return t;
 	}
 
 }

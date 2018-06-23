@@ -1,36 +1,39 @@
 package server.event;
 
 import java.util.LinkedList;
+import java.util.StringTokenizer;
 
+import server.Board;
 import server.Player;
 import server.card.BoardObject;
+import server.card.Card;
 import server.card.Minion;
 
 public class EventTurnEnd extends Event {
+	public static final int ID = 14;
 	Player p;
 
 	public EventTurnEnd(Player p) {
+		super(ID);
 		this.p = p;
 	}
 
-	public String resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-		if (!conditions()) {
-			return this.toString();
-		}
-		String eventstring = this.toString();
+	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
 		Minion leader = (Minion) this.p.board.getBoardObject(this.p.team, 0);
-		// eventlist.addAll(leader.onTurnEnd());
-		eventstring += Event.resolveAll(leader.onTurnEnd(), loopprotection);
-
+		eventlist.addAll(leader.onTurnEnd());
 		for (BoardObject b : this.p.board.getBoardObjects(this.p.team)) {
-			// eventlist.addAll(b.onTurnEnd());
-			eventstring += Event.resolveAll(b.onTurnEnd(), loopprotection);
+			eventlist.addAll(b.onTurnEnd());
 		}
-		return eventstring;
 	}
 
 	public String toString() {
-		return "turnend " + this.p.toString();
+		return this.id + " " + this.p.team + " ";
+	}
+
+	public static EventTurnEnd fromString(Board b, StringTokenizer st) {
+		int team = Integer.parseInt(st.nextToken());
+		Player p = b.getPlayer(team);
+		return new EventTurnEnd(p);
 	}
 
 	public boolean conditions() {

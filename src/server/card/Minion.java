@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.StringTokenizer;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.TrueTypeFont;
@@ -13,27 +14,68 @@ import org.newdawn.slick.geom.Vector2f;
 import client.Game;
 import server.Board;
 import server.card.effect.Effect;
+import server.card.effect.EffectStatChange;
 import server.card.effect.EffectStats;
 import server.event.Event;
+import server.event.EventAddEffect;
 import server.event.EventDamage;
 import server.event.EventDraw;
+import server.event.EventMinionDamage;
 
 public class Minion extends BoardObject {
 	public int health, attacksThisTurn = 0; // tempted to make damage an effect
 	public boolean summoningSickness = true;
 
-	public Minion(Board board, CardStatus status, int cost, int attack, int magic, int health, String name, String text,
-			String imagepath, int team, int id) {
+	public Minion(Board board, CardStatus status, int cost, int attack, int magic, int health, boolean basicUnleash,
+			String name, String text, String imagepath, int team, int id) {
 		super(board, status, cost, name, text, imagepath, team, id);
 		this.health = health;
-		this.addBasicEffect(new Effect(this, 0, "", cost, attack, magic, health, 1, false, false, false));
+		Effect e = null;
+		if (basicUnleash) {
+			e = new Effect(this, 0, "", cost, attack, magic, health, 1, false, false, false) {
+				@Override
+				public LinkedList<Event> unleash() {
+					LinkedList<Event> list = new LinkedList<Event>();
+					if (this.unleashTargets.get(0).getTarget() != null) {
+						list.add(new EventMinionDamage((Minion) this.owner,
+								(Minion) this.unleashTargets.get(0).getTarget(),
+								this.owner.finalStatEffects.getStat(EffectStats.MAGIC)));
+					}
+					// targets are reset in eventunleash
+					return list;
+				}
+			};
+			Target t = new Target(this, "Target an enemy minion.") {
+				@Override
+				public boolean canTarget(Card c) {
+					return c.status == CardStatus.BOARD && c instanceof Minion && !(c instanceof Leader)
+							&& ((Minion) c).team != this.getCreator().team;
+				}
+			};
+			LinkedList<Target> list = new LinkedList<Target>();
+			list.add(t);
+			e.setUnleashTargets(list);
+			if (!text.isEmpty()) {
+				this.text += "\n";
+			}
+			this.text += "<b> Unleash: </b> Deal X damage to an enemy minion. X equals this minion's magic.";
+		} else {
+			e = new Effect(this, 0, "", cost, attack, magic, health, 1, false, false, false);
+		}
+		this.addBasicEffect(e);
 	}
 
 	@Override
 	public void drawOnBoard(Graphics g) {
 		super.drawOnBoard(g);
 		if (this.canAttack()) {
-			g.setColor(org.newdawn.slick.Color.cyan);
+			if (this.summoningSickness && this.finalStatEffects.getStat(EffectStats.RUSH) > 0
+					&& this.finalStatEffects.getStat(EffectStats.STORM) == 0) {
+				g.setColor(org.newdawn.slick.Color.yellow);
+			} else {
+				g.setColor(org.newdawn.slick.Color.cyan);
+			}
+
 			g.drawRect((float) (this.pos.x - CARD_DIMENSIONS.x * this.scale / 2),
 					(float) (this.pos.y - CARD_DIMENSIONS.y * this.scale / 2), (float) (CARD_DIMENSIONS.x * this.scale),
 					(float) (CARD_DIMENSIONS.y * this.scale));
@@ -75,14 +117,17 @@ public class Minion extends BoardObject {
 		// check for ward
 		boolean ward = false;
 		for (BoardObject b : poss) {
-			if (b instanceof Leader
-					&& (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.STORM) > 0)) {
-				list.add((Leader) b);
-			} else if (b instanceof Minion
-					&& (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.RUSH) > 0
-							|| this.finalStatEffects.getStat(EffectStats.STORM) > 0)) {
-				// TODO add if can attack this minion
-				list.add((Minion) b);
+			if (b instanceof Leader) {
+				if (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.STORM) > 0) {
+					list.add((Leader) b);
+				}
+			} else if (b instanceof Minion) {
+				if (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.RUSH) > 0
+						|| this.finalStatEffects.getStat(EffectStats.STORM) > 0) {
+					// TODO add if can attack this minion eg stealth or can't be
+					// attacked
+					list.add((Minion) b);
+				}
 				if (((Minion) b).finalStatEffects.getStat(EffectStats.WARD) > 0) {
 					ward = true;
 					wards.add((Minion) b);
@@ -169,15 +214,23 @@ public class Minion extends BoardObject {
 
 	public String unleashTargetsToString() {
 		LinkedList<Target> list = this.getUnleashTargets();
-		String ret = "utargets " + list.size() + " ";
+		String ret = list.size() + " ";
 		for (Target t : list) {
 			ret += t.toString() + " ";
 		}
 		return ret;
 	}
 
+	public void unleashTargetsFromString(Board b, StringTokenizer st) {
+		int num = Integer.parseInt(st.nextToken());
+		for (int i = 0; i < num; i++) {
+			Target t = Target.fromString(b, st);
+			this.getUnleashTargets().set(i, t);
+		}
+	}
+
 	public String toString() {
-		return "Minion " + name + " " + this.posToString() + " alive " + alive + "\n"
-				+ this.finalStatEffects.statsToString();
+		return "Minion " + name + " " + this.cardPosToString() + " " + alive + " "
+				+ this.finalStatEffects.statsToString() + " " + this.health;
 	}
 }

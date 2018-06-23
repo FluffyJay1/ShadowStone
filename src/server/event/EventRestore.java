@@ -1,32 +1,43 @@
 package server.event;
 
 import java.util.LinkedList;
+import java.util.StringTokenizer;
 
+import server.Board;
+import server.Player;
+import server.card.Card;
 import server.card.Minion;
 import server.card.effect.EffectStats;
 
 public class EventRestore extends Event {
+	public static final int ID = 13;
 	int heal;
 	Minion m;
 
 	public EventRestore(Minion m, int heal) {
+		super(ID);
 		this.m = m;
 		this.heal = heal;
 	}
 
 	@Override
-	public String resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
 		this.m.health += heal;
 		if (this.m.health > this.m.finalStatEffects.getStat(EffectStats.HEALTH)) {
 			this.m.health = this.m.finalStatEffects.getStat(EffectStats.HEALTH);
 		}
-		// todo on healed
-		return this.toString();
+		// TODO on healed
 	}
 
 	@Override
 	public String toString() {
-		return "restore " + m.boardpos + " " + heal + "\n";
+		return this.id + " " + m.toReference() + heal + " ";
+	}
+
+	public static EventRestore fromString(Board b, StringTokenizer st) {
+		Card m = Card.fromReference(b, st);
+		int heal = Integer.parseInt(st.nextToken());
+		return new EventRestore((Minion) m, heal);
 	}
 
 	@Override

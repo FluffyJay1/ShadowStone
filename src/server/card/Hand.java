@@ -22,8 +22,13 @@ public class Hand { // its just a list of cards aaaaaa
 
 	public void update(double frametime) {
 		for (int i = 0; i < this.cards.size(); i++) {
-			this.cards.get(i).handpos = i;
 			this.cards.get(i).update(frametime);
+		}
+	}
+
+	public void updatePositions() {
+		for (int i = 0; i < this.cards.size(); i++) {
+			this.cards.get(i).cardpos = i;
 		}
 	}
 

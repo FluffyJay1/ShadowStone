@@ -11,4 +11,8 @@ public class Spell extends Card { // yea
 		super(board, status, cost, name, text, imagepath, team, id);
 	}
 
+	public String toString() {
+		return "spell " + this.id + " " + this.cardPosToString() + " ";
+	}
+
 }

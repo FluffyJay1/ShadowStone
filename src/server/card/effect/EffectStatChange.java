@@ -1,5 +1,9 @@
 package server.card.effect;
 
+import java.util.StringTokenizer;
+
+import client.Game;
+import server.Board;
 import server.card.Card;
 
 public class EffectStatChange extends Effect {
@@ -9,19 +13,12 @@ public class EffectStatChange extends Effect {
 		super(owner, ID, description);
 	}
 
-	public String toString() {
-		String ret = this.id + " " + this.description + " set ";
-		for (int i = 0; i < this.set.stats.length; i++) {
-			if (this.set.use[i]) {
-				ret += i + " " + this.set.stats[i] + " ";
-			}
-		}
-		ret += "change ";
-		for (int i = 0; i < this.change.stats.length; i++) {
-			if (this.change.use[i]) {
-				ret += i + " " + this.change.stats[i] + " ";
-			}
-		}
-		return ret;
+	public static EffectStatChange fromString(Board b, StringTokenizer st) {
+		Card owner = Card.fromReference(b, st);
+		String description = st.nextToken(Game.STRING_END);
+		EffectStatChange esc = new EffectStatChange(owner, description);
+		esc.set = EffectStats.fromString(st);
+		esc.change = EffectStats.fromString(st);
+		return esc;
 	}
 }

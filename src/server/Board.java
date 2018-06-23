@@ -81,12 +81,12 @@ public class Board {
 		if (position > relevantSide.size()) {
 			position = relevantSide.size();
 		}
-		bo.boardpos = position;
+		bo.cardpos = position;
 		bo.status = CardStatus.BOARD;
 		bo.team = team;
 		relevantSide.add(position, bo);
 		for (int i = position + 1; i < relevantSide.size(); i++) {
-			relevantSide.get(i).boardpos++;
+			relevantSide.get(i).cardpos++;
 		}
 	}
 
@@ -111,17 +111,17 @@ public class Board {
 		} else {
 			bo = relevantSide.remove(position);
 			for (int i = position; i < relevantSide.size(); i++) {
-				relevantSide.get(i).boardpos--;
+				relevantSide.get(i).cardpos--;
 			}
 		}
 	}
 
 	public void updatePositions() {
 		for (int i = 0; i < player1side.size(); i++) {
-			player1side.get(i).boardpos = i;
+			player1side.get(i).cardpos = i;
 		}
 		for (int i = 0; i < player2side.size(); i++) {
-			player2side.get(i).boardpos = i;
+			player2side.get(i).cardpos = i;
 		}
 	}
 
@@ -139,13 +139,20 @@ public class Board {
 	}
 
 	public void resolveAll() {
+		this.resolveAll(this.eventlist, false);
+	}
+
+	public void resolveAll(LinkedList<Event> eventlist, boolean loopprotection) {
 		while (!eventlist.isEmpty()) {
-			String eventstring = eventlist.getFirst().resolve(eventlist, false);
-			if (!eventstring.isEmpty()) {
-				System.out.println(eventstring);
-				// System.out.println(this.stateToString());
+			Event e = eventlist.removeFirst();
+			if (e.conditions()) {
+				String eventstring = e.toString();
+				if (!eventstring.isEmpty()) {
+					System.out.println(eventstring);
+					// System.out.println(this.stateToString());
+				}
+				e.resolve(eventlist, loopprotection);
 			}
-			eventlist.removeFirst();
 		}
 	}
 
@@ -160,14 +167,17 @@ public class Board {
 			if (bo instanceof Minion) {
 				// smorc
 				this.eventlist.add(new EventMinionAttack((Minion) bo, (Minion) this.getBoardObject(1, 0)));
+				this.resolveAll();
 			}
 		}
 		this.endCurrentPlayerTurn();
 	}
 
 	public void endCurrentPlayerTurn() {
+		System.out.println("ENDING PLAYER " + this.currentplayerturn + " TURN");
 		this.eventlist.add(new EventTurnEnd(this.getPlayer(this.currentplayerturn)));
-		this.currentplayerturn *= -1;
-		this.eventlist.add(new EventTurnStart(this.getPlayer(this.currentplayerturn)));
+		this.resolveAll();
+		this.eventlist.add(new EventTurnStart(this.getPlayer(this.currentplayerturn * -1)));
+		this.resolveAll();
 	}
 }

@@ -26,6 +26,7 @@ public class Game extends StateBasedGame {
 	public static final int WINDOW_HEIGHT = 1080;
 	public static final int SERVER_PORT = 9091;
 
+	public static final String STRING_START = "\u0fd5", STRING_END = "\u0fd6";
 	public static Map<String, Image> images = new HashMap<String, Image>();
 
 	public static Map<String, UnicodeFont> fonts = new HashMap<String, UnicodeFont>();

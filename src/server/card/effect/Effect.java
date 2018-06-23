@@ -1,16 +1,20 @@
 package server.card.effect;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
+import java.util.StringTokenizer;
 
+import client.Game;
+import server.Board;
 import server.card.*;
 import server.event.Event;
 import server.event.EventDraw;
 
 public class Effect {
-	public int id;
+	public int id = 0, pos = 0;
 	public Card owner;
 	public String description;
-	public boolean mute = false;
+	public boolean basic = false, mute = false;
 
 	public EffectStats set = new EffectStats(), change = new EffectStats();
 	public LinkedList<Target> battlecryTargets = new LinkedList<Target>(), unleashTargets = new LinkedList<Target>();
@@ -156,6 +160,46 @@ public class Effect {
 	}
 
 	public String toString() {
-		return "" + this.id;
+		return this.id + " " + this.owner.toReference() + this.description + Game.STRING_END + this.set.toString()
+				+ this.change.toString();
 	}
+
+	public static Effect fromString(Board b, StringTokenizer st) {
+		int id = Integer.parseInt(st.nextToken());
+		if (id == 0) {
+			Card owner = Card.fromReference(b, st);
+			String description = st.nextToken("" + Game.STRING_END);
+			Effect ef = new Effect(owner, 0, description);
+			ef.set = EffectStats.fromString(st);
+			ef.change = EffectStats.fromString(st);
+			return ef;
+		} else {
+			Class c = EffectIDLinker.getClass(id);
+			Effect ef = null;
+			try {
+				ef = (Effect) c.getMethod("fromString", null).invoke(st);
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+					| NoSuchMethodException | SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} // AAAAAAAAAa
+			return ef;
+		}
+	}
+
+	public String toReference() {
+		return this.owner.toReference() + this.basic + " " + this.pos;
+	}
+
+	public static Effect fromReference(Board b, StringTokenizer st) {
+		Card c = Card.fromReference(b, st);
+		boolean basic = Boolean.parseBoolean(st.nextToken());
+		int pos = Integer.parseInt(st.nextToken());
+		if (basic) {
+			return c.getBasicEffects().get(pos);
+		} else {
+			return c.getAdditionalEffects().get(pos);
+		}
+	}
+
 }

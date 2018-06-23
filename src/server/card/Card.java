@@ -2,7 +2,9 @@ package server.card;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
+import java.util.StringTokenizer;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -12,7 +14,9 @@ import org.newdawn.slick.geom.Vector2f;
 
 import client.Game;
 import server.Board;
+import server.Player;
 import server.card.effect.Effect;
+import server.card.effect.EffectIDLinker;
 import server.card.effect.EffectStats;
 import server.event.Event;
 
@@ -23,7 +27,7 @@ public class Card {
 	public static final double STAT_DEFAULT_SIZE = 24;
 	public Board board;
 	public boolean alive = true;
-	public int id, handpos, team;
+	public int id, cardpos, team;
 	public String name, text, imagepath;
 	public Vector2f targetpos, pos;
 	public double scale;
@@ -145,13 +149,19 @@ public class Card {
 	}
 
 	public void addBasicEffect(Effect e) {
+		e.basic = true;
+		e.pos = this.basicEffects.size();
 		this.basicEffects.add(e);
+		this.updateBasicEffectPositions();
 		this.updateBasicEffectStats();
 		this.updateFinalEffectStats();
 	}
 
 	public void addEffect(Effect e) {
+		e.basic = false;
+		e.pos = this.effects.size();
 		this.effects.add(e);
+		this.updateAdditionalEffectPositions();
 		this.updateFinalEffectStats();
 	}
 
@@ -166,6 +176,18 @@ public class Card {
 		this.finalStatEffects = new Effect(this, 0, "");
 		for (Effect e : this.getFinalEffects()) {
 			this.finalStatEffects.applyEffectStats(e);
+		}
+	}
+
+	public void updateBasicEffectPositions() {
+		for (int i = 0; i < this.basicEffects.size(); i++) {
+			this.basicEffects.get(i).pos = i;
+		}
+	}
+
+	public void updateAdditionalEffectPositions() {
+		for (int i = 0; i < this.effects.size(); i++) {
+			this.effects.get(i).pos = i;
 		}
 	}
 
@@ -208,12 +230,20 @@ public class Card {
 
 	public String battlecryTargetsToString() {
 		LinkedList<Target> list = this.getBattlecryTargets();
-		String ret = "btargets " + list.size() + " ";
+		String ret = list.size() + " ";
 		for (Target t : list) {
 			ret += t.toString() + " ";
 		}
 		return ret;
 
+	}
+
+	public void battlecryTargetsFromString(Board b, StringTokenizer st) {
+		int num = Integer.parseInt(st.nextToken());
+		for (int i = 0; i < num; i++) {
+			Target t = Target.fromString(b, st);
+			this.getBattlecryTargets().set(i, t);
+		}
 	}
 
 	public boolean isInside(Vector2f p) {
@@ -223,20 +253,66 @@ public class Card {
 				&& p.y <= this.pos.y + this.image.getHeight() / 2 * this.scale;
 	}
 
-	public String posToString() {
+	public String cardPosToString() {
 		switch (this.status) {
 		case HAND:
-			return "hand " + this.handpos;
+			return "hand " + this.cardpos;
 		case BOARD:
-			return "board";
+			return "board " + this.cardpos;
 		case DECK:
-			return "deck";
+			return "deck " + this.cardpos;
 		default:
 			return "";
 		}
 	}
 
 	public String toString() {
-		return "card " + this.id + " " + this.posToString();
+		return "card " + this.id + " " + this.cardPosToString();
+	}
+
+	public String toConstructorString() {
+		return this.id + " " + this.team + " ";
+	}
+
+	public static Card createFromConstructorString(Board b, StringTokenizer st) {
+		int id = Integer.parseInt(st.nextToken());
+		int team = Integer.parseInt(st.nextToken());
+		Class c = CardIDLinker.getClass(id);
+		Card card = null;
+		try {
+			card = (Card) c.getConstructor(Board.class, Integer.class).newInstance(b, team);
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return card;
+		// AAAAAAAAAAAAAAAAAAAa
+	}
+
+	public String toReference() {
+		return this.team + " " + this.cardPosToString() + " ";
+	}
+
+	public static Card fromReference(Board b, StringTokenizer reference) {
+		String firsttoken = reference.nextToken();
+		if (firsttoken == "null") {
+			return null;
+		}
+		int team = Integer.parseInt(firsttoken);
+		Player p = b.getPlayer(team);
+		String status = reference.nextToken();
+		int cardpos = Integer.parseInt(reference.nextToken());
+		switch (status) {
+		case "hand":
+			return p.hand.cards.get(cardpos);
+		case "board":
+			return b.getBoardObject(team, cardpos);
+		case "deck":
+			return p.deck.cards.get(cardpos);
+		default:
+			return null;
+		}
+
 	}
 }
