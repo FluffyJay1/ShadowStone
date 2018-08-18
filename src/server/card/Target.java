@@ -50,7 +50,9 @@ public class Target {
 	}
 
 	public void setTarget(Card target) {
-		this.targets.add(target);
+		if (target != null) {
+			this.targets.add(target);
+		}
 		this.ready = true;
 	}
 
