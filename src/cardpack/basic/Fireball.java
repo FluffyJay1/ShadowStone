@@ -22,7 +22,7 @@ public class Fireball extends Spell {
 			public LinkedList<Event> battlecry() {
 				LinkedList<Event> list = new LinkedList<Event>();
 
-				for (int i = 0; i < 2; i++) {
+				for (int i = 0; i < this.battlecryTargets.get(0).getTargets().size(); i++) {
 					ArrayList<Target> m = new ArrayList<Target>();
 					ArrayList<Integer> d = new ArrayList<Integer>();
 					int pos = ((BoardObject) this.battlecryTargets.get(0).getTargets().get(i)).cardpos;
