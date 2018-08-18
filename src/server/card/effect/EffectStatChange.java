@@ -9,14 +9,15 @@ import server.card.Card;
 public class EffectStatChange extends Effect {
 	public static final int ID = -1;
 
-	public EffectStatChange(Card owner, String description) {
-		super(owner, ID, description);
+	public EffectStatChange(String description) {
+		super(ID, description);
 	}
 
 	public static EffectStatChange fromString(Board b, StringTokenizer st) {
 		Card owner = Card.fromReference(b, st);
 		String description = st.nextToken(Game.STRING_END);
-		EffectStatChange esc = new EffectStatChange(owner, description);
+		EffectStatChange esc = new EffectStatChange(description);
+		esc.owner = owner;
 		esc.set = EffectStats.fromString(st);
 		esc.change = EffectStats.fromString(st);
 		return esc;

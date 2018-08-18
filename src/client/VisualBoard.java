@@ -9,6 +9,7 @@ import org.newdawn.slick.MouseListener;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Vector2f;
 
+import client.ui.Text;
 import client.ui.UI;
 import client.ui.game.CardSelectPanel;
 import client.ui.game.EndTurnButton;
@@ -29,11 +30,12 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 			CARD_SCALE_ABILITY = 1.5, CARD_SCALE_TARGET = 1.25, CARD_SCALE_ATTACK = 1.5;
 	UI ui;
 	public Card selectedCard, draggingCard, playingCard;
-	LinkedList<Card> targetableCards = new LinkedList<Card>();
+	ArrayList<Card> targetedCards = new ArrayList<Card>();
 	int playingX;
 	public Minion attackingMinion, unleashingMinion;
 	CardSelectPanel cardSelectPanel;
 	EndTurnButton endTurnButton;
+	Text targetText;
 	double animationtimer = 0;
 	LinkedList<Event> resolvingEvents = new LinkedList<Event>();
 	LinkedList<LinkedList<Event>> resolveQueue = new LinkedList<LinkedList<Event>>();
@@ -47,6 +49,8 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		this.cardSelectPanel.hide = true;
 		this.endTurnButton = new EndTurnButton(this.ui, this);
 		this.ui.addUIElementParent(this.endTurnButton);
+		this.targetText = new Text(ui, new Vector2f(), "Target", 400, 24, "Verdana", 30, 0, -1);
+		this.ui.addUIElementParent(this.targetText);
 		// this.cardSelectPanel.draggable = true;
 		this.resolveAll();
 	}
@@ -117,18 +121,22 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 
 			c.draw(g);
 		}
+		for (Card c : this.targetedCards) {
+			g.setColor(org.newdawn.slick.Color.red);
+			g.drawRect((float) (c.pos.x - Card.CARD_DIMENSIONS.x * c.scale / 2 * 0.9),
+					(float) (c.pos.y - Card.CARD_DIMENSIONS.y * c.scale / 2 * 0.9),
+					(float) (Card.CARD_DIMENSIONS.x * c.scale * 0.9), (float) (Card.CARD_DIMENSIONS.y * c.scale * 0.9));
+			g.setColor(org.newdawn.slick.Color.white);
+		}
+		this.targetText.hide = false;
 		if (this.playingCard != null && this.playingCard.getNextNeededBattlecryTarget() != null) {
-			UnicodeFont font = Game.getFont("Verdana", 24, true, false);
-			font.drawString(
-					this.playingCard.pos.x
-							- font.getWidth(this.playingCard.getNextNeededBattlecryTarget().description) / 2,
-					this.playingCard.pos.y + 100, this.playingCard.getNextNeededBattlecryTarget().description);
+			this.targetText.setText(this.playingCard.getNextNeededBattlecryTarget().description);
+			this.targetText.setPos(new Vector2f(this.playingCard.pos.x, this.playingCard.pos.y + 100), 1);
 		} else if (this.unleashingMinion != null && this.unleashingMinion.getNextNeededUnleashTarget() != null) {
-			UnicodeFont font = Game.getFont("Verdana", 24, true, false);
-			font.drawString(
-					this.unleashingMinion.pos.x
-							- font.getWidth(this.unleashingMinion.getNextNeededUnleashTarget().description) / 2,
-					this.unleashingMinion.pos.y + 100, this.unleashingMinion.getNextNeededUnleashTarget().description);
+			this.targetText.setText(this.unleashingMinion.getNextNeededUnleashTarget().description);
+			this.targetText.setPos(new Vector2f(this.unleashingMinion.pos.x, this.unleashingMinion.pos.y + 100), 1);
+		} else {
+			this.targetText.hide = true;
 		}
 		ui.draw(g);
 		this.drawEventAnimation(g);
@@ -230,19 +238,27 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				UnicodeFont font = Game.getFont("Verdana", 80, true, false);
 				g.setFont(font);
 				float yoff = (float) (Math.pow(this.animationtimer / 0.5 - 0.5, 2) * 300) - 37.5f;
-				for (int i = 0; i < e.m.size(); i++) {
+				for (int i = 0; i < e.t.size(); i++) {
 					String dstring = e.damage.get(i) + "";
-					g.drawString(dstring, e.m.get(i).pos.x - font.getWidth(dstring) / 2,
-							e.m.get(i).pos.y - font.getHeight(dstring) + yoff);
+					for (Card c : e.t.get(i).getTargets()) {
+						if (c != null) {
+							g.drawString(dstring, c.pos.x - font.getWidth(dstring) / 2,
+									c.pos.y - font.getHeight(dstring) + yoff);
+						}
+					}
 				}
 				g.setColor(Color.white);
 			} else if (this.currentEvent instanceof EventMinionDamage) {
 				g.setColor(Color.red);
 				EventMinionDamage e = (EventMinionDamage) this.currentEvent;
 				for (int i = 0; i < e.m2.size(); i++) {
-					Vector2f pos = e.m1.pos.copy().sub(e.m2.get(i).pos).scale((float) (this.animationtimer / 0.25))
-							.add(e.m2.get(i).pos);
-					g.fillOval(pos.x - 20, pos.y - 20, 40, 40);
+					for (Card c : e.m2.get(i).getTargets()) {
+						if (c != null) {
+							Vector2f pos = e.m1.pos.copy().sub(c.pos).scale((float) (this.animationtimer / 0.25))
+									.add(c.pos);
+							g.fillOval(pos.x - 20, pos.y - 20, 40, 40);
+						}
+					}
 				}
 				g.setColor(Color.white);
 			} else if (this.currentEvent instanceof EventUnleash) {
@@ -397,15 +413,29 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	private boolean handleTargeting(Card c) {
 		if (this.playingCard != null && this.playingCard.getNextNeededBattlecryTarget() != null) {
 			if (c != null && this.playingCard.getNextNeededBattlecryTarget().canTarget(c)) {
-				this.animateBattlecryTargets(false);
-				this.playingCard.getNextNeededBattlecryTarget().setTarget(c);
-				this.resolveNoBattlecryTarget();
-				this.animateBattlecryTargets(true);
+				if (this.targetedCards.contains(c)) {
+					this.targetedCards.remove(c);
+				} else {
+					this.targetedCards.add(c);
+					// whether max targets have been selected or all selectable
+					// targets have been selected
+					if (this.targetedCards.size() >= this.playingCard.getNextNeededBattlecryTarget().maxtargets
+							|| this.targetedCards.size() == this
+									.getTargetableCards(this.playingCard.getNextNeededBattlecryTarget()).size()) {
+						this.animateBattlecryTargets(false);
+						this.playingCard.getNextNeededBattlecryTarget().setTargets(this.targetedCards);
+						this.targetedCards.clear();
+						this.resolveNoBattlecryTarget();
+						this.animateBattlecryTargets(true);
+					}
+				}
+
 				return true;
 			} else {
 				this.animateBattlecryTargets(false);
 				this.playingCard.scale = CARD_SCALE_HAND;
 				this.playingCard.resetBattlecryTargets();
+				this.targetedCards.clear();
 				this.playingCard = null;
 			}
 		} else if (this.unleashingMinion != null && this.unleashingMinion.getNextNeededUnleashTarget() != null) {
@@ -419,6 +449,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				this.animateUnleashTargets(false);
 				this.unleashingMinion.scale = CARD_SCALE_BOARD;
 				this.unleashingMinion.resetUnleashTargets();
+				this.targetedCards.clear();
 				this.unleashingMinion = null;
 			}
 		}

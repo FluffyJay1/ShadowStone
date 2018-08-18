@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -105,5 +106,21 @@ public class Game extends StateBasedGame {
 
 	public static UnicodeFont getFont(String font, double size) {
 		return getFont(font, size, false, false);
+	}
+
+	public static <T> T selectRandom(ArrayList<T> list) {
+		ArrayList<T> ret = selectRandom(list, 1);
+		return ret.get(0);
+	}
+
+	public static <T> ArrayList<T> selectRandom(ArrayList<T> list, int num) { // helper
+		ArrayList<T> copy = new ArrayList<T>();
+		copy.addAll(list);
+		ArrayList<T> ret = new ArrayList<T>();
+		for (int i = 0; i < num && !copy.isEmpty(); i++) {
+			int randind = (int) (Math.random() * copy.size());
+			ret.add(copy.remove(randind));
+		}
+		return ret;
 	}
 }

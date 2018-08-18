@@ -3,6 +3,7 @@ package server;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import client.Game;
 import server.card.BoardObject;
 import server.card.Card;
 import server.card.CardStatus;
@@ -55,6 +56,32 @@ public class Board {
 		return list;
 	}
 
+	public ArrayList<Card> getCards() {
+		ArrayList<Card> ret = new ArrayList<Card>();
+		ret.addAll(this.getBoardObjects());
+		ret.addAll(this.player1.hand.cards);
+		ret.addAll(this.player1.deck.cards);
+		ret.addAll(this.player2.hand.cards);
+		ret.addAll(this.player2.deck.cards);
+		return ret;
+	}
+
+	// i don't even know what this is
+	public ArrayList<Card> getCollection(int team, CardStatus status) {
+		switch (status) {
+		case HAND:
+			return this.getPlayer(team).hand.cards;
+		case BOARD:
+			ArrayList<Card> cards = new ArrayList<Card>();
+			cards.addAll(this.getBoardObjects(team)); // gottem
+			return cards;
+		case DECK:
+			return this.getPlayer(team).deck.cards;
+		default:
+			return null;
+		}
+	}
+
 	public ArrayList<BoardObject> getBoardObjects() {
 		ArrayList<BoardObject> ret = new ArrayList<BoardObject>();
 		ret.addAll(this.player1side);
@@ -63,8 +90,40 @@ public class Board {
 	}
 
 	public ArrayList<BoardObject> getBoardObjects(int team) {
+		// i saw what i was trying to do here originally and it's bad
 		ArrayList<BoardObject> ret = new ArrayList<BoardObject>();
-		ret.addAll(team > 0 ? this.player1side : this.player2side);
+		if (team > 0) {
+			return this.player1side;
+		} else {
+			return this.player2side;
+		}
+	}
+
+	public ArrayList<BoardObject> getBoardObjects(int team, boolean noleader, boolean nominion, boolean noamulet) {
+		ArrayList<BoardObject> ret = new ArrayList<BoardObject>();
+		if (team >= 0) {
+			ret.addAll(this.player1side);
+		}
+		if (team <= 0) {
+			ret.addAll(this.player2side);
+		}
+		if (noleader) {
+			ret.remove(0); // gotem
+		}
+		if (nominion) {
+			for (BoardObject b : ret) {
+				if (b instanceof Minion) {
+					ret.remove(b); // don't worry about this
+				}
+			}
+		}
+		if (noamulet) { // TODO IMPLEMENT AMULET
+			for (BoardObject b : ret) {
+				if (!(b instanceof Minion)) {
+					ret.remove(b);
+				}
+			}
+		}
 		return ret;
 	}
 
@@ -98,6 +157,16 @@ public class Board {
 		if (team < 0) {
 			addBoardObject(bo, -1, player2side.size());
 		}
+	}
+
+	public void removeBoardObject(BoardObject bo) {
+		if (this.player1side.contains(bo)) {
+			this.player1side.remove(bo);
+		}
+		if (this.player2side.contains(bo)) {
+			this.player2side.remove(bo);
+		}
+		this.updatePositions();
 	}
 
 	public void removeBoardObject(int team, int position) {
@@ -170,7 +239,7 @@ public class Board {
 				this.resolveAll();
 			}
 		}
-		this.endCurrentPlayerTurn();
+		this.endPlayerTurn(-1);
 	}
 
 	public void endCurrentPlayerTurn() {

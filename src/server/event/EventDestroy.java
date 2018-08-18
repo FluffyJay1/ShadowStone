@@ -9,47 +9,54 @@ import server.card.*;
 public class EventDestroy extends Event {
 	// killing things
 	public static final int ID = 4;
-	Card c;
+	Target t;
+
+	public EventDestroy(Target t) {
+		super(ID);
+		this.t = t;
+	}
 
 	public EventDestroy(Card c) {
 		super(ID);
-		this.c = c;
+		this.t = new Target(c);
 	}
 
 	@Override
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-		this.c.alive = false;
-		switch (this.c.status) {
-		case HAND:
-			this.c.board.getPlayer(this.c.team).hand.cards.remove(this.c);
-			this.c.board.getPlayer(this.c.team).hand.updatePositions();
-			break;
-		case BOARD:
-			if (this.c instanceof BoardObject) {
-				BoardObject b = (BoardObject) this.c;
-				b.board.removeBoardObject(b.team, b.cardpos);
-				if (!loopprotection) {
-					eventlist.addAll(b.lastWords());
+		for (Card c : this.t.getTargets()) {
+			c.alive = false;
+			switch (c.status) {
+			case HAND:
+				c.board.getPlayer(c.team).hand.cards.remove(c);
+				c.board.getPlayer(c.team).hand.updatePositions();
+				break;
+			case BOARD:
+				if (c instanceof BoardObject) {
+					BoardObject b = (BoardObject) c;
+					b.board.removeBoardObject(b.team, b.cardpos);
+					if (!loopprotection) {
+						eventlist.addAll(b.lastWords());
+					}
 				}
+				break;
+			case DECK:
+				c.board.getPlayer(c.team).deck.cards.remove(c);
+				c.board.getPlayer(c.team).deck.updatePositions();
+				break;
+			default:
+				break;
 			}
-			break;
-		case DECK:
-			this.c.board.getPlayer(this.c.team).deck.cards.remove(this.c);
-			this.c.board.getPlayer(this.c.team).deck.updatePositions();
-			break;
-		default:
-			break;
 		}
 	}
 
 	@Override
 	public String toString() {
-		return this.id + " " + this.c.toReference();
+		return this.id + " " + this.t.toString();
 	}
 
 	public static EventDestroy fromString(Board b, StringTokenizer st) {
-		Card c = Card.fromReference(b, st);
-		return new EventDestroy((Minion) c);
+		Target t = Target.fromString(b, st);
+		return new EventDestroy(t);
 	}
 
 	@Override

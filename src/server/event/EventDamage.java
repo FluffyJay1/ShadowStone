@@ -8,63 +8,78 @@ import server.Board;
 import server.card.Card;
 import server.card.CardStatus;
 import server.card.Minion;
+import server.card.Target;
 import server.card.effect.EffectStats;
 
 public class EventDamage extends Event {
 	// whenever damage is dealt
 	public static final int ID = 3;
 	public ArrayList<Integer> damage;
-	public ArrayList<Minion> m;
+	public ArrayList<Target> t;
 
-	public EventDamage(ArrayList<Minion> m, ArrayList<Integer> damage) {
+	public EventDamage(ArrayList<Target> t, ArrayList<Integer> damage) {
 		super(ID);
-		this.m = new ArrayList<Minion>();
-		this.m.addAll(m);
+		this.t = new ArrayList<Target>();
+		this.t.addAll(t);
 		this.damage = new ArrayList<Integer>();
 		this.damage.addAll(damage);
 	}
 
+	public EventDamage(Target t, int damage) {
+		super(ID);
+		this.t = new ArrayList<Target>();
+		this.t.add(t);
+		this.damage = new ArrayList<Integer>();
+		this.damage.add(damage);
+	}
+
 	public EventDamage(Minion m, int damage) {
 		super(ID);
-		this.m = new ArrayList<Minion>();
-		this.m.add(m);
+		this.t = new ArrayList<Target>();
+		Target t = new Target(m);
+		this.t.add(t);
 		this.damage = new ArrayList<Integer>();
 		this.damage.add(damage);
 	}
 
 	@Override
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-		for (int i = 0; i < this.m.size(); i++) { // whatever
-			this.m.get(i).health -= damage.get(i);
-			if (!loopprotection) {
-				eventlist.addAll(m.get(i).onDamaged(damage.get(i)));
-			}
-			if (m.get(i).health <= 0) {
-				eventlist.add(new EventDestroy(m.get(i)));
+		for (int i = 0; i < this.t.size(); i++) { // whatever
+			for (Card c : this.t.get(i).getTargets()) { // sure
+				if (c instanceof Minion) {
+					Minion m = (Minion) c;
+					m.health -= damage.get(i);
+					if (!loopprotection) {
+						eventlist.addAll(m.onDamaged(damage.get(i)));
+					}
+					if (m.health <= 0) {
+						eventlist.add(new EventDestroy(m));
+					}
+				}
 			}
 		}
 	}
 
 	@Override
 	public String toString() {
-		String ret = this.id + " " + this.m.size();
-		for (int i = 0; i < this.m.size(); i++) {
-			ret += this.m.get(i).toReference() + this.damage.get(i) + " ";
+		String ret = this.id + " " + this.t.size();
+		for (int i = 0; i < this.t.size(); i++) {
+			ret += this.t.get(i).toString() + this.damage.get(i) + " ";
 		}
 		return ret;
 	}
 
 	public static EventDamage fromString(Board b, StringTokenizer st) {
 		int size = Integer.parseInt(st.nextToken());
-		ArrayList<Minion> m = new ArrayList<Minion>(size);
+		ArrayList<Target> t = new ArrayList<Target>(size);
 		ArrayList<Integer> damage = new ArrayList<Integer>(size);
 		for (int i = 0; i < size; i++) {
-			Card c = Card.fromReference(b, st);
+			Target ta = Target.fromString(b, st);
 			int d = Integer.parseInt(st.nextToken());
-			m.add((Minion) c);
+			t.add(ta);
 			damage.add(d);
 		}
-		return new EventDamage(m, damage);
+		return new EventDamage(t, damage);
 	}
 
 	@Override

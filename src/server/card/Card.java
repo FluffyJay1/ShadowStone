@@ -35,7 +35,7 @@ public class Card {
 	Image image;
 	public CardStatus status;
 
-	public Effect finalStatEffects = new Effect(this, 0, ""), finalBasicStatEffects = new Effect(this, 0, "");
+	public Effect finalStatEffects = new Effect(0, ""), finalBasicStatEffects = new Effect(0, "");
 	// basic effects cannot be muted
 	private LinkedList<Effect> effects = new LinkedList<Effect>(), basicEffects = new LinkedList<Effect>();
 
@@ -60,7 +60,7 @@ public class Card {
 		this.id = id;
 		this.status = status;
 		this.team = team;
-		this.addBasicEffect(new Effect(this, 0, "", cost));
+		this.addBasicEffect(new Effect(0, "", cost));
 	}
 
 	public void update(double frametime) {
@@ -151,6 +151,7 @@ public class Card {
 	public void addBasicEffect(Effect e) {
 		e.basic = true;
 		e.pos = this.basicEffects.size();
+		e.owner = this;
 		this.basicEffects.add(e);
 		this.updateBasicEffectPositions();
 		this.updateBasicEffectStats();
@@ -160,20 +161,21 @@ public class Card {
 	public void addEffect(Effect e) {
 		e.basic = false;
 		e.pos = this.effects.size();
+		e.owner = this;
 		this.effects.add(e);
 		this.updateAdditionalEffectPositions();
 		this.updateFinalEffectStats();
 	}
 
 	public void updateBasicEffectStats() {
-		this.finalBasicStatEffects = new Effect(this, 0, "");
+		this.finalBasicStatEffects = new Effect(0, "");
 		for (Effect e : this.getBasicEffects()) {
 			this.finalBasicStatEffects.applyEffectStats(e);
 		}
 	}
 
 	public void updateFinalEffectStats() {
-		this.finalStatEffects = new Effect(this, 0, "");
+		this.finalStatEffects = new Effect(0, "");
 		for (Effect e : this.getFinalEffects()) {
 			this.finalStatEffects.applyEffectStats(e);
 		}

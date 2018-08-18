@@ -110,30 +110,33 @@ public class Text extends UIElement {
 
 	@Override
 	public void draw(Graphics g) {
-		int flags = 0;
-		for (int i = 0; i < this.lines.size(); i++) {
-			double currlinewidth = 0;
-			for (String token : this.lines.get(i)) { // why do i do this
-				if (token.equals("<b>")) {
-					flags = flags | 1;
-				} else if (token.equals("</b>")) {
-					flags = flags & ~1;
-				} else if (token.equals("<i>")) {
-					flags = flags | 2;
-				} else if (token.equals("</i>")) {
-					flags = flags & ~2;
-				} else {
-					float drawx = (float) (this.getFinalPos().x + currlinewidth
-							- this.lineWidths.get(i) * (this.alignh + 1) / 2.);
-					float drawy = (float) (this.getFinalPos().y + this.lineHeight * i - this.getVOff());
-					g.setFont(this.uFontFamily[flags]);
-					g.drawString(token, drawx, drawy);
-					// this.uFontFamily[flags].drawString(drawx, drawy, token);
+		if (!this.hide) {
+			int flags = 0;
+			for (int i = 0; i < this.lines.size(); i++) {
+				double currlinewidth = 0;
+				for (String token : this.lines.get(i)) { // why do i do this
+					if (token.equals("<b>")) {
+						flags = flags | 1;
+					} else if (token.equals("</b>")) {
+						flags = flags & ~1;
+					} else if (token.equals("<i>")) {
+						flags = flags | 2;
+					} else if (token.equals("</i>")) {
+						flags = flags & ~2;
+					} else {
+						float drawx = (float) (this.getFinalPos().x + currlinewidth
+								- this.lineWidths.get(i) * (this.alignh + 1) / 2.);
+						float drawy = (float) (this.getFinalPos().y + this.lineHeight * i - this.getVOff());
+						g.setFont(this.uFontFamily[flags]);
+						g.drawString(token, drawx, drawy);
+						// this.uFontFamily[flags].drawString(drawx, drawy,
+						// token);
 
-					currlinewidth += this.uFontFamily[flags].getWidth(token + " ");
+						currlinewidth += this.uFontFamily[flags].getWidth(token + " ");
+					}
 				}
 			}
+			this.drawChildren(g);// why not
 		}
-		this.drawChildren(g);// why not
 	}
 }

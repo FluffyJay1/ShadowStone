@@ -8,6 +8,7 @@ import server.Player;
 import server.card.Card;
 import server.card.Deck;
 
+//TODO: SEE IF THIS EVENT IS EVEN NEEDED
 public class EventMill extends Event {
 	public static final int ID = 7;
 	Player p;

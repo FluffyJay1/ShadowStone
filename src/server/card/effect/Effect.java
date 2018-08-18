@@ -12,33 +12,32 @@ import server.event.EventDraw;
 
 public class Effect {
 	public int id = 0, pos = 0;
-	public Card owner;
+	public Card owner = null;
 	public String description;
 	public boolean basic = false, mute = false;
 
 	public EffectStats set = new EffectStats(), change = new EffectStats();
 	public LinkedList<Target> battlecryTargets = new LinkedList<Target>(), unleashTargets = new LinkedList<Target>();
 
-	public Effect(Card owner, int id, String description) {
-		this.owner = owner;
+	public Effect(int id, String description) {
 		this.description = description;
 	}
 
-	public Effect(Card owner, int id, String description, int cost) {
-		this(owner, id, description);
+	public Effect(int id, String description, int cost) {
+		this(id, description);
 		this.set.setStat(EffectStats.COST, cost);
 	}
 
-	public Effect(Card owner, int id, String description, int cost, int attack, int magic, int health) {
-		this(owner, id, description, cost);
+	public Effect(int id, String description, int cost, int attack, int magic, int health) {
+		this(id, description, cost);
 		this.set.setStat(EffectStats.ATTACK, attack);
 		this.set.setStat(EffectStats.MAGIC, magic);
 		this.set.setStat(EffectStats.HEALTH, health);
 	}
 
-	public Effect(Card owner, int id, String description, int cost, int attack, int magic, int health,
-			int attacksperturn, boolean storm, boolean rush, boolean ward) {
-		this(owner, id, description, cost, attack, magic, health);
+	public Effect(int id, String description, int cost, int attack, int magic, int health, int attacksperturn,
+			boolean storm, boolean rush, boolean ward) {
+		this(id, description, cost, attack, magic, health);
 		this.set.setStat(EffectStats.ATTACKS_PER_TURN, attacksperturn);
 		this.set.setStat(EffectStats.STORM, storm ? 1 : 0);
 		this.set.setStat(EffectStats.RUSH, rush ? 1 : 0);
@@ -160,8 +159,8 @@ public class Effect {
 	}
 
 	public String toString() {
-		return this.id + " " + this.owner.toReference() + this.description + Game.STRING_END + this.set.toString()
-				+ this.change.toString();
+		return this.id + " " + (this.owner == null ? "null" : this.owner.toReference()) + this.description
+				+ Game.STRING_END + this.set.toString() + this.change.toString();
 	}
 
 	public static Effect fromString(Board b, StringTokenizer st) {
@@ -169,7 +168,8 @@ public class Effect {
 		if (id == 0) {
 			Card owner = Card.fromReference(b, st);
 			String description = st.nextToken("" + Game.STRING_END);
-			Effect ef = new Effect(owner, 0, description);
+			Effect ef = new Effect(0, description);
+			ef.owner = owner;
 			ef.set = EffectStats.fromString(st);
 			ef.change = EffectStats.fromString(st);
 			return ef;
@@ -187,12 +187,27 @@ public class Effect {
 		}
 	}
 
+	// override this shit
+	public Effect clone() {
+		Effect e = new Effect(this.id, this.description);
+		e.mute = this.mute;
+		e.basic = this.basic;
+		e.set.copyStats(this.set);
+		e.change.copyStats(this.change);
+		// TODO determine if i need to copy over battlecry targets and unleash
+		// targets
+		return e;
+	}
+
 	public String toReference() {
 		return this.owner.toReference() + this.basic + " " + this.pos;
 	}
 
 	public static Effect fromReference(Board b, StringTokenizer st) {
 		Card c = Card.fromReference(b, st);
+		if (c == null) {
+			return null;
+		}
 		boolean basic = Boolean.parseBoolean(st.nextToken());
 		int pos = Integer.parseInt(st.nextToken());
 		if (basic) {

@@ -32,24 +32,23 @@ public class Minion extends BoardObject {
 		this.health = health;
 		Effect e = null;
 		if (basicUnleash) {
-			e = new Effect(this, 0, "", cost, attack, magic, health, 1, false, false, false) {
+			e = new Effect(0, "", cost, attack, magic, health, 1, false, false, false) {
 				@Override
 				public LinkedList<Event> unleash() {
 					LinkedList<Event> list = new LinkedList<Event>();
-					if (this.unleashTargets.get(0).getTarget() != null) {
-						list.add(new EventMinionDamage((Minion) this.owner,
-								(Minion) this.unleashTargets.get(0).getTarget(),
+					if (this.unleashTargets.get(0) != null) {
+						list.add(new EventMinionDamage((Minion) this.owner, this.unleashTargets.get(0).copy(),
 								this.owner.finalStatEffects.getStat(EffectStats.MAGIC)));
 					}
 					// targets are reset in eventunleash
 					return list;
 				}
 			};
-			Target t = new Target(this, "Target an enemy minion.") {
+			Target t = new Target(e, 1, "Deal X damage to an enemy minion. X equals this minion's magic.") {
 				@Override
 				public boolean canTarget(Card c) {
 					return c.status == CardStatus.BOARD && c instanceof Minion && !(c instanceof Leader)
-							&& ((Minion) c).team != this.getCreator().team;
+							&& ((Minion) c).team != this.getCreator().owner.team;
 				}
 			};
 			LinkedList<Target> list = new LinkedList<Target>();
@@ -60,7 +59,7 @@ public class Minion extends BoardObject {
 			}
 			this.text += "<b> Unleash: </b> Deal X damage to an enemy minion. X equals this minion's magic.";
 		} else {
-			e = new Effect(this, 0, "", cost, attack, magic, health, 1, false, false, false);
+			e = new Effect(0, "", cost, attack, magic, health, 1, false, false, false);
 		}
 		this.addBasicEffect(e);
 	}

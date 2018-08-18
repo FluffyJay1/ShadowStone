@@ -7,6 +7,7 @@ import java.util.StringTokenizer;
 import server.Board;
 import server.card.Card;
 import server.card.Minion;
+import server.card.Target;
 import server.card.effect.EffectStats;
 
 public class EventMinionAttackDamage extends Event {
@@ -22,9 +23,9 @@ public class EventMinionAttackDamage extends Event {
 
 	@Override
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-		ArrayList<Minion> minions = new ArrayList<Minion>(2);
-		minions.add(m1);
-		minions.add(m2);
+		ArrayList<Target> minions = new ArrayList<Target>(2);
+		minions.add(new Target(m1));
+		minions.add(new Target(m2));
 		ArrayList<Integer> damage = new ArrayList<Integer>(2);
 		damage.add(m2.finalStatEffects.getStat(EffectStats.ATTACK));
 		damage.add(m1.finalStatEffects.getStat(EffectStats.ATTACK));

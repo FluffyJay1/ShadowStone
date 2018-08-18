@@ -25,16 +25,13 @@ public class EndTurnButton extends UIBox {
 	@Override
 	public void update(double frametime) {
 		super.update(frametime);
-		/*
-		 * if (this.b.currentplayerturn == 1) { this.hide = false; } else {
-		 * this.hide = true; }
-		 */
+		this.hide = this.b.currentplayerturn == -1;
 	}
 
 	@Override
 	public void mouseReleased(int button, int x, int y) {
 		if (this.pointIsInHitbox(new Vector2f(x, y))) {
-			this.b.endCurrentPlayerTurn();
+			this.b.endPlayerTurn(1);
 		}
 	}
 }

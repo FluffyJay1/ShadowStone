@@ -36,6 +36,16 @@ public class EffectStats { // this is literally just a struct
 		this.setStat(HEALTH, stats.h);
 	}
 
+	public void copyStats(EffectStats stats) {
+		for (int i = 0; i < NUM_STATS; i++) {
+			if (stats.use[i]) {
+				this.setStat(i, stats.stats[i]);
+			} else {
+				this.resetStat(i);
+			}
+		}
+	}
+
 	public String toString() {
 		String s = "";
 		for (int i = 0; i < NUM_STATS; i++) {
