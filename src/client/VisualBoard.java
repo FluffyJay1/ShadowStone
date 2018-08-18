@@ -440,10 +440,22 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 			}
 		} else if (this.unleashingMinion != null && this.unleashingMinion.getNextNeededUnleashTarget() != null) {
 			if (c != null && this.unleashingMinion.getNextNeededUnleashTarget().canTarget(c)) {
-				this.animateUnleashTargets(false);
-				this.unleashingMinion.getNextNeededUnleashTarget().setTarget(c);
-				this.resolveNoUnleashTarget();
-				this.animateUnleashTargets(true);
+				if (this.targetedCards.contains(c)) {
+					this.targetedCards.remove(c);
+				} else {
+					this.targetedCards.add(c);
+					// whether max targets have been selected or all selectable
+					// targets have been selected
+					if (this.targetedCards.size() >= this.unleashingMinion.getNextNeededUnleashTarget().maxtargets
+							|| this.targetedCards.size() == this
+									.getTargetableCards(this.unleashingMinion.getNextNeededUnleashTarget()).size()) {
+						this.animateUnleashTargets(false);
+						this.unleashingMinion.getNextNeededUnleashTarget().setTarget(c);
+						this.targetedCards.clear();
+						this.resolveNoUnleashTarget();
+						this.animateUnleashTargets(true);
+					}
+				}
 				return true;
 			} else {
 				this.animateUnleashTargets(false);

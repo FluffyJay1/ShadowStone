@@ -19,6 +19,7 @@ public class Deck {
 			cards.add(new Tiny(board, team));
 			cards.add(new Fireball(board, team));
 			cards.add(new Fighter(board, team));
+			cards.add(new WellOfDestination(board, team));
 		}
 		this.shuffle();
 	}
