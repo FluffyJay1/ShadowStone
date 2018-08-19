@@ -34,7 +34,7 @@ public class Player {
 
 	// uh
 	public boolean canPlayCard(Card c) {
-		return this.board.currentplayerturn == this.team && c.conditions()
+		return c != null && this.board.currentplayerturn == this.team && c.conditions()
 				&& this.mana >= c.finalStatEffects.getStat(EffectStats.COST);
 	}
 
