@@ -35,7 +35,7 @@ public class EventTurnStart extends Event {
 	}
 
 	public String toString() {
-		return this.id + " " + this.p.team + " ";
+		return this.id + " " + this.p.team + "\n";
 	}
 
 	public static EventTurnStart fromString(Board b, StringTokenizer st) {

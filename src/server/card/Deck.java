@@ -14,13 +14,7 @@ public class Deck {
 		this.board = board;
 		this.team = team;
 		this.cards = new ArrayList<Card>();
-		for (int i = 0; i < 10; i++) {
-			cards.add(new Goblin(board, team));
-			cards.add(new Tiny(board, team));
-			cards.add(new Fireball(board, team));
-			cards.add(new Fighter(board, team));
-			cards.add(new WellOfDestination(board, team));
-		}
+
 		this.shuffle();
 	}
 

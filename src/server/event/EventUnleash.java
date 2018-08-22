@@ -28,7 +28,7 @@ public class EventUnleash extends Event {
 	}
 
 	public String toString() {
-		return this.id + " " + this.p.team + " " + m.toReference() + m.unleashTargetsToString();
+		return this.id + " " + this.p.team + " " + m.toReference() + m.unleashTargetsToString() + "\n";
 	}
 
 	public static EventUnleash fromString(Board b, StringTokenizer st) {

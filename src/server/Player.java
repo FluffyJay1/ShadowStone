@@ -14,7 +14,7 @@ public class Player {
 	public Board board;
 	public Deck deck;
 	public Hand hand;
-	public int team, mana = 4, maxmana = 4, maxmaxmana = 10; // don't ask
+	public int team, mana = 1, maxmana = 1, maxmaxmana = 10; // don't ask
 	public boolean unleashedThisTurn, canUnleash;
 
 	public Player(Board board, int team) {
@@ -41,5 +41,13 @@ public class Player {
 	public boolean canUnleashCard(Card c) {
 		return c instanceof Minion && !(c instanceof Leader) && c.status == CardStatus.BOARD && c.team == 1
 				&& !this.unleashedThisTurn && this.mana >= 2 && c.alive == true;
+	}
+
+	public void printHand() {
+		System.out.println("Hand " + this.team + ":");
+		for (Card c : this.hand.cards) {
+			System.out.print(c.id + " ");
+		}
+		System.out.println();
 	}
 }

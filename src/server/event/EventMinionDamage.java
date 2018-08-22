@@ -46,7 +46,7 @@ public class EventMinionDamage extends Event {
 		for (int i = 0; i < this.m2.size(); i++) {
 			ret += this.m2.get(i).toString() + this.damage.get(i) + " ";
 		}
-		return ret;
+		return ret + "\n";
 	}
 
 	public static EventMinionDamage fromString(Board b, StringTokenizer st) {

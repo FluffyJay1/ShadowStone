@@ -158,16 +158,21 @@ public class Effect {
 		return new LinkedList<Event>();
 	}
 
+	public LinkedList<Event> onEvent(Event event) {
+		return new LinkedList<Event>();
+	}
+
 	public String toString() {
-		return this.id + " " + (this.owner == null ? "null" : this.owner.toReference()) + this.description
-				+ Game.STRING_END + this.set.toString() + this.change.toString();
+		return this.id + " " + (this.owner == null ? "null " : this.owner.toReference()) + this.description
+				+ Game.STRING_END + " " + this.set.toString() + this.change.toString();
 	}
 
 	public static Effect fromString(Board b, StringTokenizer st) {
 		int id = Integer.parseInt(st.nextToken());
 		if (id == 0) {
 			Card owner = Card.fromReference(b, st);
-			String description = st.nextToken("" + Game.STRING_END);
+			String description = st.nextToken(Game.STRING_END);
+			st.nextToken(" \n"); // THANKS STRING TOKENIZER
 			Effect ef = new Effect(0, description);
 			ef.owner = owner;
 			ef.set = EffectStats.fromString(st);
@@ -200,7 +205,7 @@ public class Effect {
 	}
 
 	public String toReference() {
-		return this.owner.toReference() + this.basic + " " + this.pos;
+		return this.owner.toReference() + this.basic + " " + this.pos + " ";
 	}
 
 	public static Effect fromReference(Board b, StringTokenizer st) {

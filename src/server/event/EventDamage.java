@@ -62,11 +62,11 @@ public class EventDamage extends Event {
 
 	@Override
 	public String toString() {
-		String ret = this.id + " " + this.t.size();
+		String ret = this.id + " " + this.t.size() + " ";
 		for (int i = 0; i < this.t.size(); i++) {
 			ret += this.t.get(i).toString() + this.damage.get(i) + " ";
 		}
-		return ret;
+		return ret + "\n";
 	}
 
 	public static EventDamage fromString(Board b, StringTokenizer st) {

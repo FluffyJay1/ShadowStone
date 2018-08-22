@@ -2,6 +2,7 @@ package server.card;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
@@ -34,6 +35,7 @@ public class Card {
 	double speed;
 	Image image;
 	public CardStatus status;
+	public Card realCard; // for visual board
 
 	public Effect finalStatEffects = new Effect(0, ""), finalBasicStatEffects = new Effect(0, "");
 	// basic effects cannot be muted
@@ -234,7 +236,7 @@ public class Card {
 		LinkedList<Target> list = this.getBattlecryTargets();
 		String ret = list.size() + " ";
 		for (Target t : list) {
-			ret += t.toString() + " ";
+			ret += t.toString();
 		}
 		return ret;
 
@@ -243,9 +245,16 @@ public class Card {
 	public void battlecryTargetsFromString(Board b, StringTokenizer st) {
 		int num = Integer.parseInt(st.nextToken());
 		for (int i = 0; i < num; i++) {
-			Target t = Target.fromString(b, st);
-			this.getBattlecryTargets().set(i, t);
+			this.getBattlecryTargets().get(i).copyFromString(b, st);
 		}
+	}
+
+	public LinkedList<Event> onEvent(Event event) {
+		LinkedList<Event> list = new LinkedList<Event>();
+		for (Effect e : this.getFinalEffects()) {
+			list.addAll(e.onEvent(event));
+		}
+		return list;
 	}
 
 	public boolean isInside(Vector2f p) {
@@ -258,11 +267,11 @@ public class Card {
 	public String cardPosToString() {
 		switch (this.status) {
 		case HAND:
-			return "hand " + this.cardpos;
+			return "hand " + this.cardpos + " ";
 		case BOARD:
-			return "board " + this.cardpos;
+			return "board " + this.cardpos + " ";
 		case DECK:
-			return "deck " + this.cardpos;
+			return "deck " + this.cardpos + " ";
 		default:
 			return "";
 		}
@@ -279,10 +288,10 @@ public class Card {
 	public static Card createFromConstructorString(Board b, StringTokenizer st) {
 		int id = Integer.parseInt(st.nextToken());
 		int team = Integer.parseInt(st.nextToken());
-		Class c = CardIDLinker.getClass(id);
+		Class<? extends Card> c = CardIDLinker.getClass(id);
 		Card card = null;
 		try {
-			card = (Card) c.getConstructor(Board.class, Integer.class).newInstance(b, team);
+			card = (Card) c.getConstructor(Board.class, int.class).newInstance(b, team);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			// TODO Auto-generated catch block
@@ -293,12 +302,12 @@ public class Card {
 	}
 
 	public String toReference() {
-		return this.team + " " + this.cardPosToString() + " ";
+		return this.team + " " + this.cardPosToString();
 	}
 
 	public static Card fromReference(Board b, StringTokenizer reference) {
 		String firsttoken = reference.nextToken();
-		if (firsttoken == "null") {
+		if (firsttoken.equals("null")) {
 			return null;
 		}
 		int team = Integer.parseInt(firsttoken);

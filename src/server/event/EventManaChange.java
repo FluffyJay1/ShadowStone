@@ -42,7 +42,7 @@ public class EventManaChange extends Event {
 	}
 
 	public String toString() {
-		return this.id + " " + this.p.team + " " + this.mana + " " + this.empty + " " + this.recover + " ";
+		return this.id + " " + this.p.team + " " + this.mana + " " + this.empty + " " + this.recover + "\n";
 	}
 
 	public static EventManaChange fromString(Board b, StringTokenizer st) {

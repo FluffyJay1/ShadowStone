@@ -3,6 +3,7 @@ package server.event;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
+import client.VisualBoard;
 import server.Board;
 import server.Player;
 import server.card.BoardObject;
@@ -10,6 +11,7 @@ import server.card.Card;
 import server.card.CardStatus;
 import server.card.Deck;
 import server.card.Hand;
+import server.card.Minion;
 
 public class EventCreateCard extends Event {
 	public static final int ID = 2;
@@ -41,6 +43,9 @@ public class EventCreateCard extends Event {
 		case BOARD:
 			if (this.c instanceof BoardObject) {
 				this.b.addBoardObject((BoardObject) this.c, this.team, this.cardpos);
+				if (c instanceof Minion) {
+					((Minion) c).summoningSickness = true;
+				}
 			}
 			break;
 		case DECK:
@@ -51,15 +56,21 @@ public class EventCreateCard extends Event {
 		default:
 			break;
 		}
+		if (this.b.isClient) {
+			this.b.cardsCreated.add(this.c);
+		}
 	}
 
 	public String toString() {
 		return this.id + " " + this.c.toConstructorString() + " " + this.team + " " + this.status.toString() + " "
-				+ this.cardpos + " ";
+				+ this.cardpos + "\n";
 	}
 
 	public static EventCreateCard fromString(Board b, StringTokenizer st) {
 		Card c = Card.createFromConstructorString(b, st);
+		if (b instanceof VisualBoard) {
+			c.realCard = ((VisualBoard) b).realBoard.cardsCreated.removeFirst();
+		}
 		int team = Integer.parseInt(st.nextToken());
 		String sStatus = st.nextToken();
 		CardStatus csStatus = null;

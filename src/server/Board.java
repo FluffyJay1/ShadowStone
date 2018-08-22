@@ -2,6 +2,7 @@ package server;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.StringTokenizer;
 
 import client.Game;
 import server.card.BoardObject;
@@ -10,14 +11,22 @@ import server.card.CardStatus;
 import server.card.Leader;
 import server.card.Minion;
 import server.card.Target;
+import server.card.effect.EffectStats;
 import server.event.*;
 
 public class Board {
+	public boolean isClient; // true means has a visualboard
+	// links cards created between board and visualboard
+	public LinkedList<Card> cardsCreated = new LinkedList<Card>();
+
 	public Player player1, player2;
 	public int currentplayerturn = 1;
+
 	protected ArrayList<BoardObject> player1side;
 	protected ArrayList<BoardObject> player2side;
 	public LinkedList<Event> eventlist;
+	protected LinkedList<String> inputeventliststrings = new LinkedList<String>();
+	String output = "";
 
 	public Board() {
 		player1 = new Player(this, 1);
@@ -25,9 +34,7 @@ public class Board {
 		player1side = new ArrayList<BoardObject>();
 		player2side = new ArrayList<BoardObject>();
 		eventlist = new LinkedList<Event>();
-		this.addBoardObjectToSide(new Leader(this, "Rowen", "The Memer"), 1);
-		this.addBoardObjectToSide(new Leader(this, "Nower", "Remem eht"), -1);
-		this.eventlist.add(new EventDraw(player1, 3));
+
 	}
 
 	public Player getPlayer(int team) {
@@ -216,17 +223,59 @@ public class Board {
 			Event e = eventlist.removeFirst();
 			if (e.conditions()) {
 				String eventstring = e.toString();
-				if (!eventstring.isEmpty()) {
-					System.out.println(eventstring);
+				if (!eventstring.isEmpty() && e.send) {
+					// System.out.println(eventstring);
+					this.output += eventstring;
 					// System.out.println(this.stateToString());
 				}
 				e.resolve(eventlist, loopprotection);
+				for (Card c : this.getCards()) {
+					c.onEvent(e);
+				}
 			}
 		}
 	}
 
-	public void endPlayerTurn(int team) {
-		if (team == this.currentplayerturn) { // a level security
+	public String retrieveEventString() {
+		String temp = this.output;
+		this.output = "";
+		return temp;
+	}
+
+	public void parseEventString(String s) {
+		LinkedList<Event> list = new LinkedList<Event>();
+		StringTokenizer st = new StringTokenizer(s, "\n");
+		System.out.println("EVENTSTRING:");
+		System.out.println(s);
+
+		while (st.hasMoreTokens()) {
+			String event = st.nextToken();
+			this.inputeventliststrings.add(event);
+		}
+	}
+
+	public void playerPlayCard(Player p, Card c, int pos, String btstring) {
+		StringTokenizer st = new StringTokenizer(btstring);
+		c.battlecryTargetsFromString(this, st);
+		this.eventlist.add(new EventPlayCard(p, c, pos));
+		this.resolveAll();
+	}
+
+	public void playerUnleashMinion(Player p, Minion m, String utstring) {
+		StringTokenizer st = new StringTokenizer(utstring);
+		m.unleashTargetsFromString(this, st);
+		this.eventlist.add(new EventUnleash(p, m));
+		this.resolveAll();
+	}
+
+	// encapsulation at its finest
+	public void playerOrderAttack(Minion attacker, Minion victim) {
+		this.eventlist.add(new EventMinionAttack(attacker, victim));
+		this.resolveAll();
+	}
+
+	public void playerEndTurn(int team) {
+		if (team == this.currentplayerturn) {
 			this.endCurrentPlayerTurn();
 		}
 	}
@@ -239,7 +288,22 @@ public class Board {
 				this.resolveAll();
 			}
 		}
-		this.endPlayerTurn(-1);
+		int tempmana = Math.min(this.player2.maxmana, this.player2.maxmaxmana); // mm
+		for (int i = 0; i < 10; i++) {
+			if (!this.player2.hand.cards.isEmpty()) {
+				Card c = Game.selectRandom(this.player2.hand.cards);
+				if (c.conditions() && tempmana >= c.finalStatEffects.getStat(EffectStats.COST)) {
+					for (Target t : c.getBattlecryTargets()) {
+						t.fillRandomTargets();
+					}
+					int randomind = (int) (Math.random() * (this.player2side.size() - 1)) + 1;
+					this.eventlist.add(new EventPlayCard(this.player2, c, randomind));
+					tempmana -= c.finalStatEffects.getStat(EffectStats.COST);
+					this.resolveAll();
+				}
+			}
+		}
+		this.playerEndTurn(-1);
 	}
 
 	public void endCurrentPlayerTurn() {

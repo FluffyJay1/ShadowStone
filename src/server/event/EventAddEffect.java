@@ -51,7 +51,7 @@ public class EventAddEffect extends Event {
 	}
 
 	public String toString() {
-		return this.id + " " + t.toString() + e.toString();
+		return this.id + " " + t.toString() + e.toString() + "\n";
 	}
 
 	public static EventAddEffect fromString(Board b, StringTokenizer st) {

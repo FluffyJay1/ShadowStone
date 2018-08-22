@@ -39,7 +39,7 @@ public class EventMinionAttack extends Event {
 
 	@Override
 	public String toString() {
-		return this.id + " " + m1.toReference() + m2.toReference();
+		return this.id + " " + m1.toReference() + m2.toReference() + "\n";
 	}
 
 	public static EventMinionAttack fromString(Board b, StringTokenizer st) {

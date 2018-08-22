@@ -36,7 +36,7 @@ public class EventDraw extends Event {
 	}
 
 	public String toString() {
-		return this.id + " " + p.team + " " + num + " ";
+		return this.id + " " + p.team + " " + num + "\n";
 	}
 
 	public static EventDraw fromString(Board b, StringTokenizer st) {

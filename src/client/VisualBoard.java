@@ -29,21 +29,23 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	public static final double CARD_SCALE_DEFAULT = 1, CARD_SCALE_HAND = 0.75, CARD_SCALE_BOARD = 1,
 			CARD_SCALE_ABILITY = 1.5, CARD_SCALE_TARGET = 1.25, CARD_SCALE_ATTACK = 1.5;
 	UI ui;
+	public Board realBoard;
 	public Card selectedCard, draggingCard, playingCard;
 	ArrayList<Card> targetedCards = new ArrayList<Card>();
-	int playingX, lastx;
+	int playingX;
 	public Minion attackingMinion, unleashingMinion;
 	CardSelectPanel cardSelectPanel;
 	EndTurnButton endTurnButton;
 	Text targetText;
 	double animationtimer = 0;
-	LinkedList<Event> resolvingEvents = new LinkedList<Event>();
-	LinkedList<LinkedList<Event>> resolveQueue = new LinkedList<LinkedList<Event>>();
 	Event currentEvent;
 
 	public VisualBoard() {
 		super();
 		this.ui = new UI();
+		this.isClient = true;
+		this.realBoard = new Board();
+		this.realBoard.isClient = true;
 		this.cardSelectPanel = new CardSelectPanel(this.ui, this);
 		this.ui.addUIElementParent(this.cardSelectPanel);
 		this.cardSelectPanel.hide = true;
@@ -52,20 +54,23 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		this.targetText = new Text(ui, new Vector2f(), "Target", 400, 24, "Verdana", 30, 0, -1);
 		this.ui.addUIElementParent(this.targetText);
 		// this.cardSelectPanel.draggable = true;
-		this.resolveAll();
 	}
 
 	public void update(double frametime) {
 		this.updateEventAnimation(frametime);
 		ui.update(frametime);
 		player1.update(frametime);
+		player2.update(frametime);
 		for (BoardObject bo : player1side) {
 			bo.update(frametime);
 		}
 		for (BoardObject bo : player2side) {
 			bo.update(frametime);
 		}
-
+		String eventstring = this.realBoard.retrieveEventString();
+		if (!eventstring.isEmpty()) {
+			this.parseEventString(eventstring);
+		}
 	}
 
 	public void draw(Graphics g) {
@@ -79,16 +84,21 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 			bo.targetpos.set(boardPosToX((bo.cardpos), -1), 400);
 			bo.draw(g);
 		}
-		BoardObject player1leader = player1side.get(0);
-		BoardObject player2leader = player2side.get(0);
-		player1leader.targetpos.set(960, 950);
-		player2leader.targetpos.set(960, 100);
-		player1leader.draw(g);
-		player2leader.draw(g);
-		{
+		if (!player1side.isEmpty()) {
+			BoardObject player1leader = player1side.get(0);
+			player1leader.targetpos.set(960, 950);
+			player1leader.draw(g);
 			String manastring = this.player1.mana + "/" + this.player1.maxmana;
 			UnicodeFont font = Game.getFont("Verdana", 24, true, false);
 			font.drawString(player1leader.pos.x - font.getWidth(manastring) / 2, player1leader.pos.y - 100, manastring);
+		}
+		if (!player2side.isEmpty()) {
+			BoardObject player2leader = player2side.get(0);
+			player2leader.targetpos.set(960, 100);
+			player2leader.draw(g);
+			String manastring = this.player2.mana + "/" + this.player2.maxmana;
+			UnicodeFont font = Game.getFont("Verdana", 24, true, false);
+			font.drawString(player2leader.pos.x - font.getWidth(manastring) / 2, player2leader.pos.y - 100, manastring);
 		}
 		for (int i = 0; i < player1.hand.cards.size(); i++) {
 			Card c = player1.hand.cards.get(i);
@@ -97,6 +107,14 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 						(int) (((i) - (player1.hand.cards.size()) / 2.) * 500 / player1.hand.cards.size() + 1500), 950);
 				c.scale = CARD_SCALE_HAND;
 			}
+
+			c.draw(g);
+		}
+		for (int i = 0; i < player2.hand.cards.size(); i++) {
+			Card c = player2.hand.cards.get(i);
+			c.targetpos.set((int) (((i) - (player2.hand.cards.size()) / 2.) * 500 / player2.hand.cards.size() + 1500),
+					100);
+			c.scale = CARD_SCALE_HAND;
 
 			c.draw(g);
 		}
@@ -118,9 +136,9 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 			this.targetText.hide = true;
 		}
 		ui.draw(g);
-		if (this.draggingCard != null && this.draggingCard instanceof BoardObject) {
-			g.drawLine(this.playBoardPosToX(this.XToPlayBoardPos(this.lastx, 1), 1), 600,
-					this.playBoardPosToX(this.XToPlayBoardPos(this.lastx, 1), 1), 800);
+		if (this.draggingCard != null && this.draggingCard instanceof BoardObject && this.ui.lastmousepos.y < 750) {
+			g.drawLine(this.playBoardPosToX(this.XToPlayBoardPos(this.ui.lastmousepos.x, 1), 1), 600,
+					this.playBoardPosToX(this.XToPlayBoardPos(this.ui.lastmousepos.x, 1), 1), 800);
 		}
 		this.drawEventAnimation(g);
 	}
@@ -186,31 +204,23 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 
 	@Override
 	public void resolveAll(LinkedList<Event> eventlist, boolean loopprotection) {
-		if (!eventlist.isEmpty()) {
-			LinkedList<Event> list = new LinkedList<Event>();
-			list.addAll(eventlist);
-			this.resolveQueue.add(list);
-			eventlist.clear();
-		}
+		this.realBoard.resolveAll(eventlist, loopprotection); // gottem
+
 	}
 
 	public void updateEventAnimation(double frametime) {
 		if (this.animationtimer > 0) {
 			this.animationtimer -= frametime;
 		}
-		if (this.resolvingEvents.isEmpty()) {
-			if (!this.resolveQueue.isEmpty()) {
-				this.resolvingEvents.addAll(this.resolveQueue.removeFirst());
-			}
-		}
 		if (this.animationtimer <= 0) {
-			if (!this.resolvingEvents.isEmpty()) {
-				do {
-					this.currentEvent = this.resolvingEvents.removeFirst();
-				} while (this.resolvingEvents.size() > 0 && !this.resolvingEvents.getFirst().conditions());
+			if (!this.inputeventliststrings.isEmpty()) {
+				StringTokenizer st = new StringTokenizer(this.inputeventliststrings.remove(0));
+				this.currentEvent = Event.createFromString(this, st);
 				if (this.currentEvent != null && this.currentEvent.conditions()) {
-					System.out.println(this.currentEvent.toString());
-					this.currentEvent.resolve(this.resolvingEvents, false);
+					// System.out.println(this.currentEvent.toString());
+					LinkedList<Event> lmao = new LinkedList<Event>();
+					this.currentEvent.resolve(lmao, false);
+
 					if (this.currentEvent instanceof EventMinionAttack) {
 						this.animationtimer = 0.2;
 					} else if (this.currentEvent instanceof EventMinionAttackDamage) {
@@ -224,8 +234,10 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 					} else if (this.currentEvent instanceof EventTurnStart) {
 						this.animationtimer = 1;
 						if (((EventTurnStart) this.currentEvent).p.team == -1) {
-							this.AIThink();
+							this.realBoard.AIThink();
 						}
+					} else if (!(this.currentEvent instanceof EventCreateCard)) {
+						this.animationtimer = 0.5;
 					}
 
 				} else {
@@ -238,6 +250,12 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	}
 
 	public void drawEventAnimation(Graphics g) {
+		if (this.currentEvent != null) {
+			UnicodeFont font = Game.getFont("Verdana", 60, true, false);
+			g.setFont(font);
+			String debugevent = this.currentEvent.getClass().getName();
+			g.drawString(debugevent, 20, 20);
+		}
 		if (this.currentEvent != null) {
 			if (this.currentEvent instanceof EventMinionAttack) {
 				EventMinionAttack e = (EventMinionAttack) this.currentEvent;
@@ -303,6 +321,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				g.setFont(font);
 				g.drawString(dstring, Game.WINDOW_WIDTH / 2 - font.getWidth(dstring) / 2,
 						Game.WINDOW_HEIGHT / 2 - font.getHeight(dstring));
+				g.setColor(Color.white);
 			}
 		}
 	}
@@ -364,6 +383,14 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				}
 			}
 		}
+		System.out.println("REAL BOARD:");
+		System.out.println(this.realBoard.stateToString());
+		this.realBoard.player1.printHand();
+		this.realBoard.player2.printHand();
+		System.out.println("VISUAL BOARD");
+		this.player1.printHand();
+		this.player2.printHand();
+		System.out.println(this.stateToString());
 	}
 
 	@Override
@@ -373,8 +400,8 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		if (this.attackingMinion != null) {
 			BoardObject target = BOAtPos(new Vector2f(x, y));
 			if (target != null && (target instanceof Minion) && target.team == -1) {
-				this.eventlist.add(new EventMinionAttack(this.attackingMinion, (Minion) target));
-				this.resolveAll();
+				// TODO: SERVER COMMUNICATION
+				this.realBoard.playerOrderAttack((Minion) this.attackingMinion.realCard, (Minion) target.realCard);
 			}
 			for (BoardObject b : this.attackingMinion.getAttackableTargets()) {
 				b.scale = CARD_SCALE_BOARD;
@@ -395,10 +422,9 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		if (this.playingCard != null) {
 			Target t = this.playingCard.getNextNeededBattlecryTarget();
 			if (t == null) {
-				this.eventlist
-						.add(new EventPlayCard(this.player1, this.playingCard, XToPlayBoardPos(this.playingX, 1)));
+				this.realBoard.playerPlayCard(this.realBoard.player1, this.playingCard.realCard,
+						XToPlayBoardPos(this.playingX, 1), this.playingCard.battlecryTargetsToString());
 				this.playingCard = null;
-				this.resolveAll();
 			} else {
 				this.playingCard.targetpos = new Vector2f(200, 300);
 				this.playingCard.scale = CARD_SCALE_ABILITY * CARD_SCALE_HAND;
@@ -406,10 +432,10 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		} else if (this.unleashingMinion != null) {
 			Target t = this.unleashingMinion.getNextNeededUnleashTarget();
 			if (t == null) {
-				this.eventlist.add(new EventUnleash(this.player1, this.unleashingMinion));
+				this.realBoard.playerUnleashMinion(this.realBoard.player1, (Minion) this.unleashingMinion.realCard,
+						this.unleashingMinion.unleashTargetsToString());
 				this.unleashingMinion.scale = CARD_SCALE_BOARD;
 				this.unleashingMinion = null;
-				this.resolveAll();
 			} else {
 				this.unleashingMinion.scale = CARD_SCALE_ABILITY;
 			}
@@ -420,7 +446,6 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	public void mouseMoved(int oldx, int oldy, int newx, int newy) {
 		// TODO Auto-generated method stub
 		this.ui.mouseMoved(oldx, oldy, newx, newy);
-		this.lastx = newx;
 	}
 
 	@Override
@@ -430,7 +455,6 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		if (this.draggingCard != null) {
 			this.draggingCard.targetpos.add(new Vector2f(newx, newy).sub(new Vector2f(oldx, oldy)));
 		}
-		this.lastx = newx;
 	}
 
 	@Override

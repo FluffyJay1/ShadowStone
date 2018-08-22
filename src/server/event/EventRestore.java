@@ -64,7 +64,7 @@ public class EventRestore extends Event {
 		for (int i = 0; i < this.t.size(); i++) {
 			ret += this.t.toString() + this.heal.get(i) + " ";
 		}
-		return ret;
+		return ret + "\n";
 	}
 
 	public static EventRestore fromString(Board b, StringTokenizer st) {

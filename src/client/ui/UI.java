@@ -17,7 +17,7 @@ public class UI { // lets do this right this time
 	ArrayList<UIElement> parentListAddBuffer = new ArrayList<UIElement>();
 	ArrayList<UIElement> parentListRemoveBuffer = new ArrayList<UIElement>();
 	UIElement pressedElement = null, draggingElement = null;
-	Vector2f lastmousepos = new Vector2f();
+	public Vector2f lastmousepos = new Vector2f();
 
 	public UI() {
 
@@ -103,6 +103,7 @@ public class UI { // lets do this right this time
 			this.draggingElement.mouseDragged(oldx, oldy, newx, newy);
 
 		}
+		this.lastmousepos.set(newx, newy);
 	}
 
 	public void mouseWheelMoved(int change) {

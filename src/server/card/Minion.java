@@ -67,7 +67,7 @@ public class Minion extends BoardObject {
 	@Override
 	public void drawOnBoard(Graphics g) {
 		super.drawOnBoard(g);
-		if (this.canAttack()) {
+		if (this.realCard != null && this.realCard instanceof Minion && ((Minion) this.realCard).canAttack()) {
 			if (this.summoningSickness && this.finalStatEffects.getStat(EffectStats.RUSH) > 0
 					&& this.finalStatEffects.getStat(EffectStats.STORM) == 0) {
 				g.setColor(org.newdawn.slick.Color.yellow);
@@ -215,7 +215,7 @@ public class Minion extends BoardObject {
 		LinkedList<Target> list = this.getUnleashTargets();
 		String ret = list.size() + " ";
 		for (Target t : list) {
-			ret += t.toString() + " ";
+			ret += t.toString();
 		}
 		return ret;
 	}
@@ -223,8 +223,7 @@ public class Minion extends BoardObject {
 	public void unleashTargetsFromString(Board b, StringTokenizer st) {
 		int num = Integer.parseInt(st.nextToken());
 		for (int i = 0; i < num; i++) {
-			Target t = Target.fromString(b, st);
-			this.getUnleashTargets().set(i, t);
+			this.getUnleashTargets().get(i).copyFromString(b, st);
 		}
 	}
 

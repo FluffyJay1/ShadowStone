@@ -1,13 +1,13 @@
 package server.card;
 
-import cardpack.basic.Fighter;
-import cardpack.basic.Fireball;
-import cardpack.basic.Goblin;
-import cardpack.basic.Tiny;
+import cardpack.basic.*;
+import server.card.leader.Rowen;
 
 public class CardIDLinker {
 	public static Class<? extends Card> getClass(int id) {
 		switch (id) {
+		case Rowen.ID:
+			return Rowen.class;
 		case Goblin.ID:
 			return Goblin.class;
 		case Fighter.ID:
@@ -16,6 +16,8 @@ public class CardIDLinker {
 			return Fireball.class;
 		case Tiny.ID:
 			return Tiny.class;
+		case WellOfDestination.ID:
+			return WellOfDestination.class;
 		default:
 			return null;
 		}

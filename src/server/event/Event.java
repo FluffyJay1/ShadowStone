@@ -9,7 +9,8 @@ import server.Board;
 public class Event {
 	// always go full enterprise, if you start going half enterprise you're
 	// fucking done for
-	int id = 0; // id of 0 means empty event
+	int id = 0; // id of 0 means no side effects
+	public boolean send = true;
 
 	public Event(int id) {
 		this.id = id;
@@ -20,7 +21,7 @@ public class Event {
 	}
 
 	public String toString() {
-		return this.id + " ";
+		return this.id + "\n";
 	}
 
 	public static Event createFromString(Board b, StringTokenizer st) {
@@ -31,7 +32,7 @@ public class Event {
 			Class c = EventIDLinker.getClass(id);
 			Event e = null;
 			try {
-				e = (Event) c.getMethod("fromString", Board.class, StringTokenizer.class).invoke(b, st);
+				e = (Event) c.getMethod("fromString", Board.class, StringTokenizer.class).invoke(null, b, st);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 					| NoSuchMethodException | SecurityException e1) {
 				// TODO Auto-generated catch block

@@ -97,8 +97,8 @@ public class Target {
 	}
 
 	public String toString() {
-		String ret = (this.creator == null ? "null" : this.creator.toReference()) + this.description + Game.STRING_END
-				+ this.maxtargets + " " + this.targets.size() + " ";
+		String ret = (this.creator == null ? "null " : this.creator.toReference()) + this.description + Game.STRING_END
+				+ " " + this.maxtargets + " " + this.targets.size() + " ";
 		for (Card c : this.targets) {
 			ret += (c == null ? "null " : c.toReference());
 		}
@@ -108,6 +108,7 @@ public class Target {
 	public static Target fromString(Board b, StringTokenizer st) {
 		Effect creator = Effect.fromReference(b, st);
 		String description = st.nextToken(Game.STRING_END);
+		st.nextToken(" \n"); // THANKS STRING TOKENIZER
 		int maxtargets = Integer.parseInt(st.nextToken());
 		int targetsize = Integer.parseInt(st.nextToken());
 		Target t = new Target(creator, maxtargets, description);
@@ -116,6 +117,22 @@ public class Target {
 			t.setTarget(target);
 		}
 		return t;
+	}
+
+	public void copyFromString(Board b, StringTokenizer st) {
+		this.targets.clear();
+		Effect creator = Effect.fromReference(b, st);
+		String description = st.nextToken(Game.STRING_END);
+		st.nextToken(" \n"); // THANKS STRING TOKENIZER
+		int maxtargets = Integer.parseInt(st.nextToken());
+		int targetsize = Integer.parseInt(st.nextToken());
+		this.creator = creator;
+		this.maxtargets = maxtargets;
+		this.description = description;
+		for (int i = 0; i < targetsize; i++) {
+			Card target = Card.fromReference(b, st);
+			this.setTarget(target);
+		}
 	}
 
 }

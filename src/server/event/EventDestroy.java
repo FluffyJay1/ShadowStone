@@ -51,7 +51,7 @@ public class EventDestroy extends Event {
 
 	@Override
 	public String toString() {
-		return this.id + " " + this.t.toString();
+		return this.id + " " + this.t.toString() + "\n";
 	}
 
 	public static EventDestroy fromString(Board b, StringTokenizer st) {

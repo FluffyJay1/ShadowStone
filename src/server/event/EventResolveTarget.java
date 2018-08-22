@@ -17,6 +17,7 @@ public class EventResolveTarget extends Event {
 	public EventResolveTarget(Target t) {
 		super(ID);
 		this.t = t;
+		this.send = false;
 	}
 
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
@@ -24,7 +25,7 @@ public class EventResolveTarget extends Event {
 	}
 
 	public String toString() {
-		return this.id + " ";
+		return this.id + "\n";
 	}
 
 	public static EventResolveTarget fromString(Board b, StringTokenizer st) {

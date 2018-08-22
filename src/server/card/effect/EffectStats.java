@@ -58,8 +58,9 @@ public class EffectStats { // this is literally just a struct
 		EffectStats ret = new EffectStats();
 		for (int i = 0; i < NUM_STATS; i++) {
 			boolean use = st.nextToken().equals("true");
+			int stat = Integer.parseInt(st.nextToken());
 			if (use) {
-				ret.setStat(i, Integer.parseInt(st.nextToken()));
+				ret.setStat(i, stat);
 			}
 		}
 		return ret;

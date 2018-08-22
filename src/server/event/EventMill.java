@@ -28,7 +28,7 @@ public class EventMill extends Event {
 
 	@Override
 	public String toString() {
-		return this.id + " " + p.team + " " + this.c.toReference();
+		return this.id + " " + p.team + " " + this.c.toReference() + "\n";
 	}
 
 	public static EventMill fromString(Board b, StringTokenizer st) {

@@ -9,6 +9,7 @@ import server.Player;
 import server.card.BoardObject;
 import server.card.Card;
 import server.card.CardStatus;
+import server.card.Minion;
 import server.card.Target;
 
 public class EventPutCard extends Event {
@@ -59,14 +60,23 @@ public class EventPutCard extends Event {
 				if (c instanceof BoardObject) {
 					this.p.board.addBoardObject((BoardObject) c, this.targetTeam,
 							this.pos == -1 ? this.p.board.getBoardObjects(this.p.team).size() : this.pos);
+					if (c instanceof Minion) {
+						((Minion) c).summoningSickness = true;
+					}
 				}
 			} else {
 
-				ArrayList<Card> cards = this.p.board.getCollection(this.p.team, this.status); // YEA
+				ArrayList<Card> cards = this.p.board.getCollection(this.targetTeam, this.status); // YEA
 				int temppos = this.pos == -1 ? (int) (Math.random() * cards.size()) : this.pos;
 				temppos = Math.min(temppos, cards.size());
 				c.cardpos = temppos;
 				cards.add(temppos, c);
+				if (this.status.equals(CardStatus.HAND)) {
+					this.p.board.getPlayer(this.targetTeam).hand.updatePositions();
+				}
+				if (this.status.equals(CardStatus.DECK)) {
+					this.p.board.getPlayer(this.targetTeam).deck.updatePositions();
+				}
 			}
 			c.status = this.status;
 		}
@@ -74,7 +84,7 @@ public class EventPutCard extends Event {
 
 	public String toString() {
 		return this.id + " " + p.team + " " + this.t.toString() + " " + this.status.toString() + " " + this.targetTeam
-				+ " " + this.pos;
+				+ " " + this.pos + "\n";
 	}
 
 	public static EventPutCard fromString(Board b, StringTokenizer st) {

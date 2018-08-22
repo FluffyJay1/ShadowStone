@@ -42,7 +42,8 @@ public class EventPlayCard extends Event {
 	}
 
 	public String toString() {
-		return this.id + " " + p.team + " " + position + " " + this.c.toReference() + c.battlecryTargetsToString();
+		return this.id + " " + p.team + " " + position + " " + this.c.toReference() + c.battlecryTargetsToString()
+				+ "\n";
 	}
 
 	public static EventPlayCard fromString(Board b, StringTokenizer st) {

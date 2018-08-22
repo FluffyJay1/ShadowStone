@@ -35,4 +35,5 @@ public class Hand { // its just a list of cards aaaaaa
 	public void draw(Graphics g) {
 
 	}
+
 }

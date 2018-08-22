@@ -27,7 +27,7 @@ public class EventTurnEnd extends Event {
 	}
 
 	public String toString() {
-		return this.id + " " + this.p.team + " ";
+		return this.id + " " + this.p.team + "\n";
 	}
 
 	public static EventTurnEnd fromString(Board b, StringTokenizer st) {

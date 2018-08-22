@@ -1,5 +1,7 @@
 package client.states;
 
+import java.util.ArrayList;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -10,8 +12,14 @@ import cardpack.basic.*;
 import client.Game;
 import client.VisualBoard;
 import server.Board;
+import server.card.Card;
+import server.card.CardStatus;
+import server.card.Leader;
 import server.card.Minion;
+import server.card.leader.Rowen;
 import server.event.Event;
+import server.event.EventCreateCard;
+import server.event.EventDraw;
 import server.event.EventMinionAttack;
 
 public class StateGame extends BasicGameState {
@@ -22,19 +30,36 @@ public class StateGame extends BasicGameState {
 		// TODO Auto-generated method stub
 		board = new VisualBoard();
 		arg0.getInput().addMouseListener(board);
-		/*
-		 * Minion p1 = new Goblin(board); Minion p2 = new Goblin(board);
-		 * board.addBoardObject(p1, 2); board.addBoardObject(p2, -2);
-		 */
-		for (int i = 0; i < 5; i++) {
-			// board.addBoardObjectToSide(new Tiny(board, 1), 1);
-			board.addBoardObjectToSide(new Tiny(board, 1), -1);
+		for (int team = 1; team >= -1; team -= 2) { // deckbuilding 101
+			ArrayList<Card> cards = new ArrayList<Card>();
+			for (int i = 0; i < 10; i++) {
+				cards.add(new Goblin(board.realBoard, team));
+				cards.add(new Tiny(board.realBoard, team));
+				cards.add(new Fireball(board.realBoard, team));
+				cards.add(new Fighter(board.realBoard, team));
+				cards.add(new WellOfDestination(board.realBoard, team));
+			}
+			while (!cards.isEmpty()) {
+				Card selected = Game.selectRandom(cards);
+				board.realBoard.eventlist.add(new EventCreateCard(board.realBoard, selected, team, CardStatus.DECK, 0));
+				cards.remove(selected);
+			}
+			board.resolveAll();
 		}
-		System.out.println(board.stateToString());
-		/*
-		 * Event e = new EventMinionAttack(p1, p2); board.eventlist.add(e);
-		 * board.resolveAll(); board.eventlist.add(e); board.resolveAll();
-		 */
+		board.realBoard.eventlist
+				.add(new EventCreateCard(board.realBoard, new Rowen(board.realBoard, 1), 1, CardStatus.BOARD, 0));
+		board.realBoard.eventlist
+				.add(new EventCreateCard(board.realBoard, new Rowen(board.realBoard, -1), -1, CardStatus.BOARD, 0));
+		board.realBoard.eventlist.add(new EventDraw(board.realBoard.player1, 3));
+		board.realBoard.eventlist.add(new EventDraw(board.realBoard.player2, 3));
+		board.resolveAll();
+		for (int i = 0; i < 1; i++) {
+			// board.addBoardObjectToSide(new Tiny(board, 1), 1);
+
+			board.realBoard.eventlist
+					.add(new EventCreateCard(board.realBoard, new Tiny(board.realBoard, 1), -1, CardStatus.BOARD, 1));
+		}
+		board.realBoard.resolveAll();
 	}
 
 	@Override
