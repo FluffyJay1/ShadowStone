@@ -32,12 +32,13 @@ public class StateGame extends BasicGameState {
 		arg0.getInput().addMouseListener(board);
 		for (int team = 1; team >= -1; team -= 2) { // deckbuilding 101
 			ArrayList<Card> cards = new ArrayList<Card>();
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 5; i++) {
 				cards.add(new Goblin(board.realBoard, team));
 				cards.add(new Tiny(board.realBoard, team));
 				cards.add(new Fireball(board.realBoard, team));
 				cards.add(new Fighter(board.realBoard, team));
 				cards.add(new WellOfDestination(board.realBoard, team));
+				cards.add(new BellringerAngel(board.realBoard, team));
 			}
 			while (!cards.isEmpty()) {
 				Card selected = Game.selectRandom(cards);
@@ -53,11 +54,11 @@ public class StateGame extends BasicGameState {
 		board.realBoard.eventlist.add(new EventDraw(board.realBoard.player1, 3));
 		board.realBoard.eventlist.add(new EventDraw(board.realBoard.player2, 3));
 		board.resolveAll();
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 3; i++) {
 			// board.addBoardObjectToSide(new Tiny(board, 1), 1);
 
-			board.realBoard.eventlist
-					.add(new EventCreateCard(board.realBoard, new Tiny(board.realBoard, 1), -1, CardStatus.BOARD, 1));
+			board.realBoard.eventlist.add(new EventCreateCard(board.realBoard, new BellringerAngel(board.realBoard, 1),
+					-1, CardStatus.BOARD, 1));
 		}
 		board.realBoard.resolveAll();
 	}

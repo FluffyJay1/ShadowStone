@@ -39,8 +39,10 @@ public class Player {
 	}
 
 	public boolean canUnleashCard(Card c) {
-		return c instanceof Minion && !(c instanceof Leader) && c.status == CardStatus.BOARD && c.team == 1
-				&& !this.unleashedThisTurn && this.mana >= 2 && c.alive == true;
+		// TODO: CHANGE UNLEASH MANA COST MAGIC NUMBER
+		return c instanceof Minion && !(c instanceof Leader) && c.status == CardStatus.BOARD && c.team == this.team
+				&& !this.unleashedThisTurn && this.mana >= 2 && c.alive == true
+				&& this.board.currentplayerturn == this.team;
 	}
 
 	public void printHand() {

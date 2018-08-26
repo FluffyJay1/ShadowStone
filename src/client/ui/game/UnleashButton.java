@@ -26,20 +26,20 @@ public class UnleashButton extends UIElement {
 	@Override
 	public void update(double frametime) {
 		super.update(frametime);
-		if (this.b.selectedCard != null && this.b.getPlayer(1).canUnleashCard(this.b.selectedCard)) {
-			this.hide = false;
-		} else {
-			this.hide = true;
-		}
+
+		this.hide = this.b.disableInput || this.b.selectedCard == null
+				|| !this.b.getPlayer(1).canUnleashCard(this.b.selectedCard);
 
 	}
 
 	@Override
 	public void mouseReleased(int button, int x, int y) {
 		if (this.pointIsInHitbox(new Vector2f(x, y))) {
-			this.b.unleashingMinion = (Minion) b.selectedCard;
-			this.b.resolveNoUnleashTarget();
-			this.b.animateUnleashTargets(true);
+			if (!this.b.disableInput) {
+				this.b.unleashingMinion = (Minion) b.selectedCard;
+				this.b.resolveNoUnleashTarget();
+				this.b.animateUnleashTargets(true);
+			}
 		}
 	}
 }

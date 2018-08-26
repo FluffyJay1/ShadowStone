@@ -18,6 +18,8 @@ public class CardIDLinker {
 			return Tiny.class;
 		case WellOfDestination.ID:
 			return WellOfDestination.class;
+		case BellringerAngel.ID:
+			return BellringerAngel.class;
 		default:
 			return null;
 		}

@@ -11,6 +11,7 @@ import server.card.Card;
 import server.card.CardStatus;
 import server.card.Minion;
 import server.card.Target;
+import server.card.effect.EffectStats;
 
 public class EventPutCard extends Event {
 	// for effects that put specific cards in hand or just draw cards
@@ -46,6 +47,10 @@ public class EventPutCard extends Event {
 				this.p.hand.updatePositions();
 				break;
 			case BOARD:
+				c.removeAdditionalEffects();
+				if (c instanceof Minion) {
+					((Minion) c).health = c.finalStatEffects.getStat(EffectStats.HEALTH);
+				}
 				this.p.board.removeBoardObject((BoardObject) c);
 				break;
 			case DECK:

@@ -25,13 +25,17 @@ public class EndTurnButton extends UIBox {
 	@Override
 	public void update(double frametime) {
 		super.update(frametime);
-		// this.hide = this.b.currentplayerturn == -1;
+		this.hide = this.b.disableInput;
 	}
 
 	@Override
 	public void mouseReleased(int button, int x, int y) {
 		if (this.pointIsInHitbox(new Vector2f(x, y))) {
-			this.b.realBoard.playerEndTurn(1);
+			if (!this.b.disableInput) {
+				this.b.realBoard.playerEndTurn(1);
+				this.b.handleTargeting(null);
+				this.b.disableInput = true;
+			}
 		}
 	}
 }

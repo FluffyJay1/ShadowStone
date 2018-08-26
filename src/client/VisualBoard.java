@@ -26,8 +26,8 @@ import utils.DefaultMouseListener;
 
 public class VisualBoard extends Board implements DefaultMouseListener {
 	public static final int BO_SPACING = 200;
-	public static final double CARD_SCALE_DEFAULT = 1, CARD_SCALE_HAND = 0.75, CARD_SCALE_BOARD = 1,
-			CARD_SCALE_ABILITY = 1.5, CARD_SCALE_TARGET = 1.25, CARD_SCALE_ATTACK = 1.5;
+	public static final double CARD_SCALE_DEFAULT = 1, CARD_SCALE_HAND = 0.75, CARD_SCALE_HAND_EXPAND = 1.2,
+			CARD_SCALE_BOARD = 1, CARD_SCALE_ABILITY = 1.5, CARD_SCALE_TARGET = 1.25, CARD_SCALE_ATTACK = 1.5;
 	UI ui;
 	public Board realBoard;
 	public Card selectedCard, draggingCard, playingCard;
@@ -39,6 +39,9 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	Text targetText;
 	double animationtimer = 0;
 	Event currentEvent;
+
+	public boolean disableInput = false;
+	boolean expandHand = false;
 
 	public VisualBoard() {
 		super();
@@ -103,9 +106,11 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		for (int i = 0; i < player1.hand.cards.size(); i++) {
 			Card c = player1.hand.cards.get(i);
 			if (c != this.playingCard && c != this.draggingCard) {
-				c.targetpos.set(
-						(int) (((i) - (player1.hand.cards.size()) / 2.) * 500 / player1.hand.cards.size() + 1500), 950);
-				c.scale = CARD_SCALE_HAND;
+				c.targetpos.set((int) (((i) - (player1.hand.cards.size()) / 2.)
+						* (this.expandHand ? (800 + player1.hand.cards.size() * 40) : 500) / player1.hand.cards.size()
+						+ (this.expandHand ? (1400 - player1.hand.cards.size() * 20) : 1500)),
+						(this.expandHand ? 900 : 950));
+				c.scale = this.expandHand ? CARD_SCALE_HAND_EXPAND : CARD_SCALE_HAND;
 			}
 
 			c.draw(g);
@@ -235,9 +240,11 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 						this.animationtimer = 1;
 						if (((EventTurnStart) this.currentEvent).p.team == -1) {
 							this.realBoard.AIThink();
+						} else {
+							this.disableInput = false;
 						}
 					} else if (!(this.currentEvent instanceof EventCreateCard)) {
-						this.animationtimer = 0.5;
+						this.animationtimer = 0.2;
 					}
 
 				} else {
@@ -350,12 +357,6 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	}
 
 	@Override
-	public void endCurrentPlayerTurn() {
-		this.handleTargeting(null);
-		super.endCurrentPlayerTurn();
-	}
-
-	@Override
 	public void mousePressed(int button, int x, int y) {
 		// TODO Auto-generated method stub
 		if (!this.ui.mousePressed(button, x, y)) { // if we didn't click on
@@ -364,18 +365,24 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 			Card c = cardInHandAtPos(new Vector2f(x, y));
 			if (c != null) {
 				if (!this.handleTargeting(c)) {
-					if (this.player1.canPlayCard(c)) {
+					if (this.realBoard.player1.canPlayCard(c.realCard) && !this.disableInput && this.expandHand) {
 						this.draggingCard = c;
 					}
 					this.selectedCard = c;
+					this.expandHand = true;
 				}
 			} else {
+				this.expandHand = x > 1000 && y > 850;
 				BoardObject bo = BOAtPos(new Vector2f(x, y));
 				if (!this.handleTargeting(bo)) {
-					if (bo != null && bo instanceof Minion && bo.team == 1 && ((Minion) bo).canAttack()) {
+					if (bo != null && bo instanceof Minion && bo.realCard.team == 1
+							&& ((Minion) bo.realCard).canAttack() && !this.disableInput) {
 						this.attackingMinion = (Minion) bo;
-						for (BoardObject b : this.attackingMinion.getAttackableTargets()) {
-							b.scale = CARD_SCALE_TARGET;
+						for (BoardObject b : this.getBoardObjects(-1)) {
+							if (b instanceof Minion && ((Minion) this.attackingMinion.realCard).getAttackableTargets()
+									.contains((Minion) b.realCard)) {
+								b.scale = CARD_SCALE_TARGET;
+							}
 						}
 						bo.scale = CARD_SCALE_ATTACK;
 					}
@@ -391,6 +398,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		this.player1.printHand();
 		this.player2.printHand();
 		System.out.println(this.stateToString());
+
 	}
 
 	@Override
@@ -399,12 +407,17 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		this.ui.mouseReleased(button, x, y);
 		if (this.attackingMinion != null) {
 			BoardObject target = BOAtPos(new Vector2f(x, y));
-			if (target != null && (target instanceof Minion) && target.team == -1) {
+			if (target != null && (target instanceof Minion) && target.team == -1
+					&& ((Minion) this.attackingMinion.realCard).getAttackableTargets().contains(target.realCard)) {
 				// TODO: SERVER COMMUNICATION
 				this.realBoard.playerOrderAttack((Minion) this.attackingMinion.realCard, (Minion) target.realCard);
+				target.scale = CARD_SCALE_BOARD;
 			}
-			for (BoardObject b : this.attackingMinion.getAttackableTargets()) {
-				b.scale = CARD_SCALE_BOARD;
+			for (BoardObject b : this.getBoardObjects(-1)) {
+				if (b instanceof Minion && ((Minion) this.attackingMinion.realCard).getAttackableTargets()
+						.contains((Minion) b.realCard)) {
+					b.scale = CARD_SCALE_BOARD;
+				}
 			}
 			this.attackingMinion.scale = CARD_SCALE_BOARD;
 			this.attackingMinion = null;
@@ -462,9 +475,13 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		this.ui.mouseWheelMoved(change);
 	}
 
-	private boolean handleTargeting(Card c) {
+	public boolean handleTargeting(Card c) {
+		if (this.disableInput) {
+			return false;
+		}
 		if (this.playingCard != null && this.playingCard.getNextNeededBattlecryTarget() != null) {
-			if (c != null && this.playingCard.getNextNeededBattlecryTarget().canTarget(c)) {
+			if (c != null && c.realCard.alive
+					&& this.playingCard.realCard.getNextNeededBattlecryTarget().canTarget(c.realCard)) {
 				if (this.targetedCards.contains(c)) {
 					this.targetedCards.remove(c);
 				} else {
@@ -485,13 +502,14 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				return true;
 			} else {
 				this.animateBattlecryTargets(false);
-				this.playingCard.scale = CARD_SCALE_HAND;
+				this.playingCard.scale = this.expandHand ? CARD_SCALE_HAND_EXPAND : CARD_SCALE_HAND;
 				this.playingCard.resetBattlecryTargets();
 				this.targetedCards.clear();
 				this.playingCard = null;
 			}
 		} else if (this.unleashingMinion != null && this.unleashingMinion.getNextNeededUnleashTarget() != null) {
-			if (c != null && this.unleashingMinion.getNextNeededUnleashTarget().canTarget(c)) {
+			if (c != null && c.realCard.alive
+					&& ((Minion) this.unleashingMinion.realCard).getNextNeededUnleashTarget().canTarget(c.realCard)) {
 				if (this.targetedCards.contains(c)) {
 					this.targetedCards.remove(c);
 				} else {

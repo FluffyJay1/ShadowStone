@@ -83,6 +83,11 @@ public class Card {
 			break;
 		case HAND:
 			UnicodeFont font = Game.getFont("Verdana", (NAME_FONT_SIZE * this.scale), true, false);
+			// TODO: magic number below is space to display mana cost
+			if (font.getWidth(this.name) > (CARD_DIMENSIONS.x - 20) * this.scale) {
+				font = Game.getFont("Verdana", (NAME_FONT_SIZE * this.scale * (CARD_DIMENSIONS.x - 20) * this.scale
+						/ font.getWidth(this.name)), true, false);
+			}
 			font.drawString(this.pos.x - font.getWidth(this.name) / 2,
 					this.pos.y - CARD_DIMENSIONS.y * (float) this.scale / 2, this.name);
 			this.drawInHand(g);
@@ -97,7 +102,8 @@ public class Card {
 	}
 
 	public void drawInHand(Graphics g) {
-		if (this.board.getPlayer(this.team).canPlayCard(this)) {
+		if (this.realCard.board.getPlayer(this.team).canPlayCard(this.realCard)
+				&& this.team == this.board.currentplayerturn) {
 			g.setColor(org.newdawn.slick.Color.cyan);
 			g.drawRect((float) (this.pos.x - CARD_DIMENSIONS.x * this.scale / 2),
 					(float) (this.pos.y - CARD_DIMENSIONS.y * this.scale / 2), (float) (CARD_DIMENSIONS.x * this.scale),
@@ -169,14 +175,28 @@ public class Card {
 		this.updateFinalEffectStats();
 	}
 
-	public void updateBasicEffectStats() {
+	public void removeEffect(Effect e) {
+		if (this.effects.contains(e)) {
+			this.effects.remove(e);
+			this.updateAdditionalEffectPositions();
+			this.updateFinalEffectStats();
+		}
+	}
+
+	public void removeAdditionalEffects() {
+		while (!this.effects.isEmpty()) {
+			this.removeEffect(this.effects.get(0));
+		}
+	}
+
+	private void updateBasicEffectStats() {
 		this.finalBasicStatEffects = new Effect(0, "");
 		for (Effect e : this.getBasicEffects()) {
 			this.finalBasicStatEffects.applyEffectStats(e);
 		}
 	}
 
-	public void updateFinalEffectStats() {
+	private void updateFinalEffectStats() {
 		this.finalStatEffects = new Effect(0, "");
 		for (Effect e : this.getFinalEffects()) {
 			this.finalStatEffects.applyEffectStats(e);

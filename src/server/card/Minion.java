@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Vector2f;
@@ -30,9 +31,11 @@ public class Minion extends BoardObject {
 			String name, String text, String imagepath, int team, int id) {
 		super(board, status, cost, name, text, imagepath, team, id);
 		this.health = health;
-		Effect e = null;
+		Effect e = new Effect(0, "", cost, attack, magic, health, 1, false, false, false);
+		this.addBasicEffect(e);
 		if (basicUnleash) {
-			e = new Effect(0, "", cost, attack, magic, health, 1, false, false, false) {
+			Effect unl = new Effect(0,
+					"<b> Unleash: </b> Deal X damage to an enemy minion. X equals this minion's magic.") {
 				@Override
 				public LinkedList<Event> unleash() {
 					LinkedList<Event> list = new LinkedList<Event>();
@@ -44,7 +47,7 @@ public class Minion extends BoardObject {
 					return list;
 				}
 			};
-			Target t = new Target(e, 1, "Deal X damage to an enemy minion. X equals this minion's magic.") {
+			Target t = new Target(unl, 1, "Deal X damage to an enemy minion. X equals this minion's magic.") {
 				@Override
 				public boolean canTarget(Card c) {
 					return c.status == CardStatus.BOARD && c instanceof Minion && !(c instanceof Leader)
@@ -53,23 +56,23 @@ public class Minion extends BoardObject {
 			};
 			LinkedList<Target> list = new LinkedList<Target>();
 			list.add(t);
-			e.setUnleashTargets(list);
+			unl.setUnleashTargets(list);
 			if (!text.isEmpty()) {
 				this.text += "\n";
 			}
 			this.text += "<b> Unleash: </b> Deal X damage to an enemy minion. X equals this minion's magic.";
-		} else {
-			e = new Effect(0, "", cost, attack, magic, health, 1, false, false, false);
+			this.addBasicEffect(unl);
 		}
-		this.addBasicEffect(e);
+
 	}
 
 	@Override
 	public void drawOnBoard(Graphics g) {
 		super.drawOnBoard(g);
-		if (this.realCard != null && this.realCard instanceof Minion && ((Minion) this.realCard).canAttack()) {
-			if (this.summoningSickness && this.finalStatEffects.getStat(EffectStats.RUSH) > 0
-					&& this.finalStatEffects.getStat(EffectStats.STORM) == 0) {
+		if (this.realCard != null && this.realCard instanceof Minion && ((Minion) this.realCard).canAttack()
+				&& this.team == this.board.currentplayerturn) {
+			if (this.summoningSickness && ((Minion) this.realCard).finalStatEffects.getStat(EffectStats.RUSH) > 0
+					&& ((Minion) this.realCard).finalStatEffects.getStat(EffectStats.STORM) == 0) {
 				g.setColor(org.newdawn.slick.Color.yellow);
 			} else {
 				g.setColor(org.newdawn.slick.Color.cyan);
@@ -79,6 +82,10 @@ public class Minion extends BoardObject {
 					(float) (this.pos.y - CARD_DIMENSIONS.y * this.scale / 2), (float) (CARD_DIMENSIONS.x * this.scale),
 					(float) (CARD_DIMENSIONS.y * this.scale));
 			g.setColor(org.newdawn.slick.Color.white);
+		}
+		if (this.finalStatEffects.getStat(EffectStats.WARD) > 0) {
+			Image i = Game.getImage("res/game/shield.png");
+			g.drawImage(i, this.pos.x - i.getWidth() / 2, this.pos.y - i.getHeight() / 2);
 		}
 		this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.ATTACK),
 				this.finalBasicStatEffects.getStat(EffectStats.ATTACK), false, new Vector2f(-0.4f, 0.5f),

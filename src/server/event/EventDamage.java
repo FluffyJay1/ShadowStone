@@ -48,13 +48,14 @@ public class EventDamage extends Event {
 			for (Card c : this.t.get(i).getTargets()) { // sure
 				if (c instanceof Minion) {
 					Minion m = (Minion) c;
+					if (m.health > 0 && m.health <= damage.get(i)) {
+						eventlist.add(new EventDestroy(m));
+					}
 					m.health -= damage.get(i);
 					if (!loopprotection) {
 						eventlist.addAll(m.onDamaged(damage.get(i)));
 					}
-					if (m.health <= 0) {
-						eventlist.add(new EventDestroy(m));
-					}
+
 				}
 			}
 		}

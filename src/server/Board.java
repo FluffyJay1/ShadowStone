@@ -255,23 +255,29 @@ public class Board {
 	}
 
 	public void playerPlayCard(Player p, Card c, int pos, String btstring) {
-		StringTokenizer st = new StringTokenizer(btstring);
-		c.battlecryTargetsFromString(this, st);
+		if (btstring != null) {
+			StringTokenizer st = new StringTokenizer(btstring);
+			c.battlecryTargetsFromString(this, st);
+		}
 		this.eventlist.add(new EventPlayCard(p, c, pos));
 		this.resolveAll();
 	}
 
 	public void playerUnleashMinion(Player p, Minion m, String utstring) {
-		StringTokenizer st = new StringTokenizer(utstring);
-		m.unleashTargetsFromString(this, st);
+		if (utstring != null) {
+			StringTokenizer st = new StringTokenizer(utstring);
+			m.unleashTargetsFromString(this, st);
+		}
 		this.eventlist.add(new EventUnleash(p, m));
 		this.resolveAll();
 	}
 
 	// encapsulation at its finest
 	public void playerOrderAttack(Minion attacker, Minion victim) {
-		this.eventlist.add(new EventMinionAttack(attacker, victim));
-		this.resolveAll();
+		if (attacker.getAttackableTargets().contains(victim)) {
+			this.eventlist.add(new EventMinionAttack(attacker, victim));
+			this.resolveAll();
+		}
 	}
 
 	public void playerEndTurn(int team) {
@@ -281,11 +287,21 @@ public class Board {
 	}
 
 	public void AIThink() {
-		for (BoardObject bo : this.getBoardObjects(-1)) {
+		for (int i = 1; i < this.getBoardObjects(-1).size(); i++) {
+			BoardObject bo = this.getBoardObject(-1, i);
 			if (bo instanceof Minion) {
-				// smorc
-				this.eventlist.add(new EventMinionAttack((Minion) bo, (Minion) this.getBoardObject(1, 0)));
-				this.resolveAll();
+
+				ArrayList<Minion> targets = ((Minion) bo).getAttackableTargets();
+				if (targets.get(0) instanceof Leader) {
+					// smorc
+					this.playerOrderAttack((Minion) bo, targets.get(0));
+				} else {
+					// ward is cheat
+					this.playerOrderAttack((Minion) bo, Game.selectRandom(targets));
+				}
+				if (!bo.alive) {
+					i--;
+				}
 			}
 		}
 		int tempmana = Math.min(this.player2.maxmana, this.player2.maxmaxmana); // mm
@@ -297,7 +313,7 @@ public class Board {
 						t.fillRandomTargets();
 					}
 					int randomind = (int) (Math.random() * (this.player2side.size() - 1)) + 1;
-					this.eventlist.add(new EventPlayCard(this.player2, c, randomind));
+					this.playerPlayCard(this.player2, c, randomind, null);
 					tempmana -= c.finalStatEffects.getStat(EffectStats.COST);
 					this.resolveAll();
 				}
