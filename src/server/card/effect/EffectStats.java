@@ -5,9 +5,10 @@ import java.util.StringTokenizer;
 import server.card.*;
 
 public class EffectStats { // this is literally just a struct
-	public static final int NUM_STATS = 8;
+	public static final int NUM_STATS = 11;
+	// what's an enum
 	public static final int COST = 0, ATTACK = 1, MAGIC = 2, HEALTH = 3, ATTACKS_PER_TURN = 4, STORM = 5, RUSH = 6,
-			WARD = 7;
+			WARD = 7, BANE = 8, POISONOUS = 9, COUNTDOWN = 10;
 	public int[] stats = new int[NUM_STATS];
 	public boolean[] use = new boolean[NUM_STATS];
 

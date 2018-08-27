@@ -85,17 +85,30 @@ public class Minion extends BoardObject {
 		}
 		if (this.finalStatEffects.getStat(EffectStats.WARD) > 0) {
 			Image i = Game.getImage("res/game/shield.png");
+			i = i.getScaledCopy((float) this.scale);
 			g.drawImage(i, this.pos.x - i.getWidth() / 2, this.pos.y - i.getHeight() / 2);
+		}
+		if (this.finalStatEffects.getStat(EffectStats.BANE) > 0) {
+			Image i = Game.getImage("res/game/bane.png");
+			i = i.getScaledCopy((float) this.scale);
+			g.drawImage(i, this.pos.x - i.getWidth() / 2,
+					this.pos.y - i.getHeight() / 2 + CARD_DIMENSIONS.y * (float) this.scale / 2);
+		}
+		if (this.finalStatEffects.getStat(EffectStats.POISONOUS) > 0) {
+			Image i = Game.getImage("res/game/poisonous.png");
+			i = i.getScaledCopy((float) this.scale);
+			g.drawImage(i, this.pos.x - i.getWidth() / 2,
+					this.pos.y - i.getHeight() / 2 + CARD_DIMENSIONS.y * (float) this.scale / 2);
 		}
 		this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.ATTACK),
 				this.finalBasicStatEffects.getStat(EffectStats.ATTACK), false, new Vector2f(-0.4f, 0.5f),
-				new Vector2f(0, -0.5f));
+				new Vector2f(0, -0.5f), STAT_DEFAULT_SIZE);
 		this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.MAGIC),
 				this.finalBasicStatEffects.getStat(EffectStats.MAGIC), false, new Vector2f(0, 0.5f),
-				new Vector2f(0, -0.5f));
+				new Vector2f(0, -0.5f), STAT_DEFAULT_SIZE);
 		this.drawStatNumber(g, this.health, this.finalBasicStatEffects.getStat(EffectStats.HEALTH),
 				this.health < this.finalStatEffects.getStat(EffectStats.HEALTH), new Vector2f(0.4f, 0.5f),
-				new Vector2f(0, -0.5f));
+				new Vector2f(0, -0.5f), STAT_DEFAULT_SIZE);
 	}
 
 	@Override
@@ -103,13 +116,13 @@ public class Minion extends BoardObject {
 		super.drawInHand(g);
 		this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.ATTACK),
 				this.finalBasicStatEffects.getStat(EffectStats.ATTACK), false, new Vector2f(-0.4f, 0f),
-				new Vector2f(0, -0.5f));
+				new Vector2f(0, -0.5f), STAT_DEFAULT_SIZE);
 		this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.MAGIC),
 				this.finalBasicStatEffects.getStat(EffectStats.MAGIC), false, new Vector2f(-0.4f, 0.25f),
-				new Vector2f(0, -0.5f));
+				new Vector2f(0, -0.5f), STAT_DEFAULT_SIZE);
 		this.drawStatNumber(g, this.health, this.finalBasicStatEffects.getStat(EffectStats.HEALTH),
 				this.health < this.finalStatEffects.getStat(EffectStats.HEALTH), new Vector2f(-0.4f, 0.5f),
-				new Vector2f(0, -0.5f));
+				new Vector2f(0, -0.5f), STAT_DEFAULT_SIZE);
 	}
 
 	public ArrayList<Minion> getAttackableTargets() {

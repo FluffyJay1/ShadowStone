@@ -16,16 +16,16 @@ import server.event.Event;
 import server.event.EventAddEffect;
 import server.event.EventResolveTarget;
 
-public class WellOfDestination extends Amulet {
-	public static final int ID = 5;
+public class GenesisOfLegend extends Amulet {
+	public static final int ID = 7;
 
-	public WellOfDestination(Board b, int team) {
-		super(b, CardStatus.DECK, 2, "Well of Destination",
-				"At the start of your turn, give a random allied minion +1/+1/+1.",
-				"res/card/basic/wellofdestination.png", team, ID);
-		Effect e = new Effect(0, "At the start of your turn, give a random allied minion +1/+1/+1") {
+	public GenesisOfLegend(Board b, int team) {
+		super(b, CardStatus.DECK, 2, "Gensis of Legend",
+				"<b> Countdown(3). </b> At the end of your turn, give a random allied minion +0/+0/+1 <b> Bane. </b>",
+				"res/card/basic/genesisoflegend.png", team, ID);
+		Effect e = new Effect(0, "At the end of your turn, give a random allied minion +0/+0/+1 <b> Bane. </b>") {
 			@Override
-			public LinkedList<Event> onTurnStart() {
+			public LinkedList<Event> onTurnEnd() {
 				LinkedList<Event> list = new LinkedList<Event>();
 				Target t = new Target(this, 1, "") {
 					@Override
@@ -40,15 +40,14 @@ public class WellOfDestination extends Amulet {
 					}
 				};
 				list.add(new EventResolveTarget(t));
-				EffectStatChange e = new EffectStatChange("Gained +1/+1/+1 from Well of Destination");
-				e.change.setStat(EffectStats.ATTACK, 1);
-				e.change.setStat(EffectStats.MAGIC, 1);
+				EffectStatChange e = new EffectStatChange("Gained +0/+0/+1 and <b> Bane </b> from Genesis of Legend.");
 				e.change.setStat(EffectStats.HEALTH, 1);
+				e.set.setStat(EffectStats.BANE, 1);
 				list.add(new EventAddEffect(t, e));
 				return list;
 			}
 		};
+		e.set.setStat(EffectStats.COUNTDOWN, 3);
 		this.addBasicEffect(e);
 	}
-
 }

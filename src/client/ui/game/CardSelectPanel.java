@@ -55,7 +55,9 @@ public class CardSelectPanel extends UIBox {
 			this.description.setText(description);
 			String effectstext = "Effects:\n";
 			for (Effect e : this.b.selectedCard.getAdditionalEffects()) {
-				effectstext += "- " + e.description + "\n";
+				if (!e.description.isEmpty()) {
+					effectstext += "- " + e.description + "\n";
+				}
 			}
 			this.effects.setText(effectstext);
 			if (!this.ub.hide) {

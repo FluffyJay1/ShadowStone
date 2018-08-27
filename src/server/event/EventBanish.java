@@ -4,19 +4,20 @@ import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 import server.Board;
-import server.card.*;
+import server.card.BoardObject;
+import server.card.Card;
+import server.card.Target;
 
-public class EventDestroy extends Event {
-	// killing things
-	public static final int ID = 4;
+public class EventBanish extends Event {
+	public static final int ID = 18;
 	Target t;
 
-	public EventDestroy(Target t) {
+	public EventBanish(Target t) {
 		super(ID);
 		this.t = t;
 	}
 
-	public EventDestroy(Card c) {
+	public EventBanish(Card c) {
 		super(ID);
 		this.t = new Target(c);
 	}
@@ -35,9 +36,6 @@ public class EventDestroy extends Event {
 					if (c instanceof BoardObject) {
 						BoardObject b = (BoardObject) c;
 						b.board.removeBoardObject(b.team, b.cardpos);
-						if (!loopprotection) {
-							eventlist.addAll(b.lastWords());
-						}
 					}
 					break;
 				case DECK:
@@ -57,9 +55,9 @@ public class EventDestroy extends Event {
 		return this.id + " " + this.t.toString() + "\n";
 	}
 
-	public static EventDestroy fromString(Board b, StringTokenizer st) {
+	public static EventBanish fromString(Board b, StringTokenizer st) {
 		Target t = Target.fromString(b, st);
-		return new EventDestroy(t);
+		return new EventBanish(t);
 	}
 
 	@Override

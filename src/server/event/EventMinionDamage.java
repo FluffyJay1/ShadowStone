@@ -8,6 +8,7 @@ import server.Board;
 import server.card.Card;
 import server.card.Minion;
 import server.card.Target;
+import server.card.effect.EffectStats;
 
 public class EventMinionDamage extends Event {
 	// whenever a minion does damage from card text i.e. ragnaros end of turn
@@ -37,7 +38,11 @@ public class EventMinionDamage extends Event {
 
 	@Override
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-		eventlist.add(new EventDamage(this.m2, this.damage));
+		ArrayList<Boolean> poisonous = new ArrayList<Boolean>(this.m2.size());
+		for (int i = 0; i < this.m2.size(); i++) {
+			poisonous.add(m1.finalStatEffects.getStat(EffectStats.POISONOUS) > 0);
+		}
+		eventlist.add(new EventDamage(this.m2, this.damage, poisonous));
 	}
 
 	@Override

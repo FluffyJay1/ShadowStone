@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import server.Board;
 import server.card.*;
 import server.card.effect.Effect;
+import server.card.effect.EffectStats;
 import server.event.*;
 
 public class Fireball extends Spell {
@@ -25,18 +26,21 @@ public class Fireball extends Spell {
 				for (int i = 0; i < this.battlecryTargets.get(0).getTargets().size(); i++) {
 					ArrayList<Target> m = new ArrayList<Target>();
 					ArrayList<Integer> d = new ArrayList<Integer>();
+					ArrayList<Boolean> p = new ArrayList<Boolean>();
 					int pos = ((BoardObject) this.battlecryTargets.get(0).getTargets().get(i)).cardpos;
 
 					m.add(new Target(this.battlecryTargets.get(0).getTargets().get(i))); // spaghett
 					d.add(2);
+					p.add(this.owner.finalStatEffects.getStat(EffectStats.POISONOUS) > 0);
 					for (int j = -1; j <= 1; j += 2) {
 						BoardObject b = this.owner.board.getBoardObject(this.owner.team * -1, pos + j);
 						if (b != null && this.battlecryTargets.get(0).canTarget(b)) {
 							m.add(new Target(b));
 							d.add(1);
+							p.add(this.owner.finalStatEffects.getStat(EffectStats.POISONOUS) > 0);
 						}
 					}
-					list.add(new EventDamage(m, d));
+					list.add(new EventDamage(m, d, p));
 				}
 
 				return list;

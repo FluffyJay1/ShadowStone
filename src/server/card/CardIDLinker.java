@@ -5,6 +5,7 @@ import server.card.leader.Rowen;
 
 public class CardIDLinker {
 	public static Class<? extends Card> getClass(int id) {
+		// next id is 8
 		switch (id) {
 		case Rowen.ID:
 			return Rowen.class;
@@ -20,6 +21,8 @@ public class CardIDLinker {
 			return WellOfDestination.class;
 		case BellringerAngel.ID:
 			return BellringerAngel.class;
+		case GenesisOfLegend.ID:
+			return GenesisOfLegend.class;
 		default:
 			return null;
 		}

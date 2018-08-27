@@ -7,6 +7,7 @@ import java.util.StringTokenizer;
 import server.Board;
 import server.card.Card;
 import server.card.CardStatus;
+import server.card.Leader;
 import server.card.Minion;
 import server.card.Target;
 import server.card.effect.EffectStats;
@@ -16,30 +17,37 @@ public class EventDamage extends Event {
 	public static final int ID = 3;
 	public ArrayList<Integer> damage;
 	public ArrayList<Target> t;
+	public ArrayList<Boolean> poisonous;
 
-	public EventDamage(ArrayList<Target> t, ArrayList<Integer> damage) {
+	public EventDamage(ArrayList<Target> t, ArrayList<Integer> damage, ArrayList<Boolean> poisonous) {
 		super(ID);
 		this.t = new ArrayList<Target>();
 		this.t.addAll(t);
 		this.damage = new ArrayList<Integer>();
 		this.damage.addAll(damage);
+		this.poisonous = new ArrayList<Boolean>();
+		this.poisonous.addAll(poisonous);
 	}
 
-	public EventDamage(Target t, int damage) {
+	public EventDamage(Target t, int damage, boolean poisonous) {
 		super(ID);
 		this.t = new ArrayList<Target>();
 		this.t.add(t);
 		this.damage = new ArrayList<Integer>();
 		this.damage.add(damage);
+		this.poisonous = new ArrayList<Boolean>();
+		this.poisonous.add(poisonous);
 	}
 
-	public EventDamage(Minion m, int damage) {
+	public EventDamage(Minion m, int damage, boolean poisonous) {
 		super(ID);
 		this.t = new ArrayList<Target>();
 		Target t = new Target(m);
 		this.t.add(t);
 		this.damage = new ArrayList<Integer>();
 		this.damage.add(damage);
+		this.poisonous = new ArrayList<Boolean>();
+		this.poisonous.add(poisonous);
 	}
 
 	@Override
@@ -48,14 +56,14 @@ public class EventDamage extends Event {
 			for (Card c : this.t.get(i).getTargets()) { // sure
 				if (c instanceof Minion) {
 					Minion m = (Minion) c;
-					if (m.health > 0 && m.health <= damage.get(i)) {
-						eventlist.add(new EventDestroy(m));
-					}
-					m.health -= damage.get(i);
 					if (!loopprotection) {
 						eventlist.addAll(m.onDamaged(damage.get(i)));
 					}
-
+					if ((this.poisonous.get(i) && !(m instanceof Leader))
+							|| (m.health > 0 && m.health <= damage.get(i))) {
+						eventlist.add(new EventDestroy(m));
+					}
+					m.health -= damage.get(i);
 				}
 			}
 		}
@@ -65,7 +73,7 @@ public class EventDamage extends Event {
 	public String toString() {
 		String ret = this.id + " " + this.t.size() + " ";
 		for (int i = 0; i < this.t.size(); i++) {
-			ret += this.t.get(i).toString() + this.damage.get(i) + " ";
+			ret += this.t.get(i).toString() + this.damage.get(i) + " " + this.poisonous.get(i) + " ";
 		}
 		return ret + "\n";
 	}
@@ -74,13 +82,16 @@ public class EventDamage extends Event {
 		int size = Integer.parseInt(st.nextToken());
 		ArrayList<Target> t = new ArrayList<Target>(size);
 		ArrayList<Integer> damage = new ArrayList<Integer>(size);
+		ArrayList<Boolean> poisonous = new ArrayList<Boolean>();
 		for (int i = 0; i < size; i++) {
 			Target ta = Target.fromString(b, st);
 			int d = Integer.parseInt(st.nextToken());
+			boolean po = Boolean.parseBoolean(st.nextToken());
 			t.add(ta);
 			damage.add(d);
+			poisonous.add(po);
 		}
-		return new EventDamage(t, damage);
+		return new EventDamage(t, damage, poisonous);
 	}
 
 	@Override

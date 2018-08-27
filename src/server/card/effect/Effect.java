@@ -63,6 +63,10 @@ public class Effect {
 		return this.set.stats[index] + this.change.stats[index];
 	}
 
+	public boolean getUse(int index) {
+		return this.set.use[index] || this.change.use[index];
+	}
+
 	public String statsToString() {
 		return "(" + this.getStat(EffectStats.COST) + " " + this.getStat(EffectStats.ATTACK) + " "
 				+ this.getStat(EffectStats.MAGIC) + " " + this.getStat(EffectStats.HEALTH) + ")";

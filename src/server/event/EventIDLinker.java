@@ -2,9 +2,12 @@ package server.event;
 
 public class EventIDLinker {
 	public static Class<? extends Event> getClass(int id) {
+		// next id is 19
 		switch (id) {
 		case EventAddEffect.ID:
 			return EventAddEffect.class;
+		case EventBanish.ID:
+			return EventBanish.class;
 		case EventCreateCard.ID:
 			return EventCreateCard.class;
 		case EventDamage.ID:

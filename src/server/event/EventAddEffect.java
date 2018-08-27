@@ -47,6 +47,10 @@ public class EventAddEffect extends Event {
 					eventlist.add(new EventDestroy(m));
 				}
 			}
+			if (c.finalStatEffects.getUse(EffectStats.COUNTDOWN)
+					&& c.finalStatEffects.getStat(EffectStats.COUNTDOWN) <= 0) {
+				eventlist.add(new EventDestroy(c));
+			}
 		}
 	}
 

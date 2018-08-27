@@ -112,11 +112,11 @@ public class Card {
 		}
 		this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.COST),
 				this.finalBasicStatEffects.getStat(EffectStats.COST), false, new Vector2f(-0.5f, -0.5f),
-				new Vector2f(0.5f, 0.5f));
+				new Vector2f(0.5f, 0.5f), STAT_DEFAULT_SIZE);
 	}
 
 	public void drawStatNumber(Graphics g, int stat, int basestat, boolean damaged, Vector2f relpos,
-			Vector2f textoffset) {
+			Vector2f textoffset, double fontsize) {
 		Color c = Color.white;
 		if (damaged) {
 			c = Color.red;
@@ -128,7 +128,7 @@ public class Card {
 				c = Color.orange;
 			}
 		}
-		UnicodeFont font = Game.getFont("Verdana", STAT_DEFAULT_SIZE * this.scale, true, false, c, Color.BLACK);
+		UnicodeFont font = Game.getFont("Verdana", fontsize * this.scale, true, false, c, Color.BLACK);
 		font.drawString(
 				this.pos.x + CARD_DIMENSIONS.x * relpos.x * (float) this.scale
 						+ font.getWidth("" + stat) * (textoffset.x - 0.5f),
@@ -334,6 +334,9 @@ public class Card {
 		Player p = b.getPlayer(team);
 		String status = reference.nextToken();
 		int cardpos = Integer.parseInt(reference.nextToken());
+		if (cardpos == -1) { // mission failed we'll get em next time
+			return null;
+		}
 		switch (status) {
 		case "hand":
 			return p.hand.cards.get(cardpos);

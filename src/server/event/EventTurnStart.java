@@ -7,6 +7,8 @@ import server.Board;
 import server.Player;
 import server.card.BoardObject;
 import server.card.Minion;
+import server.card.effect.EffectStatChange;
+import server.card.effect.EffectStats;
 
 public class EventTurnStart extends Event {
 	public static final int ID = 15;
@@ -29,6 +31,11 @@ public class EventTurnStart extends Event {
 			if (b instanceof Minion) {
 				((Minion) b).summoningSickness = false;
 				((Minion) b).attacksThisTurn = 0;
+			}
+			if (b.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
+				EffectStatChange e = new EffectStatChange("");
+				e.change.setStat(EffectStats.COUNTDOWN, -1);
+				eventlist.add(new EventAddEffect(b, e));
 			}
 		}
 		eventlist.add(new EventDraw(this.p, 1));

@@ -6,6 +6,7 @@ import java.util.StringTokenizer;
 
 import server.Board;
 import server.card.Card;
+import server.card.Leader;
 import server.card.Minion;
 import server.card.Target;
 import server.card.effect.EffectStats;
@@ -29,7 +30,22 @@ public class EventMinionAttackDamage extends Event {
 		ArrayList<Integer> damage = new ArrayList<Integer>(2);
 		damage.add(m2.finalStatEffects.getStat(EffectStats.ATTACK));
 		damage.add(m1.finalStatEffects.getStat(EffectStats.ATTACK));
-		eventlist.add(new EventDamage(minions, damage));
+		ArrayList<Boolean> poison = new ArrayList<Boolean>(2);
+		poison.add(m2.finalStatEffects.getStat(EffectStats.POISONOUS) > 0);
+		poison.add(m1.finalStatEffects.getStat(EffectStats.POISONOUS) > 0);
+		eventlist.add(new EventDamage(minions, damage, poison));
+		ArrayList<Card> baned = new ArrayList<Card>(2);
+		if (m1.finalStatEffects.getStat(EffectStats.BANE) > 0 && !(m2 instanceof Leader)) {
+			baned.add(m2);
+		}
+		if (m2.finalStatEffects.getStat(EffectStats.BANE) > 0 && !(m1 instanceof Leader)) {
+			baned.add(m1);
+		}
+		if (!baned.isEmpty()) {
+			Target t = new Target(null, 2, "");
+			t.setTargets(baned);
+			eventlist.add(new EventDestroy(t));
+		}
 	}
 
 	@Override
