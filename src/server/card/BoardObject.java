@@ -12,13 +12,12 @@ import server.Board;
 import server.Player;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
-import server.event.Event;
+import server.event.*;
 
 public class BoardObject extends Card {
 
-	public BoardObject(Board b, CardStatus status, int cost, String name, String text, String imagepath, int team,
-			int id) {
-		super(b, status, cost, name, text, imagepath, team, id);
+	public BoardObject(Board b, CardStatus status, String name, String text, String imagepath, int team, int id) {
+		super(b, status, name, text, imagepath, team, id);
 	}
 
 	@Override
@@ -31,26 +30,61 @@ public class BoardObject extends Card {
 		}
 	}
 
-	public LinkedList<Event> lastWords() {
-		LinkedList<Event> list = new LinkedList<Event>();
+	public boolean isInPlay() {
+		return this.alive && this.status.equals(CardStatus.BOARD);
+	}
+
+	public LinkedList<EventLastWords> lastWords() {
+		LinkedList<EventLastWords> list = new LinkedList<EventLastWords>();
 		for (Effect e : this.getFinalEffects()) {
-			list.addAll(e.lastWords());
+			EventLastWords temp = e.lastWords();
+			if (temp != null) {
+				list.add(temp);
+			}
 		}
 		return list;
 	}
 
-	public LinkedList<Event> onTurnStart() {
-		LinkedList<Event> list = new LinkedList<Event>();
+	public LinkedList<EventFlag> onTurnStart() {
+		LinkedList<EventFlag> list = new LinkedList<EventFlag>();
 		for (Effect e : this.getFinalEffects()) {
-			list.addAll(e.onTurnStart());
+			EventFlag temp = e.onTurnStart();
+			if (temp != null) {
+				list.add(temp);
+			}
 		}
 		return list;
 	}
 
-	public LinkedList<Event> onTurnEnd() {
-		LinkedList<Event> list = new LinkedList<Event>();
+	public LinkedList<EventFlag> onTurnEnd() {
+		LinkedList<EventFlag> list = new LinkedList<EventFlag>();
 		for (Effect e : this.getFinalEffects()) {
-			list.addAll(e.onTurnEnd());
+			EventFlag temp = e.onTurnEnd();
+			if (temp != null) {
+				list.add(temp);
+			}
+		}
+		return list;
+	}
+
+	public LinkedList<EventFlag> onEnterPlay() {
+		LinkedList<EventFlag> list = new LinkedList<EventFlag>();
+		for (Effect e : this.getFinalEffects()) {
+			EventFlag temp = e.onEnterPlay();
+			if (temp != null) {
+				list.add(temp);
+			}
+		}
+		return list;
+	}
+
+	public LinkedList<EventFlag> onLeavePlay() {
+		LinkedList<EventFlag> list = new LinkedList<EventFlag>();
+		for (Effect e : this.getFinalEffects()) {
+			EventFlag temp = e.onLeavePlay();
+			if (temp != null) {
+				list.add(temp);
+			}
 		}
 		return list;
 	}

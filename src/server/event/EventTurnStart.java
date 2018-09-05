@@ -22,6 +22,7 @@ public class EventTurnStart extends Event {
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
 		this.p.board.currentplayerturn = this.p.team;
 		this.p.unleashedThisTurn = false;
+		eventlist.add(new EventDraw(this.p, 1));
 		eventlist.add(new EventManaChange(this.p, 1, true, false));
 		eventlist.add(new EventManaChange(this.p, this.p.maxmana + 1, false, true));
 		Minion leader = (Minion) this.p.board.getBoardObject(this.p.team, 0);
@@ -38,7 +39,7 @@ public class EventTurnStart extends Event {
 				eventlist.add(new EventAddEffect(b, e));
 			}
 		}
-		eventlist.add(new EventDraw(this.p, 1));
+
 	}
 
 	public String toString() {

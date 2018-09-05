@@ -36,26 +36,35 @@ public class EventCreateCard extends Event {
 			if (relevantHand.cards.size() >= relevantHand.maxsize) {
 				eventlist.add(new EventDestroy(c));
 			} else {
-				relevantHand.cards.add(this.cardpos, this.c);
+				int temppos = this.cardpos == -1 ? (int) (Math.random() * relevantHand.cards.size()) : this.cardpos;
+				temppos = Math.min(this.cardpos, relevantHand.cards.size());
+				relevantHand.cards.add(temppos, this.c);
 				relevantHand.updatePositions();
 			}
 			break;
 		case BOARD:
 			if (this.c instanceof BoardObject) {
-				this.b.addBoardObject((BoardObject) this.c, this.team, this.cardpos);
+				this.b.addBoardObject((BoardObject) this.c, this.team,
+						this.cardpos == -1 ? this.c.board.getBoardObjects(this.team).size() : this.cardpos);
 				if (c instanceof Minion) {
 					((Minion) c).summoningSickness = true;
+				}
+				if (!loopprotection) {
+					eventlist.add(new EventEnterPlay(c));
 				}
 			}
 			break;
 		case DECK:
 			Deck relevantDeck = this.b.getPlayer(this.team).deck;
-			relevantDeck.cards.add(this.cardpos, this.c);
+			int temppos = this.cardpos == -1 ? (int) (Math.random() * relevantDeck.cards.size()) : this.cardpos;
+			temppos = Math.min(this.cardpos, relevantDeck.cards.size());
+			relevantDeck.cards.add(temppos, this.c);
 			relevantDeck.updatePositions();
 			break;
 		default:
 			break;
 		}
+		this.c.status = this.status;
 		if (this.b.isClient) {
 			this.b.cardsCreated.add(this.c);
 		}

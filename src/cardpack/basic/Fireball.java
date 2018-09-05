@@ -17,33 +17,37 @@ public class Fireball extends Spell {
 		super(b, CardStatus.DECK, 3, "Fireball",
 				"Choose 2 enemy minions. Deal 2 damage to them and 1 damage to their adjacent minions.",
 				"res/card/basic/fireball.png", team, ID);
-
+		// anonymous classes within anonymous classes
 		this.e = new Effect(0, "") {
 			@Override
-			public LinkedList<Event> battlecry() {
-				LinkedList<Event> list = new LinkedList<Event>();
+			public EventBattlecry battlecry() {
+				EventBattlecry bc = new EventBattlecry(this) {
+					@Override
+					public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+						for (int i = 0; i < this.effect.battlecryTargets.get(0).getTargets().size(); i++) {
+							ArrayList<Target> m = new ArrayList<Target>();
+							ArrayList<Integer> d = new ArrayList<Integer>();
+							ArrayList<Boolean> p = new ArrayList<Boolean>();
+							int pos = ((BoardObject) this.effect.battlecryTargets.get(0).getTargets().get(i)).cardpos;
 
-				for (int i = 0; i < this.battlecryTargets.get(0).getTargets().size(); i++) {
-					ArrayList<Target> m = new ArrayList<Target>();
-					ArrayList<Integer> d = new ArrayList<Integer>();
-					ArrayList<Boolean> p = new ArrayList<Boolean>();
-					int pos = ((BoardObject) this.battlecryTargets.get(0).getTargets().get(i)).cardpos;
-
-					m.add(new Target(this.battlecryTargets.get(0).getTargets().get(i))); // spaghett
-					d.add(2);
-					p.add(this.owner.finalStatEffects.getStat(EffectStats.POISONOUS) > 0);
-					for (int j = -1; j <= 1; j += 2) {
-						BoardObject b = this.owner.board.getBoardObject(this.owner.team * -1, pos + j);
-						if (b != null && this.battlecryTargets.get(0).canTarget(b)) {
-							m.add(new Target(b));
-							d.add(1);
-							p.add(this.owner.finalStatEffects.getStat(EffectStats.POISONOUS) > 0);
+							m.add(new Target(this.effect.battlecryTargets.get(0).getTargets().get(i))); // spaghett
+							d.add(2);
+							p.add(this.effect.owner.finalStatEffects.getStat(EffectStats.POISONOUS) > 0);
+							for (int j = -1; j <= 1; j += 2) {
+								BoardObject b = this.effect.owner.board.getBoardObject(this.effect.owner.team * -1,
+										pos + j);
+								if (b != null && this.effect.battlecryTargets.get(0).canTarget(b)) {
+									m.add(new Target(b));
+									d.add(1);
+									p.add(this.effect.owner.finalStatEffects.getStat(EffectStats.POISONOUS) > 0);
+								}
+							}
+							eventlist.add(new EventDamage(m, d, p));
 						}
-					}
-					list.add(new EventDamage(m, d, p));
-				}
 
-				return list;
+					}
+				};
+				return bc;
 			}
 
 		};

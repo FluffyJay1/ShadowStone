@@ -1,5 +1,5 @@
 package server.card;
 
 public enum CardStatus {
-	BOARD, HAND, DECK
+	BOARD, HAND, DECK, GRAVEYARD
 }

@@ -46,6 +46,8 @@ public class EventMinionAttackDamage extends Event {
 			t.setTargets(baned);
 			eventlist.add(new EventDestroy(t));
 		}
+		System.out.println(this.m1.toString());
+		System.out.println(this.m2.toString());
 	}
 
 	@Override
@@ -61,6 +63,6 @@ public class EventMinionAttackDamage extends Event {
 
 	@Override
 	public boolean conditions() {
-		return m1.alive && m2.alive;
+		return m1.isInPlay() && m2.isInPlay();
 	}
 }

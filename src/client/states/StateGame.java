@@ -40,6 +40,7 @@ public class StateGame extends BasicGameState {
 				cards.add(new WellOfDestination(board.realBoard, team));
 				cards.add(new BellringerAngel(board.realBoard, team));
 				cards.add(new GenesisOfLegend(board.realBoard, team));
+				cards.add(new WoodOfBrambles(board.realBoard, team));
 			}
 			while (!cards.isEmpty()) {
 				Card selected = Game.selectRandom(cards);

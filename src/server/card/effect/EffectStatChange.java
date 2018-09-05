@@ -15,7 +15,7 @@ public class EffectStatChange extends Effect {
 
 	public static EffectStatChange fromString(Board b, StringTokenizer st) {
 		Card owner = Card.fromReference(b, st);
-		String description = st.nextToken(Game.STRING_END);
+		String description = st.nextToken(Game.STRING_END).trim();
 		st.nextToken(" \n"); // THANKS STRING TOKENIZER
 		EffectStatChange esc = new EffectStatChange(description);
 		esc.owner = owner;

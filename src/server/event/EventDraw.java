@@ -27,7 +27,8 @@ public class EventDraw extends Event {
 				// this code is fucked
 				Target t = new Target(this.p.deck.cards.get(0));
 				if (p.hand.cards.size() < p.hand.maxsize) {
-					(new EventPutCard(this.p, t, CardStatus.HAND, this.p.team, 10)).resolve(eventlist, loopprotection);
+					(new EventPutCard(this.p, t, CardStatus.HAND, this.p.team, this.p.hand.maxsize)).resolve(eventlist,
+							loopprotection);
 				} else {
 					(new EventDestroy(t)).resolve(eventlist, loopprotection);
 				}

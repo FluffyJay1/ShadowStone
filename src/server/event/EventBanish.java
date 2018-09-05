@@ -10,7 +10,7 @@ import server.card.Target;
 
 public class EventBanish extends Event {
 	public static final int ID = 18;
-	Target t;
+	public Target t;
 
 	public EventBanish(Target t) {
 		super(ID);
@@ -36,6 +36,9 @@ public class EventBanish extends Event {
 					if (c instanceof BoardObject) {
 						BoardObject b = (BoardObject) c;
 						b.board.removeBoardObject(b.team, b.cardpos);
+						if (!loopprotection) {
+							eventlist.add(new EventLeavePlay(c));
+						}
 					}
 					break;
 				case DECK:
@@ -45,7 +48,8 @@ public class EventBanish extends Event {
 				default:
 					break;
 				}
-				c.cardpos = -1; // just in case
+				c.cardpos = c.board.banished.size(); // just in case
+				c.board.banished.add(c);
 			}
 		}
 	}

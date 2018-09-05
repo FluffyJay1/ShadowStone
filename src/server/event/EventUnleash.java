@@ -23,7 +23,6 @@ public class EventUnleash extends Event {
 		// TODO add the unleash effects of individual classes
 		eventlist.add(new EventManaChange(this.p, -2, false, true));
 		eventlist.addAll(this.m.unleash());
-		this.m.resetUnleashTargets();
 		this.p.unleashedThisTurn = true;
 	}
 

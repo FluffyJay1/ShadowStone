@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 import client.Game;
+import server.card.Amulet;
 import server.card.BoardObject;
 import server.card.Card;
 import server.card.CardStatus;
@@ -24,6 +25,9 @@ public class Board {
 
 	protected ArrayList<BoardObject> player1side;
 	protected ArrayList<BoardObject> player2side;
+	protected ArrayList<Card> player1graveyard;
+	protected ArrayList<Card> player2graveyard;
+	public ArrayList<Card> banished;
 	public LinkedList<Event> eventlist;
 	protected LinkedList<String> inputeventliststrings = new LinkedList<String>();
 	String output = "";
@@ -34,7 +38,9 @@ public class Board {
 		player1side = new ArrayList<BoardObject>();
 		player2side = new ArrayList<BoardObject>();
 		eventlist = new LinkedList<Event>();
-
+		player1graveyard = new ArrayList<Card>();
+		player2graveyard = new ArrayList<Card>();
+		banished = new ArrayList<Card>();
 	}
 
 	public Player getPlayer(int team) {
@@ -84,6 +90,8 @@ public class Board {
 			return cards;
 		case DECK:
 			return this.getPlayer(team).deck.cards;
+		case GRAVEYARD:
+			return this.getGraveyard(team);
 		default:
 			return null;
 		}
@@ -118,16 +126,18 @@ public class Board {
 			ret.remove(0); // gotem
 		}
 		if (nominion) {
-			for (BoardObject b : ret) {
-				if (b instanceof Minion) {
-					ret.remove(b); // don't worry about this
+			for (int i = 0; i < ret.size(); i++) {
+				if (ret.get(i) instanceof Minion) {
+					ret.remove(i); // don't worry about this
+					i--;
 				}
 			}
 		}
 		if (noamulet) { // TODO IMPLEMENT AMULET
-			for (BoardObject b : ret) {
-				if (!(b instanceof Minion)) {
-					ret.remove(b);
+			for (int i = 0; i < ret.size(); i++) {
+				if (ret.get(i) instanceof Amulet) {
+					ret.remove(i);
+					i--;
 				}
 			}
 		}
@@ -201,6 +211,14 @@ public class Board {
 		}
 	}
 
+	public ArrayList<Card> getGraveyard(int team) {
+		if (team == 1) {
+			return this.player1graveyard;
+		} else {
+			return this.player2graveyard;
+		}
+	}
+
 	public String stateToString() {
 		String ret = "State----------------------------+\nPlayer 1:\n";
 		for (BoardObject b : player1side) {
@@ -228,9 +246,15 @@ public class Board {
 					this.output += eventstring;
 					// System.out.println(this.stateToString());
 				}
-				e.resolve(eventlist, loopprotection);
+				if (e.resolvefirst) {
+					LinkedList<Event> lul = new LinkedList<Event>();
+					e.resolve(lul, loopprotection);
+					eventlist.addAll(0, lul);
+				} else {
+					e.resolve(eventlist, loopprotection);
+				}
 				for (Card c : this.getCards()) {
-					c.onEvent(e);
+					eventlist.addAll(c.onEvent(e));
 				}
 			}
 		}
@@ -315,7 +339,6 @@ public class Board {
 					int randomind = (int) (Math.random() * (this.player2side.size() - 1)) + 1;
 					this.playerPlayCard(this.player2, c, randomind, null);
 					tempmana -= c.finalStatEffects.getStat(EffectStats.COST);
-					this.resolveAll();
 				}
 			}
 		}

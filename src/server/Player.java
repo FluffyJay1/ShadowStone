@@ -14,7 +14,7 @@ public class Player {
 	public Board board;
 	public Deck deck;
 	public Hand hand;
-	public int team, mana = 1, maxmana = 1, maxmaxmana = 10; // don't ask
+	public int team, mana = 3, maxmana = 3, maxmaxmana = 10; // don't ask
 	public boolean unleashedThisTurn, canUnleash;
 
 	public Player(Board board, int team) {
@@ -35,7 +35,7 @@ public class Player {
 	// uh
 	public boolean canPlayCard(Card c) {
 		return c != null && this.board.currentplayerturn == this.team && c.conditions()
-				&& this.mana >= c.finalStatEffects.getStat(EffectStats.COST);
+				&& this.mana >= c.finalStatEffects.getStat(EffectStats.COST) && c.status.equals(CardStatus.HAND);
 	}
 
 	public boolean canUnleashCard(Card c) {

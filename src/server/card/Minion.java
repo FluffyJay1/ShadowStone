@@ -17,11 +17,7 @@ import server.Board;
 import server.card.effect.Effect;
 import server.card.effect.EffectStatChange;
 import server.card.effect.EffectStats;
-import server.event.Event;
-import server.event.EventAddEffect;
-import server.event.EventDamage;
-import server.event.EventDraw;
-import server.event.EventMinionDamage;
+import server.event.*;;
 
 public class Minion extends BoardObject {
 	public int health, attacksThisTurn = 0; // tempted to make damage an effect
@@ -29,7 +25,7 @@ public class Minion extends BoardObject {
 
 	public Minion(Board board, CardStatus status, int cost, int attack, int magic, int health, boolean basicUnleash,
 			String name, String text, String imagepath, int team, int id) {
-		super(board, status, cost, name, text, imagepath, team, id);
+		super(board, status, name, text, imagepath, team, id);
 		this.health = health;
 		Effect e = new Effect(0, "", cost, attack, magic, health, 1, false, false, false);
 		this.addBasicEffect(e);
@@ -37,14 +33,18 @@ public class Minion extends BoardObject {
 			Effect unl = new Effect(0,
 					"<b> Unleash: </b> Deal X damage to an enemy minion. X equals this minion's magic.") {
 				@Override
-				public LinkedList<Event> unleash() {
-					LinkedList<Event> list = new LinkedList<Event>();
-					if (this.unleashTargets.get(0) != null) {
-						list.add(new EventMinionDamage((Minion) this.owner, this.unleashTargets.get(0).copy(),
-								this.owner.finalStatEffects.getStat(EffectStats.MAGIC)));
-					}
-					// targets are reset in eventunleash
-					return list;
+				public EventFlag unleash() {
+					EventFlag ef = new EventFlag(this) {
+						@Override
+						public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+							if (this.effect.unleashTargets.get(0) != null) {
+								eventlist.add(new EventMinionDamage((Minion) this.effect.owner,
+										this.effect.unleashTargets.get(0),
+										this.effect.owner.finalStatEffects.getStat(EffectStats.MAGIC)));
+							}
+						}
+					};
+					return ef;
 				}
 			};
 			Target t = new Target(unl, 1, "Deal X damage to an enemy minion. X equals this minion's magic.") {
@@ -165,26 +165,40 @@ public class Minion extends BoardObject {
 				&& this.attacksThisTurn < this.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN);
 	}
 
-	public LinkedList<Event> onAttack(Minion target) {
-		LinkedList<Event> list = new LinkedList<Event>();
+	@Override
+	public boolean isInPlay() {
+		return this.alive && this.health > 0 && this.status.equals(CardStatus.BOARD);
+	}
+
+	public LinkedList<EventOnAttack> onAttack(Minion target) {
+		LinkedList<EventOnAttack> list = new LinkedList<EventOnAttack>();
 		for (Effect e : this.getFinalEffects()) {
-			list.addAll(e.onAttack(target));
+			EventOnAttack temp = e.onAttack(target); // optimization probably
+			if (temp != null) {
+				list.add(temp);
+			}
 		}
 		return list;
 	}
 
-	public LinkedList<Event> onAttacked(Minion target) {
-		LinkedList<Event> list = new LinkedList<Event>();
+	public LinkedList<EventOnAttacked> onAttacked(Minion target) {
+		LinkedList<EventOnAttacked> list = new LinkedList<EventOnAttacked>();
 		for (Effect e : this.getFinalEffects()) {
-			list.addAll(e.onAttacked(target));
+			EventOnAttacked temp = e.onAttacked(target);
+			if (temp != null) {
+				list.add(temp);
+			}
 		}
 		return list;
 	}
 
-	public LinkedList<Event> clash(Minion target) {
-		LinkedList<Event> list = new LinkedList<Event>();
+	public LinkedList<EventClash> clash(Minion target) {
+		LinkedList<EventClash> list = new LinkedList<EventClash>();
 		for (Effect e : this.getFinalEffects()) {
-			list.addAll(e.clash(target));
+			EventClash temp = e.clash(target);
+			if (temp != null) {
+				list.add(temp);
+			}
 		}
 		return list;
 	}
@@ -192,15 +206,21 @@ public class Minion extends BoardObject {
 	public LinkedList<Event> onDamaged(int damage) {
 		LinkedList<Event> list = new LinkedList<Event>();
 		for (Effect e : this.getFinalEffects()) {
-			list.addAll(e.onDamaged(damage));
+			EventFlag temp = e.onDamaged(damage);
+			if (temp != null) {
+				list.add(temp);
+			}
 		}
 		return list;
 	}
 
-	public LinkedList<Event> unleash() {
-		LinkedList<Event> list = new LinkedList<Event>();
+	public LinkedList<EventFlag> unleash() {
+		LinkedList<EventFlag> list = new LinkedList<EventFlag>();
 		for (Effect e : this.getFinalEffects()) {
-			list.addAll(e.unleash());
+			EventFlag temp = e.unleash();
+			if (temp != null) {
+				list.add(temp);
+			}
 		}
 		return list;
 		// return new LinkedList<Event>();

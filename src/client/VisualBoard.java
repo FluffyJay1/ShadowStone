@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.MouseListener;
 import org.newdawn.slick.UnicodeFont;
@@ -17,8 +18,10 @@ import client.ui.game.UnleashButton;
 import server.Board;
 import server.card.BoardObject;
 import server.card.Card;
+import server.card.CardStatus;
 import server.card.Leader;
 import server.card.Minion;
+import server.card.Spell;
 import server.card.Target;
 import server.card.effect.EffectStats;
 import server.event.*;
@@ -27,10 +30,11 @@ import utils.DefaultMouseListener;
 public class VisualBoard extends Board implements DefaultMouseListener {
 	public static final int BO_SPACING = 200;
 	public static final double CARD_SCALE_DEFAULT = 1, CARD_SCALE_HAND = 0.75, CARD_SCALE_HAND_EXPAND = 1.2,
-			CARD_SCALE_BOARD = 1, CARD_SCALE_ABILITY = 1.5, CARD_SCALE_TARGET = 1.25, CARD_SCALE_ATTACK = 1.5;
+			CARD_SCALE_BOARD = 1, CARD_SCALE_ABILITY = 1.5, CARD_SCALE_TARGET = 1.25, CARD_SCALE_ATTACK = 1.5,
+			CARDS_SCALE_PLAY = 2.5;
 	UI ui;
 	public Board realBoard;
-	public Card selectedCard, draggingCard, playingCard;
+	public Card selectedCard, draggingCard, playingCard, visualPlayingCard;
 	ArrayList<Card> targetedCards = new ArrayList<Card>();
 	int playingX;
 	public Minion attackingMinion, unleashingMinion;
@@ -105,7 +109,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		}
 		for (int i = 0; i < player1.hand.cards.size(); i++) {
 			Card c = player1.hand.cards.get(i);
-			if (c != this.playingCard && c != this.draggingCard) {
+			if (c != this.playingCard && c != this.draggingCard && c != this.visualPlayingCard) {
 				c.targetpos.set((int) (((i) - (player1.hand.cards.size()) / 2.)
 						* (this.expandHand ? (800 + player1.hand.cards.size() * 40) : 500) / player1.hand.cards.size()
 						+ (this.expandHand ? (1400 - player1.hand.cards.size() * 20) : 1500)),
@@ -117,10 +121,12 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		}
 		for (int i = 0; i < player2.hand.cards.size(); i++) {
 			Card c = player2.hand.cards.get(i);
-			c.targetpos.set((int) (((i) - (player2.hand.cards.size()) / 2.) * 500 / player2.hand.cards.size() + 1500),
-					100);
-			c.scale = CARD_SCALE_HAND;
+			if (c != this.visualPlayingCard) {
+				c.targetpos.set(
+						(int) (((i) - (player2.hand.cards.size()) / 2.) * 500 / player2.hand.cards.size() + 1500), 100);
+				c.scale = CARD_SCALE_HAND;
 
+			}
 			c.draw(g);
 		}
 		for (Card c : this.targetedCards) {
@@ -222,7 +228,6 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				StringTokenizer st = new StringTokenizer(this.inputeventliststrings.remove(0));
 				this.currentEvent = Event.createFromString(this, st);
 				if (this.currentEvent != null && this.currentEvent.conditions()) {
-					// System.out.println(this.currentEvent.toString());
 					LinkedList<Event> lmao = new LinkedList<Event>();
 					this.currentEvent.resolve(lmao, false);
 
@@ -242,6 +247,44 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 							this.realBoard.AIThink();
 						} else {
 							this.disableInput = false;
+						}
+					} else if (this.currentEvent instanceof EventPlayCard) {
+						this.visualPlayingCard = ((EventPlayCard) this.currentEvent).c;
+						this.visualPlayingCard.scale = CARDS_SCALE_PLAY;
+						this.animationtimer = 0.7;
+					} else if (this.currentEvent instanceof EventPutCard) {
+						EventPutCard e = (EventPutCard) this.currentEvent;
+						for (Card c : e.t.getTargets()) {
+							if (e.status.equals(CardStatus.BOARD)) {
+								c.scale = CARD_SCALE_BOARD;
+							} else if (e.status.equals(CardStatus.HAND)) {
+								c.scale = CARD_SCALE_HAND;
+							}
+						}
+						this.animationtimer = 0.5;
+					} else if (this.currentEvent instanceof EventBattlecry) {
+						EventBattlecry e = (EventBattlecry) this.currentEvent;
+						if (!(e.effect.owner instanceof Spell)) {
+							this.animationtimer = 0.7;
+						} else {
+							this.currentEvent = null;
+						}
+
+					} else if (this.currentEvent instanceof EventLastWords) {
+						this.animationtimer = 0.4;
+					} else if (this.currentEvent instanceof EventFlag || this.currentEvent instanceof EventClash
+							|| this.currentEvent instanceof EventOnAttack
+							|| this.currentEvent instanceof EventOnAttacked) {
+						this.animationtimer = 0.6;
+					} else if (this.currentEvent instanceof EventAddEffect) {
+						EventAddEffect e = (EventAddEffect) this.currentEvent;
+						if (!e.t.getTargets().isEmpty()) {
+							this.animationtimer = 0.3;
+						}
+					} else if (this.currentEvent instanceof EventRemoveEffect) {
+						EventRemoveEffect e = (EventRemoveEffect) this.currentEvent;
+						if (e.c != null) {
+							this.animationtimer = 0.3;
 						}
 					} else if (!(this.currentEvent instanceof EventCreateCard)) {
 						this.animationtimer = 0.2;
@@ -329,8 +372,74 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				g.drawString(dstring, Game.WINDOW_WIDTH / 2 - font.getWidth(dstring) / 2,
 						Game.WINDOW_HEIGHT / 2 - font.getHeight(dstring));
 				g.setColor(Color.white);
+			} else if (this.currentEvent instanceof EventPlayCard) {
+				EventPlayCard e = (EventPlayCard) this.currentEvent;
+				e.c.targetpos = new Vector2f(Game.WINDOW_WIDTH / 2, Game.WINDOW_HEIGHT / 2);
+			} else if (this.currentEvent instanceof EventPutCard) {
+
+			} else if (this.currentEvent instanceof EventBattlecry) {
+				EventBattlecry e = (EventBattlecry) this.currentEvent;
+				for (int i = 0; i < 4; i++) {
+					Image img = Game.getImage("res/game/battlecry.png");
+					float xoffset = ((38f * i) % 64) - 32;
+					float yoffset = (((32 * i) + (float) this.animationtimer * 700) % 128) - 64;
+					g.drawImage(img, e.effect.owner.pos.x - img.getWidth() / 2 + xoffset,
+							e.effect.owner.pos.y - img.getHeight() / 2 + yoffset);
+				}
+			} else if (this.currentEvent instanceof EventLastWords) {
+				EventLastWords e = (EventLastWords) this.currentEvent;
+				Image img = Game.getImage("res/game/lastwords.png");
+				float yoffset = (float) (this.animationtimer * 250) - 64;
+				g.drawImage(img, e.effect.owner.pos.x - img.getWidth() / 2,
+						e.effect.owner.pos.y - img.getHeight() / 2 + yoffset);
+			} else if (this.currentEvent instanceof EventFlag) {
+				EventFlag e = (EventFlag) this.currentEvent;
+				Image img = Game.getImage("res/game/flag.png");
+				float yoffset = (float) (this.animationtimer * this.animationtimer * 300) - 30;
+				g.drawImage(img, e.effect.owner.pos.x - img.getWidth() / 2,
+						e.effect.owner.pos.y - img.getHeight() / 2 + yoffset);
+			} else if (this.currentEvent instanceof EventClash) {
+				EventClash e = (EventClash) this.currentEvent;
+				Image img = Game.getImage("res/game/clash.png");
+				float yoffset = (float) (this.animationtimer * this.animationtimer * 300) - 30;
+				g.drawImage(img, e.effect.owner.pos.x - img.getWidth() / 2,
+						e.effect.owner.pos.y - img.getHeight() / 2 + yoffset);
+			} else if (this.currentEvent instanceof EventOnAttack) {
+				EventOnAttack e = (EventOnAttack) this.currentEvent;
+				Image img = Game.getImage("res/game/attack.png");
+				float yoffset = (float) (this.animationtimer * this.animationtimer * 300) - 30;
+				g.drawImage(img, e.effect.owner.pos.x - img.getWidth() / 2,
+						e.effect.owner.pos.y - img.getHeight() / 2 + yoffset);
+			} else if (this.currentEvent instanceof EventOnAttacked) {
+				EventOnAttacked e = (EventOnAttacked) this.currentEvent;
+				Image img = Game.getImage("res/game/defend.png");
+				float yoffset = (float) (this.animationtimer * this.animationtimer * 300) - 30;
+				g.drawImage(img, e.effect.owner.pos.x - img.getWidth() / 2,
+						e.effect.owner.pos.y - img.getHeight() / 2 + yoffset);
+			} else if (this.currentEvent instanceof EventAddEffect) {
+				EventAddEffect e = (EventAddEffect) this.currentEvent;
+				for (Card c : e.t.getTargets()) {
+					for (int i = 0; i < 4; i++) {
+						Image img = Game.getImage("res/game/battlecry.png");
+						float xoffset = (float) Math.random() * 150 - 75;
+						float yoffset = (float) (this.animationtimer * 650) - 80 + (float) Math.random() * 150 - 75;
+						g.drawImage(img, c.pos.x - img.getWidth() / 2 + xoffset,
+								c.pos.y - img.getHeight() / 2 + yoffset);
+					}
+				}
+			} else if (this.currentEvent instanceof EventRemoveEffect) {
+				EventRemoveEffect e = (EventRemoveEffect) this.currentEvent;
+				for (int i = 0; i < 4; i++) {
+					Image img = Game.getImage("res/game/battlecry.png");
+					float xoffset = (float) Math.random() * 150 - 75;
+					float yoffset = (float) (this.animationtimer * -650) + 80 + (float) Math.random() * 150 - 75;
+					g.drawImage(img, e.c.pos.x - img.getWidth() / 2 + xoffset,
+							e.c.pos.y - img.getHeight() / 2 + yoffset);
+				}
 			}
+
 		}
+
 	}
 
 	public BoardObject BOAtPos(Vector2f pos) {
@@ -541,14 +650,17 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	public void animateBattlecryTargets(boolean activate) {
 		LinkedList<Card> tc = this.getTargetableCards(this.playingCard.getNextNeededBattlecryTarget());
 		for (Card c : tc) {
-			c.scale = activate ? 1.25 : 1;
+			c.scale = activate ? CARD_SCALE_TARGET
+					: (c.status.equals(CardStatus.HAND) ? CARD_SCALE_HAND : CARD_SCALE_BOARD);
+
 		}
 	}
 
 	public void animateUnleashTargets(boolean activate) {
 		LinkedList<Card> tc = this.getTargetableCards(this.unleashingMinion.getNextNeededUnleashTarget());
 		for (Card c : tc) {
-			c.scale = activate ? 1.25 : 1;
+			c.scale = activate ? CARD_SCALE_TARGET
+					: (c.status.equals(CardStatus.HAND) ? CARD_SCALE_HAND : CARD_SCALE_BOARD);
 		}
 	}
 

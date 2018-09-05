@@ -9,7 +9,7 @@ import server.card.*;
 public class EventDestroy extends Event {
 	// killing things
 	public static final int ID = 4;
-	Target t;
+	public Target t;
 
 	public EventDestroy(Target t) {
 		super(ID);
@@ -25,6 +25,7 @@ public class EventDestroy extends Event {
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
 		for (Card c : this.t.getTargets()) {
 			if (c.alive) {
+				// TODO increase shadows by 1
 				c.alive = false;
 				switch (c.status) {
 				case HAND:
@@ -36,6 +37,7 @@ public class EventDestroy extends Event {
 						BoardObject b = (BoardObject) c;
 						b.board.removeBoardObject(b.team, b.cardpos);
 						if (!loopprotection) {
+							eventlist.add(new EventLeavePlay(c));
 							eventlist.addAll(b.lastWords());
 						}
 					}
@@ -47,7 +49,10 @@ public class EventDestroy extends Event {
 				default:
 					break;
 				}
-				c.cardpos = -1; // just in case
+				c.cardpos = c.board.getGraveyard(c.team).size(); // just in case
+				c.status = CardStatus.GRAVEYARD;
+				c.board.getGraveyard(c.team).add(c);
+
 			}
 		}
 	}

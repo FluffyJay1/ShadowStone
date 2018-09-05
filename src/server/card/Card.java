@@ -19,13 +19,13 @@ import server.Player;
 import server.card.effect.Effect;
 import server.card.effect.EffectIDLinker;
 import server.card.effect.EffectStats;
-import server.event.Event;
+import server.event.*;
 
 public class Card {
 	public static final Vector2f CARD_DIMENSIONS = new Vector2f(150, 200);
 	public static final double EPSILON = 0.0001;
-	public static final double NAME_FONT_SIZE = 24;
-	public static final double STAT_DEFAULT_SIZE = 24;
+	public static final double NAME_FONT_SIZE = 30;
+	public static final double STAT_DEFAULT_SIZE = 30;
 	public Board board;
 	public boolean alive = true;
 	public int id, cardpos, team;
@@ -41,13 +41,7 @@ public class Card {
 	// basic effects cannot be muted
 	private LinkedList<Effect> effects = new LinkedList<Effect>(), basicEffects = new LinkedList<Effect>();
 
-	public Card() {
-		this.status = CardStatus.BOARD;
-		this.team = 0;
-	}
-
-	public Card(Board board, CardStatus status, int cost, String name, String text, String imagepath, int team,
-			int id) {
+	public Card(Board board, CardStatus status, String name, String text, String imagepath, int team, int id) {
 		this.board = board;
 		this.name = name;
 		this.text = text;
@@ -62,7 +56,7 @@ public class Card {
 		this.id = id;
 		this.status = status;
 		this.team = team;
-		this.addBasicEffect(new Effect(0, "", cost));
+
 	}
 
 	public void update(double frametime) {
@@ -135,6 +129,13 @@ public class Card {
 				this.pos.y + CARD_DIMENSIONS.y * relpos.y * (float) this.scale
 						+ font.getHeight("" + stat) * (textoffset.y - 0.5f),
 				"" + stat);
+	}
+
+	public boolean isInside(Vector2f p) {
+		return p.x >= this.pos.x - this.image.getWidth() / 2 * this.scale
+				&& p.y >= this.pos.y - this.image.getHeight() / 2 * this.scale
+				&& p.x <= this.pos.x + this.image.getWidth() / 2 * this.scale
+				&& p.y <= this.pos.y + this.image.getHeight() / 2 * this.scale;
 	}
 
 	public LinkedList<Effect> getBasicEffects() {
@@ -215,10 +216,13 @@ public class Card {
 		}
 	}
 
-	public LinkedList<Event> battlecry() {
-		LinkedList<Event> list = new LinkedList<Event>();
+	public LinkedList<EventBattlecry> battlecry() {
+		LinkedList<EventBattlecry> list = new LinkedList<EventBattlecry>();
 		for (Effect e : this.getFinalEffects()) {
-			list.addAll(e.battlecry());
+			EventBattlecry temp = e.battlecry();
+			if (temp != null) {
+				list.add(temp);
+			}
 		}
 		return list;
 	}
@@ -269,19 +273,15 @@ public class Card {
 		}
 	}
 
-	public LinkedList<Event> onEvent(Event event) {
-		LinkedList<Event> list = new LinkedList<Event>();
+	public LinkedList<EventFlag> onEvent(Event event) {
+		LinkedList<EventFlag> list = new LinkedList<EventFlag>();
 		for (Effect e : this.getFinalEffects()) {
-			list.addAll(e.onEvent(event));
+			EventFlag temp = e.onEvent(event);
+			if (temp != null) {
+				list.add(temp);
+			}
 		}
 		return list;
-	}
-
-	public boolean isInside(Vector2f p) {
-		return p.x >= this.pos.x - this.image.getWidth() / 2 * this.scale
-				&& p.y >= this.pos.y - this.image.getHeight() / 2 * this.scale
-				&& p.x <= this.pos.x + this.image.getWidth() / 2 * this.scale
-				&& p.y <= this.pos.y + this.image.getHeight() / 2 * this.scale;
 	}
 
 	public String cardPosToString() {
@@ -292,6 +292,8 @@ public class Card {
 			return "board " + this.cardpos + " ";
 		case DECK:
 			return "deck " + this.cardpos + " ";
+		case GRAVEYARD:
+			return "graveyard " + this.cardpos + " ";
 		default:
 			return "";
 		}
@@ -344,6 +346,8 @@ public class Card {
 			return b.getBoardObject(team, cardpos);
 		case "deck":
 			return p.deck.cards.get(cardpos);
+		case "graveyard":
+			return p.board.getGraveyard(team).get(cardpos);
 		default:
 			return null;
 		}

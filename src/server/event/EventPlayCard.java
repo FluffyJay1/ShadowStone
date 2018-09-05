@@ -13,8 +13,8 @@ import server.card.effect.EffectStats;
 
 public class EventPlayCard extends Event {
 	public static final int ID = 11;
-	Player p;
-	Card c;
+	public Player p;
+	public Card c;
 	int position;
 
 	public EventPlayCard(Player p, Card c, int position) {
@@ -25,19 +25,15 @@ public class EventPlayCard extends Event {
 	}
 
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-		p.hand.cards.remove(c);
+		// p.hand.cards.remove(c);
 		p.mana -= c.finalStatEffects.getStat(EffectStats.COST);
 		if (c instanceof BoardObject) {
-			p.board.addBoardObject((BoardObject) c, p.team, position);
-			c.scale = 1;
-			// c.status = CardStatus.BOARD; //happens in addboardobject
-			if (c instanceof Minion) {
-				((Minion) c).summoningSickness = true;
-			}
+			eventlist.add(new EventPutCard(this.p, this.c, CardStatus.BOARD, this.p.team, this.position));
 		} else {
-			// TODO shadows increase by one
+			eventlist.add(new EventDestroy(this.c));
 		}
-		p.hand.updatePositions();
+		// p.hand.updatePositions();
+
 		eventlist.addAll(c.battlecry());
 	}
 
@@ -56,6 +52,6 @@ public class EventPlayCard extends Event {
 	}
 
 	public boolean conditions() {
-		return p.mana >= c.finalStatEffects.getStat(EffectStats.COST);
+		return p.mana >= c.finalStatEffects.getStat(EffectStats.COST) && this.c.status.equals(CardStatus.HAND);
 	}
 }

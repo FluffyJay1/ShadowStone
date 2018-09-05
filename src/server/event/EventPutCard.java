@@ -17,8 +17,8 @@ public class EventPutCard extends Event {
 	// for effects that put specific cards in hand or just draw cards
 	public static final int ID = 12;
 	Player p;
-	Target t;
-	CardStatus status;
+	public Target t;
+	public CardStatus status;
 	int targetTeam, pos; // pos == -1 means random pos
 
 	public EventPutCard(Player p, Target t, CardStatus status, int team, int pos) {
@@ -52,6 +52,9 @@ public class EventPutCard extends Event {
 					((Minion) c).health = c.finalStatEffects.getStat(EffectStats.HEALTH);
 				}
 				this.p.board.removeBoardObject((BoardObject) c);
+				if (!loopprotection) {
+					eventlist.add(new EventLeavePlay(c));
+				}
 				break;
 			case DECK:
 				this.p.deck.cards.remove(c);
@@ -68,19 +71,25 @@ public class EventPutCard extends Event {
 					if (c instanceof Minion) {
 						((Minion) c).summoningSickness = true;
 					}
+					if (!loopprotection) {
+						eventlist.add(new EventEnterPlay(c));
+					}
 				}
 			} else {
-
-				ArrayList<Card> cards = this.p.board.getCollection(this.targetTeam, this.status); // YEA
-				int temppos = this.pos == -1 ? (int) (Math.random() * cards.size()) : this.pos;
-				temppos = Math.min(temppos, cards.size());
-				c.cardpos = temppos;
-				cards.add(temppos, c);
-				if (this.status.equals(CardStatus.HAND)) {
-					this.p.board.getPlayer(this.targetTeam).hand.updatePositions();
-				}
-				if (this.status.equals(CardStatus.DECK)) {
-					this.p.board.getPlayer(this.targetTeam).deck.updatePositions();
+				if (this.status.equals(CardStatus.HAND) && this.p.hand.cards.size() >= this.p.hand.maxsize) {
+					eventlist.add(new EventMill(this.p, c));
+				} else {
+					ArrayList<Card> cards = this.p.board.getCollection(this.targetTeam, this.status); // YEA
+					int temppos = this.pos == -1 ? (int) (Math.random() * cards.size()) : this.pos;
+					temppos = Math.min(temppos, cards.size());
+					c.cardpos = temppos;
+					cards.add(temppos, c);
+					if (this.status.equals(CardStatus.HAND)) {
+						this.p.board.getPlayer(this.targetTeam).hand.updatePositions();
+					}
+					if (this.status.equals(CardStatus.DECK)) {
+						this.p.board.getPlayer(this.targetTeam).deck.updatePositions();
+					}
 				}
 			}
 			c.status = this.status;
@@ -109,6 +118,6 @@ public class EventPutCard extends Event {
 	}
 
 	public boolean conditions() {
-		return p.hand.cards.size() < p.hand.maxsize;
+		return true;
 	}
 }

@@ -50,6 +50,6 @@ public class EventMinionAttack extends Event {
 
 	@Override
 	public boolean conditions() {
-		return m1.alive && m2.alive;
+		return m1.isInPlay() && m2.isInPlay();
 	}
 }

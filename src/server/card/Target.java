@@ -107,7 +107,7 @@ public class Target {
 
 	public static Target fromString(Board b, StringTokenizer st) {
 		Effect creator = Effect.fromReference(b, st);
-		String description = st.nextToken(Game.STRING_END);
+		String description = st.nextToken(Game.STRING_END).trim();
 		st.nextToken(" \n"); // THANKS STRING TOKENIZER
 		int maxtargets = Integer.parseInt(st.nextToken());
 		int targetsize = Integer.parseInt(st.nextToken());
@@ -122,7 +122,7 @@ public class Target {
 	public void copyFromString(Board b, StringTokenizer st) {
 		this.targets.clear();
 		Effect creator = Effect.fromReference(b, st);
-		String description = st.nextToken(Game.STRING_END);
+		String description = st.nextToken(Game.STRING_END).trim();
 		st.nextToken(" \n"); // THANKS STRING TOKENIZER
 		int maxtargets = Integer.parseInt(st.nextToken());
 		int targetsize = Integer.parseInt(st.nextToken());

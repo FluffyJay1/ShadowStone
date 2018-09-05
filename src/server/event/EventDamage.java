@@ -59,7 +59,7 @@ public class EventDamage extends Event {
 					if (!loopprotection) {
 						eventlist.addAll(m.onDamaged(damage.get(i)));
 					}
-					if ((this.poisonous.get(i) && !(m instanceof Leader))
+					if ((this.poisonous.get(i) && this.damage.get(i) > 0 && !(m instanceof Leader))
 							|| (m.health > 0 && m.health <= damage.get(i))) {
 						eventlist.add(new EventDestroy(m));
 					}

@@ -12,7 +12,7 @@ import server.card.effect.EffectStats;
 
 public class EventAddEffect extends Event {
 	public static final int ID = 1;
-	Target t;
+	public Target t;
 	Effect e;
 
 	public EventAddEffect(Target t, Effect e) {

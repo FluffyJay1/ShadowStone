@@ -7,8 +7,7 @@ import java.util.StringTokenizer;
 import client.Game;
 import server.Board;
 import server.card.*;
-import server.event.Event;
-import server.event.EventDraw;
+import server.event.*;
 
 public class Effect {
 	public int id = 0, pos = 0;
@@ -20,6 +19,7 @@ public class Effect {
 	public LinkedList<Target> battlecryTargets = new LinkedList<Target>(), unleashTargets = new LinkedList<Target>();
 
 	public Effect(int id, String description) {
+		this.id = id;
 		this.description = description;
 	}
 
@@ -72,8 +72,8 @@ public class Effect {
 				+ this.getStat(EffectStats.MAGIC) + " " + this.getStat(EffectStats.HEALTH) + ")";
 	}
 
-	public LinkedList<Event> battlecry() {
-		return new LinkedList<Event>();
+	public EventBattlecry battlecry() {
+		return null;
 	}
 
 	public void setBattlecryTargets(LinkedList<Target> targets) {
@@ -103,8 +103,8 @@ public class Effect {
 		return ret;
 	}
 
-	public LinkedList<Event> unleash() {
-		return new LinkedList<Event>();
+	public EventFlag unleash() {
+		return null;
 	}
 
 	public void setUnleashTargets(LinkedList<Target> targets) {
@@ -134,36 +134,44 @@ public class Effect {
 		return ret;
 	}
 
-	public LinkedList<Event> onAttack(Minion target) {
-		return new LinkedList<Event>();
+	public EventOnAttack onAttack(Minion target) {
+		return null;
 	}
 
-	public LinkedList<Event> onAttacked(Minion target) {
-		return new LinkedList<Event>();
+	public EventOnAttacked onAttacked(Minion target) {
+		return null;
 	}
 
-	public LinkedList<Event> clash(Minion target) {
-		return new LinkedList<Event>();
+	public EventClash clash(Minion target) {
+		return null;
 	}
 
-	public LinkedList<Event> onDamaged(int damage) {
-		return new LinkedList<Event>();
+	public EventFlag onDamaged(int damage) {
+		return null;
 	}
 
-	public LinkedList<Event> onTurnStart() {
-		return new LinkedList<Event>();
+	public EventFlag onTurnStart() {
+		return null;
 	}
 
-	public LinkedList<Event> onTurnEnd() {
-		return new LinkedList<Event>();
+	public EventFlag onTurnEnd() {
+		return null;
 	}
 
-	public LinkedList<Event> lastWords() {
-		return new LinkedList<Event>();
+	public EventLastWords lastWords() {
+		return null;
 	}
 
-	public LinkedList<Event> onEvent(Event event) {
-		return new LinkedList<Event>();
+	public EventFlag onEnterPlay() {
+		return null;
+	}
+
+	public EventFlag onLeavePlay() {
+		return null;
+	}
+
+	public EventFlag onEvent(Event event) {
+		return null;
 	}
 
 	public String toString() {
@@ -175,7 +183,7 @@ public class Effect {
 		int id = Integer.parseInt(st.nextToken());
 		if (id == 0) {
 			Card owner = Card.fromReference(b, st);
-			String description = st.nextToken(Game.STRING_END);
+			String description = st.nextToken(Game.STRING_END).trim();
 			st.nextToken(" \n"); // THANKS STRING TOKENIZER
 			Effect ef = new Effect(0, description);
 			ef.owner = owner;
@@ -186,7 +194,7 @@ public class Effect {
 			Class c = EffectIDLinker.getClass(id);
 			Effect ef = null;
 			try {
-				ef = (Effect) c.getMethod("fromString", null).invoke(st);
+				ef = (Effect) c.getMethod("fromString", Board.class, StringTokenizer.class).invoke(null, b, st);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 					| NoSuchMethodException | SecurityException e) {
 				// TODO Auto-generated catch block
