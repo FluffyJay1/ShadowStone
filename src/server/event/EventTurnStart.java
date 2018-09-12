@@ -21,7 +21,7 @@ public class EventTurnStart extends Event {
 
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
 		this.p.board.currentplayerturn = this.p.team;
-		this.p.unleashedThisTurn = false;
+		this.p.unleashPower.unleashesThisTurn = 0;
 		eventlist.add(new EventDraw(this.p, 1));
 		eventlist.add(new EventManaChange(this.p, 1, true, false));
 		eventlist.add(new EventManaChange(this.p, this.p.maxmana + 1, false, true));

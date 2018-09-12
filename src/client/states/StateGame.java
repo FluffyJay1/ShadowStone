@@ -17,6 +17,7 @@ import server.card.CardStatus;
 import server.card.Leader;
 import server.card.Minion;
 import server.card.leader.Rowen;
+import server.card.unleashpower.*;
 import server.event.Event;
 import server.event.EventCreateCard;
 import server.event.EventDraw;
@@ -47,8 +48,12 @@ public class StateGame extends BasicGameState {
 				board.realBoard.eventlist.add(new EventCreateCard(board.realBoard, selected, team, CardStatus.DECK, 0));
 				cards.remove(selected);
 			}
-			board.resolveAll();
+
 		}
+		board.realBoard.eventlist.add(new EventCreateCard(board.realBoard, new UnleashImbueMagic(board.realBoard, 1), 1,
+				CardStatus.UNLEASHPOWER, 0));
+		board.realBoard.eventlist.add(new EventCreateCard(board.realBoard, new UnleashImbueMagic(board.realBoard, -1),
+				-1, CardStatus.UNLEASHPOWER, 0));
 		board.realBoard.eventlist
 				.add(new EventCreateCard(board.realBoard, new Rowen(board.realBoard, 1), 1, CardStatus.BOARD, 0));
 		board.realBoard.eventlist

@@ -1,12 +1,17 @@
 package server.card;
 
 import cardpack.basic.*;
-import server.card.leader.Rowen;
+import server.card.leader.*;
+import server.card.unleashpower.*;
 
 public class CardIDLinker {
 	public static Class<? extends Card> getClass(int id) {
+		// ids -1 to -8 reserved for leaders
+		// ids -9 to -16 reserved for unleash powers
 		// next id is 10
 		switch (id) {
+		case UnleashImbueMagic.ID:
+			return UnleashImbueMagic.class;
 		case Rowen.ID:
 			return Rowen.class;
 		case Goblin.ID:

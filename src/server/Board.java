@@ -76,6 +76,14 @@ public class Board {
 		ret.addAll(this.player1.deck.cards);
 		ret.addAll(this.player2.hand.cards);
 		ret.addAll(this.player2.deck.cards);
+		// ret.addAll(this.player1graveyard);
+		// ret.addAll(this.player2graveyard);
+		if (this.player1.unleashPower != null) {
+			ret.add(this.player1.unleashPower);
+		}
+		if (this.player2.unleashPower != null) {
+			ret.add(this.player2.unleashPower);
+		}
 		return ret;
 	}
 
@@ -279,6 +287,9 @@ public class Board {
 	}
 
 	public void playerPlayCard(Player p, Card c, int pos, String btstring) {
+		if (!p.canPlayCard(c)) { // just to be safe
+			return;
+		}
 		if (btstring != null) {
 			StringTokenizer st = new StringTokenizer(btstring);
 			c.battlecryTargetsFromString(this, st);
@@ -288,11 +299,16 @@ public class Board {
 	}
 
 	public void playerUnleashMinion(Player p, Minion m, String utstring) {
+		if (!p.canUnleashCard(m)) {
+			return;
+		}
 		if (utstring != null) {
 			StringTokenizer st = new StringTokenizer(utstring);
 			m.unleashTargetsFromString(this, st);
 		}
-		this.eventlist.add(new EventUnleash(p, m));
+		this.eventlist
+				.add(new EventManaChange(p, -p.unleashPower.finalStatEffects.getStat(EffectStats.COST), false, true));
+		this.eventlist.addAll(p.unleashPower.unleash(m));
 		this.resolveAll();
 	}
 

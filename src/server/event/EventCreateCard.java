@@ -12,6 +12,7 @@ import server.card.CardStatus;
 import server.card.Deck;
 import server.card.Hand;
 import server.card.Minion;
+import server.card.unleashpower.UnleashPower;
 
 public class EventCreateCard extends Event {
 	public static final int ID = 2;
@@ -61,6 +62,8 @@ public class EventCreateCard extends Event {
 			relevantDeck.cards.add(temppos, this.c);
 			relevantDeck.updatePositions();
 			break;
+		case UNLEASHPOWER:
+			this.b.getPlayer(this.team).unleashPower = (UnleashPower) this.c;
 		default:
 			break;
 		}
@@ -71,7 +74,7 @@ public class EventCreateCard extends Event {
 	}
 
 	public String toString() {
-		return this.id + " " + this.c.toConstructorString() + " " + this.team + " " + this.status.toString() + " "
+		return this.id + " " + this.c.toConstructorString() + this.team + " " + this.status.toString() + " "
 				+ this.cardpos + "\n";
 	}
 

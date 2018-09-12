@@ -36,11 +36,7 @@ public class UnleashButton extends UIElement {
 	public void mouseReleased(int button, int x, int y) {
 		if (this.pointIsInHitbox(new Vector2f(x, y))) {
 			if (!this.b.disableInput) {
-				((Minion) b.selectedCard).resetUnleashTargets();
-				((Minion) b.selectedCard.realCard).resetUnleashTargets();
-				this.b.unleashingMinion = (Minion) b.selectedCard;
-				this.b.resolveNoUnleashTarget();
-				this.b.animateUnleashTargets(true);
+				this.b.selectUnleashingMinion((Minion) this.b.selectedCard);
 			}
 		}
 	}

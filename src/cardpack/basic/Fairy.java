@@ -8,6 +8,6 @@ public class Fairy extends Minion {
 	public static final int ID = 9;
 
 	public Fairy(Board b, int team) {
-		super(b, CardStatus.DECK, 1, 1, 1, 1, true, "Fairy", "", "res/card/basic/fairy.png", team, ID);
+		super(b, CardStatus.DECK, 1, 1, 0, 1, true, "Fairy", "", "res/card/basic/fairy.png", team, ID);
 	}
 }

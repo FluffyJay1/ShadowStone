@@ -7,38 +7,39 @@ import server.Board;
 import server.Player;
 import server.card.Card;
 import server.card.Minion;
+import server.card.unleashpower.UnleashPower;
 
 public class EventUnleash extends Event {
 	public static final int ID = 16;
-	public Player p;
+	public Card source;
 	public Minion m;
 
-	public EventUnleash(Player p, Minion m) {
+	public EventUnleash(Card source, Minion m) {
 		super(ID);
-		this.p = p;
+		this.source = source;
 		this.m = m;
+		this.resolvefirst = true;
 	}
 
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-		// TODO add the unleash effects of individual classes
-		eventlist.add(new EventManaChange(this.p, -2, false, true));
 		eventlist.addAll(this.m.unleash());
-		this.p.unleashedThisTurn = true;
+		if (this.source instanceof UnleashPower) { // quality
+			((UnleashPower) this.source).unleashesThisTurn++;
+		}
 	}
 
 	public String toString() {
-		return this.id + " " + this.p.team + " " + m.toReference() + m.unleashTargetsToString() + "\n";
+		return this.id + " " + this.source.toReference() + m.toReference() + m.unleashTargetsToString() + "\n";
 	}
 
 	public static EventUnleash fromString(Board b, StringTokenizer st) {
-		int team = Integer.parseInt(st.nextToken());
-		Player p = b.getPlayer(team);
+		Card source = Card.fromReference(b, st);
 		Minion m = (Minion) Card.fromReference(b, st);
-		m.unleashTargetsFromString(b, st);
-		return new EventUnleash(p, m);
+		m.unleashTargetsFromString(b, st); // TODO no need?
+		return new EventUnleash(source, m);
 	}
 
 	public boolean conditions() {
-		return this.p.canUnleashCard(this.m);
+		return true;
 	}
 }

@@ -22,7 +22,7 @@ import server.card.effect.EffectStats;
 import server.event.*;
 
 public class Card {
-	public static final Vector2f CARD_DIMENSIONS = new Vector2f(150, 200);
+	public static final Vector2f CARD_DIMENSIONS = new Vector2f(150, 180);
 	public static final double EPSILON = 0.0001;
 	public static final double NAME_FONT_SIZE = 30;
 	public static final double STAT_DEFAULT_SIZE = 30;
@@ -285,18 +285,7 @@ public class Card {
 	}
 
 	public String cardPosToString() {
-		switch (this.status) {
-		case HAND:
-			return "hand " + this.cardpos + " ";
-		case BOARD:
-			return "board " + this.cardpos + " ";
-		case DECK:
-			return "deck " + this.cardpos + " ";
-		case GRAVEYARD:
-			return "graveyard " + this.cardpos + " ";
-		default:
-			return "";
-		}
+		return this.status.toString() + " " + this.cardpos + " ";
 	}
 
 	public String toString() {
@@ -340,14 +329,16 @@ public class Card {
 			return null;
 		}
 		switch (status) {
-		case "hand":
+		case "HAND":
 			return p.hand.cards.get(cardpos);
-		case "board":
+		case "BOARD":
 			return b.getBoardObject(team, cardpos);
-		case "deck":
+		case "DECK":
 			return p.deck.cards.get(cardpos);
-		case "graveyard":
+		case "GRAVEYARD":
 			return p.board.getGraveyard(team).get(cardpos);
+		case "UNLEASHPOWER":
+			return p.unleashPower;
 		default:
 			return null;
 		}
