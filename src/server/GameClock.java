@@ -1,4 +1,4 @@
-package client.states;
+package server;
 
 public class GameClock extends Thread {
 	long startTime;

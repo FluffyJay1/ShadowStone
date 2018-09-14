@@ -5,6 +5,7 @@ import java.net.DatagramSocket;
 import java.net.DatagramPacket;
 
 import java.io.IOException;
+import server.event.Event;
 
 public class DataStreamClient extends Thread {
 
@@ -23,13 +24,17 @@ public class DataStreamClient extends Thread {
 
 	}
 
-	public String send(String message) throws IOException {
-		buffer = message.getBytes();
+	public String send(Event e) throws IOException {
+		buffer = "".getBytes();
+		if (e != null) {
+			buffer = e.toString().getBytes();
+		}
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, port);
 		socket.send(packet);
 		packet = new DatagramPacket(buffer, buffer.length);
 		socket.receive(packet);
-		return "";
+		String received = new String(packet.getData(), 0, packet.getLength());
+		return received;
 	}
 
 	public void close() {
