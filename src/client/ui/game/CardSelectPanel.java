@@ -3,7 +3,9 @@ package client.ui.game;
 import org.newdawn.slick.geom.Vector2f;
 
 import client.VisualBoard;
+import client.tooltip.Tooltip;
 import client.ui.*;
+import server.card.Card;
 import server.card.CardStatus;
 import server.card.Minion;
 import server.card.effect.Effect;
@@ -13,46 +15,57 @@ public class CardSelectPanel extends UIBox {
 	VisualBoard b;
 	UnleashButton ub;
 	ScrollingContext scroll;
-	Text name, description, effects;
+	Tooltip currTooltip;
+	Card lastCardSelected;
+	TooltipDisplayPanel tooltipPanel;
+	Text effects;
+	CardSelectTooltipPanel tooltipReferencePanel;
 
 	public CardSelectPanel(UI ui, VisualBoard b) {
 		super(ui, new Vector2f(200, 400), new Vector2f(300, 400), "src/res/ui/uiboxborder.png");
 		this.b = b;
-		this.clip = true;
 		this.margins.set(10, 10);
+		this.tooltipReferencePanel = new CardSelectTooltipPanel(ui, 3);
+		this.tooltipReferencePanel.setReferenceTooltip(null);
+		this.addChild(tooltipReferencePanel);
 		this.scroll = new ScrollingContext(ui, new Vector2f(), this.getDim(true));
+		this.scroll.clip = true;
 		this.addChild(this.scroll);
+		this.tooltipPanel = new TooltipDisplayPanel(ui) {
+			@Override
+			public void mouseClicked(int button, int x, int y, int clickCount) {
+				if (this.pointIsInHitbox(new Vector2f(x, y))) {
+					((CardSelectPanel) this.getParent().getParent()).tooltipReferencePanel
+							.setReferenceTooltip(this.tooltip);
+				} else {
+					((CardSelectPanel) this.getParent().getParent()).tooltipReferencePanel.setReferenceTooltip(null);
+				}
+			}
+		};
+		this.tooltipPanel.setPos(new Vector2f(0, (float) this.getLocalTop(true)), 1);
+		this.scroll.addChild(this.tooltipPanel);
 		this.ub = new UnleashButton(ui, b);
-
-		this.scroll.addChild(ub);
-
-		this.name = new Text(ui, new Vector2f(-130, (float) this.scroll.getLocalTop(true)), "name", 260, 32,
-				"Arial Black", 32, -1, -1);
-		this.description = new Text(ui, new Vector2f((float) this.scroll.getLocalLeft(true), -200), "description", 260,
-				18, "Arial Black", 20, -1, -1);
+		this.scroll.addChild(this.ub);
 		this.effects = new Text(ui, new Vector2f((float) this.scroll.getLocalLeft(true), 200), "effects", 260, 20,
-				"Arial Black", 18, -1, -1);
-
-		this.scroll.addChild(this.name);
-		this.scroll.addChild(this.description);
+				"Univers Condensed", 24, -1, -1);
 		this.scroll.addChild(this.effects);
 	}
 
 	@Override
 	public void update(double frametime) {
 		super.update(frametime);
+		if (this.lastCardSelected != this.b.selectedCard) {
+			this.lastCardSelected = this.b.selectedCard;
+			this.tooltipReferencePanel.setReferenceTooltip(null);
+		}
 		if (this.b.selectedCard != null) {
 			// this.setPos(new Vector2f(200, 400), 1);
 			this.hide = false;
-			this.name.setText(this.b.selectedCard.name);
-			String description = "C: " + this.b.selectedCard.finalBasicStatEffects.getStat(EffectStats.COST);
-			if (this.b.selectedCard instanceof Minion) {
-				description += ", A: " + this.b.selectedCard.finalBasicStatEffects.getStat(EffectStats.ATTACK) + ", M: "
-						+ this.b.selectedCard.finalBasicStatEffects.getStat(EffectStats.MAGIC) + ", H: "
-						+ this.b.selectedCard.finalBasicStatEffects.getStat(EffectStats.HEALTH);
+			if (this.currTooltip != this.b.selectedCard.tooltip) {
+				this.currTooltip = this.b.selectedCard.tooltip;
+				this.tooltipPanel.setTooltip(this.currTooltip);
+				this.scroll.childoffset.y = 0;
 			}
-			description += "\n \n" + this.b.selectedCard.text;
-			this.description.setText(description);
 			String effectstext = "Effects:\n";
 			for (Effect e : this.b.selectedCard.getAdditionalEffects()) {
 				if (!e.description.isEmpty()) {
@@ -61,19 +74,26 @@ public class CardSelectPanel extends UIBox {
 			}
 			this.effects.setText(effectstext);
 			if (!this.ub.hide) {
-				this.ub.setPos(new Vector2f(0, (float) this.description.getBottom(false, false) + 32), 1);
+				this.ub.setPos(new Vector2f(0, (float) this.tooltipPanel.getBottom(false, false) + 32), 1);
 				this.effects.setPos(
 						new Vector2f((float) this.getLocalLeft(true), (float) this.ub.getBottom(false, false) + 10),
 						0.99);
 			} else {
 				this.effects.setPos(new Vector2f((float) this.getLocalLeft(true),
-						(float) this.description.getBottom(false, false) + 10), 0.99);
+						(float) this.tooltipPanel.getBottom(false, false) + 10), 0.99);
 			}
 		} else {
 			this.hide = true;
 		}
-		this.description.setPos(
-				new Vector2f((float) this.getLocalLeft(true), (float) this.name.getBottom(false, false) + 10), 1);
 
+	}
+
+	@Override
+	public void mouseClicked(int button, int x, int y, int clickCount) {
+		if (this.tooltipPanel.pointIsInHitbox(new Vector2f(x, y))) {
+			this.tooltipReferencePanel.setReferenceTooltip(this.b.selectedCard.tooltip);
+		} else {
+			this.tooltipReferencePanel.setReferenceTooltip(null);
+		}
 	}
 }

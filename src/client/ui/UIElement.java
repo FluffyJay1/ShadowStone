@@ -13,7 +13,7 @@ import utils.DefaultMouseListener;
 public class UIElement implements DefaultMouseListener {
 	public static final double EPSILON = 0.0001;
 
-	UI ui;
+	protected UI ui;
 	UIElement parent = null;
 	ArrayList<UIElement> children = new ArrayList<UIElement>();
 	ArrayList<UIElement> childrenAddBuffer = new ArrayList<UIElement>();
@@ -129,7 +129,7 @@ public class UIElement implements DefaultMouseListener {
 	public double getChildLocalTop(double offset) {
 		double y = this.getLocalTop(false) + offset;
 		for (UIElement u : this.getChildren()) {
-			y = Math.min(y, u.getChildLocalTop(u.pos.y));
+			y = Math.min(y, u.getChildLocalTop(offset + u.pos.y));
 		}
 		return y;
 	}
@@ -137,7 +137,8 @@ public class UIElement implements DefaultMouseListener {
 	public double getChildLocalBottom(double offset) {
 		double y = this.getLocalBottom(false) + offset;
 		for (UIElement u : this.getChildren()) {
-			y = Math.max(y, u.getChildLocalBottom(u.pos.y));
+			y = Math.max(y, u.getChildLocalBottom(offset + u.pos.y));
+
 		}
 		return y;
 	}
@@ -180,6 +181,20 @@ public class UIElement implements DefaultMouseListener {
 		for (UIElement u : this.getChildren()) {
 			u.update(frametime);
 		}
+	}
+
+	public void debugPrint(int depth) {
+		for (int i = 0; i < depth; i++) {
+			System.out.print("|");
+		}
+		System.out.println(this.debug());
+		for (UIElement u : this.getChildren()) {
+			u.debugPrint(depth + 1);
+		}
+	}
+
+	public String debug() {
+		return this.getClass().toString().substring("class client.ui.".length());
 	}
 
 	public void draw(Graphics g) {
@@ -247,9 +262,13 @@ public class UIElement implements DefaultMouseListener {
 	public void setParent(UIElement parent) { // should only be run once per
 												// thing
 		this.parent = parent;
-		if (parent.children.contains(this) == false && parent.childrenAddBuffer.contains(this) == false) {
+		if (!parent.children.contains(this) && !parent.childrenAddBuffer.contains(this)) {
 			parent.childrenAddBuffer.add(this);
 		}
+	}
+
+	public UIElement getParent() {
+		return this.parent;
 	}
 
 	public void addChild(UIElement child) {

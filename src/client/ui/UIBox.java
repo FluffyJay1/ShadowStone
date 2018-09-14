@@ -18,8 +18,7 @@ public class UIBox extends UIElement {
 			this.finalImage = this.image.getScaledCopy((int) this.getWidth(false), (int) this.getHeight(false));
 			// this.finalImage.rotate((float) this.angle);
 			if (!this.hide) {
-				g.drawImage(this.finalImage, (float) (this.getFinalPos().x - this.getWidth(false) / 2),
-						(float) (this.getFinalPos().y - this.getHeight(false) / 2));
+				g.drawImage(this.finalImage, (float) this.getLeft(true, false), (float) this.getTop(true, false));
 			}
 		}
 		if (!this.hide) {

@@ -13,6 +13,7 @@ import server.event.EventMinionAttack;
 import utils.DefaultMouseListener;
 
 public class UI { // lets do this right this time
+	public static final boolean DEBUG = false;
 	ArrayList<UIElement> parentList = new ArrayList<UIElement>();
 	ArrayList<UIElement> parentListAddBuffer = new ArrayList<UIElement>();
 	ArrayList<UIElement> parentListRemoveBuffer = new ArrayList<UIElement>();
@@ -58,6 +59,18 @@ public class UI { // lets do this right this time
 		return ret;
 	}
 
+	public void mouseClicked(int button, int x, int y, int clickCount) {
+		if (DEBUG) {
+			for (UIElement u : this.parentList) {
+				u.debugPrint(0);
+			}
+		}
+		UIElement top = this.getTopUIElement(new Vector2f(x, y), true, false, false);
+		if (top != null) {
+			top.mouseClicked(button, x, y, clickCount);
+		}
+	}
+
 	public boolean mousePressed(int button, int x, int y) {
 		UIElement top = this.getTopUIElement(new Vector2f(x, y), true, false, false);
 		if (top != null) {
@@ -72,6 +85,7 @@ public class UI { // lets do this right this time
 	}
 
 	public void mouseReleased(int button, int x, int y) {
+
 		if (this.pressedElement != null) {
 			this.pressedElement.mouseReleased(button, x, y);
 			this.pressedElement = null;
@@ -107,7 +121,7 @@ public class UI { // lets do this right this time
 	}
 
 	public void mouseWheelMoved(int change) {
-		UIElement top = this.getTopUIElement(this.lastmousepos, true, true, false);
+		UIElement top = this.getTopUIElement(this.lastmousepos, false, true, false);
 		if (top != null) {
 			top.mouseWheelMoved(change);
 		}

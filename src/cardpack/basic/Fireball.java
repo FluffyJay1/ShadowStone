@@ -3,6 +3,7 @@ package cardpack.basic;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import client.tooltip.TooltipSpell;
 import server.Board;
 import server.card.*;
 import server.card.effect.Effect;
@@ -11,13 +12,14 @@ import server.event.*;
 
 public class Fireball extends Spell {
 	public static final int ID = 3;
+	public static final TooltipSpell TOOLTIP = new TooltipSpell("Fireball",
+			"Choose 2 enemy minions. Deal 2 damage to them and 1 damage to their adjacent minions.", 2);
 	Effect e;
 
 	public Fireball(Board b, int team) {
-		super(b, CardStatus.DECK, 3, "Fireball",
-				"Choose 2 enemy minions. Deal 2 damage to them and 1 damage to their adjacent minions.",
-				"res/card/basic/fireball.png", team, ID);
+		super(b, CardStatus.DECK, 3, TOOLTIP, "res/card/basic/fireball.png", team, ID);
 		// anonymous classes within anonymous classes
+
 		this.e = new Effect(0, "") {
 			@Override
 			public EventBattlecry battlecry() {

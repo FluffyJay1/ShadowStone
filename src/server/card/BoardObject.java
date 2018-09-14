@@ -8,6 +8,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Vector2f;
 
 import client.Game;
+import client.tooltip.Tooltip;
 import server.Board;
 import server.Player;
 import server.card.effect.Effect;
@@ -16,8 +17,8 @@ import server.event.*;
 
 public class BoardObject extends Card {
 
-	public BoardObject(Board b, CardStatus status, String name, String text, String imagepath, int team, int id) {
-		super(b, status, name, text, imagepath, team, id);
+	public BoardObject(Board b, CardStatus status, Tooltip tooltip, String imagepath, int team, int id) {
+		super(b, status, tooltip, imagepath, team, id);
 	}
 
 	@Override
@@ -90,7 +91,7 @@ public class BoardObject extends Card {
 	}
 
 	public String toString() {
-		return "BoardObject " + name + " " + this.cardPosToString() + " ";
+		return "BoardObject " + this.tooltip.name + " " + this.cardPosToString() + " ";
 	}
 
 }
