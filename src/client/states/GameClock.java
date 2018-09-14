@@ -17,6 +17,10 @@ public class GameClock extends Thread {
 	}
 
 	public String getTimeReadable() {
-		return "";
+		long timeNano = getTimeNano();
+		int seconds = (int)(timeNano / 1000000000);
+		String s = "";
+		s += Integer.toString(seconds / 60) + ":" + Integer.toString(seconds % 60);
+		return s;
 	}
 }
