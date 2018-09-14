@@ -2,6 +2,7 @@ package cardpack.basic;
 
 import java.util.LinkedList;
 
+import client.tooltip.*;
 import server.Board;
 import server.card.CardStatus;
 import server.card.Minion;
@@ -10,10 +11,11 @@ import server.event.*;
 
 public class BellringerAngel extends Minion {
 	public static final int ID = 6;
+	public static final TooltipMinion TOOLTIP = new TooltipMinion("Bellringer Angel",
+			"<b> Ward. </b> \n <b> Last Words: </b> draw a card.", 2, 0, 0, 2, false, Tooltip.WARD, Tooltip.LASTWORDS);
 
 	public BellringerAngel(Board b, int team) {
-		super(b, CardStatus.DECK, 2, 0, 0, 2, false, "Bellringer Angel",
-				"<b> Ward. </b> \n <b> Last Words: </b> draw a card.", "res/card/basic/bellringerangel.png", team, ID);
+		super(b, CardStatus.DECK, 2, 0, 0, 2, false, TOOLTIP, "res/card/basic/bellringerangel.png", team, ID);
 		Effect e = new Effect(0, "<b> Ward. </b> \n <b> Last Words: </b> draw a card.") {
 			@Override
 			public EventLastWords lastWords() {

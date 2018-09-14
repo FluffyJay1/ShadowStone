@@ -2,6 +2,8 @@ package cardpack.basic;
 
 import java.util.LinkedList;
 
+import client.tooltip.Tooltip;
+import client.tooltip.TooltipAmulet;
 import server.Board;
 import server.card.Amulet;
 import server.card.Card;
@@ -16,11 +18,11 @@ import server.event.*;
 
 public class WellOfDestination extends Amulet {
 	public static final int ID = 5;
+	public static final TooltipAmulet TOOLTIP = new TooltipAmulet("Well of Destination",
+			"At the start of your turn, give a random allied minion +1/+1/+1.", 2);
 
 	public WellOfDestination(Board b, int team) {
-		super(b, CardStatus.DECK, 2, "Well of Destination",
-				"At the start of your turn, give a random allied minion +1/+1/+1.",
-				"res/card/basic/wellofdestination.png", team, ID);
+		super(b, CardStatus.DECK, 2, TOOLTIP, "res/card/basic/wellofdestination.png", team, ID);
 		Effect e = new Effect(0, "At the start of your turn, give a random allied minion +1/+1/+1") {
 			@Override
 			public EventFlag onTurnStart() {

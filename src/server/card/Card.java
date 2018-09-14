@@ -14,6 +14,7 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Vector2f;
 
 import client.Game;
+import client.tooltip.Tooltip;
 import server.Board;
 import server.Player;
 import server.card.effect.Effect;
@@ -29,7 +30,8 @@ public class Card {
 	public Board board;
 	public boolean alive = true;
 	public int id, cardpos, team;
-	public String name, text, imagepath;
+	public Tooltip tooltip;
+	public String imagepath;
 	public Vector2f targetpos, pos;
 	public double scale;
 	double speed;
@@ -41,10 +43,9 @@ public class Card {
 	// basic effects cannot be muted
 	private LinkedList<Effect> effects = new LinkedList<Effect>(), basicEffects = new LinkedList<Effect>();
 
-	public Card(Board board, CardStatus status, String name, String text, String imagepath, int team, int id) {
+	public Card(Board board, CardStatus status, Tooltip tooltip, String imagepath, int team, int id) {
 		this.board = board;
-		this.name = name;
-		this.text = text;
+		this.tooltip = tooltip;
 		if (imagepath != null) {
 			this.image = Game.getImage(imagepath).getScaledCopy((int) CARD_DIMENSIONS.x, (int) CARD_DIMENSIONS.y);
 		}
@@ -78,12 +79,12 @@ public class Card {
 		case HAND:
 			UnicodeFont font = Game.getFont("Verdana", (NAME_FONT_SIZE * this.scale), true, false);
 			// TODO: magic number below is space to display mana cost
-			if (font.getWidth(this.name) > (CARD_DIMENSIONS.x - 20) * this.scale) {
+			if (font.getWidth(this.tooltip.name) > (CARD_DIMENSIONS.x - 20) * this.scale) {
 				font = Game.getFont("Verdana", (NAME_FONT_SIZE * this.scale * (CARD_DIMENSIONS.x - 20) * this.scale
-						/ font.getWidth(this.name)), true, false);
+						/ font.getWidth(this.tooltip.name)), true, false);
 			}
-			font.drawString(this.pos.x - font.getWidth(this.name) / 2,
-					this.pos.y - CARD_DIMENSIONS.y * (float) this.scale / 2, this.name);
+			font.drawString(this.pos.x - font.getWidth(this.tooltip.name) / 2,
+					this.pos.y - CARD_DIMENSIONS.y * (float) this.scale / 2, this.tooltip.name);
 			this.drawInHand(g);
 			break;
 		default:

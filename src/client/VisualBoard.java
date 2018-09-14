@@ -29,12 +29,16 @@ import utils.DefaultMouseListener;
 
 public class VisualBoard extends Board implements DefaultMouseListener {
 	public static final int BO_SPACING = 190;
+	// distance mouse can move between mouse down and mouse up for it to count
+	// as a click
+	public static final double CLICK_DISTANCE_THRESHOLD = 5;
 	public static final double CARD_SCALE_DEFAULT = 1, CARD_SCALE_HAND = 0.75, CARD_SCALE_HAND_EXPAND = 1.2,
 			CARD_SCALE_BOARD = 1, CARD_SCALE_ABILITY = 1.5, CARD_SCALE_TARGET = 1.2, CARD_SCALE_ATTACK = 1.3,
 			CARDS_SCALE_PLAY = 2.5;
 	UI ui;
 	public Board realBoard;
-	public Card selectedCard, draggingCard, playingCard, visualPlayingCard;
+	Vector2f mouseDownPos = new Vector2f();
+	public Card preSelectedCard, selectedCard, draggingCard, playingCard, visualPlayingCard;
 	ArrayList<Card> targetedCards = new ArrayList<Card>();
 	int playingX;
 	public Minion attackingMinion, unleashingMinion;
@@ -474,23 +478,30 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	}
 
 	@Override
+	public void mouseClicked(int button, int x, int y, int clickCount) {
+		this.ui.mouseClicked(button, x, y, clickCount);
+	}
+
+	@Override
 	public void mousePressed(int button, int x, int y) {
 		// TODO Auto-generated method stub
+		this.mouseDownPos.set(x, y);
 		if (!this.ui.mousePressed(button, x, y)) { // if we didn't click on
 													// anything in the ui
 			this.selectedCard = null;
+			this.preSelectedCard = null;
 			Card c = cardInHandAtPos(new Vector2f(x, y));
 			if (c != null) {
 				if (!this.handleTargeting(c)) {
 					if (this.realBoard.player1.canPlayCard(c.realCard) && !this.disableInput && this.expandHand) {
 						this.draggingCard = c;
 					}
-					this.selectedCard = c;
+					this.preSelectedCard = c;
 					this.expandHand = true;
 				}
 			} else if (this.player1.unleashPower.isInside(new Vector2f(x, y))) {
 				this.handleTargeting(null);
-				this.selectedCard = this.player1.unleashPower;
+				this.preSelectedCard = this.player1.unleashPower;
 				if (this.player1.canUnleash() && !this.disableInput) {
 					this.player1.unleashPower.scale = CARD_SCALE_ABILITY;
 					this.draggingUnleash = true;
@@ -502,7 +513,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				}
 			} else if (this.player2.unleashPower.isInside(new Vector2f(x, y))) {
 				this.handleTargeting(null);
-				this.selectedCard = this.player1.unleashPower;
+				this.preSelectedCard = this.player1.unleashPower;
 			} else {
 				this.expandHand = x > 1000 && y > 850;
 				BoardObject bo = BOAtPos(new Vector2f(x, y));
@@ -518,7 +529,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 						}
 						bo.scale = CARD_SCALE_ATTACK;
 					}
-					this.selectedCard = bo;
+					this.preSelectedCard = bo;
 				}
 			}
 		}
@@ -537,6 +548,9 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	public void mouseReleased(int button, int x, int y) {
 		// TODO Auto-generated method stub
 		this.ui.mouseReleased(button, x, y);
+		if (this.mouseDownPos.distance(new Vector2f(x, y)) <= CLICK_DISTANCE_THRESHOLD) {
+			this.selectedCard = this.preSelectedCard;
+		}
 		if (this.attackingMinion != null) {
 			BoardObject target = BOAtPos(new Vector2f(x, y));
 			if (target != null && (target instanceof Minion) && target.team == -1

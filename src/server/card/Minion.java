@@ -13,6 +13,7 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Vector2f;
 
 import client.Game;
+import client.tooltip.*;
 import server.Board;
 import server.card.effect.Effect;
 import server.card.effect.EffectStatChange;
@@ -24,8 +25,8 @@ public class Minion extends BoardObject {
 	public boolean summoningSickness = true;
 
 	public Minion(Board board, CardStatus status, int cost, int attack, int magic, int health, boolean basicUnleash,
-			String name, String text, String imagepath, int team, int id) {
-		super(board, status, name, text, imagepath, team, id);
+			TooltipMinion tooltip, String imagepath, int team, int id) {
+		super(board, status, tooltip, imagepath, team, id);
 		this.health = health;
 		Effect e = new Effect(0, "", cost, attack, magic, health, 1, false, false, false);
 		this.addBasicEffect(e);
@@ -57,10 +58,6 @@ public class Minion extends BoardObject {
 			LinkedList<Target> list = new LinkedList<Target>();
 			list.add(t);
 			unl.setUnleashTargets(list);
-			if (!text.isEmpty()) {
-				this.text += "\n";
-			}
-			this.text += "<b> Unleash: </b> Deal X damage to an enemy minion. X equals this minion's magic.";
 			this.addBasicEffect(unl);
 		}
 
@@ -268,7 +265,7 @@ public class Minion extends BoardObject {
 	}
 
 	public String toString() {
-		return "Minion " + name + " " + this.cardPosToString() + " " + alive + " "
+		return "Minion " + this.tooltip.name + " " + this.cardPosToString() + " " + alive + " "
 				+ this.finalStatEffects.statsToString() + " " + this.health;
 	}
 }

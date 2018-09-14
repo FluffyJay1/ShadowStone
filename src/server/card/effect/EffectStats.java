@@ -31,12 +31,6 @@ public class EffectStats { // this is literally just a struct
 		this.use[index] = false;
 	}
 
-	public void applyStats(Stats stats) {
-		this.setStat(ATTACK, stats.a);
-		this.setStat(MAGIC, stats.m);
-		this.setStat(HEALTH, stats.h);
-	}
-
 	public void copyStats(EffectStats stats) {
 		for (int i = 0; i < NUM_STATS; i++) {
 			if (stats.use[i]) {

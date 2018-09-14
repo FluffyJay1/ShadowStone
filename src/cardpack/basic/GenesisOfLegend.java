@@ -2,6 +2,8 @@ package cardpack.basic;
 
 import java.util.LinkedList;
 
+import client.tooltip.Tooltip;
+import client.tooltip.TooltipAmulet;
 import server.Board;
 import server.card.Amulet;
 import server.card.Card;
@@ -16,13 +18,13 @@ import server.event.*;
 
 public class GenesisOfLegend extends Amulet {
 	public static final int ID = 7;
+	public static final TooltipAmulet TOOLTIP = new TooltipAmulet("Gensis of Legend",
+			"<b> Countdown(3). </b> At the end of your turn, give a random allied minion +0/+0/+1 and <b> Bane. </b>",
+			2, Tooltip.COUNTDOWN, Tooltip.BANE);
 
 	public GenesisOfLegend(Board b, int team) {
-		super(b, CardStatus.DECK, 2, "Gensis of Legend",
-				"<b> Countdown(3). </b> At the end of your turn, give a random allied minion +0/+0/+1 and <b> Bane. </b>",
-				"res/card/basic/genesisoflegend.png", team, ID);
-		Effect e = new Effect(0,
-				"<b> Countdown(3). </b> At the end of your turn, give a random allied minion +0/+0/+1 and <b> Bane. </b>") {
+		super(b, CardStatus.DECK, 2, TOOLTIP, "res/card/basic/genesisoflegend.png", team, ID);
+		Effect e = new Effect(0, TOOLTIP.description) {
 			@Override
 			public EventFlag onTurnEnd() {
 				EventFlag ef = new EventFlag(this) {

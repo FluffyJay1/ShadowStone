@@ -7,6 +7,7 @@ public class ScrollingContext extends UIBox {
 	public ScrollingContext(UI ui, Vector2f pos, Vector2f dim) {
 		super(ui, pos, dim, null);
 		this.scrollable = true;
+		this.ignorehitbox = true;
 	}
 
 	public void mouseWheelMoved(int change) {
