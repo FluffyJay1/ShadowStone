@@ -16,12 +16,14 @@ import server.card.effect.EffectStats;
 import server.event.*;
 
 public class Board {
+	public boolean isServer = true; // true means it is the center of game logic
 	public boolean isClient; // true means has a visualboard
 	// links cards created between board and visualboard
 	public LinkedList<Card> cardsCreated = new LinkedList<Card>();
 
 	public Player player1, player2;
-	public int currentplayerturn = 1;
+	// localteam is the team of the player, i.e. at the bottom of the screen
+	public int currentplayerturn = 1, localteam = 1;
 
 	protected ArrayList<BoardObject> player1side;
 	protected ArrayList<BoardObject> player2side;
@@ -29,7 +31,7 @@ public class Board {
 	protected ArrayList<Card> player2graveyard;
 	public ArrayList<Card> banished;
 	public LinkedList<Event> eventlist;
-	protected LinkedList<String> inputeventliststrings = new LinkedList<String>();
+
 	String output = "";
 
 	public Board() {
@@ -131,7 +133,9 @@ public class Board {
 			ret.addAll(this.player2side);
 		}
 		if (noleader) {
-			ret.remove(0); // gotem
+			if (!ret.isEmpty() && ret.get(0) instanceof Leader) {
+				ret.remove(0); // gotem
+			}
 		}
 		if (nominion) {
 			for (int i = 0; i < ret.size(); i++) {
@@ -141,7 +145,7 @@ public class Board {
 				}
 			}
 		}
-		if (noamulet) { // TODO IMPLEMENT AMULET
+		if (noamulet) {
 			for (int i = 0; i < ret.size(); i++) {
 				if (ret.get(i) instanceof Amulet) {
 					ret.remove(i);
@@ -244,6 +248,7 @@ public class Board {
 		this.resolveAll(this.eventlist, false);
 	}
 
+	// Only used by server, i.e. isServer == true
 	public void resolveAll(LinkedList<Event> eventlist, boolean loopprotection) {
 		while (!eventlist.isEmpty()) {
 			Event e = eventlist.removeFirst();
@@ -275,15 +280,18 @@ public class Board {
 	}
 
 	public void parseEventString(String s) {
-		LinkedList<Event> list = new LinkedList<Event>();
-		StringTokenizer st = new StringTokenizer(s, "\n");
-		System.out.println("EVENTSTRING:");
-		System.out.println(s);
-
-		while (st.hasMoreTokens()) {
-			String event = st.nextToken();
-			this.inputeventliststrings.add(event);
+		if (!s.isEmpty()) {
+			String[] lines = s.split("\n");
+			for (String line : lines) {
+				StringTokenizer st = new StringTokenizer(line);
+				Event e = Event.createFromString(this, st);
+				if (e != null && e.conditions()) {
+					LinkedList<Event> lmao = new LinkedList<Event>();
+					e.resolve(lmao, false);
+				}
+			}
 		}
+
 	}
 
 	public void playerPlayCard(Player p, Card c, int pos, String btstring) {
@@ -327,8 +335,8 @@ public class Board {
 	}
 
 	public void AIThink() {
-		for (int i = 1; i < this.getBoardObjects(-1).size(); i++) {
-			BoardObject bo = this.getBoardObject(-1, i);
+		for (int i = 1; i < this.getBoardObjects(this.localteam * -1).size(); i++) {
+			BoardObject bo = this.getBoardObject(this.localteam * -1, i);
 			if (bo instanceof Minion) {
 
 				ArrayList<Minion> targets = ((Minion) bo).getAttackableTargets();
@@ -344,21 +352,22 @@ public class Board {
 				}
 			}
 		}
-		int tempmana = Math.min(this.player2.maxmana, this.player2.maxmaxmana); // mm
+		int tempmana = Math.min(this.getPlayer(this.localteam * -1).maxmana,
+				this.getPlayer(this.localteam * -1).maxmaxmana); // mm
 		for (int i = 0; i < 10; i++) {
-			if (!this.player2.hand.cards.isEmpty()) {
-				Card c = Game.selectRandom(this.player2.hand.cards);
+			if (!this.getPlayer(this.localteam * -1).hand.cards.isEmpty()) {
+				Card c = Game.selectRandom(this.getPlayer(this.localteam * -1).hand.cards);
 				if (c.conditions() && tempmana >= c.finalStatEffects.getStat(EffectStats.COST)) {
 					for (Target t : c.getBattlecryTargets()) {
 						t.fillRandomTargets();
 					}
-					int randomind = (int) (Math.random() * (this.player2side.size() - 1)) + 1;
-					this.playerPlayCard(this.player2, c, randomind, null);
+					int randomind = (int) (Math.random() * (this.getBoardObjects(this.localteam * -1).size() - 1)) + 1;
+					this.playerPlayCard(this.getPlayer(this.localteam * -1), c, randomind, null);
 					tempmana -= c.finalStatEffects.getStat(EffectStats.COST);
 				}
 			}
 		}
-		this.playerEndTurn(-1);
+		this.playerEndTurn(this.localteam * -1);
 	}
 
 	public void endCurrentPlayerTurn() {

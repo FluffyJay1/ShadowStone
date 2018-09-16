@@ -1,10 +1,9 @@
 package client.tooltip;
 
-public class TooltipSpell extends Tooltip {
-	public int cost;
+import server.card.ClassCraft;
 
-	public TooltipSpell(String name, String description, int cost, Tooltip... references) {
-		super(name, cost + "-cost spell\n \n" + description, references);
-		this.cost = cost;
+public class TooltipSpell extends TooltipCard {
+	public TooltipSpell(String name, String description, ClassCraft craft, int cost, Tooltip... references) {
+		super(name, "spell\n \n" + description, craft, cost, references);
 	}
 }

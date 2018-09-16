@@ -1,10 +1,9 @@
 package client.tooltip;
 
-public class TooltipAmulet extends Tooltip {
-	public int cost;
+import server.card.ClassCraft;
 
-	public TooltipAmulet(String name, String description, int cost, Tooltip... references) {
-		super(name, cost + "-cost amulet\n \n" + description, references);
-		this.cost = cost;
+public class TooltipAmulet extends TooltipCard {
+	public TooltipAmulet(String name, String description, ClassCraft craft, int cost, Tooltip... references) {
+		super(name, "amulet\n \n" + description, craft, cost, references);
 	}
 }

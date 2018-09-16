@@ -17,8 +17,9 @@ import server.event.*;
 
 public class BoardObject extends Card {
 
-	public BoardObject(Board b, CardStatus status, Tooltip tooltip, String imagepath, int team, int id) {
-		super(b, status, tooltip, imagepath, team, id);
+	public BoardObject(Board b, CardStatus status, Tooltip tooltip, String imagepath, int team, ClassCraft craft,
+			int id) {
+		super(b, status, tooltip, imagepath, team, craft, id);
 	}
 
 	@Override

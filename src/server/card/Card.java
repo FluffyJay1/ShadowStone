@@ -17,6 +17,7 @@ import client.Game;
 import client.tooltip.Tooltip;
 import server.Board;
 import server.Player;
+import server.card.cardpack.CardSet;
 import server.card.effect.Effect;
 import server.card.effect.EffectIDLinker;
 import server.card.effect.EffectStats;
@@ -37,13 +38,14 @@ public class Card {
 	double speed;
 	Image image;
 	public CardStatus status;
+	public ClassCraft craft;
 	public Card realCard; // for visual board
 
 	public Effect finalStatEffects = new Effect(0, ""), finalBasicStatEffects = new Effect(0, "");
 	// basic effects cannot be muted
 	private LinkedList<Effect> effects = new LinkedList<Effect>(), basicEffects = new LinkedList<Effect>();
 
-	public Card(Board board, CardStatus status, Tooltip tooltip, String imagepath, int team, int id) {
+	public Card(Board board, CardStatus status, Tooltip tooltip, String imagepath, int team, ClassCraft craft, int id) {
 		this.board = board;
 		this.tooltip = tooltip;
 		if (imagepath != null) {
@@ -56,6 +58,7 @@ public class Card {
 		this.scale = 1;
 		this.id = id;
 		this.status = status;
+		this.craft = craft;
 		this.team = team;
 
 	}
@@ -300,7 +303,7 @@ public class Card {
 	public static Card createFromConstructorString(Board b, StringTokenizer st) {
 		int id = Integer.parseInt(st.nextToken());
 		int team = Integer.parseInt(st.nextToken());
-		Class<? extends Card> c = CardIDLinker.getClass(id);
+		Class<? extends Card> c = CardSet.getCardClass(id);
 		Card card = null;
 		try {
 			card = (Card) c.getConstructor(Board.class, int.class).newInstance(b, team);

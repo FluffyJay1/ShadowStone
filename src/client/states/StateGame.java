@@ -8,14 +8,16 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import cardpack.basic.*;
 import client.Game;
 import client.VisualBoard;
 import server.Board;
 import server.card.Card;
 import server.card.CardStatus;
+import server.card.ClassCraft;
 import server.card.Leader;
 import server.card.Minion;
+import server.card.cardpack.CardSet;
+import server.card.cardpack.basic.*;
 import server.card.leader.Rowen;
 import server.card.unleashpower.*;
 import server.event.Event;
@@ -60,7 +62,6 @@ public class StateGame extends BasicGameState {
 				.add(new EventCreateCard(board.realBoard, new Rowen(board.realBoard, -1), -1, CardStatus.BOARD, 0));
 		board.realBoard.eventlist.add(new EventDraw(board.realBoard.player1, 3));
 		board.realBoard.eventlist.add(new EventDraw(board.realBoard.player2, 3));
-		board.resolveAll();
 		for (int i = 0; i < 3; i++) {
 			// board.addBoardObjectToSide(new Tiny(board, 1), 1);
 
@@ -68,6 +69,9 @@ public class StateGame extends BasicGameState {
 					-1, CardStatus.BOARD, 1));
 		}
 		board.realBoard.resolveAll();
+		if (board.realBoard.localteam != board.realBoard.currentplayerturn) {
+			board.realBoard.AIThink();
+		}
 	}
 
 	@Override

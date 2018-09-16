@@ -15,6 +15,7 @@ import server.Board;
 import server.Player;
 import server.card.Card;
 import server.card.CardStatus;
+import server.card.ClassCraft;
 import server.card.Minion;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
@@ -32,8 +33,8 @@ public class UnleashPower extends Card {
 	Image subImage;
 
 	public UnleashPower(Board b, Tooltip tooltip, String imagepath, Vector2f artFocusPos, double artFocusScale,
-			int team, int id) {
-		super(b, CardStatus.UNLEASHPOWER, tooltip, imagepath, team, id);
+			int team, ClassCraft craft, int id) {
+		super(b, CardStatus.UNLEASHPOWER, tooltip, imagepath, team, craft, id);
 
 		Image scaledCopy = Game.getImage(imagepath).getScaledCopy((float) (artFocusScale));
 		this.subImage = scaledCopy.getSubImage((int) (artFocusPos.x * artFocusScale - UNLEASH_POWER_RADIUS),

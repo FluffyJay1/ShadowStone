@@ -1,4 +1,4 @@
-package cardpack.basic;
+package server.card.cardpack.basic;
 
 import java.util.LinkedList;
 
@@ -7,6 +7,7 @@ import client.tooltip.TooltipMinion;
 import server.Board;
 import server.card.BoardObject;
 import server.card.CardStatus;
+import server.card.ClassCraft;
 import server.card.Minion;
 import server.card.effect.Effect;
 import server.card.effect.EffectStatChange;
@@ -15,11 +16,13 @@ import server.event.*;
 
 public class Tiny extends Minion {
 	public static final int ID = 4;
+	public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
 	public static final TooltipMinion TOOLTIP = new TooltipMinion("Tiny",
-			"<b> Unleash: </b> Gain +2/+0/+2 and <b> Rush. </b>", 3, 2, 2, 3, false, Tooltip.UNLEASH, Tooltip.RUSH);
+			"<b> Unleash: </b> Gain +2/+0/+2 and <b> Rush. </b>", CRAFT, 3, 2, 2, 3, false, Tooltip.UNLEASH,
+			Tooltip.RUSH);
 
 	public Tiny(Board b, int team) {
-		super(b, CardStatus.DECK, 3, 2, 2, 3, false, TOOLTIP, "res/card/basic/tiny.png", team, ID);
+		super(b, CardStatus.DECK, 3, 2, 2, 3, false, TOOLTIP, "res/card/basic/tiny.png", team, CRAFT, ID);
 		Effect e = new Effect(0, "Unleash: Gain +2/+0/+2 and Rush") {
 			@Override
 			public EventFlag unleash() {

@@ -25,8 +25,8 @@ public class Minion extends BoardObject {
 	public boolean summoningSickness = true;
 
 	public Minion(Board board, CardStatus status, int cost, int attack, int magic, int health, boolean basicUnleash,
-			TooltipMinion tooltip, String imagepath, int team, int id) {
-		super(board, status, tooltip, imagepath, team, id);
+			TooltipMinion tooltip, String imagepath, int team, ClassCraft craft, int id) {
+		super(board, status, tooltip, imagepath, team, craft, id);
 		this.health = health;
 		Effect e = new Effect(0, "", cost, attack, magic, health, 1, false, false, false);
 		this.addBasicEffect(e);
