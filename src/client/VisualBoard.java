@@ -227,8 +227,8 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	}
 
 	@Override
-	public void resolveAll(LinkedList<Event> eventlist, boolean loopprotection) {
-		this.realBoard.resolveAll(eventlist, loopprotection); // gottem
+	public LinkedList<Event> resolveAll(LinkedList<Event> eventlist, boolean loopprotection) {
+		return this.realBoard.resolveAll(eventlist, loopprotection); // gottem
 
 	}
 

@@ -15,7 +15,7 @@ public class EventLeavePlay extends Event {
 	public EventLeavePlay(Card c) {
 		super(ID);
 		this.c = c;
-		this.resolvefirst = true;
+		this.priority = 1;
 	}
 
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {

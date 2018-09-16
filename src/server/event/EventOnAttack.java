@@ -16,7 +16,7 @@ public class EventOnAttack extends Event {
 	public EventOnAttack(Effect effect) {
 		super(ID);
 		this.effect = effect;
-		this.resolvefirst = true;
+		this.priority = 1;
 	}
 
 	public EventOnAttack(Effect effect, Target t) {
