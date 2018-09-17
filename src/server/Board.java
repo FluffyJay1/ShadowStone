@@ -297,6 +297,7 @@ public class Board {
 
 	}
 
+	// moved to server.playeraction
 	public void playerPlayCard(Player p, Card c, int pos, String btstring) {
 		if (!p.canPlayCard(c)) { // just to be safe
 			return;
