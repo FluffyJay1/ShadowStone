@@ -250,6 +250,7 @@ public class Board {
 
 	// Only used by server, i.e. isServer == true
 	public LinkedList<Event> resolveAll(LinkedList<Event> eventlist, boolean loopprotection) {
+		LinkedList<Event> l = new LinkedList<Event>();
 		while (!eventlist.isEmpty()) {
 			Event e = eventlist.removeFirst();
 			l.add(e);
