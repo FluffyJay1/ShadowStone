@@ -2,7 +2,7 @@ package server.event;
 
 public class EventIDLinker {
 	public static Class<? extends Event> getClass(int id) {
-		// next id is 28
+		// next id is 29
 		switch (id) {
 		case EventAddEffect.ID:
 			return EventAddEffect.class;
@@ -24,6 +24,8 @@ public class EventIDLinker {
 			return EventEnterPlay.class;
 		case EventFlag.ID:
 			return EventFlag.class;
+		case EventGameEnd.ID:
+			return EventGameEnd.class;
 		case EventLastWords.ID:
 			return EventLastWords.class;
 		case EventLeavePlay.ID:

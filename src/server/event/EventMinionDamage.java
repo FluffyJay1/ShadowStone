@@ -25,7 +25,7 @@ public class EventMinionDamage extends Event {
 		this.m2.addAll(m2);
 		this.damage = new ArrayList<Integer>();
 		this.damage.addAll(damage);
-		this.resolvefirst = true;
+		this.priority = 1;
 	}
 
 	public EventMinionDamage(Minion m1, Target m2, int damage) {
@@ -35,7 +35,7 @@ public class EventMinionDamage extends Event {
 		this.m2.add(m2);
 		this.damage = new ArrayList<Integer>();
 		this.damage.add(damage);
-		this.resolvefirst = true;
+		this.priority = 1;
 	}
 
 	@Override

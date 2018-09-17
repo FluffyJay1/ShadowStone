@@ -22,7 +22,7 @@ public class EventDraw extends Event {
 		int i;
 		for (i = 0; i < num; i++) {
 			if (p.deck.cards.size() == 0) {
-				// lose game
+				eventlist.add(new EventGameEnd(p.team * -1)); // lose the game
 			} else {
 				// this code is fucked
 				Target t = new Target(this.p.deck.cards.get(0));

@@ -124,14 +124,11 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		for (int i = 0; i < this.getPlayer(this.realBoard.localteam).hand.cards.size(); i++) {
 			Card c = this.getPlayer(this.realBoard.localteam).hand.cards.get(i);
 			if (c != this.playingCard && c != this.draggingCard && c != this.visualPlayingCard) {
-				c.targetpos.set(
-						(int) (((i) - (this.getPlayer(this.realBoard.localteam).hand.cards.size()) / 2.)
-								* (this.expandHand ? (700 + this.getPlayer(this.localteam).hand.cards.size() * 40)
-										: 450)
-								/ this.getPlayer(this.realBoard.localteam).hand.cards.size()
-								+ (this.expandHand
-										? (1300 - this.getPlayer(this.realBoard.localteam).hand.cards.size() * 20)
-										: 1400)),
+				c.targetpos.set((int) (((i) - (this.getPlayer(this.realBoard.localteam).hand.cards.size()) / 2.)
+						* (this.expandHand ? (700 + this.getPlayer(this.localteam).hand.cards.size() * 40) : 450)
+						/ this.getPlayer(this.realBoard.localteam).hand.cards.size()
+						+ (this.expandHand ? (1300 - this.getPlayer(this.realBoard.localteam).hand.cards.size() * 20)
+								: 1400)),
 						(this.expandHand ? 900 : 950));
 				c.scale = this.expandHand ? CARD_SCALE_HAND_EXPAND : CARD_SCALE_HAND;
 			}
@@ -233,8 +230,10 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	}
 
 	@Override
-	public void resolveAll(LinkedList<Event> eventlist, boolean loopprotection) {
+	public LinkedList<Event> resolveAll(LinkedList<Event> eventlist, boolean loopprotection) {
+
 		new Exception("this shouldn't happen lmao").printStackTrace();
+		return null;
 
 	}
 

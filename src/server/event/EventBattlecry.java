@@ -14,7 +14,7 @@ public class EventBattlecry extends Event {
 	public EventBattlecry(Effect effect) {
 		super(ID);
 		this.effect = effect;
-		this.resolvefirst = true;
+		this.priority = 1;
 	}
 
 	@Override

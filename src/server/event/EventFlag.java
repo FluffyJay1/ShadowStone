@@ -15,7 +15,7 @@ public class EventFlag extends Event {
 	public EventFlag(Effect effect) {
 		super(ID);
 		this.effect = effect;
-		this.resolvefirst = true;
+		this.priority = 1;
 	}
 
 	public EventFlag(Effect effect, int param) {

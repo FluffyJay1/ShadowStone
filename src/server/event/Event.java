@@ -10,7 +10,8 @@ public class Event {
 	// always go full enterprise, if you start going half enterprise you're
 	// fucking done for
 	int id = 0; // id of 0 means no side effects
-	public boolean send = true, resolvefirst = false;
+	public boolean send = true;
+	public int priority = 0;
 
 	public Event(int id) {
 		this.id = id;
