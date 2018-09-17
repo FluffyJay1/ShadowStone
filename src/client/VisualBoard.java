@@ -46,6 +46,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	EndTurnButton endTurnButton;
 	Text targetText;
 	double animationtimer = 0;
+	LinkedList<String> inputeventliststrings = new LinkedList<String>();
 	Event currentEvent;
 
 	public boolean disableInput = false;
@@ -86,57 +87,59 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	}
 
 	public void draw(Graphics g) {
-		for (int i = 1; i < player1side.size(); i++) {
-			BoardObject bo = player1side.get(i);
-			bo.targetpos.set(boardPosToX(bo.cardpos, 1), 680);
+		for (BoardObject bo : this.getBoardObjects(this.realBoard.localteam, true, false, false)) {
+			bo.targetpos.set(boardPosToX(bo.cardpos, this.localteam), 680);
 			bo.draw(g);
 		}
-		for (int i = 1; i < player2side.size(); i++) {
-			BoardObject bo = player2side.get(i);
-			bo.targetpos.set(boardPosToX((bo.cardpos), -1), 420);
+		for (BoardObject bo : this.getBoardObjects(this.localteam * -1, true, false, false)) {
+			bo.targetpos.set(boardPosToX((bo.cardpos), this.localteam * -1), 420);
 			bo.draw(g);
 		}
-		if (!player1side.isEmpty()) {
-			BoardObject player1leader = player1side.get(0);
-			player1leader.targetpos.set(960, 950);
-			player1leader.draw(g);
-			String manastring = this.player1.mana + "/" + this.player1.maxmana;
+		if (!this.getBoardObjects(this.localteam, false, false, false).isEmpty()) {
+			BoardObject localleader = this.getBoardObjects(this.localteam, false, false, false).get(0);
+			localleader.targetpos.set(960, 950);
+			localleader.draw(g);
+			String manastring = this.getPlayer(this.realBoard.localteam).mana + "/"
+					+ this.getPlayer(this.realBoard.localteam).maxmana;
 			UnicodeFont font = Game.getFont("Verdana", 24, true, false);
-			font.drawString(player1leader.pos.x - font.getWidth(manastring) / 2, player1leader.pos.y - 100, manastring);
+			font.drawString(localleader.pos.x - font.getWidth(manastring) / 2, localleader.pos.y - 100, manastring);
 		}
-		if (!player2side.isEmpty()) {
-			BoardObject player2leader = player2side.get(0);
-			player2leader.targetpos.set(960, 100);
-			player2leader.draw(g);
-			String manastring = this.player2.mana + "/" + this.player2.maxmana;
+		if (!this.getBoardObjects(this.realBoard.localteam * -1, false, false, false).isEmpty()) {
+			BoardObject otherleader = this.getBoardObjects(this.realBoard.localteam * -1, false, false, false).get(0);
+			otherleader.targetpos.set(960, 100);
+			otherleader.draw(g);
+			String manastring = this.getPlayer(this.realBoard.localteam * -1).mana + "/"
+					+ this.getPlayer(this.realBoard.localteam * -1).maxmana;
 			UnicodeFont font = Game.getFont("Verdana", 24, true, false);
-			font.drawString(player2leader.pos.x - font.getWidth(manastring) / 2, player2leader.pos.y - 100, manastring);
+			font.drawString(otherleader.pos.x - font.getWidth(manastring) / 2, otherleader.pos.y - 100, manastring);
 		}
-		if (this.player1.unleashPower != null) {
-			this.player1.unleashPower.targetpos.set(1100, 850);
+		if (this.getPlayer(this.realBoard.localteam).unleashPower != null) {
+			this.getPlayer(this.realBoard.localteam).unleashPower.targetpos.set(1100, 850);
 		}
-		if (this.player2.unleashPower != null) {
-			this.player2.unleashPower.targetpos.set(1100, 200);
+		if (this.getPlayer(this.realBoard.localteam * -1).unleashPower != null) {
+			this.getPlayer(this.realBoard.localteam * -1).unleashPower.targetpos.set(1100, 200);
 		}
 		this.player1.draw(g);
 		this.player2.draw(g);
-		for (int i = 0; i < player1.hand.cards.size(); i++) {
-			Card c = player1.hand.cards.get(i);
+		for (int i = 0; i < this.getPlayer(this.realBoard.localteam).hand.cards.size(); i++) {
+			Card c = this.getPlayer(this.realBoard.localteam).hand.cards.get(i);
 			if (c != this.playingCard && c != this.draggingCard && c != this.visualPlayingCard) {
-				c.targetpos.set((int) (((i) - (player1.hand.cards.size()) / 2.)
-						* (this.expandHand ? (700 + player1.hand.cards.size() * 40) : 450) / player1.hand.cards.size()
-						+ (this.expandHand ? (1300 - player1.hand.cards.size() * 20) : 1400)),
+				c.targetpos.set((int) (((i) - (this.getPlayer(this.realBoard.localteam).hand.cards.size()) / 2.)
+						* (this.expandHand ? (700 + this.getPlayer(this.localteam).hand.cards.size() * 40) : 450)
+						/ this.getPlayer(this.realBoard.localteam).hand.cards.size()
+						+ (this.expandHand ? (1300 - this.getPlayer(this.realBoard.localteam).hand.cards.size() * 20)
+								: 1400)),
 						(this.expandHand ? 900 : 950));
 				c.scale = this.expandHand ? CARD_SCALE_HAND_EXPAND : CARD_SCALE_HAND;
 			}
 
 			c.draw(g);
 		}
-		for (int i = 0; i < player2.hand.cards.size(); i++) {
-			Card c = player2.hand.cards.get(i);
+		for (int i = 0; i < getPlayer(this.realBoard.localteam * -1).hand.cards.size(); i++) {
+			Card c = getPlayer(this.realBoard.localteam * -1).hand.cards.get(i);
 			if (c != this.visualPlayingCard) {
-				c.targetpos.set(
-						(int) (((i) - (player2.hand.cards.size()) / 2.) * 500 / player2.hand.cards.size() + 1500), 100);
+				c.targetpos.set((int) (((i) - (getPlayer(this.realBoard.localteam * -1).hand.cards.size()) / 2.) * 500
+						/ getPlayer(this.realBoard.localteam * -1).hand.cards.size() + 1500), 100);
 				c.scale = CARD_SCALE_HAND;
 
 			}
@@ -161,8 +164,8 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		}
 		ui.draw(g);
 		if (this.draggingCard != null && this.draggingCard instanceof BoardObject && this.ui.lastmousepos.y < 750) {
-			g.drawLine(this.playBoardPosToX(this.XToPlayBoardPos(this.ui.lastmousepos.x, 1), 1), 600,
-					this.playBoardPosToX(this.XToPlayBoardPos(this.ui.lastmousepos.x, 1), 1), 800);
+			g.drawLine(this.playBoardPosToX(this.XToPlayBoardPos(this.ui.lastmousepos.x, 1), this.localteam), 600,
+					this.playBoardPosToX(this.XToPlayBoardPos(this.ui.lastmousepos.x, 1), this.localteam), 800);
 		}
 		this.drawEventAnimation(g);
 	}
@@ -228,7 +231,25 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 
 	@Override
 	public LinkedList<Event> resolveAll(LinkedList<Event> eventlist, boolean loopprotection) {
-		return this.realBoard.resolveAll(eventlist, loopprotection); // gottem
+
+		new Exception("this shouldn't happen lmao").printStackTrace();
+		return null;
+
+	}
+
+	@Override
+	public void parseEventString(String s) {
+		if (!this.realBoard.isServer) {
+			this.realBoard.parseEventString(s);
+		}
+		StringTokenizer st = new StringTokenizer(s, "\n");
+		System.out.println("EVENTSTRING:");
+		System.out.println(s);
+
+		while (st.hasMoreTokens()) {
+			String event = st.nextToken();
+			this.inputeventliststrings.add(event);
+		}
 
 	}
 
@@ -256,7 +277,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 						this.animationtimer = 1;
 					} else if (this.currentEvent instanceof EventTurnStart) {
 						this.animationtimer = 1;
-						if (((EventTurnStart) this.currentEvent).p.team == -1) {
+						if (((EventTurnStart) this.currentEvent).p.team != this.realBoard.localteam) {
 							this.realBoard.AIThink();
 						} else {
 							this.disableInput = false;
@@ -370,7 +391,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				EventTurnStart e = (EventTurnStart) this.currentEvent;
 				UnicodeFont font = Game.getFont("Verdana", 80, true, false);
 				String dstring = "TURN START";
-				switch (e.p.team) {
+				switch (e.p.team * this.realBoard.localteam) { // ez hack
 				case 1:
 					g.setColor(Color.cyan);
 					dstring = "YOUR TURN";
@@ -469,9 +490,9 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	}
 
 	public Card cardInHandAtPos(Vector2f pos) {
-		for (int i = player1.hand.cards.size() - 1; i >= 0; i--) {
-			if (player1.hand.cards.get(i).isInside(pos)) {
-				return player1.hand.cards.get(i);
+		for (int i = getPlayer(this.realBoard.localteam).hand.cards.size() - 1; i >= 0; i--) {
+			if (getPlayer(this.realBoard.localteam).hand.cards.get(i).isInside(pos)) {
+				return getPlayer(this.realBoard.localteam).hand.cards.get(i);
 			}
 		}
 		return null;
@@ -493,35 +514,36 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 			Card c = cardInHandAtPos(new Vector2f(x, y));
 			if (c != null) {
 				if (!this.handleTargeting(c)) {
-					if (this.realBoard.player1.canPlayCard(c.realCard) && !this.disableInput && this.expandHand) {
+					if (this.realBoard.getPlayer(this.realBoard.localteam).canPlayCard(c.realCard) && !this.disableInput
+							&& this.expandHand) {
 						this.draggingCard = c;
 					}
 					this.preSelectedCard = c;
 					this.expandHand = true;
 				}
-			} else if (this.player1.unleashPower.isInside(new Vector2f(x, y))) {
+			} else if (this.getPlayer(this.realBoard.localteam).unleashPower.isInside(new Vector2f(x, y))) {
 				this.handleTargeting(null);
-				this.preSelectedCard = this.player1.unleashPower;
-				if (this.player1.canUnleash() && !this.disableInput) {
-					this.player1.unleashPower.scale = CARD_SCALE_ABILITY;
+				this.preSelectedCard = this.getPlayer(this.realBoard.localteam).unleashPower;
+				if (this.getPlayer(this.realBoard.localteam).canUnleash() && !this.disableInput) {
+					this.getPlayer(this.realBoard.localteam).unleashPower.scale = CARD_SCALE_ABILITY;
 					this.draggingUnleash = true;
-					for (BoardObject b : this.getBoardObjects(1)) {
-						if (b instanceof Minion && this.player1.canUnleashCard(b)) {
+					for (BoardObject b : this.getBoardObjects(this.localteam)) {
+						if (b instanceof Minion && this.getPlayer(this.realBoard.localteam).canUnleashCard(b)) {
 							b.scale = CARD_SCALE_TARGET;
 						}
 					}
 				}
-			} else if (this.player2.unleashPower.isInside(new Vector2f(x, y))) {
+			} else if (this.getPlayer(this.realBoard.localteam * -1).unleashPower.isInside(new Vector2f(x, y))) {
 				this.handleTargeting(null);
-				this.preSelectedCard = this.player1.unleashPower;
+				this.preSelectedCard = this.getPlayer(this.realBoard.localteam * -1).unleashPower;
 			} else {
 				this.expandHand = x > 1000 && y > 850;
 				BoardObject bo = BOAtPos(new Vector2f(x, y));
 				if (!this.handleTargeting(bo)) {
-					if (bo != null && bo instanceof Minion && bo.realCard.team == 1
+					if (bo != null && bo instanceof Minion && bo.realCard.team == this.realBoard.localteam
 							&& ((Minion) bo.realCard).canAttack() && !this.disableInput) {
 						this.attackingMinion = (Minion) bo;
-						for (BoardObject b : this.getBoardObjects(-1)) {
+						for (BoardObject b : this.getBoardObjects(this.realBoard.localteam * -1)) {
 							if (b instanceof Minion && ((Minion) this.attackingMinion.realCard).getAttackableTargets()
 									.contains((Minion) b.realCard)) {
 								b.scale = CARD_SCALE_TARGET;
@@ -553,12 +575,12 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		}
 		if (this.attackingMinion != null) {
 			BoardObject target = BOAtPos(new Vector2f(x, y));
-			if (target != null && (target instanceof Minion) && target.team == -1
+			if (target != null && (target instanceof Minion) && target.team != this.realBoard.localteam
 					&& ((Minion) this.attackingMinion.realCard).getAttackableTargets().contains(target.realCard)) {
 				this.realBoard.playerOrderAttack((Minion) this.attackingMinion.realCard, (Minion) target.realCard);
 				target.scale = CARD_SCALE_BOARD;
 			}
-			for (BoardObject b : this.getBoardObjects(-1)) {
+			for (BoardObject b : this.getBoardObjects(this.localteam * -1)) {
 				if (b instanceof Minion && ((Minion) this.attackingMinion.realCard).getAttackableTargets()
 						.contains((Minion) b.realCard)) {
 					b.scale = CARD_SCALE_BOARD;
@@ -567,19 +589,20 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 			this.attackingMinion.scale = CARD_SCALE_BOARD;
 			this.attackingMinion = null;
 		} else if (this.draggingUnleash) {
-			this.player1.unleashPower.scale = CARD_SCALE_DEFAULT;
-			for (BoardObject b : this.getBoardObjects(1)) {
+			this.getPlayer(this.realBoard.localteam).unleashPower.scale = CARD_SCALE_DEFAULT;
+			for (BoardObject b : this.getBoardObjects(this.realBoard.localteam)) {
 				if (b instanceof Minion) {
 					b.scale = CARD_SCALE_BOARD;
 				}
 			}
 			this.draggingUnleash = false;
 			BoardObject target = this.BOAtPos(new Vector2f(x, y));
-			if (target != null && target instanceof Minion && target.team == 1 && this.player1.canUnleashCard(target)) {
+			if (target != null && target instanceof Minion && target.team == this.realBoard.localteam
+					&& this.getPlayer(this.realBoard.localteam).canUnleashCard(target)) {
 				this.selectUnleashingMinion((Minion) target);
 			}
 		} else if (this.draggingCard != null) {
-			if (y < 750 && this.player1.canPlayCard(this.draggingCard)) {
+			if (y < 750 && this.getPlayer(this.realBoard.localteam).canPlayCard(this.draggingCard)) {
 				this.playingCard = this.draggingCard;
 				this.selectedCard = null;
 				this.resolveNoBattlecryTarget();
@@ -592,8 +615,9 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		if (this.playingCard != null) {
 			Target t = this.playingCard.getNextNeededBattlecryTarget();
 			if (t == null) {
-				this.realBoard.playerPlayCard(this.realBoard.player1, this.playingCard.realCard,
-						XToPlayBoardPos(this.playingX, 1), this.playingCard.battlecryTargetsToString());
+				this.realBoard.playerPlayCard(this.realBoard.getPlayer(this.realBoard.localteam),
+						this.playingCard.realCard, XToPlayBoardPos(this.playingX, this.localteam),
+						this.playingCard.battlecryTargetsToString());
 				this.playingCard = null;
 			} else {
 				this.playingCard.targetpos = new Vector2f(200, 300);
@@ -602,8 +626,8 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		} else if (this.unleashingMinion != null) {
 			Target t = this.unleashingMinion.getNextNeededUnleashTarget();
 			if (t == null) {
-				this.realBoard.playerUnleashMinion(this.realBoard.player1, (Minion) this.unleashingMinion.realCard,
-						this.unleashingMinion.unleashTargetsToString());
+				this.realBoard.playerUnleashMinion(this.realBoard.getPlayer(this.realBoard.localteam),
+						(Minion) this.unleashingMinion.realCard, this.unleashingMinion.unleashTargetsToString());
 				this.unleashingMinion.scale = CARD_SCALE_BOARD;
 				this.unleashingMinion = null;
 			} else {

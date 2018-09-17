@@ -1,14 +1,17 @@
 package client.tooltip;
 
-public class TooltipMinion extends Tooltip {
-	public int cost, attack, magic, health;
+import server.card.ClassCraft;
 
-	public TooltipMinion(String name, String description, int cost, int attack, int magic, int health,
+public class TooltipMinion extends TooltipCard {
+	public int attack, magic, health;
+
+	public TooltipMinion(String name, String description, ClassCraft craft, int cost, int attack, int magic, int health,
 			boolean basicUnleash, Tooltip... references) {
 		super(name,
-				cost + "-cost minion\nA:" + attack + ", M:" + magic + ", H:" + health + "\n \n" + (basicUnleash
+				"minion\nA:" + attack + ", M:" + magic + ", H:" + health + "\n \n" + (basicUnleash
 						? "<b> Unleash: </b> Deal X damage to an enemy minion. X equals this minion's magic.\n" : "")
-						+ description);
+						+ description,
+				craft, cost);
 		if (basicUnleash) {
 			this.references = new Tooltip[references.length + 1];
 			this.references[0] = Tooltip.UNLEASH;
@@ -16,7 +19,6 @@ public class TooltipMinion extends Tooltip {
 		} else {
 			this.references = references;
 		}
-		this.cost = cost;
 		this.attack = attack;
 		this.magic = magic;
 		this.health = health;

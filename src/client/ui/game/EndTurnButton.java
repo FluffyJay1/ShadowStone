@@ -32,7 +32,7 @@ public class EndTurnButton extends UIBox {
 	public void mouseReleased(int button, int x, int y) {
 		if (this.pointIsInHitbox(new Vector2f(x, y))) {
 			if (!this.b.disableInput) {
-				this.b.realBoard.playerEndTurn(1);
+				this.b.realBoard.playerEndTurn(this.b.localteam);
 				this.b.handleTargeting(null);
 				this.b.disableInput = true;
 			}

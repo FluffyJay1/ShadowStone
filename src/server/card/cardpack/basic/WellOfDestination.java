@@ -1,4 +1,4 @@
-package cardpack.basic;
+package server.card.cardpack.basic;
 
 import java.util.LinkedList;
 
@@ -8,6 +8,7 @@ import server.Board;
 import server.card.Amulet;
 import server.card.Card;
 import server.card.CardStatus;
+import server.card.ClassCraft;
 import server.card.Leader;
 import server.card.Minion;
 import server.card.Target;
@@ -16,17 +17,17 @@ import server.card.effect.EffectStatChange;
 import server.card.effect.EffectStats;
 import server.event.*;
 
-public class GenesisOfLegend extends Amulet {
-	public static final int ID = 7;
-	public static final TooltipAmulet TOOLTIP = new TooltipAmulet("Gensis of Legend",
-			"<b> Countdown(3). </b> At the end of your turn, give a random allied minion +0/+0/+1 and <b> Bane. </b>",
-			2, Tooltip.COUNTDOWN, Tooltip.BANE);
+public class WellOfDestination extends Amulet {
+	public static final int ID = 5;
+	public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
+	public static final TooltipAmulet TOOLTIP = new TooltipAmulet("Well of Destination",
+			"At the start of your turn, give a random allied minion +1/+1/+1.", CRAFT, 2);
 
-	public GenesisOfLegend(Board b, int team) {
-		super(b, CardStatus.DECK, 2, TOOLTIP, "res/card/basic/genesisoflegend.png", team, ID);
-		Effect e = new Effect(0, TOOLTIP.description) {
+	public WellOfDestination(Board b, int team) {
+		super(b, CardStatus.DECK, 2, TOOLTIP, "res/card/basic/wellofdestination.png", team, CRAFT, ID);
+		Effect e = new Effect(0, "At the start of your turn, give a random allied minion +1/+1/+1") {
 			@Override
-			public EventFlag onTurnEnd() {
+			public EventFlag onTurnStart() {
 				EventFlag ef = new EventFlag(this) {
 					@Override
 					public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
@@ -43,17 +44,17 @@ public class GenesisOfLegend extends Amulet {
 							}
 						};
 						eventlist.add(new EventResolveTarget(t));
-						EffectStatChange e = new EffectStatChange(
-								"Gained +0/+0/+1 and <b> Bane </b> from Genesis of Legend.");
+						EffectStatChange e = new EffectStatChange("Gained +1/+1/+1 from Well of Destination");
+						e.change.setStat(EffectStats.ATTACK, 1);
+						e.change.setStat(EffectStats.MAGIC, 1);
 						e.change.setStat(EffectStats.HEALTH, 1);
-						e.set.setStat(EffectStats.BANE, 1);
 						eventlist.add(new EventAddEffect(t, e));
 					}
 				};
 				return ef;
 			}
 		};
-		e.set.setStat(EffectStats.COUNTDOWN, 3);
 		this.addBasicEffect(e);
 	}
+
 }

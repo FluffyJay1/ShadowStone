@@ -2,8 +2,8 @@ package server.card;
 
 import java.util.ArrayList;
 
-import cardpack.basic.*;
 import server.Board;
+import server.card.cardpack.basic.*;
 
 public class Deck {
 	Board board;
