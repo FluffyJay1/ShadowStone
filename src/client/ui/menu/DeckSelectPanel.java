@@ -69,10 +69,13 @@ public class DeckSelectPanel extends UIBox {
 	public void onAlert(String strarg, int... intarg) {
 		switch (strarg) {
 		case DECK_CONFIRM:
-		case DECK_CANCEL:
 			if (this.selectedDeckUnit != null) {
 				this.hide = true;
 			}
+			this.alert(strarg, intarg);
+			break;
+		case DECK_CANCEL:
+			this.hide = true;
 			this.alert(strarg, intarg);
 			break;
 		case DECK_DELETE:
