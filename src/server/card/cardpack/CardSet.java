@@ -118,6 +118,13 @@ public class CardSet {
 
 	}
 
+	/**
+	 * Maps a card id to its tooltip
+	 * 
+	 * @param id
+	 *            the id of the card
+	 * @return the tooltip of the card
+	 */
 	public static TooltipCard getCardTooltip(int id) {
 		Class<? extends Card> c = getCardClass(id);
 		try {
