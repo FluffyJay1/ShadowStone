@@ -10,9 +10,10 @@ import server.card.Minion;
 public class Fairy extends Minion {
 	public static final int ID = 9;
 	public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
-	public static final TooltipMinion TOOLTIP = new TooltipMinion("Fairy", "", CRAFT, 1, 1, 0, 1, true);
+	public static final TooltipMinion TOOLTIP = new TooltipMinion("Fairy", "", "res/card/basic/fairy.png", CRAFT, 1, 1,
+			0, 1, true, ID);
 
 	public Fairy(Board b, int team) {
-		super(b, CardStatus.DECK, 1, 1, 0, 1, true, TOOLTIP, "res/card/basic/fairy.png", team, CRAFT, ID);
+		super(b, team, TOOLTIP);
 	}
 }

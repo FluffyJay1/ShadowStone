@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import client.tooltip.TooltipCard;
 import server.card.Card;
 import server.card.ClassCraft;
 import server.card.cardpack.basic.CardSetBasic;
@@ -83,18 +84,14 @@ public class CardSet {
 	 * 
 	 * @param crafts
 	 *            the crafts of cards that remain
+	 * @return the modified cardset
 	 */
-	public void filterCraft(ClassCraft... crafts) {
+	public CardSet filterCraft(ClassCraft... crafts) {
 		Predicate<Integer> notmatch = i -> {
-			try {
-				return !Arrays.asList(crafts).contains(getCardClass(i).getField("CRAFT").get(null));
-			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			return false;
+			return !Arrays.asList(crafts).contains(getCardTooltip(i).craft);
 		};
 		this.ids.removeIf(notmatch);
+		return this;
 	}
 
 	/**
@@ -119,5 +116,16 @@ public class CardSet {
 			return null;
 		}
 
+	}
+
+	public static TooltipCard getCardTooltip(int id) {
+		Class<? extends Card> c = getCardClass(id);
+		try {
+			return (TooltipCard) c.getField("TOOLTIP").get(null);
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

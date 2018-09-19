@@ -14,11 +14,11 @@ public class BellringerAngel extends Minion {
 	public static final int ID = 6;
 	public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
 	public static final TooltipMinion TOOLTIP = new TooltipMinion("Bellringer Angel",
-			"<b> Ward. </b> \n <b> Last Words: </b> draw a card.", CRAFT, 2, 0, 0, 2, false, Tooltip.WARD,
-			Tooltip.LASTWORDS);
+			"<b> Ward. </b> \n <b> Last Words: </b> draw a card.", "res/card/basic/bellringerangel.png", CRAFT, 2, 0, 0,
+			2, false, ID, Tooltip.WARD, Tooltip.LASTWORDS);
 
 	public BellringerAngel(Board b, int team) {
-		super(b, CardStatus.DECK, 2, 0, 0, 2, false, TOOLTIP, "res/card/basic/bellringerangel.png", team, CRAFT, ID);
+		super(b, team, TOOLTIP);
 		Effect e = new Effect(0, "<b> Ward. </b> \n <b> Last Words: </b> draw a card.") {
 			@Override
 			public EventLastWords lastWords() {

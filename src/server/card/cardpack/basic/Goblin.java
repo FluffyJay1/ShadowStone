@@ -9,9 +9,10 @@ import server.card.Minion;
 public class Goblin extends Minion {
 	public static final int ID = 1;
 	public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
-	public static final TooltipMinion TOOLTIP = new TooltipMinion("Goblin", "", CRAFT, 1, 1, 0, 2, true);
+	public static final TooltipMinion TOOLTIP = new TooltipMinion("Goblin", "", "res/card/basic/goblin.png", CRAFT, 1,
+			1, 0, 2, true, ID);
 
 	public Goblin(Board b, int team) {
-		super(b, CardStatus.DECK, 1, 1, 0, 2, true, TOOLTIP, "res/card/basic/goblin.png", team, CRAFT, ID);
+		super(b, team, TOOLTIP);
 	}
 }

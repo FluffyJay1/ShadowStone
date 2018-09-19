@@ -14,11 +14,12 @@ public class Fireball extends Spell {
 	public static final int ID = 3;
 	public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
 	public static final TooltipSpell TOOLTIP = new TooltipSpell("Fireball",
-			"Choose 2 enemy minions. Deal 2 damage to them and 1 damage to their adjacent minions.", CRAFT, 3);
+			"Choose 2 enemy minions. Deal 2 damage to them and 1 damage to their adjacent minions.",
+			"res/card/basic/fireball.png", CRAFT, 3, ID);
 	Effect e;
 
 	public Fireball(Board b, int team) {
-		super(b, CardStatus.DECK, 3, TOOLTIP, "res/card/basic/fireball.png", team, CRAFT, ID);
+		super(b, team, TOOLTIP);
 		// anonymous classes within anonymous classes
 
 		this.e = new Effect(0, "") {

@@ -57,6 +57,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		super();
 		this.ui = new UI();
 		this.isClient = true;
+		this.isServer = false;
 		this.realBoard = new Board();
 		this.realBoard.isClient = true;
 		this.cardSelectPanel = new CardSelectPanel(this.ui, this);

@@ -14,7 +14,7 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Vector2f;
 
 import client.Game;
-import client.tooltip.Tooltip;
+import client.tooltip.*;
 import server.Board;
 import server.Player;
 import server.card.cardpack.CardSet;
@@ -31,7 +31,7 @@ public class Card {
 	public Board board;
 	public boolean alive = true;
 	public int id, cardpos, team;
-	public Tooltip tooltip;
+	public TooltipCard tooltip;
 	public String imagepath;
 	public Vector2f targetpos, pos;
 	public double scale;
@@ -45,20 +45,21 @@ public class Card {
 	// basic effects cannot be muted
 	private LinkedList<Effect> effects = new LinkedList<Effect>(), basicEffects = new LinkedList<Effect>();
 
-	public Card(Board board, CardStatus status, Tooltip tooltip, String imagepath, int team, ClassCraft craft, int id) {
+	public Card(Board board, int team, TooltipCard tooltip) {
 		this.board = board;
 		this.tooltip = tooltip;
-		if (imagepath != null) {
-			this.image = Game.getImage(imagepath).getScaledCopy((int) CARD_DIMENSIONS.x, (int) CARD_DIMENSIONS.y);
+		if (tooltip.imagepath != null) {
+			this.image = Game.getImage(tooltip.imagepath).getScaledCopy((int) CARD_DIMENSIONS.x,
+					(int) CARD_DIMENSIONS.y);
 		}
-		this.imagepath = imagepath;
+		this.imagepath = tooltip.imagepath;
 		this.targetpos = new Vector2f();
 		this.pos = new Vector2f();
 		this.speed = 0.999;
 		this.scale = 1;
-		this.id = id;
-		this.status = status;
-		this.craft = craft;
+		this.id = tooltip.id;
+		this.status = CardStatus.DECK;
+		this.craft = tooltip.craft;
 		this.team = team;
 
 	}
@@ -100,7 +101,7 @@ public class Card {
 	}
 
 	public void drawInHand(Graphics g) {
-		if (this.realCard.board.getPlayer(this.team).canPlayCard(this.realCard)
+		if (this.realCard != null && this.realCard.board.getPlayer(this.team).canPlayCard(this.realCard)
 				&& this.team == this.board.currentplayerturn) {
 			g.setColor(org.newdawn.slick.Color.cyan);
 			g.drawRect((float) (this.pos.x - CARD_DIMENSIONS.x * this.scale / 2),

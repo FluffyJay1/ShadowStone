@@ -26,7 +26,7 @@ public class Player {
 		this.team = team;
 		this.deck = new Deck(board, team);
 		this.hand = new Hand(board, team);
-		// this.unleashPower = new UnleashImbueMagic(board, team);
+		this.unleashPower = new UnleashImbueMagic(board, team);
 	}
 
 	public void update(double frametime) {

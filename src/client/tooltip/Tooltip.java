@@ -24,12 +24,17 @@ public class Tooltip {
 	public static final Tooltip COUNTDOWN = new Tooltip("Countdown",
 			"At the start of the player's turn, cards in play with <b> Countdown </b> count down by one. When their <b> Countdown </b> goes to 0, the card is destroyed.");
 
-	public String name, description;
+	public String name, description, imagepath;
 	public Tooltip[] references;
 
 	public Tooltip(String name, String description, Tooltip... references) {
 		this.name = name;
 		this.description = description;
 		this.references = references;
+	}
+
+	public Tooltip(String name, String description, String imagepath, Tooltip... references) {
+		this(name, description, references);
+		this.imagepath = imagepath;
 	}
 }

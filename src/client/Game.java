@@ -15,12 +15,14 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.font.effects.OutlineEffect;
 import org.newdawn.slick.state.StateBasedGame;
 
-import client.states.StateGame;
+import client.states.*;
+import server.card.cardpack.ConstructedDeck;
 
 public class Game extends StateBasedGame {
 	public static int STATE_MENU = 0;
 	public static int STATE_GAME = 1;
 	public static int STATE_HELP = 2;
+	public static int STATE_DECKBUILD = 3;
 	public static final int WINDOW_WIDTH = 1920;
 	public static final int WINDOW_HEIGHT = 1080;
 	public static final int SERVER_PORT = 9091;
@@ -40,14 +42,15 @@ public class Game extends StateBasedGame {
 
 	public Game(String title) {
 		super(title);
+		ConstructedDeck.loadFromFile();
 	}
 
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
 		// TODO Auto-generated method stub
-		// addState(new StateMenu());
+		addState(new StateMenu());
 		addState(new StateGame());
-
+		addState(new StateDeckbuild());
 	}
 
 	public static Image getImage(String path) {

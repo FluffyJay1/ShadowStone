@@ -17,6 +17,7 @@ import server.card.ClassCraft;
 import server.card.Leader;
 import server.card.Minion;
 import server.card.cardpack.CardSet;
+import server.card.cardpack.ConstructedDeck;
 import server.card.cardpack.basic.*;
 import server.card.leader.Rowen;
 import server.card.unleashpower.*;
@@ -26,24 +27,34 @@ import server.event.EventDraw;
 import server.event.EventMinionAttack;
 
 public class StateGame extends BasicGameState {
+	public static ConstructedDeck tempdeck;
 	VisualBoard board;
 
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		board = new VisualBoard();
 		arg0.getInput().addMouseListener(board);
 		for (int team = 1; team >= -1; team -= 2) { // deckbuilding 101
 			ArrayList<Card> cards = new ArrayList<Card>();
-			for (int i = 0; i < 5; i++) {
-				cards.add(new Goblin(board.realBoard, team));
-				cards.add(new Tiny(board.realBoard, team));
-				cards.add(new Fireball(board.realBoard, team));
-				cards.add(new Fighter(board.realBoard, team));
-				cards.add(new WellOfDestination(board.realBoard, team));
-				cards.add(new BellringerAngel(board.realBoard, team));
-				cards.add(new GenesisOfLegend(board.realBoard, team));
-				cards.add(new WoodOfBrambles(board.realBoard, team));
+			if (team == board.localteam && tempdeck != null) {
+				cards.addAll(tempdeck.convertToCards(board.realBoard, team));
+			} else {
+				for (int i = 0; i < 5; i++) {
+					cards.add(new Goblin(board.realBoard, team));
+					cards.add(new Tiny(board.realBoard, team));
+					cards.add(new Fireball(board.realBoard, team));
+					cards.add(new Fighter(board.realBoard, team));
+					cards.add(new WellOfDestination(board.realBoard, team));
+					cards.add(new BellringerAngel(board.realBoard, team));
+					cards.add(new GenesisOfLegend(board.realBoard, team));
+					cards.add(new WoodOfBrambles(board.realBoard, team));
+				}
 			}
 			while (!cards.isEmpty()) {
 				Card selected = Game.selectRandom(cards);
@@ -72,6 +83,11 @@ public class StateGame extends BasicGameState {
 		if (board.realBoard.localteam != board.realBoard.currentplayerturn) {
 			board.realBoard.AIThink();
 		}
+	}
+
+	@Override
+	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+		arg0.getInput().removeMouseListener(board);
 	}
 
 	@Override

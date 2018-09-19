@@ -24,13 +24,13 @@ public class Minion extends BoardObject {
 	public int health, attacksThisTurn = 0; // tempted to make damage an effect
 	public boolean summoningSickness = true;
 
-	public Minion(Board board, CardStatus status, int cost, int attack, int magic, int health, boolean basicUnleash,
-			TooltipMinion tooltip, String imagepath, int team, ClassCraft craft, int id) {
-		super(board, status, tooltip, imagepath, team, craft, id);
-		this.health = health;
-		Effect e = new Effect(0, "", cost, attack, magic, health, 1, false, false, false);
+	public Minion(Board board, int team, TooltipMinion tooltip) {
+		super(board, team, tooltip);
+		this.health = tooltip.health;
+		Effect e = new Effect(0, "", tooltip.cost, tooltip.attack, tooltip.magic, tooltip.health, 1, false, false,
+				false);
 		this.addBasicEffect(e);
-		if (basicUnleash) {
+		if (tooltip.basicUnleash) {
 			Effect unl = new Effect(0,
 					"<b> Unleash: </b> Deal X damage to an enemy minion. X equals this minion's magic.") {
 				@Override

@@ -23,10 +23,10 @@ public class GenesisOfLegend extends Amulet {
 
 	public static final TooltipAmulet TOOLTIP = new TooltipAmulet("Gensis of Legend",
 			"<b> Countdown(3). </b> At the end of your turn, give a random allied minion +0/+0/+1 and <b> Bane. </b>",
-			CRAFT, 2, Tooltip.COUNTDOWN, Tooltip.BANE);
+			"res/card/basic/genesisoflegend.png", CRAFT, 2, ID, Tooltip.COUNTDOWN, Tooltip.BANE);
 
 	public GenesisOfLegend(Board b, int team) {
-		super(b, CardStatus.DECK, 2, TOOLTIP, "res/card/basic/genesisoflegend.png", team, CRAFT, ID);
+		super(b, team, TOOLTIP);
 		Effect e = new Effect(0, TOOLTIP.description) {
 			@Override
 			public EventFlag onTurnEnd() {

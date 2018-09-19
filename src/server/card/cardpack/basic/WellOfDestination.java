@@ -21,10 +21,11 @@ public class WellOfDestination extends Amulet {
 	public static final int ID = 5;
 	public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
 	public static final TooltipAmulet TOOLTIP = new TooltipAmulet("Well of Destination",
-			"At the start of your turn, give a random allied minion +1/+1/+1.", CRAFT, 2);
+			"At the start of your turn, give a random allied minion +1/+1/+1.", "res/card/basic/wellofdestination.png",
+			CRAFT, 2, ID);
 
 	public WellOfDestination(Board b, int team) {
-		super(b, CardStatus.DECK, 2, TOOLTIP, "res/card/basic/wellofdestination.png", team, CRAFT, ID);
+		super(b, team, TOOLTIP);
 		Effect e = new Effect(0, "At the start of your turn, give a random allied minion +1/+1/+1") {
 			@Override
 			public EventFlag onTurnStart() {

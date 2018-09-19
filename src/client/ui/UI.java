@@ -17,6 +17,7 @@ public class UI { // lets do this right this time
 	ArrayList<UIElement> parentList = new ArrayList<UIElement>();
 	ArrayList<UIElement> parentListAddBuffer = new ArrayList<UIElement>();
 	ArrayList<UIElement> parentListRemoveBuffer = new ArrayList<UIElement>();
+	ArrayList<UIEventListener> listeners = new ArrayList<UIEventListener>();
 	UIElement pressedElement = null, draggingElement = null;
 	public Vector2f lastmousepos = new Vector2f();
 
@@ -57,6 +58,21 @@ public class UI { // lets do this right this time
 			}
 		}
 		return ret;
+	}
+
+	public void addListener(UIEventListener uel) {
+		// i cannot be assed to make buffers for these
+		this.listeners.add(uel);
+	}
+
+	public void removeListener(UIEventListener uel) {
+		this.listeners.remove(uel);
+	}
+
+	public void alertListeners(String strarg, int... intarg) {
+		for (UIEventListener uel : this.listeners) {
+			uel.onAlert(strarg, intarg);
+		}
 	}
 
 	public void mouseClicked(int button, int x, int y, int clickCount) {

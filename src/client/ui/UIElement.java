@@ -10,7 +10,7 @@ import org.newdawn.slick.geom.Vector2f;
 import client.Game;
 import utils.DefaultMouseListener;
 
-public class UIElement implements DefaultMouseListener {
+public class UIElement implements DefaultMouseListener, UIEventListener {
 	public static final double EPSILON = 0.0001;
 
 	protected UI ui;
@@ -141,6 +141,20 @@ public class UIElement implements DefaultMouseListener {
 
 		}
 		return y;
+	}
+
+	// do not override this shit
+	public void alert(String strarg, int... intarg) {
+		if (this.parent != null) {
+			this.parent.onAlert(strarg, intarg);
+		} else {
+			this.ui.alertListeners(strarg, intarg);
+		}
+	}
+
+	// override this shit tho
+	public void onAlert(String strarg, int... intarg) {
+		this.alert(strarg, intarg);
 	}
 
 	public boolean pointIsInHitbox(Vector2f pos) {
@@ -282,7 +296,7 @@ public class UIElement implements DefaultMouseListener {
 	 */
 	public void removeParent() {
 		if (this.parent != null) {
-			this.setPos(this.parent.getFinalPos().add(this.pos), 1);
+			// this.setPos(this.parent.getFinalPos().add(this.pos), 1);
 			this.parent.childrenRemoveBuffer.add(this);
 		}
 		this.parent = null;

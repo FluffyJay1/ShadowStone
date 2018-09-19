@@ -10,7 +10,7 @@ import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Vector2f;
 
 import client.Game;
-import client.tooltip.Tooltip;
+import client.tooltip.*;
 import server.Board;
 import server.Player;
 import server.card.Card;
@@ -32,9 +32,8 @@ public class UnleashPower extends Card {
 	// double artFocusScale;
 	Image subImage;
 
-	public UnleashPower(Board b, Tooltip tooltip, String imagepath, Vector2f artFocusPos, double artFocusScale,
-			int team, ClassCraft craft, int id) {
-		super(b, CardStatus.UNLEASHPOWER, tooltip, imagepath, team, craft, id);
+	public UnleashPower(Board b, int team, TooltipUnleashPower tooltip, Vector2f artFocusPos, double artFocusScale) {
+		super(b, team, tooltip);
 
 		Image scaledCopy = Game.getImage(imagepath).getScaledCopy((float) (artFocusScale));
 		this.subImage = scaledCopy.getSubImage((int) (artFocusPos.x * artFocusScale - UNLEASH_POWER_RADIUS),
