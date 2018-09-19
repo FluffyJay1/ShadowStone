@@ -16,7 +16,7 @@ public class EventClash extends Event {
 	public EventClash(Effect effect) {
 		super(ID);
 		this.effect = effect;
-		this.resolvefirst = true;
+		this.priority = 1;
 	}
 
 	public EventClash(Effect effect, Target t) {

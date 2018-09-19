@@ -244,14 +244,16 @@ public class Board {
 		return ret;
 	}
 
-	public void resolveAll() {
-		this.resolveAll(this.eventlist, false);
+	public LinkedList<Event> resolveAll() {
+		return this.resolveAll(this.eventlist, false);
 	}
 
 	// Only used by server, i.e. isServer == true
-	public void resolveAll(LinkedList<Event> eventlist, boolean loopprotection) {
+	public LinkedList<Event> resolveAll(LinkedList<Event> eventlist, boolean loopprotection) {
+		LinkedList<Event> l = new LinkedList<Event>();
 		while (!eventlist.isEmpty()) {
 			Event e = eventlist.removeFirst();
+			l.add(e);
 			if (e.conditions()) {
 				String eventstring = e.toString();
 				if (!eventstring.isEmpty() && e.send) {
@@ -259,7 +261,7 @@ public class Board {
 					this.output += eventstring;
 					// System.out.println(this.stateToString());
 				}
-				if (e.resolvefirst) {
+				if (e.priority > 0) {
 					LinkedList<Event> lul = new LinkedList<Event>();
 					e.resolve(lul, loopprotection);
 					eventlist.addAll(0, lul);
@@ -271,6 +273,7 @@ public class Board {
 				}
 			}
 		}
+		return l;
 	}
 
 	public String retrieveEventString() {

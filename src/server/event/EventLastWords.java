@@ -14,7 +14,7 @@ public class EventLastWords extends Event {
 	public EventLastWords(Effect effect) {
 		super(ID);
 		this.effect = effect;
-		this.resolvefirst = true;
+		this.priority = 1;
 	}
 
 	@Override

@@ -18,7 +18,7 @@ public class EventUnleash extends Event {
 		super(ID);
 		this.source = source;
 		this.m = m;
-		this.resolvefirst = true;
+		this.priority = 1;
 	}
 
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
