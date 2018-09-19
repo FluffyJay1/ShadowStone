@@ -70,7 +70,9 @@ public class DeckSelectPanel extends UIBox {
 		switch (strarg) {
 		case DECK_CONFIRM:
 		case DECK_CANCEL:
-			this.hide = true;
+			if (this.selectedDeckUnit != null) {
+				this.hide = true;
+			}
 			this.alert(strarg, intarg);
 			break;
 		case DECK_DELETE:
