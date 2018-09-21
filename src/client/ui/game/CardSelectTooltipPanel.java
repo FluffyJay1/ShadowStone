@@ -32,13 +32,13 @@ public class CardSelectTooltipPanel extends UIBox {
 	public void setReferenceTooltip(Tooltip tooltip) {
 		if (tooltip == null || tooltip.references == null || tooltip.references.length == 0) {
 			this.tooltip = null;
-			this.hide = true;
+			this.setHide(true);
 		} else {
 			this.scroll.childoffset.y = 0;
 			this.tooltip = tooltip;
-			this.hide = false;
+			this.setHide(false);
 			if (this.child != null) {
-				this.child.hide = true;
+				this.child.setHide(true);
 			}
 			// purge the children
 			for (UIElement ue : this.scroll.getChildren()) {

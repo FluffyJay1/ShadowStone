@@ -38,6 +38,7 @@ public class StateDeckbuild extends BasicGameState {
 		this.ui = new UI();
 		this.listener = new UIMouseListenerWrapper(this.ui);
 		arg0.getInput().addMouseListener(listener);
+		arg0.getInput().addKeyListener(this.ui);
 		this.ui.addListener(new UIEventListener() {
 			@Override
 			public void onAlert(String strarg, int... intarg) {
@@ -46,7 +47,7 @@ public class StateDeckbuild extends BasicGameState {
 					// selected deck to edit
 					if (deckselectpanel.selectedDeckUnit != null) {
 						if (deckselectpanel.selectedDeckUnit.deck == null) {
-							classSelect.hide = false;
+							classSelect.setHide(false);
 						} else {
 							newDeck = false;
 							// select and edit deck
@@ -54,7 +55,7 @@ public class StateDeckbuild extends BasicGameState {
 							enterDeckbuilding();
 
 						}
-						deckselectpanel.hide = true;
+						deckselectpanel.setHide(true);
 
 					}
 					break;
@@ -73,8 +74,8 @@ public class StateDeckbuild extends BasicGameState {
 				case ClassSelectPanel.SELECT_CANCEL:
 					// cancel selecting class
 					currentDeck = null;
-					deckselectpanel.hide = false;
-					deckdisplaypanel.hide = true;
+					deckselectpanel.setHide(false);
+					deckdisplaypanel.setHide(true);
 					break;
 				case DeckDisplayPanel.CARD_CLICK:
 					// select card in deckbuilder
@@ -100,9 +101,9 @@ public class StateDeckbuild extends BasicGameState {
 					currentDeck = null;
 					deckselectpanel.selectedDeckUnit = null;
 					deckselectpanel.updateDecks();
-					deckselectpanel.hide = false;
-					deckdisplaypanel.hide = true;
-					cardsetpanel.hide = true;
+					deckselectpanel.setHide(false);
+					deckdisplaypanel.setHide(true);
+					cardsetpanel.setHide(true);
 					break;
 				case CardSetDisplayPanel.CARDSET_CLICK:
 					// select card in cards to choose from
@@ -122,26 +123,26 @@ public class StateDeckbuild extends BasicGameState {
 				}
 			}
 		});
-		this.deckdisplaypanel = new DeckDisplayPanel(ui, new Vector2f(Game.WINDOW_WIDTH / 2, 300));
-		this.deckdisplaypanel.hide = true;
+		this.deckdisplaypanel = new DeckDisplayPanel(ui, new Vector2f(Game.WINDOW_WIDTH / 2, 300), true);
+		this.deckdisplaypanel.setHide(true);
 		this.ui.addUIElementParent(this.deckdisplaypanel);
 		this.cardsetpanel = new CardSetDisplayPanel(ui, new Vector2f(Game.WINDOW_WIDTH / 2, 800));
-		this.cardsetpanel.hide = true;
+		this.cardsetpanel.setHide(true);
 		this.ui.addUIElementParent(this.cardsetpanel);
 		this.deckselectpanel = new DeckSelectPanel(ui, new Vector2f(Game.WINDOW_WIDTH / 2, Game.WINDOW_HEIGHT / 2),
 				true);
 		this.ui.addUIElementParent(this.deckselectpanel);
 		this.classSelect = new ClassSelectPanel(ui, new Vector2f(Game.WINDOW_WIDTH / 2, Game.WINDOW_HEIGHT / 2));
-		this.classSelect.hide = true;
+		this.classSelect.setHide(true);
 		this.ui.addUIElementParent(this.classSelect);
 
 	}
 
 	private void enterDeckbuilding() {
 		currentCardSet = new CardSet(CardSet.PLAYABLE_SET).filterCraft(ClassCraft.NEUTRAL, currentDeck.craft);
-		cardsetpanel.hide = false;
+		cardsetpanel.setHide(false);
 		cardsetpanel.setCardSet(currentCardSet);
-		deckdisplaypanel.hide = false;
+		deckdisplaypanel.setHide(false);
 		deckdisplaypanel.setDeck(currentDeck.copy());
 	}
 

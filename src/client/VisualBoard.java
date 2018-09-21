@@ -35,7 +35,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	public static final double CARD_SCALE_DEFAULT = 1, CARD_SCALE_HAND = 0.75, CARD_SCALE_HAND_EXPAND = 1.2,
 			CARD_SCALE_BOARD = 1, CARD_SCALE_ABILITY = 1.5, CARD_SCALE_TARGET = 1.2, CARD_SCALE_ATTACK = 1.3,
 			CARDS_SCALE_PLAY = 2.5;
-	UI ui;
+	public UI ui;
 	public Board realBoard;
 	Vector2f mouseDownPos = new Vector2f();
 	public Card preSelectedCard, selectedCard, draggingCard, playingCard, visualPlayingCard;
@@ -62,7 +62,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		this.realBoard.isClient = true;
 		this.cardSelectPanel = new CardSelectPanel(this.ui, this);
 		this.ui.addUIElementParent(this.cardSelectPanel);
-		this.cardSelectPanel.hide = true;
+		this.cardSelectPanel.setHide(true);
 		this.endTurnButton = new EndTurnButton(this.ui, this);
 		this.ui.addUIElementParent(this.endTurnButton);
 		this.targetText = new Text(ui, new Vector2f(), "Target", 400, 24, "Verdana", 30, 0, -1);
@@ -125,11 +125,14 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		for (int i = 0; i < this.getPlayer(this.realBoard.localteam).hand.cards.size(); i++) {
 			Card c = this.getPlayer(this.realBoard.localteam).hand.cards.get(i);
 			if (c != this.playingCard && c != this.draggingCard && c != this.visualPlayingCard) {
-				c.targetpos.set((int) (((i) - (this.getPlayer(this.realBoard.localteam).hand.cards.size()) / 2.)
-						* (this.expandHand ? (700 + this.getPlayer(this.localteam).hand.cards.size() * 40) : 450)
-						/ this.getPlayer(this.realBoard.localteam).hand.cards.size()
-						+ (this.expandHand ? (1300 - this.getPlayer(this.realBoard.localteam).hand.cards.size() * 20)
-								: 1400)),
+				c.targetpos.set(
+						(int) (((i) - (this.getPlayer(this.realBoard.localteam).hand.cards.size()) / 2.)
+								* (this.expandHand ? (700 + this.getPlayer(this.localteam).hand.cards.size() * 40)
+										: 450)
+								/ this.getPlayer(this.realBoard.localteam).hand.cards.size()
+								+ (this.expandHand
+										? (1300 - this.getPlayer(this.realBoard.localteam).hand.cards.size() * 20)
+										: 1400)),
 						(this.expandHand ? 900 : 950));
 				c.scale = this.expandHand ? CARD_SCALE_HAND_EXPAND : CARD_SCALE_HAND;
 			}
@@ -153,7 +156,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 					(float) (Card.CARD_DIMENSIONS.x * c.scale * 0.9), (float) (Card.CARD_DIMENSIONS.y * c.scale * 0.9));
 			g.setColor(org.newdawn.slick.Color.white);
 		}
-		this.targetText.hide = false;
+		this.targetText.setHide(false);
 		if (this.playingCard != null && this.playingCard.getNextNeededBattlecryTarget() != null) {
 			this.targetText.setText(this.playingCard.getNextNeededBattlecryTarget().description);
 			this.targetText.setPos(new Vector2f(this.playingCard.pos.x, this.playingCard.pos.y + 100), 1);
@@ -161,7 +164,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 			this.targetText.setText(this.unleashingMinion.getNextNeededUnleashTarget().description);
 			this.targetText.setPos(new Vector2f(this.unleashingMinion.pos.x, this.unleashingMinion.pos.y + 100), 1);
 		} else {
-			this.targetText.hide = true;
+			this.targetText.setHide(true);
 		}
 		ui.draw(g);
 		if (this.draggingCard != null && this.draggingCard instanceof BoardObject && this.ui.lastmousepos.y < 750) {

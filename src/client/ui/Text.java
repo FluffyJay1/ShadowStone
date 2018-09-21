@@ -58,12 +58,14 @@ public class Text extends UIElement {
 		this.lineWidths.clear();
 		StringTokenizer stlines = new StringTokenizer(text, "\n");
 		while (stlines.hasMoreTokens()) {
-			StringTokenizer st = new StringTokenizer(stlines.nextToken(), " ");
+			// StringTokenizer st = new StringTokenizer(stlines.nextToken(), "
+			// ");
+			String[] words = stlines.nextToken().split(" ");
 			ArrayList<String> line = new ArrayList<String>();
 			double currlinewidth = 0;
 
-			while (st.hasMoreTokens()) { // why do i do this
-				String token = st.nextToken();
+			for (String token : words) { // why do i do this
+				// String token = st.nextToken();
 				if (token.equals("<b>")) {
 					flags = flags | 1;
 					line.add(token);
@@ -78,9 +80,16 @@ public class Text extends UIElement {
 					line.add(token);
 				} else {
 					if (currlinewidth == 0) { // first word
-						line.add(token);
-						currlinewidth += this.uFontFamily[flags].getWidth(token);
+						if (!token.isEmpty()) {
+							line.add(token);
+							currlinewidth += this.uFontFamily[flags].getWidth(token);
+						}
 					} else if (currlinewidth + this.uFontFamily[flags].getWidth(" " + token) > this.lineWidth) { // newline
+						// remove excess spaces at end of line
+						for (int i = line.size() - 1; i >= 0 && line.get(i).isEmpty(); i--) {
+							currlinewidth -= this.uFontFamily[flags].getWidth(" ");
+							line.remove(i);
+						}
 						this.lines.add(line);
 						this.lineWidths.add(currlinewidth);
 						line = new ArrayList<String>();
@@ -110,7 +119,7 @@ public class Text extends UIElement {
 
 	@Override
 	public void draw(Graphics g) {
-		if (!this.hide) {
+		if (!this.getHide()) {
 			int flags = 0;
 			for (int i = 0; i < this.lines.size(); i++) {
 				double currlinewidth = 0;

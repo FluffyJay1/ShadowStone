@@ -8,9 +8,11 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
 import client.Game;
+import utils.DefaultInputListener;
+import utils.DefaultKeyListener;
 import utils.DefaultMouseListener;
 
-public class UIElement implements DefaultMouseListener, UIEventListener {
+public class UIElement implements DefaultInputListener, UIEventListener {
 	public static final double EPSILON = 0.0001;
 
 	protected UI ui;
@@ -19,8 +21,9 @@ public class UIElement implements DefaultMouseListener, UIEventListener {
 	ArrayList<UIElement> childrenAddBuffer = new ArrayList<UIElement>();
 	ArrayList<UIElement> childrenRemoveBuffer = new ArrayList<UIElement>();
 	public int alignh = 0, alignv = 0;
-	public boolean remove = false, hide = false, draggable = false, ignorehitbox = false, hitcircle = false,
-			clip = false, scrollable = false;
+	private boolean hide = false;
+	public boolean draggable = false, ignorehitbox = false, hitcircle = false, clip = false, scrollable = false,
+			hasFocus = false;
 	public Vector2f childoffset = new Vector2f(), margins = new Vector2f(); // public
 																			// cuz
 																			// fuck
@@ -40,13 +43,6 @@ public class UIElement implements DefaultMouseListener, UIEventListener {
 		if (imagepath != null && !imagepath.isEmpty()) {
 			this.image = Game.getImage(imagepath);
 			this.finalImage = image.getScaledCopy((float) this.scale);
-		}
-	}
-
-	public void setRemove(boolean state) {
-		this.remove = state;
-		for (UIElement u : this.getChildren()) {
-			u.setRemove(state);
 		}
 	}
 
@@ -141,6 +137,17 @@ public class UIElement implements DefaultMouseListener, UIEventListener {
 
 		}
 		return y;
+	}
+
+	public void setHide(boolean hide) {
+		this.hide = hide;
+		if (hide && this.hasFocus) {
+			this.ui.focusElement(this.parent);
+		}
+	}
+
+	public boolean getHide() {
+		return this.hide;
 	}
 
 	// do not override this shit
@@ -303,16 +310,6 @@ public class UIElement implements DefaultMouseListener, UIEventListener {
 	}
 
 	public void updateRelationships() {
-		// this.origin = this.parent.getFinalLoc();
-		/*
-		 * for(UIElement u : this.children) { if(u.getRemove()) {
-		 * this.childrenRemoveBuffer.add(u); } }
-		 */
-		if (this.parent != null) {
-			if (this.parent.remove) {
-				this.setRemove(true);
-			}
-		}
 		this.children.addAll(this.childrenAddBuffer);
 		this.children.removeAll(this.childrenRemoveBuffer);
 		this.childrenAddBuffer.clear();
@@ -336,4 +333,5 @@ public class UIElement implements DefaultMouseListener, UIEventListener {
 			u.removeParent();
 		}
 	}
+
 }

@@ -40,11 +40,11 @@ public class ClassSelectPanel extends UIBox {
 	public void onAlert(String strarg, int... intarg) {
 		switch (strarg) {
 		case SELECT:
-			this.hide = true;
+			this.setHide(true);
 			this.alert(strarg, intarg);
 			break;
 		case SELECT_CANCEL:
-			this.hide = true;
+			this.setHide(true);
 			this.alert(strarg, intarg);
 			break;
 		default:

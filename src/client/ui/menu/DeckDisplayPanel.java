@@ -9,6 +9,7 @@ import org.newdawn.slick.geom.Vector2f;
 import client.ui.GenericButton;
 import client.ui.ScrollingContext;
 import client.ui.Text;
+import client.ui.TextField;
 import client.ui.UI;
 import client.ui.UIBox;
 import server.card.cardpack.ConstructedDeck;
@@ -20,11 +21,22 @@ public class DeckDisplayPanel extends UIBox {
 	ScrollingContext scroll;
 	ArrayList<CardDisplayUnit> cards = new ArrayList<CardDisplayUnit>();
 	GenericButton okbutton;
+	TextField textfield;
+	Text text;
+	boolean edit;
 
-	public DeckDisplayPanel(UI ui, Vector2f pos) {
+	public DeckDisplayPanel(UI ui, Vector2f pos, boolean edit) {
 		super(ui, pos, new Vector2f(1600, 500), "res/ui/uiboxborder.png");
 		this.margins.set(10, 10);
-		this.addChild(new Text(ui, new Vector2f(0, -225), "Deck", 300, 20, "Verdana", 34, 0, 0));
+		this.edit = edit;
+		if (edit) {
+			this.textfield = new TextField(ui, new Vector2f(0, -225), new Vector2f(400, 50), "Deck",
+					new Text(ui, new Vector2f(0, 0), "Deck", 400, 20, "Verdana", 28, 0, 0));
+			this.addChild(this.textfield);
+		} else {
+			this.text = new Text(ui, new Vector2f(0, -225), "Deck", 300, 20, "Verdana", 34, 0, 0);
+			this.addChild(this.text);
+		}
 		this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f((float) this.getWidth(true), 400));
 		this.scroll.clip = true;
 		this.addChild(this.scroll);
@@ -43,6 +55,13 @@ public class DeckDisplayPanel extends UIBox {
 		case CardDisplayUnit.CARD_CLICK:
 			this.alert(CARD_CLICK, intarg);
 			break;
+		case DECK_CONFIRM:
+			this.deck.name = this.textfield.getText();
+			this.alert(strarg, intarg);
+			break;
+		case TextField.TEXT_ENTER:
+			this.deck.name = this.textfield.getText();
+			break;
 		default:
 			this.alert(strarg, intarg);
 			break;
@@ -50,6 +69,11 @@ public class DeckDisplayPanel extends UIBox {
 	}
 
 	public void setDeck(ConstructedDeck deck) {
+		if (this.edit) {
+			this.textfield.setText(deck.name);
+		} else {
+			this.text.setText(deck.name);
+		}
 		for (CardDisplayUnit cdu : this.cards) {
 			this.scroll.removeChild(cdu);
 		}

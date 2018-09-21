@@ -25,7 +25,7 @@ public class EndTurnButton extends UIBox {
 	@Override
 	public void update(double frametime) {
 		super.update(frametime);
-		this.hide = this.b.disableInput;
+		this.setHide(this.b.disableInput);
 	}
 
 	@Override

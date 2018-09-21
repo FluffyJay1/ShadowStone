@@ -17,11 +17,11 @@ public class UIBox extends UIElement {
 		if (this.image != null) {
 			this.finalImage = this.image.getScaledCopy((int) this.getWidth(false), (int) this.getHeight(false));
 			// this.finalImage.rotate((float) this.angle);
-			if (!this.hide) {
+			if (!this.getHide()) {
 				g.drawImage(this.finalImage, (float) this.getLeft(true, false), (float) this.getTop(true, false));
 			}
 		}
-		if (!this.hide) {
+		if (!this.getHide()) {
 			this.drawChildren(g);
 		}
 	}

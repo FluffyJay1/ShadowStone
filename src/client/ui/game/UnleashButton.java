@@ -20,15 +20,15 @@ public class UnleashButton extends UIElement {
 		this.text = new Text(ui, new Vector2f(0, 0), "<b> UNLEASH", 128, 24, "Verdana", 30, 0, 0);
 		text.setParent(this);
 		this.b = b;
-		this.hide = true;
+		this.setHide(true);
 	}
 
 	@Override
 	public void update(double frametime) {
 		super.update(frametime);
 
-		this.hide = this.b.disableInput || this.b.selectedCard == null
-				|| !this.b.getPlayer(1).canUnleashCard(this.b.selectedCard);
+		this.setHide(this.b.disableInput || this.b.selectedCard == null
+				|| !this.b.getPlayer(1).canUnleashCard(this.b.selectedCard));
 
 	}
 

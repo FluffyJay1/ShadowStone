@@ -40,6 +40,7 @@ public class StateGame extends BasicGameState {
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		board = new VisualBoard();
 		arg0.getInput().addMouseListener(board);
+		arg0.getInput().addKeyListener(board.ui);
 		for (int team = 1; team >= -1; team -= 2) { // deckbuilding 101
 			ArrayList<Card> cards = new ArrayList<Card>();
 			if (team == board.localteam && tempdeck != null) {

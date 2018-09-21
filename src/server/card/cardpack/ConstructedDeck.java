@@ -99,6 +99,7 @@ public class ConstructedDeck implements Serializable {
 	public void copyFrom(ConstructedDeck other) {
 		this.idcounts.clear();
 		this.idcounts.putAll(other.idcounts);
+		this.name = other.name;
 		this.count = other.count;
 	}
 

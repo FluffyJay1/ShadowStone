@@ -9,6 +9,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import client.Game;
 import client.ui.GenericButton;
+import client.ui.Text;
+import client.ui.TextField;
 import client.ui.UI;
 import client.ui.UIEventListener;
 import client.ui.UIMouseListenerWrapper;
@@ -31,6 +33,7 @@ public class StateMenu extends BasicGameState {
 		this.ui = new UI();
 		this.listener = new UIMouseListenerWrapper(this.ui);
 		arg0.getInput().addMouseListener(listener);
+		arg0.getInput().addKeyListener(this.ui);
 
 		this.ui.addListener(new UIEventListener() {
 			@Override

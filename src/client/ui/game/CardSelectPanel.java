@@ -60,7 +60,7 @@ public class CardSelectPanel extends UIBox {
 		}
 		if (this.b.selectedCard != null) {
 			// this.setPos(new Vector2f(200, 400), 1);
-			this.hide = false;
+			this.setHide(false);
 			if (this.currTooltip != this.b.selectedCard.tooltip) {
 				this.currTooltip = this.b.selectedCard.tooltip;
 				this.tooltipPanel.setTooltip(this.currTooltip);
@@ -73,7 +73,7 @@ public class CardSelectPanel extends UIBox {
 				}
 			}
 			this.effects.setText(effectstext);
-			if (!this.ub.hide) {
+			if (!this.ub.getHide()) {
 				this.ub.setPos(new Vector2f(0, (float) this.tooltipPanel.getBottom(false, false) + 32), 1);
 				this.effects.setPos(
 						new Vector2f((float) this.getLocalLeft(true), (float) this.ub.getBottom(false, false) + 10),
@@ -83,7 +83,7 @@ public class CardSelectPanel extends UIBox {
 						(float) this.tooltipPanel.getBottom(false, false) + 10), 0.99);
 			}
 		} else {
-			this.hide = true;
+			this.setHide(true);
 		}
 
 	}

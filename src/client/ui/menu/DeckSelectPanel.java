@@ -59,7 +59,7 @@ public class DeckSelectPanel extends UIBox {
 		this.scroll.clip = true;
 		this.addChild(this.scroll);
 		this.highlight = new UIBox(ui, new Vector2f(), new Vector2f(190, 110), "res/ui/highlight.png");
-		this.highlight.hide = true;
+		this.highlight.setHide(true);
 		this.highlight.ignorehitbox = true;
 		this.scroll.addChild(this.highlight);
 		this.updateDecks();
@@ -70,12 +70,12 @@ public class DeckSelectPanel extends UIBox {
 		switch (strarg) {
 		case DECK_CONFIRM:
 			if (this.selectedDeckUnit != null) {
-				this.hide = true;
+				this.setHide(true);
 			}
 			this.alert(strarg, intarg);
 			break;
 		case DECK_CANCEL:
-			this.hide = true;
+			this.setHide(true);
 			this.alert(strarg, intarg);
 			break;
 		case DECK_DELETE:
@@ -96,17 +96,17 @@ public class DeckSelectPanel extends UIBox {
 	public void update(double frametime) {
 		super.update(frametime);
 		if (this.selectedDeckUnit != null) {
-			this.highlight.hide = false;
+			this.highlight.setHide(false);
 			this.highlight.setPos(this.selectedDeckUnit.getPos(), 0.99999);
 			if (this.deckbuild) {
 				if (this.selectedDeckUnit.deck == null) {
-					this.deleteButton.hide = true;
+					this.deleteButton.setHide(true);
 				} else {
-					this.deleteButton.hide = false;
+					this.deleteButton.setHide(false);
 				}
 			}
 		} else {
-			this.highlight.hide = true;
+			this.highlight.setHide(true);
 		}
 	}
 
