@@ -17,6 +17,7 @@ import server.card.cardpack.ConstructedDeck;
 public class DeckDisplayPanel extends UIBox {
 	public static final String CARD_CLICK = "deckdisplaycardselect";
 	public static final String DECK_CONFIRM = "deckdisplaydeckconfirm";
+	public static final String BACKGROUND_CLICK = "deckdisplaybackgroundclick";
 	public ConstructedDeck deck;
 	ScrollingContext scroll;
 	ArrayList<CardDisplayUnit> cards = new ArrayList<CardDisplayUnit>();
@@ -66,6 +67,11 @@ public class DeckDisplayPanel extends UIBox {
 			this.alert(strarg, intarg);
 			break;
 		}
+	}
+
+	@Override
+	public void mouseClicked(int button, int x, int y, int clickCount) {
+		this.alert(BACKGROUND_CLICK);
 	}
 
 	public void setDeck(ConstructedDeck deck) {

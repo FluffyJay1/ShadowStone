@@ -25,7 +25,7 @@ public class CardSelectPanel extends UIBox {
 		super(ui, new Vector2f(200, 400), new Vector2f(300, 400), "src/res/ui/uiboxborder.png");
 		this.b = b;
 		this.margins.set(10, 10);
-		this.tooltipReferencePanel = new CardSelectTooltipPanel(ui, 3);
+		this.tooltipReferencePanel = new CardSelectTooltipPanel(ui, new Vector2f(300, 0), 3);
 		this.tooltipReferencePanel.setReferenceTooltip(null);
 		this.addChild(tooltipReferencePanel);
 		this.scroll = new ScrollingContext(ui, new Vector2f(), this.getDim(true));

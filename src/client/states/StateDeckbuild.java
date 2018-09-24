@@ -11,6 +11,7 @@ import client.Game;
 import client.ui.UI;
 import client.ui.UIEventListener;
 import client.ui.UIMouseListenerWrapper;
+import client.ui.game.CardSelectTooltipPanel;
 import client.ui.menu.*;
 import server.card.ClassCraft;
 import server.card.cardpack.CardSet;
@@ -26,6 +27,7 @@ public class StateDeckbuild extends BasicGameState {
 	CardSetDisplayPanel cardsetpanel;
 	DeckDisplayPanel deckdisplaypanel;
 	ClassSelectPanel classSelect;
+	CardSelectTooltipPanel cardTooltip;
 
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -82,6 +84,7 @@ public class StateDeckbuild extends BasicGameState {
 					switch (intarg[1]) {
 					case 1:
 						// display its tooltip
+						cardTooltip.setTooltip(CardSet.getCardTooltip(intarg[0]));
 						break;
 					case 2:
 						deckdisplaypanel.removeCard(intarg[0]);
@@ -93,6 +96,7 @@ public class StateDeckbuild extends BasicGameState {
 				case DeckDisplayPanel.DECK_CONFIRM:
 					// confirm and save deck
 					// TODO verify deck is legit
+					cardTooltip.setTooltip(null);
 					if (newDeck) {
 						ConstructedDeck.decks.add(currentDeck);
 					}
@@ -105,11 +109,15 @@ public class StateDeckbuild extends BasicGameState {
 					deckdisplaypanel.setHide(true);
 					cardsetpanel.setHide(true);
 					break;
+				case DeckDisplayPanel.BACKGROUND_CLICK:
+					cardTooltip.setTooltip(null);
+					break;
 				case CardSetDisplayPanel.CARDSET_CLICK:
 					// select card in cards to choose from
 					switch (intarg[1]) {
 					case 1:
 						// display its tooltip
+						cardTooltip.setTooltip(CardSet.getCardTooltip(intarg[0]));
 						break;
 					case 2:
 						deckdisplaypanel.addCard(intarg[0]);
@@ -120,6 +128,8 @@ public class StateDeckbuild extends BasicGameState {
 					break;
 				default:
 					break;
+				case CardSetDisplayPanel.BACKGROUND_CLICK:
+					cardTooltip.setTooltip(null);
 				}
 			}
 		});
@@ -135,6 +145,9 @@ public class StateDeckbuild extends BasicGameState {
 		this.classSelect = new ClassSelectPanel(ui, new Vector2f(Game.WINDOW_WIDTH / 2, Game.WINDOW_HEIGHT / 2));
 		this.classSelect.setHide(true);
 		this.ui.addUIElementParent(this.classSelect);
+		this.cardTooltip = new CardSelectTooltipPanel(this.ui, new Vector2f(200, 300), 5);
+		this.cardTooltip.setHide(true);
+		this.ui.addUIElementParent(this.cardTooltip);
 
 	}
 
