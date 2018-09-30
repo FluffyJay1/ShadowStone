@@ -30,7 +30,7 @@ public class DeckSelectPanel extends UIBox {
 		this.margins.set(10, 10);
 		this.deckbuild = deckbuild;
 		this.addChild(new Text(ui, new Vector2f(0, -250), "Select a deck", 300, 20, "Verdana", 34, 0, 0));
-		this.confirmButton = new GenericButton(ui, new Vector2f(deckbuild ? -125 : -75, 250), new Vector2f(100, 50),
+		this.confirmButton = new GenericButton(ui, new Vector2f(deckbuild ? -175 : -100, 250), new Vector2f(150, 50),
 				"Confirm", 0) {
 			@Override
 			public void mouseClicked(int button, int x, int y, int clickCount) {
@@ -38,7 +38,7 @@ public class DeckSelectPanel extends UIBox {
 			}
 		};
 		this.addChild(this.confirmButton);
-		this.cancelButton = new GenericButton(ui, new Vector2f(deckbuild ? 125 : 75, 250), new Vector2f(100, 50),
+		this.cancelButton = new GenericButton(ui, new Vector2f(deckbuild ? 175 : 100, 250), new Vector2f(150, 50),
 				"Back", 1) {
 			@Override
 			public void mouseClicked(int button, int x, int y, int clickCount) {
@@ -47,7 +47,7 @@ public class DeckSelectPanel extends UIBox {
 		};
 		this.addChild(this.cancelButton);
 		if (deckbuild) {
-			this.deleteButton = new GenericButton(ui, new Vector2f(0, 250), new Vector2f(100, 50), "Delete", 1) {
+			this.deleteButton = new GenericButton(ui, new Vector2f(0, 250), new Vector2f(150, 50), "Delete", 1) {
 				@Override
 				public void mouseClicked(int button, int x, int y, int clickCount) {
 					this.alert(DECK_DELETE);

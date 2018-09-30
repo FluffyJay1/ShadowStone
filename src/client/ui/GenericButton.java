@@ -9,7 +9,7 @@ public class GenericButton extends UIBox {
 	public int index;
 
 	public GenericButton(UI ui, Vector2f pos, Vector2f dim, String message, int index) {
-		super(ui, pos, dim, "res/ui/uiboxborder.png");
+		super(ui, pos, dim, new Animation("res/ui/button.png", new Vector2f(2, 1), 0, 0));
 		this.index = index;
 		this.originalDim = dim.copy();
 		this.text = new Text(ui, new Vector2f(0, 0), message, dim.x * 0.8, 20, "Verdana", 24, 0, 0);
@@ -19,12 +19,12 @@ public class GenericButton extends UIBox {
 	@Override
 	public void mousePressed(int button, int x, int y) {
 		// TODO replace this with an actual animation
-		this.setDim(this.originalDim.copy().scale(0.9f));
+		this.getAnimation().setFrame(1);
 	}
 
 	@Override
 	public void mouseReleased(int button, int x, int y) {
-		this.setDim(this.originalDim);
+		this.getAnimation().setFrame(0);
 	}
 
 }

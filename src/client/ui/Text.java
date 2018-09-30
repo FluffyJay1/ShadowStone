@@ -22,7 +22,7 @@ public class Text extends UIElement {
 
 	public Text(UI ui, Vector2f pos, String text, double linewidth, double lineheight, String font, double fontsize,
 			int alignh, int alignv) {
-		super(ui, pos, null);
+		super(ui, pos);
 		this.ignorehitbox = true;
 		this.lineWidth = linewidth;
 		this.lineHeight = lineheight;

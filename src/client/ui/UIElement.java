@@ -30,20 +30,43 @@ public class UIElement implements DefaultInputListener, UIEventListener {
 																			// u
 	private Vector2f targetpos = new Vector2f(), pos = new Vector2f();
 	public double scale = 1, speed = 1, angle = 0;
-	Image image, finalImage;
+	Animation animation;
+	Image finalImage;
 
-	public UIElement(UI ui, Vector2f pos, String imagepath) {
+	public UIElement(UI ui, Vector2f pos) {
 		this.ui = ui;
 		this.pos = pos.copy();
 		this.targetpos = pos.copy();
+	}
+
+	public UIElement(UI ui, Vector2f pos, String imagepath) {
+		this(ui, pos);
 		this.setImage(imagepath);
 	}
 
+	public UIElement(UI ui, Vector2f pos, Animation animation) {
+		this(ui, pos);
+		this.setAnimation(animation);
+	}
+
 	public void setImage(String imagepath) {
+		this.setAnimation(imagepath, new Vector2f(1, 1), 0, 0);
+	}
+
+	public void setAnimation(Animation animation) {
+		this.animation = animation;
+		this.finalImage = animation.getCurrentFrame().getScaledCopy((float) this.scale);
+	}
+
+	public void setAnimation(String imagepath, Vector2f framedim, int spacing, int margin) {
 		if (imagepath != null && !imagepath.isEmpty()) {
-			this.image = Game.getImage(imagepath);
-			this.finalImage = image.getScaledCopy((float) this.scale);
+			this.animation = new Animation(imagepath, framedim, spacing, margin);
+			this.finalImage = this.animation.getCurrentFrame().getScaledCopy((float) this.scale);
 		}
+	}
+
+	public Animation getAnimation() {
+		return this.animation;
 	}
 
 	public void setPos(Vector2f pos, double speed) {
@@ -193,6 +216,9 @@ public class UIElement implements DefaultInputListener, UIEventListener {
 	}
 
 	public void update(double frametime) {
+		if (this.animation != null) {
+			this.animation.update(frametime);
+		}
 		Vector2f delta = this.targetpos.copy().sub(this.pos);
 		if (delta.length() > EPSILON) {
 			float ratio = 1 - (float) Math.pow(1 - this.speed, frametime);
@@ -215,12 +241,13 @@ public class UIElement implements DefaultInputListener, UIEventListener {
 	}
 
 	public String debug() {
-		return this.getClass().toString().substring("class client.ui.".length());
+		return this.getClass().toString().substring("class client.ui.".length()) + " "
+				+ (this.getAnimation() != null ? this.getAnimation().getCurrentFrame() : "");
 	}
 
 	public void draw(Graphics g) {
-		if (this.image != null) {
-			this.finalImage = this.image.getScaledCopy((float) this.scale);
+		if (this.animation != null) {
+			this.finalImage = this.animation.getCurrentFrame().getScaledCopy((float) this.scale);
 			this.finalImage.rotate((float) this.angle);
 			if (!this.hide) {
 				g.drawImage(this.finalImage, (float) (this.getLeft(true, false)), (float) (this.getTop(true, false)));

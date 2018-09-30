@@ -37,7 +37,7 @@ public class EventCreateCard extends Event {
 			if (relevantHand.cards.size() >= relevantHand.maxsize) {
 				eventlist.add(new EventDestroy(c));
 			} else {
-				int temppos = this.cardpos == -1 ? (int) (Math.random() * relevantHand.cards.size()) : this.cardpos;
+				int temppos = this.cardpos == -1 ? (int) relevantHand.cards.size() : this.cardpos;
 				temppos = Math.min(this.cardpos, relevantHand.cards.size());
 				relevantHand.cards.add(temppos, this.c);
 				relevantHand.updatePositions();
@@ -57,7 +57,7 @@ public class EventCreateCard extends Event {
 			break;
 		case DECK:
 			Deck relevantDeck = this.b.getPlayer(this.team).deck;
-			int temppos = this.cardpos == -1 ? (int) (Math.random() * relevantDeck.cards.size()) : this.cardpos;
+			int temppos = this.cardpos == -1 ? (int) relevantDeck.cards.size() : this.cardpos;
 			temppos = Math.min(this.cardpos, relevantDeck.cards.size());
 			relevantDeck.cards.add(temppos, this.c);
 			relevantDeck.updatePositions();

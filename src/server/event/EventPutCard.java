@@ -19,7 +19,7 @@ public class EventPutCard extends Event {
 	Player p;
 	public Target t;
 	public CardStatus status;
-	int targetTeam, pos; // pos == -1 means random pos
+	int targetTeam, pos; // pos == -1 means last
 
 	public EventPutCard(Player p, Target t, CardStatus status, int team, int pos) {
 		super(ID);
@@ -80,7 +80,7 @@ public class EventPutCard extends Event {
 					eventlist.add(new EventMill(this.p, c));
 				} else {
 					ArrayList<Card> cards = this.p.board.getCollection(this.targetTeam, this.status); // YEA
-					int temppos = this.pos == -1 ? (int) (Math.random() * cards.size()) : this.pos;
+					int temppos = this.pos == -1 ? (int) cards.size() : this.pos;
 					temppos = Math.min(temppos, cards.size());
 					c.cardpos = temppos;
 					cards.add(temppos, c);

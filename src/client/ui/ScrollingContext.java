@@ -5,7 +5,7 @@ import org.newdawn.slick.geom.Vector2f;
 
 public class ScrollingContext extends UIBox {
 	public ScrollingContext(UI ui, Vector2f pos, Vector2f dim) {
-		super(ui, pos, dim, null);
+		super(ui, pos, dim);
 		this.scrollable = true;
 		this.ignorehitbox = true;
 	}
