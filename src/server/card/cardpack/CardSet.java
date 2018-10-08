@@ -6,11 +6,10 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import client.tooltip.TooltipCard;
-import server.card.Card;
-import server.card.ClassCraft;
-import server.card.cardpack.basic.CardSetBasic;
-import server.card.leader.Rowen;
-import server.card.unleashpower.UnleashImbueMagic;
+import server.card.*;
+import server.card.cardpack.basic.*;
+import server.card.leader.*;
+import server.card.unleashpower.*;
 
 /**
  * 
@@ -108,10 +107,24 @@ public class CardSet {
 			return CardSetBasic.getCardClass(id);
 		}
 		switch (id) {
-		case UnleashImbueMagic.ID:
-			return UnleashImbueMagic.class;
 		case Rowen.ID:
 			return Rowen.class;
+		case UnleashEmbraceNature.ID:
+			return UnleashEmbraceNature.class;
+		case UnleashSharpenSword.ID:
+			return UnleashSharpenSword.class;
+		case UnleashImbueMagic.ID:
+			return UnleashImbueMagic.class;
+		case UnleashFeedFervor.ID:
+			return UnleashFeedFervor.class;
+		case UnleashBegetUndead.ID:
+			return UnleashBegetUndead.class;
+		case UnleashTapSoul.ID:
+			return UnleashTapSoul.class;
+		case UnleashMendWounds.ID:
+			return UnleashMendWounds.class;
+		case UnleashEchoExistence.ID:
+			return UnleashEchoExistence.class;
 		default:
 			return null;
 		}

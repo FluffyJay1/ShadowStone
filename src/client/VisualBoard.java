@@ -60,6 +60,8 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		this.isServer = false;
 		this.realBoard = new Board();
 		this.realBoard.isClient = true;
+		this.player1.realPlayer = this.realBoard.player1;
+		this.player2.realPlayer = this.realBoard.player2;
 		this.cardSelectPanel = new CardSelectPanel(this.ui, this);
 		this.ui.addUIElementParent(this.cardSelectPanel);
 		this.cardSelectPanel.setHide(true);
@@ -275,6 +277,8 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 						this.animationtimer = 0.5;
 					} else if (this.currentEvent instanceof EventDamage) {
 						this.animationtimer = 0.5;
+					} else if (this.currentEvent instanceof EventRestore) {
+						this.animationtimer = 0.5;
 					} else if (this.currentEvent instanceof EventMinionDamage) {
 						this.animationtimer = 0.25;
 					} else if (this.currentEvent instanceof EventUnleash) {
@@ -292,7 +296,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 						this.animationtimer = 0.7;
 					} else if (this.currentEvent instanceof EventPutCard) {
 						EventPutCard e = (EventPutCard) this.currentEvent;
-						for (Card c : e.t.getTargets()) {
+						for (Card c : e.c) {
 							if (e.status.equals(CardStatus.BOARD)) {
 								c.scale = CARD_SCALE_BOARD;
 							} else if (e.status.equals(CardStatus.HAND)) {
@@ -316,7 +320,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 						this.animationtimer = 0.6;
 					} else if (this.currentEvent instanceof EventAddEffect) {
 						EventAddEffect e = (EventAddEffect) this.currentEvent;
-						if (!e.t.getTargets().isEmpty()) {
+						if (!e.c.isEmpty()) {
 							this.animationtimer = 0.3;
 						}
 					} else if (this.currentEvent instanceof EventRemoveEffect) {
@@ -362,27 +366,31 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				UnicodeFont font = Game.getFont("Verdana", 80, true, false);
 				g.setFont(font);
 				float yoff = (float) (Math.pow(this.animationtimer / 0.5 - 0.5, 2) * 300) - 37.5f;
-				for (int i = 0; i < e.t.size(); i++) {
+				for (int i = 0; i < e.m.size(); i++) {
 					String dstring = e.damage.get(i) + "";
-					for (Card c : e.t.get(i).getTargets()) {
-						if (c != null) {
-							g.drawString(dstring, c.pos.x - font.getWidth(dstring) / 2,
-									c.pos.y - font.getHeight(dstring) + yoff);
-						}
-					}
+					g.drawString(dstring, e.m.get(i).pos.x - font.getWidth(dstring) / 2,
+							e.m.get(i).pos.y - font.getHeight(dstring) + yoff);
+				}
+				g.setColor(Color.white);
+			} else if (this.currentEvent instanceof EventRestore) {
+				EventRestore e = (EventRestore) this.currentEvent;
+				g.setColor(Color.green);
+				UnicodeFont font = Game.getFont("Verdana", 80, true, false);
+				g.setFont(font);
+				float yoff = (float) (Math.pow(this.animationtimer / 0.5, 2) * 100) - 12.5f;
+				for (int i = 0; i < e.m.size(); i++) {
+					String dstring = e.actualHeal.get(i) + "";
+					g.drawString(dstring, e.m.get(i).pos.x - font.getWidth(dstring) / 2,
+							e.m.get(i).pos.y - font.getHeight(dstring) + yoff);
 				}
 				g.setColor(Color.white);
 			} else if (this.currentEvent instanceof EventMinionDamage) {
 				g.setColor(Color.red);
 				EventMinionDamage e = (EventMinionDamage) this.currentEvent;
 				for (int i = 0; i < e.m2.size(); i++) {
-					for (Card c : e.m2.get(i).getTargets()) {
-						if (c != null) {
-							Vector2f pos = e.m1.pos.copy().sub(c.pos).scale((float) (this.animationtimer / 0.25))
-									.add(c.pos);
-							g.fillOval(pos.x - 20, pos.y - 20, 40, 40);
-						}
-					}
+					Vector2f pos = e.m1.pos.copy().sub(e.m2.get(i).pos).scale((float) (this.animationtimer / 0.25))
+							.add(e.m2.get(i).pos);
+					g.fillOval(pos.x - 20, pos.y - 20, 40, 40);
 				}
 				g.setColor(Color.white);
 			} else if (this.currentEvent instanceof EventUnleash) {
@@ -455,7 +463,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 						e.effect.owner.pos.y - img.getHeight() / 2 + yoffset);
 			} else if (this.currentEvent instanceof EventAddEffect) {
 				EventAddEffect e = (EventAddEffect) this.currentEvent;
-				for (Card c : e.t.getTargets()) {
+				for (Card c : e.c) {
 					for (int i = 0; i < 4; i++) {
 						Image img = Game.getImage("res/game/battlecry.png");
 						float xoffset = (float) Math.random() * 150 - 75;
@@ -525,7 +533,8 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 					this.preSelectedCard = c;
 					this.expandHand = true;
 				}
-			} else if (this.getPlayer(this.realBoard.localteam).unleashPower.isInside(new Vector2f(x, y))) {
+			} else if (this.getPlayer(this.realBoard.localteam).unleashPower != null
+					&& this.getPlayer(this.realBoard.localteam).unleashPower.isInside(new Vector2f(x, y))) {
 				this.handleTargeting(null);
 				this.preSelectedCard = this.getPlayer(this.realBoard.localteam).unleashPower;
 				if (this.getPlayer(this.realBoard.localteam).canUnleash() && !this.disableInput) {
@@ -537,7 +546,8 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 						}
 					}
 				}
-			} else if (this.getPlayer(this.realBoard.localteam * -1).unleashPower.isInside(new Vector2f(x, y))) {
+			} else if (this.getPlayer(this.realBoard.localteam * -1).unleashPower != null
+					&& this.getPlayer(this.realBoard.localteam * -1).unleashPower.isInside(new Vector2f(x, y))) {
 				this.handleTargeting(null);
 				this.preSelectedCard = this.getPlayer(this.realBoard.localteam * -1).unleashPower;
 			} else {
@@ -619,9 +629,17 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		if (this.playingCard != null) {
 			Target t = this.playingCard.getNextNeededBattlecryTarget();
 			if (t == null) {
+				// convert visual card's targets to real card's targets
+				this.playingCard.realCard.resetBattlecryTargets();
+				LinkedList<Target> visualbt = this.playingCard.getBattlecryTargets();
+				LinkedList<Target> realbt = this.playingCard.realCard.getBattlecryTargets();
+				for (int i = 0; i < visualbt.size(); i++) {
+					for (Card c : visualbt.get(i).getTargets()) {
+						realbt.get(i).setTarget(c.realCard);
+					}
+				}
 				this.realBoard.playerPlayCard(this.realBoard.getPlayer(this.realBoard.localteam),
-						this.playingCard.realCard, XToPlayBoardPos(this.playingX, this.localteam),
-						this.playingCard.battlecryTargetsToString());
+						this.playingCard.realCard, XToPlayBoardPos(this.playingX, this.localteam));
 				this.playingCard = null;
 			} else {
 				this.playingCard.targetpos = new Vector2f(200, 300);
@@ -630,8 +648,17 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		} else if (this.unleashingMinion != null) {
 			Target t = this.unleashingMinion.getNextNeededUnleashTarget();
 			if (t == null) {
+				// convert visual card's targets to real card's targets
+				((Minion) this.unleashingMinion.realCard).resetUnleashTargets();
+				LinkedList<Target> visualut = this.unleashingMinion.getUnleashTargets();
+				LinkedList<Target> realut = ((Minion) this.unleashingMinion.realCard).getUnleashTargets();
+				for (int i = 0; i < visualut.size(); i++) {
+					for (Card c : visualut.get(i).getTargets()) {
+						realut.get(i).setTarget(c.realCard);
+					}
+				}
 				this.realBoard.playerUnleashMinion(this.realBoard.getPlayer(this.realBoard.localteam),
-						(Minion) this.unleashingMinion.realCard, this.unleashingMinion.unleashTargetsToString());
+						(Minion) this.unleashingMinion.realCard);
 				this.unleashingMinion.scale = CARD_SCALE_BOARD;
 				this.unleashingMinion = null;
 			} else {
@@ -729,6 +756,20 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		this.unleashingMinion = m;
 		this.resolveNoUnleashTarget();
 		this.animateUnleashTargets(true);
+	}
+
+	@Override
+	public LinkedList<Card> getTargetableCards(Target t) {
+		LinkedList<Card> list = new LinkedList<Card>();
+		if (t == null) {
+			return list;
+		}
+		for (Card c : this.getTargetableCards()) {
+			if (t.canTarget(c.realCard)) {
+				list.add(c);
+			}
+		}
+		return list;
 	}
 
 	public void animateBattlecryTargets(boolean activate) {

@@ -17,8 +17,8 @@ public class BellringerAngel extends Minion {
 			"<b> Ward. </b> \n <b> Last Words: </b> draw a card.", "res/card/basic/bellringerangel.png", CRAFT, 2, 0, 0,
 			2, false, ID, Tooltip.WARD, Tooltip.LASTWORDS);
 
-	public BellringerAngel(Board b, int team) {
-		super(b, team, TOOLTIP);
+	public BellringerAngel(Board b) {
+		super(b, TOOLTIP);
 		Effect e = new Effect(0, "<b> Ward. </b> \n <b> Last Words: </b> draw a card.") {
 			@Override
 			public EventLastWords lastWords() {

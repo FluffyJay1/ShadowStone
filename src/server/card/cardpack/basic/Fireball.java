@@ -18,8 +18,8 @@ public class Fireball extends Spell {
 			"res/card/basic/fireball.png", CRAFT, 3, ID);
 	Effect e;
 
-	public Fireball(Board b, int team) {
-		super(b, team, TOOLTIP);
+	public Fireball(Board b) {
+		super(b, TOOLTIP);
 		// anonymous classes within anonymous classes
 
 		this.e = new Effect(0, "") {
@@ -29,19 +29,19 @@ public class Fireball extends Spell {
 					@Override
 					public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
 						for (int i = 0; i < this.effect.battlecryTargets.get(0).getTargets().size(); i++) {
-							ArrayList<Target> m = new ArrayList<Target>();
+							ArrayList<Minion> m = new ArrayList<Minion>();
 							ArrayList<Integer> d = new ArrayList<Integer>();
 							ArrayList<Boolean> p = new ArrayList<Boolean>();
 							int pos = ((BoardObject) this.effect.battlecryTargets.get(0).getTargets().get(i)).cardpos;
 
-							m.add(new Target(this.effect.battlecryTargets.get(0).getTargets().get(i))); // spaghett
+							m.add((Minion) this.effect.battlecryTargets.get(0).getTargets().get(i)); // spaghett
 							d.add(2);
 							p.add(this.effect.owner.finalStatEffects.getStat(EffectStats.POISONOUS) > 0);
 							for (int j = -1; j <= 1; j += 2) {
 								BoardObject b = this.effect.owner.board.getBoardObject(this.effect.owner.team * -1,
 										pos + j);
 								if (b != null && this.effect.battlecryTargets.get(0).canTarget(b)) {
-									m.add(new Target(b));
+									m.add((Minion) b);
 									d.add(1);
 									p.add(this.effect.owner.finalStatEffects.getStat(EffectStats.POISONOUS) > 0);
 								}

@@ -8,6 +8,8 @@ public class EffectIDLinker {
 			return EffectStatChange.class;
 		case EffectBrambles.ID:
 			return EffectBrambles.class;
+		case EffectLastWordsSummon.ID:
+			return EffectLastWordsSummon.class;
 		default:
 			return null;
 		}

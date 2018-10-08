@@ -21,8 +21,8 @@ public class Tiny extends Minion {
 			"<b> Unleash: </b> Gain +2/+0/+2 and <b> Rush. </b>", "res/card/basic/tiny.png", CRAFT, 3, 2, 2, 3, false,
 			ID, Tooltip.UNLEASH, Tooltip.RUSH);
 
-	public Tiny(Board b, int team) {
-		super(b, team, TOOLTIP);
+	public Tiny(Board b) {
+		super(b, TOOLTIP);
 		Effect e = new Effect(0, "Unleash: Gain +2/+0/+2 and Rush") {
 			@Override
 			public EventFlag unleash() {

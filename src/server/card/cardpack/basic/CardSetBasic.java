@@ -7,14 +7,14 @@ import server.card.unleashpower.UnleashImbueMagic;
 
 public abstract class CardSetBasic extends CardSet {
 	public static final int MIN_ID = 1;
-	public static final int MAX_ID = 9;
+	public static final int MAX_ID = 10;
 	public static final CardSet SET = new CardSet(Goblin.ID, Fighter.ID, Fireball.ID, Tiny.ID, WellOfDestination.ID,
-			BellringerAngel.ID, GenesisOfLegend.ID, WoodOfBrambles.ID, Fairy.ID);
+			BellringerAngel.ID, GenesisOfLegend.ID, WoodOfBrambles.ID, Fairy.ID, Skeleton.ID);
 	public static final CardSet PLAYABLE_SET = new CardSet(Goblin.ID, Fighter.ID, Fireball.ID, Tiny.ID,
 			WellOfDestination.ID, BellringerAngel.ID, GenesisOfLegend.ID, WoodOfBrambles.ID);
 
 	public static Class<? extends Card> getCardClass(int id) {
-		// next id is 10
+		// next id is 11
 		switch (id) {
 		case Goblin.ID:
 			return Goblin.class;
@@ -34,6 +34,8 @@ public abstract class CardSetBasic extends CardSet {
 			return WoodOfBrambles.class;
 		case Fairy.ID:
 			return Fairy.class;
+		case Skeleton.ID:
+			return Skeleton.class;
 		default:
 			return null;
 		}

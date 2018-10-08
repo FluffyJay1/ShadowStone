@@ -42,8 +42,9 @@ public class StateMenu extends BasicGameState {
 				case DeckSelectPanel.DECK_CONFIRM:
 					if (playButton.deckspanel.selectedDeckUnit != null) {
 						StateGame.tempdeck = playButton.deckspanel.selectedDeckUnit.deck;
+						arg1.enterState(Game.STATE_GAME);
 					}
-					arg1.enterState(Game.STATE_GAME);
+
 					break;
 				case "deckbuild":
 					arg1.enterState(Game.STATE_DECKBUILD);

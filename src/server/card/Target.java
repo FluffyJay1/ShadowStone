@@ -8,7 +8,16 @@ import server.Board;
 import server.Player;
 import server.card.effect.Effect;
 
+/**
+ * Target.java is a class that is supposed to handle targeting and their related
+ * restrictions. Such applications include player targeting of cards with
+ * effects, as well as cards themselves choosing which other cards to affect.
+ * 
+ * @author Michael
+ *
+ */
 public class Target {
+	// ah yes the good ol all in one class
 	// targets are handled serverside
 	private Effect creator;
 	public int maxtargets;
@@ -20,11 +29,6 @@ public class Target {
 		this.creator = creator;
 		this.maxtargets = numtargets;
 		this.description = description;
-	}
-
-	public Target(Card c) {
-		this(null, 1, "");
-		this.setTarget(c);
 	}
 
 	public Effect getCreator() {
@@ -76,8 +80,18 @@ public class Target {
 	}
 
 	public void fillRandomTargets() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		for (Card c : this.creator.owner.board.getCards()) {
+			if (this.canTarget(c) && !this.targets.contains(c)) {
+				cards.add(c);
+			}
+		}
 		for (int i = this.targets.size(); i < this.maxtargets; i++) {
-			this.setRandomTarget();
+			if (cards.size() > 0) {
+				this.setTarget(cards.remove((int) (Math.random() * cards.size())));
+			} else {
+				this.setTarget(null);
+			}
 		}
 	}
 

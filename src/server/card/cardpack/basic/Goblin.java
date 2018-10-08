@@ -12,7 +12,7 @@ public class Goblin extends Minion {
 	public static final TooltipMinion TOOLTIP = new TooltipMinion("Goblin", "", "res/card/basic/goblin.png", CRAFT, 1,
 			1, 0, 2, true, ID);
 
-	public Goblin(Board b, int team) {
-		super(b, team, TOOLTIP);
+	public Goblin(Board b) {
+		super(b, TOOLTIP);
 	}
 }

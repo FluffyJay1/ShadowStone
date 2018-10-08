@@ -24,8 +24,8 @@ public class Minion extends BoardObject {
 	public int health, attacksThisTurn = 0; // tempted to make damage an effect
 	public boolean summoningSickness = true;
 
-	public Minion(Board board, int team, TooltipMinion tooltip) {
-		super(board, team, tooltip);
+	public Minion(Board board, TooltipMinion tooltip) {
+		super(board, tooltip);
 		this.health = tooltip.health;
 		Effect e = new Effect(0, "", tooltip.cost, tooltip.attack, tooltip.magic, tooltip.health, 1, false, false,
 				false);
@@ -97,29 +97,52 @@ public class Minion extends BoardObject {
 			g.drawImage(i, this.pos.x - i.getWidth() / 2,
 					this.pos.y - i.getHeight() / 2 + CARD_DIMENSIONS.y * (float) this.scale / 2);
 		}
-		this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.ATTACK),
-				this.finalBasicStatEffects.getStat(EffectStats.ATTACK), false, new Vector2f(-0.4f, 0.5f),
+		this.drawOffensiveStat(g, this.finalStatEffects.getStat(EffectStats.ATTACK),
+				this.finalBasicStatEffects.getStat(EffectStats.ATTACK), new Vector2f(-0.4f, 0.5f),
 				new Vector2f(0, -0.5f), STAT_DEFAULT_SIZE);
-		this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.MAGIC),
-				this.finalBasicStatEffects.getStat(EffectStats.MAGIC), false, new Vector2f(0, 0.5f),
-				new Vector2f(0, -0.5f), STAT_DEFAULT_SIZE);
-		this.drawStatNumber(g, this.health, this.finalBasicStatEffects.getStat(EffectStats.HEALTH),
-				this.health < this.finalStatEffects.getStat(EffectStats.HEALTH), new Vector2f(0.4f, 0.5f),
+		this.drawOffensiveStat(g, this.finalStatEffects.getStat(EffectStats.MAGIC),
+				this.finalBasicStatEffects.getStat(EffectStats.MAGIC), new Vector2f(0, 0.5f), new Vector2f(0, -0.5f),
+				STAT_DEFAULT_SIZE);
+		this.drawHealthStat(g, this.health, this.finalStatEffects.getStat(EffectStats.HEALTH),
+				this.finalBasicStatEffects.getStat(EffectStats.HEALTH), new Vector2f(0.4f, 0.5f),
 				new Vector2f(0, -0.5f), STAT_DEFAULT_SIZE);
 	}
 
 	@Override
 	public void drawInHand(Graphics g) {
 		super.drawInHand(g);
-		this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.ATTACK),
-				this.finalBasicStatEffects.getStat(EffectStats.ATTACK), false, new Vector2f(-0.4f, 0f),
+		this.drawOffensiveStat(g, this.finalStatEffects.getStat(EffectStats.ATTACK),
+				this.finalBasicStatEffects.getStat(EffectStats.ATTACK), new Vector2f(-0.4f, 0f), new Vector2f(0, -0.5f),
+				STAT_DEFAULT_SIZE);
+		this.drawOffensiveStat(g, this.finalStatEffects.getStat(EffectStats.MAGIC),
+				this.finalBasicStatEffects.getStat(EffectStats.MAGIC), new Vector2f(-0.4f, 0.25f),
 				new Vector2f(0, -0.5f), STAT_DEFAULT_SIZE);
-		this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.MAGIC),
-				this.finalBasicStatEffects.getStat(EffectStats.MAGIC), false, new Vector2f(-0.4f, 0.25f),
+		this.drawHealthStat(g, this.health, this.finalStatEffects.getStat(EffectStats.HEALTH),
+				this.finalBasicStatEffects.getStat(EffectStats.HEALTH), new Vector2f(-0.4f, 0.5f),
 				new Vector2f(0, -0.5f), STAT_DEFAULT_SIZE);
-		this.drawStatNumber(g, this.health, this.finalBasicStatEffects.getStat(EffectStats.HEALTH),
-				this.health < this.finalStatEffects.getStat(EffectStats.HEALTH), new Vector2f(-0.4f, 0.5f),
-				new Vector2f(0, -0.5f), STAT_DEFAULT_SIZE);
+	}
+
+	public void drawOffensiveStat(Graphics g, int stat, int basestat, Vector2f relpos, Vector2f textoffset,
+			double fontsize) {
+		Color c = Color.white;
+		if (stat > basestat) {
+			c = Color.green;
+		}
+		if (stat < basestat) {
+			c = Color.orange;
+		}
+		this.drawStatNumber(g, stat, relpos, textoffset, fontsize, c);
+	}
+
+	public void drawHealthStat(Graphics g, int health, int maxhealth, int basehealth, Vector2f relpos,
+			Vector2f textoffset, double fontsize) {
+		Color c = Color.white;
+		if (health < maxhealth) {
+			c = Color.red;
+		} else if (health > basehealth) {
+			c = Color.green;
+		}
+		this.drawStatNumber(g, health, relpos, textoffset, fontsize, c);
 	}
 
 	public ArrayList<Minion> getAttackableTargets() {

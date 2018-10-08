@@ -24,13 +24,12 @@ public class EventDraw extends Event {
 			if (p.deck.cards.size() == 0) {
 				eventlist.add(new EventGameEnd(p.team * -1)); // lose the game
 			} else {
-				// this code is fucked
-				Target t = new Target(this.p.deck.cards.get(0));
+				// TODO MAKE THIS NOT GARBAGE
 				if (p.hand.cards.size() < p.hand.maxsize) {
-					(new EventPutCard(this.p, t, CardStatus.HAND, this.p.team, this.p.hand.maxsize)).resolve(eventlist,
-							loopprotection);
+					(new EventPutCard(this.p, this.p.deck.cards.get(0), CardStatus.HAND, this.p.team,
+							this.p.hand.maxsize)).resolve(eventlist, loopprotection);
 				} else {
-					(new EventDestroy(t)).resolve(eventlist, loopprotection);
+					(new EventMill(this.p, this.p.deck.cards.get(0))).resolve(eventlist, loopprotection);
 				}
 			}
 		}

@@ -2,7 +2,7 @@ package server.event;
 
 public class EventIDLinker {
 	public static Class<? extends Event> getClass(int id) {
-		// next id is 29
+		// gap in 17, next id is 31
 		switch (id) {
 		case EventAddEffect.ID:
 			return EventAddEffect.class;
@@ -10,6 +10,8 @@ public class EventIDLinker {
 			return EventBanish.class;
 		case EventBattlecry.ID:
 			return EventBattlecry.class;
+		case EventSetEffectStats.ID:
+			return EventSetEffectStats.class;
 		case EventClash.ID:
 			return EventClash.class;
 		case EventCreateCard.ID:
@@ -40,6 +42,8 @@ public class EventIDLinker {
 			return EventMinionAttackDamage.class;
 		case EventMinionDamage.ID:
 			return EventMinionDamage.class;
+		case EventMuteEffect.ID:
+			return EventMuteEffect.class;
 		case EventOnAttack.ID:
 			return EventOnAttack.class;
 		case EventOnAttacked.ID:
@@ -50,8 +54,6 @@ public class EventIDLinker {
 			return EventPutCard.class;
 		case EventRemoveEffect.ID:
 			return EventRemoveEffect.class;
-		case EventResolveTarget.ID:
-			return EventResolveTarget.class;
 		case EventRestore.ID:
 			return EventRestore.class;
 		case EventTurnEnd.ID:

@@ -1,5 +1,6 @@
 package server.event;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
@@ -9,21 +10,29 @@ import server.card.*;
 public class EventDestroy extends Event {
 	// killing things
 	public static final int ID = 4;
-	public Target t;
+	public ArrayList<Card> c;
 
 	public EventDestroy(Target t) {
 		super(ID);
-		this.t = t;
+		this.c = new ArrayList<Card>();
+		this.c.addAll(t.getTargets());
+	}
+
+	public EventDestroy(ArrayList<Card> c) {
+		super(ID);
+		this.c = new ArrayList<Card>();
+		this.c.addAll(c);
 	}
 
 	public EventDestroy(Card c) {
 		super(ID);
-		this.t = new Target(c);
+		this.c = new ArrayList<Card>();
+		this.c.add(c);
 	}
 
 	@Override
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-		for (Card c : this.t.getTargets()) {
+		for (Card c : this.c) {
 			if (c.alive) {
 				// TODO increase shadows by 1
 				c.alive = false;
@@ -59,16 +68,25 @@ public class EventDestroy extends Event {
 
 	@Override
 	public String toString() {
-		return this.id + " " + this.t.toString() + "\n";
+		String ret = this.id + " " + this.c.size() + " ";
+		for (int i = 0; i < this.c.size(); i++) {
+			ret += this.c.get(i).toReference();
+		}
+		return ret + "\n";
 	}
 
 	public static EventDestroy fromString(Board b, StringTokenizer st) {
-		Target t = Target.fromString(b, st);
-		return new EventDestroy(t);
+		int size = Integer.parseInt(st.nextToken());
+		ArrayList<Card> c = new ArrayList<Card>(size);
+		for (int i = 0; i < size; i++) {
+			Card card = Card.fromReference(b, st);
+			c.add(card);
+		}
+		return new EventDestroy(c);
 	}
 
 	@Override
 	public boolean conditions() {
-		return true;
+		return !this.c.isEmpty();
 	}
 }

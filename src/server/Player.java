@@ -4,6 +4,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 
+import client.VisualBoard;
 import server.card.Card;
 import server.card.CardStatus;
 import server.card.Deck;
@@ -14,10 +15,11 @@ import server.card.effect.EffectStats;
 import server.card.unleashpower.*;
 
 public class Player {
+	public Player realPlayer;
 	public Board board;
 	public Deck deck;
 	public Hand hand;
-	public int team, mana = 3, maxmana = 3, maxmaxmana = 10; // don't ask
+	public int team, mana = 0, maxmana = 3, maxmaxmana = 10; // don't ask
 	public boolean unleashAllowed = true;
 	public UnleashPower unleashPower;
 
@@ -26,7 +28,6 @@ public class Player {
 		this.team = team;
 		this.deck = new Deck(board, team);
 		this.hand = new Hand(board, team);
-		this.unleashPower = new UnleashImbueMagic(board, team);
 	}
 
 	public void update(double frametime) {
@@ -39,7 +40,8 @@ public class Player {
 	public void draw(Graphics g) {
 		if (this.unleashPower != null) {
 			this.unleashPower.draw(g);
-			if (this.canUnleash()) {
+			if (this.board instanceof VisualBoard && this.realPlayer.canUnleash()
+					&& !((VisualBoard) this.board).disableInput) {
 				g.setColor(Color.cyan);
 				g.drawOval(
 						(float) (this.unleashPower.pos.x - UnleashPower.UNLEASH_POWER_RADIUS * this.unleashPower.scale),
@@ -76,5 +78,22 @@ public class Player {
 			System.out.print(c.id + " ");
 		}
 		System.out.println();
+	}
+
+	// TODO magic numbers lmao
+	public boolean overflow() {
+		return this.maxmana >= 7;
+	}
+
+	public boolean vengeance() {
+		Leader l = (Leader) this.board.getBoardObject(this.team, 0);
+		if (l != null) {
+			return l.health <= 15;
+		}
+		return false;
+	}
+
+	public boolean resonance() {
+		return this.deck.cards.size() % 2 == 0;
 	}
 }

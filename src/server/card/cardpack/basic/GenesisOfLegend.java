@@ -25,8 +25,8 @@ public class GenesisOfLegend extends Amulet {
 			"<b> Countdown(3). </b> At the end of your turn, give a random allied minion +0/+0/+1 and <b> Bane. </b>",
 			"res/card/basic/genesisoflegend.png", CRAFT, 2, ID, Tooltip.COUNTDOWN, Tooltip.BANE);
 
-	public GenesisOfLegend(Board b, int team) {
-		super(b, team, TOOLTIP);
+	public GenesisOfLegend(Board b) {
+		super(b, TOOLTIP);
 		Effect e = new Effect(0, TOOLTIP.description) {
 			@Override
 			public EventFlag onTurnEnd() {
@@ -45,7 +45,7 @@ public class GenesisOfLegend extends Amulet {
 								this.setRandomTarget();
 							}
 						};
-						eventlist.add(new EventResolveTarget(t));
+						t.resolveTargets();
 						EffectStatChange e = new EffectStatChange(
 								"Gained +0/+0/+1 and <b> Bane </b> from Genesis of Legend.");
 						e.change.setStat(EffectStats.HEALTH, 1);

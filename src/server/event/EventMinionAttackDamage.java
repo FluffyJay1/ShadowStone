@@ -24,9 +24,9 @@ public class EventMinionAttackDamage extends Event {
 
 	@Override
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-		ArrayList<Target> minions = new ArrayList<Target>(2);
-		minions.add(new Target(m1));
-		minions.add(new Target(m2));
+		ArrayList<Minion> minions = new ArrayList<Minion>();
+		minions.add(this.m1);
+		minions.add(this.m2);
 		ArrayList<Integer> damage = new ArrayList<Integer>(2);
 		damage.add(m2.finalStatEffects.getStat(EffectStats.ATTACK));
 		damage.add(m1.finalStatEffects.getStat(EffectStats.ATTACK));
@@ -46,8 +46,6 @@ public class EventMinionAttackDamage extends Event {
 			t.setTargets(baned);
 			eventlist.add(new EventDestroy(t));
 		}
-		System.out.println(this.m1.toString());
-		System.out.println(this.m2.toString());
 	}
 
 	@Override

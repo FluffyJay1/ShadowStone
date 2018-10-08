@@ -1,5 +1,6 @@
 package server.event;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
@@ -10,21 +11,29 @@ import server.card.Target;
 
 public class EventBanish extends Event {
 	public static final int ID = 18;
-	public Target t;
+	public ArrayList<Card> c;
 
 	public EventBanish(Target t) {
 		super(ID);
-		this.t = t;
+		this.c = new ArrayList<Card>();
+		this.c.addAll(t.getTargets());
+	}
+
+	public EventBanish(ArrayList<Card> c) {
+		super(ID);
+		this.c = new ArrayList<Card>();
+		this.c.addAll(c);
 	}
 
 	public EventBanish(Card c) {
 		super(ID);
-		this.t = new Target(c);
+		this.c = new ArrayList<Card>();
+		this.c.add(c);
 	}
 
 	@Override
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-		for (Card c : this.t.getTargets()) {
+		for (Card c : this.c) {
 			if (c.alive) {
 				c.alive = false;
 				switch (c.status) {
@@ -56,12 +65,21 @@ public class EventBanish extends Event {
 
 	@Override
 	public String toString() {
-		return this.id + " " + this.t.toString() + "\n";
+		String ret = this.id + " " + this.c.size() + " ";
+		for (int i = 0; i < this.c.size(); i++) {
+			ret += this.c.get(i).toReference();
+		}
+		return ret + "\n";
 	}
 
 	public static EventBanish fromString(Board b, StringTokenizer st) {
-		Target t = Target.fromString(b, st);
-		return new EventBanish(t);
+		int size = Integer.parseInt(st.nextToken());
+		ArrayList<Card> c = new ArrayList<Card>(size);
+		for (int i = 0; i < size; i++) {
+			Card card = Card.fromReference(b, st);
+			c.add(card);
+		}
+		return new EventBanish(c);
 	}
 
 	@Override

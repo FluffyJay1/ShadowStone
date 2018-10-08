@@ -31,6 +31,7 @@ public class EventCreateCard extends Event {
 	}
 
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+		this.c.team = this.team;
 		switch (this.status) {
 		case HAND:
 			Hand relevantHand = this.b.getPlayer(this.team).hand;
@@ -64,6 +65,7 @@ public class EventCreateCard extends Event {
 			break;
 		case UNLEASHPOWER:
 			this.b.getPlayer(this.team).unleashPower = (UnleashPower) this.c;
+			((UnleashPower) this.c).p = this.b.getPlayer(this.team);
 		default:
 			break;
 		}

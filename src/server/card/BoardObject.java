@@ -1,12 +1,12 @@
 package server.card;
 
+import java.awt.Color;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Vector2f;
-
 import client.Game;
 import client.tooltip.*;
 import server.Board;
@@ -17,17 +17,16 @@ import server.event.*;
 
 public class BoardObject extends Card {
 
-	public BoardObject(Board b, int team, TooltipCard tooltip) {
-		super(b, team, tooltip);
+	public BoardObject(Board b, TooltipCard tooltip) {
+		super(b, tooltip);
 	}
 
 	@Override
 	public void drawOnBoard(Graphics g) {
 		super.drawOnBoard(g);
 		if (this.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
-			this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.COUNTDOWN),
-					this.finalStatEffects.getStat(EffectStats.COUNTDOWN), false, new Vector2f(0.3f, 0.3f),
-					new Vector2f(-0.5f, -0.5f), 50);
+			this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.COUNTDOWN), new Vector2f(0.3f, 0.3f),
+					new Vector2f(-0.5f, -0.5f), 50, Color.white);
 		}
 	}
 

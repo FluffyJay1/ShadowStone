@@ -12,7 +12,7 @@ public class Fighter extends Minion {
 	public static final TooltipMinion TOOLTIP = new TooltipMinion("Fighter", "", "res/card/basic/fighter.png", CRAFT, 2,
 			2, 1, 2, true, ID);
 
-	public Fighter(Board b, int team) {
-		super(b, team, TOOLTIP);
+	public Fighter(Board b) {
+		super(b, TOOLTIP);
 	}
 }

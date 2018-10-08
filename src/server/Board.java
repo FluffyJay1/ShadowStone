@@ -259,6 +259,7 @@ public class Board {
 				if (!eventstring.isEmpty() && e.send) {
 					// System.out.println(eventstring);
 					this.output += eventstring;
+					System.out.print(e.getClass().getName() + ": " + eventstring);
 					// System.out.println(this.stateToString());
 				}
 				if (e.priority > 0) {
@@ -297,25 +298,17 @@ public class Board {
 
 	}
 
-	public void playerPlayCard(Player p, Card c, int pos, String btstring) {
+	public void playerPlayCard(Player p, Card c, int pos) {
 		if (!p.canPlayCard(c)) { // just to be safe
 			return;
-		}
-		if (btstring != null) {
-			StringTokenizer st = new StringTokenizer(btstring);
-			c.battlecryTargetsFromString(this, st);
 		}
 		this.eventlist.add(new EventPlayCard(p, c, pos));
 		this.resolveAll();
 	}
 
-	public void playerUnleashMinion(Player p, Minion m, String utstring) {
+	public void playerUnleashMinion(Player p, Minion m) {
 		if (!p.canUnleashCard(m)) {
 			return;
-		}
-		if (utstring != null) {
-			StringTokenizer st = new StringTokenizer(utstring);
-			m.unleashTargetsFromString(this, st);
 		}
 		this.eventlist
 				.add(new EventManaChange(p, -p.unleashPower.finalStatEffects.getStat(EffectStats.COST), false, true));
@@ -365,7 +358,7 @@ public class Board {
 						t.fillRandomTargets();
 					}
 					int randomind = (int) (Math.random() * (this.getBoardObjects(this.localteam * -1).size() - 1)) + 1;
-					this.playerPlayCard(this.getPlayer(this.localteam * -1), c, randomind, null);
+					this.playerPlayCard(this.getPlayer(this.localteam * -1), c, randomind);
 					tempmana -= c.finalStatEffects.getStat(EffectStats.COST);
 				}
 			}

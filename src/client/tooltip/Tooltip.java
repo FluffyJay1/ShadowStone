@@ -3,6 +3,10 @@ package client.tooltip;
 import java.util.ArrayList;
 
 public class Tooltip {
+	public static final Tooltip OVERFLOW = new Tooltip("Overflow",
+			"<b> Overflow </b> is active for a player when they have 7 or more maximum mana.");
+	public static final Tooltip VENGEANCE = new Tooltip("Vengeance",
+			"<b> Vengeance </b> is active for a player when they have 15 or less health.");
 	public static final Tooltip BATTLECRY = new Tooltip("Battlecry",
 			"<b> Battlecry </b> abilities activate whenever the card is played.");
 	public static final Tooltip UNLEASH = new Tooltip("Unleash",

@@ -171,19 +171,19 @@ public class ConstructedDeck implements Serializable {
 	 *            the team of the player owning the cards
 	 * @return an arraylist of the created cards;
 	 */
-	public ArrayList<Card> convertToCards(Board b, int team) {
+	public ArrayList<Card> convertToCards(Board b) {
 		ArrayList<Card> cards = new ArrayList<Card>(this.count);
 		for (Map.Entry<Integer, Integer> entry : this.idcounts.entrySet()) {
 			Constructor constr = null;
 			try {
-				constr = CardSet.getCardClass(entry.getKey()).getConstructor(Board.class, int.class);
+				constr = CardSet.getCardClass(entry.getKey()).getConstructor(Board.class);
 			} catch (NoSuchMethodException | SecurityException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			for (int i = 0; i < entry.getValue(); i++) {
 				try {
-					Card c = (Card) constr.newInstance(b, team);
+					Card c = (Card) constr.newInstance(b);
 					cards.add(c);
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 						| InvocationTargetException e) {

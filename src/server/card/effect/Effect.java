@@ -44,7 +44,7 @@ public class Effect {
 		this.set.setStat(EffectStats.WARD, ward ? 1 : 0);
 	}
 
-	public Effect applyEffectStats(Effect e) {
+	public void applyEffectStats(Effect e) {
 		for (int i = 0; i < e.set.stats.length; i++) {
 			if (e.set.use[i]) {
 				this.set.setStat(i, e.set.stats[i]);
@@ -56,7 +56,15 @@ public class Effect {
 				this.change.changeStat(i, e.change.stats[i]);
 			}
 		}
-		return this;
+	}
+
+	public void resetStats() {
+		for (int i = 0; i < this.set.stats.length; i++) {
+			this.set.resetStat(i);
+		}
+		for (int i = 0; i < this.change.stats.length; i++) {
+			this.change.resetStat(i);
+		}
 	}
 
 	public int getStat(int index) {

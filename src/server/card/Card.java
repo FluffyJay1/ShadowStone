@@ -42,10 +42,11 @@ public class Card {
 	public Card realCard; // for visual board
 
 	public Effect finalStatEffects = new Effect(0, ""), finalBasicStatEffects = new Effect(0, "");
-	// basic effects cannot be muted
+	// basic effects don't get removed when removed from board (e.g. bounce
+	// effects)
 	private LinkedList<Effect> effects = new LinkedList<Effect>(), basicEffects = new LinkedList<Effect>();
 
-	public Card(Board board, int team, TooltipCard tooltip) {
+	public Card(Board board, TooltipCard tooltip) {
 		this.board = board;
 		this.tooltip = tooltip;
 		if (tooltip.imagepath != null) {
@@ -60,8 +61,6 @@ public class Card {
 		this.id = tooltip.id;
 		this.status = CardStatus.DECK;
 		this.craft = tooltip.craft;
-		this.team = team;
-
 	}
 
 	public void update(double frametime) {
@@ -109,24 +108,12 @@ public class Card {
 					(float) (CARD_DIMENSIONS.y * this.scale));
 			g.setColor(org.newdawn.slick.Color.white);
 		}
-		this.drawStatNumber(g, this.finalStatEffects.getStat(EffectStats.COST),
-				this.finalBasicStatEffects.getStat(EffectStats.COST), false, new Vector2f(-0.5f, -0.5f),
+		this.drawCostStat(g, this.finalStatEffects.getStat(EffectStats.COST),
+				this.finalBasicStatEffects.getStat(EffectStats.COST), new Vector2f(-0.5f, -0.5f),
 				new Vector2f(0.5f, 0.5f), STAT_DEFAULT_SIZE);
 	}
 
-	public void drawStatNumber(Graphics g, int stat, int basestat, boolean damaged, Vector2f relpos,
-			Vector2f textoffset, double fontsize) {
-		Color c = Color.white;
-		if (damaged) {
-			c = Color.red;
-		} else {
-			if (stat > basestat) {
-				c = Color.green;
-			}
-			if (stat < basestat) {
-				c = Color.orange;
-			}
-		}
+	public void drawStatNumber(Graphics g, int stat, Vector2f relpos, Vector2f textoffset, double fontsize, Color c) {
 		UnicodeFont font = Game.getFont("Verdana", fontsize * this.scale, true, false, c, Color.BLACK);
 		font.drawString(
 				this.pos.x + CARD_DIMENSIONS.x * relpos.x * (float) this.scale
@@ -134,6 +121,18 @@ public class Card {
 				this.pos.y + CARD_DIMENSIONS.y * relpos.y * (float) this.scale
 						+ font.getHeight("" + stat) * (textoffset.y - 0.5f),
 				"" + stat);
+	}
+
+	public void drawCostStat(Graphics g, int cost, int basecost, Vector2f relpos, Vector2f textoffset,
+			double fontsize) {
+		Color c = Color.white;
+		if (cost > basecost) {
+			c = Color.red;
+		}
+		if (cost < basecost) {
+			c = Color.green;
+		}
+		this.drawStatNumber(g, cost, relpos, textoffset, fontsize, c);
 	}
 
 	public boolean isInside(Vector2f p) {
@@ -169,7 +168,6 @@ public class Card {
 		this.basicEffects.add(e);
 		this.updateBasicEffectPositions();
 		this.updateBasicEffectStats();
-		this.updateFinalEffectStats();
 	}
 
 	public void addEffect(Effect e) {
@@ -195,17 +193,35 @@ public class Card {
 		}
 	}
 
-	private void updateBasicEffectStats() {
+	public void muteEffect(Effect e, boolean mute) {
+		if (this.effects.contains(e)) {
+			e.mute = mute;
+			this.updateBasicEffectStats();
+		}
+	}
+
+	public void updateBasicEffectStats() {
 		this.finalBasicStatEffects = new Effect(0, "");
 		for (Effect e : this.getBasicEffects()) {
 			this.finalBasicStatEffects.applyEffectStats(e);
 		}
+		for (int i = 0; i < EffectStats.NUM_STATS; i++) {
+			if (this.finalBasicStatEffects.getStat(i) < 0) {
+				this.finalBasicStatEffects.set.setStat(i, 0);
+			}
+		}
+		this.updateFinalEffectStats();
 	}
 
-	private void updateFinalEffectStats() {
+	public void updateFinalEffectStats() {
 		this.finalStatEffects = new Effect(0, "");
 		for (Effect e : this.getFinalEffects()) {
 			this.finalStatEffects.applyEffectStats(e);
+		}
+		for (int i = 0; i < EffectStats.NUM_STATS; i++) {
+			if (this.finalStatEffects.getStat(i) < 0) {
+				this.finalStatEffects.set.setStat(i, 0);
+			}
 		}
 	}
 
@@ -298,23 +314,26 @@ public class Card {
 	}
 
 	public String toConstructorString() {
-		return this.id + " " + this.team + " ";
+		return this.id + " ";
 	}
 
 	public static Card createFromConstructorString(Board b, StringTokenizer st) {
 		int id = Integer.parseInt(st.nextToken());
-		int team = Integer.parseInt(st.nextToken());
+		return createFromConstructor(b, id);
+
+	}
+
+	public static Card createFromConstructor(Board b, int id) {
 		Class<? extends Card> c = CardSet.getCardClass(id);
 		Card card = null;
 		try {
-			card = (Card) c.getConstructor(Board.class, int.class).newInstance(b, team);
+			card = (Card) c.getConstructor(Board.class).newInstance(b);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return card;
-		// AAAAAAAAAAAAAAAAAAAa
 	}
 
 	public String toReference() {

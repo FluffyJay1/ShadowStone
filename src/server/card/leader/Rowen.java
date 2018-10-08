@@ -7,7 +7,7 @@ import server.card.Leader;
 public class Rowen extends Leader {
 	public static final int ID = -1;
 
-	public Rowen(Board b, int team) {
-		super(b, team, ClassCraft.DRAGONDRUID, ID, "Rowen");
+	public Rowen(Board b) {
+		super(b, ClassCraft.DRAGONDRUID, ID, "Rowen");
 	}
 }

@@ -3,6 +3,7 @@ package server.event;
 import java.util.StringTokenizer;
 
 import server.Board;
+import server.card.Card;
 import server.card.Minion;
 import server.card.Target;
 import server.card.effect.Effect;
@@ -11,7 +12,7 @@ import server.card.effect.Effect;
 public class EventOnAttacked extends Event {
 	public static final int ID = 26;
 	public Effect effect;
-	public Target t = new Target(null);
+	public Minion m;
 
 	public EventOnAttacked(Effect effect) {
 		super(ID);
@@ -19,20 +20,20 @@ public class EventOnAttacked extends Event {
 		this.priority = 1;
 	}
 
-	public EventOnAttacked(Effect effect, Target t) {
+	public EventOnAttacked(Effect effect, Minion m) {
 		this(effect);
-		this.t = t;
+		this.m = m;
 	}
 
 	@Override
 	public String toString() {
-		return this.id + " " + this.effect.toReference() + this.t.toString() + "\n";
+		return this.id + " " + this.effect.toReference() + (this.m != null ? this.m.toReference() : "null ") + "\n";
 	}
 
 	public static EventOnAttacked fromString(Board b, StringTokenizer st) {
 		Effect effect = Effect.fromReference(b, st);
-		Target t = Target.fromString(b, st);
-		return new EventOnAttacked(effect, t);
+		Minion m = (Minion) Card.fromReference(b, st);
+		return new EventOnAttacked(effect, m);
 	}
 
 	@Override

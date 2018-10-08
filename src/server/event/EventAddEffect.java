@@ -1,5 +1,6 @@
 package server.event;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
@@ -12,24 +13,32 @@ import server.card.effect.EffectStats;
 
 public class EventAddEffect extends Event {
 	public static final int ID = 1;
-	public Target t;
+	public ArrayList<Card> c;
 	Effect e;
 
 	public EventAddEffect(Target t, Effect e) {
 		super(ID);
-		this.t = t;
+		this.c = new ArrayList<Card>();
+		this.c.addAll(t.getTargets());
+		this.e = e;
+	}
+
+	public EventAddEffect(ArrayList<Card> c, Effect e) {
+		super(ID);
+		this.c = new ArrayList<Card>();
+		this.c.addAll(c);
 		this.e = e;
 	}
 
 	public EventAddEffect(Card c, Effect e) {
 		super(ID);
-		Target t = new Target(c);
-		this.t = t;
+		this.c = new ArrayList<Card>();
+		this.c.add(c);
 		this.e = e;
 	}
 
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-		for (Card c : this.t.getTargets()) {
+		for (Card c : this.c) {
 			Effect clonede = e.clone();
 			c.addEffect(clonede);
 			if (c instanceof Minion) {
@@ -55,16 +64,25 @@ public class EventAddEffect extends Event {
 	}
 
 	public String toString() {
-		return this.id + " " + t.toString() + e.toString() + "\n";
+		String ret = this.id + " " + this.c.size() + " " + e.toString();
+		for (int i = 0; i < this.c.size(); i++) {
+			ret += this.c.get(i).toReference();
+		}
+		return ret + "\n";
 	}
 
 	public static EventAddEffect fromString(Board b, StringTokenizer st) {
-		Target t = Target.fromString(b, st);
+		int size = Integer.parseInt(st.nextToken());
 		Effect e = Effect.fromString(b, st);
-		return new EventAddEffect(t, e);
+		ArrayList<Card> c = new ArrayList<Card>();
+		for (int i = 0; i < size; i++) {
+			Card card = Card.fromReference(b, st);
+			c.add(card);
+		}
+		return new EventAddEffect(c, e);
 	}
 
 	public boolean conditions() {
-		return true;
+		return !this.c.isEmpty() && this.e != null;
 	}
 }

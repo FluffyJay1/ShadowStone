@@ -16,12 +16,12 @@ public class EventMinionDamage extends Event {
 	public static final int ID = 10;
 	public ArrayList<Integer> damage;
 	public Minion m1;
-	public ArrayList<Target> m2;
+	public ArrayList<Minion> m2;
 
-	public EventMinionDamage(Minion m1, ArrayList<Target> m2, ArrayList<Integer> damage) {
+	public EventMinionDamage(Minion m1, ArrayList<Minion> m2, ArrayList<Integer> damage) {
 		super(ID);
 		this.m1 = m1;
-		this.m2 = new ArrayList<Target>();
+		this.m2 = new ArrayList<Minion>();
 		this.m2.addAll(m2);
 		this.damage = new ArrayList<Integer>();
 		this.damage.addAll(damage);
@@ -31,7 +31,21 @@ public class EventMinionDamage extends Event {
 	public EventMinionDamage(Minion m1, Target m2, int damage) {
 		super(ID);
 		this.m1 = m1;
-		this.m2 = new ArrayList<Target>();
+		this.m2 = new ArrayList<Minion>();
+		this.damage = new ArrayList<Integer>();
+		for (Card c : m2.getTargets()) {
+			if (c instanceof Minion) {
+				this.m2.add((Minion) c);
+				this.damage.add(damage);
+			}
+		}
+		this.priority = 1;
+	}
+
+	public EventMinionDamage(Minion m1, Minion m2, int damage) {
+		super(ID);
+		this.m1 = m1;
+		this.m2 = new ArrayList<Minion>();
 		this.m2.add(m2);
 		this.damage = new ArrayList<Integer>();
 		this.damage.add(damage);
@@ -51,7 +65,7 @@ public class EventMinionDamage extends Event {
 	public String toString() {
 		String ret = this.id + " " + this.m1.toReference() + this.m2.size() + " ";
 		for (int i = 0; i < this.m2.size(); i++) {
-			ret += this.m2.get(i).toString() + this.damage.get(i) + " ";
+			ret += this.m2.get(i).toReference() + this.damage.get(i) + " ";
 		}
 		return ret + "\n";
 	}
@@ -59,12 +73,12 @@ public class EventMinionDamage extends Event {
 	public static EventMinionDamage fromString(Board b, StringTokenizer st) {
 		Card m1 = Card.fromReference(b, st);
 		int size = Integer.parseInt(st.nextToken());
-		ArrayList<Target> m2 = new ArrayList<Target>(size);
+		ArrayList<Minion> m2 = new ArrayList<Minion>(size);
 		ArrayList<Integer> damage = new ArrayList<Integer>(size);
 		for (int i = 0; i < size; i++) {
-			Target t = Target.fromString(b, st);
+			Minion m = (Minion) Card.fromReference(b, st);
 			int d = Integer.parseInt(st.nextToken());
-			m2.add(t);
+			m2.add(m);
 			damage.add(d);
 		}
 		return new EventMinionDamage((Minion) m1, m2, damage);
@@ -72,6 +86,6 @@ public class EventMinionDamage extends Event {
 
 	@Override
 	public boolean conditions() {
-		return true;
+		return !this.m2.isEmpty();
 	}
 }

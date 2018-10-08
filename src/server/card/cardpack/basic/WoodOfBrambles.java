@@ -24,8 +24,8 @@ public class WoodOfBrambles extends Amulet {
 			"res/card/basic/woodofbrambles.png", CRAFT, 2, ID, Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Fairy.TOOLTIP,
 			Tooltip.CLASH);
 
-	public WoodOfBrambles(Board b, int team) {
-		super(b, team, TOOLTIP);
+	public WoodOfBrambles(Board b) {
+		super(b, TOOLTIP);
 		Effect e = new Effect(0, TOOLTIP.description) {
 			@Override
 			public EventBattlecry battlecry() {
@@ -34,8 +34,7 @@ public class WoodOfBrambles extends Amulet {
 					public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
 						for (int i = 0; i < 2; i++) {
 							eventlist.add(new EventCreateCard(this.effect.owner.board,
-									new Fairy(this.effect.owner.board, this.effect.owner.team), this.effect.owner.team,
-									CardStatus.HAND, 999));
+									new Fairy(this.effect.owner.board), this.effect.owner.team, CardStatus.HAND, 999));
 						}
 						Target t = new Target(this.effect, 5, "") {
 
@@ -47,7 +46,7 @@ public class WoodOfBrambles extends Amulet {
 								}
 							}
 						};
-						eventlist.add(new EventResolveTarget(t));
+						t.resolveTargets();
 						EffectBrambles e = new EffectBrambles(this.effect.owner);
 						eventlist.add(new EventAddEffect(t, e));
 					}

@@ -21,11 +21,10 @@ public class EffectBrambles extends Effect {
 
 	@Override
 	public EventClash clash(Minion target) {
-		Target t = new Target(target);
-		EventClash ec = new EventClash(this, t) {
+		EventClash ec = new EventClash(this, target) {
 			@Override
 			public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-				eventlist.add(new EventMinionDamage((Minion) this.effect.owner, this.t, 1));
+				eventlist.add(new EventMinionDamage((Minion) this.effect.owner, target, 1));
 			}
 		};
 		return ec;

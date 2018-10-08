@@ -11,9 +11,9 @@ public class Fairy extends Minion {
 	public static final int ID = 9;
 	public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
 	public static final TooltipMinion TOOLTIP = new TooltipMinion("Fairy", "", "res/card/basic/fairy.png", CRAFT, 1, 1,
-			0, 1, true, ID);
+			1, 1, true, ID);
 
-	public Fairy(Board b, int team) {
-		super(b, team, TOOLTIP);
+	public Fairy(Board b) {
+		super(b, TOOLTIP);
 	}
 }

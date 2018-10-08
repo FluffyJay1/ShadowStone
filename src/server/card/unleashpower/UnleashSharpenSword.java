@@ -14,26 +14,28 @@ import server.card.effect.EffectStatChange;
 import server.card.effect.EffectStats;
 import server.event.Event;
 import server.event.EventAddEffect;
+import server.event.EventFlag;
 import server.event.EventUnleash;
 
-public class UnleashImbueMagic extends UnleashPower {
-	public static final int ID = -11;
-	public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
-	public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Imbue Magic",
-			"Give an allied minion +0/+1/+0, then <b> Unleash </b> it.", "res/unleashpower/imbuemagic.png", CRAFT, 2,
+public class UnleashSharpenSword extends UnleashPower {
+	public static final int ID = -10;
+	public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
+	public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Sharpen Sword",
+			"<b> Unleash </b> an allied minion, then give it +1/+0/+0.", "res/unleashpower/sharpensword.png", CRAFT, 2,
 			ID, Tooltip.UNLEASH);
 
-	public UnleashImbueMagic(Board b) {
-		super(b, TOOLTIP, new Vector2f(393, 733), 0.3);
+	public UnleashSharpenSword(Board b) {
+		super(b, TOOLTIP, new Vector2f(500, 330), 0.3);
 	}
 
 	@Override
 	public LinkedList<Event> unleash(Minion m) {
 		LinkedList<Event> list = new LinkedList<Event>();
-		EffectStatChange e = new EffectStatChange("+0/+1/+0 from <b> Imbue Magic. </b>");
-		e.change.setStat(EffectStats.MAGIC, 1);
-		list.add(new EventAddEffect(m, e));
 		list.add(new EventUnleash(this, m));
+		EffectStatChange e = new EffectStatChange("+1/+0/+0 from <b> Sharpen Sword. </b>");
+		e.change.setStat(EffectStats.ATTACK, 1);
+		list.add(new EventAddEffect(m, e));
 		return list;
 	}
+
 }

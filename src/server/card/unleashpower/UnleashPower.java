@@ -32,14 +32,15 @@ public class UnleashPower extends Card {
 	// double artFocusScale;
 	Image subImage;
 
-	public UnleashPower(Board b, int team, TooltipUnleashPower tooltip, Vector2f artFocusPos, double artFocusScale) {
-		super(b, team, tooltip);
-
+	public UnleashPower(Board b, TooltipUnleashPower tooltip, Vector2f artFocusPos, double artFocusScale) {
+		super(b, tooltip);
+		Effect e = new Effect(0, "", tooltip.cost);
+		e.set.setStat(EffectStats.ATTACKS_PER_TURN, 1);
+		this.addBasicEffect(e);
 		Image scaledCopy = Game.getImage(imagepath).getScaledCopy((float) (artFocusScale));
 		this.subImage = scaledCopy.getSubImage((int) (artFocusPos.x * artFocusScale - UNLEASH_POWER_RADIUS),
 				(int) (artFocusPos.y * artFocusScale - UNLEASH_POWER_RADIUS), (int) (UNLEASH_POWER_RADIUS * 2),
 				(int) (UNLEASH_POWER_RADIUS * 2));
-		this.p = b.getPlayer(team);
 	}
 
 	@Override
@@ -47,11 +48,10 @@ public class UnleashPower extends Card {
 		Image scaledCopy = this.subImage.getScaledCopy((float) this.scale);
 		Circle c = new Circle(this.pos.x, this.pos.y, (float) (UNLEASH_POWER_RADIUS * this.scale));
 		g.texture(c, scaledCopy, true);
-		int stat = this.finalBasicStatEffects.getStat(EffectStats.COST);
-		UnicodeFont font = Game.getFont("Verdana", STAT_DEFAULT_SIZE * this.scale, true, false, Color.WHITE,
-				Color.BLACK);
-		font.drawString((float) (this.pos.x - font.getWidth("" + stat) * 0.5),
-				(float) (this.pos.y - UNLEASH_POWER_RADIUS * (float) this.scale), "" + stat);
+
+		this.drawCostStat(g, this.finalStatEffects.getStat(EffectStats.COST),
+				this.finalBasicStatEffects.getStat(EffectStats.COST), new Vector2f(0, -0.25f), new Vector2f(0, 0.5f),
+				STAT_DEFAULT_SIZE);
 	}
 
 	// this returns a linkedlist event because fuck u
