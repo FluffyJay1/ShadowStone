@@ -23,7 +23,7 @@ public class EventGameEnd extends Event {
 	}
 
 	public String toString() {
-		return this.id + " " + victory + " \n";
+		return this.id + " " + victory + "\n";
 	}
 
 	public static EventGameEnd fromString(Board b, StringTokenizer st) {
