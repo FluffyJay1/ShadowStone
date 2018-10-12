@@ -1,11 +1,10 @@
 package server.playeraction;
 
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Player;
-import server.card.Card;
-import server.event.EventPlayCard;
-import server.Board;
+import server.*;
+import server.card.*;
+import server.event.*;
 
 public class PlayCardAction extends PlayerAction {
 
@@ -24,15 +23,18 @@ public class PlayCardAction extends PlayerAction {
 	}
 
 	// remember to set battlecry targets
-	public void perform(Board b) {
+	@Override
+	public boolean perform(Board b) {
 		if (!p.canPlayCard(c)) { // just to be safe
-			return;
+			return false;
 		}
 
 		b.eventlist.add(new EventPlayCard(p, c, pos));
 		b.resolveAll();
+		return true;
 	}
 
+	@Override
 	public String toString() {
 		return this.ID + " " + this.p.team + " " + this.c.toReference() + " " + this.pos + " "
 				+ c.battlecryTargetsToString() + "\n"; // YEAHH

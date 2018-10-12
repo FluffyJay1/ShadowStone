@@ -8,7 +8,7 @@ public class ActionIDLinker {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Class<? extends PlayerAction> getClass(int id) {
+	public static Class<? extends PlayerAction> getClass(int id) {
 		// next id is 5
 		switch (id) {
 		case EndTurnAction.ID:

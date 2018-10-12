@@ -1,12 +1,10 @@
 package server.playeraction;
 
-import server.card.Card;
-import server.card.Minion;
-import server.event.EventMinionAttack;
+import java.util.*;
 
-import java.util.StringTokenizer;
-
-import server.Board;
+import server.*;
+import server.card.*;
+import server.event.*;
 
 public class OrderAttackAction extends PlayerAction {
 
@@ -22,13 +20,17 @@ public class OrderAttackAction extends PlayerAction {
 		this.victim = victim;
 	}
 
-	public void perform(Board b) {
+	@Override
+	public boolean perform(Board b) {
 		if (attacker.getAttackableTargets().contains(victim)) {
 			b.eventlist.add(new EventMinionAttack(attacker, victim));
 			b.resolveAll();
+			return true;
 		}
+		return false;
 	}
 
+	@Override
 	public String toString() {
 		return this.ID + " " + attacker.toReference() + " " + victim.toReference() + "\n";
 	}

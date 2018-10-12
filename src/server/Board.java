@@ -1,19 +1,13 @@
 package server;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.util.concurrent.*;
 
 import client.Game;
-import server.card.Amulet;
-import server.card.BoardObject;
-import server.card.Card;
-import server.card.CardStatus;
-import server.card.Leader;
-import server.card.Minion;
-import server.card.Target;
-import server.card.effect.EffectStats;
+import server.card.*;
+import server.card.effect.*;
 import server.event.*;
+import server.playeraction.*;
 
 public class Board {
 	public boolean isServer = true; // true means it is the center of game logic
@@ -298,35 +292,41 @@ public class Board {
 
 	}
 
+	public synchronized boolean executePlayerAction(StringTokenizer st) {
+		PlayerAction pa = PlayerAction.createFromString(this, st);
+		return pa.perform(this);
+	}
+
 	public void playerPlayCard(Player p, Card c, int pos) {
-		if (!p.canPlayCard(c)) { // just to be safe
-			return;
+		if (this.isServer) {
+			(new PlayCardAction(p, c, pos)).perform(this);
+		} else {
+			// TODO send to server and wait for response
 		}
-		this.eventlist.add(new EventPlayCard(p, c, pos));
-		this.resolveAll();
 	}
 
 	public void playerUnleashMinion(Player p, Minion m) {
-		if (!p.canUnleashCard(m)) {
-			return;
+		if (this.isServer) {
+			(new UnleashMinionAction(p, m)).perform(this);
+		} else {
+			// TODO send to server and wait for response
 		}
-		this.eventlist
-				.add(new EventManaChange(p, -p.unleashPower.finalStatEffects.getStat(EffectStats.COST), false, true));
-		this.eventlist.addAll(p.unleashPower.unleash(m));
-		this.resolveAll();
 	}
 
 	// encapsulation at its finest
 	public void playerOrderAttack(Minion attacker, Minion victim) {
-		if (attacker.getAttackableTargets().contains(victim)) {
-			this.eventlist.add(new EventMinionAttack(attacker, victim));
-			this.resolveAll();
+		if (this.isServer) {
+			(new OrderAttackAction(attacker, victim)).perform(this);
+		} else {
+			// TODO send to server and wait for response
 		}
 	}
 
 	public void playerEndTurn(int team) {
-		if (team == this.currentplayerturn) {
-			this.endCurrentPlayerTurn();
+		if (this.isServer) {
+			(new EndTurnAction(team)).perform(this);
+		} else {
+			// TODO send to server and wait for response
 		}
 	}
 

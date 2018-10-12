@@ -1,13 +1,11 @@
 package server.playeraction;
 
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Player;
-import server.card.Card;
-import server.card.Minion;
-import server.card.effect.EffectStats;
-import server.event.EventManaChange;
-import server.Board;
+import server.*;
+import server.card.*;
+import server.card.effect.*;
+import server.event.*;
 
 public class UnleashMinionAction extends PlayerAction {
 
@@ -24,16 +22,19 @@ public class UnleashMinionAction extends PlayerAction {
 	}
 
 	// remember to set targets to unleash upon
-	public void perform(Board b) {
+	@Override
+	public boolean perform(Board b) {
 		if (!p.canUnleashCard(m)) {
-			return;
+			return false;
 		}
 		b.eventlist
 				.add(new EventManaChange(p, -p.unleashPower.finalStatEffects.getStat(EffectStats.COST), false, true));
 		b.eventlist.addAll(p.unleashPower.unleash(m));
 		b.resolveAll();
+		return true;
 	}
 
+	@Override
 	public String toString() {
 		return this.ID + " " + p.team + " " + m.toReference() + " " + m.unleashTargetsToString() + "\n";
 	}

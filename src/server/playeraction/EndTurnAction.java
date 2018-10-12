@@ -17,10 +17,13 @@ public class EndTurnAction extends PlayerAction {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void perform(Board b) {
+	@Override
+	public boolean perform(Board b) {
 		if (team == b.currentplayerturn) {
 			b.endCurrentPlayerTurn();
+			return true;
 		}
+		return false;
 	}
 
 	public String toString() {
