@@ -1,15 +1,9 @@
 package client.ui.game;
 
-import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.geom.*;
 
-import client.VisualBoard;
-import client.ui.Text;
-import client.ui.UI;
-import client.ui.UIBox;
-import client.ui.UIElement;
-import server.card.CardStatus;
-import server.card.Leader;
-import server.card.Minion;
+import client.*;
+import client.ui.*;
 
 public class EndTurnButton extends UIBox {
 	VisualBoard b;

@@ -2,30 +2,15 @@ package client;
 
 import java.util.*;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.MouseListener;
-import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.*;
+import org.newdawn.slick.geom.*;
 
-import client.ui.Text;
-import client.ui.UI;
-import client.ui.game.CardSelectPanel;
-import client.ui.game.EndTurnButton;
-import client.ui.game.UnleashButton;
-import server.Board;
-import server.card.BoardObject;
-import server.card.Card;
-import server.card.CardStatus;
-import server.card.Leader;
-import server.card.Minion;
-import server.card.Spell;
-import server.card.Target;
-import server.card.effect.EffectStats;
+import client.ui.*;
+import client.ui.game.*;
+import server.*;
+import server.card.*;
 import server.event.*;
-import utils.DefaultMouseListener;
+import utils.*;
 
 public class VisualBoard extends Board implements DefaultMouseListener {
 	public static final int BO_SPACING = 190;
@@ -60,6 +45,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		this.isServer = false;
 		this.realBoard = new Board();
 		this.realBoard.isClient = true;
+		this.realBoard.isServer = false;
 		this.player1.realPlayer = this.realBoard.player1;
 		this.player2.realPlayer = this.realBoard.player2;
 		this.cardSelectPanel = new CardSelectPanel(this.ui, this);
@@ -70,6 +56,12 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 		this.targetText = new Text(ui, new Vector2f(), "Target", 400, 24, "Verdana", 30, 0, -1);
 		this.ui.addUIElementParent(this.targetText);
 		// this.cardSelectPanel.draggable = true;
+	}
+
+	public VisualBoard(int localteam) {
+		this();
+		this.realBoard.localteam = localteam;
+		this.localteam = localteam;
 	}
 
 	public void update(double frametime) {
@@ -244,7 +236,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	}
 
 	@Override
-	public void parseEventString(String s) {
+	public synchronized void parseEventString(String s) {
 		if (!this.realBoard.isServer) {
 			this.realBoard.parseEventString(s);
 		}
@@ -286,7 +278,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 					} else if (this.currentEvent instanceof EventTurnStart) {
 						this.animationtimer = 1;
 						if (((EventTurnStart) this.currentEvent).p.team != this.realBoard.localteam) {
-							this.realBoard.AIThink();
+							// this.realBoard.AIThink();
 						} else {
 							this.disableInput = false;
 						}
@@ -328,6 +320,8 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 						if (e.c != null) {
 							this.animationtimer = 0.3;
 						}
+					} else if (this.currentEvent instanceof EventGameEnd) {
+						this.animationtimer = 3;
 					} else if (!(this.currentEvent instanceof EventCreateCard)) {
 						this.animationtimer = 0.2;
 					}
@@ -481,6 +475,24 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 					g.drawImage(img, e.c.pos.x - img.getWidth() / 2 + xoffset,
 							e.c.pos.y - img.getHeight() / 2 + yoffset);
 				}
+			} else if (this.currentEvent instanceof EventGameEnd) {
+				EventGameEnd e = (EventGameEnd) this.currentEvent;
+				UnicodeFont font = Game.getFont("Verdana", 80, true, false);
+				String dstring = "GAME END";
+				switch (e.victory * this.realBoard.localteam) { // ez hack
+				case 1:
+					g.setColor(Color.cyan);
+					dstring = "YOU WIN";
+					break;
+				case -1:
+					g.setColor(Color.red);
+					dstring = "UR ASS";
+					break;
+				}
+				g.setFont(font);
+				g.drawString(dstring, Game.WINDOW_WIDTH / 2 - font.getWidth(dstring) / 2,
+						Game.WINDOW_HEIGHT / 2 - font.getHeight(dstring));
+				g.setColor(Color.white);
 			}
 
 		}
@@ -559,7 +571,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 						this.attackingMinion = (Minion) bo;
 						for (BoardObject b : this.getBoardObjects(this.realBoard.localteam * -1)) {
 							if (b instanceof Minion && ((Minion) this.attackingMinion.realCard).getAttackableTargets()
-									.contains((Minion) b.realCard)) {
+									.contains(b.realCard)) {
 								b.scale = CARD_SCALE_TARGET;
 							}
 						}
@@ -595,8 +607,8 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				target.scale = CARD_SCALE_BOARD;
 			}
 			for (BoardObject b : this.getBoardObjects(this.localteam * -1)) {
-				if (b instanceof Minion && ((Minion) this.attackingMinion.realCard).getAttackableTargets()
-						.contains((Minion) b.realCard)) {
+				if (b instanceof Minion
+						&& ((Minion) this.attackingMinion.realCard).getAttackableTargets().contains(b.realCard)) {
 					b.scale = CARD_SCALE_BOARD;
 				}
 			}

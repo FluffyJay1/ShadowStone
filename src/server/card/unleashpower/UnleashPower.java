@@ -1,35 +1,24 @@
 package server.card.unleashpower;
 
-import java.awt.Color;
-import java.util.LinkedList;
+import java.util.*;
 
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.geom.Circle;
-import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.*;
+import org.newdawn.slick.geom.*;
 
 import client.Game;
 import client.tooltip.*;
-import server.Board;
-import server.Player;
-import server.card.Card;
-import server.card.CardStatus;
-import server.card.ClassCraft;
-import server.card.Minion;
-import server.card.effect.Effect;
-import server.card.effect.EffectStats;
-import server.event.Event;
-import server.event.EventManaChange;
-import server.event.EventUnleash;
+import server.*;
+import server.card.*;
+import server.card.effect.*;
+import server.event.*;
 
 public class UnleashPower extends Card {
 	public static final double UNLEASH_POWER_RADIUS = 50;
 
 	public Player p;
 	public int unleashesThisTurn = 0;
-	// Vector2f artFocusPos;
-	// double artFocusScale;
+	Vector2f artFocusPos;
+	double artFocusScale;
 	Image subImage;
 
 	public UnleashPower(Board b, TooltipUnleashPower tooltip, Vector2f artFocusPos, double artFocusScale) {
@@ -37,14 +26,19 @@ public class UnleashPower extends Card {
 		Effect e = new Effect(0, "", tooltip.cost);
 		e.set.setStat(EffectStats.ATTACKS_PER_TURN, 1);
 		this.addBasicEffect(e);
-		Image scaledCopy = Game.getImage(imagepath).getScaledCopy((float) (artFocusScale));
-		this.subImage = scaledCopy.getSubImage((int) (artFocusPos.x * artFocusScale - UNLEASH_POWER_RADIUS),
-				(int) (artFocusPos.y * artFocusScale - UNLEASH_POWER_RADIUS), (int) (UNLEASH_POWER_RADIUS * 2),
-				(int) (UNLEASH_POWER_RADIUS * 2));
+		this.artFocusPos = artFocusPos;
+		this.artFocusScale = artFocusScale;
 	}
 
 	@Override
 	public void draw(Graphics g) {
+		if (this.subImage == null) {
+			Image scaledCopy = Game.getImage(imagepath).getScaledCopy((float) (this.artFocusScale));
+			this.subImage = scaledCopy.getSubImage(
+					(int) (this.artFocusPos.x * this.artFocusScale - UNLEASH_POWER_RADIUS),
+					(int) (this.artFocusPos.y * this.artFocusScale - UNLEASH_POWER_RADIUS),
+					(int) (UNLEASH_POWER_RADIUS * 2), (int) (UNLEASH_POWER_RADIUS * 2));
+		}
 		Image scaledCopy = this.subImage.getScaledCopy((float) this.scale);
 		Circle c = new Circle(this.pos.x, this.pos.y, (float) (UNLEASH_POWER_RADIUS * this.scale));
 		g.texture(c, scaledCopy, true);

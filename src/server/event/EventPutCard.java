@@ -1,17 +1,10 @@
 package server.event;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.Player;
-import server.card.BoardObject;
-import server.card.Card;
-import server.card.CardStatus;
-import server.card.Minion;
-import server.card.Target;
-import server.card.effect.EffectStats;
+import server.*;
+import server.card.*;
+import server.card.effect.*;
 
 public class EventPutCard extends Event {
 	// for effects that put specific cards in hand or just draw cards
@@ -44,6 +37,7 @@ public class EventPutCard extends Event {
 		this.pos.add(pos);
 	}
 
+	@Override
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
 		for (int i = 0; i < this.c.size(); i++) {
 			Card card = this.c.get(i);
@@ -56,6 +50,7 @@ public class EventPutCard extends Event {
 				card.removeAdditionalEffects();
 				if (card instanceof Minion) {
 					((Minion) card).health = card.finalStatEffects.getStat(EffectStats.HEALTH);
+					((Minion) card).attacksThisTurn = 0;
 				}
 				this.p.board.removeBoardObject((BoardObject) card);
 				if (!loopprotection) {
@@ -102,6 +97,7 @@ public class EventPutCard extends Event {
 		}
 	}
 
+	@Override
 	public String toString() {
 		String ret = this.id + " " + p.team + " " + this.c.size() + " " + this.status.toString() + " " + this.targetTeam
 				+ " ";
@@ -134,6 +130,7 @@ public class EventPutCard extends Event {
 		return new EventPutCard(p, c, csStatus, targetteam, pos);
 	}
 
+	@Override
 	public boolean conditions() {
 		return true;
 	}

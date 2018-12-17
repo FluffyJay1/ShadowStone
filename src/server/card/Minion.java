@@ -1,24 +1,18 @@
 package server.card;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.TrueTypeFont;
-import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.geom.*;
 
 import client.Game;
 import client.tooltip.*;
-import server.Board;
-import server.card.effect.Effect;
-import server.card.effect.EffectStatChange;
-import server.card.effect.EffectStats;
-import server.event.*;;
+import server.*;
+import server.card.effect.*;
+import server.event.*;
+import server.event.Event;;
 
 public class Minion extends BoardObject {
 	public int health, attacksThisTurn = 0; // tempted to make damage an effect
@@ -67,7 +61,7 @@ public class Minion extends BoardObject {
 	public void drawOnBoard(Graphics g) {
 		super.drawOnBoard(g);
 		if (this.realCard != null && this.realCard instanceof Minion && ((Minion) this.realCard).canAttack()
-				&& this.team == this.board.currentplayerturn) {
+				&& this.canAttack()) {
 			if (this.summoningSickness && ((Minion) this.realCard).finalStatEffects.getStat(EffectStats.RUSH) > 0
 					&& ((Minion) this.realCard).finalStatEffects.getStat(EffectStats.STORM) == 0) {
 				g.setColor(org.newdawn.slick.Color.yellow);
@@ -287,6 +281,7 @@ public class Minion extends BoardObject {
 		}
 	}
 
+	@Override
 	public String toString() {
 		return "Minion " + this.tooltip.name + " " + this.cardPosToString() + " " + alive + " "
 				+ this.finalStatEffects.statsToString() + " " + this.health;

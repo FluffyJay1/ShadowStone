@@ -1,10 +1,8 @@
 package server.event;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.Player;
+import server.*;
 import server.card.*;
 
 public class EventDraw extends Event {
@@ -18,11 +16,13 @@ public class EventDraw extends Event {
 		this.num = num;
 	}
 
+	@Override
 	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
 		int i;
 		for (i = 0; i < num; i++) {
 			if (p.deck.cards.size() == 0) {
-				eventlist.add(new EventGameEnd(p.team * -1)); // lose the game
+				// lose the game
+				eventlist.add(new EventGameEnd(p.board, p.team * -1));
 			} else {
 				// TODO MAKE THIS NOT GARBAGE
 				if (p.hand.cards.size() < p.hand.maxsize) {
@@ -35,6 +35,7 @@ public class EventDraw extends Event {
 		}
 	}
 
+	@Override
 	public String toString() {
 		return this.id + " " + p.team + " " + num + "\n";
 	}
@@ -46,6 +47,7 @@ public class EventDraw extends Event {
 		return new EventDraw(p, num);
 	}
 
+	@Override
 	public boolean conditions() {
 		return true;
 	}

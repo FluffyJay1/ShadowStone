@@ -1,27 +1,21 @@
 package server.card;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.lang.reflect.*;
+import java.util.*;
 
+import org.newdawn.slick.*;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.TrueTypeFont;
-import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.geom.*;
 
 import client.Game;
 import client.tooltip.*;
-import server.Board;
-import server.Player;
-import server.card.cardpack.CardSet;
-import server.card.effect.Effect;
-import server.card.effect.EffectIDLinker;
-import server.card.effect.EffectStats;
+import server.*;
+import server.card.cardpack.*;
+import server.card.effect.*;
 import server.event.*;
+import server.event.Event;
 
 public class Card {
 	public static final Vector2f CARD_DIMENSIONS = new Vector2f(150, 180);
@@ -49,10 +43,6 @@ public class Card {
 	public Card(Board board, TooltipCard tooltip) {
 		this.board = board;
 		this.tooltip = tooltip;
-		if (tooltip.imagepath != null) {
-			this.image = Game.getImage(tooltip.imagepath).getScaledCopy((int) CARD_DIMENSIONS.x,
-					(int) CARD_DIMENSIONS.y);
-		}
 		this.imagepath = tooltip.imagepath;
 		this.targetpos = new Vector2f();
 		this.pos = new Vector2f();
@@ -72,6 +62,10 @@ public class Card {
 	}
 
 	public void draw(Graphics g) {
+		if (this.image == null && this.imagepath != null) {
+			this.image = Game.getImage(tooltip.imagepath).getScaledCopy((int) CARD_DIMENSIONS.x,
+					(int) CARD_DIMENSIONS.y);
+		}
 		Image scaledCopy = this.image.getScaledCopy((float) this.scale);
 		g.drawImage(scaledCopy, (int) (this.pos.x - CARD_DIMENSIONS.x * this.scale / 2),
 				(int) (this.pos.y - CARD_DIMENSIONS.y * this.scale / 2));
@@ -101,7 +95,7 @@ public class Card {
 
 	public void drawInHand(Graphics g) {
 		if (this.realCard != null && this.realCard.board.getPlayer(this.team).canPlayCard(this.realCard)
-				&& this.team == this.board.currentplayerturn) {
+				&& this.board.getPlayer(this.team).canPlayCard(this)) {
 			g.setColor(org.newdawn.slick.Color.cyan);
 			g.drawRect((float) (this.pos.x - CARD_DIMENSIONS.x * this.scale / 2),
 					(float) (this.pos.y - CARD_DIMENSIONS.y * this.scale / 2), (float) (CARD_DIMENSIONS.x * this.scale),
@@ -309,6 +303,7 @@ public class Card {
 		return this.status.toString() + " " + this.cardpos + " ";
 	}
 
+	@Override
 	public String toString() {
 		return "card " + this.id + " " + this.cardPosToString();
 	}
@@ -327,7 +322,7 @@ public class Card {
 		Class<? extends Card> c = CardSet.getCardClass(id);
 		Card card = null;
 		try {
-			card = (Card) c.getConstructor(Board.class).newInstance(b);
+			card = c.getConstructor(Board.class).newInstance(b);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			// TODO Auto-generated catch block

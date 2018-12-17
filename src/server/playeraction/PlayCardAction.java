@@ -43,8 +43,8 @@ public class PlayCardAction extends PlayerAction {
 	public static PlayCardAction fromString(Board b, StringTokenizer st) {
 		Player p = b.getPlayer(Integer.parseInt(st.nextToken()));
 		Card c = Card.fromReference(b, st);
-		c.battlecryTargetsFromString(b, st);
 		int pos = Integer.parseInt(st.nextToken());
+		c.battlecryTargetsFromString(b, st);
 		return new PlayCardAction(p, c, pos);
 	}
 

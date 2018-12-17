@@ -1,6 +1,6 @@
 package client.ui;
 
-import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.geom.*;
 
 public class GenericButton extends UIBox {
 	Text text;

@@ -1,15 +1,15 @@
 package server;
 
 import java.util.*;
-import java.util.concurrent.*;
 
-import client.Game;
+import client.*;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.playeraction.*;
 
 public class Board {
+	public boolean ai = false;
 	public boolean isServer = true; // true means it is the center of game logic
 	public boolean isClient; // true means has a visualboard
 	// links cards created between board and visualboard
@@ -17,7 +17,7 @@ public class Board {
 
 	public Player player1, player2;
 	// localteam is the team of the player, i.e. at the bottom of the screen
-	public int currentplayerturn = 1, localteam = 1;
+	public int currentplayerturn = 1, localteam = 1, winner = 0;
 
 	protected ArrayList<BoardObject> player1side;
 	protected ArrayList<BoardObject> player2side;
@@ -27,6 +27,7 @@ public class Board {
 	public LinkedList<Event> eventlist;
 
 	String output = "";
+	List<String> playerActions;
 
 	public Board() {
 		player1 = new Player(this, 1);
@@ -37,6 +38,12 @@ public class Board {
 		player1graveyard = new ArrayList<Card>();
 		player2graveyard = new ArrayList<Card>();
 		banished = new ArrayList<Card>();
+		playerActions = new LinkedList<String>();
+	}
+
+	public Board(int localteam) {
+		this();
+		this.localteam = localteam;
 	}
 
 	public Player getPlayer(int team) {
@@ -277,7 +284,14 @@ public class Board {
 		return temp;
 	}
 
-	public void parseEventString(String s) {
+	public synchronized String retrievePlayerAction() {
+		if (!this.playerActions.isEmpty()) {
+			return this.playerActions.remove(0);
+		}
+		return null;
+	}
+
+	public synchronized void parseEventString(String s) {
 		if (!s.isEmpty()) {
 			String[] lines = s.split("\n");
 			for (String line : lines) {
@@ -297,37 +311,29 @@ public class Board {
 		return pa.perform(this);
 	}
 
-	public void playerPlayCard(Player p, Card c, int pos) {
+	private void sendAction(PlayerAction action) {
 		if (this.isServer) {
-			(new PlayCardAction(p, c, pos)).perform(this);
+			action.perform(this);
 		} else {
-			// TODO send to server and wait for response
+			this.playerActions.add(action.toString());
 		}
 	}
 
+	public void playerPlayCard(Player p, Card c, int pos) {
+		this.sendAction(new PlayCardAction(p, c, pos));
+	}
+
 	public void playerUnleashMinion(Player p, Minion m) {
-		if (this.isServer) {
-			(new UnleashMinionAction(p, m)).perform(this);
-		} else {
-			// TODO send to server and wait for response
-		}
+		this.sendAction(new UnleashMinionAction(p, m));
 	}
 
 	// encapsulation at its finest
 	public void playerOrderAttack(Minion attacker, Minion victim) {
-		if (this.isServer) {
-			(new OrderAttackAction(attacker, victim)).perform(this);
-		} else {
-			// TODO send to server and wait for response
-		}
+		this.sendAction(new OrderAttackAction(attacker, victim));
 	}
 
 	public void playerEndTurn(int team) {
-		if (this.isServer) {
-			(new EndTurnAction(team)).perform(this);
-		} else {
-			// TODO send to server and wait for response
-		}
+		this.sendAction(new EndTurnAction(team));
 	}
 
 	public void AIThink() {
@@ -372,5 +378,8 @@ public class Board {
 		this.resolveAll();
 		this.eventlist.add(new EventTurnStart(this.getPlayer(this.currentplayerturn * -1)));
 		this.resolveAll();
+		if (this.ai && this.currentplayerturn == this.localteam * -1) {
+			this.AIThink();
+		}
 	}
 }
