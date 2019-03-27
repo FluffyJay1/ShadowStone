@@ -20,12 +20,10 @@ public class Hand { // its just a list of cards aaaaaa
 		this.team = team;
 	}
 
-	public void update(double frametime) {
-		for (int i = 0; i < this.cards.size(); i++) {
-			this.cards.get(i).update(frametime);
-		}
-	}
-
+	/*
+	 * public void update(double frametime) { for (int i = 0; i < this.cards.size();
+	 * i++) { this.cards.get(i).update(frametime); } }
+	 */
 	public void updatePositions() {
 		for (int i = 0; i < this.cards.size(); i++) {
 			this.cards.get(i).cardpos = i;

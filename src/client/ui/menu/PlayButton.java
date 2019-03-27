@@ -2,19 +2,17 @@ package client.ui.menu;
 
 import org.newdawn.slick.geom.Vector2f;
 
-import client.Game;
 import client.ui.Text;
 import client.ui.UI;
 import client.ui.UIBox;
-import server.card.Minion;
 
 public class PlayButton extends UIBox {
 	Text text;
 	public DeckSelectPanel deckspanel;
 
 	public PlayButton(UI ui) {
-		super(ui, new Vector2f(Game.WINDOW_WIDTH / 2, Game.WINDOW_HEIGHT / 2), new Vector2f(128, 128),
-				"res/ui/uiboxborder.png");
+		super(ui, new Vector2f(0, 0), new Vector2f(128, 128), "res/ui/uiboxborder.png");
+		this.relpos = true;
 		this.text = new Text(ui, new Vector2f(0, 0), "<b> PLAY GAME", 128, 24, "Verdana", 30, 0, 0);
 		text.setParent(this);
 		this.deckspanel = new DeckSelectPanel(ui, new Vector2f(), false);

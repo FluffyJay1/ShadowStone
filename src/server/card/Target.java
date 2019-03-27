@@ -1,12 +1,11 @@
 package server.card;
 
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import client.Game;
-import server.Board;
-import server.Player;
-import server.card.effect.Effect;
+import client.*;
+import client.ui.game.*;
+import server.*;
+import server.card.effect.*;
 
 /**
  * Target.java is a class that is supposed to handle targeting and their related
@@ -21,7 +20,7 @@ public class Target {
 	// targets are handled serverside
 	private Effect creator;
 	public int maxtargets;
-	private ArrayList<Card> targets = new ArrayList<Card>();
+	private List<Card> targets = new ArrayList<Card>();
 	public String description;
 	boolean ready = false;
 
@@ -45,7 +44,7 @@ public class Target {
 
 	}
 
-	public ArrayList<Card> getTargets() {
+	public List<Card> getTargets() {
 		// TODO: Determine if this is necessary
 		if (!this.ready) {
 			this.resolveTargets();
@@ -60,13 +59,21 @@ public class Target {
 		this.ready = true;
 	}
 
-	public void setTargets(ArrayList<Card> targets) {
+	public void setTargets(List<Card> targets) {
 		this.targets.addAll(targets);
 		this.ready = true;
 	}
 
+	// what you're looking at here son is a mistake
+	public void setTargetsUI(List<UICard> targets) {
+		for (UICard c : targets) {
+			this.targets.add(c.getCard());
+		}
+		this.ready = true;
+	}
+
 	public void setRandomTarget() {
-		ArrayList<Card> cards = new ArrayList<Card>();
+		List<Card> cards = new ArrayList<Card>();
 		for (Card c : this.creator.owner.board.getCards()) {
 			if (this.canTarget(c) && !this.targets.contains(c)) {
 				cards.add(c);
@@ -110,6 +117,7 @@ public class Target {
 		return ret;
 	}
 
+	@Override
 	public String toString() {
 		String ret = (this.creator == null ? "null " : this.creator.toReference()) + this.description + Game.STRING_END
 				+ " " + this.maxtargets + " " + this.targets.size() + " ";

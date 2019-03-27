@@ -1,17 +1,13 @@
 package server.event;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.card.BoardObject;
-import server.card.Card;
-import server.card.Target;
+import server.*;
+import server.card.*;
 
 public class EventBanish extends Event {
 	public static final int ID = 18;
-	public ArrayList<Card> c;
+	public List<Card> c;
 
 	public EventBanish(Target t) {
 		super(ID);
@@ -19,7 +15,7 @@ public class EventBanish extends Event {
 		this.c.addAll(t.getTargets());
 	}
 
-	public EventBanish(ArrayList<Card> c) {
+	public EventBanish(List<Card> c) {
 		super(ID);
 		this.c = new ArrayList<Card>();
 		this.c.addAll(c);
@@ -32,7 +28,7 @@ public class EventBanish extends Event {
 	}
 
 	@Override
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		for (Card c : this.c) {
 			if (c.alive) {
 				c.alive = false;
@@ -54,7 +50,7 @@ public class EventBanish extends Event {
 					c.board.getPlayer(c.team).deck.cards.remove(c);
 					c.board.getPlayer(c.team).deck.updatePositions();
 					break;
-				default:
+				default: // banish leader lmao
 					break;
 				}
 				c.cardpos = c.board.banished.size(); // just in case

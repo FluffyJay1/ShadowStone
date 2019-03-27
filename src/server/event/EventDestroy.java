@@ -1,16 +1,14 @@
 package server.event;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
+import server.*;
 import server.card.*;
 
 public class EventDestroy extends Event {
 	// killing things
 	public static final int ID = 4;
-	public ArrayList<Card> c;
+	public List<Card> c;
 
 	public EventDestroy(Target t) {
 		super(ID);
@@ -18,7 +16,7 @@ public class EventDestroy extends Event {
 		this.c.addAll(t.getTargets());
 	}
 
-	public EventDestroy(ArrayList<Card> c) {
+	public EventDestroy(List<Card> c) {
 		super(ID);
 		this.c = new ArrayList<Card>();
 		this.c.addAll(c);
@@ -31,7 +29,7 @@ public class EventDestroy extends Event {
 	}
 
 	@Override
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		for (Card c : this.c) {
 			if (c.alive) {
 				// TODO increase shadows by 1
@@ -54,6 +52,9 @@ public class EventDestroy extends Event {
 				case DECK:
 					c.board.getPlayer(c.team).deck.cards.remove(c);
 					c.board.getPlayer(c.team).deck.updatePositions();
+					break;
+				case LEADER:
+					// TODO lose the game
 					break;
 				default:
 					break;

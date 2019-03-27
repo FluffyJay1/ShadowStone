@@ -1,14 +1,10 @@
 package server.event;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.Player;
-import server.card.BoardObject;
-import server.card.Minion;
-import server.card.effect.EffectStatChange;
-import server.card.effect.EffectStats;
+import server.*;
+import server.card.*;
+import server.card.effect.*;
 
 public class EventTurnStart extends Event {
 	public static final int ID = 15;
@@ -19,13 +15,14 @@ public class EventTurnStart extends Event {
 		this.p = p;
 	}
 
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	@Override
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		this.p.board.currentplayerturn = this.p.team;
 		this.p.unleashPower.unleashesThisTurn = 0;
 		eventlist.add(new EventDraw(this.p, 1));
 		eventlist.add(new EventManaChange(this.p, 1, true, false));
 		eventlist.add(new EventManaChange(this.p, this.p.maxmana + 1, false, true));
-		Minion leader = (Minion) this.p.board.getBoardObject(this.p.team, 0);
+		Minion leader = this.p.leader;
 		eventlist.addAll(leader.onTurnStart());
 		for (BoardObject b : this.p.board.getBoardObjects(this.p.team)) {
 			eventlist.addAll(b.onTurnStart());
@@ -42,6 +39,7 @@ public class EventTurnStart extends Event {
 
 	}
 
+	@Override
 	public String toString() {
 		return this.id + " " + this.p.team + "\n";
 	}
@@ -52,6 +50,7 @@ public class EventTurnStart extends Event {
 		return new EventTurnStart(p);
 	}
 
+	@Override
 	public boolean conditions() {
 		return true;
 	}

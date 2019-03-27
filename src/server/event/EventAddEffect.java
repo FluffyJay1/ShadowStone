@@ -1,19 +1,14 @@
 package server.event;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.card.Card;
-import server.card.Minion;
-import server.card.Target;
-import server.card.effect.Effect;
-import server.card.effect.EffectStats;
+import server.*;
+import server.card.*;
+import server.card.effect.*;
 
 public class EventAddEffect extends Event {
 	public static final int ID = 1;
-	public ArrayList<Card> c;
+	public List<Card> c;
 	Effect e;
 
 	public EventAddEffect(Target t, Effect e) {
@@ -23,7 +18,7 @@ public class EventAddEffect extends Event {
 		this.e = e;
 	}
 
-	public EventAddEffect(ArrayList<Card> c, Effect e) {
+	public EventAddEffect(List<Card> c, Effect e) {
 		super(ID);
 		this.c = new ArrayList<Card>();
 		this.c.addAll(c);
@@ -37,7 +32,8 @@ public class EventAddEffect extends Event {
 		this.e = e;
 	}
 
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	@Override
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		for (Card c : this.c) {
 			Effect clonede = e.clone();
 			c.addEffect(clonede);
@@ -63,6 +59,7 @@ public class EventAddEffect extends Event {
 		}
 	}
 
+	@Override
 	public String toString() {
 		String ret = this.id + " " + this.c.size() + " " + e.toString();
 		for (int i = 0; i < this.c.size(); i++) {
@@ -82,6 +79,7 @@ public class EventAddEffect extends Event {
 		return new EventAddEffect(c, e);
 	}
 
+	@Override
 	public boolean conditions() {
 		return !this.c.isEmpty() && this.e != null;
 	}

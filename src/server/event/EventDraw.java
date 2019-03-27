@@ -17,7 +17,7 @@ public class EventDraw extends Event {
 	}
 
 	@Override
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		int i;
 		for (i = 0; i < num; i++) {
 			if (p.deck.cards.size() == 0) {

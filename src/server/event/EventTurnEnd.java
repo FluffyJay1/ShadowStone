@@ -1,13 +1,9 @@
 package server.event;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.Player;
-import server.card.BoardObject;
-import server.card.Card;
-import server.card.Minion;
+import server.*;
+import server.card.*;
 
 public class EventTurnEnd extends Event {
 	public static final int ID = 14;
@@ -18,14 +14,16 @@ public class EventTurnEnd extends Event {
 		this.p = p;
 	}
 
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
-		Minion leader = (Minion) this.p.board.getBoardObject(this.p.team, 0);
+	@Override
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
+		Minion leader = this.p.leader;
 		eventlist.addAll(leader.onTurnEnd());
 		for (BoardObject b : this.p.board.getBoardObjects(this.p.team)) {
 			eventlist.addAll(b.onTurnEnd());
 		}
 	}
 
+	@Override
 	public String toString() {
 		return this.id + " " + this.p.team + "\n";
 	}
@@ -36,6 +34,7 @@ public class EventTurnEnd extends Event {
 		return new EventTurnEnd(p);
 	}
 
+	@Override
 	public boolean conditions() {
 		return true;
 	}

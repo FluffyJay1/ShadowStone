@@ -1,14 +1,10 @@
 package server.event;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.card.Card;
-import server.card.Minion;
-import server.card.Target;
-import server.card.effect.Effect;
-import server.card.effect.EffectStats;
+import server.*;
+import server.card.*;
+import server.card.effect.*;
 
 public class EventRemoveEffect extends Event {
 	public static final int ID = 22;
@@ -21,7 +17,8 @@ public class EventRemoveEffect extends Event {
 		this.e = e;
 	}
 
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	@Override
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 
 		this.c.removeEffect(this.e);
 		if (c instanceof Minion) {
@@ -40,6 +37,7 @@ public class EventRemoveEffect extends Event {
 
 	}
 
+	@Override
 	public String toString() {
 		return this.id + " " + this.c.toReference() + this.e.toReference() + "\n";
 	}
@@ -50,6 +48,7 @@ public class EventRemoveEffect extends Event {
 		return new EventRemoveEffect(c, e);
 	}
 
+	@Override
 	public boolean conditions() {
 		return this.c.getAdditionalEffects().contains(this.e);
 	}

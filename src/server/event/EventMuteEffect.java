@@ -1,14 +1,10 @@
 package server.event;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.card.Card;
-import server.card.Minion;
-import server.card.Target;
-import server.card.effect.Effect;
-import server.card.effect.EffectStats;
+import server.*;
+import server.card.*;
+import server.card.effect.*;
 
 public class EventMuteEffect extends Event {
 	public static final int ID = 29;
@@ -23,7 +19,8 @@ public class EventMuteEffect extends Event {
 		this.mute = mute;
 	}
 
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	@Override
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		this.c.muteEffect(this.e, this.mute);
 		if (c instanceof Minion) {
 			Minion m = ((Minion) c);
@@ -41,6 +38,7 @@ public class EventMuteEffect extends Event {
 
 	}
 
+	@Override
 	public String toString() {
 		return this.id + " " + this.c.toReference() + this.e.toReference() + this.mute + "\n";
 	}
@@ -52,6 +50,7 @@ public class EventMuteEffect extends Event {
 		return new EventMuteEffect(c, e, mute);
 	}
 
+	@Override
 	public boolean conditions() {
 		return this.c.getAdditionalEffects().contains(this.e);
 	}

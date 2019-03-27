@@ -1,12 +1,9 @@
 package server.card.effect;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.card.Card;
-import server.card.Minion;
-import server.card.Target;
+import server.*;
+import server.card.*;
 import server.event.*;
 
 public class EffectBrambles extends Effect {
@@ -23,7 +20,7 @@ public class EffectBrambles extends Effect {
 	public EventClash clash(Minion target) {
 		EventClash ec = new EventClash(this, target) {
 			@Override
-			public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+			public void resolve(List<Event> eventlist, boolean loopprotection) {
 				eventlist.add(new EventMinionDamage((Minion) this.effect.owner, target, 1));
 			}
 		};
@@ -37,7 +34,7 @@ public class EffectBrambles extends Effect {
 			if (this.creator == e.c) {
 				EventFlag ef = new EventFlag(this) {
 					@Override
-					public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+					public void resolve(List<Event> eventlist, boolean loopprotection) {
 						eventlist.add(new EventRemoveEffect(this.effect.owner, this.effect));
 					}
 				};

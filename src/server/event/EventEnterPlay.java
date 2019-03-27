@@ -1,11 +1,9 @@
 package server.event;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.card.BoardObject;
-import server.card.Card;
+import server.*;
+import server.card.*;
 
 public class EventEnterPlay extends Event {
 	public static final int ID = 23;
@@ -18,10 +16,12 @@ public class EventEnterPlay extends Event {
 		this.priority = 1;
 	}
 
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	@Override
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		eventlist.addAll(((BoardObject) this.c).onEnterPlay());
 	}
 
+	@Override
 	public String toString() {
 		return this.id + " " + this.c.toReference() + "\n";
 	}
@@ -31,6 +31,7 @@ public class EventEnterPlay extends Event {
 		return new EventEnterPlay(c);
 	}
 
+	@Override
 	public boolean conditions() {
 		return this.c instanceof BoardObject;
 	}

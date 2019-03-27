@@ -19,7 +19,7 @@ public class EventGameEnd extends Event {
 	}
 
 	@Override
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		this.b.winner = victory;
 		// System.exit(0); // YES
 	}

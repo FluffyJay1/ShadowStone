@@ -1,25 +1,18 @@
 package client.states;
 
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Vector2f;
-import org.newdawn.slick.state.BasicGameState;
-import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.*;
+import org.newdawn.slick.geom.*;
+import org.newdawn.slick.state.*;
 
 import client.Game;
-import client.ui.UI;
-import client.ui.UIEventListener;
-import client.ui.UIMouseListenerWrapper;
-import client.ui.game.CardSelectTooltipPanel;
+import client.ui.*;
+import client.ui.game.*;
 import client.ui.menu.*;
-import server.card.ClassCraft;
-import server.card.cardpack.CardSet;
-import server.card.cardpack.ConstructedDeck;
+import server.card.*;
+import server.card.cardpack.*;
 
 public class StateDeckbuild extends BasicGameState {
 	UI ui;
-	UIMouseListenerWrapper listener;
 	DeckSelectPanel deckselectpanel;
 	boolean newDeck;
 	ConstructedDeck currentDeck;
@@ -38,9 +31,7 @@ public class StateDeckbuild extends BasicGameState {
 	@Override
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		this.ui = new UI();
-		this.listener = new UIMouseListenerWrapper(this.ui);
-		arg0.getInput().addMouseListener(listener);
-		arg0.getInput().addKeyListener(this.ui);
+		arg0.getInput().addListener(this.ui);
 		this.ui.addListener(new UIEventListener() {
 			@Override
 			public void onAlert(String strarg, int... intarg) {
@@ -133,17 +124,20 @@ public class StateDeckbuild extends BasicGameState {
 				}
 			}
 		});
-		this.deckdisplaypanel = new DeckDisplayPanel(ui, new Vector2f(Game.WINDOW_WIDTH / 2, 300), true);
+		this.deckdisplaypanel = new DeckDisplayPanel(ui, new Vector2f(0, -0.2f), true);
 		this.deckdisplaypanel.setHide(true);
+		this.deckdisplaypanel.relpos = true;
 		this.ui.addUIElementParent(this.deckdisplaypanel);
-		this.cardsetpanel = new CardSetDisplayPanel(ui, new Vector2f(Game.WINDOW_WIDTH / 2, 800));
+		this.cardsetpanel = new CardSetDisplayPanel(ui, new Vector2f(0, 0.2f));
 		this.cardsetpanel.setHide(true);
+		this.cardsetpanel.relpos = true;
 		this.ui.addUIElementParent(this.cardsetpanel);
-		this.deckselectpanel = new DeckSelectPanel(ui, new Vector2f(Game.WINDOW_WIDTH / 2, Game.WINDOW_HEIGHT / 2),
-				true);
+		this.deckselectpanel = new DeckSelectPanel(ui, new Vector2f(0, 0), true);
+		this.deckselectpanel.relpos = true;
 		this.ui.addUIElementParent(this.deckselectpanel);
-		this.classSelect = new ClassSelectPanel(ui, new Vector2f(Game.WINDOW_WIDTH / 2, Game.WINDOW_HEIGHT / 2));
+		this.classSelect = new ClassSelectPanel(ui, new Vector2f(0, 0));
 		this.classSelect.setHide(true);
+		this.classSelect.relpos = true;
 		this.ui.addUIElementParent(this.classSelect);
 		this.cardTooltip = new CardSelectTooltipPanel(this.ui, new Vector2f(200, 300), 5);
 		this.cardTooltip.setHide(true);
@@ -161,7 +155,7 @@ public class StateDeckbuild extends BasicGameState {
 
 	@Override
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		arg0.getInput().removeMouseListener(listener);
+		arg0.getInput().removeListener(this.ui);
 	}
 
 	@Override

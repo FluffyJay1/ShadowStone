@@ -1,16 +1,24 @@
 package server.card.unleashpower;
 
-import java.util.*;
+import java.util.LinkedList;
 
-import org.newdawn.slick.*;
-import org.newdawn.slick.geom.*;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.geom.Vector2f;
 
 import client.Game;
-import client.tooltip.*;
-import server.*;
-import server.card.*;
-import server.card.effect.*;
-import server.event.*;
+import client.VisualBoard;
+import client.tooltip.TooltipUnleashPower;
+import server.Board;
+import server.Player;
+import server.card.Card;
+import server.card.Minion;
+import server.card.effect.Effect;
+import server.card.effect.EffectStats;
+import server.event.Event;
+import server.event.EventUnleash;
 
 public class UnleashPower extends Card {
 	public static final double UNLEASH_POWER_RADIUS = 50;
@@ -31,7 +39,7 @@ public class UnleashPower extends Card {
 	}
 
 	@Override
-	public void draw(Graphics g) {
+	public void draw(Graphics g, Vector2f pos, double scale) {
 		if (this.subImage == null) {
 			Image scaledCopy = Game.getImage(imagepath).getScaledCopy((float) (this.artFocusScale));
 			this.subImage = scaledCopy.getSubImage(
@@ -39,13 +47,21 @@ public class UnleashPower extends Card {
 					(int) (this.artFocusPos.y * this.artFocusScale - UNLEASH_POWER_RADIUS),
 					(int) (UNLEASH_POWER_RADIUS * 2), (int) (UNLEASH_POWER_RADIUS * 2));
 		}
-		Image scaledCopy = this.subImage.getScaledCopy((float) this.scale);
-		Circle c = new Circle(this.pos.x, this.pos.y, (float) (UNLEASH_POWER_RADIUS * this.scale));
+		Image scaledCopy = this.subImage.getScaledCopy((float) scale);
+		Circle c = new Circle(pos.x, pos.y, (float) (UNLEASH_POWER_RADIUS * scale));
 		g.texture(c, scaledCopy, true);
 
-		this.drawCostStat(g, this.finalStatEffects.getStat(EffectStats.COST),
+		this.drawCostStat(g, pos, scale, this.finalStatEffects.getStat(EffectStats.COST),
 				this.finalBasicStatEffects.getStat(EffectStats.COST), new Vector2f(0, -0.25f), new Vector2f(0, 0.5f),
 				STAT_DEFAULT_SIZE);
+
+		if (this.board instanceof VisualBoard && this.board.getPlayer(this.team).realPlayer.canUnleash()
+				&& !((VisualBoard) this.board).disableInput) {
+			g.setColor(Color.cyan);
+			g.drawOval((float) (pos.x - UNLEASH_POWER_RADIUS * scale), (float) (pos.y - UNLEASH_POWER_RADIUS * scale),
+					(float) (UNLEASH_POWER_RADIUS * 2 * scale), (float) (UNLEASH_POWER_RADIUS * 2 * scale));
+			g.setColor(Color.white);
+		}
 	}
 
 	// this returns a linkedlist event because fuck u
@@ -53,11 +69,6 @@ public class UnleashPower extends Card {
 		LinkedList<Event> list = new LinkedList<Event>();
 		list.add(new EventUnleash(this, m));
 		return list;
-	}
-
-	@Override
-	public boolean isInside(Vector2f p) {
-		return p.distance(this.pos) <= UNLEASH_POWER_RADIUS * this.scale;
 	}
 
 }

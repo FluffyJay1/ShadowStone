@@ -1,18 +1,10 @@
 package server.card.cardpack.basic;
 
-import java.util.LinkedList;
+import java.util.*;
 
-import client.tooltip.Tooltip;
-import client.tooltip.TooltipAmulet;
-import server.Board;
-import server.card.Amulet;
-import server.card.BoardObject;
-import server.card.Card;
-import server.card.CardStatus;
-import server.card.ClassCraft;
-import server.card.Leader;
-import server.card.Minion;
-import server.card.Target;
+import client.tooltip.*;
+import server.*;
+import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 
@@ -31,7 +23,7 @@ public class WoodOfBrambles extends Amulet {
 			public EventBattlecry battlecry() {
 				EventBattlecry eb = new EventBattlecry(this) {
 					@Override
-					public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+					public void resolve(List<Event> eventlist, boolean loopprotection) {
 						for (int i = 0; i < 2; i++) {
 							eventlist.add(new EventCreateCard(this.effect.owner.board,
 									new Fairy(this.effect.owner.board), this.effect.owner.team, CardStatus.HAND, 999));
@@ -61,7 +53,7 @@ public class WoodOfBrambles extends Amulet {
 					if (e.c instanceof Minion && e.c.team == this.owner.team) {
 						EventFlag ef = new EventFlag(this) {
 							@Override
-							public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+							public void resolve(List<Event> eventlist, boolean loopprotection) {
 								eventlist.add(new EventAddEffect(e.c, new EffectBrambles(this.effect.owner)));
 							}
 						};

@@ -5,10 +5,11 @@ import java.util.StringTokenizer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 
-import client.ui.*;
+import client.ui.Text;
+import client.ui.UI;
+import client.ui.UIBox;
 import server.card.Card;
 import server.card.CardStatus;
-import server.card.cardpack.CardSet;
 
 public class CardDisplayUnit extends UIBox {
 	public static final String CARD_CLICK = "cardclick";
@@ -39,7 +40,6 @@ public class CardDisplayUnit extends UIBox {
 			this.card = null;
 		} else {
 			this.card = Card.createFromConstructorString(null, new StringTokenizer(cardid + " 1"));
-			this.card.scale = SCALE;
 			this.card.status = CardStatus.HAND;
 		}
 	}
@@ -60,8 +60,7 @@ public class CardDisplayUnit extends UIBox {
 	public void draw(Graphics g) {
 		super.draw(g);
 		if (this.card != null) {
-			card.pos.set(this.getFinalPos());
-			card.draw(g);
+			card.draw(g, this.getFinalPos(), SCALE);
 		}
 	}
 

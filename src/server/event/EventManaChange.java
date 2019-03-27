@@ -1,10 +1,8 @@
 package server.event;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.Player;
+import server.*;
 
 public class EventManaChange extends Event {
 	public static final int ID = 6;
@@ -20,7 +18,8 @@ public class EventManaChange extends Event {
 		this.recover = recover;
 	}
 
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	@Override
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		if (!this.recover) {
 			if (this.p.maxmana + this.mana > this.p.maxmaxmana) {
 				this.p.maxmana = this.p.maxmaxmana;
@@ -41,6 +40,7 @@ public class EventManaChange extends Event {
 		}
 	}
 
+	@Override
 	public String toString() {
 		return this.id + " " + this.p.team + " " + this.mana + " " + this.empty + " " + this.recover + "\n";
 	}
@@ -54,6 +54,7 @@ public class EventManaChange extends Event {
 		return new EventManaChange(p, mana, empty, recover);
 	}
 
+	@Override
 	public boolean conditions() {
 		return !(this.empty && this.recover);
 	}

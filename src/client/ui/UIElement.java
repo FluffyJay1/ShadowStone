@@ -1,35 +1,32 @@
 package client.ui;
 
-import java.util.ArrayList;
+import java.util.*;
 
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.*;
+import org.newdawn.slick.geom.*;
 
-import client.Game;
-import utils.DefaultInputListener;
-import utils.DefaultKeyListener;
-import utils.DefaultMouseListener;
+import client.*;
+import utils.*;
 
-public class UIElement implements DefaultInputListener, UIEventListener {
+public class UIElement implements DefaultInputListener, UIEventListener, Comparable<UIElement> {
 	public static final double EPSILON = 0.0001;
 
 	protected UI ui;
 	UIElement parent = null;
-	ArrayList<UIElement> children = new ArrayList<UIElement>();
-	ArrayList<UIElement> childrenAddBuffer = new ArrayList<UIElement>();
-	ArrayList<UIElement> childrenRemoveBuffer = new ArrayList<UIElement>();
+	List<UIElement> children = new ArrayList<UIElement>();
+	List<UIElement> childrenAddBuffer = new ArrayList<UIElement>();
+	List<UIElement> childrenRemoveBuffer = new ArrayList<UIElement>();
 	public int alignh = 0, alignv = 0;
-	private boolean hide = false;
+	private int z = 0; // z order is int based because optimization probably
+	private boolean hide = false, updateZOrder = false;
 	public boolean draggable = false, ignorehitbox = false, hitcircle = false, clip = false, scrollable = false,
-			hasFocus = false;
+			hasFocus = false, relpos = false;
 	public Vector2f childoffset = new Vector2f(), margins = new Vector2f(); // public
 																			// cuz
 																			// fuck
 																			// u
 	private Vector2f targetpos = new Vector2f(), pos = new Vector2f();
-	public double scale = 1, speed = 1, angle = 0;
+	private double scale = 1, speed = 1, angle = 0;
 	Animation animation;
 	Image finalImage;
 
@@ -77,15 +74,62 @@ public class UIElement implements DefaultInputListener, UIEventListener {
 		}
 	}
 
+	public void changePos(Vector2f pos, double speed) {
+		this.setPos(this.targetpos.copy().add(pos), speed);
+	}
+
+	public void changeAbsPos(Vector2f pos, double speed) {
+		if (this.relpos) {
+			if (this.parent == null) {
+				this.changePos(new Vector2f(pos.x / Config.WINDOW_WIDTH, pos.y / Config.WINDOW_HEIGHT), speed);
+			} else {
+				this.changePos(new Vector2f((float) (pos.x / this.parent.getWidth(true)),
+						(float) (pos.y / this.parent.getHeight(true))), speed);
+			}
+		} else {
+			this.changePos(pos, speed);
+		}
+	}
+
 	public Vector2f getPos() {
+		if (this.relpos) {
+			if (this.parent == null) {
+				return new Vector2f((float) ((this.pos.x + 0.5) * Config.WINDOW_WIDTH),
+						(float) ((this.pos.y + 0.5) * Config.WINDOW_HEIGHT));
+			} else {
+				return new Vector2f((float) (this.pos.x * this.parent.getWidth(true)),
+						(float) (this.pos.y * this.parent.getHeight(true)));
+			}
+		}
 		return this.pos.copy();
 	}
 
 	public Vector2f getFinalPos() {
 		if (this.parent != null) {
-			return this.parent.getFinalPos().copy().add(this.parent.childoffset).add(this.pos);
+			return this.parent.getFinalPos().copy().add(this.parent.childoffset).add(this.getPos());
 		}
 		return this.getPos();
+	}
+
+	public Vector2f getRelPos() {
+		if (!this.relpos) {
+			if (this.parent == null) {
+				return new Vector2f((float) ((this.pos.x / Config.WINDOW_WIDTH) - 0.5),
+						(float) ((this.pos.y / Config.WINDOW_HEIGHT) - 0.5));
+			} else {
+				return new Vector2f((float) ((this.pos.x / this.parent.getWidth(true)) - 0.5),
+						(float) ((this.pos.y / this.parent.getHeight(true)) - 0.5));
+			}
+		}
+		return this.pos.copy();
+	}
+
+	public void setScale(double scale) {
+		this.scale = scale;
+	}
+
+	public double getScale() {
+		return this.scale;
 	}
 
 	public Vector2f getDim(boolean margin) {
@@ -148,7 +192,7 @@ public class UIElement implements DefaultInputListener, UIEventListener {
 	public double getChildLocalTop(double offset) {
 		double y = this.getLocalTop(false) + offset;
 		for (UIElement u : this.getChildren()) {
-			y = Math.min(y, u.getChildLocalTop(offset + u.pos.y));
+			y = Math.min(y, u.getChildLocalTop(offset + u.getPos().y));
 		}
 		return y;
 	}
@@ -156,7 +200,7 @@ public class UIElement implements DefaultInputListener, UIEventListener {
 	public double getChildLocalBottom(double offset) {
 		double y = this.getLocalBottom(false) + offset;
 		for (UIElement u : this.getChildren()) {
-			y = Math.max(y, u.getChildLocalBottom(offset + u.pos.y));
+			y = Math.max(y, u.getChildLocalBottom(offset + u.getPos().y));
 
 		}
 		return y;
@@ -183,8 +227,15 @@ public class UIElement implements DefaultInputListener, UIEventListener {
 	}
 
 	// override this shit tho
+	@Override
 	public void onAlert(String strarg, int... intarg) {
 		this.alert(strarg, intarg);
+	}
+
+	// normalize position relative to position and scale of this ui element
+	public Vector2f normalize(Vector2f pos) {
+		return new Vector2f((pos.x - this.getFinalPos().x) / (float) this.getWidth(false),
+				(pos.y - this.getFinalPos().y) / (float) this.getHeight(false));
 	}
 
 	public boolean pointIsInHitbox(Vector2f pos) {
@@ -193,19 +244,19 @@ public class UIElement implements DefaultInputListener, UIEventListener {
 					(float) ((pos.x - this.getFinalPos().x + this.getWidth(false) / 2 - this.getHOff())
 							/ this.getWidth(false)),
 					(float) ((pos.y - this.getFinalPos().y + this.getHeight(false) / 2 - this.getVOff())
-							/ this.getHeight(false))).length()) < 0.25;
+							/ this.getHeight(false))).lengthSquared()) < 0.25;
 		}
 		return pos.getX() >= this.getLeft(true, false) && pos.getX() <= this.getRight(true, false)
 				&& pos.getY() >= this.getTop(true, false) && pos.getY() <= this.getBottom(true, false);
 	}
 
 	public void fitInParent() {
-		double x = this.pos.getX(), y = this.pos.getY();
+		double x = this.getPos().getX(), y = this.getPos().getY();
 		if (this.parent == null) { // is parent
 			x = Math.max(x, this.getHOff());
-			x = Math.min(x, Game.WINDOW_WIDTH - this.getHOff() + this.getWidth(false));
+			x = Math.min(x, Config.WINDOW_WIDTH - this.getHOff() + this.getWidth(false));
 			y = Math.max(y, this.getVOff());
-			y = Math.min(y, Game.WINDOW_HEIGHT - this.getVOff() + this.getHeight(false));
+			y = Math.min(y, Config.WINDOW_HEIGHT - this.getVOff() + this.getHeight(false));
 		} else { // has parent
 			x = Math.max(x, -this.parent.getLocalLeft(true) + this.getHOff());
 			x = Math.min(x, this.parent.getLocalRight(true) - this.getHOff() + this.getWidth(false));
@@ -228,6 +279,10 @@ public class UIElement implements DefaultInputListener, UIEventListener {
 		for (UIElement u : this.getChildren()) {
 			u.update(frametime);
 		}
+		if (this.updateZOrder) {
+			Collections.sort(this.children);
+			this.updateZOrder = false;
+		}
 	}
 
 	public void debugPrint(int depth) {
@@ -241,8 +296,7 @@ public class UIElement implements DefaultInputListener, UIEventListener {
 	}
 
 	public String debug() {
-		return this.getClass().toString().substring("class client.ui.".length()) + " "
-				+ (this.getAnimation() != null ? this.getAnimation().getCurrentFrame() : "");
+		return this.getClass().toString().substring("class client.ui.".length());
 	}
 
 	public void draw(Graphics g) {
@@ -269,6 +323,28 @@ public class UIElement implements DefaultInputListener, UIEventListener {
 
 		}
 		g.setClip(prevClip);
+	}
+
+	public void setZ(int z) {
+		if (z != this.z) {
+			this.z = z;
+			if (this.parent != null) {
+				this.parent.updateZOrder = true;
+			} else {
+				this.ui.updateZOrder = true;
+			}
+		}
+	}
+
+	public int getZ() {
+		return this.z;
+	}
+
+	public void bringToFront(boolean recursive) {
+		this.setZ(this.parent.children.get(this.parent.children.size() - 1).z);
+		if (recursive && this.parent != null) {
+			this.parent.bringToFront(recursive);
+		}
 	}
 
 	// returns the uielement that is top (prioritizes children)
@@ -298,8 +374,8 @@ public class UIElement implements DefaultInputListener, UIEventListener {
 
 	// PARENTING //////////////////////////
 	// massive copy paste fiesta down below
-	public ArrayList<UIElement> getChildren() {
-		ArrayList<UIElement> allchildren = new ArrayList<UIElement>();
+	public List<UIElement> getChildren() {
+		List<UIElement> allchildren = new LinkedList<UIElement>();
 		allchildren.addAll(this.children);
 		allchildren.addAll(this.childrenAddBuffer);
 		allchildren.removeAll(this.childrenRemoveBuffer);
@@ -324,9 +400,9 @@ public class UIElement implements DefaultInputListener, UIEventListener {
 	}
 
 	/**
-	 * Removes the parent of the UIElement, handles the removing of the
-	 * connection between parent and child by removing itself from the parent's
-	 * children and by removing its parent object
+	 * Removes the parent of the UIElement, handles the removing of the connection
+	 * between parent and child by removing itself from the parent's children and by
+	 * removing its parent object
 	 */
 	public void removeParent() {
 		if (this.parent != null) {
@@ -346,8 +422,7 @@ public class UIElement implements DefaultInputListener, UIEventListener {
 	/**
 	 * Removes a child of an UIElement
 	 * 
-	 * @param child
-	 *            The child to remove
+	 * @param child The child to remove
 	 */
 	public void removeChild(UIElement child) {
 		if (this.getChildren().contains(child)) {
@@ -359,6 +434,11 @@ public class UIElement implements DefaultInputListener, UIEventListener {
 		for (UIElement u : this.getChildren()) {
 			u.removeParent();
 		}
+	}
+
+	@Override
+	public int compareTo(UIElement uie) {
+		return this.z - uie.z;
 	}
 
 }

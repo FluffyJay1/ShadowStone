@@ -1,25 +1,15 @@
 package client.states;
 
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Vector2f;
-import org.newdawn.slick.state.BasicGameState;
-import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.*;
+import org.newdawn.slick.geom.*;
+import org.newdawn.slick.state.*;
 
 import client.Game;
-import client.ui.GenericButton;
-import client.ui.Text;
-import client.ui.TextField;
-import client.ui.UI;
-import client.ui.UIEventListener;
-import client.ui.UIMouseListenerWrapper;
-import client.ui.menu.DeckSelectPanel;
-import client.ui.menu.PlayButton;
+import client.ui.*;
+import client.ui.menu.*;
 
 public class StateMenu extends BasicGameState {
 	UI ui;
-	UIMouseListenerWrapper listener;
 	PlayButton playButton;
 
 	@Override
@@ -31,9 +21,9 @@ public class StateMenu extends BasicGameState {
 	@Override
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		this.ui = new UI();
-		this.listener = new UIMouseListenerWrapper(this.ui);
-		arg0.getInput().addMouseListener(listener);
-		arg0.getInput().addKeyListener(this.ui);
+		// arg0.getInput().addMouseListener(this.ui);
+		// arg0.getInput().addKeyListener(this.ui);
+		arg0.getInput().addListener(this.ui);
 
 		this.ui.addListener(new UIEventListener() {
 			@Override
@@ -54,13 +44,14 @@ public class StateMenu extends BasicGameState {
 				}
 			}
 		});
-		GenericButton deckbuildbutton = new GenericButton(this.ui, new Vector2f(Game.WINDOW_WIDTH / 2, 800),
-				new Vector2f(120, 80), "Manage Decks", 0) {
+		GenericButton deckbuildbutton = new GenericButton(this.ui, new Vector2f(0, 0.25f), new Vector2f(120, 80),
+				"Manage Decks", 0) {
 			@Override
 			public void mouseClicked(int button, int x, int y, int clickCount) {
 				this.alert("deckbuild");
 			}
 		};
+		deckbuildbutton.relpos = true;
 		this.ui.addUIElementParent(deckbuildbutton);
 		this.playButton = new PlayButton(ui);
 		this.ui.addUIElementParent(this.playButton);
@@ -68,7 +59,7 @@ public class StateMenu extends BasicGameState {
 
 	@Override
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		arg0.getInput().removeMouseListener(listener);
+		arg0.getInput().removeListener(this.ui);
 	}
 
 	@Override

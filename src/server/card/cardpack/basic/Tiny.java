@@ -1,17 +1,11 @@
 package server.card.cardpack.basic;
 
-import java.util.LinkedList;
+import java.util.*;
 
-import client.tooltip.Tooltip;
-import client.tooltip.TooltipMinion;
-import server.Board;
-import server.card.BoardObject;
-import server.card.CardStatus;
-import server.card.ClassCraft;
-import server.card.Minion;
-import server.card.effect.Effect;
-import server.card.effect.EffectStatChange;
-import server.card.effect.EffectStats;
+import client.tooltip.*;
+import server.*;
+import server.card.*;
+import server.card.effect.*;
 import server.event.*;
 
 public class Tiny extends Minion {
@@ -28,7 +22,7 @@ public class Tiny extends Minion {
 			public EventFlag unleash() {
 				EventFlag ef = new EventFlag(this) {
 					@Override
-					public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+					public void resolve(List<Event> eventlist, boolean loopprotection) {
 						EffectStatChange ef = new EffectStatChange("Gained +2/+0/+2 and <b> Rush </b> from Unleash");
 						ef.change.setStat(EffectStats.ATTACK, 2);
 						ef.change.setStat(EffectStats.HEALTH, 2);

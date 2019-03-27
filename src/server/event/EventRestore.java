@@ -1,23 +1,18 @@
 package server.event;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.Player;
-import server.card.Card;
-import server.card.Minion;
-import server.card.Target;
-import server.card.effect.EffectStats;
+import server.*;
+import server.card.*;
+import server.card.effect.*;
 
 public class EventRestore extends Event {
 	public static final int ID = 13;
 	// actualheal is (kind of) for display only
-	public ArrayList<Integer> heal, actualHeal;
-	public ArrayList<Minion> m;
+	public List<Integer> heal, actualHeal;
+	public List<Minion> m;
 
-	public EventRestore(ArrayList<Minion> m, ArrayList<Integer> heal) {
+	public EventRestore(List<Minion> m, List<Integer> heal) {
 		super(ID);
 		this.m = new ArrayList<Minion>();
 		this.m.addAll(m);
@@ -47,7 +42,7 @@ public class EventRestore extends Event {
 	}
 
 	@Override
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		this.actualHeal = new ArrayList<Integer>();
 		for (int i = 0; i < this.m.size(); i++) { // whatever
 			Minion minion = this.m.get(i);

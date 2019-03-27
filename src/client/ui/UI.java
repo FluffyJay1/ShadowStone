@@ -1,22 +1,13 @@
 package client.ui;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.*;
+import org.newdawn.slick.geom.*;
 
-import server.card.BoardObject;
-import server.card.Card;
-import server.card.Minion;
-import server.event.EventMinionAttack;
-import utils.DefaultKeyListener;
-import utils.DefaultMouseListener;
+import utils.*;
 
-public class UI implements DefaultKeyListener { // lets do this right this time
+public class UI implements DefaultInputListener { // lets do this right this time
 	public static final boolean DEBUG = false;
 	ArrayList<UIElement> parentList = new ArrayList<UIElement>();
 	ArrayList<UIElement> parentListAddBuffer = new ArrayList<UIElement>();
@@ -24,7 +15,9 @@ public class UI implements DefaultKeyListener { // lets do this right this time
 	ArrayList<UIEventListener> listeners = new ArrayList<UIEventListener>();
 	UIElement pressedElement = null, draggingElement = null, focusedElement = null;
 	public Vector2f lastmousepos = new Vector2f();
+	private double scale = 1;
 	public boolean[] pressedKeys = new boolean[255];
+	public boolean updateZOrder = false;
 
 	public UI() {
 
@@ -38,6 +31,10 @@ public class UI implements DefaultKeyListener { // lets do this right this time
 		this.parentList.removeAll(this.parentListRemoveBuffer);
 		this.parentListAddBuffer.clear();
 		this.parentListRemoveBuffer.clear();
+		if (this.updateZOrder) {
+			Collections.sort(this.parentList);
+			this.updateZOrder = false;
+		}
 	}
 
 	public void draw(Graphics g) {
@@ -53,6 +50,7 @@ public class UI implements DefaultKeyListener { // lets do this right this time
 
 	public void addUIElementParent(UIElement u) {
 		this.parentListAddBuffer.add(u);
+		this.updateZOrder = true;
 	}
 
 	public void removeUIElementParent(UIElement u) {
@@ -127,6 +125,7 @@ public class UI implements DefaultKeyListener { // lets do this right this time
 		}
 	}
 
+	@Override
 	public void mouseClicked(int button, int x, int y, int clickCount) {
 		if (DEBUG) {
 			for (UIElement u : this.parentList) {
@@ -139,7 +138,8 @@ public class UI implements DefaultKeyListener { // lets do this right this time
 		}
 	}
 
-	public boolean mousePressed(int button, int x, int y) {
+	@Override
+	public void mousePressed(int button, int x, int y) {
 		UIElement top = this.getTopUIElement(new Vector2f(x, y), true, false, false);
 		this.pressedElement = top;
 		this.focusElement(top);
@@ -150,9 +150,9 @@ public class UI implements DefaultKeyListener { // lets do this right this time
 		if (dragging != null) {
 			this.draggingElement = dragging;
 		}
-		return top != null;
 	}
 
+	@Override
 	public void mouseReleased(int button, int x, int y) {
 
 		if (this.pressedElement != null) {
@@ -163,6 +163,7 @@ public class UI implements DefaultKeyListener { // lets do this right this time
 
 	}
 
+	@Override
 	public void mouseMoved(int oldx, int oldy, int newx, int newy) {
 		LinkedList<UIElement> temp = new LinkedList<UIElement>();
 		temp.addAll(this.parentList);
@@ -174,14 +175,14 @@ public class UI implements DefaultKeyListener { // lets do this right this time
 		this.lastmousepos.set(newx, newy);
 	}
 
+	@Override
 	public void mouseDragged(int oldx, int oldy, int newx, int newy) {
 		if (this.pressedElement != null) {
 			this.pressedElement.mouseDragged(oldx, oldy, newx, newy);
 		}
 		if (this.draggingElement != null) {
 			if (this.draggingElement.draggable) {
-				this.draggingElement
-						.setPos(this.draggingElement.getPos().copy().add(new Vector2f(newx - oldx, newy - oldy)), 1);
+				this.draggingElement.changeAbsPos(new Vector2f(newx - oldx, newy - oldy), 1);
 			}
 			this.draggingElement.mouseDragged(oldx, oldy, newx, newy);
 
@@ -189,6 +190,7 @@ public class UI implements DefaultKeyListener { // lets do this right this time
 		this.lastmousepos.set(newx, newy);
 	}
 
+	@Override
 	public void mouseWheelMoved(int change) {
 		UIElement top = this.getTopUIElement(this.lastmousepos, false, true, false);
 		if (top != null) {

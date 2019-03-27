@@ -1,18 +1,11 @@
 package server.event;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import client.VisualBoard;
-import server.Board;
-import server.Player;
-import server.card.BoardObject;
-import server.card.Card;
-import server.card.CardStatus;
-import server.card.Deck;
-import server.card.Hand;
-import server.card.Minion;
-import server.card.unleashpower.UnleashPower;
+import client.*;
+import server.*;
+import server.card.*;
+import server.card.unleashpower.*;
 
 public class EventCreateCard extends Event {
 	public static final int ID = 2;
@@ -30,7 +23,8 @@ public class EventCreateCard extends Event {
 		this.cardpos = cardpos;
 	}
 
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	@Override
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		this.c.team = this.team;
 		switch (this.status) {
 		case HAND:
@@ -66,6 +60,9 @@ public class EventCreateCard extends Event {
 		case UNLEASHPOWER:
 			this.b.getPlayer(this.team).unleashPower = (UnleashPower) this.c;
 			((UnleashPower) this.c).p = this.b.getPlayer(this.team);
+			break;
+		case LEADER:
+			this.b.getPlayer(this.team).leader = (Leader) this.c;
 		default:
 			break;
 		}
@@ -75,6 +72,7 @@ public class EventCreateCard extends Event {
 		}
 	}
 
+	@Override
 	public String toString() {
 		return this.id + " " + this.c.toConstructorString() + this.team + " " + this.status.toString() + " "
 				+ this.cardpos + "\n";
@@ -84,6 +82,7 @@ public class EventCreateCard extends Event {
 		Card c = Card.createFromConstructorString(b, st);
 		if (b instanceof VisualBoard) {
 			c.realCard = ((VisualBoard) b).realBoard.cardsCreated.removeFirst();
+			((VisualBoard) b).uiBoard.addCard(c);
 		}
 		int team = Integer.parseInt(st.nextToken());
 		String sStatus = st.nextToken();
@@ -97,6 +96,7 @@ public class EventCreateCard extends Event {
 		return new EventCreateCard(b, c, team, csStatus, cardpos);
 	}
 
+	@Override
 	public boolean conditions() {
 		return true;
 	}

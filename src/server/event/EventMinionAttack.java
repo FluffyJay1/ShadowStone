@@ -1,13 +1,9 @@
 package server.event;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.Player;
-import server.card.Card;
-import server.card.Leader;
-import server.card.Minion;
+import server.*;
+import server.card.*;
 
 public class EventMinionAttack extends Event {
 	// start attack
@@ -21,7 +17,7 @@ public class EventMinionAttack extends Event {
 	}
 
 	@Override
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		if (!loopprotection) {
 			m1.attacksThisTurn++;
 			eventlist.addAll(m1.onAttack(m2));

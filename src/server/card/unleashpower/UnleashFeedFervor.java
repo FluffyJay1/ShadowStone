@@ -1,11 +1,11 @@
 package server.card.unleashpower;
 
-import java.util.LinkedList;
+import java.util.*;
 
-import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
-import server.Board;
+import server.*;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
@@ -31,7 +31,7 @@ public class UnleashFeedFervor extends UnleashPower {
 						overflow = true;
 						EventFlag ef = new EventFlag(this) {
 							@Override
-							public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+							public void resolve(List<Event> eventlist, boolean loopprotection) {
 								EffectStatChange esc = new EffectStatChange("");
 								esc.change.setStat(EffectStats.COST, -1);
 								eventlist.add(new EventSetEffectStats(overflowDiscount, esc)); // WHY
@@ -43,7 +43,7 @@ public class UnleashFeedFervor extends UnleashPower {
 						overflow = false;
 						EventFlag ef = new EventFlag(this) {
 							@Override
-							public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+							public void resolve(List<Event> eventlist, boolean loopprotection) {
 								EffectStatChange esc = new EffectStatChange("");
 								esc.change.setStat(EffectStats.COST, 0);
 								eventlist.add(new EventSetEffectStats(overflowDiscount, esc)); // WHY

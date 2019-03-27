@@ -1,13 +1,11 @@
 package server.card.cardpack.basic;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.*;
 
-import client.tooltip.TooltipSpell;
-import server.Board;
+import client.tooltip.*;
+import server.*;
 import server.card.*;
-import server.card.effect.Effect;
-import server.card.effect.EffectStats;
+import server.card.effect.*;
 import server.event.*;
 
 public class Fireball extends Spell {
@@ -27,11 +25,11 @@ public class Fireball extends Spell {
 			public EventBattlecry battlecry() {
 				EventBattlecry bc = new EventBattlecry(this) {
 					@Override
-					public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+					public void resolve(List<Event> eventlist, boolean loopprotection) {
 						for (int i = 0; i < this.effect.battlecryTargets.get(0).getTargets().size(); i++) {
-							ArrayList<Minion> m = new ArrayList<Minion>();
-							ArrayList<Integer> d = new ArrayList<Integer>();
-							ArrayList<Boolean> p = new ArrayList<Boolean>();
+							List<Minion> m = new ArrayList<Minion>();
+							List<Integer> d = new ArrayList<Integer>();
+							List<Boolean> p = new ArrayList<Boolean>();
 							int pos = ((BoardObject) this.effect.battlecryTargets.get(0).getTargets().get(i)).cardpos;
 
 							m.add((Minion) this.effect.battlecryTargets.get(0).getTargets().get(i)); // spaghett
@@ -58,7 +56,7 @@ public class Fireball extends Spell {
 		Target t = new Target(e, 2, "Deal 2 damage to an enemy minion and 1 damage to adjacent minions.") {
 			@Override
 			public boolean canTarget(Card c) {
-				return c.status == CardStatus.BOARD && c instanceof Minion && !(c instanceof Leader)
+				return c.status == CardStatus.BOARD && c instanceof Minion
 						&& ((Minion) c).team != this.getCreator().owner.team;
 			}
 		};

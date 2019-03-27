@@ -1,18 +1,11 @@
 package client.ui.menu;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Map;
+import java.util.*;
 
-import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.geom.*;
 
-import client.ui.GenericButton;
-import client.ui.ScrollingContext;
-import client.ui.Text;
-import client.ui.TextField;
-import client.ui.UI;
-import client.ui.UIBox;
-import server.card.cardpack.ConstructedDeck;
+import client.ui.*;
+import server.card.cardpack.*;
 
 public class DeckDisplayPanel extends UIBox {
 	public static final String CARD_CLICK = "deckdisplaycardselect";
@@ -41,7 +34,7 @@ public class DeckDisplayPanel extends UIBox {
 		this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f((float) this.getWidth(true), 400));
 		this.scroll.clip = true;
 		this.addChild(this.scroll);
-		this.okbutton = new GenericButton(ui, new Vector2f(0, 210), new Vector2f(100, 50), "Ok", 0) {
+		this.okbutton = new GenericButton(ui, new Vector2f(0, 150), new Vector2f(100, 50), "Ok", 0) {
 			@Override
 			public void mouseClicked(int button, int x, int y, int clickCount) {
 				this.alert(DECK_CONFIRM);
@@ -72,6 +65,8 @@ public class DeckDisplayPanel extends UIBox {
 	@Override
 	public void mouseClicked(int button, int x, int y, int clickCount) {
 		this.alert(BACKGROUND_CLICK);
+		System.out.println(this.okbutton.getFinalPos());
+
 	}
 
 	public void setDeck(ConstructedDeck deck) {

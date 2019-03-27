@@ -10,12 +10,12 @@ public class EventPutCard extends Event {
 	// for effects that put specific cards in hand or just draw cards
 	public static final int ID = 12;
 	Player p;
-	public ArrayList<Card> c;
-	public ArrayList<Integer> pos; // pos == -1 means last
+	public List<Card> c;
+	public List<Integer> pos; // pos == -1 means last
 	public CardStatus status;
 	int targetTeam;
 
-	public EventPutCard(Player p, ArrayList<Card> c, CardStatus status, int team, ArrayList<Integer> pos) {
+	public EventPutCard(Player p, List<Card> c, CardStatus status, int team, List<Integer> pos) {
 		super(ID);
 		this.p = p;
 		this.c = new ArrayList<Card>();
@@ -38,7 +38,7 @@ public class EventPutCard extends Event {
 	}
 
 	@Override
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		for (int i = 0; i < this.c.size(); i++) {
 			Card card = this.c.get(i);
 			switch (card.status) { // removing from
@@ -61,6 +61,9 @@ public class EventPutCard extends Event {
 				this.p.deck.cards.remove(card);
 				this.p.deck.updatePositions();
 				break;
+			case LEADER:
+				// wait
+				break;
 			default:
 				break;
 			}
@@ -80,15 +83,14 @@ public class EventPutCard extends Event {
 				if (this.status.equals(CardStatus.HAND) && this.p.hand.cards.size() >= this.p.hand.maxsize) {
 					eventlist.add(new EventMill(this.p, card));
 				} else {
-					ArrayList<Card> cards = this.p.board.getCollection(this.targetTeam, this.status); // YEA
+					List<Card> cards = this.p.board.getCollection(this.targetTeam, this.status); // YEA
 					int temppos = this.pos.get(i) == -1 ? (int) cards.size() : this.pos.get(i);
 					temppos = Math.min(temppos, cards.size());
 					card.cardpos = temppos;
 					cards.add(temppos, card);
 					if (this.status.equals(CardStatus.HAND)) {
 						this.p.board.getPlayer(this.targetTeam).hand.updatePositions();
-					}
-					if (this.status.equals(CardStatus.DECK)) {
+					} else if (this.status.equals(CardStatus.DECK)) {
 						this.p.board.getPlayer(this.targetTeam).deck.updatePositions();
 					}
 				}

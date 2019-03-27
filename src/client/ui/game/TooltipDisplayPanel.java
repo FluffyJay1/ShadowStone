@@ -1,6 +1,5 @@
 package client.ui.game;
 
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 
 import client.tooltip.Tooltip;
@@ -13,15 +12,15 @@ public class TooltipDisplayPanel extends UIBox {
 	Text name, description;
 
 	public TooltipDisplayPanel(UI ui) {
-		super(ui, new Vector2f(0, 0), new Vector2f(280, 0), "src/res/ui/uiboxborder.png");
+		super(ui, new Vector2f(0, 0), new Vector2f(380, 0), "src/res/ui/uiboxborder.png");
 		this.margins.set(10, 10);
 		this.alignv = -1;
 		this.name = new Text(ui, new Vector2f((float) this.getLocalLeft(true), (float) this.getLocalTop(true)), "name",
-				this.getWidth(true), 32, "Univers Condensed", 32, -1, -1);
+				this.getWidth(true), 40, "Lucida Console", 40, -1, -1);
 		this.addChild(name);
 		this.description = new Text(ui,
 				new Vector2f((float) this.getLocalLeft(true), (float) this.name.getBottom(false, false) + 10), "jeff",
-				this.getWidth(true), 24, "Univers Condensed", 24, -1, -1);
+				this.getWidth(true), 32, "Lucida Console", 32, -1, -1);
 		this.addChild(description);
 
 	}

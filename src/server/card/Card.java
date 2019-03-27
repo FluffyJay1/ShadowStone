@@ -3,6 +3,7 @@ package server.card;
 import java.awt.Color;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.List;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.Graphics;
@@ -11,6 +12,7 @@ import org.newdawn.slick.geom.*;
 
 import client.Game;
 import client.tooltip.*;
+import client.ui.game.*;
 import server.*;
 import server.card.cardpack.*;
 import server.card.effect.*;
@@ -27,13 +29,12 @@ public class Card {
 	public int id, cardpos, team;
 	public TooltipCard tooltip;
 	public String imagepath;
-	public Vector2f targetpos, pos;
-	public double scale;
 	double speed;
 	Image image;
 	public CardStatus status;
 	public ClassCraft craft;
 	public Card realCard; // for visual board
+	public UICard uiCard;
 
 	public Effect finalStatEffects = new Effect(0, ""), finalBasicStatEffects = new Effect(0, "");
 	// basic effects don't get removed when removed from board (e.g. bounce
@@ -44,81 +45,78 @@ public class Card {
 		this.board = board;
 		this.tooltip = tooltip;
 		this.imagepath = tooltip.imagepath;
-		this.targetpos = new Vector2f();
-		this.pos = new Vector2f();
 		this.speed = 0.999;
-		this.scale = 1;
 		this.id = tooltip.id;
 		this.status = CardStatus.DECK;
 		this.craft = tooltip.craft;
 	}
 
-	public void update(double frametime) {
-		Vector2f delta = this.targetpos.copy().sub(this.pos);
-		if (delta.length() > EPSILON) {
-			float ratio = 1 - (float) Math.pow(1 - this.speed, frametime);
-			this.pos.add(delta.scale(ratio));
-		}
-	}
+	/*
+	 * public void update(double frametime) {
+	 * 
+	 * }
+	 */
 
-	public void draw(Graphics g) {
+	// TODO move all this draw garbage to the UICard
+	public void draw(Graphics g, Vector2f pos, double scale) {
 		if (this.image == null && this.imagepath != null) {
 			this.image = Game.getImage(tooltip.imagepath).getScaledCopy((int) CARD_DIMENSIONS.x,
 					(int) CARD_DIMENSIONS.y);
 		}
-		Image scaledCopy = this.image.getScaledCopy((float) this.scale);
-		g.drawImage(scaledCopy, (int) (this.pos.x - CARD_DIMENSIONS.x * this.scale / 2),
-				(int) (this.pos.y - CARD_DIMENSIONS.y * this.scale / 2));
+		Image scaledCopy = this.image.getScaledCopy((float) scale);
+		g.drawImage(scaledCopy, (int) (pos.x - CARD_DIMENSIONS.x * scale / 2),
+				(int) (pos.y - CARD_DIMENSIONS.y * scale / 2));
 		switch (this.status) {
 		case BOARD:
-			this.drawOnBoard(g);
+		case LEADER:
+			this.drawOnBoard(g, pos, scale);
 			break;
 		case HAND:
-			UnicodeFont font = Game.getFont("Verdana", (NAME_FONT_SIZE * this.scale), true, false);
+			UnicodeFont font = Game.getFont("Verdana", (NAME_FONT_SIZE * scale), true, false);
 			// TODO: magic number below is space to display mana cost
-			if (font.getWidth(this.tooltip.name) > (CARD_DIMENSIONS.x - 20) * this.scale) {
-				font = Game.getFont("Verdana", (NAME_FONT_SIZE * this.scale * (CARD_DIMENSIONS.x - 20) * this.scale
-						/ font.getWidth(this.tooltip.name)), true, false);
+			if (font.getWidth(this.tooltip.name) > (CARD_DIMENSIONS.x - 20) * scale) {
+				font = Game.getFont("Verdana",
+						(NAME_FONT_SIZE * scale * (CARD_DIMENSIONS.x - 20) * scale / font.getWidth(this.tooltip.name)),
+						true, false);
 			}
-			font.drawString(this.pos.x - font.getWidth(this.tooltip.name) / 2,
-					this.pos.y - CARD_DIMENSIONS.y * (float) this.scale / 2, this.tooltip.name);
-			this.drawInHand(g);
+			font.drawString(pos.x - font.getWidth(this.tooltip.name) / 2, pos.y - CARD_DIMENSIONS.y * (float) scale / 2,
+					this.tooltip.name);
+			this.drawInHand(g, pos, scale);
 			break;
 		default:
 			break;
 		}
 	}
 
-	public void drawOnBoard(Graphics g) {
+	public void drawOnBoard(Graphics g, Vector2f pos, double scale) {
 
 	}
 
-	public void drawInHand(Graphics g) {
+	public void drawInHand(Graphics g, Vector2f pos, double scale) {
 		if (this.realCard != null && this.realCard.board.getPlayer(this.team).canPlayCard(this.realCard)
 				&& this.board.getPlayer(this.team).canPlayCard(this)) {
 			g.setColor(org.newdawn.slick.Color.cyan);
-			g.drawRect((float) (this.pos.x - CARD_DIMENSIONS.x * this.scale / 2),
-					(float) (this.pos.y - CARD_DIMENSIONS.y * this.scale / 2), (float) (CARD_DIMENSIONS.x * this.scale),
-					(float) (CARD_DIMENSIONS.y * this.scale));
+			g.drawRect((float) (pos.x - CARD_DIMENSIONS.x * scale / 2), (float) (pos.y - CARD_DIMENSIONS.y * scale / 2),
+					(float) (CARD_DIMENSIONS.x * scale), (float) (CARD_DIMENSIONS.y * scale));
 			g.setColor(org.newdawn.slick.Color.white);
 		}
-		this.drawCostStat(g, this.finalStatEffects.getStat(EffectStats.COST),
+		this.drawCostStat(g, pos, scale, this.finalStatEffects.getStat(EffectStats.COST),
 				this.finalBasicStatEffects.getStat(EffectStats.COST), new Vector2f(-0.5f, -0.5f),
 				new Vector2f(0.5f, 0.5f), STAT_DEFAULT_SIZE);
 	}
 
-	public void drawStatNumber(Graphics g, int stat, Vector2f relpos, Vector2f textoffset, double fontsize, Color c) {
-		UnicodeFont font = Game.getFont("Verdana", fontsize * this.scale, true, false, c, Color.BLACK);
+	public void drawStatNumber(Graphics g, Vector2f pos, double scale, int stat, Vector2f relpos, Vector2f textoffset,
+			double fontsize, Color c) {
+		UnicodeFont font = Game.getFont("Verdana", fontsize * scale, true, false, c, Color.BLACK);
 		font.drawString(
-				this.pos.x + CARD_DIMENSIONS.x * relpos.x * (float) this.scale
-						+ font.getWidth("" + stat) * (textoffset.x - 0.5f),
-				this.pos.y + CARD_DIMENSIONS.y * relpos.y * (float) this.scale
+				pos.x + CARD_DIMENSIONS.x * relpos.x * (float) scale + font.getWidth("" + stat) * (textoffset.x - 0.5f),
+				pos.y + CARD_DIMENSIONS.y * relpos.y * (float) scale
 						+ font.getHeight("" + stat) * (textoffset.y - 0.5f),
 				"" + stat);
 	}
 
-	public void drawCostStat(Graphics g, int cost, int basecost, Vector2f relpos, Vector2f textoffset,
-			double fontsize) {
+	public void drawCostStat(Graphics g, Vector2f pos, double scale, int cost, int basecost, Vector2f relpos,
+			Vector2f textoffset, double fontsize) {
 		Color c = Color.white;
 		if (cost > basecost) {
 			c = Color.red;
@@ -126,25 +124,18 @@ public class Card {
 		if (cost < basecost) {
 			c = Color.green;
 		}
-		this.drawStatNumber(g, cost, relpos, textoffset, fontsize, c);
+		this.drawStatNumber(g, pos, scale, cost, relpos, textoffset, fontsize, c);
 	}
 
-	public boolean isInside(Vector2f p) {
-		return p.x >= this.pos.x - this.image.getWidth() / 2 * this.scale
-				&& p.y >= this.pos.y - this.image.getHeight() / 2 * this.scale
-				&& p.x <= this.pos.x + this.image.getWidth() / 2 * this.scale
-				&& p.y <= this.pos.y + this.image.getHeight() / 2 * this.scale;
-	}
-
-	public LinkedList<Effect> getBasicEffects() {
+	public List<Effect> getBasicEffects() {
 		return this.basicEffects;
 	}
 
-	public LinkedList<Effect> getAdditionalEffects() {
+	public List<Effect> getAdditionalEffects() {
 		return this.effects;
 	}
 
-	public LinkedList<Effect> getFinalEffects() {
+	public List<Effect> getFinalEffects() {
 		LinkedList<Effect> list = new LinkedList<Effect>();
 		list.addAll(this.getBasicEffects());
 		for (Effect e : this.getAdditionalEffects()) {
@@ -231,8 +222,8 @@ public class Card {
 		}
 	}
 
-	public LinkedList<EventBattlecry> battlecry() {
-		LinkedList<EventBattlecry> list = new LinkedList<EventBattlecry>();
+	public List<EventBattlecry> battlecry() {
+		List<EventBattlecry> list = new LinkedList<EventBattlecry>();
 		for (Effect e : this.getFinalEffects()) {
 			EventBattlecry temp = e.battlecry();
 			if (temp != null) {
@@ -246,8 +237,8 @@ public class Card {
 		return true;
 	}
 
-	public LinkedList<Target> getBattlecryTargets() {
-		LinkedList<Target> list = new LinkedList<Target>();
+	public List<Target> getBattlecryTargets() {
+		List<Target> list = new LinkedList<Target>();
 		for (Effect e : this.getFinalEffects()) {
 			for (Target t : e.battlecryTargets) {
 				list.add(t);
@@ -272,7 +263,7 @@ public class Card {
 	}
 
 	public String battlecryTargetsToString() {
-		LinkedList<Target> list = this.getBattlecryTargets();
+		List<Target> list = this.getBattlecryTargets();
 		String ret = list.size() + " ";
 		for (Target t : list) {
 			ret += t.toString();
@@ -288,8 +279,8 @@ public class Card {
 		}
 	}
 
-	public LinkedList<EventFlag> onEvent(Event event) {
-		LinkedList<EventFlag> list = new LinkedList<EventFlag>();
+	public List<EventFlag> onEvent(Event event) {
+		List<EventFlag> list = new LinkedList<EventFlag>();
 		for (Effect e : this.getFinalEffects()) {
 			EventFlag temp = e.onEvent(event);
 			if (temp != null) {
@@ -358,6 +349,8 @@ public class Card {
 			return p.board.getGraveyard(team).get(cardpos);
 		case "UNLEASHPOWER":
 			return p.unleashPower;
+		case "LEADER":
+			return p.leader;
 		default:
 			return null;
 		}

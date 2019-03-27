@@ -1,11 +1,11 @@
 package server.card.unleashpower;
 
-import java.util.LinkedList;
+import java.util.*;
 
-import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
-import server.Board;
+import server.*;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
@@ -31,7 +31,7 @@ public class UnleashTapSoul extends UnleashPower {
 						vengeance = true;
 						EventFlag ef = new EventFlag(this) {
 							@Override
-							public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+							public void resolve(List<Event> eventlist, boolean loopprotection) {
 								EffectStatChange esc = new EffectStatChange("");
 								esc.change.setStat(EffectStats.ATTACKS_PER_TURN, 1);
 								eventlist.add(new EventSetEffectStats(vengeanceBonus, esc));
@@ -43,7 +43,7 @@ public class UnleashTapSoul extends UnleashPower {
 						vengeance = false;
 						EventFlag ef = new EventFlag(this) {
 							@Override
-							public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+							public void resolve(List<Event> eventlist, boolean loopprotection) {
 								EffectStatChange esc = new EffectStatChange("");
 								esc.change.setStat(EffectStats.ATTACKS_PER_TURN, 0);
 								eventlist.add(new EventSetEffectStats(vengeanceBonus, esc));
@@ -59,10 +59,11 @@ public class UnleashTapSoul extends UnleashPower {
 
 	}
 
+	@Override
 	public LinkedList<Event> unleash(Minion m) {
 		LinkedList<Event> list = new LinkedList<Event>();
 		list.add(new EventUnleash(this, m));
-		list.add(new EventDamage((Leader) this.p.board.getBoardObject(this.p.team, 0), 3, false));
+		list.add(new EventDamage(this.p.leader, 3, false));
 		return list;
 	}
 }

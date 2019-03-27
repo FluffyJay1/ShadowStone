@@ -1,24 +1,20 @@
 package server.event;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.card.Card;
-import server.card.Minion;
-import server.card.Target;
-import server.card.effect.EffectStats;
+import server.*;
+import server.card.*;
+import server.card.effect.*;
 
 public class EventMinionDamage extends Event {
 	// whenever a minion does damage from card text i.e. ragnaros end of turn
 	// effect
 	public static final int ID = 10;
-	public ArrayList<Integer> damage;
+	public List<Integer> damage;
 	public Minion m1;
-	public ArrayList<Minion> m2;
+	public List<Minion> m2;
 
-	public EventMinionDamage(Minion m1, ArrayList<Minion> m2, ArrayList<Integer> damage) {
+	public EventMinionDamage(Minion m1, List<Minion> m2, List<Integer> damage) {
 		super(ID);
 		this.m1 = m1;
 		this.m2 = new ArrayList<Minion>();
@@ -53,7 +49,7 @@ public class EventMinionDamage extends Event {
 	}
 
 	@Override
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		ArrayList<Boolean> poisonous = new ArrayList<Boolean>(this.m2.size());
 		for (int i = 0; i < this.m2.size(); i++) {
 			poisonous.add(m1.finalStatEffects.getStat(EffectStats.POISONOUS) > 0);

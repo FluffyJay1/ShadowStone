@@ -1,10 +1,9 @@
 package server.card.effect;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import client.Game;
-import server.Board;
+import client.*;
+import server.*;
 import server.card.*;
 import server.event.*;
 
@@ -25,7 +24,7 @@ public class EffectLastWordsSummon extends Effect {
 		int recentcardpos = this.owner.cardpos;
 		EventLastWords elw = new EventLastWords(this) {
 			@Override
-			public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+			public void resolve(List<Event> eventlist, boolean loopprotection) {
 				eventlist.add(new EventCreateCard(this.effect.owner.board, m, team, CardStatus.BOARD, recentcardpos));
 				// why is an anonymous class allowed to use variables in the
 				// method scope

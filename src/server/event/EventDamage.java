@@ -1,25 +1,18 @@
 package server.event;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.card.Card;
-import server.card.CardStatus;
-import server.card.Leader;
-import server.card.Minion;
-import server.card.Target;
-import server.card.effect.EffectStats;
+import server.*;
+import server.card.*;
 
 public class EventDamage extends Event {
 	// whenever damage is dealt
 	public static final int ID = 3;
-	public ArrayList<Integer> damage;
-	public ArrayList<Minion> m;
-	public ArrayList<Boolean> poisonous;
+	public List<Integer> damage;
+	public List<Minion> m;
+	public List<Boolean> poisonous;
 
-	public EventDamage(ArrayList<Minion> m, ArrayList<Integer> damage, ArrayList<Boolean> poisonous) {
+	public EventDamage(List<Minion> m, List<Integer> damage, List<Boolean> poisonous) {
 		super(ID);
 		this.m = new ArrayList<Minion>();
 		this.damage = new ArrayList<Integer>();
@@ -55,7 +48,7 @@ public class EventDamage extends Event {
 	}
 
 	@Override
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		for (int i = 0; i < this.m.size(); i++) { // sure
 			Minion minion = m.get(i);
 			if (!loopprotection) {

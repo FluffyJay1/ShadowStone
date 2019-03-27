@@ -1,9 +1,8 @@
 package server.event;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
+import server.*;
 import server.card.effect.*;
 
 public class EventSetEffectStats extends Event {
@@ -18,7 +17,7 @@ public class EventSetEffectStats extends Event {
 	}
 
 	@Override
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		this.target.resetStats();
 		this.target.applyEffectStats(newstats);
 		this.target.owner.updateBasicEffectStats();

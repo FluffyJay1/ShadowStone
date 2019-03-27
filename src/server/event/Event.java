@@ -1,10 +1,9 @@
 package server.event;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.lang.reflect.*;
+import java.util.*;
 
-import server.Board;
+import server.*;
 
 public class Event {
 	// always go full enterprise, if you start going half enterprise you're
@@ -17,10 +16,11 @@ public class Event {
 		this.id = id;
 	}
 
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 
 	}
 
+	@Override
 	public String toString() {
 		return this.id + "\n";
 	}

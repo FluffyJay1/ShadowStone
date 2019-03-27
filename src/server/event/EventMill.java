@@ -1,12 +1,9 @@
 package server.event;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.Player;
-import server.card.Card;
-import server.card.Deck;
+import server.*;
+import server.card.*;
 
 //TODO: SEE IF THIS EVENT IS EVEN NEEDED
 public class EventMill extends Event {
@@ -21,7 +18,7 @@ public class EventMill extends Event {
 	}
 
 	@Override
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		p.deck.cards.remove(c);
 		p.deck.updatePositions();
 	}

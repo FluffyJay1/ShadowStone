@@ -1,15 +1,10 @@
 package server.event;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.Player;
-import server.card.BoardObject;
-import server.card.Card;
-import server.card.CardStatus;
-import server.card.Minion;
-import server.card.effect.EffectStats;
+import server.*;
+import server.card.*;
+import server.card.effect.*;
 
 public class EventPlayCard extends Event {
 	public static final int ID = 11;
@@ -24,7 +19,8 @@ public class EventPlayCard extends Event {
 		this.position = position;
 	}
 
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	@Override
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		// p.hand.cards.remove(c);
 		p.mana -= c.finalStatEffects.getStat(EffectStats.COST);
 		if (c instanceof BoardObject) {
@@ -37,6 +33,7 @@ public class EventPlayCard extends Event {
 		eventlist.addAll(c.battlecry());
 	}
 
+	@Override
 	public String toString() {
 		return this.id + " " + p.team + " " + position + " " + this.c.toReference() + c.battlecryTargetsToString()
 				+ "\n";
@@ -51,6 +48,7 @@ public class EventPlayCard extends Event {
 		return new EventPlayCard(p, c, position);
 	}
 
+	@Override
 	public boolean conditions() {
 		return p.mana >= c.finalStatEffects.getStat(EffectStats.COST) && this.c.status.equals(CardStatus.HAND);
 	}

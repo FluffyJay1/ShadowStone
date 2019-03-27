@@ -6,7 +6,6 @@ import org.newdawn.slick.geom.Vector2f;
 
 import client.tooltip.Tooltip;
 import client.ui.ScrollingContext;
-import client.ui.Text;
 import client.ui.UI;
 import client.ui.UIBox;
 import client.ui.UIElement;
@@ -18,10 +17,10 @@ public class CardSelectTooltipPanel extends UIBox {
 	ArrayList<TooltipDisplayPanel> childTooltips = new ArrayList<TooltipDisplayPanel>();
 
 	public CardSelectTooltipPanel(UI ui, Vector2f pos, int layers) {
-		super(ui, pos, new Vector2f(300, 400), "src/res/ui/uiboxborder.png");
+		super(ui, pos, new Vector2f(400, 500), "src/res/ui/uiboxborder.png");
 		this.margins.set(10, 10);
 		if (layers > 0) {
-			this.child = new CardSelectTooltipPanel(ui, new Vector2f(300, 0), layers - 1);
+			this.child = new CardSelectTooltipPanel(ui, new Vector2f(400, 0), layers - 1);
 			this.addChild(this.child);
 		}
 		this.scroll = new ScrollingContext(ui, new Vector2f(), this.getDim(true));

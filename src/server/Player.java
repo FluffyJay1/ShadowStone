@@ -1,17 +1,7 @@
 package server;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Vector2f;
-
-import client.VisualBoard;
-import server.card.Card;
-import server.card.CardStatus;
-import server.card.Deck;
-import server.card.Hand;
-import server.card.Leader;
-import server.card.Minion;
-import server.card.effect.EffectStats;
+import server.card.*;
+import server.card.effect.*;
 import server.card.unleashpower.*;
 
 public class Player {
@@ -21,6 +11,7 @@ public class Player {
 	public Hand hand;
 	public int team, mana = 0, maxmana = 3, maxmaxmana = 10; // don't ask
 	public boolean unleashAllowed = true;
+	public Leader leader;
 	public UnleashPower unleashPower;
 
 	public Player(Board board, int team) {
@@ -30,28 +21,15 @@ public class Player {
 		this.hand = new Hand(board, team);
 	}
 
-	public void update(double frametime) {
-		this.hand.update(frametime);
-		if (this.unleashPower != null) {
-			this.unleashPower.update(frametime);
-		}
-	}
-
-	public void draw(Graphics g) {
-		if (this.unleashPower != null) {
-			this.unleashPower.draw(g);
-			if (this.board instanceof VisualBoard && this.realPlayer.canUnleash()
-					&& !((VisualBoard) this.board).disableInput) {
-				g.setColor(Color.cyan);
-				g.drawOval(
-						(float) (this.unleashPower.pos.x - UnleashPower.UNLEASH_POWER_RADIUS * this.unleashPower.scale),
-						(float) (this.unleashPower.pos.y - UnleashPower.UNLEASH_POWER_RADIUS * this.unleashPower.scale),
-						(float) (UnleashPower.UNLEASH_POWER_RADIUS * 2 * this.unleashPower.scale),
-						(float) (UnleashPower.UNLEASH_POWER_RADIUS * 2 * this.unleashPower.scale));
-				g.setColor(Color.white);
-			}
-		}
-	}
+	/*
+	 * public void update(double frametime) { this.hand.update(frametime); if
+	 * (this.unleashPower != null) { this.unleashPower.update(frametime); } }
+	 */
+	/*
+	 * public void draw(Graphics g) {
+	 * 
+	 * }
+	 */
 
 	// uh
 	public boolean canPlayCard(Card c) {
@@ -86,9 +64,8 @@ public class Player {
 	}
 
 	public boolean vengeance() {
-		Leader l = (Leader) this.board.getBoardObject(this.team, 0);
-		if (l != null) {
-			return l.health <= 15;
+		if (this.leader != null) {
+			return this.leader.health <= 15;
 		}
 		return false;
 	}

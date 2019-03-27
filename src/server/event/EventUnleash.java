@@ -1,13 +1,10 @@
 package server.event;
 
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.Player;
-import server.card.Card;
-import server.card.Minion;
-import server.card.unleashpower.UnleashPower;
+import server.*;
+import server.card.*;
+import server.card.unleashpower.*;
 
 public class EventUnleash extends Event {
 	public static final int ID = 16;
@@ -21,13 +18,15 @@ public class EventUnleash extends Event {
 		this.priority = 1;
 	}
 
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	@Override
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		eventlist.addAll(this.m.unleash());
 		if (this.source instanceof UnleashPower) { // quality
 			((UnleashPower) this.source).unleashesThisTurn++;
 		}
 	}
 
+	@Override
 	public String toString() {
 		return this.id + " " + this.source.toReference() + m.toReference() + m.unleashTargetsToString() + "\n";
 	}
@@ -39,6 +38,7 @@ public class EventUnleash extends Event {
 		return new EventUnleash(source, m);
 	}
 
+	@Override
 	public boolean conditions() {
 		return true;
 	}

@@ -19,12 +19,12 @@ public class Board {
 	// localteam is the team of the player, i.e. at the bottom of the screen
 	public int currentplayerturn = 1, localteam = 1, winner = 0;
 
-	protected ArrayList<BoardObject> player1side;
-	protected ArrayList<BoardObject> player2side;
-	protected ArrayList<Card> player1graveyard;
-	protected ArrayList<Card> player2graveyard;
-	public ArrayList<Card> banished;
-	public LinkedList<Event> eventlist;
+	protected List<BoardObject> player1side;
+	protected List<BoardObject> player2side;
+	protected List<Card> player1graveyard;
+	protected List<Card> player2graveyard;
+	public List<Card> banished;
+	public List<Event> eventlist;
 
 	String output = "";
 	List<String> playerActions;
@@ -50,8 +50,8 @@ public class Board {
 		return team == 1 ? player1 : player2;
 	}
 
-	public ArrayList<Card> getTargetableCards() {
-		ArrayList<Card> ret = new ArrayList<Card>();
+	public List<Card> getTargetableCards() {
+		List<Card> ret = new ArrayList<Card>();
 		ret.addAll(this.player1side);
 		ret.addAll(this.player2side);
 		ret.addAll(this.player1.hand.cards);
@@ -59,8 +59,8 @@ public class Board {
 		return ret;
 	}
 
-	public LinkedList<Card> getTargetableCards(Target t) {
-		LinkedList<Card> list = new LinkedList<Card>();
+	public List<Card> getTargetableCards(Target t) {
+		List<Card> list = new LinkedList<Card>();
 		if (t == null) {
 			return list;
 		}
@@ -72,8 +72,8 @@ public class Board {
 		return list;
 	}
 
-	public ArrayList<Card> getCards() {
-		ArrayList<Card> ret = new ArrayList<Card>();
+	public List<Card> getCards() {
+		List<Card> ret = new ArrayList<Card>();
 		ret.addAll(this.getBoardObjects());
 		ret.addAll(this.player1.hand.cards);
 		ret.addAll(this.player1.deck.cards);
@@ -91,31 +91,39 @@ public class Board {
 	}
 
 	// i don't even know what this is
-	public ArrayList<Card> getCollection(int team, CardStatus status) {
+	public List<Card> getCollection(int team, CardStatus status) {
 		switch (status) {
 		case HAND:
 			return this.getPlayer(team).hand.cards;
 		case BOARD:
-			ArrayList<Card> cards = new ArrayList<Card>();
+			List<Card> cards = new ArrayList<Card>();
 			cards.addAll(this.getBoardObjects(team)); // gottem
 			return cards;
 		case DECK:
 			return this.getPlayer(team).deck.cards;
 		case GRAVEYARD:
 			return this.getGraveyard(team);
+		case UNLEASHPOWER:
+			List<Card> cards2 = new ArrayList<Card>();
+			cards2.add(this.getPlayer(team).unleashPower);
+			return cards2;
+		case LEADER:
+			List<Card> cards3 = new ArrayList<Card>();
+			cards3.add(this.getPlayer(team).leader);
+			return cards3;
 		default:
 			return null;
 		}
 	}
 
-	public ArrayList<BoardObject> getBoardObjects() {
+	public List<BoardObject> getBoardObjects() {
 		ArrayList<BoardObject> ret = new ArrayList<BoardObject>();
 		ret.addAll(this.player1side);
 		ret.addAll(this.player2side);
 		return ret;
 	}
 
-	public ArrayList<BoardObject> getBoardObjects(int team) {
+	public List<BoardObject> getBoardObjects(int team) {
 		// i saw what i was trying to do here originally and it's bad
 		ArrayList<BoardObject> ret = new ArrayList<BoardObject>();
 		if (team > 0) {
@@ -125,7 +133,7 @@ public class Board {
 		}
 	}
 
-	public ArrayList<BoardObject> getBoardObjects(int team, boolean noleader, boolean nominion, boolean noamulet) {
+	public List<BoardObject> getBoardObjects(int team, boolean leader, boolean minion, boolean amulet) {
 		ArrayList<BoardObject> ret = new ArrayList<BoardObject>();
 		if (team >= 0) {
 			ret.addAll(this.player1side);
@@ -133,12 +141,10 @@ public class Board {
 		if (team <= 0) {
 			ret.addAll(this.player2side);
 		}
-		if (noleader) {
-			if (!ret.isEmpty() && ret.get(0) instanceof Leader) {
-				ret.remove(0); // gotem
-			}
+		if (leader && this.getPlayer(team).leader != null) {
+			ret.add(this.getPlayer(team).leader);
 		}
-		if (nominion) {
+		if (!minion) {
 			for (int i = 0; i < ret.size(); i++) {
 				if (ret.get(i) instanceof Minion) {
 					ret.remove(i); // don't worry about this
@@ -146,7 +152,7 @@ public class Board {
 				}
 			}
 		}
-		if (noamulet) {
+		if (!amulet) {
 			for (int i = 0; i < ret.size(); i++) {
 				if (ret.get(i) instanceof Amulet) {
 					ret.remove(i);
@@ -158,7 +164,7 @@ public class Board {
 	}
 
 	public BoardObject getBoardObject(int team, int position) {
-		ArrayList<BoardObject> relevantSide = team > 0 ? player1side : player2side;
+		List<BoardObject> relevantSide = team > 0 ? player1side : player2side;
 		if (position >= relevantSide.size()) {
 			return null;
 		}
@@ -166,7 +172,7 @@ public class Board {
 	}
 
 	public void addBoardObject(BoardObject bo, int team, int position) {
-		ArrayList<BoardObject> relevantSide = team > 0 ? player1side : player2side;
+		List<BoardObject> relevantSide = team > 0 ? player1side : player2side;
 		if (position > relevantSide.size()) {
 			position = relevantSide.size();
 		}
@@ -201,17 +207,13 @@ public class Board {
 
 	public void removeBoardObject(int team, int position) {
 		BoardObject bo;
-		ArrayList<BoardObject> relevantSide = team > 0 ? player1side : player2side;
+		List<BoardObject> relevantSide = team > 0 ? player1side : player2side;
 		if (position >= relevantSide.size()) {
 			return;
 		}
-		if (position == 0) { // leader dies
-
-		} else {
-			bo = relevantSide.remove(position);
-			for (int i = position; i < relevantSide.size(); i++) {
-				relevantSide.get(i).cardpos--;
-			}
+		bo = relevantSide.remove(position);
+		for (int i = position; i < relevantSide.size(); i++) {
+			relevantSide.get(i).cardpos--;
 		}
 	}
 
@@ -224,7 +226,7 @@ public class Board {
 		}
 	}
 
-	public ArrayList<Card> getGraveyard(int team) {
+	public List<Card> getGraveyard(int team) {
 		if (team == 1) {
 			return this.player1graveyard;
 		} else {
@@ -245,15 +247,15 @@ public class Board {
 		return ret;
 	}
 
-	public LinkedList<Event> resolveAll() {
+	public List<Event> resolveAll() {
 		return this.resolveAll(this.eventlist, false);
 	}
 
 	// Only used by server, i.e. isServer == true
-	public LinkedList<Event> resolveAll(LinkedList<Event> eventlist, boolean loopprotection) {
+	public List<Event> resolveAll(List<Event> eventlist, boolean loopprotection) {
 		LinkedList<Event> l = new LinkedList<Event>();
 		while (!eventlist.isEmpty()) {
-			Event e = eventlist.removeFirst();
+			Event e = eventlist.remove(0);
 			l.add(e);
 			if (e.conditions()) {
 				String eventstring = e.toString();
@@ -337,11 +339,11 @@ public class Board {
 	}
 
 	public void AIThink() {
-		for (int i = 1; i < this.getBoardObjects(this.localteam * -1).size(); i++) {
+		for (int i = 0; i < this.getBoardObjects(this.localteam * -1).size(); i++) {
 			BoardObject bo = this.getBoardObject(this.localteam * -1, i);
 			if (bo instanceof Minion) {
 
-				ArrayList<Minion> targets = ((Minion) bo).getAttackableTargets();
+				List<Minion> targets = ((Minion) bo).getAttackableTargets();
 				if (targets.get(0) instanceof Leader) {
 					// smorc
 					this.playerOrderAttack((Minion) bo, targets.get(0));
@@ -363,7 +365,7 @@ public class Board {
 					for (Target t : c.getBattlecryTargets()) {
 						t.fillRandomTargets();
 					}
-					int randomind = (int) (Math.random() * (this.getBoardObjects(this.localteam * -1).size() - 1)) + 1;
+					int randomind = (int) (Math.random() * (this.getBoardObjects(this.localteam * -1).size()));
 					this.playerPlayCard(this.getPlayer(this.localteam * -1), c, randomind);
 					tempmana -= c.finalStatEffects.getStat(EffectStats.COST);
 				}

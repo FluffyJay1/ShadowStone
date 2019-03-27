@@ -94,7 +94,7 @@ public class ServerGameThread extends Thread {
 					-8 - this.decks[(team - 1) / -2].craft.ordinal());
 			this.b.eventlist.add(new EventCreateCard(this.b, up, team, CardStatus.UNLEASHPOWER, 0));
 			// TODO change leader
-			this.b.eventlist.add(new EventCreateCard(this.b, new Rowen(this.b), team, CardStatus.BOARD, 0));
+			this.b.eventlist.add(new EventCreateCard(this.b, new Rowen(this.b), team, CardStatus.LEADER, 0));
 		}
 		this.b.eventlist.add(new EventDraw(this.b.player1, 3));
 		this.b.eventlist.add(new EventDraw(this.b.player2, 3));

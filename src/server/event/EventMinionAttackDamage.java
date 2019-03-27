@@ -1,15 +1,10 @@
 package server.event;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.card.Card;
-import server.card.Leader;
-import server.card.Minion;
-import server.card.Target;
-import server.card.effect.EffectStats;
+import server.*;
+import server.card.*;
+import server.card.effect.*;
 
 public class EventMinionAttackDamage extends Event {
 	// damage phase of attack
@@ -23,7 +18,7 @@ public class EventMinionAttackDamage extends Event {
 	}
 
 	@Override
-	public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		ArrayList<Minion> minions = new ArrayList<Minion>();
 		minions.add(this.m1);
 		minions.add(this.m2);

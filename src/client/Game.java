@@ -2,24 +2,30 @@ package client;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.newdawn.slick.*;
+import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.font.effects.*;
-import org.newdawn.slick.state.*;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.font.effects.ColorEffect;
+import org.newdawn.slick.font.effects.OutlineEffect;
+import org.newdawn.slick.state.StateBasedGame;
 
-import client.states.*;
-import server.card.cardpack.*;
+import client.states.StateDeckbuild;
+import client.states.StateGame;
+import client.states.StateMenu;
+import server.card.cardpack.ConstructedDeck;
 
 public class Game extends StateBasedGame {
 	public static int STATE_MENU = 0;
 	public static int STATE_GAME = 1;
 	public static int STATE_HELP = 2;
 	public static int STATE_DECKBUILD = 3;
-	public static final int WINDOW_WIDTH = 1920;
-	public static final int WINDOW_HEIGHT = 1080;
 	public static final int SERVER_PORT = 9091;
 
 	public static final String STRING_START = "\u0fd5", STRING_END = "\u0fd6", BLOCK_END = "\u0fd7";
@@ -29,7 +35,7 @@ public class Game extends StateBasedGame {
 
 	public static void main(String[] args) throws SlickException {
 		AppGameContainer app = new AppGameContainer(new Game("ShadowStone"));
-		app.setDisplayMode(WINDOW_WIDTH, WINDOW_HEIGHT, false);
+		app.setDisplayMode(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT, false);
 		// app.setTargetFrameRate(15);
 		app.start();
 

@@ -5,21 +5,30 @@ import org.newdawn.slick.geom.Vector2f;
 
 public class UIBox extends UIElement {
 
-	private Vector2f dim = new Vector2f();
+	private Vector2f dim = new Vector2f(), originalDim = new Vector2f();
 
 	public UIBox(UI ui, Vector2f pos, Vector2f dim) {
 		super(ui, pos);
 		this.dim.set(dim);
+		this.originalDim.set(dim);
 	}
 
 	public UIBox(UI ui, Vector2f pos, Vector2f dim, String imagepath) {
 		super(ui, pos, imagepath);
 		this.dim.set(dim);
+		this.originalDim.set(dim);
 	}
 
 	public UIBox(UI ui, Vector2f pos, Vector2f dim, Animation animation) {
 		super(ui, pos, animation);
 		this.dim.set(dim);
+		this.originalDim.set(dim);
+	}
+
+	@Override
+	public void setScale(double scale) {
+		super.setScale(scale);
+		this.dim.set(this.originalDim.copy().scale((float) scale));
 	}
 
 	@Override
@@ -38,7 +47,8 @@ public class UIBox extends UIElement {
 	}
 
 	public void setDim(Vector2f dim) {
-		this.dim.set(dim);
+		this.originalDim.set(dim);
+		this.setScale(1);
 	}
 
 	@Override

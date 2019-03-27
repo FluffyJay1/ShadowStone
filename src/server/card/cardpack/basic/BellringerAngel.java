@@ -1,12 +1,10 @@
 package server.card.cardpack.basic;
 
-import java.util.LinkedList;
+import java.util.*;
 
 import client.tooltip.*;
-import server.Board;
-import server.card.CardStatus;
-import server.card.ClassCraft;
-import server.card.Minion;
+import server.*;
+import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 
@@ -24,7 +22,7 @@ public class BellringerAngel extends Minion {
 			public EventLastWords lastWords() {
 				EventLastWords lw = new EventLastWords(this) {
 					@Override
-					public void resolve(LinkedList<Event> eventlist, boolean loopprotection) {
+					public void resolve(List<Event> eventlist, boolean loopprotection) {
 						eventlist.add(new EventDraw(this.effect.owner.board.getPlayer(this.effect.owner.team), 1));
 					}
 				};
