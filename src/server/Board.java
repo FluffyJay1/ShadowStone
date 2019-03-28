@@ -165,7 +165,7 @@ public class Board {
 
 	public BoardObject getBoardObject(int team, int position) {
 		List<BoardObject> relevantSide = team > 0 ? player1side : player2side;
-		if (position >= relevantSide.size()) {
+		if (position >= relevantSide.size() || position < 0) {
 			return null;
 		}
 		return relevantSide.get(position);

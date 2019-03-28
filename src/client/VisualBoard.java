@@ -107,7 +107,8 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 			if (currentEvent != null && currentEvent.conditions()) {
 				LinkedList<Event> lmao = new LinkedList<Event>();
 				currentEvent.resolve(lmao, false);
-				// TODO use each card's respective eventaniation for these events
+				// TODO use each card's respective eventaniation for these
+				// events
 				// e.g. tiny throwing a rock for his attack
 				if (currentEvent instanceof EventMinionAttack) {
 					EventAnimation anim = new EventAnimationMinionAttack();
@@ -193,8 +194,8 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 						this.currentAnimations.add(anim);
 					}
 				} else if (currentEvent instanceof EventGameEnd) {
-					EventAnimation anim = new EventAnimationGameEnd();
-					anim.init(currentEvent);
+					EventAnimationBoard anim = new EventAnimationGameEnd();
+					anim.init(currentEvent, this.uiBoard);
 					this.currentAnimations.add(anim);
 				}
 			}
@@ -211,9 +212,10 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 	public void mouseDragged(int oldx, int oldy, int newx, int newy) {
 		// TODO Auto-generated method stub
 		// this.ui.mouseDragged(oldx, oldy, newx, newy);
-//		if (this.draggingCard != null) {
-//			this.draggingCard.targetpos.add(new Vector2f(newx, newy).sub(new Vector2f(oldx, oldy)));
-//		}
+		// if (this.draggingCard != null) {
+		// this.draggingCard.targetpos.add(new Vector2f(newx, newy).sub(new
+		// Vector2f(oldx, oldy)));
+		// }
 	}
 
 	@Override

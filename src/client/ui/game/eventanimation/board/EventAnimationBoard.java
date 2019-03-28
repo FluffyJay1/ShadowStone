@@ -16,6 +16,16 @@ public abstract class EventAnimationBoard extends EventAnimation {
 		super(duration);
 	}
 
+	@Override
+	public void init(Event event) {
+		try {
+			throw new Exception("lmao don't do this");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public void init(Event event, UIBoard uiboard) {
 		this.uiboard = uiboard;
 		super.init(event);

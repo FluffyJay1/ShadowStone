@@ -33,7 +33,7 @@ public class WoodOfBrambles extends Amulet {
 							@Override
 							public void resolveTargets() {
 								for (BoardObject b : this.getCreator().owner.board
-										.getBoardObjects(this.getCreator().owner.team, true, false, true)) {
+										.getBoardObjects(this.getCreator().owner.team, false, true, false)) {
 									this.setTarget(b);
 								}
 							}

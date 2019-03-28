@@ -132,27 +132,23 @@ public class UIBoard extends UIBox {
 					// dont bother understanding it lol
 					// if there's a bug then god have mercy
 					c.setPos(
-							new Vector2f(
-									(float) (((c.getCard().cardpos)
-											- (this.b.getPlayer(c.getCard().team).hand.cards.size()) / 2.)
-											* (c.getCard().team == this.b.localteam ? (this.expandHand
-													? (HAND_X_SCALE_EXPAND_LOCAL
-															+ this.b.getPlayer(c.getCard().team).hand.cards.size()
-																	* 0.02)
-													: HAND_X_SCALE_LOCAL) : HAND_X_SCALE_ENEMY)
-											/ this.b.getPlayer(c.getCard().team).hand.cards.size()
-											+ (c.getCard().team == this.b.localteam ? (this.expandHand
-													? (HAND_X_EXPAND_LOCAL
-															- this.b.getPlayer(c.getCard().team).hand.cards.size()
-																	* 0.01)
-													: HAND_X_LOCAL) : HAND_X_ENEMY)),
+							new Vector2f((float) (((c.getCard().cardpos)
+									- (this.b.getPlayer(c.getCard().team).hand.cards.size())
+											/ 2.)
+									* (c.getCard().team == this.b.localteam ? (this.expandHand
+											? (HAND_X_SCALE_EXPAND_LOCAL
+													+ this.b.getPlayer(c.getCard().team).hand.cards.size() * 0.02)
+											: HAND_X_SCALE_LOCAL) : HAND_X_SCALE_ENEMY)
+									/ this.b.getPlayer(c.getCard().team).hand.cards.size()
+									+ (c.getCard().team == this.b.localteam ? (this.expandHand
+											? (HAND_X_EXPAND_LOCAL
+													- this.b.getPlayer(c.getCard().team).hand.cards.size() * 0.01)
+											: HAND_X_LOCAL) : HAND_X_ENEMY)),
 									(float) (c.getCard().team == this.b.localteam
-											? (this.expandHand ? HAND_Y_EXPAND_LOCAL : HAND_Y_LOCAL)
-											: HAND_Y_ENEMY)),
+											? (this.expandHand ? HAND_Y_EXPAND_LOCAL : HAND_Y_LOCAL) : HAND_Y_ENEMY)),
 							0.99);
 					c.setScale(c.getCard().team == this.b.localteam
-							? (this.expandHand ? CARD_SCALE_HAND_EXPAND : CARD_SCALE_HAND)
-							: CARD_SCALE_HAND);
+							? (this.expandHand ? CARD_SCALE_HAND_EXPAND : CARD_SCALE_HAND) : CARD_SCALE_HAND);
 				}
 				break;
 			default:
@@ -272,7 +268,7 @@ public class UIBoard extends UIBox {
 
 	public UICard cardAtPos(Vector2f pos) {
 		for (UICard c : this.cards) {
-			if (c.pointIsInHitbox(pos)) {
+			if (!c.getHide() && c.pointIsInHitbox(pos)) {
 				return c;
 			}
 		}
@@ -381,7 +377,7 @@ public class UIBoard extends UIBox {
 						(Minion) c.getCard().realCard);
 				c.setScale(CARD_SCALE_BOARD);
 			}
-			for (UICard uib : this.getBoardObjects(this.b.localteam * -1)) {
+			for (UICard uib : this.getBoardObjects(this.b.localteam * -1, true, true, false)) {
 				if (uib.getCard() instanceof Minion && ((Minion) this.attackingMinion.getCard().realCard)
 						.getAttackableTargets().contains(uib.getCard().realCard)) {
 					uib.setScale(CARD_SCALE_BOARD);
@@ -398,6 +394,10 @@ public class UIBoard extends UIBox {
 				}
 			}
 			this.draggingUnleash = false;
+			System.out.println(c);
+			System.out.println(c.getCard());
+			System.out.println(c.getCard().team);
+			System.out.println(this.b.getPlayer(this.b.localteam).canUnleashCard(c.getCard()));
 			if (c != null && c.getCard() instanceof Minion && c.getCard().team == this.b.localteam
 					&& this.b.getPlayer(this.b.localteam).canUnleashCard(c.getCard())) {
 				this.selectUnleashingMinion(c);
@@ -487,7 +487,8 @@ public class UIBoard extends UIBox {
 				return true;
 			} else {
 				this.animateBattlecryTargets(false);
-				// this.playingCard.scale = this.expandHand ? CARD_SCALE_HAND_EXPAND :
+				// this.playingCard.scale = this.expandHand ?
+				// CARD_SCALE_HAND_EXPAND :
 				// CARD_SCALE_HAND;
 				this.playingCard.getCard().resetBattlecryTargets();
 				this.targetedCards.clear();
