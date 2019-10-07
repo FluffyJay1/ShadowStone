@@ -12,7 +12,7 @@ public class EventMinionAttackDamage extends Event {
 	public Minion m1, m2;
 
 	public EventMinionAttackDamage(Minion m1, Minion m2) {
-		super(ID);
+		super(ID, false);
 		this.m1 = m1;
 		this.m2 = m2;
 	}
@@ -41,6 +41,11 @@ public class EventMinionAttackDamage extends Event {
 			t.setTargets(baned);
 			eventlist.add(new EventDestroy(t));
 		}
+	}
+
+	@Override
+	public void undo() {
+		// no state change
 	}
 
 	@Override

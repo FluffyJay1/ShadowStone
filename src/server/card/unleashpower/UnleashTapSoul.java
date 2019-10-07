@@ -2,8 +2,6 @@ package server.card.unleashpower;
 
 import java.util.*;
 
-import org.newdawn.slick.geom.*;
-
 import client.tooltip.*;
 import server.*;
 import server.card.*;
@@ -20,7 +18,7 @@ public class UnleashTapSoul extends UnleashPower {
 	Effect vengeanceBonus;
 
 	public UnleashTapSoul(Board b) {
-		super(b, TOOLTIP, new Vector2f(430, 535), 0.12);
+		super(b, TOOLTIP);
 		this.vengeanceBonus = new Effect(0, "When Vengeance is active, this can be used once more per turn.") {
 			boolean vengeance;
 
@@ -29,7 +27,7 @@ public class UnleashTapSoul extends UnleashPower {
 				if (e instanceof EventDamage || e instanceof EventRestore || e instanceof EventAddEffect) {
 					if (!vengeance && p.vengeance()) {
 						vengeance = true;
-						EventFlag ef = new EventFlag(this) {
+						EventFlag ef = new EventFlag(this, false) {
 							@Override
 							public void resolve(List<Event> eventlist, boolean loopprotection) {
 								EffectStatChange esc = new EffectStatChange("");
@@ -41,7 +39,7 @@ public class UnleashTapSoul extends UnleashPower {
 					}
 					if (vengeance && !p.vengeance()) {
 						vengeance = false;
-						EventFlag ef = new EventFlag(this) {
+						EventFlag ef = new EventFlag(this, false) {
 							@Override
 							public void resolve(List<Event> eventlist, boolean loopprotection) {
 								EffectStatChange esc = new EffectStatChange("");

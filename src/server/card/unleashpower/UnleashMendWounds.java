@@ -1,17 +1,11 @@
 package server.card.unleashpower;
 
-import java.util.LinkedList;
+import java.util.*;
 
-import org.newdawn.slick.geom.Vector2f;
-
-import client.tooltip.Tooltip;
-import client.tooltip.TooltipUnleashPower;
-import server.Board;
-import server.card.ClassCraft;
-import server.card.Minion;
-import server.card.effect.Effect;
-import server.card.effect.EffectStatChange;
-import server.card.effect.EffectStats;
+import client.tooltip.*;
+import server.*;
+import server.card.*;
+import server.card.effect.*;
 import server.event.*;
 
 public class UnleashMendWounds extends UnleashPower {
@@ -22,7 +16,7 @@ public class UnleashMendWounds extends UnleashPower {
 			"res/unleashpower/mendwounds.png", CRAFT, 2, ID, Tooltip.UNLEASH);
 
 	public UnleashMendWounds(Board b) {
-		super(b, TOOLTIP, new Vector2f(665, 535), 0.6);
+		super(b, TOOLTIP);
 	}
 
 	@Override

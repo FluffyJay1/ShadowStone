@@ -14,6 +14,7 @@ public class StateGame extends BasicGameState {
 	UI ui;
 	UIBoard uiBoard;
 	ServerGameThread game;
+	DataStream dslocal, dsserver;
 
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -24,9 +25,12 @@ public class StateGame extends BasicGameState {
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		this.ui = new UI();
 		arg0.getInput().addMouseListener(this.ui);
-		this.uiBoard = new UIBoard(this.ui, 1);
+		this.dslocal = new DataStream();
+		this.dsserver = new DataStream();
+		DataStream.pair(dslocal, dsserver);
+		this.uiBoard = new UIBoard(this.ui, 1, this.dslocal);
 		this.ui.addUIElementParent(this.uiBoard);
-		game = new ServerGameThread(this.uiBoard.b);
+		game = new ServerGameThread(this.dsserver, false, this.uiBoard.b);
 		game.setDecklist(1, tempdeck);
 		game.setDecklist(-1, Game.selectRandom(ConstructedDeck.decks));
 		game.start();

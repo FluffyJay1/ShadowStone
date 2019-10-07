@@ -1,5 +1,7 @@
 package network;
 
+import java.io.*;
+import java.net.*;
 import java.util.*;
 
 import client.*;
@@ -19,38 +21,48 @@ import server.playeraction.*;
  *
  */
 public class ServerGameThread extends Thread {
-	DataStreamServer dstream;
+	DataStream dsexternal, dslocal;
+	boolean pvp;
+	AI ai;
 	Board b;
 	VisualBoard localBoard;
 	ConstructedDeck[] decks;
 
-	// if playing vs ai
-	public ServerGameThread(VisualBoard localBoard) {
+	public ServerGameThread(DataStream dsclient, boolean pvp, VisualBoard localBoard) {
 		this.b = new Board();
-		this.b.ai = true;
 		this.localBoard = localBoard;
+		this.dslocal = dsclient;
+		this.pvp = pvp;
 		this.b.localteam = localBoard.localteam;
 		this.decks = new ConstructedDeck[2];
 	}
 
-	public ServerGameThread(DataStreamServer dstream, VisualBoard localBoard) {
-		this.dstream = dstream;
-		this.b = new Board();
-		this.localBoard = localBoard;
-		this.b.localteam = localBoard.localteam;
-		this.decks = new ConstructedDeck[2];
-	}
-
+	// TODO REWORK GAME LOGIC INTO ITS OWN CLASS
 	@Override
 	public void run() {
+		if (this.pvp) { // if pvp, wait for a player to connect
+			try {
+				ServerSocket serverSocket = new ServerSocket(Game.SERVER_PORT);
+				this.dsexternal = new DataStream(serverSocket.accept());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			DataStream dsai = new DataStream();
+			this.dsexternal = new DataStream();
+			DataStream.pair(dsai, this.dsexternal);
+			this.ai = new AI(dsai, this.b.localteam * -1, 0);
+			this.ai.start();
+		}
 		// accept decklists
 		while (this.decks[0] == null && this.decks[1] == null) {
-			if (this.dstream.ready()) {
-				MessageType mtype = this.dstream.receive();
+			if (this.dsexternal.ready()) {
+				MessageType mtype = this.dsexternal.receive();
 				if (mtype == MessageType.DECK) {
-					this.setDecklist(this.localBoard.localteam * -1, this.dstream.readDecklist());
+					this.setDecklist(this.localBoard.localteam * -1, this.dsexternal.readDecklist());
 				} else {
-					this.dstream.discardMessage();
+					this.dsexternal.discardMessage();
 				}
 			}
 		}
@@ -58,25 +70,15 @@ public class ServerGameThread extends Thread {
 		// TODO mulligan phase
 		// game loop
 		while (this.b.winner == 0) {
-			while (!this.b.ai && this.dstream.ready()) {
-				MessageType mtype = this.dstream.receive();
-				switch (mtype) {
-				case PLAYERACTION:
-					if (this.b.currentplayerturn == this.localBoard.localteam * -1) {
-						this.b.executePlayerAction(new StringTokenizer(this.dstream.readPlayerAction().toString()));
-						this.sendEvents();
-					}
-					break;
-				default:
-					this.dstream.discardMessage();
-					break;
-				}
-			}
-			String action = this.localBoard.realBoard.retrievePlayerAction();
-			while (action != null) {
-				this.b.executePlayerAction(new StringTokenizer(action));
-				this.sendEvents();
-				action = this.localBoard.realBoard.retrievePlayerAction();
+			this.handleGameInput(this.dsexternal, this.localBoard.localteam * -1);
+			this.handleGameInput(this.dslocal, this.localBoard.localteam);
+		}
+		if (this.dsexternal.socket != null) { // aka if pvp
+			try {
+				this.dsexternal.socket.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
@@ -96,15 +98,34 @@ public class ServerGameThread extends Thread {
 			// TODO change leader
 			this.b.eventlist.add(new EventCreateCard(this.b, new Rowen(this.b), team, CardStatus.LEADER, 0));
 		}
-		this.b.eventlist.add(new EventDraw(this.b.player1, 3));
-		this.b.eventlist.add(new EventDraw(this.b.player2, 3));
+		EventDraw.drawMultiple(this.b.eventlist, false, this.b.player1, 3);
+		EventDraw.drawMultiple(this.b.eventlist, false, this.b.player2, 3);
 		this.b.resolveAll();
 		this.b.eventlist.add(new EventTurnStart(this.b.getPlayer(1)));
 		this.b.resolveAll();
-		if (this.b.ai && this.localBoard.localteam != this.b.currentplayerturn) {
-			this.b.AIThink();
-		}
 		this.sendEvents();
+	}
+
+	private void handleGameInput(DataStream ds, int team) {
+		while (ds.ready()) {
+			MessageType mtype = ds.receive();
+			switch (mtype) {
+			case PLAYERACTION:
+				System.out.println("received player action");
+				if (this.b.currentPlayerTurn == team) {
+					String action = ds.readPlayerAction();
+					System.out.println("action: " + action);
+					this.b.executePlayerAction(new StringTokenizer(action));
+					this.sendEvents();
+				} else {
+					ds.discardMessage();
+				}
+				break;
+			default:
+				ds.discardMessage();
+				break;
+			}
+		}
 	}
 
 	public void sendEvents() {
@@ -115,25 +136,26 @@ public class ServerGameThread extends Thread {
 
 	public void sendEvent(int team, String eventstring) {
 		if (team == this.localBoard.localteam) {
-			this.localBoard.parseEventString(eventstring);
-		} else if (!this.b.ai) {
-			this.dstream.sendEvent(eventstring);
+			// this.localBoard.parseEventString(eventstring);
+			this.dslocal.sendEvent(eventstring);
+		} else {
+			this.dsexternal.sendEvent(eventstring);
 		}
 	}
 
 	public void sendPlayerAction(int team, PlayerAction action) {
 		if (team == this.localBoard.localteam) {
 			// display something idk
-		} else if (!this.b.ai) {
-			this.dstream.sendPlayerAction(action);
+		} else {
+			this.dsexternal.sendPlayerAction(action.toString());
 		}
 	}
 
 	public void sendDecklist(int team, ConstructedDeck deck) {
 		if (team == this.localBoard.localteam) {
 			// display something idk
-		} else if (!this.b.ai) {
-			this.dstream.sendDecklist(deck);
+		} else {
+			this.dsexternal.sendDecklist(deck);
 		}
 	}
 

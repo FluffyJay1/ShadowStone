@@ -10,19 +10,22 @@ public class EventRemoveEffect extends Event {
 	public static final int ID = 22;
 	public Card c;
 	Effect e;
+	private int prevPos;
+	private int oldHealth;
 
 	public EventRemoveEffect(Card c, Effect e) {
-		super(ID);
+		super(ID, false);
 		this.c = c;
 		this.e = e;
 	}
 
 	@Override
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
-
+		this.prevPos = this.e.pos;
 		this.c.removeEffect(this.e);
 		if (c instanceof Minion) {
 			Minion m = ((Minion) c);
+			this.oldHealth = m.health;
 			if (c.finalStatEffects.getStat(EffectStats.HEALTH) < m.health) {
 				m.health = m.finalStatEffects.getStat(EffectStats.HEALTH);
 			}
@@ -35,6 +38,15 @@ public class EventRemoveEffect extends Event {
 			eventlist.add(new EventDestroy(c));
 		}
 
+	}
+
+	@Override
+	public void undo() {
+		this.c.addEffect(this.prevPos, this.e);
+		if (this.c instanceof Minion) {
+			Minion m = (Minion) this.c;
+			m.health = this.oldHealth;
+		}
 	}
 
 	@Override

@@ -22,7 +22,7 @@ public class EffectLastWordsSummon extends Effect {
 	public EventLastWords lastWords() {
 		Minion m = (Minion) Card.createFromConstructor(this.owner.board, this.cardid);
 		int recentcardpos = this.owner.cardpos;
-		EventLastWords elw = new EventLastWords(this) {
+		EventLastWords elw = new EventLastWords(this, false) {
 			@Override
 			public void resolve(List<Event> eventlist, boolean loopprotection) {
 				eventlist.add(new EventCreateCard(this.effect.owner.board, m, team, CardStatus.BOARD, recentcardpos));
@@ -44,10 +44,5 @@ public class EffectLastWordsSummon extends Effect {
 		int cardid = Integer.parseInt(st.nextToken());
 		int team = Integer.parseInt(st.nextToken());
 		return new EffectLastWordsSummon(description, cardid, team);
-	}
-
-	@Override
-	public EffectLastWordsSummon clone() {
-		return new EffectLastWordsSummon(this.description, this.cardid, this.team);
 	}
 }

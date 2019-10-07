@@ -1,10 +1,9 @@
 package server.card.effect;
 
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.card.*;
-
-public class EffectStats { // this is literally just a struct
+public class EffectStats implements Cloneable { // this is literally just a
+												// struct
 	public static final int NUM_STATS = 11;
 	// what's an enum
 	public static final int COST = 0, ATTACK = 1, MAGIC = 2, HEALTH = 3, ATTACKS_PER_TURN = 4, STORM = 5, RUSH = 6,
@@ -41,6 +40,14 @@ public class EffectStats { // this is literally just a struct
 		}
 	}
 
+	@Override
+	public EffectStats clone() {
+		EffectStats e = new EffectStats();
+		e.copyStats(this);
+		return e;
+	}
+
+	@Override
 	public String toString() {
 		String s = "";
 		for (int i = 0; i < NUM_STATS; i++) {

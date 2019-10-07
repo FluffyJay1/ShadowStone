@@ -13,9 +13,11 @@ public class EventCreateCard extends Event {
 	Board b;
 	CardStatus status;
 	int team, cardpos;
+	private UnleashPower prevUP;
+	private Leader prevLeader;
 
 	public EventCreateCard(Board b, Card c, int team, CardStatus status, int cardpos) {
-		super(ID);
+		super(ID, false);
 		this.c = c;
 		this.b = b;
 		this.team = team;
@@ -58,10 +60,12 @@ public class EventCreateCard extends Event {
 			relevantDeck.updatePositions();
 			break;
 		case UNLEASHPOWER:
+			this.prevUP = this.b.getPlayer(this.team).unleashPower;
 			this.b.getPlayer(this.team).unleashPower = (UnleashPower) this.c;
 			((UnleashPower) this.c).p = this.b.getPlayer(this.team);
 			break;
 		case LEADER:
+			this.prevLeader = this.b.getPlayer(this.team).leader;
 			this.b.getPlayer(this.team).leader = (Leader) this.c;
 		default:
 			break;
@@ -69,6 +73,39 @@ public class EventCreateCard extends Event {
 		this.c.status = this.status;
 		if (this.b.isClient) {
 			this.b.cardsCreated.add(this.c);
+		}
+	}
+
+	@Override
+	public void undo() {
+		CardStatus status = this.c.status;
+		switch (status) {
+		case HAND:
+			Hand relevantHand = this.b.getPlayer(this.team).hand;
+			if (relevantHand.cards.size() >= relevantHand.maxsize) {
+				// just do nothing, shouldn't try to unmill
+			} else {
+				relevantHand.cards.remove(this.c);
+				relevantHand.updatePositions();
+			}
+			break;
+		case BOARD:
+			if (this.c instanceof BoardObject) {
+				this.b.removeBoardObject((BoardObject) this.c);
+			}
+			break;
+		case DECK:
+			Deck relevantDeck = this.b.getPlayer(this.team).deck;
+			relevantDeck.cards.remove(this.c);
+			relevantDeck.updatePositions();
+			break;
+		case UNLEASHPOWER:
+			this.b.getPlayer(this.team).unleashPower = this.prevUP;
+			break;
+		case LEADER:
+			this.b.getPlayer(this.team).leader = this.prevLeader;
+		default:
+			break;
 		}
 	}
 

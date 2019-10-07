@@ -1,20 +1,12 @@
 package server.card.unleashpower;
 
-import java.util.LinkedList;
+import java.util.*;
 
-import org.newdawn.slick.geom.Vector2f;
-
-import client.tooltip.Tooltip;
-import client.tooltip.TooltipUnleashPower;
-import server.Board;
-import server.card.ClassCraft;
-import server.card.Minion;
-import server.card.effect.Effect;
-import server.card.effect.EffectStatChange;
-import server.card.effect.EffectStats;
-import server.event.Event;
-import server.event.EventAddEffect;
-import server.event.EventUnleash;
+import client.tooltip.*;
+import server.*;
+import server.card.*;
+import server.card.effect.*;
+import server.event.*;
 
 public class UnleashImbueMagic extends UnleashPower {
 	public static final int ID = -11;
@@ -24,7 +16,7 @@ public class UnleashImbueMagic extends UnleashPower {
 			ID, Tooltip.UNLEASH);
 
 	public UnleashImbueMagic(Board b) {
-		super(b, TOOLTIP, new Vector2f(393, 733), 0.3);
+		super(b, TOOLTIP);
 	}
 
 	@Override

@@ -12,32 +12,31 @@ public class PlayCardAction extends PlayerAction {
 	public Player p;
 	public Card c;
 	public int pos;
+	String battlecryTargets;
 
-	public PlayCardAction(Player p, Card c, int pos) {
+	public PlayCardAction(Player p, Card c, int pos, String battlecryTargets) {
 		super(ID);
 
 		this.p = p;
 		this.c = c;
 		this.pos = pos;
-		// TODO Auto-generated constructor stub
+		this.battlecryTargets = battlecryTargets;
 	}
 
 	// remember to set battlecry targets
 	@Override
-	public boolean perform(Board b) {
-		if (!p.canPlayCard(c)) { // just to be safe
-			return false;
+	public List<Event> perform(Board b) {
+		if (!this.p.canPlayCard(this.c)) { // just to be safe
+			return new LinkedList<Event>();
 		}
-
+		c.battlecryTargetsFromString(b, new StringTokenizer(this.battlecryTargets));
 		b.eventlist.add(new EventPlayCard(p, c, pos));
-		b.resolveAll();
-		return true;
+		return b.resolveAll();
 	}
 
 	@Override
 	public String toString() {
-		return this.ID + " " + this.p.team + " " + this.c.toReference() + " " + this.pos + " "
-				+ c.battlecryTargetsToString() + "\n"; // YEAHH
+		return this.ID + " " + this.p.team + " " + this.c.toReference() + this.pos + " " + this.battlecryTargets + "\n"; // YEAHH
 	}
 
 	public static PlayCardAction fromString(Board b, StringTokenizer st) {
@@ -45,7 +44,7 @@ public class PlayCardAction extends PlayerAction {
 		Card c = Card.fromReference(b, st);
 		int pos = Integer.parseInt(st.nextToken());
 		c.battlecryTargetsFromString(b, st);
-		return new PlayCardAction(p, c, pos);
+		return new PlayCardAction(p, c, pos, c.battlecryTargetsToString());
 	}
 
 }

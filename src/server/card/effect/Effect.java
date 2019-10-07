@@ -1,15 +1,14 @@
 package server.card.effect;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.lang.reflect.*;
+import java.util.*;
 
-import client.Game;
-import server.Board;
+import client.*;
+import server.*;
 import server.card.*;
 import server.event.*;
 
-public class Effect {
+public class Effect implements Cloneable {
 	public int id = 0, pos = 0;
 	public Card owner = null;
 	public String description;
@@ -56,6 +55,12 @@ public class Effect {
 				this.change.changeStat(i, e.change.stats[i]);
 			}
 		}
+	}
+
+	public EffectStatChange copyEffectStats() {
+		EffectStatChange ret = new EffectStatChange(this.description);
+		ret.applyEffectStats(this);
+		return ret;
 	}
 
 	public void resetStats() {
@@ -182,9 +187,10 @@ public class Effect {
 		return null;
 	}
 
+	@Override
 	public String toString() {
 		return this.id + " " + (this.owner == null ? "null " : this.owner.toReference()) + this.description
-				+ Game.STRING_END + " " + this.set.toString() + this.change.toString();
+				+ Game.STRING_END + " " + this.mute + " " + this.set.toString() + this.change.toString();
 	}
 
 	public static Effect fromString(Board b, StringTokenizer st) {
@@ -193,8 +199,10 @@ public class Effect {
 			Card owner = Card.fromReference(b, st);
 			String description = st.nextToken(Game.STRING_END).trim();
 			st.nextToken(" \n"); // THANKS STRING TOKENIZER
+			boolean mute = Boolean.parseBoolean(st.nextToken());
 			Effect ef = new Effect(0, description);
 			ef.owner = owner;
+			ef.mute = mute;
 			ef.set = EffectStats.fromString(st);
 			ef.change = EffectStats.fromString(st);
 			return ef;
@@ -212,15 +220,16 @@ public class Effect {
 		}
 	}
 
-	// override this shit
-	public Effect clone() {
-		Effect e = new Effect(this.id, this.description);
-		e.mute = this.mute;
-		e.basic = this.basic;
-		e.set.copyStats(this.set);
-		e.change.copyStats(this.change);
-		// TODO determine if i need to copy over battlecry targets and unleash
-		// targets
+	@Override
+	public Effect clone() throws CloneNotSupportedException {
+		Effect e = (Effect) super.clone(); // shallow copy
+		// e.mute = this.mute;
+		// e.basic = this.basic;
+		e.set = this.set.clone();
+		e.change = this.change.clone();
+		// TODO clone battlecry targets?
+		this.battlecryTargets = new LinkedList<Target>();
+		this.unleashTargets = new LinkedList<Target>();
 		return e;
 	}
 

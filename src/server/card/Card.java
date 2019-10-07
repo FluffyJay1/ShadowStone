@@ -1,36 +1,20 @@
 package server.card;
 
-import java.awt.Color;
 import java.lang.reflect.*;
 import java.util.*;
-import java.util.List;
 
-import org.newdawn.slick.*;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.geom.*;
-
-import client.Game;
 import client.tooltip.*;
 import client.ui.game.*;
 import server.*;
 import server.card.cardpack.*;
 import server.card.effect.*;
 import server.event.*;
-import server.event.Event;
 
-public class Card {
-	public static final Vector2f CARD_DIMENSIONS = new Vector2f(150, 180);
-	public static final double EPSILON = 0.0001;
-	public static final double NAME_FONT_SIZE = 30;
-	public static final double STAT_DEFAULT_SIZE = 30;
+public class Card implements Cloneable {
 	public Board board;
 	public boolean alive = true;
 	public int id, cardpos, team;
 	public TooltipCard tooltip;
-	public String imagepath;
-	double speed;
-	Image image;
 	public CardStatus status;
 	public ClassCraft craft;
 	public Card realCard; // for visual board
@@ -44,8 +28,6 @@ public class Card {
 	public Card(Board board, TooltipCard tooltip) {
 		this.board = board;
 		this.tooltip = tooltip;
-		this.imagepath = tooltip.imagepath;
-		this.speed = 0.999;
 		this.id = tooltip.id;
 		this.status = CardStatus.DECK;
 		this.craft = tooltip.craft;
@@ -57,74 +39,14 @@ public class Card {
 	 * }
 	 */
 
-	// TODO move all this draw garbage to the UICard
-	public void draw(Graphics g, Vector2f pos, double scale) {
-		if (this.image == null && this.imagepath != null) {
-			this.image = Game.getImage(tooltip.imagepath).getScaledCopy((int) CARD_DIMENSIONS.x,
-					(int) CARD_DIMENSIONS.y);
-		}
-		Image scaledCopy = this.image.getScaledCopy((float) scale);
-		g.drawImage(scaledCopy, (int) (pos.x - CARD_DIMENSIONS.x * scale / 2),
-				(int) (pos.y - CARD_DIMENSIONS.y * scale / 2));
-		switch (this.status) {
-		case BOARD:
-		case LEADER:
-			this.drawOnBoard(g, pos, scale);
-			break;
-		case HAND:
-			UnicodeFont font = Game.getFont("Verdana", (NAME_FONT_SIZE * scale), true, false);
-			// TODO: magic number below is space to display mana cost
-			if (font.getWidth(this.tooltip.name) > (CARD_DIMENSIONS.x - 20) * scale) {
-				font = Game.getFont("Verdana",
-						(NAME_FONT_SIZE * scale * (CARD_DIMENSIONS.x - 20) * scale / font.getWidth(this.tooltip.name)),
-						true, false);
-			}
-			font.drawString(pos.x - font.getWidth(this.tooltip.name) / 2, pos.y - CARD_DIMENSIONS.y * (float) scale / 2,
-					this.tooltip.name);
-			this.drawInHand(g, pos, scale);
-			break;
-		default:
-			break;
-		}
-	}
-
-	public void drawOnBoard(Graphics g, Vector2f pos, double scale) {
-
-	}
-
-	public void drawInHand(Graphics g, Vector2f pos, double scale) {
-		if (this.realCard != null && this.realCard.board.getPlayer(this.team).canPlayCard(this.realCard)
-				&& this.board.getPlayer(this.team).canPlayCard(this)) {
-			g.setColor(org.newdawn.slick.Color.cyan);
-			g.drawRect((float) (pos.x - CARD_DIMENSIONS.x * scale / 2), (float) (pos.y - CARD_DIMENSIONS.y * scale / 2),
-					(float) (CARD_DIMENSIONS.x * scale), (float) (CARD_DIMENSIONS.y * scale));
-			g.setColor(org.newdawn.slick.Color.white);
-		}
-		this.drawCostStat(g, pos, scale, this.finalStatEffects.getStat(EffectStats.COST),
-				this.finalBasicStatEffects.getStat(EffectStats.COST), new Vector2f(-0.5f, -0.5f),
-				new Vector2f(0.5f, 0.5f), STAT_DEFAULT_SIZE);
-	}
-
-	public void drawStatNumber(Graphics g, Vector2f pos, double scale, int stat, Vector2f relpos, Vector2f textoffset,
-			double fontsize, Color c) {
-		UnicodeFont font = Game.getFont("Verdana", fontsize * scale, true, false, c, Color.BLACK);
-		font.drawString(
-				pos.x + CARD_DIMENSIONS.x * relpos.x * (float) scale + font.getWidth("" + stat) * (textoffset.x - 0.5f),
-				pos.y + CARD_DIMENSIONS.y * relpos.y * (float) scale
-						+ font.getHeight("" + stat) * (textoffset.y - 0.5f),
-				"" + stat);
-	}
-
-	public void drawCostStat(Graphics g, Vector2f pos, double scale, int cost, int basecost, Vector2f relpos,
-			Vector2f textoffset, double fontsize) {
-		Color c = Color.white;
-		if (cost > basecost) {
-			c = Color.red;
-		}
-		if (cost < basecost) {
-			c = Color.green;
-		}
-		this.drawStatNumber(g, pos, scale, cost, relpos, textoffset, fontsize, c);
+	/**
+	 * Estimates a "power level" of a card, for an AI to use to evaluate board
+	 * state. Values should be in terms of equivalent mana worth.
+	 * 
+	 * @return the approximate mana worth of the card
+	 */
+	public double getValue() {
+		return this.finalBasicStatEffects.getStat(EffectStats.COST) + 1;
 	}
 
 	public List<Effect> getBasicEffects() {
@@ -146,22 +68,30 @@ public class Card {
 		return list;
 	}
 
-	public void addBasicEffect(Effect e) {
+	public void addBasicEffect(int pos, Effect e) {
 		e.basic = true;
-		e.pos = this.basicEffects.size();
+		e.pos = pos;
 		e.owner = this;
-		this.basicEffects.add(e);
+		this.basicEffects.add(pos, e);
 		this.updateBasicEffectPositions();
 		this.updateBasicEffectStats();
 	}
 
-	public void addEffect(Effect e) {
+	public void addBasicEffect(Effect e) {
+		this.addBasicEffect(this.basicEffects.size(), e);
+	}
+
+	public void addEffect(int pos, Effect e) {
 		e.basic = false;
-		e.pos = this.effects.size();
+		e.pos = pos;
 		e.owner = this;
-		this.effects.add(e);
+		this.effects.add(pos, e);
 		this.updateAdditionalEffectPositions();
 		this.updateFinalEffectStats();
+	}
+
+	public void addEffect(Effect e) {
+		this.addEffect(this.effects.size(), e);
 	}
 
 	public void removeEffect(Effect e) {
@@ -172,10 +102,13 @@ public class Card {
 		}
 	}
 
-	public void removeAdditionalEffects() {
+	public List<Effect> removeAdditionalEffects() {
+		List<Effect> ret = new LinkedList<Effect>();
 		while (!this.effects.isEmpty()) {
+			ret.add(this.effects.get(0));
 			this.removeEffect(this.effects.get(0));
 		}
+		return ret;
 	}
 
 	public void muteEffect(Effect e, boolean mute) {
@@ -263,13 +196,7 @@ public class Card {
 	}
 
 	public String battlecryTargetsToString() {
-		List<Target> list = this.getBattlecryTargets();
-		String ret = list.size() + " ";
-		for (Target t : list) {
-			ret += t.toString();
-		}
-		return ret;
-
+		return Target.listToString(this.getBattlecryTargets());
 	}
 
 	public void battlecryTargetsFromString(Board b, StringTokenizer st) {
@@ -290,13 +217,38 @@ public class Card {
 		return list;
 	}
 
+	// cloning a card ingame should be done as a create card + copy effect
+	// events
+	@Override
+	public Card clone() throws CloneNotSupportedException {
+		Card c = (Card) super.clone();
+		c.basicEffects = new LinkedList<Effect>();
+		for (Effect e : this.basicEffects) {
+			c.addBasicEffect(e.clone());
+		}
+		c.effects = new LinkedList<Effect>();
+		for (Effect e : this.effects) {
+			c.addEffect(e.clone());
+		}
+		return c;
+	}
+
 	public String cardPosToString() {
 		return this.status.toString() + " " + this.cardpos + " ";
 	}
 
+	// TODO make a corresponding fromString method
 	@Override
 	public String toString() {
-		return "card " + this.id + " " + this.cardPosToString();
+		String ret = this.id + " " + this.team + " " + this.cardPosToString() + this.basicEffects.size() + " ";
+		for (Effect e : this.basicEffects) {
+			ret += e.toString();
+		}
+		ret += this.effects.size() + " ";
+		for (Effect e : this.effects) {
+			ret += e.toString();
+		}
+		return ret;
 	}
 
 	public String toConstructorString() {
@@ -354,6 +306,5 @@ public class Card {
 		default:
 			return null;
 		}
-
 	}
 }

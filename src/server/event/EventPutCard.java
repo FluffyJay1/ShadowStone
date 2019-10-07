@@ -14,9 +14,16 @@ public class EventPutCard extends Event {
 	public List<Integer> pos; // pos == -1 means last
 	public CardStatus status;
 	int targetTeam;
+	private List<CardStatus> prevStatus;
+	private List<List<Effect>> prevEffects;
+	private List<Integer> prevPos;
+	private List<Integer> prevTeam;
+	private List<Integer> prevHealth;
+	private List<Integer> prevAttacks;
+	private List<Boolean> prevSick;
 
 	public EventPutCard(Player p, List<Card> c, CardStatus status, int team, List<Integer> pos) {
-		super(ID);
+		super(ID, false);
 		this.p = p;
 		this.c = new ArrayList<Card>();
 		this.c.addAll(c);
@@ -27,7 +34,7 @@ public class EventPutCard extends Event {
 	}
 
 	public EventPutCard(Player p, Card c, CardStatus status, int team, int pos) {
-		super(ID);
+		super(ID, false);
 		this.p = p;
 		this.c = new ArrayList<Card>();
 		this.c.add(c);
@@ -39,19 +46,32 @@ public class EventPutCard extends Event {
 
 	@Override
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
+		this.prevStatus = new LinkedList<CardStatus>();
+		this.prevEffects = new LinkedList<List<Effect>>();
+		this.prevPos = new LinkedList<Integer>();
+		this.prevTeam = new LinkedList<Integer>();
+		this.prevHealth = new LinkedList<Integer>();
+		this.prevAttacks = new LinkedList<Integer>();
+		this.prevSick = new LinkedList<Boolean>();
 		for (int i = 0; i < this.c.size(); i++) {
 			Card card = this.c.get(i);
+			this.prevStatus.add(card.status);
+			this.prevEffects.add(new LinkedList<Effect>());
+			this.prevPos.add(card.cardpos);
+			this.prevTeam.add(card.team);
+			this.prevHealth.add(0);
+			this.prevAttacks.add(0);
+			if (card instanceof Minion) {
+				this.prevHealth.set(i, ((Minion) card).health);
+				this.prevAttacks.set(i, ((Minion) card).attacksThisTurn);
+			}
+			this.prevSick.add(true);
 			switch (card.status) { // removing from
 			case HAND:
 				this.p.hand.cards.remove(card);
 				this.p.hand.updatePositions();
 				break;
 			case BOARD:
-				card.removeAdditionalEffects();
-				if (card instanceof Minion) {
-					((Minion) card).health = card.finalStatEffects.getStat(EffectStats.HEALTH);
-					((Minion) card).attacksThisTurn = 0;
-				}
 				this.p.board.removeBoardObject((BoardObject) card);
 				if (!loopprotection) {
 					eventlist.add(new EventLeavePlay(card));
@@ -67,12 +87,21 @@ public class EventPutCard extends Event {
 			default:
 				break;
 			}
+			// goes against flow
+			if (card.status.ordinal() < this.status.ordinal()) {
+				this.prevEffects.set(i, card.removeAdditionalEffects());
+				if (card instanceof Minion) {
+					((Minion) card).health = card.finalStatEffects.getStat(EffectStats.HEALTH);
+					((Minion) card).attacksThisTurn = 0;
+				}
+			}
 			card.team = this.targetTeam;
 			if (this.status.equals(CardStatus.BOARD)) { // now adding to
 				if (card instanceof BoardObject) {
 					this.p.board.addBoardObject((BoardObject) card, this.targetTeam,
 							this.pos.get(i) == -1 ? this.p.board.getBoardObjects(this.p.team).size() : this.pos.get(i));
 					if (card instanceof Minion) {
+						this.prevSick.set(i, ((Minion) card).summoningSickness);
 						((Minion) card).summoningSickness = true;
 					}
 					if (!loopprotection) {
@@ -96,6 +125,60 @@ public class EventPutCard extends Event {
 				}
 			}
 			card.status = this.status;
+		}
+	}
+
+	@Override
+	public void undo() {
+		for (int i = 0; i < this.c.size(); i++) {
+			Card card = this.c.get(i);
+			switch (card.status) { // removing from
+			case HAND:
+				this.p.hand.cards.remove(card);
+				this.p.hand.updatePositions();
+				break;
+			case BOARD:
+				this.p.board.removeBoardObject((BoardObject) card);
+				break;
+			case DECK:
+				this.p.deck.cards.remove(card);
+				this.p.deck.updatePositions();
+				break;
+			case LEADER:
+				// wait
+				break;
+			default:
+				break;
+			}
+			for (Effect e : this.prevEffects.get(i)) {
+				card.addEffect(e);
+			}
+			// goes against flow
+			if (card instanceof Minion) {
+				((Minion) card).health = this.prevHealth.get(i);
+				((Minion) card).attacksThisTurn = this.prevAttacks.get(i);
+				((Minion) card).summoningSickness = this.prevSick.get(i);
+			}
+			card.team = this.prevTeam.get(i);
+			card.status = this.prevStatus.get(i);
+			switch (this.prevStatus.get(i)) { // adding to
+			case HAND:
+				this.p.hand.cards.add(this.prevPos.get(i), card);
+				this.p.hand.updatePositions();
+				break;
+			case BOARD:
+				this.p.board.addBoardObject((BoardObject) card, card.team, this.prevPos.get(i));
+				break;
+			case DECK:
+				this.p.deck.cards.add(this.prevPos.get(i), card);
+				this.p.deck.updatePositions();
+				break;
+			case LEADER:
+				// wait
+				break;
+			default:
+				break;
+			}
 		}
 	}
 

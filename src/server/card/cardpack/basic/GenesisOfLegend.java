@@ -21,7 +21,7 @@ public class GenesisOfLegend extends Amulet {
 		Effect e = new Effect(0, TOOLTIP.description) {
 			@Override
 			public EventFlag onTurnEnd() {
-				EventFlag ef = new EventFlag(this) {
+				EventFlag ef = new EventFlag(this, true) {
 					@Override
 					public void resolve(List<Event> eventlist, boolean loopprotection) {
 						Target t = new Target(this.effect, 1, "") {

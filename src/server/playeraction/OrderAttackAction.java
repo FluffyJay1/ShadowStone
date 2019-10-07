@@ -21,18 +21,17 @@ public class OrderAttackAction extends PlayerAction {
 	}
 
 	@Override
-	public boolean perform(Board b) {
-		if (attacker.getAttackableTargets().contains(victim)) {
-			b.eventlist.add(new EventMinionAttack(attacker, victim));
-			b.resolveAll();
-			return true;
+	public List<Event> perform(Board b) {
+		if (this.attacker.getAttackableTargets().contains(this.victim) && this.attacker.canAttack()) {
+			b.eventlist.add(new EventMinionAttack(this.attacker, this.victim));
+			return b.resolveAll();
 		}
-		return false;
+		return new LinkedList<Event>();
 	}
 
 	@Override
 	public String toString() {
-		return this.ID + " " + attacker.toReference() + " " + victim.toReference() + "\n";
+		return this.ID + " " + this.attacker.toReference() + this.victim.toReference() + "\n";
 	}
 
 	public static OrderAttackAction fromString(Board b, StringTokenizer st) {

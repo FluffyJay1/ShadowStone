@@ -2,14 +2,11 @@ package server;
 
 import java.util.*;
 
-import client.*;
 import server.card.*;
-import server.card.effect.*;
 import server.event.*;
 import server.playeraction.*;
 
 public class Board {
-	public boolean ai = false;
 	public boolean isServer = true; // true means it is the center of game logic
 	public boolean isClient; // true means has a visualboard
 	// links cards created between board and visualboard
@@ -17,7 +14,7 @@ public class Board {
 
 	public Player player1, player2;
 	// localteam is the team of the player, i.e. at the bottom of the screen
-	public int currentplayerturn = 1, localteam = 1, winner = 0;
+	public int currentPlayerTurn = 1, localteam = 1, winner = 0;
 
 	protected List<BoardObject> player1side;
 	protected List<BoardObject> player2side;
@@ -27,7 +24,6 @@ public class Board {
 	public List<Event> eventlist;
 
 	String output = "";
-	List<String> playerActions;
 
 	public Board() {
 		player1 = new Player(this, 1);
@@ -38,7 +34,6 @@ public class Board {
 		player1graveyard = new ArrayList<Card>();
 		player2graveyard = new ArrayList<Card>();
 		banished = new ArrayList<Card>();
-		playerActions = new LinkedList<String>();
 	}
 
 	public Board(int localteam) {
@@ -59,6 +54,7 @@ public class Board {
 		return ret;
 	}
 
+	// cards that can be added to a Target object
 	public List<Card> getTargetableCards(Target t) {
 		List<Card> list = new LinkedList<Card>();
 		if (t == null) {
@@ -70,6 +66,12 @@ public class Board {
 			}
 		}
 		return list;
+	}
+
+	// if the maximum number of targets is selected, or all targetable cards
+	// have been targeted
+	public boolean isFullyTargeted(Target t) {
+		return t.getTargets().size() >= t.maxtargets || t.getTargets().size() == this.getTargetableCards(t).size();
 	}
 
 	public List<Card> getCards() {
@@ -125,7 +127,6 @@ public class Board {
 
 	public List<BoardObject> getBoardObjects(int team) {
 		// i saw what i was trying to do here originally and it's bad
-		ArrayList<BoardObject> ret = new ArrayList<BoardObject>();
 		if (team > 0) {
 			return this.player1side;
 		} else {
@@ -235,13 +236,9 @@ public class Board {
 	}
 
 	public String stateToString() {
-		String ret = "State----------------------------+\nPlayer 1:\n";
-		for (BoardObject b : player1side) {
-			ret += b.toString() + "\n";
-		}
-		ret += "\nPlayer 2:\n";
-		for (BoardObject b : player2side) {
-			ret += b.toString() + "\n";
+		String ret = "State----------------------------+\n";
+		for (Card c : this.getCards()) {
+			ret += c.toString() + "\n";
 		}
 		ret += "---------------------------------+\n";
 		return ret;
@@ -260,10 +257,10 @@ public class Board {
 			if (e.conditions()) {
 				String eventstring = e.toString();
 				if (!eventstring.isEmpty() && e.send) {
-					// System.out.println(eventstring);
+					// add this to a buffer of happened events
 					this.output += eventstring;
-					System.out.print(e.getClass().getName() + ": " + eventstring);
-					// System.out.println(this.stateToString());
+					// System.out.print(e.getClass().getName() + ": " +
+					// eventstring);
 				}
 				if (e.priority > 0) {
 					LinkedList<Event> lul = new LinkedList<Event>();
@@ -286,13 +283,6 @@ public class Board {
 		return temp;
 	}
 
-	public synchronized String retrievePlayerAction() {
-		if (!this.playerActions.isEmpty()) {
-			return this.playerActions.remove(0);
-		}
-		return null;
-	}
-
 	public synchronized void parseEventString(String s) {
 		if (!s.isEmpty()) {
 			String[] lines = s.split("\n");
@@ -308,80 +298,17 @@ public class Board {
 
 	}
 
-	public synchronized boolean executePlayerAction(StringTokenizer st) {
+	public List<Event> executePlayerAction(StringTokenizer st) {
 		PlayerAction pa = PlayerAction.createFromString(this, st);
 		return pa.perform(this);
 	}
 
-	private void sendAction(PlayerAction action) {
-		if (this.isServer) {
-			action.perform(this);
-		} else {
-			this.playerActions.add(action.toString());
-		}
-	}
-
-	public void playerPlayCard(Player p, Card c, int pos) {
-		this.sendAction(new PlayCardAction(p, c, pos));
-	}
-
-	public void playerUnleashMinion(Player p, Minion m) {
-		this.sendAction(new UnleashMinionAction(p, m));
-	}
-
-	// encapsulation at its finest
-	public void playerOrderAttack(Minion attacker, Minion victim) {
-		this.sendAction(new OrderAttackAction(attacker, victim));
-	}
-
-	public void playerEndTurn(int team) {
-		this.sendAction(new EndTurnAction(team));
-	}
-
-	public void AIThink() {
-		for (int i = 0; i < this.getBoardObjects(this.localteam * -1).size(); i++) {
-			BoardObject bo = this.getBoardObject(this.localteam * -1, i);
-			if (bo instanceof Minion) {
-
-				List<Minion> targets = ((Minion) bo).getAttackableTargets();
-				if (targets.get(0) instanceof Leader) {
-					// smorc
-					this.playerOrderAttack((Minion) bo, targets.get(0));
-				} else {
-					// ward is cheat
-					this.playerOrderAttack((Minion) bo, Game.selectRandom(targets));
-				}
-				if (!bo.alive) {
-					i--;
-				}
-			}
-		}
-		int tempmana = Math.min(this.getPlayer(this.localteam * -1).maxmana,
-				this.getPlayer(this.localteam * -1).maxmaxmana); // mm
-		for (int i = 0; i < 10; i++) {
-			if (!this.getPlayer(this.localteam * -1).hand.cards.isEmpty()) {
-				Card c = Game.selectRandom(this.getPlayer(this.localteam * -1).hand.cards);
-				if (c.conditions() && tempmana >= c.finalStatEffects.getStat(EffectStats.COST)) {
-					for (Target t : c.getBattlecryTargets()) {
-						t.fillRandomTargets();
-					}
-					int randomind = (int) (Math.random() * (this.getBoardObjects(this.localteam * -1).size()));
-					this.playerPlayCard(this.getPlayer(this.localteam * -1), c, randomind);
-					tempmana -= c.finalStatEffects.getStat(EffectStats.COST);
-				}
-			}
-		}
-		this.playerEndTurn(this.localteam * -1);
-	}
-
-	public void endCurrentPlayerTurn() {
-		System.out.println("ENDING PLAYER " + this.currentplayerturn + " TURN");
-		this.eventlist.add(new EventTurnEnd(this.getPlayer(this.currentplayerturn)));
-		this.resolveAll();
-		this.eventlist.add(new EventTurnStart(this.getPlayer(this.currentplayerturn * -1)));
-		this.resolveAll();
-		if (this.ai && this.currentplayerturn == this.localteam * -1) {
-			this.AIThink();
-		}
+	public List<Event> endCurrentPlayerTurn() {
+		List<Event> l = new LinkedList<Event>();
+		this.eventlist.add(new EventTurnEnd(this.getPlayer(this.currentPlayerTurn)));
+		l.addAll(this.resolveAll());
+		this.eventlist.add(new EventTurnStart(this.getPlayer(this.currentPlayerTurn * -1)));
+		l.addAll(this.resolveAll());
+		return l;
 	}
 }

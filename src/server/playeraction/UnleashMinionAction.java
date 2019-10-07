@@ -13,37 +13,39 @@ public class UnleashMinionAction extends PlayerAction {
 
 	public Player p;
 	public Minion m;
+	String unleashTargets;
 
-	public UnleashMinionAction(Player p, Minion m) {
+	public UnleashMinionAction(Player p, Minion m, String unleashTargets) {
 		super(ID);
 		// TODO Auto-generated constructor stub
 		this.p = p;
 		this.m = m;
+		this.unleashTargets = unleashTargets;
 	}
 
 	// remember to set targets to unleash upon
 	@Override
-	public boolean perform(Board b) {
+	public List<Event> perform(Board b) {
 		if (!p.canUnleashCard(m)) {
-			return false;
+			return new LinkedList<Event>();
 		}
+		this.m.unleashTargetsFromString(b, new StringTokenizer(this.unleashTargets));
 		b.eventlist
 				.add(new EventManaChange(p, -p.unleashPower.finalStatEffects.getStat(EffectStats.COST), false, true));
 		b.eventlist.addAll(p.unleashPower.unleash(m));
-		b.resolveAll();
-		return true;
+		return b.resolveAll();
 	}
 
 	@Override
 	public String toString() {
-		return this.ID + " " + p.team + " " + m.toReference() + " " + m.unleashTargetsToString() + "\n";
+		return this.ID + " " + p.team + " " + m.toReference() + this.unleashTargets + "\n";
 	}
 
 	public static UnleashMinionAction fromString(Board b, StringTokenizer st) {
 		Player p = b.getPlayer(Integer.parseInt(st.nextToken()));
 		Minion m = (Minion) Card.fromReference(b, st);
 		m.unleashTargetsFromString(b, st);
-		return new UnleashMinionAction(p, m);
+		return new UnleashMinionAction(p, m, m.unleashTargetsToString());
 	}
 
 }

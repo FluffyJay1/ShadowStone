@@ -11,7 +11,7 @@ public class EventGameEnd extends Event {
 	Board b;
 
 	public EventGameEnd(Board b, int victory) {
-		super(ID);
+		super(ID, false);
 		this.b = b;
 		this.priority = 10000;
 		this.victory = victory;
@@ -22,6 +22,11 @@ public class EventGameEnd extends Event {
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		this.b.winner = victory;
 		// System.exit(0); // YES
+	}
+
+	@Override
+	public void undo() {
+		this.b.winner = 0; // gameend me irl
 	}
 
 	@Override

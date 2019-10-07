@@ -1,8 +1,9 @@
 package server.playeraction;
 
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
+import server.*;
+import server.event.*;
 
 public class EndTurnAction extends PlayerAction {
 
@@ -18,14 +19,14 @@ public class EndTurnAction extends PlayerAction {
 	}
 
 	@Override
-	public boolean perform(Board b) {
-		if (team == b.currentplayerturn) {
-			b.endCurrentPlayerTurn();
-			return true;
+	public List<Event> perform(Board b) {
+		if (team == b.currentPlayerTurn) {
+			return b.endCurrentPlayerTurn();
 		}
-		return false;
+		return new LinkedList<Event>();
 	}
 
+	@Override
 	public String toString() {
 		return this.id + " " + this.team + "\n";
 	}

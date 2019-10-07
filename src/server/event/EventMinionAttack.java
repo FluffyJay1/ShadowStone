@@ -11,7 +11,7 @@ public class EventMinionAttack extends Event {
 	public Minion m1, m2;
 
 	public EventMinionAttack(Minion m1, Minion m2) {
-		super(ID);
+		super(ID, false);
 		this.m1 = m1;
 		this.m2 = m2;
 	}
@@ -19,7 +19,7 @@ public class EventMinionAttack extends Event {
 	@Override
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		if (!loopprotection) {
-			m1.attacksThisTurn++;
+			this.m1.attacksThisTurn++;
 			eventlist.addAll(m1.onAttack(m2));
 			if (!(this.m2 instanceof Leader)) {
 				eventlist.addAll(m1.clash(m2));
@@ -31,6 +31,11 @@ public class EventMinionAttack extends Event {
 
 		}
 		eventlist.add(new EventMinionAttackDamage(m1, m2));
+	}
+
+	@Override
+	public void undo() {
+		this.m1.attacksThisTurn--; // this should be fine
 	}
 
 	@Override

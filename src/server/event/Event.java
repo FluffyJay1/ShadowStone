@@ -9,26 +9,37 @@ public class Event {
 	// always go full enterprise, if you start going half enterprise you're
 	// fucking done for
 	int id = 0; // id of 0 means no side effects
-	public boolean send = true;
+	public boolean send = true, rng = false; // rng = true means the AI has to
+												// evaluate it differently
 	public int priority = 0;
 
-	public Event(int id) {
+	public Event(int id, boolean rng) {
 		this.id = id;
+		this.rng = true;
 	}
 
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
 
 	}
 
+	/*
+	 * This undo method should only be used for internal purposes like AI and is
+	 * never a valid action that a server sends to its clients
+	 */
+	public void undo() {
+
+	}
+
 	@Override
 	public String toString() {
-		return this.id + "\n";
+		return this.id + " " + this.rng + "\n";
 	}
 
 	public static Event createFromString(Board b, StringTokenizer st) {
 		int id = Integer.parseInt(st.nextToken());
 		if (id == 0) {
-			return new Event(0);
+			boolean rng = Boolean.parseBoolean(st.nextToken());
+			return new Event(0, rng);
 		} else {
 			Class c = EventIDLinker.getClass(id);
 			Event e = null;

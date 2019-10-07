@@ -5,22 +5,28 @@ import java.util.*;
 import server.*;
 import server.card.*;
 
-//TODO: SEE IF THIS EVENT IS EVEN NEEDED
+//this is different from just destroying the card because it shows the card being destroyed before thanos snapping it
 public class EventMill extends Event {
 	public static final int ID = 7;
 	Player p;
 	Card c;
 
 	public EventMill(Player p, Card c) {
-		super(ID);
+		super(ID, false);
 		this.p = p;
 		this.c = c;
+		this.priority = 1;
 	}
 
 	@Override
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
-		p.deck.cards.remove(c);
-		p.deck.updatePositions();
+		// for display purposes, shouldn't cause errors
+		eventlist.add(new EventDestroy(this.c));
+	}
+
+	@Override
+	public void undo() {
+
 	}
 
 	@Override
@@ -37,6 +43,6 @@ public class EventMill extends Event {
 
 	@Override
 	public boolean conditions() {
-		return true;
+		return this.c.status == CardStatus.DECK;
 	}
 }

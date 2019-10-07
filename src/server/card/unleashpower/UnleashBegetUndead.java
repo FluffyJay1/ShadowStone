@@ -1,15 +1,11 @@
 package server.card.unleashpower;
 
-import java.util.LinkedList;
+import java.util.*;
 
-import org.newdawn.slick.geom.Vector2f;
-
-import client.tooltip.Tooltip;
-import client.tooltip.TooltipUnleashPower;
-import server.Board;
-import server.card.ClassCraft;
-import server.card.Minion;
-import server.card.cardpack.basic.Skeleton;
+import client.tooltip.*;
+import server.*;
+import server.card.*;
+import server.card.cardpack.basic.*;
 import server.card.effect.*;
 import server.event.*;
 
@@ -21,7 +17,7 @@ public class UnleashBegetUndead extends UnleashPower {
 			"res/unleashpower/begetundead.png", CRAFT, 2, ID, Tooltip.UNLEASH, Tooltip.LASTWORDS, Skeleton.TOOLTIP);
 
 	public UnleashBegetUndead(Board b) {
-		super(b, TOOLTIP, new Vector2f(410, 460), 0.6);
+		super(b, TOOLTIP);
 
 	}
 

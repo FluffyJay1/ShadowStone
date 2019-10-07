@@ -1,9 +1,10 @@
 package server.playeraction;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.StringTokenizer;
+import java.lang.reflect.*;
+import java.util.*;
 
 import server.*;
+import server.event.*;
 
 public abstract class PlayerAction {
 	int id = 0; // literally just copying off of event
@@ -12,10 +13,11 @@ public abstract class PlayerAction {
 		this.id = id;
 	}
 
-	public boolean perform(Board b) {
-		return true;
+	public List<Event> perform(Board b) {
+		return new LinkedList<Event>();
 	}
 
+	@Override
 	public String toString() {
 		return this.id + "\n";
 	}

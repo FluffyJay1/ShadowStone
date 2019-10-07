@@ -1,37 +1,30 @@
 package server.event;
 
-import java.util.StringTokenizer;
+import java.util.*;
 
-import server.Board;
-import server.card.Target;
-import server.card.effect.Effect;
+import server.*;
+import server.card.effect.*;
 
 //basically for display purposes
 public class EventFlag extends Event {
 	public static final int ID = 21;
 	public Effect effect;
-	public int param;
 
-	public EventFlag(Effect effect) {
-		super(ID);
+	public EventFlag(Effect effect, boolean rng) {
+		super(ID, rng);
 		this.effect = effect;
 		this.priority = 1;
 	}
 
-	public EventFlag(Effect effect, int param) {
-		this(effect);
-		this.param = param;
-	}
-
 	@Override
 	public String toString() {
-		return this.id + " " + this.effect.toReference() + this.param + " " + "\n";
+		return this.id + " " + this.rng + " " + this.effect.toReference() + " " + "\n";
 	}
 
 	public static EventFlag fromString(Board b, StringTokenizer st) {
+		boolean rng = Boolean.parseBoolean(st.nextToken());
 		Effect effect = Effect.fromReference(b, st);
-		int param = Integer.parseInt(st.nextToken());
-		return new EventFlag(effect, param);
+		return new EventFlag(effect, rng);
 	}
 
 }

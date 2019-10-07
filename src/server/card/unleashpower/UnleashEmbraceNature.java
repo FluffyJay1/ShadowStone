@@ -1,11 +1,9 @@
 package server.card.unleashpower;
 
-import java.util.LinkedList;
-
-import org.newdawn.slick.geom.Vector2f;
+import java.util.*;
 
 import client.tooltip.*;
-import server.Board;
+import server.*;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
@@ -18,7 +16,7 @@ public class UnleashEmbraceNature extends UnleashPower {
 			"res/unleashpower/embracenature.png", CRAFT, 2, ID, Tooltip.UNLEASH);
 
 	public UnleashEmbraceNature(Board b) {
-		super(b, TOOLTIP, new Vector2f(380, 280), 0.3);
+		super(b, TOOLTIP);
 	}
 
 	@Override

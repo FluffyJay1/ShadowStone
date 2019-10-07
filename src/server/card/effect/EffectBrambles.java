@@ -18,7 +18,7 @@ public class EffectBrambles extends Effect {
 
 	@Override
 	public EventClash clash(Minion target) {
-		EventClash ec = new EventClash(this, target) {
+		EventClash ec = new EventClash(this, target, false) {
 			@Override
 			public void resolve(List<Event> eventlist, boolean loopprotection) {
 				eventlist.add(new EventMinionDamage((Minion) this.effect.owner, target, 1));
@@ -32,7 +32,7 @@ public class EffectBrambles extends Effect {
 		if (event instanceof EventLeavePlay) {
 			EventLeavePlay e = (EventLeavePlay) event;
 			if (this.creator == e.c) {
-				EventFlag ef = new EventFlag(this) {
+				EventFlag ef = new EventFlag(this, false) {
 					@Override
 					public void resolve(List<Event> eventlist, boolean loopprotection) {
 						eventlist.add(new EventRemoveEffect(this.effect.owner, this.effect));
@@ -54,8 +54,4 @@ public class EffectBrambles extends Effect {
 		return new EffectBrambles(creator);
 	}
 
-	@Override
-	public EffectBrambles clone() {
-		return new EffectBrambles(this.creator);
-	}
 }

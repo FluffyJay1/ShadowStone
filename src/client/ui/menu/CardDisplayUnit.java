@@ -1,15 +1,13 @@
 package client.ui.menu;
 
-import java.util.StringTokenizer;
+import java.util.*;
 
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.*;
+import org.newdawn.slick.geom.*;
 
-import client.ui.Text;
-import client.ui.UI;
-import client.ui.UIBox;
-import server.card.Card;
-import server.card.CardStatus;
+import client.ui.*;
+import client.ui.game.*;
+import server.card.*;
 
 public class CardDisplayUnit extends UIBox {
 	public static final String CARD_CLICK = "cardclick";
@@ -17,12 +15,14 @@ public class CardDisplayUnit extends UIBox {
 	private int cardid;
 	Text text;
 	Card card;
+	UICard uicard;
 
 	public CardDisplayUnit(UI ui, Vector2f pos) {
-		super(ui, pos, Card.CARD_DIMENSIONS.copy().scale((float) SCALE), "res/ui/uiboxborder.png");
+		super(ui, pos, UICard.CARD_DIMENSIONS.copy().scale((float) SCALE), "res/ui/uiboxborder.png");
 		this.text = new Text(ui, new Vector2f((float) this.getLocalRight(false), (float) this.getLocalTop(false)), "0",
 				50, 14, "Verdana", 20, -1, 1);
 		this.addChild(this.text);
+		this.uicard = new UICard(ui, null, null);
 		this.setCardID(0);
 		this.setCount(-1);
 
@@ -41,6 +41,7 @@ public class CardDisplayUnit extends UIBox {
 		} else {
 			this.card = Card.createFromConstructorString(null, new StringTokenizer(cardid + " 1"));
 			this.card.status = CardStatus.HAND;
+			this.uicard.setCard(this.card);
 		}
 	}
 
@@ -60,7 +61,7 @@ public class CardDisplayUnit extends UIBox {
 	public void draw(Graphics g) {
 		super.draw(g);
 		if (this.card != null) {
-			card.draw(g, this.getFinalPos(), SCALE);
+			this.uicard.drawCard(g, this.getFinalPos(), SCALE);
 		}
 	}
 

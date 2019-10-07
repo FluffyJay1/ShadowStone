@@ -59,10 +59,6 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 
 	public void update(double frametime) {
 		this.updateEventAnimation(frametime);
-		String eventstring = this.realBoard.retrieveEventString();
-		if (!eventstring.isEmpty()) {
-			this.parseEventString(eventstring);
-		}
 	}
 
 	public void draw(Graphics g) {
@@ -71,21 +67,18 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 
 	@Override
 	public List<Event> resolveAll(List<Event> eventlist, boolean loopprotection) {
-
+		// at one point in time only god and i knew why i wrote this, now only
+		// god knows
 		new Exception("this shouldn't happen lmao").printStackTrace();
 		return null;
 
 	}
 
+	// also updates the underlying real board of the events
 	@Override
 	public synchronized void parseEventString(String s) {
-		if (!this.realBoard.isServer) {
-			this.realBoard.parseEventString(s);
-		}
+		this.realBoard.parseEventString(s);
 		StringTokenizer st = new StringTokenizer(s, "\n");
-		System.out.println("EVENTSTRING:");
-		System.out.println(s);
-
 		while (st.hasMoreTokens()) {
 			String event = st.nextToken();
 			this.inputeventliststrings.add(event);

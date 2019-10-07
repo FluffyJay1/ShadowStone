@@ -2,24 +2,16 @@ package client;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
-import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.*;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.font.effects.ColorEffect;
-import org.newdawn.slick.font.effects.OutlineEffect;
-import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.font.effects.*;
+import org.newdawn.slick.state.*;
 
-import client.states.StateDeckbuild;
-import client.states.StateGame;
-import client.states.StateMenu;
-import server.card.cardpack.ConstructedDeck;
+import client.states.*;
+import server.card.cardpack.*;
 
 public class Game extends StateBasedGame {
 	public static int STATE_MENU = 0;
@@ -28,7 +20,7 @@ public class Game extends StateBasedGame {
 	public static int STATE_DECKBUILD = 3;
 	public static final int SERVER_PORT = 9091;
 
-	public static final String STRING_START = "\u0fd5", STRING_END = "\u0fd6", BLOCK_END = "\u0fd7";
+	public static final String STRING_START = "\u00bc", STRING_END = "\u00bd", BLOCK_END = "\u00be";
 	public static Map<String, Image> images = new HashMap<String, Image>();
 
 	public static Map<String, UnicodeFont> fonts = new HashMap<String, UnicodeFont>();

@@ -33,7 +33,7 @@ public class Player {
 
 	// uh
 	public boolean canPlayCard(Card c) {
-		return c != null && this.board.currentplayerturn == this.team && c.conditions()
+		return c != null && this.board.currentPlayerTurn == this.team && c.conditions()
 				&& this.mana >= c.finalStatEffects.getStat(EffectStats.COST) && c.status.equals(CardStatus.HAND);
 	}
 
@@ -47,7 +47,7 @@ public class Player {
 				&& this.unleashPower.unleashesThisTurn < this.unleashPower.finalStatEffects
 						.getStat(EffectStats.ATTACKS_PER_TURN)
 				&& this.mana >= this.unleashPower.finalStatEffects.getStat(EffectStats.COST)
-				&& this.board.currentplayerturn == this.team;
+				&& this.board.currentPlayerTurn == this.team;
 	}
 
 	public void printHand() {

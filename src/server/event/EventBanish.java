@@ -8,28 +8,37 @@ import server.card.*;
 public class EventBanish extends Event {
 	public static final int ID = 18;
 	public List<Card> c;
+	private List<Boolean> alive;
+	private List<CardStatus> prevStatus;
+	private List<Integer> prevPos;
 
 	public EventBanish(Target t) {
-		super(ID);
+		super(ID, false);
 		this.c = new ArrayList<Card>();
 		this.c.addAll(t.getTargets());
 	}
 
 	public EventBanish(List<Card> c) {
-		super(ID);
+		super(ID, false);
 		this.c = new ArrayList<Card>();
 		this.c.addAll(c);
 	}
 
 	public EventBanish(Card c) {
-		super(ID);
+		super(ID, false);
 		this.c = new ArrayList<Card>();
 		this.c.add(c);
 	}
 
 	@Override
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
+		this.alive = new ArrayList<Boolean>();
+		this.prevStatus = new ArrayList<CardStatus>();
+		this.prevPos = new ArrayList<Integer>();
 		for (Card c : this.c) {
+			this.alive.add(c.alive);
+			this.prevStatus.add(c.status);
+			this.prevPos.add(c.cardpos);
 			if (c.alive) {
 				c.alive = false;
 				switch (c.status) {
@@ -55,6 +64,39 @@ public class EventBanish extends Event {
 				}
 				c.cardpos = c.board.banished.size(); // just in case
 				c.board.banished.add(c);
+			}
+		}
+	}
+
+	@Override
+	public void undo() {
+		for (int i = 0; i < this.c.size(); i++) {
+			Card c = this.c.get(i);
+			c.alive = this.alive.get(i);
+			if (c.alive) {
+				CardStatus status = this.prevStatus.get(i);
+				int pos = this.prevPos.get(i);
+				c.board.banished.remove(c);
+				switch (status) {
+				case HAND:
+					c.board.getPlayer(c.team).hand.cards.add(pos, c);
+					c.board.getPlayer(c.team).hand.updatePositions();
+					break;
+				case BOARD:
+					if (c instanceof BoardObject) {
+						BoardObject b = (BoardObject) c;
+						b.board.addBoardObject(b, b.team, pos);
+					}
+					break;
+				case DECK:
+					c.board.getPlayer(c.team).deck.cards.add(pos, c);
+					c.board.getPlayer(c.team).deck.updatePositions();
+					break;
+				default: // unbanish leader lmao
+					break;
+				}
+				c.cardpos = pos; // just in case
+				c.status = status;
 			}
 		}
 	}

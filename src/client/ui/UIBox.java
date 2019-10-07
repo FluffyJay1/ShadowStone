@@ -1,7 +1,7 @@
 package client.ui;
 
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.*;
+import org.newdawn.slick.geom.*;
 
 public class UIBox extends UIElement {
 
@@ -49,6 +49,10 @@ public class UIBox extends UIElement {
 	public void setDim(Vector2f dim) {
 		this.originalDim.set(dim);
 		this.setScale(1);
+	}
+
+	public Vector2f getOriginalDim() {
+		return this.originalDim;
 	}
 
 	@Override

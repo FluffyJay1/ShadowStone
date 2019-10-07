@@ -11,9 +11,10 @@ public class EventRestore extends Event {
 	// actualheal is (kind of) for display only
 	public List<Integer> heal, actualHeal;
 	public List<Minion> m;
+	private List<Integer> oldHealth;
 
 	public EventRestore(List<Minion> m, List<Integer> heal) {
-		super(ID);
+		super(ID, false);
 		this.m = new ArrayList<Minion>();
 		this.m.addAll(m);
 		this.heal = new ArrayList<Integer>();
@@ -21,7 +22,7 @@ public class EventRestore extends Event {
 	}
 
 	public EventRestore(Target t, int heal) {
-		super(ID);
+		super(ID, false);
 		this.m = new ArrayList<Minion>();
 		this.heal = new ArrayList<Integer>();
 		for (Card c : t.getTargets()) {
@@ -34,7 +35,7 @@ public class EventRestore extends Event {
 	}
 
 	public EventRestore(Minion m, int heal) {
-		super(ID);
+		super(ID, false);
 		this.m = new ArrayList<Minion>();
 		this.m.add(m);
 		this.heal = new ArrayList<Integer>();
@@ -44,8 +45,10 @@ public class EventRestore extends Event {
 	@Override
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		this.actualHeal = new ArrayList<Integer>();
+		this.oldHealth = new ArrayList<Integer>();
 		for (int i = 0; i < this.m.size(); i++) { // whatever
 			Minion minion = this.m.get(i);
+			this.oldHealth.add(minion.health);
 			minion.health += this.heal.get(i);
 			int healAmount = this.heal.get(i);
 			if (minion.health > minion.finalStatEffects.getStat(EffectStats.HEALTH)) {
@@ -56,6 +59,14 @@ public class EventRestore extends Event {
 		}
 
 		// TODO on healed
+	}
+
+	@Override
+	public void undo() {
+		for (int i = 0; i < this.m.size(); i++) {
+			Minion minion = this.m.get(i);
+			minion.health = this.oldHealth.get(i);
+		}
 	}
 
 	@Override

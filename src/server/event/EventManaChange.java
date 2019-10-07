@@ -9,9 +9,10 @@ public class EventManaChange extends Event {
 	Player p;
 	int mana;
 	boolean empty, recover;
+	private int prevMana, prevMaxMana;
 
 	public EventManaChange(Player p, int mana, boolean empty, boolean recover) {
-		super(ID);
+		super(ID, false);
 		this.p = p;
 		this.mana = mana;
 		this.empty = empty;
@@ -20,7 +21,9 @@ public class EventManaChange extends Event {
 
 	@Override
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
-		if (!this.recover) {
+		this.prevMana = this.p.mana;
+		this.prevMaxMana = this.p.maxmana;
+		if (!this.recover) { // change max mana
 			if (this.p.maxmana + this.mana > this.p.maxmaxmana) {
 				this.p.maxmana = this.p.maxmaxmana;
 			} else if (this.p.maxmana + this.mana < 0) {
@@ -29,7 +32,7 @@ public class EventManaChange extends Event {
 				this.p.maxmana += this.mana;
 			}
 		}
-		if (!this.empty) {
+		if (!this.empty) { // change regular mana
 			if (this.p.mana + this.mana > this.p.maxmana) {
 				this.p.mana = this.p.maxmana;
 			} else if (this.p.mana + this.mana < 0) {
@@ -38,6 +41,12 @@ public class EventManaChange extends Event {
 				this.p.mana += this.mana;
 			}
 		}
+	}
+
+	@Override
+	public void undo() {
+		this.p.mana = this.prevMana;
+		this.p.maxmana = this.prevMaxMana;
 	}
 
 	@Override

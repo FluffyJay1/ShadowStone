@@ -11,9 +11,10 @@ public class EventDamage extends Event {
 	public List<Integer> damage;
 	public List<Minion> m;
 	public List<Boolean> poisonous;
+	private List<Integer> oldHealth;
 
 	public EventDamage(List<Minion> m, List<Integer> damage, List<Boolean> poisonous) {
-		super(ID);
+		super(ID, false);
 		this.m = new ArrayList<Minion>();
 		this.damage = new ArrayList<Integer>();
 		this.poisonous = new ArrayList<Boolean>();
@@ -23,7 +24,7 @@ public class EventDamage extends Event {
 	}
 
 	public EventDamage(Target t, int damage, boolean poisonous) {
-		super(ID);
+		super(ID, false);
 		this.m = new ArrayList<Minion>();
 		this.damage = new ArrayList<Integer>();
 		for (Card card : t.getTargets()) {
@@ -38,7 +39,7 @@ public class EventDamage extends Event {
 	}
 
 	public EventDamage(Minion m, int damage, boolean poisonous) {
-		super(ID);
+		super(ID, false);
 		this.m = new ArrayList<Minion>();
 		this.m.add(m);
 		this.damage = new ArrayList<Integer>();
@@ -49,8 +50,10 @@ public class EventDamage extends Event {
 
 	@Override
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
+		this.oldHealth = new ArrayList<Integer>();
 		for (int i = 0; i < this.m.size(); i++) { // sure
 			Minion minion = m.get(i);
+			this.oldHealth.add(minion.health);
 			if (!loopprotection) {
 				eventlist.addAll(minion.onDamaged(damage.get(i)));
 			}
@@ -59,6 +62,14 @@ public class EventDamage extends Event {
 				eventlist.add(new EventDestroy(minion));
 			}
 			minion.health -= damage.get(i);
+		}
+	}
+
+	@Override
+	public void undo() {
+		for (int i = 0; i < this.m.size(); i++) { // sure
+			Minion minion = m.get(i);
+			minion.health = this.oldHealth.get(i);
 		}
 	}
 

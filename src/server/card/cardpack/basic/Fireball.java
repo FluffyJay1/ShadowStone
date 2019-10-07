@@ -23,7 +23,7 @@ public class Fireball extends Spell {
 		this.e = new Effect(0, "") {
 			@Override
 			public EventBattlecry battlecry() {
-				EventBattlecry bc = new EventBattlecry(this) {
+				EventBattlecry bc = new EventBattlecry(this, false) {
 					@Override
 					public void resolve(List<Event> eventlist, boolean loopprotection) {
 						for (int i = 0; i < this.effect.battlecryTargets.get(0).getTargets().size(); i++) {

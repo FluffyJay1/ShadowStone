@@ -15,7 +15,7 @@ public class EventMinionDamage extends Event {
 	public List<Minion> m2;
 
 	public EventMinionDamage(Minion m1, List<Minion> m2, List<Integer> damage) {
-		super(ID);
+		super(ID, false);
 		this.m1 = m1;
 		this.m2 = new ArrayList<Minion>();
 		this.m2.addAll(m2);
@@ -25,7 +25,7 @@ public class EventMinionDamage extends Event {
 	}
 
 	public EventMinionDamage(Minion m1, Target m2, int damage) {
-		super(ID);
+		super(ID, false);
 		this.m1 = m1;
 		this.m2 = new ArrayList<Minion>();
 		this.damage = new ArrayList<Integer>();
@@ -39,7 +39,7 @@ public class EventMinionDamage extends Event {
 	}
 
 	public EventMinionDamage(Minion m1, Minion m2, int damage) {
-		super(ID);
+		super(ID, false);
 		this.m1 = m1;
 		this.m2 = new ArrayList<Minion>();
 		this.m2.add(m2);
@@ -55,6 +55,11 @@ public class EventMinionDamage extends Event {
 			poisonous.add(m1.finalStatEffects.getStat(EffectStats.POISONOUS) > 0);
 		}
 		eventlist.add(new EventDamage(this.m2, this.damage, poisonous));
+	}
+
+	@Override
+	public void undo() {
+		// no state change here folks
 	}
 
 	@Override

@@ -13,24 +13,29 @@ public class EventPlayCard extends Event {
 	int position;
 
 	public EventPlayCard(Player p, Card c, int position) {
-		super(ID);
+		super(ID, false);
 		this.p = p;
 		this.c = c;
 		this.position = position;
+		this.priority = 1;
 	}
 
 	@Override
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		// p.hand.cards.remove(c);
-		p.mana -= c.finalStatEffects.getStat(EffectStats.COST);
+		eventlist.add(new EventManaChange(this.p, -c.finalStatEffects.getStat(EffectStats.COST), false, true));
 		if (c instanceof BoardObject) {
 			eventlist.add(new EventPutCard(this.p, this.c, CardStatus.BOARD, this.p.team, this.position));
 		} else {
 			eventlist.add(new EventDestroy(this.c));
 		}
 		// p.hand.updatePositions();
-
 		eventlist.addAll(c.battlecry());
+	}
+
+	@Override
+	public void undo() {
+		// hmm
 	}
 
 	@Override

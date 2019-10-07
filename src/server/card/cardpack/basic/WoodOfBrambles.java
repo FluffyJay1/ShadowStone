@@ -21,7 +21,7 @@ public class WoodOfBrambles extends Amulet {
 		Effect e = new Effect(0, TOOLTIP.description) {
 			@Override
 			public EventBattlecry battlecry() {
-				EventBattlecry eb = new EventBattlecry(this) {
+				EventBattlecry eb = new EventBattlecry(this, false) {
 					@Override
 					public void resolve(List<Event> eventlist, boolean loopprotection) {
 						for (int i = 0; i < 2; i++) {
@@ -51,7 +51,7 @@ public class WoodOfBrambles extends Amulet {
 				if (this.owner.status.equals(CardStatus.BOARD) && event instanceof EventEnterPlay) {
 					EventEnterPlay e = (EventEnterPlay) event;
 					if (e.c instanceof Minion && e.c.team == this.owner.team) {
-						EventFlag ef = new EventFlag(this) {
+						EventFlag ef = new EventFlag(this, false) {
 							@Override
 							public void resolve(List<Event> eventlist, boolean loopprotection) {
 								eventlist.add(new EventAddEffect(e.c, new EffectBrambles(this.effect.owner)));

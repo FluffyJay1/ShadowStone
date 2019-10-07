@@ -11,9 +11,11 @@ public class EventMuteEffect extends Event {
 	public Card c;
 	Effect e;
 	boolean mute;
+	private boolean prevMute;
+	private int prevHealth;
 
 	public EventMuteEffect(Card c, Effect e, boolean mute) {
-		super(ID);
+		super(ID, false);
 		this.c = c;
 		this.e = e;
 		this.mute = mute;
@@ -21,9 +23,11 @@ public class EventMuteEffect extends Event {
 
 	@Override
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
+		this.prevMute = this.e.mute;
 		this.c.muteEffect(this.e, this.mute);
 		if (c instanceof Minion) {
 			Minion m = ((Minion) c);
+			this.prevHealth = m.health;
 			if (c.finalStatEffects.getStat(EffectStats.HEALTH) < m.health) {
 				m.health = m.finalStatEffects.getStat(EffectStats.HEALTH);
 			}
@@ -35,7 +39,15 @@ public class EventMuteEffect extends Event {
 				&& c.finalStatEffects.getStat(EffectStats.COUNTDOWN) <= 0) {
 			eventlist.add(new EventDestroy(c));
 		}
+	}
 
+	@Override
+	public void undo() {
+		this.c.muteEffect(this.e, this.prevMute);
+		if (c instanceof Minion) {
+			Minion m = ((Minion) c);
+			m.health = this.prevHealth;
+		}
 	}
 
 	@Override

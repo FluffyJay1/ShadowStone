@@ -2,8 +2,6 @@ package server.card.unleashpower;
 
 import java.util.*;
 
-import org.newdawn.slick.geom.*;
-
 import client.tooltip.*;
 import server.*;
 import server.card.*;
@@ -20,7 +18,7 @@ public class UnleashFeedFervor extends UnleashPower {
 	Effect overflowDiscount;
 
 	public UnleashFeedFervor(Board b) {
-		super(b, TOOLTIP, new Vector2f(410, 200), 0.3);
+		super(b, TOOLTIP);
 		this.overflowDiscount = new Effect(0, "When Overflow is active, this costs 1 less") {
 			boolean overflow;
 
@@ -29,7 +27,7 @@ public class UnleashFeedFervor extends UnleashPower {
 				if (e instanceof EventManaChange) {
 					if (!overflow && p.overflow()) {
 						overflow = true;
-						EventFlag ef = new EventFlag(this) {
+						EventFlag ef = new EventFlag(this, false) {
 							@Override
 							public void resolve(List<Event> eventlist, boolean loopprotection) {
 								EffectStatChange esc = new EffectStatChange("");
@@ -41,7 +39,7 @@ public class UnleashFeedFervor extends UnleashPower {
 					}
 					if (overflow && !p.overflow()) {
 						overflow = false;
-						EventFlag ef = new EventFlag(this) {
+						EventFlag ef = new EventFlag(this, false) {
 							@Override
 							public void resolve(List<Event> eventlist, boolean loopprotection) {
 								EffectStatChange esc = new EffectStatChange("");

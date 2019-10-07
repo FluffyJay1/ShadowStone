@@ -5,7 +5,6 @@ import java.net.*;
 
 import client.*;
 import server.card.cardpack.*;
-import server.playeraction.*;
 
 /**
  * interface for sending and receiving things, serializing and deserializing
@@ -15,7 +14,7 @@ import server.playeraction.*;
  */
 public class DataStream {
 	Socket socket;
-	PrintWriter out;
+	PrintStream out;
 	ObjectOutputStream objectOut;
 	BufferedReader in;
 	ObjectInputStream objectIn;
@@ -28,7 +27,7 @@ public class DataStream {
 	public DataStream(Socket socket) {
 		try {
 			this.socket = socket;
-			this.out = new PrintWriter(this.socket.getOutputStream());
+			this.out = new PrintStream(this.socket.getOutputStream());
 			this.objectOut = new ObjectOutputStream(this.socket.getOutputStream());
 			this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 			this.objectIn = new ObjectInputStream(this.socket.getInputStream());
@@ -42,14 +41,50 @@ public class DataStream {
 		this(new Socket(ip, port));
 	}
 
+	public static void pair(DataStream a, DataStream b) { // local data streams
+		PipedInputStream apr = new PipedInputStream(), bpr = new PipedInputStream();
+		PipedOutputStream apw = new PipedOutputStream(), bpw = new PipedOutputStream();
+		try {
+			apr.connect(bpw);
+			bpr.connect(apw);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		a.pipeOut(apw);
+		b.pipeOut(bpw);
+		a.pipeIn(apr);
+		b.pipeIn(bpr);
+	}
+
+	private void pipeOut(PipedOutputStream pos) {
+		this.out = new PrintStream(pos);
+		try {
+			this.objectOut = new ObjectOutputStream(pos);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void pipeIn(PipedInputStream pis) {
+		this.in = new BufferedReader(new InputStreamReader(pis));
+		try {
+			this.objectIn = new ObjectInputStream(pis);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public void sendEvent(String eventstring) {
 		this.out.println(MessageType.EVENT);
 		this.out.println(eventstring + Game.BLOCK_END);
 	}
 
-	public void sendPlayerAction(PlayerAction action) {
+	public void sendPlayerAction(String action) {
 		this.out.println(MessageType.PLAYERACTION);
-		this.out.println(action.toString());
+		this.out.print(action);
 	}
 
 	public void sendDecklist(ConstructedDeck deck) {
@@ -94,9 +129,9 @@ public class DataStream {
 
 	public String readEvent() {
 		try {
-			String events = "", line = "";
+			String events = "", line = in.readLine();
 			while (!line.equals(Game.BLOCK_END)) {
-				events += line;
+				events += line + "\n";
 				line = in.readLine();
 			}
 			return events;
@@ -108,7 +143,8 @@ public class DataStream {
 
 	public String readPlayerAction() {
 		try {
-			return in.readLine();
+			String action = in.readLine();
+			return action;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

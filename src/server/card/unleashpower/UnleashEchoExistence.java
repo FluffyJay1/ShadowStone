@@ -1,11 +1,9 @@
 package server.card.unleashpower;
 
-import java.util.LinkedList;
-
-import org.newdawn.slick.geom.Vector2f;
+import java.util.*;
 
 import client.tooltip.*;
-import server.Board;
+import server.*;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
@@ -18,7 +16,7 @@ public class UnleashEchoExistence extends UnleashPower {
 			"res/unleashpower/echoexistence.png", CRAFT, 2, ID, Tooltip.UNLEASH);
 
 	public UnleashEchoExistence(Board b) {
-		super(b, TOOLTIP, new Vector2f(425, 445), 0.25);
+		super(b, TOOLTIP);
 	}
 
 	@Override

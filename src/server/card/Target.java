@@ -15,7 +15,7 @@ import server.card.effect.*;
  * @author Michael
  *
  */
-public class Target {
+public class Target implements Cloneable {
 	// ah yes the good ol all in one class
 	// targets are handled serverside
 	private Effect creator;
@@ -111,8 +111,16 @@ public class Target {
 		this.ready = false;
 	}
 
-	public Target copy() {
-		Target ret = new Target(this.creator, this.maxtargets, this.description);
+	@Override
+	public Target clone() {
+		Target ret = null;
+		try {
+			ret = (Target) super.clone();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ret.targets = new LinkedList<Card>();
 		ret.targets.addAll(this.targets);
 		return ret;
 	}
@@ -155,6 +163,14 @@ public class Target {
 			Card target = Card.fromReference(b, st);
 			this.setTarget(target);
 		}
+	}
+
+	public static String listToString(List<Target> list) {
+		String ret = list.size() + " ";
+		for (Target t : list) {
+			ret += t.toString();
+		}
+		return ret;
 	}
 
 }

@@ -3,6 +3,7 @@ package client.ui.game;
 import org.newdawn.slick.geom.*;
 
 import client.ui.*;
+import server.playeraction.*;
 
 public class EndTurnButton extends UIBox {
 	UIBoard b;
@@ -26,7 +27,7 @@ public class EndTurnButton extends UIBox {
 	public void mouseReleased(int button, int x, int y) {
 		if (this.pointIsInHitbox(new Vector2f(x, y))) {
 			if (!this.b.b.disableInput) {
-				this.b.b.realBoard.playerEndTurn(this.b.b.localteam);
+				this.b.ds.sendPlayerAction(new EndTurnAction(this.b.b.localteam).toString());
 				this.b.handleTargeting(null);
 				this.b.b.disableInput = true;
 			}

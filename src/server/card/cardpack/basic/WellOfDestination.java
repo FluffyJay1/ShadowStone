@@ -20,7 +20,7 @@ public class WellOfDestination extends Amulet {
 		Effect e = new Effect(0, "At the start of your turn, give a random allied minion +1/+1/+1") {
 			@Override
 			public EventFlag onTurnStart() {
-				EventFlag ef = new EventFlag(this) {
+				EventFlag ef = new EventFlag(this, true) {
 					@Override
 					public void resolve(List<Event> eventlist, boolean loopprotection) {
 						Target t = new Target(this.effect, 1, "") {

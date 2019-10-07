@@ -10,7 +10,7 @@ public class EventTurnEnd extends Event {
 	Player p;
 
 	public EventTurnEnd(Player p) {
-		super(ID);
+		super(ID, false);
 		this.p = p;
 	}
 
@@ -21,6 +21,11 @@ public class EventTurnEnd extends Event {
 		for (BoardObject b : this.p.board.getBoardObjects(this.p.team)) {
 			eventlist.addAll(b.onTurnEnd());
 		}
+	}
+
+	@Override
+	public void undo() {
+		// nothing lmao
 	}
 
 	@Override

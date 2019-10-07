@@ -11,7 +11,7 @@ public class EventEnterPlay extends Event {
 
 	// this is just used as a hook for effects
 	public EventEnterPlay(Card c) {
-		super(ID);
+		super(ID, false);
 		this.c = c;
 		this.priority = 1;
 	}
@@ -19,6 +19,11 @@ public class EventEnterPlay extends Event {
 	@Override
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		eventlist.addAll(((BoardObject) this.c).onEnterPlay());
+	}
+
+	@Override
+	public void undo() {
+		// nothing much we can do here either
 	}
 
 	@Override

@@ -10,9 +10,10 @@ public class EventUnleash extends Event {
 	public static final int ID = 16;
 	public Card source;
 	public Minion m;
+	private int prevUnleashes;
 
 	public EventUnleash(Card source, Minion m) {
-		super(ID);
+		super(ID, false);
 		this.source = source;
 		this.m = m;
 		this.priority = 1;
@@ -22,7 +23,15 @@ public class EventUnleash extends Event {
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		eventlist.addAll(this.m.unleash());
 		if (this.source instanceof UnleashPower) { // quality
+			this.prevUnleashes = ((UnleashPower) this.source).unleashesThisTurn;
 			((UnleashPower) this.source).unleashesThisTurn++;
+		}
+	}
+
+	@Override
+	public void undo() {
+		if (this.source instanceof UnleashPower) { // quality
+			((UnleashPower) this.source).unleashesThisTurn = this.prevUnleashes;
 		}
 	}
 
