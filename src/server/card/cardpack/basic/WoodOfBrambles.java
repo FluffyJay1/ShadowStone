@@ -47,7 +47,7 @@ public class WoodOfBrambles extends Amulet {
 			}
 
 			@Override
-			public EventFlag onEvent(Event event) {
+			public EventFlag onListenEvent(Event event) {
 				if (this.owner.status.equals(CardStatus.BOARD) && event instanceof EventEnterPlay) {
 					EventEnterPlay e = (EventEnterPlay) event;
 					if (e.c instanceof Minion && e.c.team == this.owner.team) {

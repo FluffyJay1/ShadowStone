@@ -28,7 +28,7 @@ public class EffectBrambles extends Effect {
 	}
 
 	@Override
-	public EventFlag onEvent(Event event) {
+	public EventFlag onListenEvent(Event event) {
 		if (event instanceof EventLeavePlay) {
 			EventLeavePlay e = (EventLeavePlay) event;
 			if (this.creator == e.c) {

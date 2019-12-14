@@ -251,10 +251,12 @@ public class Board {
 	// Only used by server, i.e. isServer == true
 	public List<Event> resolveAll(List<Event> eventlist, boolean loopprotection) {
 		LinkedList<Event> l = new LinkedList<Event>();
+		long stringTime = 0, resolveTime = 0, sideEffectTime = 0;
 		while (!eventlist.isEmpty()) {
 			Event e = eventlist.remove(0);
 			l.add(e);
 			if (e.conditions()) {
+				long start = System.nanoTime();
 				String eventstring = e.toString();
 				if (!eventstring.isEmpty() && e.send) {
 					// add this to a buffer of happened events
@@ -262,6 +264,8 @@ public class Board {
 					// System.out.print(e.getClass().getName() + ": " +
 					// eventstring);
 				}
+				stringTime += System.nanoTime() - start;
+				start = System.nanoTime();
 				if (e.priority > 0) {
 					LinkedList<Event> lul = new LinkedList<Event>();
 					e.resolve(lul, loopprotection);
@@ -269,11 +273,19 @@ public class Board {
 				} else {
 					e.resolve(eventlist, loopprotection);
 				}
+				resolveTime += System.nanoTime() - start;
+				start = System.nanoTime();
 				for (Card c : this.getCards()) {
 					eventlist.addAll(c.onEvent(e));
 				}
+				sideEffectTime += System.nanoTime() - start;
 			}
 		}
+		System.out.println("Times from resolving:");
+		System.out.println("String: " + stringTime);
+		System.out.println("Resolve: " + resolveTime);
+		System.out.println("Side Effects: " + sideEffectTime);
+		System.out.println("Total: " + (stringTime + resolveTime + sideEffectTime));
 		return l;
 	}
 

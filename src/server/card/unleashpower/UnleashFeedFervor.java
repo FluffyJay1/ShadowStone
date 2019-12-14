@@ -23,7 +23,7 @@ public class UnleashFeedFervor extends UnleashPower {
 			boolean overflow;
 
 			@Override
-			public EventFlag onEvent(Event e) {
+			public EventFlag onListenEvent(Event e) {
 				if (e instanceof EventManaChange) {
 					if (!overflow && p.overflow()) {
 						overflow = true;

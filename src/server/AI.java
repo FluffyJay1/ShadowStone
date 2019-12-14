@@ -2,10 +2,8 @@ package server;
 
 import java.util.*;
 
-import client.*;
 import network.*;
 import server.card.*;
-import server.card.cardpack.basic.*;
 import server.card.effect.*;
 import server.event.*;
 import server.playeraction.*;
@@ -61,23 +59,9 @@ public class AI extends Thread {
 
 	private void AIThink() {
 		System.out.println("advantage: " + this.evaluateAdvantage(this.b.localteam));
-		List<Event> undoStack = new LinkedList<Event>();
 		List<String> actionStack = new LinkedList<String>();
 		String stateBefore = this.b.stateToString();
-		while (true) {
-			List<PlayerAction> poss = this.getPossibleActions();
-			PlayerAction action = Game.selectRandom(poss);
-			actionStack.add(action.toString());
-			List<Event> happenings = this.b.executePlayerAction(new StringTokenizer(action.toString()));
-			undoStack.addAll(happenings);
-			if (action instanceof EndTurnAction) {
-				break;
-			}
-		}
-		while (!undoStack.isEmpty()) {
-			undoStack.get(undoStack.size() - 1).undo();
-			undoStack.remove(undoStack.size() - 1);
-		}
+		this.getBestTurn(actionStack, 0);
 		String stateAfter = this.b.stateToString();
 		if (!stateBefore.equals(stateAfter)) {
 			System.out.println("SOMETHINGS WRONG");
@@ -88,31 +72,82 @@ public class AI extends Thread {
 	}
 
 	/**
+	 * Given the current board state, get the sequence of player actions that
+	 * maximizes the advantage of the AI.
+	 * 
+	 * @param actions
+	 *            A list that will contain the sequence of player actions after
+	 *            the method is run
+	 * @param depth
+	 *            Passes the current depth in the decision tree, should start at
+	 *            0
+	 * @return The best advantage score
+	 */
+	private double getBestTurn(List<String> actions, int depth) {
+		List<PlayerAction> poss = this.getPossibleActions();
+		List<String> bestTurn = new LinkedList<String>();
+		double bestScore = Double.NEGATIVE_INFINITY;
+		for (PlayerAction action : poss) {
+			List<Event> undoStack = new LinkedList<Event>();
+			List<String> turn = new LinkedList<String>();
+			turn.add(action.toString());
+			List<Event> happenings = this.b.executePlayerAction(new StringTokenizer(action.toString()));
+			double score = 0;
+			if (action instanceof EndTurnAction || this.b.winner != 0) {
+				// no more actions can be taken
+				score = this.evaluateAdvantage(this.b.localteam);
+			} else {
+				score = this.getBestTurn(turn, depth + 1);
+			}
+			if (score > bestScore) {
+				bestTurn = turn;
+				bestScore = score;
+			}
+			undoStack.addAll(happenings);
+			while (!undoStack.isEmpty()) {
+				undoStack.get(undoStack.size() - 1).undo();
+				undoStack.remove(undoStack.size() - 1);
+			}
+		}
+		actions.addAll(bestTurn);
+		return bestScore;
+	}
+
+	/**
 	 * Given the current board state, attempts to find every possible action
 	 * that the AI can make.
 	 * 
 	 * @return a list of possible actions taken by the AI
 	 */
 	private List<PlayerAction> getPossibleActions() {
-		// minion attack
 		Player p = this.b.getPlayer(this.b.localteam);
 		List<PlayerAction> poss = new LinkedList<PlayerAction>();
 		List<BoardObject> minions = this.b.getBoardObjects(this.b.localteam, false, true, false);
 		for (BoardObject b : minions) {
+			// minion attack
 			Minion m = (Minion) b;
-			for (Minion target : m.getAttackableTargets()) {
-				poss.add(new OrderAttackAction(m, target));
+			if (m.canAttack()) {
+				for (Minion target : m.getAttackableTargets()) {
+					poss.add(new OrderAttackAction(m, target));
+				}
+			}
+			// unleashing cards & selecting targets
+			if (p.canUnleashCard(m)) {
+				if (!m.getUnleashTargets().isEmpty()) {
+					List<List<Target>> targetSearchSpace = this.getPossibleListTargets(m.getUnleashTargets());
+					for (List<Target> targets : targetSearchSpace) {
+						poss.add(new UnleashMinionAction(p, m, Target.listToString(targets)));
+					}
+				} else { // no targets to set
+					poss.add(new UnleashMinionAction(p, m, "0"));
+				}
 			}
 		}
 		// playing cards & selecting targets
 		List<Card> hand = this.b.getPlayer(this.b.localteam).hand.cards;
 		for (Card c : hand) {
-			// sweet lord
 			// TODO make it consider board positioning
 			if (p.canPlayCard(c)) {
-				if (c instanceof Fireball) {
-					System.out.println("gamer moment");
-				}
 				if (!c.getBattlecryTargets().isEmpty()) {
 					List<List<Target>> targetSearchSpace = this.getPossibleListTargets(c.getBattlecryTargets());
 					for (List<Target> targets : targetSearchSpace) {
@@ -123,7 +158,6 @@ public class AI extends Thread {
 				}
 			}
 		}
-		// unleashing cards & selecting targets
 		// ending turn
 		poss.add(new EndTurnAction(this.b.localteam));
 		return poss;
@@ -131,25 +165,38 @@ public class AI extends Thread {
 
 	/**
 	 * Given the current board state and a targeting requirement to fulfill,
-	 * recursively finds every possible combination of targets
+	 * recursively finds every possible combination of targets, returns null if
+	 * it cannot fully target because startInd was too large
 	 * 
 	 * @param t
 	 *            The target to fill
+	 * @param searchSpace
+	 *            the list of cards to search through that are possible targets,
+	 *            for optimization purposes, usually it's just
+	 *            this.b.getTargetableCards(t)
+	 * @param startInd
+	 *            the first index of targets in the searchspace that haven't
+	 *            been considered, for optimization purposes, usually it's just
+	 *            0
 	 * @return A list of possible targets
 	 */
-	private List<Target> getPossibleTargets(Target t) {
-		// TODO OPTIMIZE SO IT DOESN'T SEARCH THE SAME COMBINATION TWICE
+	private List<Target> getPossibleTargets(Target t, List<Card> searchSpace, int startInd) {
+		// TODO TEST THAT IT DOESN'T SEARCH THE SAME COMBINATION TWICE
+		if (startInd >= searchSpace.size()) {
+			System.out.println("this shouldn't happen lmao");
+		}
 		List<Target> poss = new LinkedList<Target>();
 		if (this.b.isFullyTargeted(t)) {
 			poss.add(t);
 			return poss;
 		}
-		List<Card> searchspace = this.b.getTargetableCards(t);
-		for (Card c : searchspace) {
+		for (int i = startInd; i < searchSpace.size() - (searchSpace.size() - t.getTargets().size()); i++) {
+			Card c = searchSpace.get(i);
 			if (!t.getTargets().contains(c)) {
 				Target copy = t.clone();
 				copy.setTarget(c);
-				poss.addAll(this.getPossibleTargets(copy));
+				List<Target> subspace = this.getPossibleTargets(copy, searchSpace, i + 1);
+				poss.addAll(subspace);
 			}
 		}
 		return poss;
@@ -173,7 +220,7 @@ public class AI extends Thread {
 		if (list.isEmpty()) {
 			return poss;
 		}
-		List<Target> searchspace = this.getPossibleTargets(list.get(0));
+		List<Target> searchspace = this.getPossibleTargets(list.get(0), this.b.getTargetableCards(list.get(0)), 0);
 		for (Target t : searchspace) {
 			List<Target> posscombo = new LinkedList<Target>();
 			posscombo.add(t.clone());
@@ -196,8 +243,24 @@ public class AI extends Thread {
 	public double evaluateAdvantage(int team) {
 		// because i dont want implement hand tracking by the ai, im just gonna
 		// let the ai see the opponents hand lmao
-		return this.evaluateSurvivability(team) + this.evaluateBoard(team) + this.evaluateHand(team)
-				- this.evaluateSurvivability(team * -1) - this.evaluateBoard(team * -1) - this.evaluateHand(team * -1);
+		return this.evaluateVictory(team) + this.evaluateSurvivability(team) + this.evaluateBoard(team)
+				+ this.evaluateHand(team) - this.evaluateSurvivability(team * -1) - this.evaluateBoard(team * -1)
+				- this.evaluateHand(team * -1);
+	}
+
+	/**
+	 * Indicator that a player has achieved victory.
+	 * 
+	 * @param team
+	 *            the team to evaluate for
+	 * @return a large number in favor of the winning team
+	 */
+	public double evaluateVictory(int team) {
+		if (this.b.winner == team) {
+			return 99999999999.;
+		} else {
+			return -99999999999.;
+		}
 	}
 
 	/**
@@ -224,7 +287,7 @@ public class AI extends Thread {
 					* m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN);
 			attackers += m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN);
 		}
-		for (BoardObject bo : this.b.getBoardObjects(team * -1, false, true, false)) {
+		for (BoardObject bo : this.b.getBoardObjects(team, false, true, false)) {
 			Minion m = (Minion) bo;
 			if (m.finalStatEffects.getStat(EffectStats.WARD) > 0) {
 				ehp += m.health;
@@ -264,9 +327,8 @@ public class AI extends Thread {
 
 	/**
 	 * More cards in hand is better, but you also want playable stuff. The power
-	 * of a card is value/(cost + 1) + 1, which usually comes to about 2 mana
-	 * per card. A more powerful hand would have higher value cards with lower
-	 * cost.
+	 * of a card is value/(cost + 1), which usually comes to about 1 mana per
+	 * card. A more powerful hand would have higher value cards with lower cost.
 	 * 
 	 * @param team
 	 *            the team to evaluate for. can cheat by looking at opponents
@@ -277,7 +339,7 @@ public class AI extends Thread {
 		Hand hand = this.b.getPlayer(team).hand;
 		double totalPower = 0;
 		for (Card c : hand.cards) {
-			totalPower += c.getValue() / (c.finalStatEffects.getStat(EffectStats.COST) + 1) + 1;
+			totalPower += c.getValue() / (c.finalStatEffects.getStat(EffectStats.COST) + 1);
 		}
 		return totalPower;
 	}

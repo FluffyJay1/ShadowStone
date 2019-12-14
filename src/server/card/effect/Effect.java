@@ -12,7 +12,7 @@ public class Effect implements Cloneable {
 	public int id = 0, pos = 0;
 	public Card owner = null;
 	public String description;
-	public boolean basic = false, mute = false;
+	public boolean basic = false, mute = false, listener = false;
 
 	public EffectStats set = new EffectStats(), change = new EffectStats();
 	public LinkedList<Target> battlecryTargets = new LinkedList<Target>(), unleashTargets = new LinkedList<Target>();
@@ -183,7 +183,7 @@ public class Effect implements Cloneable {
 		return null;
 	}
 
-	public EventFlag onEvent(Event event) {
+	public EventFlag onListenEvent(Event event) {
 		return null;
 	}
 

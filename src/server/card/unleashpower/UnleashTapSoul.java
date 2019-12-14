@@ -23,7 +23,7 @@ public class UnleashTapSoul extends UnleashPower {
 			boolean vengeance;
 
 			@Override
-			public EventFlag onEvent(Event e) {
+			public EventFlag onListenEvent(Event e) {
 				if (e instanceof EventDamage || e instanceof EventRestore || e instanceof EventAddEffect) {
 					if (!vengeance && p.vengeance()) {
 						vengeance = true;

@@ -33,12 +33,6 @@ public class Card implements Cloneable {
 		this.craft = tooltip.craft;
 	}
 
-	/*
-	 * public void update(double frametime) {
-	 * 
-	 * }
-	 */
-
 	/**
 	 * Estimates a "power level" of a card, for an AI to use to evaluate board
 	 * state. Values should be in terms of equivalent mana worth.
@@ -209,7 +203,7 @@ public class Card implements Cloneable {
 	public List<EventFlag> onEvent(Event event) {
 		List<EventFlag> list = new LinkedList<EventFlag>();
 		for (Effect e : this.getFinalEffects()) {
-			EventFlag temp = e.onEvent(event);
+			EventFlag temp = e.onListenEvent(event);
 			if (temp != null) {
 				list.add(temp);
 			}
