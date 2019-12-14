@@ -23,7 +23,7 @@ public class Card implements Cloneable {
 	public Effect finalStatEffects = new Effect(0, ""), finalBasicStatEffects = new Effect(0, "");
 	// basic effects don't get removed when removed from board (e.g. bounce
 	// effects)
-	private LinkedList<Effect> effects = new LinkedList<Effect>(), basicEffects = new LinkedList<Effect>();
+	private List<Effect> effects = new LinkedList<Effect>(), basicEffects = new LinkedList<Effect>();
 
 	public Card(Board board, TooltipCard tooltip) {
 		this.board = board;
