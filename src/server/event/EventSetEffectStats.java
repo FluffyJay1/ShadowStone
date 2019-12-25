@@ -22,14 +22,14 @@ public class EventSetEffectStats extends Event {
 		this.oldStats = this.target.copyEffectStats();
 		this.target.resetStats();
 		this.target.applyEffectStats(this.newStats);
-		this.target.owner.updateBasicEffectStats();
+		this.target.owner.updateEffectStats(true);
 	}
 
 	@Override
 	public void undo() {
 		this.target.resetStats();
 		this.target.applyEffectStats(this.oldStats);
-		this.target.owner.updateBasicEffectStats();
+		this.target.owner.updateEffectStats(true);
 	}
 
 	@Override

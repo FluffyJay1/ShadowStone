@@ -16,7 +16,7 @@ public class Minion extends BoardObject {
 		this.health = tooltip.health;
 		Effect e = new Effect(0, "", tooltip.cost, tooltip.attack, tooltip.magic, tooltip.health, 1, false, false,
 				false);
-		this.addBasicEffect(e);
+		this.addEffect(true, e);
 		if (tooltip.basicUnleash) {
 			Effect unl = new Effect(0,
 					"<b> Unleash: </b> Deal X damage to an enemy minion. X equals this minion's magic.") {
@@ -45,18 +45,18 @@ public class Minion extends BoardObject {
 			LinkedList<Target> list = new LinkedList<Target>();
 			list.add(t);
 			unl.setUnleashTargets(list);
-			this.addBasicEffect(unl);
+			this.addEffect(true, unl);
 		}
 
 	}
 
 	@Override
 	public double getValue() {
-		// sqrt(atk * hp + magic) + 1
+		// sqrt(atk * hp) + sqrt(magic) + 1
+		// TODO make it consider bane, poisonous, shield, etc.
 		return Math.sqrt(
-				this.finalStatEffects.getStat(EffectStats.ATTACK) * this.finalStatEffects.getStat(EffectStats.HEALTH)
-						+ this.finalStatEffects.getStat(EffectStats.MAGIC))
-				+ 1;
+				this.finalStatEffects.getStat(EffectStats.ATTACK) * this.finalStatEffects.getStat(EffectStats.HEALTH))
+				+ Math.sqrt(this.finalStatEffects.getStat(EffectStats.MAGIC)) + 1;
 	}
 
 	public List<Minion> getAttackableTargets() {
@@ -66,18 +66,18 @@ public class Minion extends BoardObject {
 		}
 		List<Minion> list = new ArrayList<Minion>();
 		List<BoardObject> poss = new ArrayList<BoardObject>();
-		poss.add(this.board.getPlayer(this.team * -1).leader);
 		poss.addAll(this.board.getBoardObjects(this.team * -1));
 		List<Minion> wards = new ArrayList<Minion>();
+
+		Leader enemyLeader = this.board.getPlayer(this.team * -1).leader;
+		if (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.STORM) > 0) {
+			list.add(enemyLeader);
+		}
 		// check for ward
 		boolean ward = false;
-
 		for (BoardObject b : poss) {
 			if (b instanceof Minion) {
-				if (b instanceof Leader
-						&& (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.STORM) > 0)) {
-					list.add((Leader) b);
-				} else if (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.RUSH) > 0
+				if (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.RUSH) > 0
 						|| this.finalStatEffects.getStat(EffectStats.STORM) > 0) {
 					// TODO add if can attack this minion eg stealth or can't be
 					// attacked

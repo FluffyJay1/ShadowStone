@@ -64,7 +64,7 @@ public class Fireball extends Spell {
 		LinkedList<Target> list = new LinkedList<Target>();
 		list.add(t);
 		e.setBattlecryTargets(list);
-		this.addBasicEffect(e);
+		this.addEffect(true, e);
 	}
 
 	@Override

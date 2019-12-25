@@ -58,14 +58,9 @@ public class AI extends Thread {
 	}
 
 	private void AIThink() {
-		System.out.println("advantage: " + this.evaluateAdvantage(this.b.localteam));
+		System.out.println("advantage: " + evaluateAdvantage(this.b, this.b.localteam));
 		List<String> actionStack = new LinkedList<String>();
-		String stateBefore = this.b.stateToString();
 		this.getBestTurn(actionStack, 0);
-		String stateAfter = this.b.stateToString();
-		if (!stateBefore.equals(stateAfter)) {
-			System.out.println("SOMETHINGS WRONG");
-		}
 		for (String action : actionStack) {
 			this.dslocal.sendPlayerAction(action);
 		}
@@ -88,14 +83,15 @@ public class AI extends Thread {
 		List<String> bestTurn = new LinkedList<String>();
 		double bestScore = Double.NEGATIVE_INFINITY;
 		for (PlayerAction action : poss) {
+			String stateBefore = this.b.stateToString();
 			List<Event> undoStack = new LinkedList<Event>();
 			List<String> turn = new LinkedList<String>();
 			turn.add(action.toString());
 			List<Event> happenings = this.b.executePlayerAction(new StringTokenizer(action.toString()));
 			double score = 0;
-			if (action instanceof EndTurnAction || this.b.winner != 0) {
+			if (action instanceof EndTurnAction || this.b.winner != 0 || this.b.currentPlayerTurn != this.b.localteam) {
 				// no more actions can be taken
-				score = this.evaluateAdvantage(this.b.localteam);
+				score = evaluateAdvantage(this.b, this.b.localteam);
 			} else {
 				score = this.getBestTurn(turn, depth + 1);
 			}
@@ -107,6 +103,10 @@ public class AI extends Thread {
 			while (!undoStack.isEmpty()) {
 				undoStack.get(undoStack.size() - 1).undo();
 				undoStack.remove(undoStack.size() - 1);
+			}
+			String stateAfter = this.b.stateToString();
+			if (!stateBefore.equals(stateAfter)) {
+				System.out.println("SOMETHINGS WRONG");
 			}
 		}
 		actions.addAll(bestTurn);
@@ -182,15 +182,15 @@ public class AI extends Thread {
 	 */
 	private List<Target> getPossibleTargets(Target t, List<Card> searchSpace, int startInd) {
 		// TODO TEST THAT IT DOESN'T SEARCH THE SAME COMBINATION TWICE
-		if (startInd >= searchSpace.size()) {
-			System.out.println("this shouldn't happen lmao");
-		}
 		List<Target> poss = new LinkedList<Target>();
-		if (this.b.isFullyTargeted(t)) {
+		if (t.ready()) {
 			poss.add(t);
 			return poss;
 		}
-		for (int i = startInd; i < searchSpace.size() - (searchSpace.size() - t.getTargets().size()); i++) {
+		if (startInd >= searchSpace.size()) {
+			System.out.println("this shouldn't happen lmao");
+		}
+		for (int i = startInd; i < searchSpace.size() - (t.maxtargets - t.getTargets().size()); i++) {
 			Card c = searchSpace.get(i);
 			if (!t.getTargets().contains(c)) {
 				Target copy = t.clone();
@@ -220,6 +220,7 @@ public class AI extends Thread {
 		if (list.isEmpty()) {
 			return poss;
 		}
+		list.get(0).reset();
 		List<Target> searchspace = this.getPossibleTargets(list.get(0), this.b.getTargetableCards(list.get(0)), 0);
 		for (Target t : searchspace) {
 			List<Target> posscombo = new LinkedList<Target>();
@@ -240,12 +241,12 @@ public class AI extends Thread {
 	 *            the team to evaluate for
 	 * @return the advantage quantized as mana
 	 */
-	public double evaluateAdvantage(int team) {
+	public static double evaluateAdvantage(Board b, int team) {
 		// because i dont want implement hand tracking by the ai, im just gonna
 		// let the ai see the opponents hand lmao
-		return this.evaluateVictory(team) + this.evaluateSurvivability(team) + this.evaluateBoard(team)
-				+ this.evaluateHand(team) - this.evaluateSurvivability(team * -1) - this.evaluateBoard(team * -1)
-				- this.evaluateHand(team * -1);
+		return evaluateVictory(b, team) + evaluateSurvivability(b, team) + evaluateBoard(b, team)
+				+ evaluateHand(b, team) - evaluateSurvivability(b, team * -1) - evaluateBoard(b, team * -1)
+				- evaluateHand(b, team * -1);
 	}
 
 	/**
@@ -255,11 +256,13 @@ public class AI extends Thread {
 	 *            the team to evaluate for
 	 * @return a large number in favor of the winning team
 	 */
-	public double evaluateVictory(int team) {
-		if (this.b.winner == team) {
+	public static double evaluateVictory(Board b, int team) {
+		if (b.winner == team) {
 			return 99999999999.;
-		} else {
+		} else if (b.winner == team * -1) {
 			return -99999999999.;
+		} else {
+			return 0;
 		}
 	}
 
@@ -274,12 +277,16 @@ public class AI extends Thread {
 	 *            the team to evaluate for
 	 * @return The approximate mana value of that leader's survivability
 	 */
-	public double evaluateSurvivability(int team) {
-		if (this.b.getPlayer(team).leader.health <= 0) { // if dead
+	public static double evaluateSurvivability(Board b, int team) {
+		Leader l = b.getPlayer(team).leader;
+		if (l == null) {
+			return 0;
+		}
+		if (l.health <= 0) { // if dead
 			return -99999999; // u dont want to be dead
 		}
-		int potentialDamage = 0, ehp = this.b.getPlayer(team).leader.health, attackers = 0, defenders = 0;
-		for (BoardObject bo : this.b.getBoardObjects(team * -1, false, true, false)) {
+		int potentialDamage = 0, ehp = l.health, attackers = 0, defenders = 0;
+		for (BoardObject bo : b.getBoardObjects(team * -1, false, true, false)) {
 			// TODO add if can attack check
 			Minion m = (Minion) bo;
 			// TODO factor in damage limiting effects like durandal
@@ -287,7 +294,7 @@ public class AI extends Thread {
 					* m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN);
 			attackers += m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN);
 		}
-		for (BoardObject bo : this.b.getBoardObjects(team, false, true, false)) {
+		for (BoardObject bo : b.getBoardObjects(team, false, true, false)) {
 			Minion m = (Minion) bo;
 			if (m.finalStatEffects.getStat(EffectStats.WARD) > 0) {
 				ehp += m.health;
@@ -300,7 +307,7 @@ public class AI extends Thread {
 		// if there are more defenders than attacks, then minions shouldn't be
 		// able to touch face
 		if (defenders >= attackers) {
-			ehp = Math.max(ehp, this.b.getPlayer(team).leader.health);
+			ehp = Math.max(ehp, l.health);
 		}
 
 		if (ehp < 0) {
@@ -317,9 +324,9 @@ public class AI extends Thread {
 	 *            the team to evaluate for
 	 * @return the approximate mana value
 	 */
-	public double evaluateBoard(int team) {
+	public static double evaluateBoard(Board b, int team) {
 		double total = 0;
-		for (BoardObject bo : this.b.getBoardObjects(team)) {
+		for (BoardObject bo : b.getBoardObjects(team)) {
 			total += bo.getValue();
 		}
 		return total;
@@ -335,8 +342,8 @@ public class AI extends Thread {
 	 *            hand lol
 	 * @return the mana value of having these cards in hand
 	 */
-	public double evaluateHand(int team) {
-		Hand hand = this.b.getPlayer(team).hand;
+	public static double evaluateHand(Board b, int team) {
+		Hand hand = b.getPlayer(team).hand;
 		double totalPower = 0;
 		for (Card c : hand.cards) {
 			totalPower += c.getValue() / (c.finalStatEffects.getStat(EffectStats.COST) + 1);

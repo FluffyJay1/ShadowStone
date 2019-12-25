@@ -56,12 +56,12 @@ public class Target implements Cloneable {
 		if (target != null) {
 			this.targets.add(target);
 		}
-		this.ready = true;
+		this.checkReady();
 	}
 
 	public void setTargets(List<Card> targets) {
 		this.targets.addAll(targets);
-		this.ready = true;
+		this.checkReady();
 	}
 
 	// what you're looking at here son is a mistake
@@ -69,12 +69,12 @@ public class Target implements Cloneable {
 		for (UICard c : targets) {
 			this.targets.add(c.getCard());
 		}
-		this.ready = true;
+		this.checkReady();
 	}
 
 	public void setRandomTarget() {
 		List<Card> cards = new ArrayList<Card>();
-		for (Card c : this.creator.owner.board.getCards()) {
+		for (Card c : this.creator.owner.board.getTargetableCards()) {
 			if (this.canTarget(c) && !this.targets.contains(c)) {
 				cards.add(c);
 			}
@@ -88,7 +88,7 @@ public class Target implements Cloneable {
 
 	public void fillRandomTargets() {
 		ArrayList<Card> cards = new ArrayList<Card>();
-		for (Card c : this.creator.owner.board.getCards()) {
+		for (Card c : this.creator.owner.board.getTargetableCards()) {
 			if (this.canTarget(c) && !this.targets.contains(c)) {
 				cards.add(c);
 			}
@@ -102,7 +102,30 @@ public class Target implements Cloneable {
 		}
 	}
 
+	// if the maximum number of targets is selected, or all targetable cards
+	// have been targeted
+	public boolean isFullyTargeted(Board b) {
+		return this.getTargets().size() >= this.maxtargets
+				|| this.getTargets().size() == b.getTargetableCards(this).size();
+	}
+
+	// when the target is deemed ready for the first time, we assume it stays
+	// ready until it gets reset, so we don't need to check if it's fully
+	// targeted
+	private void checkReady() {
+		if (!this.ready && this.isFullyTargeted(this.creator.owner.board)) {
+			this.ready = true;
+		}
+	}
+
+	/**
+	 * A target is deemed to be ready if no more targets can be selected from
+	 * the board.
+	 * 
+	 * @return whether the target is ready
+	 */
 	public boolean ready() { // yeah
+		this.checkReady();
 		return this.ready;
 	}
 

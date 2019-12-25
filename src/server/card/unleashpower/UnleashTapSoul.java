@@ -15,11 +15,9 @@ public class UnleashTapSoul extends UnleashPower {
 			"<b> Unleash </b> an allied minion. Deal 3 damage to your leader. If <b> Vengeance </b> is active for you, this can be used once more per turn.",
 			"res/unleashpower/tapsoul.png", CRAFT, 1, ID, Tooltip.UNLEASH, Tooltip.VENGEANCE);
 
-	Effect vengeanceBonus;
-
 	public UnleashTapSoul(Board b) {
 		super(b, TOOLTIP);
-		this.vengeanceBonus = new Effect(0, "When Vengeance is active, this can be used once more per turn.") {
+		Effect vengeanceBonus = new Effect(0, "When Vengeance is active, this can be used once more per turn.", true) {
 			boolean vengeance;
 
 			@Override
@@ -32,7 +30,7 @@ public class UnleashTapSoul extends UnleashPower {
 							public void resolve(List<Event> eventlist, boolean loopprotection) {
 								EffectStatChange esc = new EffectStatChange("");
 								esc.change.setStat(EffectStats.ATTACKS_PER_TURN, 1);
-								eventlist.add(new EventSetEffectStats(vengeanceBonus, esc));
+								eventlist.add(new EventSetEffectStats(this.effect, esc));
 							}
 						};
 						return ef;
@@ -44,7 +42,7 @@ public class UnleashTapSoul extends UnleashPower {
 							public void resolve(List<Event> eventlist, boolean loopprotection) {
 								EffectStatChange esc = new EffectStatChange("");
 								esc.change.setStat(EffectStats.ATTACKS_PER_TURN, 0);
-								eventlist.add(new EventSetEffectStats(vengeanceBonus, esc));
+								eventlist.add(new EventSetEffectStats(this.effect, esc));
 							}
 						};
 						return ef;
@@ -53,7 +51,7 @@ public class UnleashTapSoul extends UnleashPower {
 				return null;
 			}
 		};
-		this.addBasicEffect(this.vengeanceBonus);
+		this.addEffect(true, vengeanceBonus);
 
 	}
 

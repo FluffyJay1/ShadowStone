@@ -17,7 +17,7 @@ public class UnleashPower extends Card {
 		super(b, tooltip);
 		Effect e = new Effect(0, "", tooltip.cost);
 		e.set.setStat(EffectStats.ATTACKS_PER_TURN, 1);
-		this.addBasicEffect(e);
+		this.addEffect(true, e);
 	}
 
 	// this returns a linkedlist event because fuck u

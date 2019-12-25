@@ -3,6 +3,7 @@ package server;
 import java.util.*;
 
 import server.card.*;
+import server.card.effect.*;
 import server.event.*;
 import server.playeraction.*;
 
@@ -22,8 +23,9 @@ public class Board {
 	protected List<Card> player2graveyard;
 	public List<Card> banished;
 	public List<Event> eventlist;
+	private List<Effect> eventlisteners;
 
-	String output = "";
+	StringBuilder output;
 
 	public Board() {
 		player1 = new Player(this, 1);
@@ -34,6 +36,8 @@ public class Board {
 		player1graveyard = new ArrayList<Card>();
 		player2graveyard = new ArrayList<Card>();
 		banished = new ArrayList<Card>();
+		eventlisteners = new ArrayList<Effect>();
+		output = new StringBuilder();
 	}
 
 	public Board(int localteam) {
@@ -47,8 +51,7 @@ public class Board {
 
 	public List<Card> getTargetableCards() {
 		List<Card> ret = new ArrayList<Card>();
-		ret.addAll(this.player1side);
-		ret.addAll(this.player2side);
+		ret.addAll(this.getBoardObjects());
 		ret.addAll(this.player1.hand.cards);
 		ret.addAll(this.player2.hand.cards);
 		return ret;
@@ -68,12 +71,6 @@ public class Board {
 		return list;
 	}
 
-	// if the maximum number of targets is selected, or all targetable cards
-	// have been targeted
-	public boolean isFullyTargeted(Target t) {
-		return t.getTargets().size() >= t.maxtargets || t.getTargets().size() == this.getTargetableCards(t).size();
-	}
-
 	public List<Card> getCards() {
 		List<Card> ret = new ArrayList<Card>();
 		ret.addAll(this.getBoardObjects());
@@ -81,8 +78,8 @@ public class Board {
 		ret.addAll(this.player1.deck.cards);
 		ret.addAll(this.player2.hand.cards);
 		ret.addAll(this.player2.deck.cards);
-		// ret.addAll(this.player1graveyard);
-		// ret.addAll(this.player2graveyard);
+		ret.addAll(this.player1graveyard);
+		ret.addAll(this.player2graveyard);
 		if (this.player1.unleashPower != null) {
 			ret.add(this.player1.unleashPower);
 		}
@@ -122,11 +119,12 @@ public class Board {
 		ArrayList<BoardObject> ret = new ArrayList<BoardObject>();
 		ret.addAll(this.player1side);
 		ret.addAll(this.player2side);
+		ret.add(this.player1.leader);
+		ret.add(this.player2.leader);
 		return ret;
 	}
 
 	public List<BoardObject> getBoardObjects(int team) {
-		// i saw what i was trying to do here originally and it's bad
 		if (team > 0) {
 			return this.player1side;
 		} else {
@@ -218,6 +216,14 @@ public class Board {
 		}
 	}
 
+	public void registerEventListener(Effect e) {
+		this.eventlisteners.add(e);
+	}
+
+	public void removeEventListener(Effect e) {
+		this.eventlisteners.remove(e);
+	}
+
 	public void updatePositions() {
 		for (int i = 0; i < player1side.size(); i++) {
 			player1side.get(i).cardpos = i;
@@ -251,21 +257,17 @@ public class Board {
 	// Only used by server, i.e. isServer == true
 	public List<Event> resolveAll(List<Event> eventlist, boolean loopprotection) {
 		LinkedList<Event> l = new LinkedList<Event>();
-		long stringTime = 0, resolveTime = 0, sideEffectTime = 0;
 		while (!eventlist.isEmpty()) {
 			Event e = eventlist.remove(0);
 			l.add(e);
 			if (e.conditions()) {
-				long start = System.nanoTime();
 				String eventstring = e.toString();
 				if (!eventstring.isEmpty() && e.send) {
 					// add this to a buffer of happened events
-					this.output += eventstring;
+					this.output.append(eventstring);
 					// System.out.print(e.getClass().getName() + ": " +
 					// eventstring);
 				}
-				stringTime += System.nanoTime() - start;
-				start = System.nanoTime();
 				if (e.priority > 0) {
 					LinkedList<Event> lul = new LinkedList<Event>();
 					e.resolve(lul, loopprotection);
@@ -273,25 +275,22 @@ public class Board {
 				} else {
 					e.resolve(eventlist, loopprotection);
 				}
-				resolveTime += System.nanoTime() - start;
-				start = System.nanoTime();
-				for (Card c : this.getCards()) {
-					eventlist.addAll(c.onEvent(e));
+				for (Effect effect : this.eventlisteners) {
+					if (!effect.mute) {
+						Event response = effect.onListenEvent(e);
+						if (response != null) {
+							eventlist.add(response);
+						}
+					}
 				}
-				sideEffectTime += System.nanoTime() - start;
 			}
 		}
-		System.out.println("Times from resolving:");
-		System.out.println("String: " + stringTime);
-		System.out.println("Resolve: " + resolveTime);
-		System.out.println("Side Effects: " + sideEffectTime);
-		System.out.println("Total: " + (stringTime + resolveTime + sideEffectTime));
 		return l;
 	}
 
 	public String retrieveEventString() {
-		String temp = this.output;
-		this.output = "";
+		String temp = this.output.toString();
+		this.output.delete(0, this.output.length());
 		return temp;
 	}
 

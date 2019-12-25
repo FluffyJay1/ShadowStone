@@ -111,10 +111,9 @@ public class ServerGameThread extends Thread {
 			MessageType mtype = ds.receive();
 			switch (mtype) {
 			case PLAYERACTION:
-				System.out.println("received player action");
 				if (this.b.currentPlayerTurn == team) {
 					String action = ds.readPlayerAction();
-					System.out.println("action: " + action);
+					System.out.println("team" + team + " action: " + action);
 					this.b.executePlayerAction(new StringTokenizer(action));
 					this.sendEvents();
 				} else {

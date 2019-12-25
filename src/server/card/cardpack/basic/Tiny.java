@@ -35,6 +35,6 @@ public class Tiny extends Minion {
 				return ef;
 			}
 		};
-		this.addBasicEffect(e);
+		this.addEffect(true, e);
 	}
 }

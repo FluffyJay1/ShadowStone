@@ -64,6 +64,6 @@ public class EventMuteEffect extends Event {
 
 	@Override
 	public boolean conditions() {
-		return this.c.getAdditionalEffects().contains(this.e);
+		return this.c.getEffects(false).contains(this.e);
 	}
 }

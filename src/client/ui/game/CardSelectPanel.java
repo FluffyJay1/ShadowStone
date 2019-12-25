@@ -63,7 +63,7 @@ public class CardSelectPanel extends UIBox {
 				this.scroll.childoffset.y = 0;
 			}
 			String effectstext = "Effects:\n";
-			for (Effect e : this.uib.selectedCard.getCard().getAdditionalEffects()) {
+			for (Effect e : this.uib.selectedCard.getCard().getEffects(false)) {
 				if (!e.description.isEmpty()) {
 					effectstext += "- " + e.description + (e.mute ? " <b> MUTED </b> " : "") + "\n";
 				}

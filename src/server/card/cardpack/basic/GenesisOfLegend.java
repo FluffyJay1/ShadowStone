@@ -48,6 +48,6 @@ public class GenesisOfLegend extends Amulet {
 			}
 		};
 		e.set.setStat(EffectStats.COUNTDOWN, 3);
-		this.addBasicEffect(e);
+		this.addEffect(true, e);
 	}
 }

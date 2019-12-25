@@ -95,11 +95,15 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 			}
 		}
 		if (this.currentAnimations.isEmpty() && !this.inputeventliststrings.isEmpty()) {
+			// current set of animations is empty, see what we have to animate
+			// next
 			StringTokenizer st = new StringTokenizer(this.inputeventliststrings.remove(0));
 			Event currentEvent = Event.createFromString(this, st);
 			if (currentEvent != null && currentEvent.conditions()) {
 				LinkedList<Event> lmao = new LinkedList<Event>();
 				currentEvent.resolve(lmao, false);
+				this.uiBoard.advantageText
+						.setText(String.format("Adv: %.4f", AI.evaluateAdvantage(this, this.localteam)));
 				// TODO use each card's respective eventaniation for these
 				// events
 				// e.g. tiny throwing a rock for his attack

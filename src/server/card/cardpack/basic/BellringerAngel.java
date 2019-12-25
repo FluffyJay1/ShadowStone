@@ -32,6 +32,6 @@ public class BellringerAngel extends Minion {
 			}
 		};
 		e.set.setStat(EffectStats.WARD, 1);
-		this.addBasicEffect(e);
+		this.addEffect(true, e);
 	}
 }

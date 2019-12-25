@@ -46,7 +46,7 @@ public class WellOfDestination extends Amulet {
 				return ef;
 			}
 		};
-		this.addBasicEffect(e);
+		this.addEffect(true, e);
 	}
 
 }

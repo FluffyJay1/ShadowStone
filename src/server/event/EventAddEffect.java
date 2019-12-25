@@ -47,7 +47,7 @@ public class EventAddEffect extends Event {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			c.addEffect(clonede);
+			c.addEffect(false, clonede);
 			this.effects.add(clonede);
 			this.oldHealth.add(0);
 			if (c instanceof Minion) {

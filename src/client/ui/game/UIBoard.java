@@ -35,7 +35,7 @@ public class UIBoard extends UIBox {
 	Vector2f mouseDownPos = new Vector2f();
 	CardSelectPanel cardSelectPanel;
 	EndTurnButton endTurnButton;
-	Text targetText, player1ManaText, player2ManaText;
+	public Text targetText, player1ManaText, player2ManaText, advantageText;
 	public UICard preSelectedCard, selectedCard, draggingCard, playingCard, visualPlayingCard, attackingMinion,
 			unleashingMinion;
 	// TODO: CARD PLAYING QUEUE AND BOARD POSITIONING
@@ -64,9 +64,13 @@ public class UIBoard extends UIBox {
 				0);
 		this.player2ManaText.relpos = true;
 		this.player2ManaText.setZ(1);
+		this.advantageText = new Text(ui, new Vector2f(-0.4f, -0.4f), "Advantage Text", 400, 24, "Verdana", 30, -1, -1);
+		this.advantageText.relpos = true;
+		this.advantageText.setZ(1);
 		this.addChild(this.targetText);
 		this.addChild(this.player1ManaText);
 		this.addChild(this.player2ManaText);
+		this.addChild(this.advantageText);
 	}
 
 	@Override
@@ -331,7 +335,6 @@ public class UIBoard extends UIBox {
 		// this.player1.printHand();
 		// this.player2.printHand();
 		// System.out.println(this.stateToString());
-
 	}
 
 	public void mousePressedCard(UICard c, int button, int x, int y) {

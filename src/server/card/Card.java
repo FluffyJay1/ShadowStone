@@ -43,18 +43,14 @@ public class Card implements Cloneable {
 		return this.finalBasicStatEffects.getStat(EffectStats.COST) + 1;
 	}
 
-	public List<Effect> getBasicEffects() {
-		return this.basicEffects;
-	}
-
-	public List<Effect> getAdditionalEffects() {
-		return this.effects;
+	public List<Effect> getEffects(boolean basic) {
+		return basic ? this.basicEffects : this.effects;
 	}
 
 	public List<Effect> getFinalEffects() {
 		LinkedList<Effect> list = new LinkedList<Effect>();
-		list.addAll(this.getBasicEffects());
-		for (Effect e : this.getAdditionalEffects()) {
+		list.addAll(this.getEffects(true));
+		for (Effect e : this.getEffects(false)) {
 			if (!e.mute) {
 				list.add(e);
 			}
@@ -62,37 +58,41 @@ public class Card implements Cloneable {
 		return list;
 	}
 
-	public void addBasicEffect(int pos, Effect e) {
-		e.basic = true;
+	/**
+	 * Adds an effect to the card. If the effect is also flagged as an event
+	 * listener, it is registered with the board.
+	 * 
+	 * @param basic
+	 *            Whether the effect is a basic effect of the card
+	 * @param pos
+	 *            The position to add the effect to
+	 * @param e
+	 *            The effect
+	 */
+	public void addEffect(boolean basic, int pos, Effect e) {
+		e.basic = basic;
 		e.pos = pos;
 		e.owner = this;
-		this.basicEffects.add(pos, e);
-		this.updateBasicEffectPositions();
-		this.updateBasicEffectStats();
+		this.getEffects(basic).add(pos, e);
+		if (this.board != null && e.listener) {
+			this.board.registerEventListener(e);
+		}
+		this.updateEffectPositions(basic);
+		this.updateEffectStats(basic);
 	}
 
-	public void addBasicEffect(Effect e) {
-		this.addBasicEffect(this.basicEffects.size(), e);
-	}
-
-	public void addEffect(int pos, Effect e) {
-		e.basic = false;
-		e.pos = pos;
-		e.owner = this;
-		this.effects.add(pos, e);
-		this.updateAdditionalEffectPositions();
-		this.updateFinalEffectStats();
-	}
-
-	public void addEffect(Effect e) {
-		this.addEffect(this.effects.size(), e);
+	public void addEffect(boolean basic, Effect e) {
+		this.addEffect(basic, this.getEffects(basic).size(), e);
 	}
 
 	public void removeEffect(Effect e) {
 		if (this.effects.contains(e)) {
 			this.effects.remove(e);
-			this.updateAdditionalEffectPositions();
-			this.updateFinalEffectStats();
+			if (this.board != null && e.listener) {
+				this.board.removeEventListener(e);
+			}
+			this.updateEffectPositions(false);
+			this.updateEffectStats(false);
 		}
 	}
 
@@ -108,44 +108,40 @@ public class Card implements Cloneable {
 	public void muteEffect(Effect e, boolean mute) {
 		if (this.effects.contains(e)) {
 			e.mute = mute;
-			this.updateBasicEffectStats();
+			this.updateEffectStats(false);
 		}
 	}
 
-	public void updateBasicEffectStats() {
-		this.finalBasicStatEffects = new Effect(0, "");
-		for (Effect e : this.getBasicEffects()) {
-			this.finalBasicStatEffects.applyEffectStats(e);
+	// updates stat numbers, if a basic effect changed then it tallies the stat
+	// numbers for both basic and additional effects, caching the tally for the
+	// base stat numbers for future use
+	public void updateEffectStats(boolean basic) {
+		// start with clean slate
+		Effect stats = new Effect(0, "", 1);
+		if (basic) {
+			this.finalBasicStatEffects = stats;
+		} else {
+			this.finalStatEffects = stats;
+		}
+		List<Effect> relevant = basic ? this.getEffects(basic) : this.getFinalEffects();
+		for (Effect e : relevant) {
+			stats.applyEffectStats(e);
 		}
 		for (int i = 0; i < EffectStats.NUM_STATS; i++) {
-			if (this.finalBasicStatEffects.getStat(i) < 0) {
-				this.finalBasicStatEffects.set.setStat(i, 0);
+			if (stats.getStat(i) < 0) {
+				stats.set.setStat(i, 0);
 			}
 		}
-		this.updateFinalEffectStats();
-	}
-
-	public void updateFinalEffectStats() {
-		this.finalStatEffects = new Effect(0, "");
-		for (Effect e : this.getFinalEffects()) {
-			this.finalStatEffects.applyEffectStats(e);
-		}
-		for (int i = 0; i < EffectStats.NUM_STATS; i++) {
-			if (this.finalStatEffects.getStat(i) < 0) {
-				this.finalStatEffects.set.setStat(i, 0);
-			}
+		if (basic) {
+			// update the stat numbers for the additional effects too
+			this.updateEffectStats(false);
 		}
 	}
 
-	public void updateBasicEffectPositions() {
-		for (int i = 0; i < this.basicEffects.size(); i++) {
-			this.basicEffects.get(i).pos = i;
-		}
-	}
-
-	public void updateAdditionalEffectPositions() {
-		for (int i = 0; i < this.effects.size(); i++) {
-			this.effects.get(i).pos = i;
+	public void updateEffectPositions(boolean basic) {
+		List<Effect> relevant = this.getEffects(basic);
+		for (int i = 0; i < relevant.size(); i++) {
+			relevant.get(i).pos = i;
 		}
 	}
 
@@ -200,17 +196,6 @@ public class Card implements Cloneable {
 		}
 	}
 
-	public List<EventFlag> onEvent(Event event) {
-		List<EventFlag> list = new LinkedList<EventFlag>();
-		for (Effect e : this.getFinalEffects()) {
-			EventFlag temp = e.onListenEvent(event);
-			if (temp != null) {
-				list.add(temp);
-			}
-		}
-		return list;
-	}
-
 	// cloning a card ingame should be done as a create card + copy effect
 	// events
 	@Override
@@ -218,11 +203,11 @@ public class Card implements Cloneable {
 		Card c = (Card) super.clone();
 		c.basicEffects = new LinkedList<Effect>();
 		for (Effect e : this.basicEffects) {
-			c.addBasicEffect(e.clone());
+			c.addEffect(true, e.clone());
 		}
 		c.effects = new LinkedList<Effect>();
 		for (Effect e : this.effects) {
-			c.addEffect(e.clone());
+			c.addEffect(false, e.clone());
 		}
 		return c;
 	}

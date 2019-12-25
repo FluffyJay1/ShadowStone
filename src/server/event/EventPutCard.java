@@ -151,7 +151,7 @@ public class EventPutCard extends Event {
 				break;
 			}
 			for (Effect e : this.prevEffects.get(i)) {
-				card.addEffect(e);
+				card.addEffect(false, e);
 			}
 			// goes against flow
 			if (card instanceof Minion) {

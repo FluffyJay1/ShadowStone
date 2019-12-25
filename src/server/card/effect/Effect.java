@@ -22,6 +22,11 @@ public class Effect implements Cloneable {
 		this.description = description;
 	}
 
+	public Effect(int id, String description, boolean listener) {
+		this(id, description);
+		this.listener = listener;
+	}
+
 	public Effect(int id, String description, int cost) {
 		this(id, description);
 		this.set.setStat(EffectStats.COST, cost);
@@ -183,6 +188,7 @@ public class Effect implements Cloneable {
 		return null;
 	}
 
+	// make sure to flag effect as an event listener
 	public EventFlag onListenEvent(Event event) {
 		return null;
 	}
@@ -244,11 +250,7 @@ public class Effect implements Cloneable {
 		}
 		boolean basic = Boolean.parseBoolean(st.nextToken());
 		int pos = Integer.parseInt(st.nextToken());
-		if (basic) {
-			return c.getBasicEffects().get(pos);
-		} else {
-			return c.getAdditionalEffects().get(pos);
-		}
+		return c.getEffects(basic).get(pos);
 	}
 
 }

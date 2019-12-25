@@ -15,11 +15,9 @@ public class UnleashFeedFervor extends UnleashPower {
 			"<b> Unleash </b> an allied minion. If <b> Overflow </b> is active for you, this costs 1 less.",
 			"res/unleashpower/feedfervor.png", CRAFT, 2, ID, Tooltip.UNLEASH, Tooltip.OVERFLOW);
 
-	Effect overflowDiscount;
-
 	public UnleashFeedFervor(Board b) {
 		super(b, TOOLTIP);
-		this.overflowDiscount = new Effect(0, "When Overflow is active, this costs 1 less") {
+		Effect overflowDiscount = new Effect(0, "When Overflow is active, this costs 1 less", true) {
 			boolean overflow;
 
 			@Override
@@ -32,7 +30,7 @@ public class UnleashFeedFervor extends UnleashPower {
 							public void resolve(List<Event> eventlist, boolean loopprotection) {
 								EffectStatChange esc = new EffectStatChange("");
 								esc.change.setStat(EffectStats.COST, -1);
-								eventlist.add(new EventSetEffectStats(overflowDiscount, esc)); // WHY
+								eventlist.add(new EventSetEffectStats(this.effect, esc)); // WHY
 							}
 						};
 						return ef;
@@ -44,7 +42,7 @@ public class UnleashFeedFervor extends UnleashPower {
 							public void resolve(List<Event> eventlist, boolean loopprotection) {
 								EffectStatChange esc = new EffectStatChange("");
 								esc.change.setStat(EffectStats.COST, 0);
-								eventlist.add(new EventSetEffectStats(overflowDiscount, esc)); // WHY
+								eventlist.add(new EventSetEffectStats(this.effect, esc)); // WHY
 							}
 						};
 						return ef;
@@ -53,7 +51,6 @@ public class UnleashFeedFervor extends UnleashPower {
 				return null;
 			}
 		};
-		this.addBasicEffect(this.overflowDiscount);
-
+		this.addEffect(true, overflowDiscount);
 	}
 }

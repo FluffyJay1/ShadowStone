@@ -64,6 +64,6 @@ public class WoodOfBrambles extends Amulet {
 			}
 		};
 		e.set.setStat(EffectStats.COUNTDOWN, 2);
-		this.addBasicEffect(e);
+		this.addEffect(true, e);
 	}
 }

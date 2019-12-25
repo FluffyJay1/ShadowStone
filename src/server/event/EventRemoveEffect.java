@@ -42,7 +42,7 @@ public class EventRemoveEffect extends Event {
 
 	@Override
 	public void undo() {
-		this.c.addEffect(this.prevPos, this.e);
+		this.c.addEffect(false, this.prevPos, this.e);
 		if (this.c instanceof Minion) {
 			Minion m = (Minion) this.c;
 			m.health = this.oldHealth;
@@ -62,6 +62,6 @@ public class EventRemoveEffect extends Event {
 
 	@Override
 	public boolean conditions() {
-		return this.c.getAdditionalEffects().contains(this.e);
+		return this.c.getEffects(false).contains(this.e);
 	}
 }
