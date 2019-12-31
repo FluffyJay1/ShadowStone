@@ -190,7 +190,7 @@ public class AI extends Thread {
 		if (startInd >= searchSpace.size()) {
 			System.out.println("this shouldn't happen lmao");
 		}
-		for (int i = startInd; i < searchSpace.size() - (t.maxtargets - t.getTargets().size()); i++) {
+		for (int i = startInd; i < searchSpace.size() - (t.maxtargets - t.getTargets().size() - 1); i++) {
 			Card c = searchSpace.get(i);
 			if (!t.getTargets().contains(c)) {
 				Target copy = t.clone();
