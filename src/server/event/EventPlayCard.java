@@ -40,8 +40,8 @@ public class EventPlayCard extends Event {
 
 	@Override
 	public String toString() {
-		return this.id + " " + p.team + " " + position + " " + this.c.toReference() + c.battlecryTargetsToString()
-				+ "\n";
+		return this.id + " " + p.team + " " + position + " " + this.c.toReference()
+				+ Target.listToString(this.c.getBattlecryTargets()) + "\n";
 	}
 
 	public static EventPlayCard fromString(Board b, StringTokenizer st) {
@@ -49,7 +49,7 @@ public class EventPlayCard extends Event {
 		Player p = b.getPlayer(team);
 		int position = Integer.parseInt(st.nextToken());
 		Card c = Card.fromReference(b, st);
-		c.battlecryTargetsFromString(b, st);
+		Target.setListFromString(c.getBattlecryTargets(), b, st);
 		return new EventPlayCard(p, c, position);
 	}
 

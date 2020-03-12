@@ -156,6 +156,7 @@ public class Card implements Cloneable {
 		return list;
 	}
 
+	// TODO refactor to effect
 	public boolean conditions() { // to be able to even begin to play
 		return true;
 	}
@@ -168,32 +169,6 @@ public class Card implements Cloneable {
 			}
 		}
 		return list;
-	}
-
-	public void resetBattlecryTargets() {
-		for (Target t : this.getBattlecryTargets()) {
-			t.reset();
-		}
-	}
-
-	public Target getNextNeededBattlecryTarget() {
-		for (Target t : this.getBattlecryTargets()) {
-			if (!t.ready()) {
-				return t;
-			}
-		}
-		return null;
-	}
-
-	public String battlecryTargetsToString() {
-		return Target.listToString(this.getBattlecryTargets());
-	}
-
-	public void battlecryTargetsFromString(Board b, StringTokenizer st) {
-		int num = Integer.parseInt(st.nextToken());
-		for (int i = 0; i < num; i++) {
-			this.getBattlecryTargets().get(i).copyFromString(b, st);
-		}
 	}
 
 	// cloning a card ingame should be done as a create card + copy effect

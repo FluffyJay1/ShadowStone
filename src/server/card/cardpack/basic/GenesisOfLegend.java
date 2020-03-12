@@ -33,7 +33,7 @@ public class GenesisOfLegend extends Amulet {
 
 							@Override
 							public void resolveTargets() {
-								this.setRandomTarget();
+								this.setRandomCards();
 							}
 						};
 						t.resolveTargets();

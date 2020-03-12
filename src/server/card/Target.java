@@ -3,7 +3,6 @@ package server.card;
 import java.util.*;
 
 import client.*;
-import client.ui.game.*;
 import server.*;
 import server.card.effect.*;
 
@@ -52,27 +51,26 @@ public class Target implements Cloneable {
 		return this.targets;
 	}
 
-	public void setTarget(Card target) {
+	public void addCard(Card target) {
 		if (target != null) {
 			this.targets.add(target);
 		}
 		this.checkReady();
 	}
 
-	public void setTargets(List<Card> targets) {
-		this.targets.addAll(targets);
-		this.checkReady();
-	}
-
-	// what you're looking at here son is a mistake
-	public void setTargetsUI(List<UICard> targets) {
-		for (UICard c : targets) {
-			this.targets.add(c.getCard());
+	public void removeCards(Card target) {
+		if (target != null) {
+			this.ready = !this.targets.remove(target);
 		}
 		this.checkReady();
 	}
 
-	public void setRandomTarget() {
+	public void setCards(List<Card> targets) {
+		this.targets.addAll(targets);
+		this.checkReady();
+	}
+
+	public void setRandomCards() {
 		List<Card> cards = new ArrayList<Card>();
 		for (Card c : this.creator.owner.board.getTargetableCards()) {
 			if (this.canTarget(c) && !this.targets.contains(c)) {
@@ -80,13 +78,13 @@ public class Target implements Cloneable {
 			}
 		}
 		if (cards.size() > 0) {
-			this.setTarget(cards.get((int) (Math.random() * cards.size())));
+			this.addCard(cards.get((int) (Math.random() * cards.size())));
 		} else {
-			this.setTarget(null);
+			this.addCard(null);
 		}
 	}
 
-	public void fillRandomTargets() {
+	public void fillRandomCards() {
 		ArrayList<Card> cards = new ArrayList<Card>();
 		for (Card c : this.creator.owner.board.getTargetableCards()) {
 			if (this.canTarget(c) && !this.targets.contains(c)) {
@@ -95,9 +93,9 @@ public class Target implements Cloneable {
 		}
 		for (int i = this.targets.size(); i < this.maxtargets; i++) {
 			if (cards.size() > 0) {
-				this.setTarget(cards.remove((int) (Math.random() * cards.size())));
+				this.addCard(cards.remove((int) (Math.random() * cards.size())));
 			} else {
-				this.setTarget(null);
+				this.addCard(null);
 			}
 		}
 	}
@@ -124,7 +122,7 @@ public class Target implements Cloneable {
 	 * 
 	 * @return whether the target is ready
 	 */
-	public boolean ready() { // yeah
+	public boolean isReady() { // yeah
 		this.checkReady();
 		return this.ready;
 	}
@@ -132,6 +130,32 @@ public class Target implements Cloneable {
 	public void reset() { // why am i doing this
 		this.targets.clear();
 		this.ready = false;
+	}
+
+	public static void resetList(List<Target> targets) {
+		if (targets != null) {
+			for (Target t : targets) {
+				t.reset();
+			}
+		}
+	}
+
+	public static Target firstUnsetTarget(List<Target> targets) {
+		if (targets != null) {
+			for (Target t : targets) {
+				if (!t.isReady()) {
+					return t;
+				}
+			}
+		}
+		return null;
+	}
+
+	public static void setListFromString(List<Target> targets, Board b, StringTokenizer st) {
+		int num = Integer.parseInt(st.nextToken());
+		for (int i = 0; i < num; i++) {
+			targets.get(i).copyFromString(b, st);
+		}
 	}
 
 	@Override
@@ -167,7 +191,7 @@ public class Target implements Cloneable {
 		Target t = new Target(creator, maxtargets, description);
 		for (int i = 0; i < targetsize; i++) {
 			Card target = Card.fromReference(b, st);
-			t.setTarget(target);
+			t.addCard(target);
 		}
 		return t;
 	}
@@ -184,7 +208,7 @@ public class Target implements Cloneable {
 		this.description = description;
 		for (int i = 0; i < targetsize; i++) {
 			Card target = Card.fromReference(b, st);
-			this.setTarget(target);
+			this.addCard(target);
 		}
 	}
 

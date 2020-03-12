@@ -40,13 +40,12 @@ public class UIBoard extends UIBox {
 			unleashingMinion;
 	// TODO: CARD PLAYING QUEUE AND BOARD POSITIONING
 	double playingX;
-	List<UICard> cards, targetedCards;
+	List<UICard> cards;
 
 	public UIBoard(UI ui, int localteam, DataStream ds) {
 		super(ui, new Vector2f(Config.WINDOW_WIDTH / 2, Config.WINDOW_HEIGHT / 2),
 				new Vector2f(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT), "res/ui/uibox.png");
 		this.cards = new ArrayList<UICard>();
-		this.targetedCards = new LinkedList<UICard>();
 		this.b = new VisualBoard(this, localteam);
 		this.ds = ds;
 		this.cardSelectPanel = new CardSelectPanel(ui, this);
@@ -79,25 +78,21 @@ public class UIBoard extends UIBox {
 		this.b.update(frametime);
 		this.readDataStream();
 
+		// handle targeting text
 		this.targetText.setHide(false);
-		if (this.playingCard != null && this.playingCard.getCard().getNextNeededBattlecryTarget() != null) {
-			this.targetText.setText(this.playingCard.getCard().getNextNeededBattlecryTarget().description);
+		UICard relevantCard = this.getCurrentTargetingCard();
+		Target relevantTarget = Target.firstUnsetTarget(this.getCurrentTargetingTargetList());
+		if (relevantCard != null && relevantTarget != null) {
+			this.targetText.setText(relevantTarget.description);
 			this.targetText.setPos(
-					new Vector2f(this.playingCard.getPos().x,
-							this.playingCard.getPos().y
+					new Vector2f(relevantCard.getPos().x,
+							relevantCard.getPos().y
 									+ (float) (UICard.CARD_DIMENSIONS.y * CARD_SCALE_ABILITY * CARD_SCALE_HAND / 2)),
-					1);
-		} else if (this.unleashingMinion != null
-				&& this.unleashingMinion.getMinion().getNextNeededUnleashTarget() != null) {
-			this.targetText.setText(this.unleashingMinion.getMinion().getNextNeededUnleashTarget().description);
-			this.targetText.setPos(
-					new Vector2f(this.unleashingMinion.getPos().x,
-							this.unleashingMinion.getPos().y
-									+ (float) (UICard.CARD_DIMENSIONS.y * CARD_SCALE_ABILITY * CARD_SCALE_BOARD / 2)),
 					1);
 		} else {
 			this.targetText.setHide(true);
 		}
+		// end handling targeting text
 
 		this.player1ManaText
 				.setText(this.b.getPlayer(this.b.localteam).mana + "/" + this.b.getPlayer(this.b.localteam).maxmana);
@@ -185,13 +180,17 @@ public class UIBoard extends UIBox {
 	public void draw(Graphics g) {
 		super.draw(g);
 		this.b.draw(g);
-		for (UICard c : this.targetedCards) {
-			g.setColor(org.newdawn.slick.Color.red);
-			g.drawRect((float) (c.getFinalPos().x - UICard.CARD_DIMENSIONS.x * c.getScale() / 2 * 0.9),
-					(float) (c.getFinalPos().y - UICard.CARD_DIMENSIONS.y * c.getScale() / 2 * 0.9),
-					(float) (UICard.CARD_DIMENSIONS.x * c.getScale() * 0.9),
-					(float) (UICard.CARD_DIMENSIONS.y * c.getScale() * 0.9));
-			g.setColor(org.newdawn.slick.Color.white);
+		Target currentTargeting = Target.firstUnsetTarget(this.getCurrentTargetingTargetList());
+		if (currentTargeting != null) {
+			for (Card card : currentTargeting.getTargets()) {
+				UICard c = card.uiCard;
+				g.setColor(org.newdawn.slick.Color.red);
+				g.drawRect((float) (c.getFinalPos().x - UICard.CARD_DIMENSIONS.x * c.getScale() / 2 * 0.9),
+						(float) (c.getFinalPos().y - UICard.CARD_DIMENSIONS.y * c.getScale() / 2 * 0.9),
+						(float) (UICard.CARD_DIMENSIONS.x * c.getScale() * 0.9),
+						(float) (UICard.CARD_DIMENSIONS.y * c.getScale() * 0.9));
+				g.setColor(org.newdawn.slick.Color.white);
+			}
 		}
 		if (this.draggingCard != null && this.draggingCard.getCard() instanceof BoardObject
 				&& this.draggingCard.getRelPos().y < CARD_PLAY_Y) {
@@ -377,7 +376,7 @@ public class UIBoard extends UIBox {
 						&& ((Minion) bo.realCard).canAttack() && !this.b.disableInput) {
 					this.attackingMinion = c;
 					for (UICard uib : this.getBoardObjects(this.b.localteam * -1, true, true, false)) {
-						if (uib.getCard() instanceof Minion && ((Minion) this.attackingMinion.getCard().realCard)
+						if (uib.getCard() instanceof Minion && this.attackingMinion.getMinion().realMinion()
 								.getAttackableTargets().contains(uib.getCard().realCard)) {
 							uib.setScale(CARD_SCALE_TARGET);
 						}
@@ -399,14 +398,15 @@ public class UIBoard extends UIBox {
 		UICard c = this.cardAtPos(new Vector2f(x, y));
 		if (this.attackingMinion != null) { // in middle of ordering attack
 			if (c != null && (c.getCard() instanceof Minion) && c.getCard().team != this.b.localteam
-					&& ((Minion) this.attackingMinion.getCard().realCard).getAttackableTargets()
+					&& this.attackingMinion.getMinion().realMinion().getAttackableTargets()
 							.contains(c.getCard().realCard)) {
-				this.ds.sendPlayerAction(new OrderAttackAction((Minion) this.attackingMinion.getCard().realCard,
-						(Minion) c.getCard().realCard).toString());
+				this.ds.sendPlayerAction(
+						new OrderAttackAction(this.attackingMinion.getMinion().realMinion(), c.getMinion().realMinion())
+								.toString());
 				c.setScale(CARD_SCALE_BOARD);
 			}
 			for (UICard uib : this.getBoardObjects(this.b.localteam * -1, true, true, false)) {
-				if (uib.getCard() instanceof Minion && ((Minion) this.attackingMinion.getCard().realCard)
+				if (uib.getCard() instanceof Minion && this.attackingMinion.getMinion().realMinion()
 						.getAttackableTargets().contains(uib.getCard().realCard)) {
 					uib.setScale(CARD_SCALE_BOARD);
 				}
@@ -431,58 +431,68 @@ public class UIBoard extends UIBox {
 					&& this.b.getPlayer(this.b.localteam).canPlayCard(this.draggingCard.getCard())) {
 				this.playingCard = this.draggingCard;
 				this.selectedCard = null;
-				this.resolveNoBattlecryTarget();
-				this.animateBattlecryTargets(true);
+				// this.resolveNoBattlecryTarget();
+				this.animateTargets(Target.firstUnsetTarget(this.getCurrentTargetingTargetList()), true);
 				this.playingX = this.draggingCard.getRelPos().x;
 			}
 			this.draggingCard = null;
 		}
-
-		if (this.playingCard != null) {
-			this.finishBattlecryTargeting();
-		} else if (this.unleashingMinion != null) {
-			this.finishUnleashTargeting();
-		}
+		this.finishTargeting();
 	}
 
-	// attempt to resolve targeting as a player action to send to server
-	public void finishBattlecryTargeting() {
-		Target t = this.playingCard.getCard().getNextNeededBattlecryTarget();
-		if (t == null) {
-			// convert visual card's targets to real card's targets
-			this.playingCard.getCard().realCard.resetBattlecryTargets();
-			List<Target> visualbt = this.playingCard.getCard().getBattlecryTargets();
-			List<Target> realbt = this.playingCard.getCard().realCard.getBattlecryTargets();
-			for (int i = 0; i < visualbt.size(); i++) {
-				for (Card targetc : visualbt.get(i).getTargets()) {
-					realbt.get(i).setTarget(targetc.realCard);
-				}
-			}
-			this.ds.sendPlayerAction(new PlayCardAction(this.b.realBoard.getPlayer(this.b.localteam),
-					this.playingCard.getCard().realCard, XToPlayBoardPos(this.playingX, this.b.localteam),
-					this.playingCard.getCard().realCard.battlecryTargetsToString()).toString());
+	public void stopTargeting() {
+		Target.resetList(this.getCurrentTargetingTargetList());
+		Target.resetList(this.getCurrentTargetingRealTargetList());
+		if (this.playingCard != null) {
 			this.playingCard = null;
 		}
+		if (this.unleashingMinion != null) {
+			this.unleashingMinion.setScale(CARD_SCALE_BOARD);
+			this.unleashingMinion = null;
+		}
+	}
+
+	public UICard getCurrentTargetingCard() {
+		return this.playingCard != null ? this.playingCard
+				: (this.unleashingMinion != null ? this.unleashingMinion : null);
+	}
+
+	public List<Target> getCurrentTargetingTargetList() {
+		return this.playingCard != null ? this.playingCard.getCard().getBattlecryTargets()
+				: (this.unleashingMinion != null ? this.unleashingMinion.getMinion().getUnleashTargets() : null);
+	}
+
+	public List<Target> getCurrentTargetingRealTargetList() {
+		return this.playingCard != null ? this.playingCard.getCard().realCard.getBattlecryTargets()
+				: (this.unleashingMinion != null ? this.unleashingMinion.getMinion().realMinion().getUnleashTargets()
+						: null);
 	}
 
 	// attempt to resolve targeting as a player action to send to server
-	public void finishUnleashTargeting() {
-		Target t = this.unleashingMinion.getMinion().getNextNeededUnleashTarget();
-		if (t == null) {
-			// convert visual card's targets to real card's targets
-			((Minion) this.unleashingMinion.getMinion().realCard).resetUnleashTargets();
-			List<Target> visualut = this.unleashingMinion.getMinion().getUnleashTargets();
-			List<Target> realut = ((Minion) this.unleashingMinion.getCard().realCard).getUnleashTargets();
-			for (int i = 0; i < visualut.size(); i++) {
-				for (Card targetc : visualut.get(i).getTargets()) {
-					realut.get(i).setTarget(targetc.realCard);
+	public void finishTargeting() {
+		List<Target> visualt = this.getCurrentTargetingTargetList();
+		if (visualt != null) {
+			Target t = Target.firstUnsetTarget(this.getCurrentTargetingTargetList());
+			if (t == null) {
+				// convert visual card's targets to real card's targets
+				List<Target> realt = this.getCurrentTargetingRealTargetList();
+				Target.resetList(realt);
+				for (int i = 0; i < visualt.size(); i++) {
+					for (Card targetc : visualt.get(i).getTargets()) {
+						realt.get(i).addCard(targetc.realCard);
+					}
 				}
+				if (this.playingCard != null) {
+					this.ds.sendPlayerAction(new PlayCardAction(this.b.realBoard.getPlayer(this.b.localteam),
+							this.playingCard.getCard().realCard, XToPlayBoardPos(this.playingX, this.b.localteam),
+							Target.listToString(realt)).toString());
+				} else if (this.unleashingMinion != null) {
+					// unnecessary check but gets intent across
+					this.ds.sendPlayerAction(new UnleashMinionAction(this.b.realBoard.getPlayer(this.b.localteam),
+							this.unleashingMinion.getMinion().realMinion(), Target.listToString(realt)).toString());
+				}
+				this.stopTargeting();
 			}
-			this.ds.sendPlayerAction(new UnleashMinionAction(this.b.realBoard.getPlayer(this.b.localteam),
-					(Minion) this.unleashingMinion.getMinion().realCard,
-					((Minion) this.unleashingMinion.getCard().realCard).unleashTargetsToString()).toString());
-			this.unleashingMinion.setScale(CARD_SCALE_BOARD);
-			this.unleashingMinion = null;
 		}
 	}
 
@@ -491,77 +501,37 @@ public class UIBoard extends UIBox {
 		if (this.b.disableInput) {
 			return false;
 		}
-		if (this.playingCard != null && this.playingCard.getCard().getNextNeededBattlecryTarget() != null) {
-			if (c != null && c.getCard().realCard.alive && this.playingCard.getCard().realCard
-					.getNextNeededBattlecryTarget().canTarget(c.getCard().realCard)) {
-				if (this.targetedCards.contains(c)) {
-					this.targetedCards.remove(c);
+		Target nextTarget = Target.firstUnsetTarget(this.getCurrentTargetingTargetList());
+		Target nextRealTarget = Target.firstUnsetTarget(this.getCurrentTargetingRealTargetList());
+		if (nextTarget != null) {
+			if (c != null && c.getCard().realCard.alive && nextRealTarget.canTarget(c.getCard().realCard)) {
+				if (nextTarget.getTargets().contains(c.getCard())) {
+					nextTarget.removeCards(c.getCard());
 				} else {
-					this.targetedCards.add(c);
+					nextTarget.addCard(c.getCard());
 					// whether max targets have been selected or all selectable
 					// targets have been selected
-					if (this.hasFinishedTargeting(this.playingCard.getCard().getNextNeededBattlecryTarget())) {
-						this.animateBattlecryTargets(false);
-						this.playingCard.getCard().getNextNeededBattlecryTarget().setTargetsUI(this.targetedCards);
-						this.targetedCards.clear();
-						this.resolveNoBattlecryTarget();
-						this.animateBattlecryTargets(true);
+					if (nextTarget.isReady()) {
+						this.animateTargets(nextTarget, false);
+						this.animateTargets(Target.firstUnsetTarget(this.getCurrentTargetingTargetList()), true);
 					}
 				}
 
 				return true;
 			} else { // invalid target, so stop targeting
-				this.animateBattlecryTargets(false);
-				// this.playingCard.scale = this.expandHand ?
-				// CARD_SCALE_HAND_EXPAND :
-				// CARD_SCALE_HAND;
-				this.playingCard.getCard().resetBattlecryTargets();
-				this.targetedCards.clear();
-				this.playingCard = null;
-			}
-		} else if (this.unleashingMinion != null
-				&& this.unleashingMinion.getMinion().getNextNeededUnleashTarget() != null) {
-			if (c != null && c.getCard().realCard.alive && ((Minion) this.unleashingMinion.getCard().realCard)
-					.getNextNeededUnleashTarget().canTarget(c.getCard().realCard)) {
-				if (this.targetedCards.contains(c)) {
-					this.targetedCards.remove(c);
-				} else {
-					this.targetedCards.add(c);
-					// whether max targets have been selected or all selectable
-					// targets have been selected
-					if (this.hasFinishedTargeting(this.unleashingMinion.getMinion().getNextNeededUnleashTarget())) {
-						this.animateUnleashTargets(false);
-						this.unleashingMinion.getMinion().getNextNeededUnleashTarget().setTarget(c.getCard());
-						this.targetedCards.clear();
-						this.resolveNoUnleashTarget();
-						this.animateUnleashTargets(true);
-					}
-				}
-				return true;
-			} else { // invalid target, so stop targeting
-				this.animateUnleashTargets(false);
-				this.unleashingMinion.setScale(CARD_SCALE_BOARD);
-				this.unleashingMinion.getMinion().resetUnleashTargets();
-				this.targetedCards.clear();
-				this.unleashingMinion = null;
+				this.stopTargeting();
 			}
 		}
 		return false;
 	}
 
-	private boolean hasFinishedTargeting(Target t) {
-		return this.targetedCards.size() >= t.maxtargets
-				|| this.targetedCards.size() == this.getTargetableCards(t).size();
-	}
-
 	public void selectUnleashingMinion(UICard c) {
-		c.getMinion().resetUnleashTargets();
-		((Minion) c.getMinion().realCard).resetUnleashTargets();
 		this.unleashingMinion = c;
-		this.resolveNoUnleashTarget();
-		this.animateUnleashTargets(true);
+		Target.resetList(c.getMinion().getUnleashTargets());
+		Target.resetList(c.getMinion().realMinion().getUnleashTargets());
+		this.animateTargets(Target.firstUnsetTarget(c.getMinion().getUnleashTargets()), true);
 		c.setScale(CARD_SCALE_ABILITY * CARD_SCALE_BOARD);
-		this.finishUnleashTargeting();
+		this.finishTargeting();
 	}
 
 	public List<UICard> getTargetableCards(Target t) {
@@ -575,36 +545,14 @@ public class UIBoard extends UIBox {
 		return list;
 	}
 
-	public void animateBattlecryTargets(boolean activate) {
-		List<UICard> tc = this.getTargetableCards(this.playingCard.getCard().getNextNeededBattlecryTarget());
-		for (UICard c : tc) {
-			c.setScale(activate ? CARD_SCALE_TARGET
-					: (c.getCard().status.equals(CardStatus.HAND) ? CARD_SCALE_HAND : CARD_SCALE_BOARD));
+	public void animateTargets(Target t, boolean activate) {
+		if (t != null) {
+			List<UICard> tc = this.getTargetableCards(t);
+			for (UICard c : tc) {
+				c.setScale(activate ? CARD_SCALE_TARGET
+						: (c.getCard().status.equals(CardStatus.HAND) ? CARD_SCALE_HAND : CARD_SCALE_BOARD));
 
-		}
-	}
-
-	public void animateUnleashTargets(boolean activate) {
-		List<UICard> tc = this.getTargetableCards(this.unleashingMinion.getMinion().getNextNeededUnleashTarget());
-		for (UICard c : tc) {
-			c.setScale(activate ? CARD_SCALE_TARGET
-					: (c.getCard().status.equals(CardStatus.HAND) ? CARD_SCALE_HAND : CARD_SCALE_BOARD));
-		}
-	}
-
-	public void resolveNoBattlecryTarget() {
-		List<UICard> tc = this.getTargetableCards(this.playingCard.getCard().getNextNeededBattlecryTarget());
-		while (tc.isEmpty() && this.playingCard.getCard().getNextNeededBattlecryTarget() != null) {
-			this.playingCard.getCard().getNextNeededBattlecryTarget().setTarget(null);
-			tc = this.getTargetableCards(this.playingCard.getCard().getNextNeededBattlecryTarget());
-		}
-	}
-
-	public void resolveNoUnleashTarget() {
-		List<UICard> tc = this.getTargetableCards(this.unleashingMinion.getMinion().getNextNeededUnleashTarget());
-		while (tc.isEmpty() && this.unleashingMinion.getMinion().getNextNeededUnleashTarget() != null) {
-			this.unleashingMinion.getMinion().getNextNeededUnleashTarget().setTarget(null);
-			tc = this.getTargetableCards(this.unleashingMinion.getMinion().getNextNeededUnleashTarget());
+			}
 		}
 	}
 }

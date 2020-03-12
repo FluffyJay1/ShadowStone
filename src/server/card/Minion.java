@@ -47,7 +47,10 @@ public class Minion extends BoardObject {
 			unl.setUnleashTargets(list);
 			this.addEffect(true, unl);
 		}
+	}
 
+	public Minion realMinion() {
+		return (Minion) this.realCard;
 	}
 
 	@Override
@@ -173,32 +176,6 @@ public class Minion extends BoardObject {
 			}
 		}
 		return list;
-	}
-
-	public void resetUnleashTargets() {
-		for (Target t : this.getUnleashTargets()) {
-			t.reset();
-		}
-	}
-
-	public Target getNextNeededUnleashTarget() {
-		for (Target t : this.getUnleashTargets()) {
-			if (!t.ready()) {
-				return t;
-			}
-		}
-		return null;
-	}
-
-	public String unleashTargetsToString() {
-		return Target.listToString(this.getUnleashTargets());
-	}
-
-	public void unleashTargetsFromString(Board b, StringTokenizer st) {
-		int num = Integer.parseInt(st.nextToken());
-		for (int i = 0; i < num; i++) {
-			this.getUnleashTargets().get(i).copyFromString(b, st);
-		}
 	}
 
 	@Override

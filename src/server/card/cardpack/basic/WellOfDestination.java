@@ -32,7 +32,7 @@ public class WellOfDestination extends Amulet {
 
 							@Override
 							public void resolveTargets() {
-								this.setRandomTarget();
+								this.setRandomCards();
 							}
 						};
 						t.resolveTargets();

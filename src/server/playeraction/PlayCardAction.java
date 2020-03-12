@@ -29,7 +29,7 @@ public class PlayCardAction extends PlayerAction {
 		if (!this.p.canPlayCard(this.c)) { // just to be safe
 			return new LinkedList<Event>();
 		}
-		c.battlecryTargetsFromString(b, new StringTokenizer(this.battlecryTargets));
+		Target.setListFromString(c.getBattlecryTargets(), b, new StringTokenizer(this.battlecryTargets));
 		b.eventlist.add(new EventPlayCard(p, c, pos));
 		return b.resolveAll();
 	}
@@ -43,8 +43,8 @@ public class PlayCardAction extends PlayerAction {
 		Player p = b.getPlayer(Integer.parseInt(st.nextToken()));
 		Card c = Card.fromReference(b, st);
 		int pos = Integer.parseInt(st.nextToken());
-		c.battlecryTargetsFromString(b, st);
-		return new PlayCardAction(p, c, pos, c.battlecryTargetsToString());
+		Target.setListFromString(c.getBattlecryTargets(), b, st);
+		return new PlayCardAction(p, c, pos, Target.listToString(c.getBattlecryTargets()));
 	}
 
 }

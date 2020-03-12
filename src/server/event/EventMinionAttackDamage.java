@@ -38,7 +38,7 @@ public class EventMinionAttackDamage extends Event {
 		}
 		if (!baned.isEmpty()) {
 			Target t = new Target(null, 2, "");
-			t.setTargets(baned);
+			t.setCards(baned);
 			eventlist.add(new EventDestroy(t));
 		}
 	}

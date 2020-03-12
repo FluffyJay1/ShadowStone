@@ -29,7 +29,7 @@ public class UnleashMinionAction extends PlayerAction {
 		if (!p.canUnleashCard(m)) {
 			return new LinkedList<Event>();
 		}
-		this.m.unleashTargetsFromString(b, new StringTokenizer(this.unleashTargets));
+		Target.setListFromString(m.getUnleashTargets(), b, new StringTokenizer(this.unleashTargets));
 		b.eventlist
 				.add(new EventManaChange(p, -p.unleashPower.finalStatEffects.getStat(EffectStats.COST), false, true));
 		b.eventlist.addAll(p.unleashPower.unleash(m));
@@ -44,8 +44,8 @@ public class UnleashMinionAction extends PlayerAction {
 	public static UnleashMinionAction fromString(Board b, StringTokenizer st) {
 		Player p = b.getPlayer(Integer.parseInt(st.nextToken()));
 		Minion m = (Minion) Card.fromReference(b, st);
-		m.unleashTargetsFromString(b, st);
-		return new UnleashMinionAction(p, m, m.unleashTargetsToString());
+		Target.setListFromString(m.getUnleashTargets(), b, st);
+		return new UnleashMinionAction(p, m, Target.listToString(m.getUnleashTargets()));
 	}
 
 }

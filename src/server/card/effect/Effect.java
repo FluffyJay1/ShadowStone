@@ -106,7 +106,7 @@ public class Effect implements Cloneable {
 
 	public Target getNextNeededBattlecryTarget() {
 		for (Target t : this.battlecryTargets) {
-			if (!t.ready()) {
+			if (!t.isReady()) {
 				return t;
 			}
 		}
@@ -137,7 +137,7 @@ public class Effect implements Cloneable {
 
 	public Target getNextNeededUnleashTarget() {
 		for (Target t : this.unleashTargets) {
-			if (!t.ready()) {
+			if (!t.isReady()) {
 				return t;
 			}
 		}

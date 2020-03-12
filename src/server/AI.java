@@ -183,7 +183,7 @@ public class AI extends Thread {
 	private List<Target> getPossibleTargets(Target t, List<Card> searchSpace, int startInd) {
 		// TODO TEST THAT IT DOESN'T SEARCH THE SAME COMBINATION TWICE
 		List<Target> poss = new LinkedList<Target>();
-		if (t.ready()) {
+		if (t.isReady()) {
 			poss.add(t);
 			return poss;
 		}
@@ -194,7 +194,7 @@ public class AI extends Thread {
 			Card c = searchSpace.get(i);
 			if (!t.getTargets().contains(c)) {
 				Target copy = t.clone();
-				copy.setTarget(c);
+				copy.addCard(c);
 				List<Target> subspace = this.getPossibleTargets(copy, searchSpace, i + 1);
 				poss.addAll(subspace);
 			}
