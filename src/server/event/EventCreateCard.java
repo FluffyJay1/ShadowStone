@@ -118,7 +118,7 @@ public class EventCreateCard extends Event {
 	public static EventCreateCard fromString(Board b, StringTokenizer st) {
 		Card c = Card.createFromConstructorString(b, st);
 		if (b instanceof VisualBoard) {
-			c.realCard = ((VisualBoard) b).realBoard.cardsCreated.removeFirst();
+			c.realCard = ((VisualBoard) b).realBoard.cardsCreated.remove(0);
 			((VisualBoard) b).uiBoard.addCard(c);
 		}
 		int team = Integer.parseInt(st.nextToken());
