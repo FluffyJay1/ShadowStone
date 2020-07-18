@@ -86,6 +86,30 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 
 	}
 
+	public void skipCurrentAnimation() {
+		for (Iterator<EventAnimation> i = this.currentAnimations.iterator(); i.hasNext();) {
+			EventAnimation ea = i.next();
+			i.remove();
+		}
+	}
+
+	public void skipAllAnimations() {
+		this.skipCurrentAnimation();
+		while (!this.inputeventliststrings.isEmpty()) {
+			StringTokenizer st = new StringTokenizer(this.inputeventliststrings.remove(0));
+			Event currentEvent = Event.createFromString(this, st);
+			if (currentEvent != null && currentEvent.conditions()) {
+				LinkedList<Event> lmao = new LinkedList<Event>();
+				currentEvent.resolve(lmao, false);
+				this.uiBoard.advantageText
+						.setText(String.format("Adv: %.4f", AI.evaluateAdvantage(this, this.localteam)));
+				if (currentEvent instanceof EventTurnStart) {
+					this.disableInput = ((EventTurnStart) currentEvent).p.team != this.realBoard.localteam;
+				}
+			}
+		}
+	}
+
 	public void updateEventAnimation(double frametime) {
 		for (Iterator<EventAnimation> i = this.currentAnimations.iterator(); i.hasNext();) {
 			EventAnimation ea = i.next();
@@ -104,8 +128,8 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 				currentEvent.resolve(lmao, false);
 				this.uiBoard.advantageText
 						.setText(String.format("Adv: %.4f", AI.evaluateAdvantage(this, this.localteam)));
-				// TODO use each card's respective eventaniation for these
-				// events
+				// TODO refactor this godforsaken thing and use each card's respective
+				// eventaniation for these events
 				// e.g. tiny throwing a rock for his attack
 				if (currentEvent instanceof EventMinionAttack) {
 					EventAnimation anim = new EventAnimationMinionAttack();
@@ -123,8 +147,12 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 					EventAnimation anim = new EventAnimationRestore();
 					anim.init(currentEvent);
 					this.currentAnimations.add(anim);
-				} else if (currentEvent instanceof EventMinionDamage) {
-					EventAnimation anim = new EventAnimationMinionDamage();
+				} else if (currentEvent instanceof EventCardDamage) {
+					EventAnimation anim = new EventAnimationCardDamage();
+					anim.init(currentEvent);
+					this.currentAnimations.add(anim);
+				} else if (currentEvent instanceof EventEffectDamage) {
+					EventAnimation anim = new EventAnimationEffectDamage();
 					anim.init(currentEvent);
 					this.currentAnimations.add(anim);
 				} else if (currentEvent instanceof EventUnleash) {
@@ -135,11 +163,7 @@ public class VisualBoard extends Board implements DefaultMouseListener {
 					EventAnimation anim = new EventAnimationTurnStart();
 					anim.init(currentEvent);
 					this.currentAnimations.add(anim);
-					if (((EventTurnStart) currentEvent).p.team != this.realBoard.localteam) {
-						// this.realBoard.AIThink();
-					} else {
-						this.disableInput = false;
-					}
+					this.disableInput = ((EventTurnStart) currentEvent).p.team != this.realBoard.localteam;
 				} else if (currentEvent instanceof EventPlayCard) {
 					EventAnimationBoard anim = new EventAnimationPlayCard();
 					anim.init(currentEvent, this.uiBoard);

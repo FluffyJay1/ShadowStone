@@ -401,9 +401,9 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
 	}
 
 	/**
-	 * Removes the parent of the UIElement, handles the removing of the
-	 * connection between parent and child by removing itself from the parent's
-	 * children and by removing its parent object
+	 * Removes the parent of the UIElement, handles the removing of the connection
+	 * between parent and child by removing itself from the parent's children and by
+	 * removing its parent object
 	 */
 	public void removeParent() {
 		if (this.parent != null) {
@@ -423,12 +423,17 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
 	/**
 	 * Removes a child of an UIElement
 	 * 
-	 * @param child
-	 *            The child to remove
+	 * @param child The child to remove
 	 */
 	public void removeChild(UIElement child) {
 		if (this.getChildren().contains(child)) {
 			child.removeParent();
+		}
+	}
+
+	public void removeChildren(List<? extends UIElement> children) {
+		for (UIElement child : children) {
+			this.removeChild(child);
 		}
 	}
 

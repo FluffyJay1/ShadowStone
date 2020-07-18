@@ -58,7 +58,7 @@ public class Game extends StateBasedGame {
 				System.out.println("Unable to load: " + path);
 				e.printStackTrace();
 			} finally {
-				System.out.println("loaded into memory: " + path);
+				// System.out.println("loaded into memory: " + path);
 			}
 		}
 		return i;
@@ -83,8 +83,10 @@ public class Game extends StateBasedGame {
 				e.printStackTrace();
 			}
 			fonts.put(condensed, f);
-			System.out.println("loaded new font: " + font + ", size = " + (int) size + (bold ? " bold" : "")
-					+ (italic ? " italic" : ""));
+			/*
+			 * System.out.println("loaded new font: " + font + ", size = " + (int) size +
+			 * (bold ? " bold" : "") + (italic ? " italic" : ""));
+			 */
 
 		}
 

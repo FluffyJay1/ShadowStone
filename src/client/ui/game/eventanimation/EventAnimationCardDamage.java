@@ -1,4 +1,4 @@
-package client.ui.game.eventanimation.attack;
+package client.ui.game.eventanimation;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
@@ -6,18 +6,18 @@ import org.newdawn.slick.geom.*;
 import client.ui.game.eventanimation.*;
 import server.event.*;
 
-public class EventAnimationMinionDamage extends EventAnimation {
-	public EventAnimationMinionDamage() {
+public class EventAnimationCardDamage extends EventAnimation {
+	public EventAnimationCardDamage() {
 		this(0.25);
 	}
 
-	public EventAnimationMinionDamage(double duration) {
+	public EventAnimationCardDamage(double duration) {
 		super(duration);
 	}
 
 	@Override
 	public void draw(Graphics g) {
-		EventMinionDamage e = (EventMinionDamage) this.event;
+		EventCardDamage e = (EventCardDamage) this.event;
 		g.setColor(Color.red);
 		for (int i = 0; i < e.m2.size(); i++) {
 			Vector2f pos = e.m2.get(i).uiCard.getFinalPos().sub(e.m1.uiCard.getFinalPos())

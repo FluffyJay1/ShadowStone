@@ -26,8 +26,7 @@ public class Minion extends BoardObject {
 						@Override
 						public void resolve(List<Event> eventlist, boolean loopprotection) {
 							if (this.effect.unleashTargets.get(0) != null) {
-								eventlist.add(new EventMinionDamage((Minion) this.effect.owner,
-										this.effect.unleashTargets.get(0),
+								eventlist.add(new EventEffectDamage(this.effect, this.effect.unleashTargets.get(0),
 										this.effect.owner.finalStatEffects.getStat(EffectStats.MAGIC)));
 							}
 						}

@@ -71,11 +71,12 @@ public class EventRestore extends Event {
 
 	@Override
 	public String toString() {
-		String ret = this.id + " " + this.m.size() + " ";
+		StringBuilder builder = new StringBuilder();
+		builder.append(this.id + " " + this.m.size() + " ");
 		for (int i = 0; i < this.m.size(); i++) {
-			ret += this.m.get(i).toReference() + this.heal.get(i) + " ";
+			builder.append(this.m.get(i).toReference() + this.heal.get(i) + " ");
 		}
-		return ret + "\n";
+		return builder.append("\n").toString();
 	}
 
 	public static EventRestore fromString(Board b, StringTokenizer st) {

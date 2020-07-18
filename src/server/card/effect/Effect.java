@@ -15,7 +15,7 @@ public class Effect implements Cloneable {
 	public boolean basic = false, mute = false, listener = false;
 
 	public EffectStats set = new EffectStats(), change = new EffectStats();
-	public LinkedList<Target> battlecryTargets = new LinkedList<Target>(), unleashTargets = new LinkedList<Target>();
+	public List<Target> battlecryTargets = new LinkedList<Target>(), unleashTargets = new LinkedList<Target>();
 
 	public Effect(int id, String description) {
 		this.id = id;
@@ -94,7 +94,7 @@ public class Effect implements Cloneable {
 		return null;
 	}
 
-	public void setBattlecryTargets(LinkedList<Target> targets) {
+	public void setBattlecryTargets(List<Target> targets) {
 		this.battlecryTargets = targets;
 	}
 
@@ -113,19 +113,11 @@ public class Effect implements Cloneable {
 		return null;
 	}
 
-	public String battlecryTargetsToString() {
-		String ret = "btargets " + this.battlecryTargets.size();
-		for (Target t : this.battlecryTargets) {
-			ret += t.toString() + " ";
-		}
-		return ret;
-	}
-
 	public EventFlag unleash() {
 		return null;
 	}
 
-	public void setUnleashTargets(LinkedList<Target> targets) {
+	public void setUnleashTargets(List<Target> targets) {
 		this.unleashTargets = targets;
 	}
 
@@ -142,14 +134,6 @@ public class Effect implements Cloneable {
 			}
 		}
 		return null;
-	}
-
-	public String unleashTargetsToString() {
-		String ret = "utargets " + this.unleashTargets.size() + " ";
-		for (Target t : this.unleashTargets) {
-			ret += t.toString() + " ";
-		}
-		return ret;
 	}
 
 	public EventOnAttack onAttack(Minion target) {
@@ -195,8 +179,8 @@ public class Effect implements Cloneable {
 
 	@Override
 	public String toString() {
-		return this.id + " " + (this.owner == null ? "null " : this.owner.toReference()) + this.description
-				+ Game.STRING_END + " " + this.mute + " " + this.set.toString() + this.change.toString();
+		return this.id + " " + Card.referenceOrNull(this.owner) + this.description + Game.STRING_END + " " + this.mute
+				+ " " + this.set.toString() + this.change.toString();
 	}
 
 	public static Effect fromString(Board b, StringTokenizer st) {
@@ -241,6 +225,10 @@ public class Effect implements Cloneable {
 
 	public String toReference() {
 		return this.owner.toReference() + this.basic + " " + this.pos + " ";
+	}
+
+	public static String referenceOrNull(Effect effect) {
+		return effect == null ? "null " : effect.toReference();
 	}
 
 	public static Effect fromReference(Board b, StringTokenizer st) {

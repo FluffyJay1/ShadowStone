@@ -18,7 +18,7 @@ public class WoodOfBrambles extends Amulet {
 
 	public WoodOfBrambles(Board b) {
 		super(b, TOOLTIP);
-		Effect e = new Effect(0, TOOLTIP.description) {
+		Effect e = new Effect(0, TOOLTIP.description, true) {
 			@Override
 			public EventBattlecry battlecry() {
 				EventBattlecry eb = new EventBattlecry(this, false) {
@@ -28,7 +28,7 @@ public class WoodOfBrambles extends Amulet {
 							eventlist.add(new EventCreateCard(this.effect.owner.board,
 									new Fairy(this.effect.owner.board), this.effect.owner.team, CardStatus.HAND, 999));
 						}
-						Target t = new Target(this.effect, 5, "") {
+						Target t = new Target(this.effect, 10, "") {
 
 							@Override
 							public void resolveTargets() {

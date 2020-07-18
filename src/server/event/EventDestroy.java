@@ -63,7 +63,7 @@ public class EventDestroy extends Event {
 					c.board.getPlayer(c.team).deck.updatePositions();
 					break;
 				case LEADER:
-					// TODO lose the game
+					eventlist.add(new EventGameEnd(c.board, c.team * -1));
 					break;
 				default:
 					break;
@@ -111,11 +111,12 @@ public class EventDestroy extends Event {
 
 	@Override
 	public String toString() {
-		String ret = this.id + " " + this.c.size() + " ";
+		StringBuilder builder = new StringBuilder();
+		builder.append(this.id + " " + this.c.size() + " ");
 		for (int i = 0; i < this.c.size(); i++) {
-			ret += this.c.get(i).toReference();
+			builder.append(this.c.get(i).toReference());
 		}
-		return ret + "\n";
+		return builder.append("\n").toString();
 	}
 
 	public static EventDestroy fromString(Board b, StringTokenizer st) {

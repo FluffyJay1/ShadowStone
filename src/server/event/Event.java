@@ -15,7 +15,7 @@ public class Event {
 
 	public Event(int id, boolean rng) {
 		this.id = id;
-		this.rng = true;
+		this.rng = rng;
 	}
 
 	public void resolve(List<Event> eventlist, boolean loopprotection) {

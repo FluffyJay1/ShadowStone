@@ -62,12 +62,9 @@ public class Card implements Cloneable {
 	 * Adds an effect to the card. If the effect is also flagged as an event
 	 * listener, it is registered with the board.
 	 * 
-	 * @param basic
-	 *            Whether the effect is a basic effect of the card
-	 * @param pos
-	 *            The position to add the effect to
-	 * @param e
-	 *            The effect
+	 * @param basic Whether the effect is a basic effect of the card
+	 * @param pos   The position to add the effect to
+	 * @param e     The effect
 	 */
 	public void addEffect(boolean basic, int pos, Effect e) {
 		e.basic = basic;
@@ -194,15 +191,16 @@ public class Card implements Cloneable {
 	// TODO make a corresponding fromString method
 	@Override
 	public String toString() {
-		String ret = this.id + " " + this.team + " " + this.cardPosToString() + this.basicEffects.size() + " ";
+		StringBuilder builder = new StringBuilder();
+		builder.append(this.id + " " + this.team + " " + this.cardPosToString() + this.basicEffects.size() + " ");
 		for (Effect e : this.basicEffects) {
-			ret += e.toString();
+			builder.append(e.toString());
 		}
-		ret += this.effects.size() + " ";
+		builder.append(this.effects.size() + " ");
 		for (Effect e : this.effects) {
-			ret += e.toString();
+			builder.append(e.toString());
 		}
-		return ret;
+		return builder.toString();
 	}
 
 	public String toConstructorString() {
@@ -230,6 +228,10 @@ public class Card implements Cloneable {
 
 	public String toReference() {
 		return this.team + " " + this.cardPosToString();
+	}
+
+	public static String referenceOrNull(Card c) {
+		return c == null ? "null " : c.toReference();
 	}
 
 	public static Card fromReference(Board b, StringTokenizer reference) {

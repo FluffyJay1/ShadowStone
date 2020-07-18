@@ -184,12 +184,13 @@ public class EventPutCard extends Event {
 
 	@Override
 	public String toString() {
-		String ret = this.id + " " + p.team + " " + this.c.size() + " " + this.status.toString() + " " + this.targetTeam
-				+ " ";
+		StringBuilder builder = new StringBuilder();
+		builder.append(this.id + " " + p.team + " " + this.c.size() + " " + this.status.toString() + " "
+				+ this.targetTeam + " ");
 		for (int i = 0; i < this.c.size(); i++) {
-			ret += this.c.get(i).toReference() + this.pos.get(i) + " ";
+			builder.append(this.c.get(i).toReference() + this.pos.get(i) + " ");
 		}
-		return ret + "\n";
+		return builder.append("\n").toString();
 	}
 
 	public static EventPutCard fromString(Board b, StringTokenizer st) {

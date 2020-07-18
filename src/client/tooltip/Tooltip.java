@@ -1,7 +1,5 @@
 package client.tooltip;
 
-import java.util.ArrayList;
-
 public class Tooltip {
 	public static final Tooltip OVERFLOW = new Tooltip("Overflow",
 			"<b> Overflow </b> is active for a player when they have 7 or more maximum mana.");
@@ -27,6 +25,8 @@ public class Tooltip {
 			"Cards with <b> Poisonous </b> destroy any minion they damage.");
 	public static final Tooltip COUNTDOWN = new Tooltip("Countdown",
 			"At the start of the player's turn, cards in play with <b> Countdown </b> count down by one. When their <b> Countdown </b> goes to 0, the card is destroyed.");
+	public static final Tooltip BLAST = new Tooltip("Blast",
+			"Deal X damage to a random enemy minion. If there are no enemy minions in play, deal X damage to the enemy leader.");
 
 	public String name, description, imagepath;
 	public Tooltip[] references;

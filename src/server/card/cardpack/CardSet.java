@@ -1,11 +1,9 @@
 package server.card.cardpack;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Predicate;
+import java.util.*;
+import java.util.function.*;
 
-import client.tooltip.TooltipCard;
+import client.tooltip.*;
 import server.card.*;
 import server.card.cardpack.basic.*;
 import server.card.leader.*;
@@ -49,8 +47,7 @@ public class CardSet {
 	/**
 	 * Constructor for a CardSet using a series of ids
 	 * 
-	 * @param ids
-	 *            the ids to construct the set with
+	 * @param ids the ids to construct the set with
 	 */
 	public CardSet(Integer... ids) {
 		this.ids.addAll(Arrays.asList(ids));
@@ -59,8 +56,7 @@ public class CardSet {
 	/**
 	 * Constructor for a CardSet using other CardSets
 	 * 
-	 * @param sets
-	 *            the other sets to construct the set with
+	 * @param sets the other sets to construct the set with
 	 */
 	public CardSet(CardSet... sets) {
 		for (CardSet set : sets) {
@@ -71,8 +67,7 @@ public class CardSet {
 	/**
 	 * Adds a set to this set
 	 * 
-	 * @param other
-	 *            the other CardSet to add
+	 * @param other the other CardSet to add
 	 */
 	public void add(CardSet other) {
 		this.ids.addAll(other.ids);
@@ -81,8 +76,7 @@ public class CardSet {
 	/**
 	 * Filters until only cards that match the crafts are left
 	 * 
-	 * @param crafts
-	 *            the crafts of cards that remain
+	 * @param crafts the crafts of cards that remain
 	 * @return the modified cardset
 	 */
 	public CardSet filterCraft(ClassCraft... crafts) {
@@ -96,14 +90,13 @@ public class CardSet {
 	/**
 	 * Maps a card id to its class
 	 * 
-	 * @param id
-	 *            the id of the card
+	 * @param id the id of the card
 	 * @return the class of the card
 	 */
 	public static Class<? extends Card> getCardClass(int id) {
 		// ids -1 to -8 reserved for leaders
 		// ids -9 to -16 reserved for unleash powers
-		if (id >= CardSetBasic.MIN_ID && id <= CardSetBasic.MAX_ID) {
+		if (CardSetBasic.SET.ids.contains(id)) {
 			return CardSetBasic.getCardClass(id);
 		}
 		switch (id) {
@@ -134,8 +127,7 @@ public class CardSet {
 	/**
 	 * Maps a card id to its tooltip
 	 * 
-	 * @param id
-	 *            the id of the card
+	 * @param id the id of the card
 	 * @return the tooltip of the card
 	 */
 	public static TooltipCard getCardTooltip(int id) {

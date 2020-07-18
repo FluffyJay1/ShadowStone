@@ -7,7 +7,7 @@ import server.card.*;
 
 public class EventTurnEnd extends Event {
 	public static final int ID = 14;
-	Player p;
+	public Player p;
 
 	public EventTurnEnd(Player p) {
 		super(ID, false);

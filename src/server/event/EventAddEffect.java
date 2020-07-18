@@ -20,7 +20,7 @@ public class EventAddEffect extends Event {
 		this.e = e;
 	}
 
-	public EventAddEffect(List<Card> c, Effect e) {
+	public EventAddEffect(List<? extends Card> c, Effect e) {
 		super(ID, false);
 		this.c = new ArrayList<Card>();
 		this.c.addAll(c);
@@ -87,11 +87,13 @@ public class EventAddEffect extends Event {
 
 	@Override
 	public String toString() {
-		String ret = this.id + " " + this.c.size() + " " + e.toString();
+		StringBuilder builder = new StringBuilder();
+		builder.append(this.id + " " + this.c.size() + " " + e.toString());
 		for (int i = 0; i < this.c.size(); i++) {
-			ret += this.c.get(i).toReference();
+			builder.append(this.c.get(i).toReference());
 		}
-		return ret + "\n";
+		builder.append("\n");
+		return builder.toString();
 	}
 
 	public static EventAddEffect fromString(Board b, StringTokenizer st) {

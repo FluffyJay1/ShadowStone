@@ -75,11 +75,13 @@ public class EventDamage extends Event {
 
 	@Override
 	public String toString() {
-		String ret = this.id + " " + this.m.size() + " ";
+		StringBuilder builder = new StringBuilder();
+		builder.append(this.id + " " + this.m.size() + " ");
 		for (int i = 0; i < this.m.size(); i++) {
-			ret += this.m.get(i).toReference() + this.damage.get(i) + " " + this.poisonous.get(i) + " ";
+			builder.append(this.m.get(i).toReference() + this.damage.get(i) + " " + this.poisonous.get(i) + " ");
 		}
-		return ret + "\n";
+		builder.append("\n");
+		return builder.toString();
 	}
 
 	public static EventDamage fromString(Board b, StringTokenizer st) {

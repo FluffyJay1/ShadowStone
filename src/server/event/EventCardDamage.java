@@ -6,15 +6,14 @@ import server.*;
 import server.card.*;
 import server.card.effect.*;
 
-public class EventMinionDamage extends Event {
-	// whenever a minion does damage from card text i.e. ragnaros end of turn
-	// effect
+public class EventCardDamage extends Event {
+	// whenever damage needs to be attributed to a card
 	public static final int ID = 10;
 	public List<Integer> damage;
-	public Minion m1;
+	public Card m1;
 	public List<Minion> m2;
 
-	public EventMinionDamage(Minion m1, List<Minion> m2, List<Integer> damage) {
+	public EventCardDamage(Card m1, List<Minion> m2, List<Integer> damage) {
 		super(ID, false);
 		this.m1 = m1;
 		this.m2 = new ArrayList<Minion>();
@@ -24,7 +23,7 @@ public class EventMinionDamage extends Event {
 		this.priority = 1;
 	}
 
-	public EventMinionDamage(Minion m1, Target m2, int damage) {
+	public EventCardDamage(Card m1, Target m2, int damage) {
 		super(ID, false);
 		this.m1 = m1;
 		this.m2 = new ArrayList<Minion>();
@@ -38,7 +37,7 @@ public class EventMinionDamage extends Event {
 		this.priority = 1;
 	}
 
-	public EventMinionDamage(Minion m1, Minion m2, int damage) {
+	public EventCardDamage(Card m1, Minion m2, int damage) {
 		super(ID, false);
 		this.m1 = m1;
 		this.m2 = new ArrayList<Minion>();
@@ -64,14 +63,16 @@ public class EventMinionDamage extends Event {
 
 	@Override
 	public String toString() {
-		String ret = this.id + " " + this.m1.toReference() + this.m2.size() + " ";
+		StringBuilder builder = new StringBuilder();
+		builder.append(this.id + " " + this.m1.toReference() + this.m2.size() + " ");
 		for (int i = 0; i < this.m2.size(); i++) {
-			ret += this.m2.get(i).toReference() + this.damage.get(i) + " ";
+			builder.append(this.m2.get(i).toReference() + this.damage.get(i) + " ");
 		}
-		return ret + "\n";
+		builder.append("\n");
+		return builder.toString();
 	}
 
-	public static EventMinionDamage fromString(Board b, StringTokenizer st) {
+	public static EventCardDamage fromString(Board b, StringTokenizer st) {
 		Card m1 = Card.fromReference(b, st);
 		int size = Integer.parseInt(st.nextToken());
 		ArrayList<Minion> m2 = new ArrayList<Minion>(size);
@@ -82,7 +83,7 @@ public class EventMinionDamage extends Event {
 			m2.add(m);
 			damage.add(d);
 		}
-		return new EventMinionDamage((Minion) m1, m2, damage);
+		return new EventCardDamage(m1, m2, damage);
 	}
 
 	@Override

@@ -25,6 +25,7 @@ public class StateGame extends BasicGameState {
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		this.ui = new UI();
 		arg0.getInput().addMouseListener(this.ui);
+		arg0.getInput().addKeyListener(this.ui);
 		this.dslocal = new DataStream();
 		this.dsserver = new DataStream();
 		DataStream.pair(dslocal, dsserver);

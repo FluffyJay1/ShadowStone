@@ -1,5 +1,7 @@
 package server;
 
+import java.io.*;
+import java.nio.file.*;
 import java.util.*;
 
 import server.card.*;
@@ -11,11 +13,11 @@ public class Board {
 	public boolean isServer = true; // true means it is the center of game logic
 	public boolean isClient; // true means has a visualboard
 	// links cards created between board and visualboard
-	public LinkedList<Card> cardsCreated = new LinkedList<Card>();
+	public List<Card> cardsCreated;
 
 	public Player player1, player2;
 	// localteam is the team of the player, i.e. at the bottom of the screen
-	public int currentPlayerTurn = 1, localteam = 1, winner = 0;
+	public int currentPlayerTurn, localteam, winner;
 
 	protected List<BoardObject> player1side;
 	protected List<BoardObject> player2side;
@@ -25,9 +27,18 @@ public class Board {
 	public List<Event> eventlist;
 	private List<Effect> eventlisteners;
 
-	StringBuilder output;
+	StringBuilder output, history;
 
 	public Board() {
+		this.init();
+	}
+
+	// reset state
+	public void init() {
+		this.currentPlayerTurn = 1;
+		this.localteam = 1;
+		this.winner = 0;
+		this.cardsCreated = new LinkedList<Card>();
 		player1 = new Player(this, 1);
 		player2 = new Player(this, -1);
 		player1side = new ArrayList<BoardObject>();
@@ -38,6 +49,7 @@ public class Board {
 		banished = new ArrayList<Card>();
 		eventlisteners = new ArrayList<Effect>();
 		output = new StringBuilder();
+		history = new StringBuilder();
 	}
 
 	public Board(int localteam) {
@@ -133,7 +145,7 @@ public class Board {
 	}
 
 	public List<BoardObject> getBoardObjects(int team, boolean leader, boolean minion, boolean amulet) {
-		ArrayList<BoardObject> ret = new ArrayList<BoardObject>();
+		ArrayList<BoardObject> ret = new ArrayList<>();
 		if (team >= 0) {
 			ret.addAll(this.player1side);
 		}
@@ -158,6 +170,20 @@ public class Board {
 					i--;
 				}
 			}
+		}
+		return ret;
+	}
+
+	public List<Minion> getMinions(int team, boolean leader, boolean health) {
+		ArrayList<Minion> ret = new ArrayList<>();
+		List<BoardObject> relevantSide = this.getBoardObjects(team);
+		for (BoardObject bo : relevantSide) {
+			if (bo instanceof Minion && (!health || ((Minion) bo).health > 0)) {
+				ret.add((Minion) bo);
+			}
+		}
+		if (leader && (!health || this.getPlayer(team).leader.health > 0)) {
+			ret.add(this.getPlayer(team).leader);
 		}
 		return ret;
 	}
@@ -217,7 +243,9 @@ public class Board {
 	}
 
 	public void registerEventListener(Effect e) {
-		this.eventlisteners.add(e);
+		if (!this.eventlisteners.contains(e)) {
+			this.eventlisteners.add(e);
+		}
 	}
 
 	public void removeEventListener(Effect e) {
@@ -242,12 +270,18 @@ public class Board {
 	}
 
 	public String stateToString() {
-		String ret = "State----------------------------+\n";
+		StringBuilder builder = new StringBuilder();
+		builder.append("State----------------------------+\n");
+		builder.append("player turn: ");
+		builder.append(this.currentPlayerTurn);
+		builder.append(", winner: ");
+		builder.append(this.winner);
+		builder.append("\n");
 		for (Card c : this.getCards()) {
-			ret += c.toString() + "\n";
+			builder.append(c.toString() + "\n");
 		}
-		ret += "---------------------------------+\n";
-		return ret;
+		builder.append("---------------------------------+\n");
+		return builder.toString();
 	}
 
 	public List<Event> resolveAll() {
@@ -265,8 +299,8 @@ public class Board {
 				if (!eventstring.isEmpty() && e.send) {
 					// add this to a buffer of happened events
 					this.output.append(eventstring);
-					// System.out.print(e.getClass().getName() + ": " +
-					// eventstring);
+					this.history.append(eventstring);
+					// System.out.print(e.getClass().getName() + ": " + eventstring);
 				}
 				if (e.priority > 0) {
 					LinkedList<Event> lul = new LinkedList<Event>();
@@ -276,7 +310,7 @@ public class Board {
 					e.resolve(eventlist, loopprotection);
 				}
 				for (Effect effect : this.eventlisteners) {
-					if (!effect.mute) {
+					if (!effect.mute && effect.owner.alive) {
 						Event response = effect.onListenEvent(e);
 						if (response != null) {
 							eventlist.add(response);
@@ -292,6 +326,54 @@ public class Board {
 		String temp = this.output.toString();
 		this.output.delete(0, this.output.length());
 		return temp;
+	}
+
+	public String getHistory() {
+		return this.history.toString();
+	}
+
+	public void saveBoardState() {
+		File f = new File("board.dat");
+		if (!f.exists()) {
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		try {
+			PrintWriter pw = new PrintWriter(f);
+			pw.print(this.getHistory());
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void loadBoardState() {
+		File f = new File("board.dat");
+		if (f.exists()) {
+			try {
+				this.init();
+				String state = new String(Files.readAllBytes(f.toPath()));
+				this.parseEventString(state);
+				this.output.append(state);
+				this.history.append(state);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} else {
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public synchronized void parseEventString(String s) {

@@ -32,6 +32,7 @@ public class UIBoard extends UIBox {
 	public DataStream ds;
 	boolean expandHand = false;
 	boolean draggingUnleash = false;
+	boolean skipNextEventAnimations = false;
 	Vector2f mouseDownPos = new Vector2f();
 	CardSelectPanel cardSelectPanel;
 	EndTurnButton endTurnButton;
@@ -142,23 +143,27 @@ public class UIBoard extends UIBox {
 					// dont bother understanding it lol
 					// if there's a bug then god have mercy
 					c.setPos(
-							new Vector2f((float) (((c.getCard().cardpos)
-									- (this.b.getPlayer(c.getCard().team).hand.cards.size())
-											/ 2.)
-									* (c.getCard().team == this.b.localteam ? (this.expandHand
-											? (HAND_X_SCALE_EXPAND_LOCAL
-													+ this.b.getPlayer(c.getCard().team).hand.cards.size() * 0.02)
-											: HAND_X_SCALE_LOCAL) : HAND_X_SCALE_ENEMY)
-									/ this.b.getPlayer(c.getCard().team).hand.cards.size()
-									+ (c.getCard().team == this.b.localteam ? (this.expandHand
-											? (HAND_X_EXPAND_LOCAL
-													- this.b.getPlayer(c.getCard().team).hand.cards.size() * 0.01)
-											: HAND_X_LOCAL) : HAND_X_ENEMY)),
+							new Vector2f(
+									(float) (((c.getCard().cardpos)
+											- (this.b.getPlayer(c.getCard().team).hand.cards.size()) / 2.)
+											* (c.getCard().team == this.b.localteam ? (this.expandHand
+													? (HAND_X_SCALE_EXPAND_LOCAL
+															+ this.b.getPlayer(c.getCard().team).hand.cards.size()
+																	* 0.02)
+													: HAND_X_SCALE_LOCAL) : HAND_X_SCALE_ENEMY)
+											/ this.b.getPlayer(c.getCard().team).hand.cards.size()
+											+ (c.getCard().team == this.b.localteam ? (this.expandHand
+													? (HAND_X_EXPAND_LOCAL
+															- this.b.getPlayer(c.getCard().team).hand.cards.size()
+																	* 0.01)
+													: HAND_X_LOCAL) : HAND_X_ENEMY)),
 									(float) (c.getCard().team == this.b.localteam
-											? (this.expandHand ? HAND_Y_EXPAND_LOCAL : HAND_Y_LOCAL) : HAND_Y_ENEMY)),
+											? (this.expandHand ? HAND_Y_EXPAND_LOCAL : HAND_Y_LOCAL)
+											: HAND_Y_ENEMY)),
 							0.99);
 					c.setScale(c.getCard().team == this.b.localteam
-							? (this.expandHand ? CARD_SCALE_HAND_EXPAND : CARD_SCALE_HAND) : CARD_SCALE_HAND);
+							? (this.expandHand ? CARD_SCALE_HAND_EXPAND : CARD_SCALE_HAND)
+							: CARD_SCALE_HAND);
 				}
 				break;
 			default:
@@ -179,7 +184,6 @@ public class UIBoard extends UIBox {
 	@Override
 	public void draw(Graphics g) {
 		super.draw(g);
-		this.b.draw(g);
 		Target currentTargeting = Target.firstUnsetTarget(this.getCurrentTargetingTargetList());
 		if (currentTargeting != null) {
 			for (Card card : currentTargeting.getTargets()) {
@@ -216,11 +220,33 @@ public class UIBoard extends UIBox {
 			case EVENT:
 				String eventstring = this.ds.readEvent();
 				this.b.parseEventString(eventstring);
+				if (this.skipNextEventAnimations) {
+					this.b.skipAllAnimations();
+					this.skipNextEventAnimations = false;
+				}
+				break;
+			case BOARDRESET:
+				this.resetBoard();
+				this.skipNextEventAnimations = true;
 				break;
 			default:
 				break;
 			}
 		}
+	}
+
+	private void resetBoard() {
+		this.b.currentAnimations.clear();
+		this.preSelectedCard = null;
+		this.selectedCard = null;
+		this.draggingCard = null;
+		this.playingCard = null;
+		this.visualPlayingCard = null;
+		this.attackingMinion = null;
+		this.unleashingMinion = null;
+		this.removeChildren(this.cards);
+		this.cards = new ArrayList<UICard>();
+		this.b = new VisualBoard(this, this.b.localteam);
 	}
 
 	// auxiliary function for position on board
@@ -440,8 +466,29 @@ public class UIBoard extends UIBox {
 		this.finishTargeting();
 	}
 
+	// TODO: remove save scumming debug
+	@Override
+	public void keyPressed(int key, char c) {
+		if (c == 'z') {
+			this.ds.sendEmote("save");
+		}
+		if (c == 'x') {
+			this.ds.sendEmote("load");
+			this.advantageText.setText("KIRA QUEEN DAISAN NO BAKUDAN");
+		}
+		if (key == Input.KEY_SPACE) {
+			System.out.println("KING CRIMSON");
+			this.advantageText.setText("KING CRIMSON");
+			this.b.skipAllAnimations();
+		}
+	}
+
 	public void stopTargeting() {
-		Target.resetList(this.getCurrentTargetingTargetList());
+		List<Target> currList = this.getCurrentTargetingTargetList();
+		if (currList != null) {
+			this.animateTargets(Target.firstUnsetTarget(currList), false);
+		}
+		Target.resetList(currList);
 		Target.resetList(this.getCurrentTargetingRealTargetList());
 		if (this.playingCard != null) {
 			this.playingCard = null;
@@ -551,7 +598,9 @@ public class UIBoard extends UIBox {
 			for (UICard c : tc) {
 				c.setScale(activate ? CARD_SCALE_TARGET
 						: (c.getCard().status.equals(CardStatus.HAND) ? CARD_SCALE_HAND : CARD_SCALE_BOARD));
-
+				if (c.getCard().status.equals(CardStatus.LEADER) && activate) {
+					this.expandHand = false;
+				}
 			}
 		}
 	}

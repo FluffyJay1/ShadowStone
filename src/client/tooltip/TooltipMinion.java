@@ -15,15 +15,15 @@ public class TooltipMinion extends TooltipCard {
 			int magic, int health, boolean basicUnleash, int id, Vector2f artFocusPos, double artFocusScale,
 			Tooltip... references) {
 		super(name,
-				"minion\nA:" + attack + ", M:" + magic + ", H:" + health + "\n \n" + (basicUnleash
-						? "<b> Unleash: </b> Deal X damage to an enemy minion. X equals this minion's magic.\n" : "")
-						+ description,
+				"minion\nA:" + attack + ", M:" + magic + ", H:" + health + "\n \n" + description + (basicUnleash
+						? "\n <b> Unleash: </b> Deal X damage to an enemy minion. X equals this minion's magic.\n"
+						: ""),
 				imagepath, craft, cost, id);
 		this.basicUnleash = basicUnleash;
 		if (basicUnleash) {
 			this.references = new Tooltip[references.length + 1];
-			this.references[0] = Tooltip.UNLEASH;
-			System.arraycopy(references, 0, this.references, 1, references.length);
+			this.references[references.length] = Tooltip.UNLEASH;
+			System.arraycopy(references, 0, this.references, 0, references.length);
 		} else {
 			this.references = references;
 		}

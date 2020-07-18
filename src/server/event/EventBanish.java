@@ -103,11 +103,13 @@ public class EventBanish extends Event {
 
 	@Override
 	public String toString() {
-		String ret = this.id + " " + this.c.size() + " ";
+		StringBuilder builder = new StringBuilder();
+		builder.append(this.id + " " + this.c.size() + " ");
 		for (int i = 0; i < this.c.size(); i++) {
-			ret += this.c.get(i).toReference();
+			builder.append(this.c.get(i).toReference());
 		}
-		return ret + "\n";
+		builder.append("\n");
+		return builder.toString();
 	}
 
 	public static EventBanish fromString(Board b, StringTokenizer st) {

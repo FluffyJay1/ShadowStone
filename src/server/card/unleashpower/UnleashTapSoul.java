@@ -12,7 +12,7 @@ public class UnleashTapSoul extends UnleashPower {
 	public static final int ID = -14;
 	public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
 	public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Tap Soul",
-			"<b> Unleash </b> an allied minion. Deal 3 damage to your leader. If <b> Vengeance </b> is active for you, this can be used once more per turn.",
+			" Deal 2 damage to your leader. <b> Unleash </b> an allied minion. If <b> Vengeance </b> is active for you, this can be used once more per turn.",
 			"res/unleashpower/tapsoul.png", CRAFT, 1, ID, Tooltip.UNLEASH, Tooltip.VENGEANCE);
 
 	public UnleashTapSoul(Board b) {
@@ -58,8 +58,8 @@ public class UnleashTapSoul extends UnleashPower {
 	@Override
 	public LinkedList<Event> unleash(Minion m) {
 		LinkedList<Event> list = new LinkedList<Event>();
+		list.add(new EventDamage(this.p.leader, 2, false));
 		list.add(new EventUnleash(this, m));
-		list.add(new EventDamage(this.p.leader, 3, false));
 		return list;
 	}
 }

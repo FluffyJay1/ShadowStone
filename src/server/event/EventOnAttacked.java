@@ -25,8 +25,7 @@ public class EventOnAttacked extends Event {
 
 	@Override
 	public String toString() {
-		return this.id + " " + this.rng + " " + this.effect.toReference()
-				+ (this.m != null ? this.m.toReference() : "null ") + "\n";
+		return this.id + " " + this.rng + " " + this.effect.toReference() + Card.referenceOrNull(this.m) + "\n";
 	}
 
 	public static EventOnAttacked fromString(Board b, StringTokenizer st) {

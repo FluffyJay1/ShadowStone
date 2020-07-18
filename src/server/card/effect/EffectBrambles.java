@@ -12,7 +12,8 @@ public class EffectBrambles extends Effect {
 
 	public EffectBrambles(Card creator) {
 		super(ID,
-				"Has <b> Clash: </b> deal 1 damage to the enemy minion until the corresponding Wood of Brambles leaves play.");
+				"Has <b> Clash: </b> deal 1 damage to the enemy minion until the corresponding Wood of Brambles leaves play.",
+				true);
 		this.creator = creator;
 	}
 
@@ -21,7 +22,7 @@ public class EffectBrambles extends Effect {
 		EventClash ec = new EventClash(this, target, false) {
 			@Override
 			public void resolve(List<Event> eventlist, boolean loopprotection) {
-				eventlist.add(new EventMinionDamage((Minion) this.effect.owner, target, 1));
+				eventlist.add(new EventEffectDamage(this.effect, target, 1));
 			}
 		};
 		return ec;

@@ -65,8 +65,6 @@ public class DeckDisplayPanel extends UIBox {
 	@Override
 	public void mouseClicked(int button, int x, int y, int clickCount) {
 		this.alert(BACKGROUND_CLICK);
-		System.out.println(this.okbutton.getFinalPos());
-
 	}
 
 	public void setDeck(ConstructedDeck deck) {

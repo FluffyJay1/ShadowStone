@@ -120,6 +120,19 @@ public class ServerGameThread extends Thread {
 					ds.discardMessage();
 				}
 				break;
+			case EMOTE:
+				String emote = ds.readEmote();
+				if (emote.equals("save")) {
+					this.b.saveBoardState();
+				}
+				if (emote.equals("load")) {
+					System.out.println("BITES ZA DUSTO");
+					this.b.loadBoardState();
+					this.dsexternal.sendResetBoard();
+					this.dslocal.sendResetBoard();
+					this.sendEvents();
+				}
+				break;
 			default:
 				ds.discardMessage();
 				break;

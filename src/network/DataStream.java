@@ -97,6 +97,15 @@ public class DataStream {
 		}
 	}
 
+	public void sendEmote(String emote) {
+		this.out.println(MessageType.EMOTE);
+		this.out.println(emote);
+	}
+
+	public void sendResetBoard() {
+		this.out.println(MessageType.BOARDRESET);
+	}
+
 	public boolean ready() {
 		try {
 			return this.in.ready();
@@ -107,8 +116,10 @@ public class DataStream {
 		return false;
 	}
 
-	// two parter, first use this method to determine message type, then use
-	// a corresponding read...() method to finish reading the message
+	/*
+	 * two parter, first use this method to determine message type, then use a
+	 * corresponding read...() method to finish reading the message
+	 */
 	public MessageType receive() {
 		String header = "";
 		try {
@@ -152,6 +163,17 @@ public class DataStream {
 		return null;
 	}
 
+	public String readEmote() {
+		try {
+			String emote = in.readLine();
+			return emote;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public ConstructedDeck readDecklist() {
 		try {
 			return (ConstructedDeck) this.objectIn.readObject();
@@ -162,6 +184,10 @@ public class DataStream {
 		return null;
 	}
 
+	/*
+	 * If we don't care about the message we just received, we "discard" it, reading
+	 * the message but not doing anything with it
+	 */
 	public void discardMessage() {
 		switch (this.lastMessageType) {
 		case EVENT:
@@ -173,6 +199,8 @@ public class DataStream {
 		case DECK:
 			this.readDecklist();
 			break;
+		case EMOTE:
+			this.readEmote();
 		default:
 			break;
 		}

@@ -44,10 +44,6 @@ public class Target implements Cloneable {
 	}
 
 	public List<Card> getTargets() {
-		// TODO: Determine if this is necessary
-		if (!this.ready) {
-			this.resolveTargets();
-		}
 		return this.targets;
 	}
 
@@ -117,8 +113,8 @@ public class Target implements Cloneable {
 	}
 
 	/**
-	 * A target is deemed to be ready if no more targets can be selected from
-	 * the board.
+	 * A target is deemed to be ready if no more targets can be selected from the
+	 * board.
 	 * 
 	 * @return whether the target is ready
 	 */
@@ -174,12 +170,13 @@ public class Target implements Cloneable {
 
 	@Override
 	public String toString() {
-		String ret = (this.creator == null ? "null " : this.creator.toReference()) + this.description + Game.STRING_END
-				+ " " + this.maxtargets + " " + this.targets.size() + " ";
+		StringBuilder builder = new StringBuilder();
+		builder.append(Effect.referenceOrNull(this.creator)).append(this.description).append(Game.STRING_END)
+				.append(" ").append(this.maxtargets).append(" ").append(this.targets.size()).append(" ");
 		for (Card c : this.targets) {
-			ret += (c == null ? "null " : c.toReference());
+			builder.append(Card.referenceOrNull(c));
 		}
-		return ret;
+		return builder.toString();
 	}
 
 	public static Target fromString(Board b, StringTokenizer st) {
@@ -213,11 +210,12 @@ public class Target implements Cloneable {
 	}
 
 	public static String listToString(List<Target> list) {
-		String ret = list.size() + " ";
+		StringBuilder builder = new StringBuilder();
+		builder.append(list.size() + " ");
 		for (Target t : list) {
-			ret += t.toString();
+			builder.append(t.toString());
 		}
-		return ret;
+		return builder.toString();
 	}
 
 }
