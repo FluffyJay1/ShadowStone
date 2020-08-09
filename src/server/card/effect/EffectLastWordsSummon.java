@@ -25,7 +25,7 @@ public class EffectLastWordsSummon extends Effect {
 		EventLastWords elw = new EventLastWords(this, false) {
 			@Override
 			public void resolve(List<Event> eventlist, boolean loopprotection) {
-				eventlist.add(new EventCreateCard(this.effect.owner.board, m, team, CardStatus.BOARD, recentcardpos));
+				eventlist.add(new EventCreateCard(m, team, CardStatus.BOARD, recentcardpos));
 				// why is an anonymous class allowed to use variables in the
 				// method scope
 			}

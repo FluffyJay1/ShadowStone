@@ -29,29 +29,25 @@ public class AI extends Thread {
 	 * this depth again, we will have to re-evaluate which action is best.
 	 */
 	// The minimum depth for sampling to occur
-	private static final int REEVALUATION_MIN_DEPTH = 2;
+	private static final int REEVALUATION_MIN_DEPTH = 1;
 
 	// After this depth, just kinda call it
-	private static final int REEVALUATION_MAX_DEPTH = 6;
-
-	// At min depth, the fraction of total actions to actually sample
-	private static final double REEVALUATION_SAMPLE_RATE = 0.5;
-
-	// For each node past minimum depth, the sample rate is decreased
-	private static final double REEVALUATION_SAMPLE_RATE_MULTIPLIER = 0.5;
+	private static final int REEVALUATION_MAX_DEPTH = 8;
 
 	// The minimum number of branches to sample at each level
 	private static final int REEVALUATION_MIN_SAMPLES = 1;
 
-	// The maximum number of branches to sample at each level
-	private static final int REEVALUATION_MAX_SAMPLES = 10;
+	// The maximum number of branches to sample at min depth
+	private static final int REEVALUATION_MAX_SAMPLES = 16;
 
-	/*
-	 * Past a certain depth, the sampling rate is probably bad, so let's also assume
-	 * that whatever actions the AI takes, it won't make the board state worse than
-	 * it already is
-	 */
-	private static final int REEVALUATION_ESTIMATION_DEPTH = 4;
+	// How much the max number of samples gets multiplied by per level
+	private static final double REEVALUATION_MAX_SAMPLES_MULTIPLIER = 0.5;
+
+	// Proportion of total possible actions that we sample at min depth
+	private static final double REEVALUATION_SAMPLE_RATE = 1;
+
+	// Multiplier of sample rate at each depth
+	private static final double REEVALUATION_SAMPLE_RATE_MULTIPLIER = 0.5;
 
 	// Statistics to gauge AI evaluation speed
 	private int[] width = new int[50], maxBranches = new int[50];
@@ -113,7 +109,7 @@ public class AI extends Thread {
 		}
 		List<String> actionStack = new LinkedList<String>();
 		long start = System.nanoTime();
-		double score = this.getBestTurn(actionStack, 0, 1);
+		double score = this.getBestTurn(this.b.localteam, actionStack, 0, 1, Double.POSITIVE_INFINITY, false);
 		double time = (System.nanoTime() - start) / 1000000000.;
 		this.actionSendQueue.addAll(actionStack);
 		System.out.println("Time taken: " + time);
@@ -139,25 +135,32 @@ public class AI extends Thread {
 
 	/**
 	 * Given the current board state, get the sequence of player actions that
-	 * maximizes the advantage of the AI.
+	 * maximizes the advantage of a player. Should the turn be complicated by RNG or
+	 * a large number of possibilities, get only the first few actions that may lead
+	 * to the greatest advantage. Will end the turn with a EndTurnAction.
 	 * 
-	 * @param actions    A list that will contain the sequence of player actions
-	 *                   after the method is run, can be null if not necessary
-	 * @param depth      Passes the current depth in the decision tree, should start
-	 *                   at 0
-	 * @param sampleRate The fraction of total possible actions that we sample
+	 * @param team         The team of the player to evaluate for
+	 * @param actions      A list that will contain the sequence of player actions
+	 *                     after the method is run, can be null if not necessary
+	 * @param depth        Passes the current depth in the decision tree, should
+	 *                     start at 0
+	 * @param sampleRate   The proportion of total actions to sample
+	 * @param maxSamples   Max number of samples to use
+	 * @param filterLethal Flag to only traverse actions that may result in lethal
 	 * @return The best advantage score
 	 */
-	private double getBestTurn(List<String> actions, int depth, double sampleRate) {
+	private double getBestTurn(int team, List<String> actions, int depth, double sampleRate, double maxSamples,
+			boolean filterLethal) {
 		// TODO: implement simplified version of this method for lethal checking, used
 		// by AI to make sure oppponent doesn't have lethal
-		List<PlayerAction> poss = this.getPossibleActions(), samples;
+		List<PlayerAction> poss = filterLethal ? this.getPossibleLethalActions(team) : this.getPossibleActions(team),
+				samples;
 		List<String> bestTurn = new LinkedList<String>();
 		double bestScore = Double.NEGATIVE_INFINITY;
 		// start sampling
 		if (depth >= REEVALUATION_MIN_DEPTH) {
-			int numSamples = (int) Math.max(poss.size() * sampleRate, REEVALUATION_MIN_SAMPLES);
-			numSamples = Math.min(numSamples, REEVALUATION_MAX_SAMPLES);
+			int numSamples = (int) Math.min(poss.size() * sampleRate, maxSamples);
+			numSamples = Math.max(numSamples, REEVALUATION_MIN_SAMPLES);
 			samples = Game.selectRandom(poss, numSamples);
 		} else {
 			samples = poss;
@@ -178,12 +181,13 @@ public class AI extends Thread {
 					break;
 				}
 			}
-			boolean assuredLethal = !rng && this.b.winner == this.b.localteam;
+			boolean assuredLethal = !rng && this.b.winner == team;
 			double score = 0;
 			// If we are uncertain about actions after this, don't commit those actions.
 			// Don't keep track of the best actions after this.
 			boolean uncertain = rng || samples.size() < poss.size();
-			score = this.traverseAction(action, uncertain ? null : turn, depth, sampleRate);
+			score = this.traverseAction(team, action, uncertain ? null : turn, depth, sampleRate, maxSamples,
+					filterLethal);
 			undoStack.addAll(happenings);
 			while (!undoStack.isEmpty()) {
 				undoStack.get(undoStack.size() - 1).undo();
@@ -209,7 +213,7 @@ public class AI extends Thread {
 				for (int i = 1; i < trials; i++) {
 					happenings = this.b.executePlayerAction(new StringTokenizer(action.toString()));
 					// TODO: make easier difficulties not traverse the tree
-					score += this.traverseAction(action, null, depth, sampleRate);
+					score += this.traverseAction(team, action, null, depth, sampleRate, maxSamples, filterLethal);
 					undoStack.addAll(happenings);
 					while (!undoStack.isEmpty()) {
 						undoStack.get(undoStack.size() - 1).undo();
@@ -232,9 +236,6 @@ public class AI extends Thread {
 		if (actions != null) {
 			actions.addAll(bestTurn);
 		}
-		if (depth >= REEVALUATION_ESTIMATION_DEPTH) {
-			bestScore = Math.max(bestScore, evaluateAdvantage(this.b, this.b.localteam));
-		}
 		return bestScore;
 	}
 
@@ -242,41 +243,58 @@ public class AI extends Thread {
 	 * Helper method (for getBestTurn) to perform a traversal of the decision tree,
 	 * recursively exploring the subtree.
 	 * 
-	 * @param action     The action to perform
-	 * @param turn       A list that will be modified into a chain of player actions
-	 *                   leading to the best state, can be null if not necessary
-	 * @param depth      The current traversal depth
-	 * @param sampleRate The fraction of total possible actions that we sampled
+	 * @param action       The action to perform
+	 * @param turn         A list that will be modified into a chain of player
+	 *                     actions leading to the best state, can be null if not
+	 *                     necessary
+	 * @param depth        The current traversal depth
+	 * @param sampleRate   The proportion of total actions we sampled
+	 * @param maxSamples   The max number of samples we used before
+	 * @param filterLethal Flag to only traverse actions that may result in lethal
 	 * @return The score of the best board state traversed
 	 */
-	private double traverseAction(PlayerAction action, List<String> turn, int depth, double sampleRate) {
+	private double traverseAction(int team, PlayerAction action, List<String> turn, int depth, double sampleRate,
+			double maxSamples, boolean filterLethal) {
 		double score = 0;
-		if (action instanceof EndTurnAction || this.b.winner != 0 || this.b.currentPlayerTurn != this.b.localteam
-				|| depth == REEVALUATION_MAX_DEPTH) {
+		double nextMaxSamples = maxSamples;
+		double nextSampleRate = sampleRate;
+		if (depth + 1 == REEVALUATION_MIN_DEPTH) {
+			nextMaxSamples = REEVALUATION_MAX_SAMPLES;
+			nextSampleRate = REEVALUATION_SAMPLE_RATE;
+		} else if (depth + 1 > REEVALUATION_MIN_DEPTH) {
+			nextMaxSamples = maxSamples * REEVALUATION_MAX_SAMPLES_MULTIPLIER;
+			nextSampleRate = sampleRate * REEVALUATION_SAMPLE_RATE_MULTIPLIER;
+		}
+		if (this.b.winner != 0 || depth == REEVALUATION_MAX_DEPTH) {
 			// no more actions can be taken
-			score = evaluateAdvantage(this.b, this.b.localteam);
-		} else {
-			double nextSampleRate = sampleRate;
-			if (depth + 1 == REEVALUATION_MIN_DEPTH) {
-				nextSampleRate = REEVALUATION_SAMPLE_RATE;
-			} else if (depth + 1 > REEVALUATION_MIN_DEPTH) {
-				nextSampleRate = sampleRate * REEVALUATION_SAMPLE_RATE_MULTIPLIER;
+			score = evaluateAdvantage(this.b, team);
+		} else if (action instanceof EndTurnAction || this.b.currentPlayerTurn != team) {
+			// assess what's the worst the opponent can do
+			score = evaluateAdvantage(this.b, team);
+			if (!filterLethal) {
+				score = Math.min(score,
+						this.getBestTurn(team * -1, null, depth + 1, nextSampleRate, nextMaxSamples, true) * -1);
 			}
-			score = this.getBestTurn(turn, depth + 1, nextSampleRate);
+		} else {
+			score = this.getBestTurn(team, turn, depth + 1, nextSampleRate, nextMaxSamples, filterLethal);
 		}
 		return score;
 	}
 
 	/**
-	 * Given the current board state, attempts to find every possible action that
-	 * the AI can make.
+	 * Given the current board state, attempts to find every possible action that a
+	 * player on this team can make.
 	 * 
+	 * @param team The team to evaluate for
 	 * @return a list of possible actions taken by the AI
 	 */
-	private List<PlayerAction> getPossibleActions() {
-		Player p = this.b.getPlayer(this.b.localteam);
+	private List<PlayerAction> getPossibleActions(int team) {
+		if (this.b.currentPlayerTurn != team || this.b.winner != 0) {
+			return null;
+		}
+		Player p = this.b.getPlayer(team);
 		List<PlayerAction> poss = new LinkedList<PlayerAction>();
-		List<BoardObject> minions = this.b.getBoardObjects(this.b.localteam, false, true, false);
+		List<BoardObject> minions = this.b.getBoardObjects(team, false, true, false);
 		for (BoardObject b : minions) {
 			// minion attack
 			Minion m = (Minion) b;
@@ -298,7 +316,7 @@ public class AI extends Thread {
 			}
 		}
 		// playing cards & selecting targets
-		List<Card> hand = this.b.getPlayer(this.b.localteam).hand.cards;
+		List<Card> hand = p.hand.cards;
 		for (Card c : hand) {
 			// TODO make it consider board positioning
 			if (p.canPlayCard(c)) {
@@ -313,7 +331,68 @@ public class AI extends Thread {
 			}
 		}
 		// ending turn
-		poss.add(new EndTurnAction(this.b.localteam));
+		poss.add(new EndTurnAction(team));
+		return poss;
+	}
+
+	/**
+	 * Given the current board state, return the obvious actions that could lead to
+	 * a lethal. Intended to be a subset of all possible actions that are openly
+	 * visible on the board, i.e. unleashing minions and attacking face. If the
+	 * enemy face can be attacked by multiple minions, only the action of the first
+	 * minion attacking is added, with the assumption that the order of attacks no
+	 * longer matters and that subsequent calls to this method will result in the
+	 * minions attacking face one by one.
+	 * 
+	 * @param team The team to evaluate for
+	 * @return The set of actions that the team could take that could lead to lethal
+	 */
+	private List<PlayerAction> getPossibleLethalActions(int team) {
+		if (this.b.currentPlayerTurn != team || this.b.winner != 0) {
+			return null;
+		}
+		Player p = this.b.getPlayer(team);
+		List<PlayerAction> poss = new LinkedList<PlayerAction>();
+		List<Minion> minions = this.b.getMinions(team, false, true);
+		boolean enemyWard = false;
+		for (Minion m : this.b.getMinions(team * -1, false, true)) {
+			if (m.finalStatEffects.getStat(EffectStats.WARD) > 0) {
+				enemyWard = true;
+				break;
+			}
+		}
+		for (Minion m : minions) {
+			if (p.canUnleashCard(m)) {
+				if (!m.getUnleashTargets().isEmpty()) {
+					List<List<Target>> targetSearchSpace = this.getPossibleListTargets(m.getUnleashTargets());
+					for (List<Target> targets : targetSearchSpace) {
+						poss.add(new UnleashMinionAction(p, m, Target.listToString(targets)));
+					}
+				} else { // no targets to set
+					poss.add(new UnleashMinionAction(p, m, "0"));
+				}
+			}
+		}
+		if (enemyWard) {
+			// find ways to break through the wards
+			for (Minion m : minions) {
+				if (m.canAttack()) {
+					for (Minion target : m.getAttackableTargets()) {
+						poss.add(new OrderAttackAction(m, target));
+					}
+				}
+			}
+		} else {
+			// just go face
+			Leader enemyFace = this.b.getPlayer(team * -1).leader;
+			for (Minion m : minions) {
+				if (m.canAttack(enemyFace)) {
+					poss.add(new OrderAttackAction(m, enemyFace));
+					break; // only want one action, trust that we can always attack in sequence after
+				}
+			}
+		}
+		poss.add(new EndTurnAction(team));
 		return poss;
 	}
 

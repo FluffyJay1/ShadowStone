@@ -7,9 +7,10 @@ import server.card.*;
 import server.event.*;
 
 public class EffectBrambles extends Effect {
-	public static final int ID = 1;
+	public static final int ID = 3;
 	Card creator;
 
+	// TODO: make this into an anonymous class for brambles
 	public EffectBrambles(Card creator) {
 		super(ID,
 				"Has <b> Clash: </b> deal 1 damage to the enemy minion until the corresponding Wood of Brambles leaves play.",

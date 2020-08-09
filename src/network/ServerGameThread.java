@@ -89,14 +89,14 @@ public class ServerGameThread extends Thread {
 			cards.addAll(this.decks[(team - 1) / -2].convertToCards(this.b));
 			while (!cards.isEmpty()) {
 				Card selected = Game.selectRandom(cards);
-				this.b.eventlist.add(new EventCreateCard(this.b, selected, team, CardStatus.DECK, 0));
+				this.b.eventlist.add(new EventCreateCard(selected, team, CardStatus.DECK, 0));
 				cards.remove(selected);
 			}
 			UnleashPower up = (UnleashPower) Card.createFromConstructor(this.b,
 					-8 - this.decks[(team - 1) / -2].craft.ordinal());
-			this.b.eventlist.add(new EventCreateCard(this.b, up, team, CardStatus.UNLEASHPOWER, 0));
+			this.b.eventlist.add(new EventCreateCard(up, team, CardStatus.UNLEASHPOWER, 0));
 			// TODO change leader
-			this.b.eventlist.add(new EventCreateCard(this.b, new Rowen(this.b), team, CardStatus.LEADER, 0));
+			this.b.eventlist.add(new EventCreateCard(new Rowen(this.b), team, CardStatus.LEADER, 0));
 		}
 		EventDraw.drawMultiple(this.b.eventlist, false, this.b.player1, 3);
 		EventDraw.drawMultiple(this.b.eventlist, false, this.b.player2, 3);

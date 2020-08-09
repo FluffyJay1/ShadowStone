@@ -131,8 +131,12 @@ public class Board {
 		ArrayList<BoardObject> ret = new ArrayList<BoardObject>();
 		ret.addAll(this.player1side);
 		ret.addAll(this.player2side);
-		ret.add(this.player1.leader);
-		ret.add(this.player2.leader);
+		if (this.player1.leader != null) {
+			ret.add(this.player1.leader);
+		}
+		if (this.player2.leader != null) {
+			ret.add(this.player2.leader);
+		}
 		return ret;
 	}
 
@@ -146,14 +150,14 @@ public class Board {
 
 	public List<BoardObject> getBoardObjects(int team, boolean leader, boolean minion, boolean amulet) {
 		ArrayList<BoardObject> ret = new ArrayList<>();
+		if (leader && this.getPlayer(team).leader != null) {
+			ret.add(this.getPlayer(team).leader);
+		}
 		if (team >= 0) {
 			ret.addAll(this.player1side);
 		}
 		if (team <= 0) {
 			ret.addAll(this.player2side);
-		}
-		if (leader && this.getPlayer(team).leader != null) {
-			ret.add(this.getPlayer(team).leader);
 		}
 		if (!minion) {
 			for (int i = 0; i < ret.size(); i++) {
@@ -385,6 +389,11 @@ public class Board {
 				if (e != null && e.conditions()) {
 					LinkedList<Event> lmao = new LinkedList<Event>();
 					e.resolve(lmao, false);
+					for (Effect effect : this.eventlisteners) {
+						if (!effect.mute && effect.owner.alive) {
+							effect.onListenEvent(e);
+						}
+					}
 				}
 			}
 		}

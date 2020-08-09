@@ -27,8 +27,8 @@ public class WeatheredVanguard extends Minion {
 					@Override
 					public void resolve(List<Event> eventlist, boolean loopprotection) {
 						for (int i = 0; i < 2; i++) {
-							eventlist.add(new EventCreateCard(b, new Knight(b), this.effect.owner.team,
-									CardStatus.BOARD, this.effect.owner.cardpos + i * 2));
+							eventlist.add(new EventCreateCard(new Knight(b), this.effect.owner.team, CardStatus.BOARD,
+									this.effect.owner.cardpos + i * 2));
 						}
 					}
 				};

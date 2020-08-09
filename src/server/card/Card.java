@@ -113,13 +113,13 @@ public class Card implements Cloneable {
 	// numbers for both basic and additional effects, caching the tally for the
 	// base stat numbers for future use
 	public void updateEffectStats(boolean basic) {
-		// start with clean slate
-		Effect stats = new Effect(0, "", 1);
+		Effect stats;
 		if (basic) {
-			this.finalBasicStatEffects = stats;
+			stats = this.finalBasicStatEffects;
 		} else {
-			this.finalStatEffects = stats;
+			stats = this.finalStatEffects;
 		}
+		stats.applyEffectStats(new Effect(0, ""));
 		List<Effect> relevant = basic ? this.getEffects(basic) : this.getFinalEffects();
 		for (Effect e : relevant) {
 			stats.applyEffectStats(e);
@@ -127,6 +127,7 @@ public class Card implements Cloneable {
 		for (int i = 0; i < EffectStats.NUM_STATS; i++) {
 			if (stats.getStat(i) < 0) {
 				stats.set.setStat(i, 0);
+				stats.change.setStat(i, 0);
 			}
 		}
 		if (basic) {
@@ -192,7 +193,8 @@ public class Card implements Cloneable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(this.id + " " + this.team + " " + this.cardPosToString() + this.basicEffects.size() + " ");
+		builder.append(this.id + " " + this.team + " " + this.alive + " " + this.cardPosToString()
+				+ this.basicEffects.size() + " ");
 		for (Effect e : this.basicEffects) {
 			builder.append(e.toString());
 		}

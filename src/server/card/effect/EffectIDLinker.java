@@ -6,10 +6,10 @@ public class EffectIDLinker {
 		switch (id) {
 		case EffectStatChange.ID:
 			return EffectStatChange.class;
-		case EffectBrambles.ID:
-			return EffectBrambles.class;
 		case EffectLastWordsSummon.ID:
 			return EffectLastWordsSummon.class;
+		case EffectBrambles.ID:
+			return EffectBrambles.class;
 		default:
 			return null;
 		}

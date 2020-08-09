@@ -61,11 +61,12 @@ public class EventPutCard extends Event {
 			this.prevTeam.add(card.team);
 			this.prevHealth.add(0);
 			this.prevAttacks.add(0);
+			this.prevSick.add(true);
 			if (card instanceof Minion) {
 				this.prevHealth.set(i, ((Minion) card).health);
 				this.prevAttacks.set(i, ((Minion) card).attacksThisTurn);
+				this.prevSick.set(i, ((Minion) card).summoningSickness);
 			}
-			this.prevSick.add(true);
 			switch (card.status) { // removing from
 			case HAND:
 				this.p.hand.cards.remove(card);
@@ -101,7 +102,6 @@ public class EventPutCard extends Event {
 					this.p.board.addBoardObject((BoardObject) card, this.targetTeam,
 							this.pos.get(i) == -1 ? this.p.board.getBoardObjects(this.p.team).size() : this.pos.get(i));
 					if (card instanceof Minion) {
-						this.prevSick.set(i, ((Minion) card).summoningSickness);
 						((Minion) card).summoningSickness = true;
 					}
 					if (!loopprotection) {

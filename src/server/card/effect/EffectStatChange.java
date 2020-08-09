@@ -7,7 +7,7 @@ import server.*;
 import server.card.*;
 
 public class EffectStatChange extends Effect {
-	public static final int ID = -1;
+	public static final int ID = 1;
 
 	public EffectStatChange(String description) {
 		super(ID, description);

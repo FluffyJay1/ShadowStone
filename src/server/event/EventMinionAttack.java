@@ -9,6 +9,7 @@ public class EventMinionAttack extends Event {
 	// start attack
 	public static final int ID = 8;
 	public Minion m1, m2;
+	int prevAttacksThisTurn;
 
 	public EventMinionAttack(Minion m1, Minion m2) {
 		super(ID, false);
@@ -18,6 +19,7 @@ public class EventMinionAttack extends Event {
 
 	@Override
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
+		this.prevAttacksThisTurn = this.m1.attacksThisTurn;
 		if (!loopprotection) {
 			this.m1.attacksThisTurn++;
 			eventlist.addAll(m1.onAttack(m2));
@@ -35,7 +37,7 @@ public class EventMinionAttack extends Event {
 
 	@Override
 	public void undo() {
-		this.m1.attacksThisTurn--; // this should be fine
+		this.m1.attacksThisTurn = this.prevAttacksThisTurn;
 	}
 
 	@Override

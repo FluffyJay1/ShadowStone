@@ -61,6 +61,7 @@ public class Minion extends BoardObject {
 				+ Math.sqrt(this.finalStatEffects.getStat(EffectStats.MAGIC)) + 1;
 	}
 
+	// remember to change logic in canAttack(Minion)
 	public List<Minion> getAttackableTargets() {
 		if (this.summoningSickness && (this.finalStatEffects.getStat(EffectStats.STORM) == 0
 				&& this.finalStatEffects.getStat(EffectStats.RUSH) == 0)) {
@@ -103,6 +104,23 @@ public class Minion extends BoardObject {
 				&& this.attacksThisTurn < this.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN)
 				&& (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.RUSH) > 0
 						|| this.finalStatEffects.getStat(EffectStats.STORM) > 0);
+	}
+
+	// like getAttackableTargets but for a single target
+	public boolean canAttack(Minion m) {
+		if (!this.canAttack()) {
+			return false;
+		}
+		boolean ward = false;
+		for (Minion potentialWard : this.board.getMinions(this.team * -1, true, true)) {
+			if (potentialWard.finalStatEffects.getStat(EffectStats.WARD) > 0) {
+				ward = true;
+				break;
+			}
+		}
+		return (!ward || m.finalStatEffects.getStat(EffectStats.WARD) > 0)
+				&& (!this.summoningSickness || (this.finalStatEffects.getStat(EffectStats.STORM) > 0
+						|| (this.finalStatEffects.getStat(EffectStats.RUSH) > 0 && m.status.equals(CardStatus.BOARD))));
 	}
 
 	@Override
@@ -179,6 +197,6 @@ public class Minion extends BoardObject {
 
 	@Override
 	public String toString() {
-		return super.toString() + this.health + " ";
+		return super.toString() + this.health + " " + this.attacksThisTurn + " " + this.summoningSickness + " ";
 	}
 }

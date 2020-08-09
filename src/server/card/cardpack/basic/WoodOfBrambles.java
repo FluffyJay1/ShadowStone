@@ -25,8 +25,8 @@ public class WoodOfBrambles extends Amulet {
 					@Override
 					public void resolve(List<Event> eventlist, boolean loopprotection) {
 						for (int i = 0; i < 2; i++) {
-							eventlist.add(new EventCreateCard(this.effect.owner.board,
-									new Fairy(this.effect.owner.board), this.effect.owner.team, CardStatus.HAND, 999));
+							eventlist.add(new EventCreateCard(new Fairy(this.effect.owner.board),
+									this.effect.owner.team, CardStatus.HAND, 999));
 						}
 						Target t = new Target(this.effect, 10, "") {
 

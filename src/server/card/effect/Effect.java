@@ -6,6 +6,7 @@ import java.util.*;
 import client.*;
 import server.*;
 import server.card.*;
+import server.card.cardpack.*;
 import server.event.*;
 
 public class Effect implements Cloneable {
@@ -185,7 +186,7 @@ public class Effect implements Cloneable {
 
 	public static Effect fromString(Board b, StringTokenizer st) {
 		int id = Integer.parseInt(st.nextToken());
-		if (id == 0) {
+		if (id == 0 || id == AnonymousEffect.ID) {
 			Card owner = Card.fromReference(b, st);
 			String description = st.nextToken(Game.STRING_END).trim();
 			st.nextToken(" \n"); // THANKS STRING TOKENIZER
@@ -195,7 +196,26 @@ public class Effect implements Cloneable {
 			ef.mute = mute;
 			ef.set = EffectStats.fromString(st);
 			ef.change = EffectStats.fromString(st);
-			return ef;
+			if (id == 0) {
+				return ef;
+			}
+			int ownerID = Integer.parseInt(st.nextToken());
+			int anonymousIndex = Integer.parseInt(st.nextToken());
+			Class<? extends Card> cardClass = CardSet.getCardClass(ownerID);
+			AnonymousEffectList effectList = null;
+			Effect anonymousEffect = null;
+			try {
+				effectList = (AnonymousEffectList) cardClass.getField("EFFECTS").get(null);
+				anonymousEffect = effectList.get(anonymousIndex).reconstruct(st);
+			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException
+					| CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			anonymousEffect.owner = owner;
+			anonymousEffect.mute = mute;
+			anonymousEffect.applyEffectStats(ef);
+			return anonymousEffect;
 		} else {
 			Class c = EffectIDLinker.getClass(id);
 			Effect ef = null;

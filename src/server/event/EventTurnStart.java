@@ -56,8 +56,9 @@ public class EventTurnStart extends Event {
 	public void undo() {
 		this.p.board.currentPlayerTurn = this.prevCurrentPlayerTurn;
 		this.p.unleashPower.unleashesThisTurn = this.prevUnleashesThisTurn;
-		for (int i = 0; i < this.p.board.getBoardObjects(this.p.team).size(); i++) {
-			BoardObject bo = this.p.board.getBoardObjects(this.p.team).get(i);
+		List<BoardObject> boardObjects = this.p.board.getBoardObjects(this.p.team);
+		for (int i = 0; i < boardObjects.size(); i++) {
+			BoardObject bo = boardObjects.get(i);
 			if (bo instanceof Minion) {
 				Minion m = (Minion) bo;
 				m.summoningSickness = this.prevSickness.get(i);

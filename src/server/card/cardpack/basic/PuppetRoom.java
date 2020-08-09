@@ -25,8 +25,8 @@ public class PuppetRoom extends Amulet {
 					@Override
 					public void resolve(List<Event> eventlist, boolean loopprotection) {
 						Board b = this.effect.owner.board;
-						eventlist.add(
-								new EventCreateCard(b, new Puppet(b), this.effect.owner.team, CardStatus.HAND, 1000));
+						eventlist
+								.add(new EventCreateCard(new Puppet(b), this.effect.owner.team, CardStatus.HAND, 1000));
 					}
 				};
 				return eb;
@@ -38,8 +38,8 @@ public class PuppetRoom extends Amulet {
 					@Override
 					public void resolve(List<Event> eventlist, boolean loopprotection) {
 						Board b = this.effect.owner.board;
-						eventlist.add(
-								new EventCreateCard(b, new Puppet(b), this.effect.owner.team, CardStatus.HAND, 1000));
+						eventlist
+								.add(new EventCreateCard(new Puppet(b), this.effect.owner.team, CardStatus.HAND, 1000));
 					}
 				};
 				return ef;

@@ -16,10 +16,12 @@ public class EventCreateCard extends Event {
 	private UnleashPower prevUP;
 	private Leader prevLeader;
 
-	public EventCreateCard(Board b, Card c, int team, CardStatus status, int cardpos) {
+	String before, after;
+
+	public EventCreateCard(Card c, int team, CardStatus status, int cardpos) {
 		super(ID, false);
 		this.c = c;
-		this.b = b;
+		this.b = c.board;
 		this.team = team;
 		this.status = status;
 		this.cardpos = cardpos;
@@ -27,18 +29,19 @@ public class EventCreateCard extends Event {
 
 	@Override
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
+		this.before = this.b.stateToString();
 		this.c.team = this.team;
+		this.c.status = this.status;
 		switch (this.status) {
 		case HAND:
 			Hand relevantHand = this.b.getPlayer(this.team).hand;
 			if (relevantHand.cards.size() >= relevantHand.maxsize) {
-				eventlist.add(new EventDestroy(c));
-			} else {
-				int temppos = this.cardpos == -1 ? (int) relevantHand.cards.size() : this.cardpos;
-				temppos = Math.min(this.cardpos, relevantHand.cards.size());
-				relevantHand.cards.add(temppos, this.c);
-				relevantHand.updatePositions();
+				eventlist.add(0, new EventDestroy(c));
 			}
+			int temppos = this.cardpos == -1 ? (int) relevantHand.cards.size() : this.cardpos;
+			temppos = Math.min(this.cardpos, relevantHand.cards.size());
+			relevantHand.cards.add(temppos, this.c);
+			relevantHand.updatePositions();
 			break;
 		case BOARD:
 			if (this.c instanceof BoardObject) {
@@ -54,7 +57,7 @@ public class EventCreateCard extends Event {
 			break;
 		case DECK:
 			Deck relevantDeck = this.b.getPlayer(this.team).deck;
-			int temppos = this.cardpos == -1 ? (int) relevantDeck.cards.size() : this.cardpos;
+			temppos = this.cardpos == -1 ? (int) relevantDeck.cards.size() : this.cardpos;
 			temppos = Math.min(this.cardpos, relevantDeck.cards.size());
 			relevantDeck.cards.add(temppos, this.c);
 			relevantDeck.updatePositions();
@@ -70,10 +73,10 @@ public class EventCreateCard extends Event {
 		default:
 			break;
 		}
-		this.c.status = this.status;
 		if (this.b.isClient) {
 			this.b.cardsCreated.add(this.c);
 		}
+		this.after = this.b.stateToString();
 	}
 
 	@Override
@@ -84,10 +87,9 @@ public class EventCreateCard extends Event {
 			Hand relevantHand = this.b.getPlayer(this.team).hand;
 			if (relevantHand.cards.size() >= relevantHand.maxsize) {
 				// just do nothing, shouldn't try to unmill
-			} else {
-				relevantHand.cards.remove(this.c);
-				relevantHand.updatePositions();
 			}
+			relevantHand.cards.remove(this.c);
+			relevantHand.updatePositions();
 			break;
 		case BOARD:
 			if (this.c instanceof BoardObject) {
@@ -130,7 +132,7 @@ public class EventCreateCard extends Event {
 			}
 		}
 		int cardpos = Integer.parseInt(st.nextToken());
-		return new EventCreateCard(b, c, team, csStatus, cardpos);
+		return new EventCreateCard(c, team, csStatus, cardpos);
 	}
 
 	@Override
