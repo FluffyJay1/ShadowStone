@@ -20,7 +20,7 @@ public class Card implements Cloneable {
 	public Card realCard; // for visual board
 	public UICard uiCard;
 
-	public Effect finalStatEffects = new Effect(0, ""), finalBasicStatEffects = new Effect(0, "");
+	public Effect finalStatEffects = new Effect(), finalBasicStatEffects = new Effect();
 	// basic effects don't get removed when removed from board (e.g. bounce
 	// effects)
 	private List<Effect> effects = new LinkedList<Effect>(), basicEffects = new LinkedList<Effect>();
@@ -119,7 +119,7 @@ public class Card implements Cloneable {
 		} else {
 			stats = this.finalStatEffects;
 		}
-		stats.applyEffectStats(new Effect(0, ""));
+		stats.applyEffectStats(new Effect());
 		List<Effect> relevant = basic ? this.getEffects(basic) : this.getFinalEffects();
 		for (Effect e : relevant) {
 			stats.applyEffectStats(e);

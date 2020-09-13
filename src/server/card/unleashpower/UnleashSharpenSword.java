@@ -23,7 +23,7 @@ public class UnleashSharpenSword extends UnleashPower {
 	public LinkedList<Event> unleash(Minion m) {
 		LinkedList<Event> list = new LinkedList<Event>();
 		list.add(new EventUnleash(this, m));
-		EffectStatChange e = new EffectStatChange("+1/+0/+0 from <b> Sharpen Sword. </b>");
+		EffectStatChange e = new EffectStatChange("+1/+0/+0 from <b> Sharpen Sword. </b>", 1, 0, 0);
 		e.change.setStat(EffectStats.ATTACK, 1);
 		list.add(new EventAddEffect(m, e));
 		return list;

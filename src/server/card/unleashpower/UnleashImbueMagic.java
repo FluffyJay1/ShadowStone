@@ -22,7 +22,7 @@ public class UnleashImbueMagic extends UnleashPower {
 	@Override
 	public LinkedList<Event> unleash(Minion m) {
 		LinkedList<Event> list = new LinkedList<Event>();
-		EffectStatChange e = new EffectStatChange("+0/+1/+0 from <b> Imbue Magic. </b>");
+		EffectStatChange e = new EffectStatChange("+0/+1/+0 from <b> Imbue Magic. </b>", 0, 1, 0);
 		e.change.setStat(EffectStats.MAGIC, 1);
 		list.add(new EventAddEffect(m, e));
 		list.add(new EventUnleash(this, m));

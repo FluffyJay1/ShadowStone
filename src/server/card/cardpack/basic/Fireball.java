@@ -20,7 +20,7 @@ public class Fireball extends Spell {
 		super(b, TOOLTIP);
 		// anonymous classes within anonymous classes
 
-		this.e = new Effect(0, "") {
+		this.e = new Effect(TOOLTIP.description, false) {
 			@Override
 			public EventBattlecry battlecry() {
 				EventBattlecry bc = new EventBattlecry(this, false) {

@@ -19,15 +19,14 @@ public class Tiny extends Minion {
 
 	public Tiny(Board b) {
 		super(b, TOOLTIP);
-		Effect e = new Effect(0, "Unleash: Gain +2/+0/+2 and Rush") {
+		Effect e = new Effect("Unleash: Gain +2/+0/+2 and Rush", false) {
 			@Override
 			public EventFlag unleash() {
 				EventFlag ef = new EventFlag(this, false) {
 					@Override
 					public void resolve(List<Event> eventlist, boolean loopprotection) {
-						EffectStatChange ef = new EffectStatChange("Gained +2/+0/+2 and <b> Rush </b> from Unleash");
-						ef.change.setStat(EffectStats.ATTACK, 2);
-						ef.change.setStat(EffectStats.HEALTH, 2);
+						EffectStatChange ef = new EffectStatChange("Gained +2/+0/+2 and <b> Rush </b> from Unleash", 2,
+								0, 2);
 						ef.set.setStat(EffectStats.RUSH, 1);
 						eventlist.add(new EventAddEffect(this.effect.owner, ef));
 					}

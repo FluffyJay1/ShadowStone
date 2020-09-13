@@ -7,6 +7,6 @@ import server.card.effect.*;
 public class Amulet extends BoardObject {
 	public Amulet(Board b, TooltipAmulet tooltip) {
 		super(b, tooltip);
-		this.addEffect(true, new Effect(0, "", tooltip.cost));
+		this.addEffect(true, new Effect("", tooltip.cost));
 	}
 }

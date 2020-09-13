@@ -20,7 +20,7 @@ public class Baneling extends Minion {
 
 	public Baneling(Board b) {
 		super(b, TOOLTIP);
-		Effect e = new Effect(0, "<b> Last Words: Blast(5). </b>") {
+		Effect e = new Effect("<b> Last Words: Blast(5). </b>", false) {
 			@Override
 			public EventLastWords lastWords() {
 				EventLastWords lw = new EventLastWords(this, false) {

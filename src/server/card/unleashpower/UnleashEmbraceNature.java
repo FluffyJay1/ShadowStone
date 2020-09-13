@@ -25,7 +25,7 @@ public class UnleashEmbraceNature extends UnleashPower {
 		list.add(new EventUnleash(this, m));
 		if (m.attacksThisTurn > 0) {
 			list.add(new EventPutCard(this.p, m, CardStatus.HAND, this.p.team, -1));
-			EffectStatChange esc = new EffectStatChange("Cost reduced by 1 from <b> Embrace Nature. </b>");
+			Effect esc = new Effect("Cost reduced by 1 from <b> Embrace Nature. </b>", false);
 			esc.change.setStat(EffectStats.COST, -1);
 			list.add(new EventAddEffect(m, esc));
 		}

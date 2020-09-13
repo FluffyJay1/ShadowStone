@@ -23,7 +23,7 @@ public class UnleashMendWounds extends UnleashPower {
 	public LinkedList<Event> unleash(Minion m) {
 		LinkedList<Event> list = new LinkedList<Event>();
 		list.add(new EventUnleash(this, m));
-		EffectStatChange e = new EffectStatChange("+0/+0/+1 from <b> Mend Wounds. </b>");
+		EffectStatChange e = new EffectStatChange("+0/+0/+1 from <b> Mend Wounds. </b>", 0, 0, 1);
 		e.change.setStat(EffectStats.HEALTH, 1);
 		list.add(new EventAddEffect(m, e));
 		list.add(new EventRestore(m, 1));

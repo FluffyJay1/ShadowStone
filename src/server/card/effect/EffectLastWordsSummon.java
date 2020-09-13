@@ -2,18 +2,19 @@ package server.card.effect;
 
 import java.util.*;
 
-import client.*;
 import server.*;
 import server.card.*;
 import server.event.*;
 
 public class EffectLastWordsSummon extends Effect {
-	public static final int ID = 2;
-
 	int cardid, team;
 
+	public EffectLastWordsSummon(String description, boolean listener) {
+		super(description, listener);
+	}
+
 	public EffectLastWordsSummon(String description, int cardid, int team) {
-		super(ID, description);
+		super(description, false);
 		this.cardid = cardid;
 		this.team = team;
 	}
@@ -34,15 +35,14 @@ public class EffectLastWordsSummon extends Effect {
 	}
 
 	@Override
-	public String toString() {
-		return this.id + " " + this.description + Game.STRING_END + " " + this.cardid + " " + this.team + " ";
+	public String extraStateString() {
+		return this.cardid + " " + this.team + " ";
 	}
 
-	public static EffectLastWordsSummon fromString(Board b, StringTokenizer st) {
-		String description = st.nextToken(Game.STRING_END).trim();
-		st.nextToken(" \n"); // THANKS STRING TOKENIZER
-		int cardid = Integer.parseInt(st.nextToken());
-		int team = Integer.parseInt(st.nextToken());
-		return new EffectLastWordsSummon(description, cardid, team);
+	@Override
+	public Effect loadExtraState(Board b, StringTokenizer st) {
+		this.cardid = Integer.parseInt(st.nextToken());
+		this.team = Integer.parseInt(st.nextToken());
+		return this;
 	}
 }

@@ -1,9 +1,9 @@
-package server;
+package server.ai;
 
 import java.util.*;
 
-import client.*;
 import network.*;
+import server.*;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
@@ -18,7 +18,7 @@ import server.playeraction.*;
  *
  */
 public class AI extends Thread {
-	private static final int MAX_RNG_TRIALS = 4;
+	private static final int MAX_RNG_TRIALS = 5;
 	private static final int MIN_RNG_TRIALS = 2;
 
 	/*
@@ -29,10 +29,10 @@ public class AI extends Thread {
 	 * this depth again, we will have to re-evaluate which action is best.
 	 */
 	// The minimum depth for sampling to occur
-	private static final int REEVALUATION_MIN_DEPTH = 1;
+	private static final int REEVALUATION_MIN_DEPTH = 2;
 
 	// After this depth, just kinda call it
-	private static final int REEVALUATION_MAX_DEPTH = 8;
+	private static final int REEVALUATION_MAX_DEPTH = 10;
 
 	// The minimum number of branches to sample at each level
 	private static final int REEVALUATION_MIN_SAMPLES = 1;
@@ -50,7 +50,10 @@ public class AI extends Thread {
 	private static final double REEVALUATION_SAMPLE_RATE_MULTIPLIER = 0.5;
 
 	// Statistics to gauge AI evaluation speed
-	private int[] width = new int[50], maxBranches = new int[50];
+	private int[] width = new int[50], maxBranches = new int[50], cacheHits = new int[50];
+
+	// Map board state to cached AI calculations
+	private Map<String, BoardStateNode> nodeMap;
 
 	int difficulty;
 	Board b;
@@ -63,6 +66,7 @@ public class AI extends Thread {
 		this.dslocal = dslocal;
 		this.b = new Board(team);
 		this.actionSendQueue = new LinkedList<String>();
+		this.nodeMap = new HashMap<>();
 	}
 
 	@Override
@@ -70,7 +74,7 @@ public class AI extends Thread {
 		while (this.b.winner == 0) {
 			this.readDataStream();
 			if (this.b.currentPlayerTurn == this.b.localteam && !this.finishedTurn && !this.waitForEvents) {
-				if (this.actionSendQueue.isEmpty()) {
+				if (this.actionSendQueue.isEmpty() && this.b.winner == 0) {
 					this.AIThink();
 				}
 				this.sendNextAction();
@@ -106,30 +110,57 @@ public class AI extends Thread {
 		for (int i = 0; i < this.width.length; i++) {
 			this.width[i] = 0;
 			this.maxBranches[i] = 0;
+			this.cacheHits[i] = 0;
 		}
-		List<String> actionStack = new LinkedList<String>();
+		List<String> actionStack = new LinkedList<>();
 		long start = System.nanoTime();
-		double score = this.getBestTurn(this.b.localteam, actionStack, 0, 1, Double.POSITIVE_INFINITY, false);
+		BoardStateNode bsn = this.getBestTurn(this.b.localteam, 0, 1, Double.POSITIVE_INFINITY, false);
+		if (bsn == null) {
+			System.out.println("AIThink returned from a null best turn, sadge");
+			return;
+		}
 		double time = (System.nanoTime() - start) / 1000000000.;
+		BoardStateNode temp = bsn;
+		while (temp.definedNext && temp.team == this.b.localteam && (temp.isFullyEvaluated() || temp.lethal)) {
+			String nextAction = temp.maxAction;
+			actionStack.add(nextAction);
+			temp = temp.branches.get(nextAction);
+		}
+		if (actionStack.isEmpty()) {
+			System.out.println("AIThink produced no actions!");
+		}
+		temp = bsn;
+		while (temp.definedNext) {
+			String nextAction = temp.maxAction;
+			System.out.println(temp.toString());
+			temp = temp.branches.get(nextAction);
+		}
 		this.actionSendQueue.addAll(actionStack);
 		System.out.println("Time taken: " + time);
-		System.out.println("Score achieved: " + score);
-		System.out.printf("%-6s %-6s %-12s", "Depth", "Width", "Max Branches\n");
+		System.out.println("Score achieved: " + bsn.maxScore);
+		System.out.printf("%-6s %-6s %-6s %-6s", "Depth", "Width", "Cache", "Brnchs\n");
 		for (int i = 0; i < this.width.length; i++) {
 			if (this.width[i] == 0) {
 				break;
 			}
-			System.out.printf("%6d %6d %12d\n", i, this.width[i], this.maxBranches[i]);
+			System.out.printf("%6d %6d %6d %6d\n", i, this.width[i], this.cacheHits[i], this.maxBranches[i]);
 		}
 	}
 
 	private void sendNextAction() {
 		// TODO: check if action is still valid
+		if (this.actionSendQueue.isEmpty()) {
+			// invalid state, maybe something is up
+			System.out.println("AI attempt to send action without any actions in action queue");
+			this.finishedTurn = true;
+			return;
+		}
 		String action = this.actionSendQueue.remove(0);
 		this.dslocal.sendPlayerAction(action);
 		StringTokenizer st = new StringTokenizer(action);
 		if (Integer.parseInt(st.nextToken()) == EndTurnAction.ID) {
 			this.finishedTurn = true;
+			this.nodeMap.clear();
 		}
 	}
 
@@ -137,43 +168,65 @@ public class AI extends Thread {
 	 * Given the current board state, get the sequence of player actions that
 	 * maximizes the advantage of a player. Should the turn be complicated by RNG or
 	 * a large number of possibilities, get only the first few actions that may lead
-	 * to the greatest advantage. Will end the turn with a EndTurnAction.
+	 * to the greatest advantage. Will end the turn with a EndTurnAction. Has the
+	 * side effect of populating the AI decision tree, which caches results of
+	 * previous AI evaluation, valid until the AI ends its turn. Returns null if no
+	 * actions are possible, i.e. if it's the wrong player's turn or the game is
+	 * over.
 	 * 
 	 * @param team         The team of the player to evaluate for
-	 * @param actions      A list that will contain the sequence of player actions
-	 *                     after the method is run, can be null if not necessary
 	 * @param depth        Passes the current depth in the decision tree, should
 	 *                     start at 0
 	 * @param sampleRate   The proportion of total actions to sample
 	 * @param maxSamples   Max number of samples to use
 	 * @param filterLethal Flag to only traverse actions that may result in lethal
-	 * @return The best advantage score
+	 * @return A BoardStateNode object that has been populated, with data such as
+	 *         maxScore and maxAction, for the current board state
 	 */
-	private double getBestTurn(int team, List<String> actions, int depth, double sampleRate, double maxSamples,
+	private BoardStateNode getBestTurn(int team, int depth, double sampleRate, double maxSamples,
 			boolean filterLethal) {
-		// TODO: implement simplified version of this method for lethal checking, used
-		// by AI to make sure oppponent doesn't have lethal
-		List<PlayerAction> poss = filterLethal ? this.getPossibleLethalActions(team) : this.getPossibleActions(team),
-				samples;
-		List<String> bestTurn = new LinkedList<String>();
-		double bestScore = Double.NEGATIVE_INFINITY;
-		// start sampling
-		if (depth >= REEVALUATION_MIN_DEPTH) {
-			int numSamples = (int) Math.min(poss.size() * sampleRate, maxSamples);
-			numSamples = Math.max(numSamples, REEVALUATION_MIN_SAMPLES);
-			samples = Game.selectRandom(poss, numSamples);
+		// no turn possible
+		if (this.b.currentPlayerTurn != team || this.b.winner != 0) {
+			return null;
+		}
+		String state = this.b.stateToString();
+		BoardStateNode bsn;
+		boolean cacheHit = false;
+		if (!this.nodeMap.containsKey(state)) {
+			bsn = new BoardStateNode(team,
+					filterLethal ? this.getPossibleLethalActions(team) : this.getPossibleActions(team));
+			this.nodeMap.put(state, bsn);
+			bsn.currScore = evaluateAdvantage(this.b, team);
 		} else {
-			samples = poss;
+			bsn = this.nodeMap.get(state);
+			cacheHit = true;
+		}
+		// start sampling
+		int numSamples;
+		if (depth >= REEVALUATION_MIN_DEPTH) {
+			numSamples = (int) Math.min(bsn.totalBranches * sampleRate, maxSamples);
+			numSamples = Math.max(numSamples, REEVALUATION_MIN_SAMPLES);
+			numSamples = Math.min(numSamples, bsn.totalBranches);
+		} else {
+			numSamples = bsn.totalBranches;
 		}
 		// some statistics for debugging purposes
-		this.maxBranches[depth] = Math.max(this.maxBranches[depth], samples.size());
+		this.maxBranches[depth] = Math.max(this.maxBranches[depth], numSamples);
 		this.width[depth]++;
-		for (PlayerAction action : samples) {
-			String stateBefore = this.b.stateToString();
+		if (cacheHit) {
+			this.cacheHits[depth]++;
+		}
+		for (int i = bsn.branches.size(); i < numSamples; i++) {
+			int branchIndex = (int) (Math.random() * bsn.unevaluatedBranches.size());
+			String actionString = bsn.unevaluatedBranches.get(branchIndex);
 			List<Event> undoStack = new LinkedList<Event>();
 			List<String> turn = new LinkedList<String>();
-			turn.add(action.toString());
-			List<Event> happenings = this.b.executePlayerAction(new StringTokenizer(action.toString()));
+			turn.add(actionString);
+			StringBuilder listenerStates = new StringBuilder();
+			for (Effect e : this.b.getEventListeners()) {
+				listenerStates.append(e.extraStateString());
+			}
+			List<Event> happenings = this.b.executePlayerAction(new StringTokenizer(actionString));
 			boolean rng = false;
 			for (Event e : happenings) {
 				if (e.rng) {
@@ -181,81 +234,101 @@ public class AI extends Thread {
 					break;
 				}
 			}
-			boolean assuredLethal = !rng && this.b.winner == team;
-			double score = 0;
-			// If we are uncertain about actions after this, don't commit those actions.
-			// Don't keep track of the best actions after this.
-			boolean uncertain = rng || samples.size() < poss.size();
-			score = this.traverseAction(team, action, uncertain ? null : turn, depth, sampleRate, maxSamples,
+			BoardStateNode nextBsn = this.traverseAction(team, actionString, depth, sampleRate, maxSamples,
 					filterLethal);
+			boolean assuredLethal = (nextBsn.team == team && nextBsn.lethal) || (!rng && this.b.winner == team);
 			undoStack.addAll(happenings);
 			while (!undoStack.isEmpty()) {
 				undoStack.get(undoStack.size() - 1).undo();
 				undoStack.remove(undoStack.size() - 1);
 			}
+			StringTokenizer st = new StringTokenizer(listenerStates.toString());
+			/*
+			 * This here assumes that changes to the list of eventlisteners can be fully
+			 * undone
+			 */
+			for (Effect e : this.b.getEventListeners()) {
+				e.loadExtraState(this.b, st);
+			}
 			String stateAfter = this.b.stateToString();
-			if (!stateBefore.equals(stateAfter)) {
+			if (!state.equals(stateAfter)) {
 				System.out.println(
 						"Discrepancy after executing " + turn.get(0) + ", rng = " + rng + ", depth = " + depth);
 				for (Event e : happenings) {
 					System.out.println(e.toString());
 				}
 				System.out.println("Before:");
-				System.out.println(stateBefore);
+				System.out.println(state);
 				System.out.println("After:");
 				System.out.println(stateAfter);
 			}
-
 			if (rng) {
 				// TODO: have AI re-evaluate rng events if the depth was too
 				// high
 				int trials = Math.max(MAX_RNG_TRIALS - depth, MIN_RNG_TRIALS);
-				for (int i = 1; i < trials; i++) {
-					happenings = this.b.executePlayerAction(new StringTokenizer(action.toString()));
+				double score = nextBsn.maxScore * team * nextBsn.team;
+				for (int j = 1; j < trials; j++) {
+					listenerStates = new StringBuilder();
+					for (Effect e : this.b.getEventListeners()) {
+						listenerStates.append(e.extraStateString());
+					}
+					happenings = this.b.executePlayerAction(new StringTokenizer(actionString));
 					// TODO: make easier difficulties not traverse the tree
-					score += this.traverseAction(team, action, null, depth, sampleRate, maxSamples, filterLethal);
+					nextBsn = this.traverseAction(team, actionString, depth, sampleRate, maxSamples, filterLethal);
+					score += nextBsn.maxScore * team * nextBsn.team;
 					undoStack.addAll(happenings);
 					while (!undoStack.isEmpty()) {
 						undoStack.get(undoStack.size() - 1).undo();
 						undoStack.remove(undoStack.size() - 1);
 					}
+					st = new StringTokenizer(listenerStates.toString());
+					for (Effect e : this.b.getEventListeners()) {
+						e.loadExtraState(this.b, st);
+					}
+					stateAfter = this.b.stateToString();
+					if (!state.equals(stateAfter)) {
+						System.out.println(
+								"Discrepancy after executing " + turn.get(0) + ", rng = " + rng + ", depth = " + depth);
+						for (Event e : happenings) {
+							System.out.println(e.toString());
+						}
+						System.out.println("Before:");
+						System.out.println(state);
+						System.out.println("After:");
+						System.out.println(stateAfter);
+					}
 				}
 				score /= trials; // get the average result
-
-			}
-
-			if (score > bestScore || assuredLethal) {
-				bestTurn = turn;
-				bestScore = score;
+				bsn.logEvaluation(branchIndex, new BoardStateNode(team, score));
+			} else {
+				bsn.logEvaluation(branchIndex, nextBsn);
 			}
 
 			if (assuredLethal) {
+				bsn.lethal = true;
 				break;
 			}
 		}
-		if (actions != null) {
-			actions.addAll(bestTurn);
-		}
-		return bestScore;
+
+		return bsn;
 	}
 
 	/**
 	 * Helper method (for getBestTurn) to perform a traversal of the decision tree,
-	 * recursively exploring the subtree.
+	 * recursively exploring the subtree. Assumes that the board is in the
+	 * post-traversal state, i.e. the action has been carried out already.
 	 * 
+	 * @param team         The team from which we consider
 	 * @param action       The action to perform
-	 * @param turn         A list that will be modified into a chain of player
-	 *                     actions leading to the best state, can be null if not
-	 *                     necessary
 	 * @param depth        The current traversal depth
 	 * @param sampleRate   The proportion of total actions we sampled
 	 * @param maxSamples   The max number of samples we used before
 	 * @param filterLethal Flag to only traverse actions that may result in lethal
-	 * @return The score of the best board state traversed
+	 * @return The BoardStateNode at the end of the edge traversed
 	 */
-	private double traverseAction(int team, PlayerAction action, List<String> turn, int depth, double sampleRate,
-			double maxSamples, boolean filterLethal) {
-		double score = 0;
+	private BoardStateNode traverseAction(int team, String action, int depth, double sampleRate, double maxSamples,
+			boolean filterLethal) {
+		BoardStateNode node;
 		double nextMaxSamples = maxSamples;
 		double nextSampleRate = sampleRate;
 		if (depth + 1 == REEVALUATION_MIN_DEPTH) {
@@ -267,18 +340,19 @@ public class AI extends Thread {
 		}
 		if (this.b.winner != 0 || depth == REEVALUATION_MAX_DEPTH) {
 			// no more actions can be taken
-			score = evaluateAdvantage(this.b, team);
-		} else if (action instanceof EndTurnAction || this.b.currentPlayerTurn != team) {
+			node = new BoardStateNode(team, evaluateAdvantage(this.b, team));
+		} else if (Integer.parseInt(action.substring(0, 1)) == EndTurnAction.ID || this.b.currentPlayerTurn != team) {
 			// assess what's the worst the opponent can do
-			score = evaluateAdvantage(this.b, team);
-			if (!filterLethal) {
-				score = Math.min(score,
-						this.getBestTurn(team * -1, null, depth + 1, nextSampleRate, nextMaxSamples, true) * -1);
+			double score = evaluateAdvantage(this.b, team);
+			if (filterLethal) {
+				node = new BoardStateNode(team, score);
+			} else {
+				node = this.getBestTurn(team * -1, depth + 1, nextSampleRate, nextMaxSamples, true);
 			}
 		} else {
-			score = this.getBestTurn(team, turn, depth + 1, nextSampleRate, nextMaxSamples, filterLethal);
+			node = this.getBestTurn(team, depth + 1, nextSampleRate, nextMaxSamples, filterLethal);
 		}
-		return score;
+		return node;
 	}
 
 	/**
@@ -288,19 +362,19 @@ public class AI extends Thread {
 	 * @param team The team to evaluate for
 	 * @return a list of possible actions taken by the AI
 	 */
-	private List<PlayerAction> getPossibleActions(int team) {
+	private List<String> getPossibleActions(int team) {
 		if (this.b.currentPlayerTurn != team || this.b.winner != 0) {
 			return null;
 		}
 		Player p = this.b.getPlayer(team);
-		List<PlayerAction> poss = new LinkedList<PlayerAction>();
+		List<String> poss = new LinkedList<>();
 		List<BoardObject> minions = this.b.getBoardObjects(team, false, true, false);
 		for (BoardObject b : minions) {
 			// minion attack
 			Minion m = (Minion) b;
 			if (m.canAttack()) {
 				for (Minion target : m.getAttackableTargets()) {
-					poss.add(new OrderAttackAction(m, target));
+					poss.add(new OrderAttackAction(m, target).toString());
 				}
 			}
 			// unleashing cards & selecting targets
@@ -308,10 +382,10 @@ public class AI extends Thread {
 				if (!m.getUnleashTargets().isEmpty()) {
 					List<List<Target>> targetSearchSpace = this.getPossibleListTargets(m.getUnleashTargets());
 					for (List<Target> targets : targetSearchSpace) {
-						poss.add(new UnleashMinionAction(p, m, Target.listToString(targets)));
+						poss.add(new UnleashMinionAction(p, m, Target.listToString(targets)).toString());
 					}
 				} else { // no targets to set
-					poss.add(new UnleashMinionAction(p, m, "0"));
+					poss.add(new UnleashMinionAction(p, m, "0").toString());
 				}
 			}
 		}
@@ -323,36 +397,32 @@ public class AI extends Thread {
 				if (!c.getBattlecryTargets().isEmpty()) {
 					List<List<Target>> targetSearchSpace = this.getPossibleListTargets(c.getBattlecryTargets());
 					for (List<Target> targets : targetSearchSpace) {
-						poss.add(new PlayCardAction(p, c, 0, Target.listToString(targets)));
+						poss.add(new PlayCardAction(p, c, 0, Target.listToString(targets)).toString());
 					}
 				} else { // no targets to set
-					poss.add(new PlayCardAction(p, c, 0, "0"));
+					poss.add(new PlayCardAction(p, c, 0, "0").toString());
 				}
 			}
 		}
 		// ending turn
-		poss.add(new EndTurnAction(team));
+		poss.add(new EndTurnAction(team).toString());
 		return poss;
 	}
 
 	/**
 	 * Given the current board state, return the obvious actions that could lead to
 	 * a lethal. Intended to be a subset of all possible actions that are openly
-	 * visible on the board, i.e. unleashing minions and attacking face. If the
-	 * enemy face can be attacked by multiple minions, only the action of the first
-	 * minion attacking is added, with the assumption that the order of attacks no
-	 * longer matters and that subsequent calls to this method will result in the
-	 * minions attacking face one by one.
+	 * visible on the board, i.e. unleashing minions and attacking face.
 	 * 
 	 * @param team The team to evaluate for
 	 * @return The set of actions that the team could take that could lead to lethal
 	 */
-	private List<PlayerAction> getPossibleLethalActions(int team) {
+	private List<String> getPossibleLethalActions(int team) {
 		if (this.b.currentPlayerTurn != team || this.b.winner != 0) {
 			return null;
 		}
 		Player p = this.b.getPlayer(team);
-		List<PlayerAction> poss = new LinkedList<PlayerAction>();
+		List<String> poss = new LinkedList<>();
 		List<Minion> minions = this.b.getMinions(team, false, true);
 		boolean enemyWard = false;
 		for (Minion m : this.b.getMinions(team * -1, false, true)) {
@@ -366,10 +436,10 @@ public class AI extends Thread {
 				if (!m.getUnleashTargets().isEmpty()) {
 					List<List<Target>> targetSearchSpace = this.getPossibleListTargets(m.getUnleashTargets());
 					for (List<Target> targets : targetSearchSpace) {
-						poss.add(new UnleashMinionAction(p, m, Target.listToString(targets)));
+						poss.add(new UnleashMinionAction(p, m, Target.listToString(targets)).toString());
 					}
 				} else { // no targets to set
-					poss.add(new UnleashMinionAction(p, m, "0"));
+					poss.add(new UnleashMinionAction(p, m, "0").toString());
 				}
 			}
 		}
@@ -378,7 +448,7 @@ public class AI extends Thread {
 			for (Minion m : minions) {
 				if (m.canAttack()) {
 					for (Minion target : m.getAttackableTargets()) {
-						poss.add(new OrderAttackAction(m, target));
+						poss.add(new OrderAttackAction(m, target).toString());
 					}
 				}
 			}
@@ -387,12 +457,11 @@ public class AI extends Thread {
 			Leader enemyFace = this.b.getPlayer(team * -1).leader;
 			for (Minion m : minions) {
 				if (m.canAttack(enemyFace)) {
-					poss.add(new OrderAttackAction(m, enemyFace));
-					break; // only want one action, trust that we can always attack in sequence after
+					poss.add(new OrderAttackAction(m, enemyFace).toString());
 				}
 			}
 		}
-		poss.add(new EndTurnAction(team));
+		poss.add(new EndTurnAction(team).toString());
 		return poss;
 	}
 
@@ -464,7 +533,8 @@ public class AI extends Thread {
 
 	/**
 	 * Attempts to estimate the advantage of a player in terms of mana value. This
-	 * is the value that gets maximized by the ai.
+	 * is the value that gets maximized by the ai. These values should be
+	 * symmetrical, i.e. evauateAdvantage(b, 1) == -evaluateAdvantage(b, -1)
 	 * 
 	 * @param team the team to evaluate for
 	 * @return the advantage quantized as mana

@@ -17,7 +17,7 @@ public class WellOfDestination extends Amulet {
 
 	public WellOfDestination(Board b) {
 		super(b, TOOLTIP);
-		Effect e = new Effect(0, "At the start of your turn, give a random allied minion +1/+1/+1") {
+		Effect e = new Effect("At the start of your turn, give a random allied minion +1/+1/+1", false) {
 			@Override
 			public EventFlag onTurnStart() {
 				EventFlag ef = new EventFlag(this, true) {
@@ -36,10 +36,7 @@ public class WellOfDestination extends Amulet {
 							}
 						};
 						t.resolveTargets();
-						EffectStatChange e = new EffectStatChange("Gained +1/+1/+1 from Well of Destination");
-						e.change.setStat(EffectStats.ATTACK, 1);
-						e.change.setStat(EffectStats.MAGIC, 1);
-						e.change.setStat(EffectStats.HEALTH, 1);
+						EffectStatChange e = new EffectStatChange("Gained +1/+1/+1 from Well of Destination", 1, 1, 1);
 						eventlist.add(new EventAddEffect(t, e));
 					}
 				};

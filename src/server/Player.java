@@ -21,15 +21,13 @@ public class Player {
 		this.hand = new Hand(board, team);
 	}
 
-	/*
-	 * public void update(double frametime) { this.hand.update(frametime); if
-	 * (this.unleashPower != null) { this.unleashPower.update(frametime); } }
-	 */
-	/*
-	 * public void draw(Graphics g) {
-	 * 
-	 * }
-	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.team).append(" ").append(this.mana).append(" ").append(this.maxmana).append(" ")
+				.append(this.maxmaxmana).append(" ").append(this.unleashAllowed).append(" ");
+		return sb.toString();
+	}
 
 	// uh
 	public boolean canPlayCard(Card c) {

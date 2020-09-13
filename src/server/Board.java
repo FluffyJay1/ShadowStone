@@ -256,6 +256,10 @@ public class Board {
 		this.eventlisteners.remove(e);
 	}
 
+	public List<Effect> getEventListeners() {
+		return this.eventlisteners;
+	}
+
 	public void updatePositions() {
 		for (int i = 0; i < player1side.size(); i++) {
 			player1side.get(i).cardpos = i;
@@ -281,6 +285,8 @@ public class Board {
 		builder.append(", winner: ");
 		builder.append(this.winner);
 		builder.append("\n");
+		builder.append(this.player1.toString()).append("\n");
+		builder.append(this.player2.toString()).append("\n");
 		for (Card c : this.getCards()) {
 			builder.append(c.toString() + "\n");
 		}

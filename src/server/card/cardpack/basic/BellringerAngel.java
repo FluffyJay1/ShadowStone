@@ -19,7 +19,7 @@ public class BellringerAngel extends Minion {
 
 	public BellringerAngel(Board b) {
 		super(b, TOOLTIP);
-		Effect e = new Effect(0, "<b> Ward. </b> \n <b> Last Words: </b> draw a card.") {
+		Effect e = new Effect("<b> Ward. </b> \n <b> Last Words: </b> draw a card.", false) {
 			@Override
 			public EventLastWords lastWords() {
 				EventLastWords lw = new EventLastWords(this, false) {

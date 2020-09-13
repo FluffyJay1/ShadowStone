@@ -28,7 +28,7 @@ public class UnleashEchoExistence extends UnleashPower {
 			Card c = Card.createFromConstructor(this.p.board, m.id);
 			list.add(new EventCreateCard(c, this.p.team, CardStatus.DECK,
 					(int) (this.p.deck.cards.size() * Math.random())));
-			EffectStatChange esc = new EffectStatChange("Cost reduced by 2 from <b> Echo Existence. </b>");
+			Effect esc = new Effect("Cost reduced by 2 from <b> Echo Existence. </b>", false);
 			esc.change.setStat(EffectStats.COST, -2);
 			list.add(new EventAddEffect(c, esc));
 		}

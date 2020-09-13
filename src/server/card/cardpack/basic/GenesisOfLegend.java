@@ -18,7 +18,7 @@ public class GenesisOfLegend extends Amulet {
 
 	public GenesisOfLegend(Board b) {
 		super(b, TOOLTIP);
-		Effect e = new Effect(0, TOOLTIP.description) {
+		Effect e = new Effect(TOOLTIP.description, false) {
 			@Override
 			public EventFlag onTurnEnd() {
 				EventFlag ef = new EventFlag(this, true) {
@@ -38,8 +38,7 @@ public class GenesisOfLegend extends Amulet {
 						};
 						t.resolveTargets();
 						EffectStatChange e = new EffectStatChange(
-								"Gained +0/+0/+1 and <b> Bane </b> from Genesis of Legend.");
-						e.change.setStat(EffectStats.HEALTH, 1);
+								"Gained +0/+0/+1 and <b> Bane </b> from Genesis of Legend.", 0, 0, 1);
 						e.set.setStat(EffectStats.BANE, 1);
 						eventlist.add(new EventAddEffect(t, e));
 					}

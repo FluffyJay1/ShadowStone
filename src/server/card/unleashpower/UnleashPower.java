@@ -15,7 +15,7 @@ public class UnleashPower extends Card {
 
 	public UnleashPower(Board b, TooltipUnleashPower tooltip) {
 		super(b, tooltip);
-		Effect e = new Effect(0, "", tooltip.cost);
+		Effect e = new Effect("", tooltip.cost);
 		e.set.setStat(EffectStats.ATTACKS_PER_TURN, 1);
 		this.addEffect(true, e);
 	}

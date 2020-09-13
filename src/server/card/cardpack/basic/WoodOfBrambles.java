@@ -18,7 +18,7 @@ public class WoodOfBrambles extends Amulet {
 
 	public WoodOfBrambles(Board b) {
 		super(b, TOOLTIP);
-		Effect e = new Effect(0, TOOLTIP.description, true) {
+		Effect e = new Effect(TOOLTIP.description, true) {
 			@Override
 			public EventBattlecry battlecry() {
 				EventBattlecry eb = new EventBattlecry(this, false) {
@@ -65,5 +65,60 @@ public class WoodOfBrambles extends Amulet {
 		};
 		e.set.setStat(EffectStats.COUNTDOWN, 2);
 		this.addEffect(true, e);
+	}
+
+	public static class EffectBrambles extends Effect {
+		Card creator;
+
+		public EffectBrambles(String description, boolean listener) {
+			super(description, listener);
+		}
+
+		public EffectBrambles(Card creator) {
+			this("Has <b> Clash: </b> deal 1 damage to the enemy minion until the corresponding Wood of Brambles leaves play.",
+					true);
+			this.creator = creator;
+
+		}
+
+		@Override
+		public EventClash clash(Minion target) {
+			EventClash ec = new EventClash(this, target, false) {
+				@Override
+				public void resolve(List<Event> eventlist, boolean loopprotection) {
+					eventlist.add(new EventEffectDamage(this.effect, target, 1));
+				}
+			};
+			return ec;
+		}
+
+		@Override
+		public EventFlag onListenEvent(Event event) {
+			if (event instanceof EventLeavePlay) {
+				EventLeavePlay e = (EventLeavePlay) event;
+				if (this.creator == e.c) {
+					EventFlag ef = new EventFlag(this, false) {
+						@Override
+						public void resolve(List<Event> eventlist, boolean loopprotection) {
+							eventlist.add(new EventRemoveEffect(this.effect.owner, this.effect));
+						}
+					};
+					return ef;
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public String extraStateString() {
+			return this.creator.toReference();
+		}
+
+		@Override
+		public Effect loadExtraState(Board b, StringTokenizer st) {
+			this.creator = Card.fromReference(b, st);
+			return this;
+		}
+
 	}
 }

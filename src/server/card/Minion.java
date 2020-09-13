@@ -14,12 +14,11 @@ public class Minion extends BoardObject {
 	public Minion(Board board, TooltipMinion tooltip) {
 		super(board, tooltip);
 		this.health = tooltip.health;
-		Effect e = new Effect(0, "", tooltip.cost, tooltip.attack, tooltip.magic, tooltip.health, 1, false, false,
-				false);
+		Effect e = new Effect("", tooltip.cost, tooltip.attack, tooltip.magic, tooltip.health, 1, false, false, false);
 		this.addEffect(true, e);
 		if (tooltip.basicUnleash) {
-			Effect unl = new Effect(0,
-					"<b> Unleash: </b> Deal X damage to an enemy minion. X equals this minion's magic.") {
+			Effect unl = new Effect("<b> Unleash: </b> Deal X damage to an enemy minion. X equals this minion's magic.",
+					false) {
 				@Override
 				public EventFlag unleash() {
 					EventFlag ef = new EventFlag(this, false) {

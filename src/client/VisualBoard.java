@@ -10,6 +10,7 @@ import client.ui.game.eventanimation.*;
 import client.ui.game.eventanimation.attack.*;
 import client.ui.game.eventanimation.board.*;
 import server.*;
+import server.ai.*;
 import server.card.*;
 import server.event.*;
 import utils.*;

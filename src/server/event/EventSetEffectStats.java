@@ -8,10 +8,10 @@ import server.card.effect.*;
 public class EventSetEffectStats extends Event {
 	public static final int ID = 30;
 	Effect target;
-	EffectStatChange newStats;
-	private EffectStatChange oldStats;
+	Effect newStats;
+	private Effect oldStats;
 
-	public EventSetEffectStats(Effect target, EffectStatChange newStats) {
+	public EventSetEffectStats(Effect target, Effect newStats) {
 		super(ID, false);
 		this.target = target;
 		this.newStats = newStats;
@@ -39,7 +39,7 @@ public class EventSetEffectStats extends Event {
 
 	public static EventSetEffectStats fromString(Board b, StringTokenizer st) {
 		Effect target = Effect.fromReference(b, st);
-		EffectStatChange newstats = (EffectStatChange) Effect.fromString(b, st);
+		Effect newstats = Effect.fromString(b, st);
 		return new EventSetEffectStats(target, newstats);
 	}
 }

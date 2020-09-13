@@ -6,6 +6,7 @@ import java.util.*;
 
 import client.*;
 import server.*;
+import server.ai.*;
 import server.card.*;
 import server.card.cardpack.*;
 import server.card.leader.*;

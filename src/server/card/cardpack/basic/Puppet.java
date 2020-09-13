@@ -19,7 +19,7 @@ public class Puppet extends Minion {
 
 	public Puppet(Board b) {
 		super(b, TOOLTIP);
-		Effect e = new Effect(0, TOOLTIP.description, true) {
+		Effect e = new Effect(TOOLTIP.description, true) {
 			@Override
 			public EventFlag onListenEvent(Event e) {
 				if (e instanceof EventTurnEnd && ((EventTurnEnd) e).p.team != this.owner.team

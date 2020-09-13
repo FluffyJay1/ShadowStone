@@ -6,11 +6,19 @@ import java.util.*;
 import client.*;
 import server.*;
 import server.card.*;
-import server.card.cardpack.*;
 import server.event.*;
 
+/*
+ * Few important things:
+ * - Jank card effects are pretty much expected to be anonymous instances of this class
+ * - Any subclasses must implement the (String, boolean) constructor for fromString reflection reasons also fuck you
+ * - Anonymous classes cannot be recreated with fromString, so don't add that effect to other cards or don't make it anonymous
+ * -- Anonymous effects solely tied to the construction of a card are fine, since they won't use fromString
+ * - If a class saves state of some kind, it must implement extraStateString() and loadExtraState(Board, StringTokenizer)
+ * -- If this state is mutable from in-game events, the effect must be marked as a listener (so AI can reset its state)
+ */
 public class Effect implements Cloneable {
-	public int id = 0, pos = 0;
+	public int pos = 0;
 	public Card owner = null;
 	public String description;
 	public boolean basic = false, mute = false, listener = false;
@@ -18,31 +26,30 @@ public class Effect implements Cloneable {
 	public EffectStats set = new EffectStats(), change = new EffectStats();
 	public List<Target> battlecryTargets = new LinkedList<Target>(), unleashTargets = new LinkedList<Target>();
 
-	public Effect(int id, String description) {
-		this.id = id;
-		this.description = description;
+	public Effect() {
+		// TODO lmao
 	}
 
-	public Effect(int id, String description, boolean listener) {
-		this(id, description);
+	public Effect(String description, boolean listener) {
+		this.description = description;
 		this.listener = listener;
 	}
 
-	public Effect(int id, String description, int cost) {
-		this(id, description);
+	public Effect(String description, int cost) {
+		this(description, false);
 		this.set.setStat(EffectStats.COST, cost);
 	}
 
-	public Effect(int id, String description, int cost, int attack, int magic, int health) {
-		this(id, description, cost);
+	public Effect(String description, int cost, int attack, int magic, int health) {
+		this(description, cost);
 		this.set.setStat(EffectStats.ATTACK, attack);
 		this.set.setStat(EffectStats.MAGIC, magic);
 		this.set.setStat(EffectStats.HEALTH, health);
 	}
 
-	public Effect(int id, String description, int cost, int attack, int magic, int health, int attacksperturn,
-			boolean storm, boolean rush, boolean ward) {
-		this(id, description, cost, attack, magic, health);
+	public Effect(String description, int cost, int attack, int magic, int health, int attacksperturn, boolean storm,
+			boolean rush, boolean ward) {
+		this(description, cost, attack, magic, health);
 		this.set.setStat(EffectStats.ATTACKS_PER_TURN, attacksperturn);
 		this.set.setStat(EffectStats.STORM, storm ? 1 : 0);
 		this.set.setStat(EffectStats.RUSH, rush ? 1 : 0);
@@ -63,8 +70,8 @@ public class Effect implements Cloneable {
 		}
 	}
 
-	public EffectStatChange copyEffectStats() {
-		EffectStatChange ret = new EffectStatChange(this.description);
+	public Effect copyEffectStats() {
+		Effect ret = new Effect(this.description, false);
 		ret.applyEffectStats(this);
 		return ret;
 	}
@@ -180,54 +187,48 @@ public class Effect implements Cloneable {
 
 	@Override
 	public String toString() {
-		return this.id + " " + Card.referenceOrNull(this.owner) + this.description + Game.STRING_END + " " + this.mute
-				+ " " + this.set.toString() + this.change.toString();
+		return this.getClass().getName() + " " + Card.referenceOrNull(this.owner) + this.description + Game.STRING_END
+				+ " " + this.mute + " " + this.listener + " " + this.extraStateString() + this.set.toString()
+				+ this.change.toString();
 	}
 
 	public static Effect fromString(Board b, StringTokenizer st) {
-		int id = Integer.parseInt(st.nextToken());
-		if (id == 0 || id == AnonymousEffect.ID) {
+		try {
+			String className = st.nextToken();
+			Class<?> c = Class.forName(className);
 			Card owner = Card.fromReference(b, st);
 			String description = st.nextToken(Game.STRING_END).trim();
 			st.nextToken(" \n"); // THANKS STRING TOKENIZER
 			boolean mute = Boolean.parseBoolean(st.nextToken());
-			Effect ef = new Effect(0, description);
+			boolean listener = Boolean.parseBoolean(st.nextToken());
+			Effect ef;
+			ef = (Effect) c.getDeclaredConstructor(String.class, boolean.class).newInstance(description, listener);
+			ef.loadExtraState(b, st);
 			ef.owner = owner;
 			ef.mute = mute;
 			ef.set = EffectStats.fromString(st);
 			ef.change = EffectStats.fromString(st);
-			if (id == 0) {
-				return ef;
-			}
-			int ownerID = Integer.parseInt(st.nextToken());
-			int anonymousIndex = Integer.parseInt(st.nextToken());
-			Class<? extends Card> cardClass = CardSet.getCardClass(ownerID);
-			AnonymousEffectList effectList = null;
-			Effect anonymousEffect = null;
-			try {
-				effectList = (AnonymousEffectList) cardClass.getField("EFFECTS").get(null);
-				anonymousEffect = effectList.get(anonymousIndex).reconstruct(st);
-			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException
-					| CloneNotSupportedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			anonymousEffect.owner = owner;
-			anonymousEffect.mute = mute;
-			anonymousEffect.applyEffectStats(ef);
-			return anonymousEffect;
-		} else {
-			Class c = EffectIDLinker.getClass(id);
-			Effect ef = null;
-			try {
-				ef = (Effect) c.getMethod("fromString", Board.class, StringTokenizer.class).invoke(null, b, st);
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-					| NoSuchMethodException | SecurityException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} // AAAAAAAAAa
 			return ef;
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return null;
+	}
+
+	// override this shit, end with space
+	public String extraStateString() {
+		return " ";
+	}
+
+	/*
+	 * Some anonymous effects may have some extra state they keep track of that we
+	 * can't really pass into as a constructor, to restore them we use this method
+	 * that always returns this for convenience
+	 */
+	public Effect loadExtraState(Board b, StringTokenizer st) {
+		return this;
 	}
 
 	@Override

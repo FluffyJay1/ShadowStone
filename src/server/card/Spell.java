@@ -8,7 +8,7 @@ public class Spell extends Card { // yea
 
 	public Spell(Board board, TooltipSpell tooltip) {
 		super(board, tooltip);
-		this.addEffect(true, new Effect(0, "", tooltip.cost));
+		this.addEffect(true, new Effect("", tooltip.cost));
 	}
 
 }

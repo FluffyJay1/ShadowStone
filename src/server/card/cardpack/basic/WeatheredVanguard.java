@@ -20,7 +20,7 @@ public class WeatheredVanguard extends Minion {
 
 	public WeatheredVanguard(Board b) {
 		super(b, TOOLTIP);
-		Effect e = new Effect(0, TOOLTIP.description, true) {
+		Effect e = new Effect(TOOLTIP.description, true) {
 			@Override
 			public EventBattlecry battlecry() {
 				EventBattlecry eb = new EventBattlecry(this, false) {

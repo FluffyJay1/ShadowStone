@@ -44,7 +44,7 @@ public class EventTurnStart extends Event {
 				this.prevAttacks.add(0);
 			}
 			if (b.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
-				EffectStatChange e = new EffectStatChange("");
+				Effect e = new Effect();
 				e.change.setStat(EffectStats.COUNTDOWN, -1);
 				eventlist.add(new EventAddEffect(b, e));
 			}

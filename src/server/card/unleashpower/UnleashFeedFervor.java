@@ -17,7 +17,7 @@ public class UnleashFeedFervor extends UnleashPower {
 
 	public UnleashFeedFervor(Board b) {
 		super(b, TOOLTIP);
-		Effect overflowDiscount = new Effect(0, "When Overflow is active, this costs 1 less", true) {
+		Effect overflowDiscount = new Effect("When Overflow is active, this costs 1 less", true) {
 			boolean overflow;
 
 			@Override
@@ -28,7 +28,7 @@ public class UnleashFeedFervor extends UnleashPower {
 						EventFlag ef = new EventFlag(this, false) {
 							@Override
 							public void resolve(List<Event> eventlist, boolean loopprotection) {
-								EffectStatChange esc = new EffectStatChange("");
+								Effect esc = new Effect();
 								esc.change.setStat(EffectStats.COST, -1);
 								eventlist.add(new EventSetEffectStats(this.effect, esc)); // WHY
 							}
@@ -40,7 +40,7 @@ public class UnleashFeedFervor extends UnleashPower {
 						EventFlag ef = new EventFlag(this, false) {
 							@Override
 							public void resolve(List<Event> eventlist, boolean loopprotection) {
-								EffectStatChange esc = new EffectStatChange("");
+								Effect esc = new Effect();
 								esc.change.setStat(EffectStats.COST, 0);
 								eventlist.add(new EventSetEffectStats(this.effect, esc)); // WHY
 							}
@@ -49,6 +49,17 @@ public class UnleashFeedFervor extends UnleashPower {
 					}
 				}
 				return null;
+			}
+
+			@Override
+			public String extraStateString() {
+				return this.overflow + " ";
+			}
+
+			@Override
+			public Effect loadExtraState(Board b, StringTokenizer st) {
+				this.overflow = Boolean.parseBoolean(st.nextToken());
+				return this;
 			}
 		};
 		this.addEffect(true, overflowDiscount);

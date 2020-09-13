@@ -17,7 +17,7 @@ public class DragonOracle extends Spell {
 
 	public DragonOracle(Board b) {
 		super(b, TOOLTIP);
-		Effect e = new Effect(0, TOOLTIP.description) {
+		Effect e = new Effect(TOOLTIP.description, false) {
 			@Override
 			public EventBattlecry battlecry() {
 				EventBattlecry eb = new EventBattlecry(this, false) {
