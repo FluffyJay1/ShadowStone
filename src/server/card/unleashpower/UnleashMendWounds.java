@@ -9,11 +9,10 @@ import server.card.effect.*;
 import server.event.*;
 
 public class UnleashMendWounds extends UnleashPower {
-	public static final int ID = -15;
 	public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
 	public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Mend Wounds",
 			"<b> Unleash </b> an allied minion. Give it +0/+0/+1, then restore 1 health to it.",
-			"res/unleashpower/mendwounds.png", CRAFT, 2, ID, Tooltip.UNLEASH);
+			"res/unleashpower/mendwounds.png", CRAFT, 2, UnleashMendWounds.class, Tooltip.UNLEASH);
 
 	public UnleashMendWounds(Board b) {
 		super(b, TOOLTIP);

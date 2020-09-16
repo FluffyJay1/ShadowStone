@@ -9,12 +9,11 @@ import server.card.effect.*;
 import server.event.*;
 
 public class WoodOfBrambles extends Amulet {
-	public static final int ID = 8;
 	public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
 	public static final TooltipAmulet TOOLTIP = new TooltipAmulet("Wood of Brambles",
 			"<b> Countdown(2). </b> \n <b> Battlecry: </b> add two <b> Faries </b> to your hand. Give all allied minions the following effect until this amulet leaves play: <b> Clash: </b> deal 1 damage to the enemy minion. \n Whenever an allied minion comes into play, give them that effect until this amulet leaves play.",
-			"res/card/basic/woodofbrambles.png", CRAFT, 2, ID, Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Fairy.TOOLTIP,
-			Tooltip.CLASH);
+			"res/card/basic/woodofbrambles.png", CRAFT, 2, WoodOfBrambles.class, Tooltip.COUNTDOWN, Tooltip.BATTLECRY,
+			Fairy.TOOLTIP, Tooltip.CLASH);
 
 	public WoodOfBrambles(Board b) {
 		super(b, TOOLTIP);

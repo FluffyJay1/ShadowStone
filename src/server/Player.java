@@ -51,7 +51,7 @@ public class Player {
 	public void printHand() {
 		System.out.println("Hand " + this.team + ":");
 		for (Card c : this.hand.cards) {
-			System.out.print(c.id + " ");
+			System.out.print(c.getClass().getName() + " ");
 		}
 		System.out.println();
 	}

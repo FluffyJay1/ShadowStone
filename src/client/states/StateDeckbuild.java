@@ -1,5 +1,7 @@
 package client.states;
 
+import java.util.*;
+
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
 import org.newdawn.slick.state.*;
@@ -35,7 +37,8 @@ public class StateDeckbuild extends BasicGameState {
 		this.ui.addListener(new UIEventListener() {
 			@Override
 			public void onAlert(String strarg, int... intarg) {
-				switch (strarg) {
+				StringTokenizer st = new StringTokenizer(strarg);
+				switch (st.nextToken()) {
 				case DeckSelectPanel.DECK_CONFIRM:
 					// selected deck to edit
 					if (deckselectpanel.selectedDeckUnit != null) {
@@ -72,17 +75,25 @@ public class StateDeckbuild extends BasicGameState {
 					break;
 				case DeckDisplayPanel.CARD_CLICK:
 					// select card in deckbuilder
-					switch (intarg[1]) {
-					case 1:
-						// display its tooltip
-						cardTooltip.setTooltip(CardSet.getCardTooltip(intarg[0]));
-						break;
-					case 2:
-						deckdisplaypanel.removeCard(intarg[0]);
-						break;
-					default:
-						break;
+					Class<? extends Card> cardClass;
+					try {
+						cardClass = (Class<? extends Card>) Class.forName(st.nextToken());
+						switch (intarg[0]) {
+						case 1:
+							// display its tooltip
+							cardTooltip.setTooltip(CardSet.getCardTooltip(cardClass));
+							break;
+						case 2:
+							deckdisplaypanel.removeCard(cardClass);
+							break;
+						default:
+							break;
+						}
+					} catch (ClassNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
+
 					break;
 				case DeckDisplayPanel.DECK_CONFIRM:
 					// confirm and save deck
@@ -105,16 +116,23 @@ public class StateDeckbuild extends BasicGameState {
 					break;
 				case CardSetDisplayPanel.CARDSET_CLICK:
 					// select card in cards to choose from
-					switch (intarg[1]) {
-					case 1:
-						// display its tooltip
-						cardTooltip.setTooltip(CardSet.getCardTooltip(intarg[0]));
-						break;
-					case 2:
-						deckdisplaypanel.addCard(intarg[0]);
-						break;
-					default:
-						break;
+					try {
+						String cardClassString = st.nextToken();
+						cardClass = (Class<? extends Card>) Class.forName(cardClassString);
+						switch (intarg[0]) {
+						case 1:
+							// display its tooltip
+							cardTooltip.setTooltip(CardSet.getCardTooltip(cardClass));
+							break;
+						case 2:
+							deckdisplaypanel.addCard(cardClass);
+							break;
+						default:
+							break;
+						}
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 					break;
 				default:

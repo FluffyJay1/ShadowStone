@@ -9,11 +9,10 @@ import server.card.effect.*;
 import server.event.*;
 
 public class Fireball extends Spell {
-	public static final int ID = 3;
 	public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
 	public static final TooltipSpell TOOLTIP = new TooltipSpell("Fireball",
 			"Choose 2 enemy minions. Deal 2 damage to them and 1 damage to their adjacent minions.",
-			"res/card/basic/fireball.png", CRAFT, 3, ID);
+			"res/card/basic/fireball.png", CRAFT, 3, Fireball.class);
 	Effect e;
 
 	public Fireball(Board b) {

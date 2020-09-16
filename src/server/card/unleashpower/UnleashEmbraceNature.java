@@ -9,11 +9,10 @@ import server.card.effect.*;
 import server.event.*;
 
 public class UnleashEmbraceNature extends UnleashPower {
-	public static final int ID = -9;
 	public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
 	public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Embrace Nature",
 			"<b> Unleash </b> an allied minion. If it has already attacked this turn, return it to your hand and subtract 1 from its cost.",
-			"res/unleashpower/embracenature.png", CRAFT, 2, ID, Tooltip.UNLEASH);
+			"res/unleashpower/embracenature.png", CRAFT, 2, UnleashEmbraceNature.class, Tooltip.UNLEASH);
 
 	public UnleashEmbraceNature(Board b) {
 		super(b, TOOLTIP);

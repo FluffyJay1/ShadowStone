@@ -9,11 +9,10 @@ import server.card.effect.*;
 import server.event.*;
 
 public class UnleashImbueMagic extends UnleashPower {
-	public static final int ID = -11;
 	public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
 	public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Imbue Magic",
 			"Give an allied minion +0/+1/+0, then <b> Unleash </b> it.", "res/unleashpower/imbuemagic.png", CRAFT, 2,
-			ID, Tooltip.UNLEASH);
+			UnleashImbueMagic.class, Tooltip.UNLEASH);
 
 	public UnleashImbueMagic(Board b) {
 		super(b, TOOLTIP);

@@ -1,0 +1,32 @@
+--file to keep track of event ids, doesn't impact game
+ 1: AddEffect
+ 2: CreateCard
+ 3: Damage
+ 4: Destroy
+ 5: Draw
+ 6: ManaChange
+ 7: Mill
+ 8: MinionAttack
+ 9: MinionAttackDamage
+10: CardDamage
+11: PlayCard
+12: PutCard
+13: Restore
+14: TurnEnd
+15: TurnStart
+16: Unleash
+17: EffectDamage
+18: Banish
+19: Battlecry
+20: LastWords
+21: Flag
+22: RemoveEffect
+23: EnterPlay
+24: LeavePlay
+25: OnAttack
+26: OnAttacked
+27: Clash
+28: GameEnd
+29: MuteEffect
+30: SetEffectStats
+31: Blast

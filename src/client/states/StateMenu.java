@@ -1,5 +1,7 @@
 package client.states;
 
+import java.util.*;
+
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
 import org.newdawn.slick.state.*;
@@ -28,7 +30,8 @@ public class StateMenu extends BasicGameState {
 		this.ui.addListener(new UIEventListener() {
 			@Override
 			public void onAlert(String strarg, int... intarg) {
-				switch (strarg) {
+				StringTokenizer st = new StringTokenizer(strarg);
+				switch (st.nextToken()) {
 				case DeckSelectPanel.DECK_CONFIRM:
 					if (playButton.deckspanel.selectedDeckUnit != null) {
 						StateGame.tempdeck = playButton.deckspanel.selectedDeckUnit.deck;

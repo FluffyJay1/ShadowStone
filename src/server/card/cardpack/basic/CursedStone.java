@@ -12,12 +12,11 @@ import server.event.*;
 import server.event.misc.*;
 
 public class CursedStone extends Minion {
-	public static final int ID = 12;
 	public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
 	public static final TooltipMinion TOOLTIP = new TooltipMinion("Cursed Stone",
 			"<b> Unleash: Blast(X) </b> and gain <b> Last Words: </b> Deal X damage to a random allied minion. X equals the amount of health your leader is missing.",
-			"res/card/basic/cursedstone.png", CRAFT, 5, 1, 5, 5, false, ID, new Vector2f(), -1, Tooltip.UNLEASH,
-			Tooltip.BLAST, Tooltip.LASTWORDS);
+			"res/card/basic/cursedstone.png", CRAFT, 5, 1, 5, 5, false, CursedStone.class, new Vector2f(), -1,
+			Tooltip.UNLEASH, Tooltip.BLAST, Tooltip.LASTWORDS);
 
 	public CursedStone(Board b) {
 		super(b, TOOLTIP);

@@ -11,11 +11,10 @@ import server.card.effect.*;
 import server.event.*;
 
 public class Curate extends Minion {
-	public static final int ID = 16;
 	public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
 	public static final TooltipMinion TOOLTIP = new TooltipMinion("Curate",
 			"<b> Battlecry: </b> Restore 5 health to an ally.", "res/card/basic/curate.png", CRAFT, 7, 5, 3, 5, true,
-			ID, new Vector2f(169, 143), 1.4, Tooltip.BATTLECRY);
+			Curate.class, new Vector2f(169, 143), 1.4, Tooltip.BATTLECRY);
 
 	public Curate(Board b) {
 		super(b, TOOLTIP);

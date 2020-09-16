@@ -9,12 +9,12 @@ import server.card.effect.*;
 import server.event.*;
 
 public class PuppetRoom extends Amulet {
-	public static final int ID = 18;
 	public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
 
 	public static final TooltipAmulet TOOLTIP = new TooltipAmulet("Puppet Room",
 			"<b> Countdown(3). Battlecry: </b> put a <b> Puppet </b> in your hand. At the end of your turn, put a <b> Puppet </b> in your hand.",
-			"res/card/basic/puppetroom.png", CRAFT, 3, ID, Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Puppet.TOOLTIP);
+			"res/card/basic/puppetroom.png", CRAFT, 3, PuppetRoom.class, Tooltip.COUNTDOWN, Tooltip.BATTLECRY,
+			Puppet.TOOLTIP);
 
 	public PuppetRoom(Board b) {
 		super(b, TOOLTIP);

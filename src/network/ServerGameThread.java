@@ -94,7 +94,7 @@ public class ServerGameThread extends Thread {
 				cards.remove(selected);
 			}
 			UnleashPower up = (UnleashPower) Card.createFromConstructor(this.b,
-					-8 - this.decks[(team - 1) / -2].craft.ordinal());
+					CardSet.getDefaultUnleashPower(this.decks[(team - 1) / -2].craft));
 			this.b.eventlist.add(new EventCreateCard(up, team, CardStatus.UNLEASHPOWER, 0));
 			// TODO change leader
 			this.b.eventlist.add(new EventCreateCard(new Rowen(this.b), team, CardStatus.LEADER, 0));

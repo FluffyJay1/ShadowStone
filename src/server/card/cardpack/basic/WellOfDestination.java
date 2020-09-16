@@ -9,11 +9,10 @@ import server.card.effect.*;
 import server.event.*;
 
 public class WellOfDestination extends Amulet {
-	public static final int ID = 5;
 	public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
 	public static final TooltipAmulet TOOLTIP = new TooltipAmulet("Well of Destination",
 			"At the start of your turn, give a random allied minion +1/+1/+1.", "res/card/basic/wellofdestination.png",
-			CRAFT, 2, ID);
+			CRAFT, 2, WellOfDestination.class);
 
 	public WellOfDestination(Board b) {
 		super(b, TOOLTIP);

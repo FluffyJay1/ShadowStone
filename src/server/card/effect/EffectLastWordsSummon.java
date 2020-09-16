@@ -7,21 +7,22 @@ import server.card.*;
 import server.event.*;
 
 public class EffectLastWordsSummon extends Effect {
-	int cardid, team;
+	int team;
+	Class<? extends Card> cardClass;
 
 	public EffectLastWordsSummon(String description, boolean listener) {
 		super(description, listener);
 	}
 
-	public EffectLastWordsSummon(String description, int cardid, int team) {
+	public EffectLastWordsSummon(String description, Class<? extends Card> cardClass, int team) {
 		super(description, false);
-		this.cardid = cardid;
+		this.cardClass = cardClass;
 		this.team = team;
 	}
 
 	@Override
 	public EventLastWords lastWords() {
-		Minion m = (Minion) Card.createFromConstructor(this.owner.board, this.cardid);
+		Minion m = (Minion) Card.createFromConstructor(this.owner.board, this.cardClass);
 		int recentcardpos = this.owner.cardpos;
 		EventLastWords elw = new EventLastWords(this, false) {
 			@Override
@@ -36,12 +37,17 @@ public class EffectLastWordsSummon extends Effect {
 
 	@Override
 	public String extraStateString() {
-		return this.cardid + " " + this.team + " ";
+		return this.cardClass.getName() + " " + this.team + " ";
 	}
 
 	@Override
 	public Effect loadExtraState(Board b, StringTokenizer st) {
-		this.cardid = Integer.parseInt(st.nextToken());
+		try {
+			this.cardClass = (Class<? extends Card>) Class.forName(st.nextToken());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.team = Integer.parseInt(st.nextToken());
 		return this;
 	}

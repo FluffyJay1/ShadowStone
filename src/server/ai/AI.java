@@ -29,7 +29,7 @@ public class AI extends Thread {
 	 * this depth again, we will have to re-evaluate which action is best.
 	 */
 	// The minimum depth for sampling to occur
-	private static final int REEVALUATION_MIN_DEPTH = 2;
+	private static final int REEVALUATION_MIN_DEPTH = 1;
 
 	// After this depth, just kinda call it
 	private static final int REEVALUATION_MAX_DEPTH = 10;
@@ -222,8 +222,10 @@ public class AI extends Thread {
 			List<Event> undoStack = new LinkedList<Event>();
 			List<String> turn = new LinkedList<String>();
 			turn.add(actionString);
+			List<Effect> listeners = new ArrayList<>();
+			listeners.addAll(this.b.getEventListeners());
 			StringBuilder listenerStates = new StringBuilder();
-			for (Effect e : this.b.getEventListeners()) {
+			for (Effect e : listeners) {
 				listenerStates.append(e.extraStateString());
 			}
 			List<Event> happenings = this.b.executePlayerAction(new StringTokenizer(actionString));
@@ -247,7 +249,7 @@ public class AI extends Thread {
 			 * This here assumes that changes to the list of eventlisteners can be fully
 			 * undone
 			 */
-			for (Effect e : this.b.getEventListeners()) {
+			for (Effect e : listeners) {
 				e.loadExtraState(this.b, st);
 			}
 			String stateAfter = this.b.stateToString();
@@ -255,7 +257,7 @@ public class AI extends Thread {
 				System.out.println(
 						"Discrepancy after executing " + turn.get(0) + ", rng = " + rng + ", depth = " + depth);
 				for (Event e : happenings) {
-					System.out.println(e.toString());
+					System.out.print(e.toString());
 				}
 				System.out.println("Before:");
 				System.out.println(state);
@@ -269,7 +271,7 @@ public class AI extends Thread {
 				double score = nextBsn.maxScore * team * nextBsn.team;
 				for (int j = 1; j < trials; j++) {
 					listenerStates = new StringBuilder();
-					for (Effect e : this.b.getEventListeners()) {
+					for (Effect e : listeners) {
 						listenerStates.append(e.extraStateString());
 					}
 					happenings = this.b.executePlayerAction(new StringTokenizer(actionString));
@@ -282,7 +284,7 @@ public class AI extends Thread {
 						undoStack.remove(undoStack.size() - 1);
 					}
 					st = new StringTokenizer(listenerStates.toString());
-					for (Effect e : this.b.getEventListeners()) {
+					for (Effect e : listeners) {
 						e.loadExtraState(this.b, st);
 					}
 					stateAfter = this.b.stateToString();

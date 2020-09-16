@@ -5,9 +5,13 @@ import java.util.*;
 import org.newdawn.slick.geom.*;
 
 import client.ui.*;
+import server.card.*;
 import server.card.cardpack.*;
 
 public class DeckDisplayPanel extends UIBox {
+	/**
+	 * Alert syntax: "deckdisplaycardselect (cardClassString)" [clickCount]
+	 */
 	public static final String CARD_CLICK = "deckdisplaycardselect";
 	public static final String DECK_CONFIRM = "deckdisplaydeckconfirm";
 	public static final String BACKGROUND_CLICK = "deckdisplaybackgroundclick";
@@ -45,9 +49,10 @@ public class DeckDisplayPanel extends UIBox {
 
 	@Override
 	public void onAlert(String strarg, int... intarg) {
-		switch (strarg) {
+		StringTokenizer st = new StringTokenizer(strarg);
+		switch (st.nextToken()) {
 		case CardDisplayUnit.CARD_CLICK:
-			this.alert(CARD_CLICK, intarg);
+			this.alert(CARD_CLICK + " " + st.nextToken(), intarg);
 			break;
 		case DECK_CONFIRM:
 			this.deck.name = this.textfield.getText();
@@ -79,42 +84,42 @@ public class DeckDisplayPanel extends UIBox {
 		this.cards.clear();
 		this.deck = deck;
 		if (deck != null) {
-			for (Map.Entry<Integer, Integer> entry : deck.idcounts.entrySet()) {
+			for (Map.Entry<Class<? extends Card>, Integer> entry : deck.cardClassCounts.entrySet()) {
 				CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f());
 				this.scroll.addChild(cdu);
 				this.cards.add(cdu);
-				cdu.setCardID(entry.getKey());
+				cdu.setCardClass(entry.getKey());
 				cdu.setCount(entry.getValue());
 			}
 		}
 		this.updateCardPositions();
 	}
 
-	public void addCard(int id) {
-		boolean newpanel = !this.deck.idcounts.containsKey(id);
-		if (this.deck.addCard(id)) {
+	public void addCard(Class<? extends Card> cardClass) {
+		boolean newpanel = !this.deck.cardClassCounts.containsKey(cardClass);
+		if (this.deck.addCard(cardClass)) {
 			if (newpanel) {
 				CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f());
-				cdu.setCardID(id);
+				cdu.setCardClass(cardClass);
 				this.scroll.addChild(cdu);
 				this.cards.add(cdu);
 
 			}
 
-			this.getCardDisplayUnit(id).setCount(this.deck.idcounts.get(id));
+			this.getCardDisplayUnit(cardClass).setCount(this.deck.cardClassCounts.get(cardClass));
 			this.updateCardPositions();
 		}
 	}
 
-	public void removeCard(int id) {
-		if (this.deck.removeCard(id)) {
+	public void removeCard(Class<? extends Card> cardClass) {
+		if (this.deck.removeCard(cardClass)) {
 
-			if (!this.deck.idcounts.containsKey(id)) {
-				CardDisplayUnit cdu = this.getCardDisplayUnit(id);
+			if (!this.deck.cardClassCounts.containsKey(cardClass)) {
+				CardDisplayUnit cdu = this.getCardDisplayUnit(cardClass);
 				this.scroll.removeChild(cdu);
 				this.cards.remove(cdu);
 			} else {
-				this.getCardDisplayUnit(id).setCount(this.deck.idcounts.get(id));
+				this.getCardDisplayUnit(cardClass).setCount(this.deck.cardClassCounts.get(cardClass));
 			}
 			this.updateCardPositions();
 		}
@@ -124,8 +129,7 @@ public class DeckDisplayPanel extends UIBox {
 		this.cards.sort(new Comparator<CardDisplayUnit>() {
 			@Override
 			public int compare(CardDisplayUnit a, CardDisplayUnit b) {
-				return (a.card.tooltip.cost == b.card.tooltip.cost) ? a.card.tooltip.id - b.card.tooltip.id
-						: a.card.tooltip.cost - b.card.tooltip.cost;
+				return Card.compareDefault(a.card, b.card);
 			}
 		});
 		for (int i = 0; i < this.cards.size(); i++) {
@@ -133,9 +137,9 @@ public class DeckDisplayPanel extends UIBox {
 		}
 	}
 
-	private CardDisplayUnit getCardDisplayUnit(int id) {
+	private CardDisplayUnit getCardDisplayUnit(Class<? extends Card> cardClass) {
 		for (CardDisplayUnit cdu : this.cards) {
-			if (cdu.getCardID() == id) {
+			if (cdu.getCardClass().equals(cardClass)) {
 				return cdu;
 			}
 		}

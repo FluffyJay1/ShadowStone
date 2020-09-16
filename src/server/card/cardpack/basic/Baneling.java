@@ -12,11 +12,10 @@ import server.event.*;
 import server.event.misc.*;
 
 public class Baneling extends Minion {
-	public static final int ID = 11;
 	public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
 	public static final TooltipMinion TOOLTIP = new TooltipMinion("Baneling", "<b> Last Words: Blast(5). </b>",
-			"res/card/basic/baneling.png", CRAFT, 3, 1, 0, 1, false, ID, new Vector2f(253, 271), 1.5, Tooltip.LASTWORDS,
-			Tooltip.BLAST);
+			"res/card/basic/baneling.png", CRAFT, 3, 1, 0, 1, false, Baneling.class, new Vector2f(253, 271), 1.5,
+			Tooltip.LASTWORDS, Tooltip.BLAST);
 
 	public Baneling(Board b) {
 		super(b, TOOLTIP);

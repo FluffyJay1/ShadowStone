@@ -9,11 +9,10 @@ import server.card.effect.*;
 import server.event.*;
 
 public class UnleashSharpenSword extends UnleashPower {
-	public static final int ID = -10;
 	public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
 	public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Sharpen Sword",
 			"<b> Unleash </b> an allied minion, then give it +1/+0/+0.", "res/unleashpower/sharpensword.png", CRAFT, 2,
-			ID, Tooltip.UNLEASH);
+			UnleashSharpenSword.class, Tooltip.UNLEASH);
 
 	public UnleashSharpenSword(Board b) {
 		super(b, TOOLTIP);

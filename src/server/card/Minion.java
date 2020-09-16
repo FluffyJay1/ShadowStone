@@ -99,7 +99,7 @@ public class Minion extends BoardObject {
 	}
 
 	public boolean canAttack() {
-		return this.team == this.board.currentPlayerTurn
+		return this.team == this.board.currentPlayerTurn && this.status.equals(CardStatus.BOARD)
 				&& this.attacksThisTurn < this.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN)
 				&& (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.RUSH) > 0
 						|| this.finalStatEffects.getStat(EffectStats.STORM) > 0);

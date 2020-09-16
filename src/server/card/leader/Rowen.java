@@ -1,13 +1,11 @@
 package server.card.leader;
 
-import server.Board;
-import server.card.ClassCraft;
-import server.card.Leader;
+import server.*;
+import server.card.*;
 
 public class Rowen extends Leader {
-	public static final int ID = -1;
 
 	public Rowen(Board b) {
-		super(b, ClassCraft.DRAGONDRUID, ID, "Rowen");
+		super(b, ClassCraft.DRAGONDRUID, Rowen.class, "Rowen");
 	}
 }

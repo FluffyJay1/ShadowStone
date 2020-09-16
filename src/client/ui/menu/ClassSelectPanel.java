@@ -1,12 +1,11 @@
 package client.ui.menu;
 
-import org.newdawn.slick.geom.Vector2f;
+import java.util.*;
 
-import client.ui.GenericButton;
-import client.ui.Text;
-import client.ui.UI;
-import client.ui.UIBox;
-import server.card.ClassCraft;
+import org.newdawn.slick.geom.*;
+
+import client.ui.*;
+import server.card.*;
 
 public class ClassSelectPanel extends UIBox {
 	public static final String SELECT = "classselect";
@@ -38,7 +37,8 @@ public class ClassSelectPanel extends UIBox {
 
 	@Override
 	public void onAlert(String strarg, int... intarg) {
-		switch (strarg) {
+		StringTokenizer st = new StringTokenizer(strarg);
+		switch (st.nextToken()) {
 		case SELECT:
 			this.setHide(true);
 			this.alert(strarg, intarg);

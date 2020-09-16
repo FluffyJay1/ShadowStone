@@ -1,24 +1,22 @@
 package client.ui.menu;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Map;
+import java.util.*;
 
-import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.geom.*;
 
-import client.ui.ScrollingContext;
-import client.ui.Text;
-import client.ui.UI;
-import client.ui.UIBox;
-import server.card.cardpack.CardSet;
-import server.card.cardpack.ConstructedDeck;
+import client.ui.*;
+import server.card.*;
+import server.card.cardpack.*;
 
 public class CardSetDisplayPanel extends UIBox {
+	/**
+	 * Alert syntax: "cardsetclick (cardClassString)" [clickCount]
+	 */
 	public static final String CARDSET_CLICK = "cardsetclick";
 	public static final String BACKGROUND_CLICK = "cardsetbackgroundclick";
 	CardSet set;
 	ScrollingContext scroll;
-	ArrayList<CardDisplayUnit> cards = new ArrayList<CardDisplayUnit>();
+	List<CardDisplayUnit> cards = new ArrayList<CardDisplayUnit>();
 
 	public CardSetDisplayPanel(UI ui, Vector2f pos) {
 		super(ui, pos, new Vector2f(1600, 500), "res/ui/uiboxborder.png");
@@ -31,9 +29,10 @@ public class CardSetDisplayPanel extends UIBox {
 
 	@Override
 	public void onAlert(String strarg, int... intarg) {
-		switch (strarg) {
+		StringTokenizer st = new StringTokenizer(strarg);
+		switch (st.nextToken()) {
 		case CardDisplayUnit.CARD_CLICK:
-			this.alert(CARDSET_CLICK, intarg);
+			this.alert(CARDSET_CLICK + " " + st.nextToken(), intarg);
 			break;
 		default:
 			this.alert(strarg, intarg);
@@ -53,11 +52,11 @@ public class CardSetDisplayPanel extends UIBox {
 		this.cards.clear();
 		this.set = set;
 		if (set != null) {
-			for (int i : set.ids) {
+			for (Class<? extends Card> cardClass : set.cardClasses) {
 				CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f());
 				this.scroll.addChild(cdu);
 				this.cards.add(cdu);
-				cdu.setCardID(i);
+				cdu.setCardClass(cardClass);
 			}
 		}
 		this.updateCardPositions();
@@ -67,7 +66,7 @@ public class CardSetDisplayPanel extends UIBox {
 		this.cards.sort(new Comparator<CardDisplayUnit>() {
 			@Override
 			public int compare(CardDisplayUnit a, CardDisplayUnit b) {
-				return a.card.tooltip.cost - b.card.tooltip.cost;
+				return Card.compareDefault(a.card, b.card);
 			}
 		});
 		for (int i = 0; i < this.cards.size(); i++) {
@@ -75,9 +74,9 @@ public class CardSetDisplayPanel extends UIBox {
 		}
 	}
 
-	private CardDisplayUnit getCardDisplayUnit(int id) {
+	private CardDisplayUnit getCardDisplayUnit(Class<? extends Card> cardClass) {
 		for (CardDisplayUnit cdu : this.cards) {
-			if (cdu.getCardID() == id) {
+			if (cdu.getCardClass().equals(cardClass)) {
 				return cdu;
 			}
 		}

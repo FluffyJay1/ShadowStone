@@ -1,23 +1,11 @@
 package server.card.cardpack;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.lang.reflect.*;
+import java.util.*;
 
-import server.Board;
-import server.card.Card;
-import server.card.ClassCraft;
+import server.*;
+import server.card.*;
 
 /**
  * ConstructedDeck is a class that deals with playermade decks, which can be
@@ -33,7 +21,7 @@ public class ConstructedDeck implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
 	public static final int MAX_SIZE = 40, MAX_DUPES = 3;
 
@@ -43,9 +31,9 @@ public class ConstructedDeck implements Serializable {
 	public static ArrayList<ConstructedDeck> decks = new ArrayList<ConstructedDeck>();
 
 	/**
-	 * The map between a card id and its count in the deck
+	 * The map between a card class and its count in the deck
 	 */
-	public Map<Integer, Integer> idcounts = new HashMap<Integer, Integer>();
+	public Map<Class<? extends Card>, Integer> cardClassCounts = new HashMap<>();
 
 	/**
 	 * The name of the deck
@@ -93,12 +81,11 @@ public class ConstructedDeck implements Serializable {
 	/**
 	 * Set a deck to a copy of another deck
 	 * 
-	 * @param other
-	 *            the deck to copy
+	 * @param other the deck to copy
 	 */
 	public void copyFrom(ConstructedDeck other) {
-		this.idcounts.clear();
-		this.idcounts.putAll(other.idcounts);
+		this.cardClassCounts.clear();
+		this.cardClassCounts.putAll(other.cardClassCounts);
 		this.name = other.name;
 		this.count = other.count;
 	}
@@ -106,15 +93,14 @@ public class ConstructedDeck implements Serializable {
 	/**
 	 * Method for adding a card to the deck
 	 * 
-	 * @param id
-	 *            the id of the card to add
+	 * @param cardClass the class of the card to add
 	 * @return whether or not the operation was successful
 	 */
-	public boolean addCard(int id) {
-		if (!this.idcounts.containsKey(id)) {
-			this.idcounts.put(id, 1);
-		} else if (this.idcounts.get(id) < MAX_DUPES) {
-			this.idcounts.put(id, this.idcounts.get(id) + 1);
+	public boolean addCard(Class<? extends Card> cardClass) {
+		if (!this.cardClassCounts.containsKey(cardClass)) {
+			this.cardClassCounts.put(cardClass, 1);
+		} else if (this.cardClassCounts.get(cardClass) < MAX_DUPES) {
+			this.cardClassCounts.put(cardClass, this.cardClassCounts.get(cardClass) + 1);
 		} else {
 			// ye fucked up
 			return false;
@@ -126,32 +112,31 @@ public class ConstructedDeck implements Serializable {
 	/**
 	 * Method for removing a card from the deck
 	 * 
-	 * @param id
-	 *            the id of the card to remove
+	 * @param cardClass the class of the card to remove
 	 * @return if it returns false then you did something special
 	 */
-	public boolean removeCard(int id) {
-		if (!this.idcounts.containsKey(id)) {
+	public boolean removeCard(Class<? extends Card> cardClass) {
+		if (!this.cardClassCounts.containsKey(cardClass)) {
 			return false;
 		}
-		this.idcounts.put(id, this.idcounts.get(id) - 1);
-		if (this.idcounts.get(id) <= 0) {
-			this.idcounts.remove(id);
+		this.cardClassCounts.put(cardClass, this.cardClassCounts.get(cardClass) - 1);
+		if (this.cardClassCounts.get(cardClass) <= 0) {
+			this.cardClassCounts.remove(cardClass);
 		}
 		this.count--;
 		return true;
 	}
 
 	/**
-	 * Method to validate that a deck is playable, also updates the size of the
-	 * deck just in case there is a discrepancy
+	 * Method to validate that a deck is playable, also updates the size of the deck
+	 * just in case there is a discrepancy
 	 * 
 	 * @return whether or not the deck is playable
 	 */
 	public boolean validate() {
 		int size = 0;
 		boolean dupes = true;
-		for (Map.Entry<Integer, Integer> entry : this.idcounts.entrySet()) {
+		for (Map.Entry<Class<? extends Card>, Integer> entry : this.cardClassCounts.entrySet()) {
 			this.count += entry.getValue();
 			if (entry.getValue() > MAX_DUPES) {
 				dupes = false;
@@ -162,21 +147,18 @@ public class ConstructedDeck implements Serializable {
 	}
 
 	/**
-	 * Converts a decklist to a list of actual Card objects ready to be used in
-	 * game
+	 * Converts a decklist to a list of actual Card objects ready to be used in game
 	 * 
-	 * @param b
-	 *            the board to add the cards to
-	 * @param team
-	 *            the team of the player owning the cards
+	 * @param b    the board to add the cards to
+	 * @param team the team of the player owning the cards
 	 * @return an arraylist of the created cards;
 	 */
-	public ArrayList<Card> convertToCards(Board b) {
+	public List<Card> convertToCards(Board b) {
 		ArrayList<Card> cards = new ArrayList<Card>(this.count);
-		for (Map.Entry<Integer, Integer> entry : this.idcounts.entrySet()) {
+		for (Map.Entry<Class<? extends Card>, Integer> entry : this.cardClassCounts.entrySet()) {
 			Constructor constr = null;
 			try {
-				constr = CardSet.getCardClass(entry.getKey()).getConstructor(Board.class);
+				constr = entry.getKey().getConstructor(Board.class);
 			} catch (NoSuchMethodException | SecurityException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

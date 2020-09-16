@@ -1,16 +1,11 @@
 package client.ui.menu;
 
-import java.util.ArrayList;
+import java.util.*;
 
-import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.geom.*;
 
-import client.Game;
-import client.ui.GenericButton;
-import client.ui.ScrollingContext;
-import client.ui.Text;
-import client.ui.UI;
-import client.ui.UIBox;
-import server.card.cardpack.ConstructedDeck;
+import client.ui.*;
+import server.card.cardpack.*;
 
 public class DeckSelectPanel extends UIBox {
 	public static final String DECK_CONFIRM = "deckselectpanelconfirm";
@@ -67,7 +62,8 @@ public class DeckSelectPanel extends UIBox {
 
 	@Override
 	public void onAlert(String strarg, int... intarg) {
-		switch (strarg) {
+		StringTokenizer st = new StringTokenizer(strarg);
+		switch (st.nextToken()) {
 		case DECK_CONFIRM:
 			if (this.selectedDeckUnit != null) {
 				this.setHide(true);

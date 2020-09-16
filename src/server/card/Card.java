@@ -6,14 +6,13 @@ import java.util.*;
 import client.tooltip.*;
 import client.ui.game.*;
 import server.*;
-import server.card.cardpack.*;
 import server.card.effect.*;
 import server.event.*;
 
 public class Card implements Cloneable {
 	public Board board;
 	public boolean alive = true;
-	public int id, cardpos, team;
+	public int cardpos, team;
 	public TooltipCard tooltip;
 	public CardStatus status;
 	public ClassCraft craft;
@@ -28,7 +27,6 @@ public class Card implements Cloneable {
 	public Card(Board board, TooltipCard tooltip) {
 		this.board = board;
 		this.tooltip = tooltip;
-		this.id = tooltip.id;
 		this.status = CardStatus.DECK;
 		this.craft = tooltip.craft;
 	}
@@ -119,7 +117,7 @@ public class Card implements Cloneable {
 		} else {
 			stats = this.finalStatEffects;
 		}
-		stats.applyEffectStats(new Effect());
+		stats.resetStats();
 		List<Effect> relevant = basic ? this.getEffects(basic) : this.getFinalEffects();
 		for (Effect e : relevant) {
 			stats.applyEffectStats(e);
@@ -193,7 +191,7 @@ public class Card implements Cloneable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(this.id + " " + this.team + " " + this.alive + " " + this.cardPosToString()
+		builder.append(this.getClass().getName() + " " + this.team + " " + this.alive + " " + this.cardPosToString()
 				+ this.basicEffects.size() + " ");
 		for (Effect e : this.basicEffects) {
 			builder.append(e.toString());
@@ -206,20 +204,26 @@ public class Card implements Cloneable {
 	}
 
 	public String toConstructorString() {
-		return this.id + " ";
+		return this.getClass().getName() + " ";
 	}
 
 	public static Card createFromConstructorString(Board b, StringTokenizer st) {
-		int id = Integer.parseInt(st.nextToken());
-		return createFromConstructor(b, id);
+		Class<? extends Card> cardClass;
+		try {
+			cardClass = (Class<? extends Card>) Class.forName(st.nextToken());
+			return createFromConstructor(b, cardClass);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 
 	}
 
-	public static Card createFromConstructor(Board b, int id) {
-		Class<? extends Card> c = CardSet.getCardClass(id);
+	public static Card createFromConstructor(Board b, Class<? extends Card> cardClass) {
 		Card card = null;
 		try {
-			card = c.getConstructor(Board.class).newInstance(b);
+			card = cardClass.getConstructor(Board.class).newInstance(b);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			// TODO Auto-generated catch block
@@ -264,5 +268,10 @@ public class Card implements Cloneable {
 		default:
 			return null;
 		}
+	}
+
+	public static int compareDefault(Card a, Card b) {
+		return (a.tooltip.cost == b.tooltip.cost) ? a.getClass().getName().compareTo(b.getClass().getName())
+				: a.tooltip.cost - b.tooltip.cost;
 	}
 }

@@ -1,7 +1,5 @@
 package client.ui.menu;
 
-import java.util.*;
-
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
 
@@ -10,9 +8,12 @@ import client.ui.game.*;
 import server.card.*;
 
 public class CardDisplayUnit extends UIBox {
+	/**
+	 * Alert Syntax: "cardclick (cardClassString)" [clickCount]
+	 */
 	public static final String CARD_CLICK = "cardclick";
 	public static final double SCALE = 0.75;
-	private int cardid;
+	private Class<? extends Card> cardClass;
 	Text text;
 	Card card;
 	UICard uicard;
@@ -23,30 +24,30 @@ public class CardDisplayUnit extends UIBox {
 				50, 14, "Verdana", 20, -1, 1);
 		this.addChild(this.text);
 		this.uicard = new UICard(ui, null, null);
-		this.setCardID(0);
+		this.setCardClass(null);
 		this.setCount(-1);
 
 	}
 
 	@Override
 	public void mouseClicked(int button, int x, int y, int clickCount) {
-		this.alert(CARD_CLICK, cardid, clickCount);
+		this.alert(CARD_CLICK + " " + cardClass.getName(), clickCount);
 
 	}
 
-	public void setCardID(int cardid) {
-		this.cardid = cardid;
-		if (cardid == 0) {
+	public void setCardClass(Class<? extends Card> cardClass) {
+		this.cardClass = cardClass;
+		if (cardClass == null) {
 			this.card = null;
 		} else {
-			this.card = Card.createFromConstructorString(null, new StringTokenizer(cardid + " 1"));
+			this.card = Card.createFromConstructor(null, cardClass);
 			this.card.status = CardStatus.HAND;
 			this.uicard.setCard(this.card);
 		}
 	}
 
-	public int getCardID() {
-		return this.cardid;
+	public Class<? extends Card> getCardClass() {
+		return this.cardClass;
 	}
 
 	public void setCount(int count) {
