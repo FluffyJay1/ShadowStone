@@ -1,6 +1,8 @@
 package client.ui.game;
 
 import java.awt.Color;
+import java.util.*;
+import java.util.List;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.Graphics;
@@ -30,15 +32,18 @@ public class UICard extends UIBox {
 	public static final float UNLEASH_POWER_RADIUS = 50;
 	public static final double NAME_FONT_SIZE = 30;
 	public static final double STAT_DEFAULT_SIZE = 30;
+	public static final int ICON_SPACING = 32;
 	public static final String CARD_CLICK = "cardclick";
 	private Card card;
 	private Image cardImage, subImage;
 	private UIBoard uib;
+	private List<Image> icons;
 
 	public UICard(UI ui, UIBoard uib, Card c) {
 		super(ui, new Vector2f(), CARD_DIMENSIONS, "");
 		this.uib = uib;
 		this.setCard(c);
+		this.icons = new LinkedList<>();
 	}
 
 	@Override
@@ -186,18 +191,7 @@ public class UICard extends UIBox {
 				i = i.getScaledCopy((float) scale);
 				g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
 			}
-			if (this.card.finalStatEffects.getStat(EffectStats.BANE) > 0) {
-				Image i = Game.getImage("res/game/bane.png");
-				i = i.getScaledCopy((float) scale);
-				g.drawImage(i, pos.x - i.getWidth() / 2,
-						pos.y - i.getHeight() / 2 + CARD_DIMENSIONS.y * (float) scale / 2);
-			}
-			if (this.card.finalStatEffects.getStat(EffectStats.POISONOUS) > 0) {
-				Image i = Game.getImage("res/game/poisonous.png");
-				i = i.getScaledCopy((float) scale);
-				g.drawImage(i, pos.x - i.getWidth() / 2,
-						pos.y - i.getHeight() / 2 + CARD_DIMENSIONS.y * (float) scale / 2);
-			}
+			this.drawIcons(g, pos, scale);
 			this.drawOffensiveStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.ATTACK),
 					this.card.finalBasicStatEffects.getStat(EffectStats.ATTACK),
 					new Vector2f(-MINION_STAT_POS_OFFSET_BOARD, 0.5f), MINION_STAT_ALIGN_BOARD, STAT_DEFAULT_SIZE);
@@ -208,6 +202,29 @@ public class UICard extends UIBox {
 					this.card.finalStatEffects.getStat(EffectStats.HEALTH),
 					this.card.finalBasicStatEffects.getStat(EffectStats.HEALTH),
 					new Vector2f(MINION_STAT_POS_OFFSET_BOARD, 0.5f), MINION_STAT_ALIGN_BOARD, STAT_DEFAULT_SIZE);
+		}
+	}
+
+	// called by updateEffectStats in Card
+	public void updateIconList() {
+		this.icons.clear();
+		if (this.card.finalStatEffects.getStat(EffectStats.BANE) > 0) {
+			this.icons.add(Game.getImage("res/game/baneicon.png"));
+		}
+		if (this.card.finalStatEffects.getStat(EffectStats.POISONOUS) > 0) {
+			this.icons.add(Game.getImage("res/game/poisonousicon.png"));
+		}
+		if (this.card instanceof Minion && !this.getMinion().lastWords().isEmpty()) {
+			this.icons.add(Game.getImage("res/game/lastwordsicon.png"));
+		}
+	}
+
+	public void drawIcons(Graphics g, Vector2f pos, double scale) {
+		int numIcons = this.icons.size();
+		for (int i = 0; i < numIcons; i++) {
+			Image scaled = this.icons.get(i).getScaledCopy((float) scale);
+			g.drawImage(scaled, pos.x - scaled.getWidth() / 2 - (i - (numIcons - 1f) / 2) * ICON_SPACING,
+					pos.y - scaled.getHeight() / 2 + CARD_DIMENSIONS.y * (float) scale / 2);
 		}
 	}
 
@@ -291,5 +308,4 @@ public class UICard extends UIBox {
 		}
 		this.drawStatNumber(g, pos, scale, health, relpos, textoffset, fontsize, c);
 	}
-
 }

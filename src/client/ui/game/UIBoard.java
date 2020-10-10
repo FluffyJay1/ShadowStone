@@ -316,6 +316,7 @@ public class UIBoard extends UIBox {
 		UICard uic = new UICard(this.ui, this, c);
 		uic.relpos = true;
 		c.uiCard = uic;
+		uic.updateIconList();
 		this.cards.add(uic);
 		this.addChild(uic);
 	}

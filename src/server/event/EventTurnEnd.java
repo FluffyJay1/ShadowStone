@@ -16,10 +16,11 @@ public class EventTurnEnd extends Event {
 
 	@Override
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
-		Minion leader = this.p.leader;
-		eventlist.addAll(leader.onTurnEnd());
-		for (BoardObject b : this.p.board.getBoardObjects(this.p.team)) {
+		for (BoardObject b : this.p.board.getBoardObjects(this.p.team, true, true, true)) {
 			eventlist.addAll(b.onTurnEnd());
+		}
+		for (BoardObject b : this.p.board.getBoardObjects(this.p.team * -1, true, true, true)) {
+			eventlist.addAll(b.onTurnEndEnemy());
 		}
 	}
 

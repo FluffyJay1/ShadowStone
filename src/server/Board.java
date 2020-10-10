@@ -127,6 +127,7 @@ public class Board {
 		}
 	}
 
+	// with leaders
 	public List<BoardObject> getBoardObjects() {
 		ArrayList<BoardObject> ret = new ArrayList<BoardObject>();
 		ret.addAll(this.player1side);
@@ -140,6 +141,7 @@ public class Board {
 		return ret;
 	}
 
+	// no leader
 	public List<BoardObject> getBoardObjects(int team) {
 		if (team > 0) {
 			return this.player1side;

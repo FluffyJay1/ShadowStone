@@ -16,6 +16,7 @@ public class EventPutCard extends Event {
 	int targetTeam;
 	private List<CardStatus> prevStatus;
 	private List<List<Effect>> prevEffects;
+	private List<List<Boolean>> prevMute;
 	private List<Integer> prevPos;
 	private List<Integer> prevTeam;
 	private List<Integer> prevHealth;
@@ -46,17 +47,19 @@ public class EventPutCard extends Event {
 
 	@Override
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
-		this.prevStatus = new LinkedList<CardStatus>();
-		this.prevEffects = new LinkedList<List<Effect>>();
-		this.prevPos = new LinkedList<Integer>();
-		this.prevTeam = new LinkedList<Integer>();
-		this.prevHealth = new LinkedList<Integer>();
-		this.prevAttacks = new LinkedList<Integer>();
-		this.prevSick = new LinkedList<Boolean>();
+		this.prevStatus = new LinkedList<>();
+		this.prevEffects = new LinkedList<>();
+		this.prevMute = new LinkedList<>();
+		this.prevPos = new LinkedList<>();
+		this.prevTeam = new LinkedList<>();
+		this.prevHealth = new LinkedList<>();
+		this.prevAttacks = new LinkedList<>();
+		this.prevSick = new LinkedList<>();
 		for (int i = 0; i < this.c.size(); i++) {
 			Card card = this.c.get(i);
 			this.prevStatus.add(card.status);
-			this.prevEffects.add(new LinkedList<Effect>());
+			this.prevEffects.add(new LinkedList<>());
+			this.prevMute.add(new LinkedList<>());
 			this.prevPos.add(card.cardpos);
 			this.prevTeam.add(card.team);
 			this.prevHealth.add(0);
@@ -89,6 +92,9 @@ public class EventPutCard extends Event {
 				break;
 			}
 			// goes against flow
+			for (Effect be : card.getEffects(true)) {
+				this.prevMute.get(i).add(be.mute);
+			}
 			if (card.status.ordinal() < this.status.ordinal()) {
 				this.prevEffects.set(i, card.removeAdditionalEffects());
 				if (card instanceof Minion) {
@@ -150,10 +156,14 @@ public class EventPutCard extends Event {
 			default:
 				break;
 			}
+			// goes against flow
 			for (Effect e : this.prevEffects.get(i)) {
 				card.addEffect(false, e);
 			}
-			// goes against flow
+			List<Effect> basicEffects = card.getEffects(true);
+			for (int j = 0; j < basicEffects.size(); j++) {
+				basicEffects.get(j).mute = this.prevMute.get(i).get(j);
+			}
 			if (card instanceof Minion) {
 				((Minion) card).health = this.prevHealth.get(i);
 				((Minion) card).attacksThisTurn = this.prevAttacks.get(i);

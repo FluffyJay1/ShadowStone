@@ -50,7 +50,8 @@ public class AI extends Thread {
 	private static final double REEVALUATION_SAMPLE_RATE_MULTIPLIER = 0.5;
 
 	// Statistics to gauge AI evaluation speed
-	private int[] width = new int[50], maxBranches = new int[50], cacheHits = new int[50];
+	private int[] width = new int[REEVALUATION_MAX_DEPTH + 1], maxBranches = new int[REEVALUATION_MAX_DEPTH + 1],
+			cacheHits = new int[REEVALUATION_MAX_DEPTH + 1];
 
 	// Map board state to cached AI calculations
 	private Map<String, BoardStateNode> nodeMap;
@@ -538,18 +539,21 @@ public class AI extends Thread {
 	 * is the value that gets maximized by the ai. These values should be
 	 * symmetrical, i.e. evauateAdvantage(b, 1) == -evaluateAdvantage(b, -1)
 	 * 
+	 * @param b    The board
 	 * @param team the team to evaluate for
 	 * @return the advantage quantized as mana
 	 */
 	public static double evaluateAdvantage(Board b, int team) {
-		return evaluateVictory(b, team) + evaluateSurvivability(b, team) + evaluateBoard(b, team)
-				+ evaluateHand(b, team) - evaluateSurvivability(b, team * -1) - evaluateBoard(b, team * -1)
-				- evaluateHand(b, team * -1);
+		return evaluateVictory(b, team) + evaluateMana(b, team) + evaluateSurvivability(b, team)
+				+ evaluateBoard(b, team) + evaluateHand(b, team) - evaluateSurvivability(b, team * -1)
+				- evaluateBoard(b, team * -1) - evaluateHand(b, team * -1);
 	}
 
 	/**
-	 * Indicator that a player has achieved victory.
+	 * Indicator that a player has achieved victory. Is probably a bit redundant
+	 * with how the AI evaluates lethal but whatever
 	 * 
+	 * @param b    The board
 	 * @param team the team to evaluate for
 	 * @return a large number in favor of the winning team
 	 */
@@ -570,6 +574,7 @@ public class AI extends Thread {
 	 * hp, equivalent to greater healing potion, and a 6hp nuke worth about 5 mana
 	 * when opponent is at 11 hp, equivalent to fireball
 	 * 
+	 * @param b    The board
 	 * @param team the team to evaluate for
 	 * @return The approximate mana value of that leader's survivability
 	 */
@@ -629,6 +634,7 @@ public class AI extends Thread {
 	 * Attempts to put a mana value on a boardstate, basically just the sum of the
 	 * values of each board object
 	 * 
+	 * @param b    The board
 	 * @param team the team to evaluate for
 	 * @return the approximate mana value
 	 */
@@ -645,6 +651,7 @@ public class AI extends Thread {
 	 * a card is value/(cost + 1), which usually comes to about 1 mana per card. A
 	 * more powerful hand would have higher value cards with lower cost.
 	 * 
+	 * @param b    The board
 	 * @param team the team to evaluate for. can cheat by looking at opponents hand
 	 *             lol
 	 * @return the mana value of having these cards in hand
@@ -656,5 +663,16 @@ public class AI extends Thread {
 			totalPower += c.getValue() / (c.finalStatEffects.getStat(EffectStats.COST) + 1);
 		}
 		return totalPower;
+	}
+
+	/**
+	 * This metric attempts to quantify ramping as an advantage
+	 * 
+	 * @param b    The board
+	 * @param team The team to evaluate for
+	 * @return Mana value of difference in max mana
+	 */
+	public static double evaluateMana(Board b, int team) {
+		return b.getPlayer(team).maxmana - b.getPlayer(-team).maxmana;
 	}
 }

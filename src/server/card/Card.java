@@ -20,8 +20,10 @@ public class Card implements Cloneable {
 	public UICard uiCard;
 
 	public Effect finalStatEffects = new Effect(), finalBasicStatEffects = new Effect();
-	// basic effects don't get removed when removed from board (e.g. bounce
-	// effects)
+	/*
+	 * basic effects can't get removed unlike additional effects (e.g. bounce
+	 * effects), but they can be muted
+	 */
 	private List<Effect> effects = new LinkedList<Effect>(), basicEffects = new LinkedList<Effect>();
 
 	public Card(Board board, TooltipCard tooltip) {
@@ -45,13 +47,24 @@ public class Card implements Cloneable {
 		return basic ? this.basicEffects : this.effects;
 	}
 
-	public List<Effect> getFinalEffects() {
+	public List<Effect> getUnmutedEffects(boolean basic) {
 		LinkedList<Effect> list = new LinkedList<Effect>();
-		list.addAll(this.getEffects(true));
-		for (Effect e : this.getEffects(false)) {
+		for (Effect e : this.getEffects(basic)) {
 			if (!e.mute) {
 				list.add(e);
 			}
+		}
+		return list;
+	}
+
+	public List<Effect> getFinalEffects(boolean unmutedOnly) {
+		LinkedList<Effect> list = new LinkedList<Effect>();
+		if (unmutedOnly) {
+			list.addAll(this.getUnmutedEffects(true));
+			list.addAll(this.getUnmutedEffects(false));
+		} else {
+			list.addAll(this.getEffects(true));
+			list.addAll(this.getEffects(false));
 		}
 		return list;
 	}
@@ -103,7 +116,9 @@ public class Card implements Cloneable {
 	public void muteEffect(Effect e, boolean mute) {
 		if (this.effects.contains(e)) {
 			e.mute = mute;
-			this.updateEffectStats(false);
+		}
+		if (this.uiCard != null) {
+			this.uiCard.updateIconList();
 		}
 	}
 
@@ -118,7 +133,7 @@ public class Card implements Cloneable {
 			stats = this.finalStatEffects;
 		}
 		stats.resetStats();
-		List<Effect> relevant = basic ? this.getEffects(basic) : this.getFinalEffects();
+		List<Effect> relevant = basic ? this.getEffects(basic) : this.getFinalEffects(false);
 		for (Effect e : relevant) {
 			stats.applyEffectStats(e);
 		}
@@ -132,6 +147,9 @@ public class Card implements Cloneable {
 			// update the stat numbers for the additional effects too
 			this.updateEffectStats(false);
 		}
+		if (this.uiCard != null) {
+			this.uiCard.updateIconList();
+		}
 	}
 
 	public void updateEffectPositions(boolean basic) {
@@ -143,7 +161,7 @@ public class Card implements Cloneable {
 
 	public List<EventBattlecry> battlecry() {
 		List<EventBattlecry> list = new LinkedList<EventBattlecry>();
-		for (Effect e : this.getFinalEffects()) {
+		for (Effect e : this.getFinalEffects(true)) {
 			EventBattlecry temp = e.battlecry();
 			if (temp != null) {
 				list.add(temp);
@@ -159,7 +177,7 @@ public class Card implements Cloneable {
 
 	public List<Target> getBattlecryTargets() {
 		List<Target> list = new LinkedList<Target>();
-		for (Effect e : this.getFinalEffects()) {
+		for (Effect e : this.getFinalEffects(true)) {
 			for (Target t : e.battlecryTargets) {
 				list.add(t);
 			}

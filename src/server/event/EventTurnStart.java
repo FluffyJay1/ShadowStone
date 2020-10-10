@@ -23,8 +23,8 @@ public class EventTurnStart extends Event {
 	public void resolve(List<Event> eventlist, boolean loopprotection) {
 		this.prevCurrentPlayerTurn = this.p.board.currentPlayerTurn;
 		this.prevUnleashesThisTurn = this.p.unleashPower.unleashesThisTurn;
-		this.prevSickness = new ArrayList<Boolean>();
-		this.prevAttacks = new ArrayList<Integer>();
+		this.prevSickness = new ArrayList<>();
+		this.prevAttacks = new ArrayList<>();
 		this.p.board.currentPlayerTurn = this.p.team;
 		this.p.unleashPower.unleashesThisTurn = 0;
 		eventlist.add(new EventDraw(this.p));
@@ -48,6 +48,9 @@ public class EventTurnStart extends Event {
 				e.change.setStat(EffectStats.COUNTDOWN, -1);
 				eventlist.add(new EventAddEffect(b, e));
 			}
+		}
+		for (BoardObject b : this.p.board.getBoardObjects(this.p.team * -1, true, true, true)) {
+			eventlist.addAll(b.onTurnStartEnemy());
 		}
 
 	}

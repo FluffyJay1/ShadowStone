@@ -130,7 +130,7 @@ public class Minion extends BoardObject {
 
 	public List<EventOnAttack> onAttack(Minion target) {
 		List<EventOnAttack> list = new LinkedList<EventOnAttack>();
-		for (Effect e : this.getFinalEffects()) {
+		for (Effect e : this.getFinalEffects(true)) {
 			EventOnAttack temp = e.onAttack(target); // optimization probably
 			if (temp != null) {
 				list.add(temp);
@@ -141,7 +141,7 @@ public class Minion extends BoardObject {
 
 	public List<EventOnAttacked> onAttacked(Minion target) {
 		List<EventOnAttacked> list = new LinkedList<EventOnAttacked>();
-		for (Effect e : this.getFinalEffects()) {
+		for (Effect e : this.getFinalEffects(true)) {
 			EventOnAttacked temp = e.onAttacked(target);
 			if (temp != null) {
 				list.add(temp);
@@ -152,7 +152,7 @@ public class Minion extends BoardObject {
 
 	public List<EventClash> clash(Minion target) {
 		List<EventClash> list = new LinkedList<EventClash>();
-		for (Effect e : this.getFinalEffects()) {
+		for (Effect e : this.getFinalEffects(true)) {
 			EventClash temp = e.clash(target);
 			if (temp != null) {
 				list.add(temp);
@@ -163,7 +163,7 @@ public class Minion extends BoardObject {
 
 	public List<Event> onDamaged(int damage) {
 		List<Event> list = new LinkedList<Event>();
-		for (Effect e : this.getFinalEffects()) {
+		for (Effect e : this.getFinalEffects(true)) {
 			EventFlag temp = e.onDamaged(damage);
 			if (temp != null) {
 				list.add(temp);
@@ -174,7 +174,7 @@ public class Minion extends BoardObject {
 
 	public List<EventFlag> unleash() {
 		List<EventFlag> list = new LinkedList<EventFlag>();
-		for (Effect e : this.getFinalEffects()) {
+		for (Effect e : this.getFinalEffects(true)) {
 			EventFlag temp = e.unleash();
 			if (temp != null) {
 				list.add(temp);
@@ -186,7 +186,7 @@ public class Minion extends BoardObject {
 
 	public List<Target> getUnleashTargets() {
 		List<Target> list = new LinkedList<Target>();
-		for (Effect e : this.getFinalEffects()) {
+		for (Effect e : this.getFinalEffects(true)) {
 			for (Target t : e.unleashTargets) {
 				list.add(t);
 			}

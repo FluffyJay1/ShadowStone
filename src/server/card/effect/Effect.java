@@ -21,6 +21,10 @@ public class Effect implements Cloneable {
 	public int pos = 0;
 	public Card owner = null;
 	public String description;
+	/*
+	 * Mute means the effect still provides stats, but won't do anything extra, it
+	 * can't listen for events or battlecry or unleash or anything
+	 */
 	public boolean basic = false, mute = false, listener = false;
 
 	public EffectStats set = new EffectStats(), change = new EffectStats();
@@ -165,6 +169,14 @@ public class Effect implements Cloneable {
 	}
 
 	public EventFlag onTurnEnd() {
+		return null;
+	}
+
+	public EventFlag onTurnStartEnemy() {
+		return null;
+	}
+
+	public EventFlag onTurnEndEnemy() {
 		return null;
 	}
 
