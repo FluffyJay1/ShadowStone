@@ -3,26 +3,26 @@
  2: CreateCard
  3: Damage
  4: Destroy
- 5: Draw
+ 5: Draw - DELETED
  6: ManaChange
  7: Mill
  8: MinionAttack
- 9: MinionAttackDamage
-10: CardDamage
+ 9: MinionBeginAttackPhase - DEPRECATED
+10: CardDamage - DELETED
 11: PlayCard
 12: PutCard
 13: Restore
 14: TurnEnd
 15: TurnStart
 16: Unleash
-17: EffectDamage
+17: EffectDamage - DELETED
 18: Banish
 19: Battlecry
 20: LastWords
 21: Flag
 22: RemoveEffect
-23: EnterPlay
-24: LeavePlay
+23: EnterPlay - DEPRECATED
+24: LeavePlay - DEPRECATED
 25: OnAttack
 26: OnAttacked
 27: Clash
