@@ -128,14 +128,14 @@ public class DataStream {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        MessageType mtype = null;
-        for (MessageType mt : MessageType.values()) {
-            if (mt.toString().equals(header)) {
-                mtype = mt;
-            }
+        try {
+            MessageType mtype = MessageType.valueOf(header);
+            this.lastMessageType = mtype;
+            return mtype;
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return null;
         }
-        this.lastMessageType = mtype;
-        return mtype;
     }
 
     public String readEvent() {

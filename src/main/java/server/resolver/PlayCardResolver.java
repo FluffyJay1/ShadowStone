@@ -6,6 +6,8 @@ import server.*;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
+import server.event.eventgroup.EventGroup;
+import server.event.eventgroup.EventGroupType;
 
 public class PlayCardResolver extends Resolver {
     public Player p;
@@ -40,10 +42,13 @@ public class PlayCardResolver extends Resolver {
                 b.processEvent(rl, el, new EventDestroy(this.c));
             }
             List<Resolver> battlecryList = c.battlecry();
-            if (!(this.c instanceof Spell) && !battlecryList.isEmpty()) {
-                b.processEvent(rl, el, new EventBattlecry(this.c));
+            if (!(this.c instanceof Spell)) {
+                b.pushEventGroup(new EventGroup(EventGroupType.BATTLECRY, List.of(this.c)));
             }
             this.resolveList(b, rl, el, battlecryList);
+            if (!(this.c instanceof Spell)) {
+                b.popEventGroup();
+            }
         }
     }
 }

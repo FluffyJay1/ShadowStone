@@ -30,10 +30,10 @@ public class EventDamage extends Event {
         this.m = m;
         this.damage = damage;
         this.poisonous = poisonous;
-        this.markedForDeath = markedForDeath;
+        this.markedForDeath = Objects.requireNonNullElseGet(markedForDeath, ArrayList::new);
         this.minionAttack = minionAttack;
     }
-    
+
     public EventDamage(Effect source, List<Minion> m, List<Integer> damage, List<Boolean> poisonous, List<Card> markedForDeath) {
         this(source.owner, m, damage, poisonous, false, markedForDeath);
         this.effectSource = source;
@@ -41,9 +41,6 @@ public class EventDamage extends Event {
 
     @Override
     public void resolve() {
-        if (this.markedForDeath == null) {
-            this.markedForDeath = new ArrayList<>();
-        }
         this.oldHealth = new ArrayList<Integer>();
         this.oldAlive = new ArrayList<>();
         for (int i = 0; i < this.m.size(); i++) { // sure

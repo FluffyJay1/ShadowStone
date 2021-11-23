@@ -27,7 +27,6 @@ public class GenesisOfLegend extends Amulet {
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
                         List<Minion> possible = b.getMinions(owner.team, false, true);
                         if (!possible.isEmpty()) {
-                            b.processEvent(rl, el, new EventFlag(owner));
                             Minion selected = Game.selectRandom(possible);
                             EffectStatChange e = new EffectStatChange(
                                     "Gained +0/+0/+1 and <b> Bane </b> from Genesis of Legend.", 0, 0, 1);

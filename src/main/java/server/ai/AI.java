@@ -19,6 +19,7 @@ import server.resolver.*;
  *
  */
 public class AI extends Thread {
+    private static final boolean DEBUG_PRINT = false;
     private static final int MAX_RNG_TRIALS = 6;
     private static final int MIN_RNG_TRIALS = 3;
 
@@ -108,7 +109,7 @@ public class AI extends Thread {
     }
 
     private void AIThink() {
-        System.out.println("Start score: " + evaluateAdvantage(this.b, this.b.localteam));
+        if (DEBUG_PRINT) System.out.println("Start score: " + evaluateAdvantage(this.b, this.b.localteam));
         for (int i = 0; i < this.width.length; i++) {
             this.width[i] = 0;
             this.maxBranches[i] = 0;
@@ -131,21 +132,27 @@ public class AI extends Thread {
         if (actionStack.isEmpty()) {
             System.out.println("AIThink produced no actions!");
         }
-        temp = bsn;
-        while (temp.definedNext) {
-            String nextAction = temp.maxAction;
-            System.out.println(temp.toString());
-            temp = temp.branches.get(nextAction);
-        }
-        this.actionSendQueue.addAll(actionStack);
-        System.out.println("Time taken: " + time);
-        System.out.println("Score achieved: " + bsn.maxScore);
-        System.out.printf("%-6s %-6s %-6s %-6s", "Depth", "Width", "Cache", "Brnchs\n");
-        for (int i = 0; i < this.width.length; i++) {
-            if (this.width[i] == 0) {
-                break;
+
+        if (DEBUG_PRINT) {
+            temp = bsn;
+            while (temp.definedNext) {
+                String nextAction = temp.maxAction;
+                System.out.println(temp.toString());
+                temp = temp.branches.get(nextAction);
             }
-            System.out.printf("%6d %6d %6d %6d\n", i, this.width[i], this.cacheHits[i], this.maxBranches[i]);
+        }
+
+        this.actionSendQueue.addAll(actionStack);
+        if (DEBUG_PRINT) {
+            System.out.println("Time taken: " + time);
+            System.out.println("Score achieved: " + bsn.maxScore);
+            System.out.printf("%-6s %-6s %-6s %-6s", "Depth", "Width", "Cache", "Brnchs\n");
+            for (int i = 0; i < this.width.length; i++) {
+                if (this.width[i] == 0) {
+                    break;
+                }
+                System.out.printf("%6d %6d %6d %6d\n", i, this.width[i], this.cacheHits[i], this.maxBranches[i]);
+            }
         }
     }
 

@@ -6,6 +6,7 @@ import server.*;
 import server.card.*;
 import server.event.*;
 
+// deprecated resolver?
 public class MillResolver extends Resolver {
     Card c;
 

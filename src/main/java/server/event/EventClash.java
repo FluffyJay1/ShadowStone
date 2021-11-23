@@ -5,7 +5,7 @@ import java.util.*;
 import server.*;
 import server.card.*;
 
-//basically for display purposes
+// deprecated, see event groups
 public class EventClash extends Event {
     public static final int ID = 27;
     public Minion owner;

@@ -24,9 +24,9 @@ public class Card implements Cloneable {
      * basic effects can't get removed unlike additional effects (e.g. bounce
      * effects), but they can be muted
      */
-    private List<Effect> effects = new LinkedList<Effect>(), basicEffects = new LinkedList<Effect>();
+    private List<Effect> effects = new LinkedList<>(), basicEffects = new LinkedList<>();
     // for convenience, a subset of above effects that are listeners
-    public List<Effect> listeners = new LinkedList<Effect>();
+    public List<Effect> listeners = new LinkedList<>();
 
     public Card(Board board, TooltipCard tooltip) {
         this.board = board;

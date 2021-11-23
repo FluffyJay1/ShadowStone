@@ -13,18 +13,14 @@ public class EventRemoveEffect extends Event {
     private List<Integer> oldHealth;
     List<Card> markedForDeath;
 
-    // TODO make it accept multiple effects
     public EventRemoveEffect(List<Effect> effects, List<Card> markedForDeath) {
         super(ID);
         this.effects = effects;
-        this.markedForDeath = markedForDeath;
+        this.markedForDeath = Objects.requireNonNullElseGet(markedForDeath, ArrayList::new);
     }
 
     @Override
     public void resolve() {
-        if (this.markedForDeath == null) {
-            this.markedForDeath = new ArrayList<>();
-        }
         this.prevPos = new ArrayList<>();
         this.oldHealth = new ArrayList<>();
         for (int i = 0; i < this.effects.size(); i++) {

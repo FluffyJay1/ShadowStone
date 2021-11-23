@@ -23,7 +23,8 @@ public class EventAddEffect extends Event {
         super(ID);
         this.c = c;
         this.e = e;
-        this.markedForDeath = markedForDeath;
+        this.markedForDeath = Objects.requireNonNullElseGet(markedForDeath, ArrayList::new);
+        this.effects = new ArrayList<>();
     }
 
     public EventAddEffect(Card c, Effect e, List<Card> markedForDeath) {
@@ -32,11 +33,7 @@ public class EventAddEffect extends Event {
 
     @Override
     public void resolve() {
-        if (this.markedForDeath == null) {
-            this.markedForDeath = new ArrayList<>();
-        }
-        this.effects = new ArrayList<Effect>();
-        this.oldHealth = new ArrayList<Integer>();
+        this.oldHealth = new ArrayList<>();
         this.oldAlive = new ArrayList<>();
         for (int i = 0; i < this.c.size(); i++) {
             Card c = this.c.get(i);
@@ -92,7 +89,7 @@ public class EventAddEffect extends Event {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.id + " " + this.c.size() + " " + e.toString());
+        builder.append(this.id).append(" ").append(this.c.size()).append(" ").append(e.toString());
         for (int i = 0; i < this.c.size(); i++) {
             builder.append(this.c.get(i).toReference());
         }

@@ -7,6 +7,7 @@ import java.util.*;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
+import server.event.eventgroup.EventGroup;
 import server.playeraction.*;
 import server.resolver.*;
 
@@ -27,6 +28,9 @@ public class Board {
     public List<Card> banished;
     private List<Resolver> resolveList;
 
+    // the hierarchy of groups we are under
+    private List<EventGroup> eventGroups;
+
     StringBuilder output, history;
 
     public Board() {
@@ -39,16 +43,17 @@ public class Board {
         this.localteam = 1;
         this.winner = 0;
         this.cardsCreated = new LinkedList<Card>();
-        player1 = new Player(this, 1);
-        player2 = new Player(this, -1);
-        player1side = new ArrayList<BoardObject>();
-        player2side = new ArrayList<BoardObject>();
-        resolveList = new LinkedList<>();
-        player1graveyard = new ArrayList<Card>();
-        player2graveyard = new ArrayList<Card>();
-        banished = new ArrayList<Card>();
-        output = new StringBuilder();
-        history = new StringBuilder();
+        this.player1 = new Player(this, 1);
+        this.player2 = new Player(this, -1);
+        this.player1side = new ArrayList<BoardObject>();
+        this.player2side = new ArrayList<BoardObject>();
+        this.resolveList = new LinkedList<>();
+        this.player1graveyard = new ArrayList<Card>();
+        this.player2graveyard = new ArrayList<Card>();
+        this.banished = new ArrayList<Card>();
+        this.output = new StringBuilder();
+        this.history = new StringBuilder();
+        this.eventGroups = new LinkedList<>();
     }
 
     public Board(int localteam) {
@@ -334,8 +339,17 @@ public class Board {
      * 
      */
     public <T extends Event> T processEvent(List<Resolver> rl, List<Event> el, T e) {
-        if (this.winner != 0) {
+        if (this.winner != 0 || !e.conditions()) {
             return e;
+        }
+        EventGroup eg = this.peekEventGroup();
+        if (eg != null) {
+            if (eg.numChildren == 0) {
+                // commit this event group to output if it isn't empty
+                this.output.append(eg.toString());
+                this.history.append(eg.toString());
+            }
+            eg.numChildren++;
         }
         String eventString = e.toString();
         e.resolve();
@@ -350,7 +364,7 @@ public class Board {
         if (rl != null) {
             if (e.cardsEnteringPlay() != null) {
                 for (BoardObject bo : e.cardsEnteringPlay()) {
-                    rl.addAll(bo.onEnterPlay());
+                    rl.add(new FlagResolver(bo, bo.onEnterPlay()));
                 }
             }
             if (e.cardsLeavingPlay() != null) {
@@ -359,9 +373,11 @@ public class Board {
                 }
             }
             for (Card c : this.getCards()) {
+                List<Resolver> listenEventResolvers = new LinkedList<>();
                 for (Effect listener : c.listeners) {
-                    rl.add(listener.onListenEvent(e));
+                    listenEventResolvers.add(listener.onListenEvent(e));
                 }
+                rl.add(new FlagResolver(c, listenEventResolvers));
             }
         }
         return e;
@@ -419,15 +435,54 @@ public class Board {
         }
     }
 
+    
+    /**
+     * Parses a set of events/eventgroups and applies their changes to the board state
+     * @param s The string to parse
+     */
     public synchronized void parseEventString(String s) {
         if (!s.isEmpty()) {
             String[] lines = s.split("\n");
             for (String line : lines) {
                 StringTokenizer st = new StringTokenizer(line);
-                Event e = Event.createFromString(this, st);
-                this.processEvent(null, null, e);
+                char firstChar = line.charAt(0);
+                if (firstChar == EventGroup.PUSH_TOKEN) {
+                    this.pushEventGroup(EventGroup.fromString(this, st));
+                } else if (firstChar == EventGroup.POP_TOKEN) {
+                    this.popEventGroup();
+                } else {
+                    Event e = Event.createFromString(this, st);
+                    this.processEvent(null, null, e);
+                }
             }
         }
+    }
+
+    public void pushEventGroup(EventGroup group) {
+        this.eventGroups.add(group);
+        // don't commit to output just yet, we don't know if this group is empty or not
+    }
+
+    public EventGroup popEventGroup() {
+        EventGroup eg = this.eventGroups.remove(this.eventGroups.size() - 1);
+        if (eg.numChildren > 0) {
+            this.output.append(EventGroup.POP_TOKEN + "\n");
+            this.history.append(EventGroup.POP_TOKEN + "\n");
+
+            // if this wasn't empty, we consider this group as a legitimate child
+            EventGroup parent = this.peekEventGroup();
+            if (parent != null) {
+                parent.numChildren++;
+            }
+        }
+        return eg;
+    }
+
+    public EventGroup peekEventGroup() {
+        if (this.eventGroups.isEmpty()) {
+            return null;
+        }
+        return this.eventGroups.get(this.eventGroups.size() - 1);
     }
 
     public ResolutionResult executePlayerAction(StringTokenizer st) {

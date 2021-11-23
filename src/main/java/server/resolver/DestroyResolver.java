@@ -23,16 +23,11 @@ public class DestroyResolver extends Resolver {
         if (!this.cards.isEmpty()) {
             EventDestroy destroy = new EventDestroy(this.cards);
             b.processEvent(rl, el, destroy);
-            for (Card c : destroy.cardsLeavingPlay()) {
-                if (c instanceof Leader) {
-                    b.processEvent(rl, el, new EventGameEnd(c.board, c.team * -1));
+            for (BoardObject bo : destroy.cardsLeavingPlay()) {
+                if (bo instanceof Leader) {
+                    b.processEvent(rl, el, new EventGameEnd(bo.board, bo.team * -1));
                 }
-                BoardObject bo = (BoardObject) c;
-                List<Resolver> lastwords = bo.lastWords();
-                if (!lastwords.isEmpty()) {
-                    b.processEvent(rl, el, new EventLastWords(bo));
-                    rl.addAll(lastwords);
-                }
+                rl.add(new LastWordsResolver(bo));
             }
         }
     }

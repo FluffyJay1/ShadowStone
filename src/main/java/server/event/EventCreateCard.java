@@ -7,6 +7,7 @@ import server.*;
 import server.card.*;
 import server.card.unleashpower.*;
 
+// Changes references, should not run concurrent with other events
 public class EventCreateCard extends Event {
     public static final int ID = 2;
     List<Card> cards;
@@ -27,6 +28,7 @@ public class EventCreateCard extends Event {
         this.status = status;
         this.cardpos = cardpos;
         this.markedForDeath = markedForDeath;
+        this.successful = new ArrayList<>();
     }
 
     @Override
@@ -34,7 +36,6 @@ public class EventCreateCard extends Event {
         if (this.markedForDeath == null) {
             this.markedForDeath = new ArrayList<>();
         }
-        this.successful = new ArrayList<>();
         for (int i = 0; i < this.cards.size(); i++) {
             Card c = this.cards.get(i);
             int cardpos = this.cardpos.get(i);

@@ -28,14 +28,12 @@ public class UnleashFeedFervor extends UnleashPower {
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
                         if (e instanceof EventManaChange) {
                             if (!overflow && p.overflow()) {
-								b.processEvent(rl, el, new EventFlag(owner));
                                 overflow = true;
                                 Effect esc = new Effect();
                                 esc.change.setStat(EffectStats.COST, -1);
                                 this.resolve(b, rl, el, new SetEffectStatsResolver(effect, esc));
                             }
                             if (overflow && !p.overflow()) {
-								b.processEvent(rl, el, new EventFlag(owner));
                                 overflow = false;
                                 Effect esc = new Effect();
                                 esc.change.setStat(EffectStats.COST, 0);

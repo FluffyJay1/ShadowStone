@@ -28,14 +28,7 @@ public class PuppetRoom extends Amulet {
 
             @Override
             public Resolver onTurnEnd() {
-                return new Resolver(false) {
-                    @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
-                        b.processEvent(rl, el, new EventFlag(owner));
-                        this.resolve(b, rl, el, new CreateCardResolver(new Puppet(owner.board), owner.team, CardStatus.HAND, -1));
-                    }
-                };
-                // return new CreateCardResolver(new Puppet(this.owner.board), this.owner.team, CardStatus.HAND, -1);
+                 return new CreateCardResolver(new Puppet(this.owner.board), this.owner.team, CardStatus.HAND, -1);
             }
         };
         e.set.setStat(EffectStats.COUNTDOWN, 3);

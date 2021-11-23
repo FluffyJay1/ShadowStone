@@ -5,6 +5,8 @@ import java.util.*;
 import server.*;
 import server.card.*;
 import server.event.*;
+import server.event.eventgroup.EventGroup;
+import server.event.eventgroup.EventGroupType;
 
 public class TurnEndResolver extends Resolver {
     Player p;
@@ -19,10 +21,14 @@ public class TurnEndResolver extends Resolver {
         b.processEvent(rl, el, new EventTurnEnd(p));
         List<Resolver> subList = new LinkedList<>();
         for (BoardObject bo : this.p.board.getBoardObjects(this.p.team, true, true, true)) {
+            b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
             this.resolveList(b, subList, el, bo.onTurnEnd());
+            b.popEventGroup();
         }
         for (BoardObject bo : this.p.board.getBoardObjects(this.p.team * -1, true, true, true)) {
+            b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
             this.resolveList(b, subList, el, bo.onTurnEndEnemy());
+            b.popEventGroup();
         }
         this.resolveList(b, subList, el, subList);
     }

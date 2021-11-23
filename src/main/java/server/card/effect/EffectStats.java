@@ -51,7 +51,7 @@ public class EffectStats implements Cloneable { // this is literally just a
     public String toString() {
         String s = "";
         for (int i = 0; i < NUM_STATS; i++) {
-            s += use[i] + " " + stats[i] + " ";
+            s += (use[i] ? "T" : "F") + " " + stats[i] + " ";
         }
         return s;
     }
@@ -59,7 +59,7 @@ public class EffectStats implements Cloneable { // this is literally just a
     public static EffectStats fromString(StringTokenizer st) {
         EffectStats ret = new EffectStats();
         for (int i = 0; i < NUM_STATS; i++) {
-            boolean use = st.nextToken().equals("true");
+            boolean use = st.nextToken().equals("T");
             int stat = Integer.parseInt(st.nextToken());
             if (use) {
                 ret.setStat(i, stat);

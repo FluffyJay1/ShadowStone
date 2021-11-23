@@ -58,7 +58,6 @@ public class WoodOfBrambles extends Amulet {
                                 }
                             }
                             if (!relevant.isEmpty()) {
-                                b.processEvent(rl, el, new EventFlag(owner));
                                 AddEffectResolver aer = new AddEffectResolver(relevant, new EffectBrambles());
                                 this.resolve(b, rl, el, aer);
                                 distributedEffects.addAll(aer.effects);
@@ -109,15 +108,7 @@ public class WoodOfBrambles extends Amulet {
 
         @Override
         public Resolver clash(Minion target) {
-            Effect effect = this;
-            return new Resolver(false) {
-                @Override
-                public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
-                    b.processEvent(rl, el, new EventClash((Minion) owner));
-                    this.resolve(b, rl, el, new EffectDamageResolver(effect, target, 1, true));
-                }
-            };
-            // return new EffectDamageResolver(this, target, 1, true);
+            return new EffectDamageResolver(this, target, 1, true);
         }
 
     }

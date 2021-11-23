@@ -91,7 +91,6 @@ public class UICard extends UIBox {
 
     public void drawCard(Graphics g, Vector2f pos, double scale) {
         this.drawCardArt(g, pos, scale);
-        g.drawString(this.card.cardPosToString(), pos.x, pos.y);
         switch (this.card.status) {
         case BOARD:
         case LEADER:

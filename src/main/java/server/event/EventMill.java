@@ -5,7 +5,7 @@ import java.util.*;
 import server.*;
 import server.card.*;
 
-// visual event
+// deprecated event?
 public class EventMill extends Event {
     public static final int ID = 7;
     Card c;

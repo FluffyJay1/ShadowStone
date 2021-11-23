@@ -54,7 +54,7 @@ public class EventRestore extends Event {
         builder.append(this.id).append(" ").append(Effect.referenceOrNull(this.source)).append(this.m.size())
                 .append(" ");
         for (int i = 0; i < this.m.size(); i++) {
-            builder.append(this.m.get(i).toReference() + this.heal.get(i) + " ");
+            builder.append(this.m.get(i).toReference()).append(this.heal.get(i)).append(" ");
         }
         return builder.append("\n").toString();
     }

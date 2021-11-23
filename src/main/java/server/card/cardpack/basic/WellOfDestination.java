@@ -26,7 +26,6 @@ public class WellOfDestination extends Amulet {
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
                         List<Minion> possible = b.getMinions(owner.team, false, true);
                         if (!possible.isEmpty()) {
-                            b.processEvent(rl, el, new EventFlag(owner));
                             Minion targeted = Game.selectRandom(possible);
                             EffectStatChange e = new EffectStatChange("Gained +1/+1/+1 from Well of Destination", 1, 1,
                                     1);

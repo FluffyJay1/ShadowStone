@@ -2,14 +2,18 @@ package client;
 
 import java.util.*;
 
+import client.ui.game.visualboardanimation.VisualBoardAnimation;
+import client.ui.game.visualboardanimation.eventgroupanimation.EventGroupAnimationFactory;
 import org.newdawn.slick.geom.*;
 
 import client.ui.game.*;
-import client.ui.game.eventanimation.*;
+import client.ui.game.visualboardanimation.eventanimation.*;
 import server.*;
 import server.ai.*;
 import server.card.*;
 import server.event.*;
+import server.event.eventgroup.EventGroup;
+import server.event.eventgroup.EventGroupType;
 import server.resolver.Resolver;
 
 /**
@@ -20,20 +24,22 @@ import server.resolver.Resolver;
  * done with the UIBoard.
  */
 public class VisualBoard extends Board {
+    public static final double MIN_CONCURRENT_EVENT_DELAY = 0.2;
+
     public UIBoard uiBoard;
     public Board realBoard;
     Vector2f mouseDownPos = new Vector2f();
     ArrayList<Card> targetedCards = new ArrayList<>();
     int playingX;
     List<String> inputeventliststrings = new LinkedList<>();
-    public List<EventAnimation<Event>> currentAnimations = new LinkedList<>();
+    public List<VisualBoardAnimation> currentAnimations = new LinkedList<>();
 
     // whether this board is not accepting input from the player (i.e., only works when it's the player's turn)
     // Currently this is controlled in EventAnimationTurnStart (enable control) and EndTurnButton (disable control)
     public boolean disableInput = false;
 
-    EventAnimationFactory animationFactory;
-
+    EventAnimationFactory eventAnimationFactory;
+    EventGroupAnimationFactory eventGroupAnimationFactory;
     public VisualBoard(UIBoard uiBoard) {
         this(uiBoard, 1);
     }
@@ -50,7 +56,8 @@ public class VisualBoard extends Board {
         this.player2.realPlayer = this.realBoard.player2;
         this.realBoard.localteam = localteam;
         this.localteam = localteam;
-        this.animationFactory = new EventAnimationFactory(this);
+        this.eventAnimationFactory = new EventAnimationFactory(this);
+        this.eventGroupAnimationFactory = new EventGroupAnimationFactory(this);
     }
 
     public void update(double frametime) {
@@ -71,16 +78,16 @@ public class VisualBoard extends Board {
         this.realBoard.parseEventString(s);
         StringTokenizer st = new StringTokenizer(s, "\n");
         while (st.hasMoreTokens()) {
-            String event = st.nextToken();
-            this.inputeventliststrings.add(event);
+            String eventOrGroup = st.nextToken();
+            this.inputeventliststrings.add(eventOrGroup);
         }
 
     }
 
     public void skipCurrentAnimation() {
-        for (Iterator<EventAnimation<Event>> i = this.currentAnimations.iterator(); i.hasNext();) {
-            EventAnimation<Event> ea = i.next();
-            ea.update(999999); //lmao
+        for (Iterator<VisualBoardAnimation> i = this.currentAnimations.iterator(); i.hasNext();) {
+            VisualBoardAnimation vba = i.next();
+            vba.update(999999); //lmao
             i.remove();
         }
     }
@@ -88,42 +95,66 @@ public class VisualBoard extends Board {
     public void skipAllAnimations() {
         this.skipCurrentAnimation();
         while (!this.inputeventliststrings.isEmpty()) {
-            StringTokenizer st = new StringTokenizer(this.inputeventliststrings.remove(0));
-            Event currentEvent = Event.createFromString(this, st);
-            if (currentEvent != null && currentEvent.conditions()) {
-                this.processEvent(null, null, currentEvent);
+            String eventOrGroup = this.inputeventliststrings.remove(0);
+            if (!EventGroup.isGroup(eventOrGroup)) {
+                Event currentEvent = Event.createFromString(this, new StringTokenizer(eventOrGroup));
+                if (currentEvent != null && currentEvent.conditions()) {
+                    this.processEvent(null, null, currentEvent);
+                }
             }
         }
     }
 
     public void updateEventAnimation(double frametime) {
-        for (Iterator<EventAnimation<Event>> i = this.currentAnimations.iterator(); i.hasNext();) {
-            EventAnimation<Event> ea = i.next();
-            ea.update(frametime);
-            if (ea.isFinished()) {
+        double timeUntilLatestProcess = Double.NEGATIVE_INFINITY;
+        for (Iterator<VisualBoardAnimation> i = this.currentAnimations.iterator(); i.hasNext();) {
+            VisualBoardAnimation vba = i.next();
+            if (vba instanceof EventAnimation) {
+                // enforce ordering
+                EventAnimation<Event> ea = (EventAnimation<Event>) vba;
+                if (ea.getTimeUntilProcess() >= timeUntilLatestProcess) {
+                    ea.update(frametime);
+                    timeUntilLatestProcess = ea.getTimeUntilProcess() + MIN_CONCURRENT_EVENT_DELAY;
+                }
+            } else {
+                vba.update(frametime);
+            }
+            if (vba.isFinished()) {
                 i.remove();
             }
         }
-        if (this.currentAnimations.isEmpty() && !this.inputeventliststrings.isEmpty()) {
+        while ((shouldConcurrentlyAnimate() || this.currentAnimations.isEmpty())
+                && !this.inputeventliststrings.isEmpty()) {
             // current set of animations is empty, see what we have to animate
             // next
-            StringTokenizer st = new StringTokenizer(this.inputeventliststrings.remove(0));
-            Event currentEvent = Event.createFromString(this, st);
-            if (currentEvent != null && currentEvent.conditions()) {
-                // TODO: handle concurrent animations
-                EventAnimation<Event> anim = this.animationFactory.newAnimation(currentEvent);
-                // The animation will take care of when to resolve the event
-                this.currentAnimations.add(anim);
-                // concurrent minion attack animation
-                // not the prettiest solution but whatever
-                if (currentEvent instanceof EventDamage && ((EventDamage) currentEvent).minionAttack && !this.inputeventliststrings.isEmpty()) {
-                    Event nextEvent = Event.createFromString(this, new StringTokenizer(this.inputeventliststrings.remove(0)));
-                    if (nextEvent instanceof EventDamage && ((EventDamage)nextEvent).minionAttack) {
-                        this.currentAnimations.add(this.animationFactory.newAnimation(nextEvent));
+            VisualBoardAnimation anim = null;
+            String eventOrGroup = this.inputeventliststrings.remove(0);
+            StringTokenizer st = new StringTokenizer(eventOrGroup);
+            if (EventGroup.isPush(eventOrGroup)) {
+                EventGroup group = EventGroup.fromString(this, st);
+                this.pushEventGroup(group);
+                anim = this.eventGroupAnimationFactory.newAnimation(group);
+            } else if (EventGroup.isPop(eventOrGroup)) {
+                EventGroup group = this.popEventGroup();
+                // TODO do something special
+            } else {
+                Event currentEvent = Event.createFromString(this, st);
+                if (currentEvent != null && currentEvent.conditions()) {
+                    anim = this.eventAnimationFactory.newAnimation(currentEvent);
+                    if (anim == null) {
+                        this.processEvent(null, null, currentEvent);
                     }
                 }
             }
+            if (anim != null) {
+                // The animation will take care of when to resolve the event
+                this.currentAnimations.add(anim);
+            }
         }
+    }
+
+    private boolean shouldConcurrentlyAnimate() {
+        return this.peekEventGroup() != null && this.peekEventGroup().type.equals(EventGroupType.MINIONCOMBAT);
     }
 
     @Override

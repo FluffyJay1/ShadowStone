@@ -5,6 +5,7 @@ import java.util.*;
 import server.*;
 import server.card.*;
 
+// Changes references, should not run concurrent with other events
 public class EventBanish extends Event {
     public static final int ID = 18;
     public List<Card> c;

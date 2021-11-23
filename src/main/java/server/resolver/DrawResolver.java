@@ -28,7 +28,9 @@ public class DrawResolver extends Resolver {
                     b.processEvent(rl, el, new EventPutCard(this.p.deck.cards.get(0), CardStatus.HAND, this.p.team,
                             this.p.hand.maxsize, null));
                 } else {
-                    this.resolve(b, rl, el, new MillResolver(this.p.deck.cards.get(0)));
+                    b.processEvent(rl, el, new EventDestroy(this.p.deck.cards.get(0)));
+                    // hmm
+                    // this.resolve(b, rl, el, new MillResolver(this.p.deck.cards.get(0)));
                 }
             }
         }

@@ -20,7 +20,7 @@ public class EventMuteEffect extends Event {
         this.c = c;
         this.e = e;
         this.mute = mute;
-        this.markedForDeath = markedForDeath;
+        this.markedForDeath = Objects.requireNonNullElseGet(markedForDeath, ArrayList::new);
     }
 
     @Override

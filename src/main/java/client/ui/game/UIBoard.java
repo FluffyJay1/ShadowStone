@@ -2,12 +2,13 @@ package client.ui.game;
 
 import java.util.*;
 
+import client.ui.game.visualboardanimation.VisualBoardAnimation;
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
 
 import client.*;
 import client.ui.*;
-import client.ui.game.eventanimation.*;
+import client.ui.game.visualboardanimation.eventanimation.*;
 import network.*;
 import server.card.*;
 import server.playeraction.*;
@@ -208,8 +209,10 @@ public class UIBoard extends UIBox {
                             this.b.localteam) + 0.5) * Config.WINDOW_WIDTH,
                     Config.WINDOW_HEIGHT * 0.74f);
         }
-        for (EventAnimation ea : this.b.currentAnimations) {
-            ea.draw(g);
+        for (VisualBoardAnimation ea : this.b.currentAnimations) {
+            if (ea.isStarted()) {
+                ea.draw(g);
+            }
         }
     }
 

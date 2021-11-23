@@ -5,7 +5,7 @@
  4: Destroy
  5: Draw - DELETED
  6: ManaChange
- 7: Mill
+ 7: Mill - DEPRECATED
  8: MinionAttack
  9: MinionBeginAttackPhase - DEPRECATED
 10: CardDamage - DELETED
@@ -17,16 +17,16 @@
 16: Unleash
 17: EffectDamage - DELETED
 18: Banish
-19: Battlecry
-20: LastWords
-21: Flag
+19: Battlecry - DEPRECATED, see event groups
+20: LastWords - DEPRECATED, see event groups
+21: Flag - DEPRECATED, see event groups
 22: RemoveEffect
 23: EnterPlay - DEPRECATED
 24: LeavePlay - DEPRECATED
-25: OnAttack
-26: OnAttacked
-27: Clash
+25: OnAttack - DEPRECATED, see event groups
+26: OnAttacked - DEPRECATED, see event groups
+27: Clash - DEPRECATED, see event groups
 28: GameEnd
 29: MuteEffect
 30: SetEffectStats
-31: Blast
+31: Blast - DELETED

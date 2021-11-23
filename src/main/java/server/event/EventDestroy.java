@@ -5,6 +5,7 @@ import java.util.*;
 import server.*;
 import server.card.*;
 
+// Changes references, should not run concurrent with other events
 public class EventDestroy extends Event {
     // Shouldn't process this event outright, as it ignores lastwords triggers
     public static final int ID = 4;

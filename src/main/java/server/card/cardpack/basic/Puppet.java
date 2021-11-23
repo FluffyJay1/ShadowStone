@@ -22,14 +22,7 @@ public class Puppet extends Minion {
         Effect e = new Effect(TOOLTIP.description) {
             @Override
             public Resolver onTurnEndEnemy() {
-                return new Resolver(false) {
-                    @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
-                        b.processEvent(rl, el, new EventFlag(owner));
-                        this.resolve(b, rl, el, new DestroyResolver(owner));
-                    }
-                };
-
+                return new DestroyResolver(owner);
             }
         };
         e.set.setStat(EffectStats.RUSH, 1);

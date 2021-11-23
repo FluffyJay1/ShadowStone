@@ -215,12 +215,7 @@ public class EventPutCard extends Event {
     public static EventPutCard fromString(Board b, StringTokenizer st) {
         int size = Integer.parseInt(st.nextToken());
         String sStatus = st.nextToken();
-        CardStatus csStatus = null;
-        for (CardStatus cs : CardStatus.values()) {
-            if (cs.toString().equals(sStatus)) {
-                csStatus = cs;
-            }
-        }
+        CardStatus csStatus = CardStatus.valueOf(sStatus);
         int targetteam = Integer.parseInt(st.nextToken());
         ArrayList<Card> c = new ArrayList<Card>();
         ArrayList<Integer> pos = new ArrayList<Integer>();
