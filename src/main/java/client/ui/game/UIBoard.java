@@ -1,14 +1,21 @@
 package client.ui.game;
 
 import java.util.*;
+import java.util.function.Supplier;
 
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
+import client.ui.interpolation.realvalue.LinearInterpolation;
+import client.ui.interpolation.realvalue.QuadraticInterpolationA;
+import client.ui.particle.ParticleSystem;
+import client.ui.particle.strategy.EmissionStrategy;
+import client.ui.particle.strategy.property.*;
+import client.ui.particle.strategy.timing.InstantEmission;
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
 
 import client.*;
 import client.ui.*;
-import client.ui.game.visualboardanimation.eventanimation.*;
 import network.*;
 import server.card.*;
 import server.playeraction.*;
@@ -28,6 +35,16 @@ public class UIBoard extends UIBox {
     public static final int CARD_DEFAULT_Z = 0, CARD_HAND_Z = 2, CARD_BOARD_Z = 0, CARD_ABILITY_Z = 4,
             CARD_VISUALPLAYING_Z = 4, CARD_DRAGGING_Z = 3;
     public static final Vector2f TARGETING_CARD_POS = new Vector2f(-0.4f, -0.22f);
+
+    private static final Supplier<EmissionStrategy> DUST_EMISSION_STRATEGY = () -> new EmissionStrategy(
+            new InstantEmission(6),
+            new ComposedEmissionPropertyStrategy(List.of(
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/dust.png", new Vector2f(1, 1), 0, 0)),
+                    new ConstantEmissionPropertyStrategy(0.1, 0.4, new Vector2f(0, 700), new LinearInterpolation(0.4, 0), new QuadraticInterpolationA(1, 0, -4)),
+                    new RadialVelocityEmissionPropertyStrategy(new LinearInterpolation(0, 350)),
+                    new RandomAngleEmissionPropertyStrategy(new LinearInterpolation(-300, 300))
+            ))
+        );
 
     public VisualBoard b;
     public DataStream ds;
@@ -356,14 +373,9 @@ public class UIBoard extends UIBox {
         this.preSelectedCard = null;
         this.expandHand = x > 800 && y > (HAND_EXPAND_Y + 0.5) * Config.WINDOW_HEIGHT;
         this.handleTargeting(null);
-        // System.out.println("REAL BOARD:");
-        // System.out.println(this.realBoard.stateToString());
-        // this.realBoard.player1.printHand();
-        // this.realBoard.player2.printHand();
-        // System.out.println("VISUAL BOARD");
-        // this.player1.printHand();
-        // this.player2.printHand();
-        // System.out.println(this.stateToString());
+        ParticleSystem ps = new ParticleSystem(this.ui, this.getLocalPosOf(new Vector2f(x, y)), DUST_EMISSION_STRATEGY.get());
+        ps.setZ(1);
+        this.addChild(ps);
     }
 
     public void mousePressedCard(UICard c, int button, int x, int y) {

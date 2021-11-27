@@ -74,7 +74,7 @@ public class UI implements DefaultInputListener { // lets do this right this tim
         if (first == second) {
             return first;
         }
-        Set<UIElement> trace = new HashSet<UIElement>();
+        Set<UIElement> trace = new HashSet<>();
         for (UIElement e = first; e != null; e = e.getParent()) {
             trace.add(e);
         }

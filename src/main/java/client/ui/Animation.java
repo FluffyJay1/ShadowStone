@@ -17,7 +17,7 @@ import client.Game;
  * @author Michael
  *
  */
-public class Animation {
+public class Animation implements Cloneable {
     private SpriteSheet sheet;
     private int frame = 0;
     private double timer = 0, frameInterval = 1;
@@ -104,5 +104,17 @@ public class Animation {
         int x = this.frame % this.sheet.getHorizontalCount();
         int y = this.frame / this.sheet.getHorizontalCount();
         return this.sheet.getSubImage(x, y).getFlippedCopy(hflip, vflip);
+    }
+
+    @Override
+    public Animation clone() {
+        try {
+            Animation clone = (Animation) super.clone();
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            // this should be good lol
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

@@ -16,11 +16,14 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     List<UIElement> children = new ArrayList<UIElement>();
     List<UIElement> childrenAddBuffer = new ArrayList<UIElement>();
     List<UIElement> childrenRemoveBuffer = new ArrayList<UIElement>();
+    // alignment: how the element is placed relative to its pos, takes values (-1, 0, 1)
+    // e.g. alignh of -1 means the element is shifted to the right such that the left edge is aligned with the pos
     public int alignh = 0, alignv = 0;
     private int z = 0; // z order is int based because optimization probably
     private boolean hide = false, updateZOrder = false;
     public boolean draggable = false, ignorehitbox = false, hitcircle = false, clip = false, scrollable = false,
             hasFocus = false, relpos = false;
+    // relpos: represent position in terms of proportion of total width/height (considering margin), with (0, 0) being pos
     public Vector2f childoffset = new Vector2f(), margins = new Vector2f(); // public
                                                                             // cuz
                                                                             // fuck
@@ -91,6 +94,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         }
     }
 
+    // get the normal pos vector, i.e. not relpos
     public Vector2f getPos() {
         if (this.relpos) {
             if (this.parent == null) {
@@ -104,6 +108,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         return this.pos.copy();
     }
 
+    // absolute position on the screen more or less
     public Vector2f getFinalPos() {
         if (this.parent != null) {
             return this.parent.getFinalPos().copy().add(this.parent.childoffset).add(this.getPos());
@@ -234,9 +239,13 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     }
 
     // normalize position relative to position and scale of this ui element
-    public Vector2f normalize(Vector2f pos) {
-        return new Vector2f((pos.x - this.getFinalPos().x) / (float) this.getWidth(false),
-                (pos.y - this.getFinalPos().y) / (float) this.getHeight(false));
+    public Vector2f getLocalPosOf(Vector2f absPos) {
+        return new Vector2f(absPos.x - this.getFinalPos().x, absPos.y - this.getFinalPos().y);
+    }
+
+    public Vector2f getLocalRelPosOf(Vector2f absPos) {
+        return new Vector2f((absPos.x - this.getFinalPos().x) / (float) this.getWidth(false),
+                (absPos.y - this.getFinalPos().y) / (float) this.getHeight(false));
     }
 
     public boolean pointIsInHitbox(Vector2f pos) {
@@ -389,6 +398,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         this.parent = parent;
         if (!parent.children.contains(this) && !parent.childrenAddBuffer.contains(this)) {
             parent.childrenAddBuffer.add(this);
+            parent.updateZOrder = true;
         }
     }
 
@@ -409,6 +419,8 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         if (this.parent != null) {
             // this.setPos(this.parent.getFinalPos().add(this.pos), 1);
             this.parent.childrenRemoveBuffer.add(this);
+        } else {
+            this.ui.removeUIElementParent(this);
         }
         this.parent = null;
     }
