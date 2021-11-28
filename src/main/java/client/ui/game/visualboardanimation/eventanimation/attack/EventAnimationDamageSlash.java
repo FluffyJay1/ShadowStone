@@ -55,9 +55,7 @@ public class EventAnimationDamageSlash extends EventAnimationDamage {
     @Override
     public void onProcess() {
         for (Minion m : this.event.m) {
-            Vector2f pos = this.visualBoard.uiBoard.getLocalPosOf(m.uiCard.getFinalPos());
-            ParticleSystem ps = new ParticleSystem(this.visualBoard.uiBoard.getUI(), pos, EMISSION_STRATEGY.get());
-            this.visualBoard.uiBoard.addChild(ps);
+            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getFinalPos(), EMISSION_STRATEGY.get());
         }
     }
 

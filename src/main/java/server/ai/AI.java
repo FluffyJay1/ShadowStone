@@ -626,7 +626,7 @@ public class AI extends Thread {
         } else {
             if (threatenDamage >= ehp) {
                 // they're threatening lethal if i dont do anything
-                return -5 + ehp - threatenDamage;
+                return -30 + ehp - threatenDamage;
             }
             ehp -= threatenDamage;
         }

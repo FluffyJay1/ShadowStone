@@ -34,7 +34,7 @@ public class UIBoard extends UIBox {
     public static final double HAND_X_SCALE_LOCAL = 0.22, HAND_X_SCALE_ENEMY = 0.26, HAND_X_SCALE_EXPAND_LOCAL = 0.36;
     public static final double CARD_PLAY_Y = 0.2, HAND_EXPAND_Y = 0.30;
     public static final int CARD_DEFAULT_Z = 0, CARD_HAND_Z = 2, CARD_BOARD_Z = 0, CARD_ABILITY_Z = 4,
-            CARD_VISUALPLAYING_Z = 4, CARD_DRAGGING_Z = 3;
+            CARD_VISUALPLAYING_Z = 4, CARD_DRAGGING_Z = 3, PARTICLE_Z = 1;
     public static final Vector2f TARGETING_CARD_POS = new Vector2f(-0.4f, -0.22f);
 
     private static final Supplier<EmissionStrategy> DUST_EMISSION_STRATEGY = () -> new EmissionStrategy(
@@ -379,9 +379,7 @@ public class UIBoard extends UIBox {
         this.preSelectedCard = null;
         this.expandHand = x > 800 && y > (HAND_EXPAND_Y + 0.5) * Config.WINDOW_HEIGHT;
         this.handleTargeting(null);
-        ParticleSystem ps = new ParticleSystem(this.ui, this.getLocalPosOf(new Vector2f(x, y)), DUST_EMISSION_STRATEGY.get());
-        ps.setZ(1);
-        this.addChild(ps);
+        this.addParticleSystem(new Vector2f(x, y), DUST_EMISSION_STRATEGY.get());
     }
 
     public void mousePressedCard(UICard c, int button, int x, int y) {
@@ -625,5 +623,12 @@ public class UIBoard extends UIBox {
                 }
             }
         }
+    }
+
+    public ParticleSystem addParticleSystem(Vector2f absPos, EmissionStrategy es) {
+        ParticleSystem ps = new ParticleSystem(this.getUI(), this.getLocalPosOf(absPos), es);
+        ps.setZ(PARTICLE_Z);
+        this.addChild(ps);
+        return ps;
     }
 }
