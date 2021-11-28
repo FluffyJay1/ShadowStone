@@ -1,5 +1,6 @@
 package client.tooltip;
 
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamage;
 import org.newdawn.slick.geom.*;
 
 import server.card.*;
@@ -10,10 +11,11 @@ public class TooltipMinion extends TooltipCard {
     public Vector2f artFocusPos;
     public double artFocusScale; // if <= 0, focused image will be same as
                                     // original
+    public Class<? extends EventAnimationDamage> attackAnimation;
 
     public TooltipMinion(String name, String description, String imagepath, ClassCraft craft, int cost, int attack,
-            int magic, int health, boolean basicUnleash, Class<? extends Card> cardClass, Vector2f artFocusPos,
-            double artFocusScale, Tooltip... references) {
+                         int magic, int health, boolean basicUnleash, Class<? extends Card> cardClass, Vector2f artFocusPos,
+                         double artFocusScale, Class<? extends EventAnimationDamage> attackAnimation, Tooltip... references) {
         super(name,
                 "minion\nA:" + attack + ", M:" + magic + ", H:" + health + "\n \n" + description + (basicUnleash
                         ? "\n <b> Unleash: </b> Deal X damage to an enemy minion. X equals this minion's magic.\n"
@@ -32,5 +34,6 @@ public class TooltipMinion extends TooltipCard {
         this.health = health;
         this.artFocusPos = artFocusPos;
         this.artFocusScale = artFocusScale;
+        this.attackAnimation = attackAnimation;
     }
 }

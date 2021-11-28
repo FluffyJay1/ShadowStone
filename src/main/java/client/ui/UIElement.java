@@ -49,6 +49,10 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         this.setAnimation(animation);
     }
 
+    public UI getUI() {
+        return this.ui;
+    }
+
     public void setImage(String imagepath) {
         this.setAnimation(imagepath, new Vector2f(1, 1), 0, 0);
     }

@@ -53,9 +53,9 @@ public class MinionAttackResolver extends Resolver {
             int damage2 = this.m2.finalStatEffects.getStat(EffectStats.ATTACK);
             b.pushEventGroup(new EventGroup(EventGroupType.MINIONCOMBAT));
             b.processEvent(rl, el, new EventDamage(this.m1, List.of(this.m2), List.of(damage1),
-                    List.of(this.m1.finalStatEffects.getStat(EffectStats.POISONOUS) > 0), true, destroyed));
+                    List.of(this.m1.finalStatEffects.getStat(EffectStats.POISONOUS) > 0), destroyed, m1.getTooltip().attackAnimation));
             b.processEvent(rl, el, new EventDamage(this.m2, List.of(this.m1), List.of(damage2),
-                    List.of(this.m2.finalStatEffects.getStat(EffectStats.POISONOUS) > 0), true, destroyed));
+                    List.of(this.m2.finalStatEffects.getStat(EffectStats.POISONOUS) > 0), destroyed, m2.getTooltip().attackAnimation));
             b.popEventGroup();
             if (this.m1.finalStatEffects.getStat(EffectStats.BANE) > 0 && !(this.m2 instanceof Leader)
                     && !destroyed.contains(this.m2)) {

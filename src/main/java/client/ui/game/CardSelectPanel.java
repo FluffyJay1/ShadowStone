@@ -57,8 +57,8 @@ public class CardSelectPanel extends UIBox {
         if (this.uib.selectedCard != null) {
             // this.setPos(new Vector2f(200, 400), 1);
             this.setHide(false);
-            if (this.currTooltip != this.uib.selectedCard.getCard().tooltip) {
-                this.currTooltip = this.uib.selectedCard.getCard().tooltip;
+            if (this.currTooltip != this.uib.selectedCard.getCard().getTooltip()) {
+                this.currTooltip = this.uib.selectedCard.getCard().getTooltip();
                 this.tooltipPanel.setTooltip(this.currTooltip);
                 this.scroll.childoffset.y = 0;
             }
@@ -87,7 +87,7 @@ public class CardSelectPanel extends UIBox {
     @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
         if (this.tooltipPanel.pointIsInHitbox(new Vector2f(x, y))) {
-            this.tooltipReferencePanel.setReferenceTooltip(this.uib.selectedCard.getCard().tooltip);
+            this.tooltipReferencePanel.setReferenceTooltip(this.uib.selectedCard.getCard().getTooltip());
         } else {
             this.tooltipReferencePanel.setReferenceTooltip(null);
         }

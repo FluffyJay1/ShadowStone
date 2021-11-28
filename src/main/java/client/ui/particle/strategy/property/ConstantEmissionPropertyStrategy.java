@@ -8,16 +8,17 @@ import java.util.function.Supplier;
 
 // set the properties on the particle that are likely to be constant
 public class ConstantEmissionPropertyStrategy implements EmissionPropertyStrategy {
-    double velscale, maxTime;
+    int drawMode;
+    double velscale;
+    Vector2f accel;
     Interpolation<Double> opacityInterpolation;
     Interpolation<Double> scaleInterpolation;
-    Vector2f accel;
 
-    public ConstantEmissionPropertyStrategy(double velscale, double maxTime, Vector2f accel,
+    public ConstantEmissionPropertyStrategy(int drawMode, double velscale, Vector2f accel,
                                             Interpolation<Double> opacityInterpolation,
                                             Interpolation<Double> scaleInterpolation) {
+        this.drawMode = drawMode;
         this.velscale = velscale;
-        this.maxTime = maxTime;
         this.accel = accel;
         this.opacityInterpolation = opacityInterpolation;
         this.scaleInterpolation = scaleInterpolation;
@@ -25,8 +26,8 @@ public class ConstantEmissionPropertyStrategy implements EmissionPropertyStrateg
 
     @Override
     public void applyProperties(Particle p) {
+        p.drawMode = drawMode;
         p.velscale = this.velscale;
-        p.maxTime = this.maxTime;
         p.accel = accel.copy();
         p.opacityInterpolation = this.opacityInterpolation;
         p.scaleInterpolation = this.scaleInterpolation;

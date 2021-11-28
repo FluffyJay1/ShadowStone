@@ -5,12 +5,13 @@ import java.util.function.Supplier;
 
 import client.ui.Animation;
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
+import client.ui.interpolation.realvalue.ConstantInterpolation;
 import client.ui.interpolation.realvalue.LinearInterpolation;
 import client.ui.interpolation.realvalue.QuadraticInterpolationA;
 import client.ui.particle.ParticleSystem;
 import client.ui.particle.strategy.EmissionStrategy;
 import client.ui.particle.strategy.property.*;
-import client.ui.particle.strategy.timing.InstantEmission;
+import client.ui.particle.strategy.timing.InstantEmissionTimingStrategy;
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
 
@@ -37,10 +38,15 @@ public class UIBoard extends UIBox {
     public static final Vector2f TARGETING_CARD_POS = new Vector2f(-0.4f, -0.22f);
 
     private static final Supplier<EmissionStrategy> DUST_EMISSION_STRATEGY = () -> new EmissionStrategy(
-            new InstantEmission(6),
+            new InstantEmissionTimingStrategy(6),
             new ComposedEmissionPropertyStrategy(List.of(
                     new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/dust.png", new Vector2f(1, 1), 0, 0)),
-                    new ConstantEmissionPropertyStrategy(0.1, 0.4, new Vector2f(0, 700), new LinearInterpolation(0.4, 0), new QuadraticInterpolationA(1, 0, -4)),
+                    new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.4)),
+                    new ConstantEmissionPropertyStrategy(
+                            Graphics.MODE_NORMAL, 0.1, new Vector2f(0, 700),
+                            new LinearInterpolation(0.4, 0),
+                            new QuadraticInterpolationA(1, 0, -4)
+                    ),
                     new RadialVelocityEmissionPropertyStrategy(new LinearInterpolation(0, 350)),
                     new RandomAngleEmissionPropertyStrategy(new LinearInterpolation(-300, 300))
             ))

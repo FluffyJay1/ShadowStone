@@ -1,9 +1,9 @@
 package client.ui.particle.strategy.timing;
 
-public class InstantEmission implements EmissionTimingStrategy {
+public class InstantEmissionTimingStrategy implements EmissionTimingStrategy {
     private final int maxCount;
     private int count;
-    public InstantEmission(int count) {
+    public InstantEmissionTimingStrategy(int count) {
         this.maxCount = count;
         this.count = 0;
     }

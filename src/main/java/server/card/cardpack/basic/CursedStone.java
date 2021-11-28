@@ -2,6 +2,7 @@ package server.card.cardpack.basic;
 
 import java.util.*;
 
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
@@ -16,6 +17,7 @@ public class CursedStone extends Minion {
     public static final TooltipMinion TOOLTIP = new TooltipMinion("Cursed Stone",
             "<b> Unleash: Blast(X) </b> and gain <b> Last Words: </b> Deal X damage to a random allied minion. X equals the amount of health your leader is missing.",
             "res/card/basic/cursedstone.png", CRAFT, 5, 1, 5, 5, false, CursedStone.class, new Vector2f(), -1,
+            EventAnimationDamageSlash.class,
             Tooltip.UNLEASH, Tooltip.BLAST, Tooltip.LASTWORDS);
 
     public CursedStone(Board b) {
@@ -33,7 +35,7 @@ public class CursedStone extends Minion {
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
                         Player player = owner.board.getPlayer(owner.team);
                         int missing = player.leader.finalStatEffects.getStat(EffectStats.HEALTH) - player.leader.health;
-                        this.resolve(b, rl, el, new BlastResolver(effect, missing));
+                        this.resolve(b, rl, el, new BlastResolver(effect, missing, null));
                         Effect lw = new EffectLastWordsAlliedBlast(missing);
                         this.resolve(b, rl, el, new AddEffectResolver(effect.owner, lw));
                     }

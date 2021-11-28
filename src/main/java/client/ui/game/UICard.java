@@ -109,8 +109,8 @@ public class UICard extends UIBox {
 
     public void drawCardArt(Graphics g, Vector2f pos, double scale) {
         // get image if it doesn't exist
-        if (this.cardImage == null && this.card.tooltip.imagepath != null) {
-            this.cardImage = Game.getImage(this.card.tooltip.imagepath).getScaledCopy((int) this.getOriginalDim().x,
+        if (this.cardImage == null && this.card.getTooltip().imagepath != null) {
+            this.cardImage = Game.getImage(this.card.getTooltip().imagepath).getScaledCopy((int) this.getOriginalDim().x,
                     (int) this.getOriginalDim().y);
         }
         // scale it
@@ -122,14 +122,14 @@ public class UICard extends UIBox {
         } else {
             // if its a minion on board, zoom in
             if (this.card instanceof Minion && this.card.status.equals(CardStatus.BOARD)) {
-                TooltipMinion tooltip = (TooltipMinion) this.card.tooltip;
+                TooltipMinion tooltip = (TooltipMinion) this.card.getTooltip();
                 if (this.subImage == null) {
                     if (tooltip.artFocusScale <= 0) {
                         // use original art
                         this.subImage = this.cardImage.copy();
                     } else {
                         // for maximum resolution
-                        Image originalImage = Game.getImage(this.card.tooltip.imagepath);
+                        Image originalImage = Game.getImage(this.card.getTooltip().imagepath);
                         Image scaledOriginal = originalImage.getScaledCopy(
                                 (int) (CARD_DIMENSIONS.x * tooltip.artFocusScale),
                                 (int) (CARD_DIMENSIONS.y * tooltip.artFocusScale));
@@ -231,13 +231,13 @@ public class UICard extends UIBox {
     public void drawInHand(Graphics g, Vector2f pos, double scale) {
         UnicodeFont font = Game.getFont("Verdana", (NAME_FONT_SIZE * scale), true, false);
         // TODO: magic number below is space to display mana cost
-        if (font.getWidth(this.card.tooltip.name) > (CARD_DIMENSIONS.x - 20) * scale) {
+        if (font.getWidth(this.card.getTooltip().name) > (CARD_DIMENSIONS.x - 20) * scale) {
             font = Game.getFont("Verdana",
-                    (NAME_FONT_SIZE * scale * (CARD_DIMENSIONS.x - 20) * scale / font.getWidth(this.card.tooltip.name)),
+                    (NAME_FONT_SIZE * scale * (CARD_DIMENSIONS.x - 20) * scale / font.getWidth(this.card.getTooltip().name)),
                     true, false);
         }
-        font.drawString(pos.x - font.getWidth(this.card.tooltip.name) / 2,
-                pos.y - CARD_DIMENSIONS.y * (float) scale / 2, this.card.tooltip.name);
+        font.drawString(pos.x - font.getWidth(this.card.getTooltip().name) / 2,
+                pos.y - CARD_DIMENSIONS.y * (float) scale / 2, this.card.getTooltip().name);
         if (this.card.realCard != null
                 && this.card.realCard.board.getPlayer(this.card.team).canPlayCard(this.card.realCard)
                 && this.uib.b.getPlayer(this.card.team).canPlayCard(this.card)) {

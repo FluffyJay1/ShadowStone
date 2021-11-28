@@ -20,6 +20,7 @@ public class ParticleSystem extends UIElement {
     private final EmissionTimingStrategy timingStrategy;
     private final EmissionPropertyStrategy propertyStrategy;
     private double nextEmission;
+    private boolean killed;
 
     public ParticleSystem(UI ui, Vector2f pos, EmissionStrategy strategy) {
         super(ui, pos, "");
@@ -29,6 +30,7 @@ public class ParticleSystem extends UIElement {
         this.nextEmission = 0;
         this.ignorehitbox = true;
         this.updateEmission(0);
+        this.killed = false;
     }
 
     @Override
@@ -52,7 +54,7 @@ public class ParticleSystem extends UIElement {
                 ip.remove();
             }
         }
-        if (this.timingStrategy.isFinished() && this.particles.isEmpty()) {
+        if ((this.timingStrategy.isFinished() || this.killed) && this.particles.isEmpty()) {
             // kekbye
             this.removeParent();
         }
@@ -61,7 +63,7 @@ public class ParticleSystem extends UIElement {
     private void updateEmission(double frametime) {
         this.nextEmission -= frametime;
         int emittedThisFrame = 0;
-        while (!this.timingStrategy.isFinished() && this.nextEmission <= 0 && emittedThisFrame < MAX_PARTICLES_PER_FRAME) {
+        while (!this.timingStrategy.isFinished() && this.nextEmission <= 0 && emittedThisFrame < MAX_PARTICLES_PER_FRAME && !this.killed) {
             this.emit();
             this.nextEmission += this.timingStrategy.getNextEmissionTime();
             emittedThisFrame++;
@@ -82,5 +84,10 @@ public class ParticleSystem extends UIElement {
             }
             this.drawChildren(g); // i guess
         }
+    }
+
+    // kill: permanently stop emission, and remove once particles are gone
+    public void kill() {
+        this.killed = true;
     }
 }

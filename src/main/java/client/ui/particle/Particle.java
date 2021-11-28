@@ -7,6 +7,11 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Vector2f;
 
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import static org.newdawn.slick.opengl.renderer.SGL.GL_ONE;
+import static org.newdawn.slick.opengl.renderer.SGL.GL_SRC_ALPHA;
+
 public class Particle {
     // basically a bean
     public double time, maxTime;
@@ -16,6 +21,7 @@ public class Particle {
     public Interpolation<Double> scaleInterpolation;
     public Vector2f pos, vel, accel;
     public Animation animation;
+    public int drawMode;
 
     public Particle() {
         this.time = 0;
@@ -26,6 +32,7 @@ public class Particle {
         this.pos = new Vector2f();
         this.vel = new Vector2f();
         this.accel = new Vector2f();
+        this.drawMode = Graphics.MODE_NORMAL;
     }
 
     public void update(double frametime) {
@@ -43,28 +50,21 @@ public class Particle {
 
     public void draw(Graphics g, Vector2f parentAbsPos) {
         Image image = this.animation.getCurrentFrame();
-        image.rotate((float) this.angle);
         image.setAlpha(this.opacityInterpolation.get(this.normalizedTime()).floatValue());
         float scale = this.scaleInterpolation.get(this.normalizedTime()).floatValue();
         float scaledWidth = scale * image.getWidth();
         float scaledHeight = scale * image.getHeight();
+        image.setCenterOfRotation(scaledWidth/2, scaledHeight/2);
+        image.rotate((float) this.angle);
         Vector2f topleft = new Vector2f(-scaledWidth / 2, -scaledHeight / 2).add(pos).add(parentAbsPos);
-        /*
-        This looks dumb but I will explain:
-        To draw a rotated image, I have to set the rotation in the Image, fair enough
-        To draw a scaled image, I can get a scaled copy of the image, but the dimensions get rounded,
-        which looks jittery when scale is being interpolated
-        So alternatively I scale it in the draw call, which makes interpolation smooth like we want
-        HOWEVER when it tries to draw the rotated image this way, it considers the center of rotation as if
-        it wasn't scaled, so rotation + scaling causes the center of rotation to not align
-        here we do some dumb compensation to adjust for the fucked center of rotation
-         */
-        double rad = this.angle * Math.PI / 180;
-        double widthDiff = image.getWidth() - scaledWidth;
-        double heightDiff = image.getHeight() - scaledHeight;
-        Vector2f dumbCompensation = new Vector2f((float) (widthDiff / 2 * (1 - Math.cos(rad)) + heightDiff / 2 * Math.sin(rad)),
-                (float) (widthDiff / 2 * -Math.sin(rad) + heightDiff / 2 * (float) (1 - Math.cos(rad))));
-        Vector2f actual = topleft.copy().sub(dumbCompensation);
-        g.drawImage(image, actual.x, actual.y, actual.x + scaledWidth, actual.y + scaledHeight, 0, 0, image.getWidth(), image.getHeight());
+        g.setDrawMode(this.drawMode);
+        // the boys over at slick got the blending equations wrong, they don't factor in alpha correctly
+        if (this.drawMode == Graphics.MODE_NORMAL) {
+            glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
+        } else if (this.drawMode == Graphics.MODE_ADD) {
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        }
+        g.drawImage(image, topleft.x, topleft.y, topleft.x + scaledWidth, topleft.y + scaledHeight, 0, 0, image.getWidth(), image.getHeight());
+        g.setDrawMode(Graphics.MODE_NORMAL);
     }
 }

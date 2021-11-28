@@ -11,4 +11,8 @@ public class Spell extends Card { // yea
         this.addEffect(true, new Effect("", tooltip.cost));
     }
 
+    @Override
+    public TooltipSpell getTooltip() {
+        return (TooltipSpell) super.getTooltip();
+    }
 }

@@ -13,7 +13,7 @@ public class Card implements Cloneable {
     public Board board;
     public boolean alive = true;
     public int cardpos, team;
-    public TooltipCard tooltip;
+    private TooltipCard tooltip;
     public CardStatus status;
     public ClassCraft craft;
     public Card realCard; // for visual board
@@ -291,7 +291,11 @@ public class Card implements Cloneable {
     }
 
     public static int compareDefault(Card a, Card b) {
-        return (a.tooltip.cost == b.tooltip.cost) ? a.getClass().getName().compareTo(b.getClass().getName())
-                : a.tooltip.cost - b.tooltip.cost;
+        return (a.getTooltip().cost == b.getTooltip().cost) ? a.getClass().getName().compareTo(b.getClass().getName())
+                : a.getTooltip().cost - b.getTooltip().cost;
+    }
+
+    public TooltipCard getTooltip() {
+        return tooltip;
     }
 }

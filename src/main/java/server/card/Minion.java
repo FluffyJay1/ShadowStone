@@ -30,7 +30,7 @@ public class Minion extends BoardObject {
                             if (targets.size() > 0) {
                                 Minion target = (Minion) effect.unleashTargets.get(0).getTargets().get(0);
                                 EffectDamageResolver edr = new EffectDamageResolver(effect, List.of(target),
-                                        List.of(effect.owner.finalStatEffects.getStat(EffectStats.MAGIC)), true);
+                                        List.of(effect.owner.finalStatEffects.getStat(EffectStats.MAGIC)), true, null);
                                 this.resolve(board, rl, el, edr);
                             }
                         }
@@ -214,5 +214,10 @@ public class Minion extends BoardObject {
     @Override
     public String toString() {
         return super.toString() + this.health + " " + this.attacksThisTurn + " " + this.summoningSickness + " ";
+    }
+
+    @Override
+    public TooltipMinion getTooltip() {
+        return (TooltipMinion) super.getTooltip();
     }
 }

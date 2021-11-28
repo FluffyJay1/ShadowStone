@@ -2,6 +2,7 @@ package server.card.cardpack.basic;
 
 import java.util.*;
 
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageRocks;
 import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
@@ -15,7 +16,7 @@ public class Tiny extends Minion {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final TooltipMinion TOOLTIP = new TooltipMinion("Tiny",
             "<b> Unleash: </b> Gain +2/+0/+2 and <b> Rush. </b>", "res/card/basic/tiny.png", CRAFT, 3, 2, 2, 3, false,
-            Tiny.class, new Vector2f(), -1, Tooltip.UNLEASH, Tooltip.RUSH);
+            Tiny.class, new Vector2f(), -1, EventAnimationDamageRocks.class, Tooltip.UNLEASH, Tooltip.RUSH);
 
     public Tiny(Board b) {
         super(b, TOOLTIP);

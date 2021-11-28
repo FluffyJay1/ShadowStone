@@ -30,7 +30,7 @@ public class EffectLastWordsAlliedBlast extends Effect {
                 if (!minions.isEmpty()) {
                     Minion victim = Game.selectRandom(minions);
                     EffectLastWordsAlliedBlast parent = (EffectLastWordsAlliedBlast) effect;
-                    this.resolve(b, rl, el, new EffectDamageResolver(effect, victim, parent.damage, true));
+                    this.resolve(b, rl, el, new EffectDamageResolver(effect, victim, parent.damage, true, null));
                 }
             }
         };

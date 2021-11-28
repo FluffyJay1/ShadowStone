@@ -2,6 +2,7 @@ package server.card.cardpack.basic;
 
 import java.util.*;
 
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
@@ -16,7 +17,8 @@ public class WeatheredVanguard extends Minion {
     public static final TooltipMinion TOOLTIP = new TooltipMinion("Weathered Vanguard",
             "<b> Battlecry: </b> Summon 2 <b> Knights. Unleash: </b> Give all allied minions +1/+0/+1.",
             "res/card/basic/weatheredvanguard.png", CRAFT, 6, 4, 2, 4, false, WeatheredVanguard.class,
-            new Vector2f(155, 120), 1.6, Tooltip.BATTLECRY, Knight.TOOLTIP, Tooltip.UNLEASH);
+            new Vector2f(155, 120), 1.6, EventAnimationDamageSlash.class,
+            Tooltip.BATTLECRY, Knight.TOOLTIP, Tooltip.UNLEASH);
 
     public WeatheredVanguard(Board b) {
         super(b, TOOLTIP);

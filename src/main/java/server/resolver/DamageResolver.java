@@ -2,6 +2,7 @@ package server.resolver;
 
 import java.util.*;
 
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamage;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -13,6 +14,7 @@ public class DamageResolver extends Resolver {
     List<Boolean> poisonous;
     public List<Card> destroyed;
     Effect source;
+    Class<? extends EventAnimationDamage> animation;
 
     /**
      * If true, this resolver will handle destruction. If false, hopefully the
@@ -22,7 +24,7 @@ public class DamageResolver extends Resolver {
     boolean resolveDestroy;
 
     public DamageResolver(Effect source, List<Minion> targets, List<Integer> damage, List<Boolean> poisonous,
-            boolean resolveDestroy) {
+            boolean resolveDestroy, Class<? extends EventAnimationDamage> animation) {
         super(false);
         this.source = source;
         this.targets = targets;
@@ -30,15 +32,16 @@ public class DamageResolver extends Resolver {
         this.poisonous = poisonous;
         this.destroyed = new LinkedList<>();
         this.resolveDestroy = resolveDestroy;
+        this.animation = animation;
     }
 
-    public DamageResolver(Effect source, Minion target, int damage, boolean poisonous, boolean resolveDestroy) {
-        this(source, List.of(target), List.of(damage), List.of(poisonous), resolveDestroy);
+    public DamageResolver(Effect source, Minion target, int damage, boolean poisonous, boolean resolveDestroy, Class<? extends EventAnimationDamage> animation) {
+        this(source, List.of(target), List.of(damage), List.of(poisonous), resolveDestroy, animation);
     }
 
     @Override
     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
-        b.processEvent(rl, el, new EventDamage(this.source, this.targets, this.damage, this.poisonous, this.destroyed));
+        b.processEvent(rl, el, new EventDamage(this.source, this.targets, this.damage, this.poisonous, this.destroyed, this.animation));
         for (int i = 0; i < this.targets.size(); i++) {
             Minion m = this.targets.get(i);
             int damage = this.damage.get(i);

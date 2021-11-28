@@ -2,6 +2,7 @@ package client.tooltip;
 
 import server.card.*;
 
+// used to store metadata on a card
 public abstract class TooltipCard extends Tooltip {
     public Class<? extends Card> cardClass;
     public int cost;

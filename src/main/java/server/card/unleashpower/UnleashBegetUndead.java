@@ -40,7 +40,7 @@ public class UnleashBegetUndead extends UnleashPower {
                 return new Resolver(false) {
                     @Override
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
-                        this.resolve(b, rl, el, new EffectDamageResolver(effect, m, 1, true));
+                        this.resolve(b, rl, el, new EffectDamageResolver(effect, m, 1, true, null));
                     }
                 };
             }

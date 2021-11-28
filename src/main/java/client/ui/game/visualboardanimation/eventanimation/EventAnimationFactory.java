@@ -8,12 +8,13 @@ import client.ui.game.visualboardanimation.eventanimation.board.*;
 import client.VisualBoard;
 import client.ui.game.visualboardanimation.eventanimation.attack.*;
 import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationAddEffect;
-import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationDamage;
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamage;
 import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationRemoveEffect;
 import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationRestore;
 import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationSetEffectStats;
 import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationTurnStart;
 import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationUnleash;
+import server.card.Minion;
 import server.event.*;
 
 /**
@@ -35,7 +36,7 @@ public class EventAnimationFactory {
     public <T extends Event> EventAnimation<T> newAnimation(T event) {
         // TODO: check to see if we want to use a special animation or not
         EventAnimation<T> anim = null;
-        Class<? extends EventAnimation<? extends Event>> animClass = eventToAnimationMap.get(event.getClass());
+        Class<? extends EventAnimation<? extends Event>> animClass = getAnimationClass(event);
         if (animClass == null) {
             return null;
         } else {
@@ -49,6 +50,17 @@ public class EventAnimationFactory {
         }
         anim.init(this.b, event);
         return anim;
+    }
+
+    private Class<? extends EventAnimation<? extends Event>> getAnimationClass(Event event) {
+        if (event instanceof EventDamage) {
+            EventDamage ed = (EventDamage) event;
+            Class<? extends EventAnimation<? extends Event>> animClass = ed.animation;
+            if (animClass != null) {
+                return animClass;
+            }
+        }
+        return eventToAnimationMap.get(event.getClass());
     }
 
     private static Map<Class<? extends Event>, Class<? extends EventAnimation<? extends Event>>> eventToAnimationMap = new HashMap<>() {{

@@ -9,4 +9,9 @@ public class Amulet extends BoardObject {
         super(b, tooltip);
         this.addEffect(true, new Effect("", tooltip.cost));
     }
+
+    @Override
+    public TooltipAmulet getTooltip() {
+        return (TooltipAmulet) super.getTooltip();
+    }
 }

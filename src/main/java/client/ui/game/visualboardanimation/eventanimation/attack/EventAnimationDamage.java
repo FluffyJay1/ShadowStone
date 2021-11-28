@@ -1,4 +1,4 @@
-package client.ui.game.visualboardanimation.eventanimation.basic;
+package client.ui.game.visualboardanimation.eventanimation.attack;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
@@ -19,14 +19,22 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
      * is the only class that has to handle both cases.
      */
     public EventAnimationDamage() {
-        super(0, 0.5);
+        this(0, 0.5);
+    }
+
+    public EventAnimationDamage(double preTime) {
+        this(preTime, 0.5);
+    }
+
+    public EventAnimationDamage(double preTime, double postTime) {
+        super(preTime, postTime);
     }
 
     @Override
     public void init(VisualBoard b, EventDamage event) {
         this.visualBoard = b;
         this.event = event;
-        if (event.cardSource != null) {
+        if (event.cardSource != null && this.preTime == 0) {
             this.preTime = 0.25;
         }
     }
@@ -42,10 +50,10 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
                         .add(this.event.cardSource.uiCard.getFinalPos());
                 g.fillOval(pos.x - 20, pos.y - 20, 40, 40);
             }
+            g.setColor(Color.white);
         } else {
             this.drawDamageNumber(g);
         }
-        g.setColor(Color.white);
     }
 
     public void drawDamageNumber(Graphics g) {
@@ -59,5 +67,6 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
             g.drawString(dstring, this.event.m.get(i).uiCard.getFinalPos().x - font.getWidth(dstring) / 2,
                     this.event.m.get(i).uiCard.getFinalPos().y - font.getHeight(dstring) + yoff);
         }
+        g.setColor(Color.white);
     }
 }

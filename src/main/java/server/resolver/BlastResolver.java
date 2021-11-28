@@ -3,6 +3,7 @@ package server.resolver;
 import java.util.*;
 
 import client.*;
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamage;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -13,13 +14,15 @@ public class BlastResolver extends Resolver {
     int damage;
     Board b;
     int enemyTeam;
+    Class<? extends EventAnimationDamage> animation;
 
-    public BlastResolver(Effect source, int damage) {
+    public BlastResolver(Effect source, int damage, Class<? extends EventAnimationDamage> animation) {
         super(true);
         this.source = source;
         this.damage = damage;
         this.b = source.owner.board;
         this.enemyTeam = source.owner.team * -1;
+        this.animation = animation;
     }
 
     @Override
@@ -31,6 +34,6 @@ public class BlastResolver extends Resolver {
         } else {
             target = Game.selectRandom(minions);
         }
-        this.resolve(b, rl, el, new EffectDamageResolver(this.source, List.of(target), List.of(this.damage), true));
+        this.resolve(b, rl, el, new EffectDamageResolver(this.source, List.of(target), List.of(this.damage), true, this.animation));
     }
 }

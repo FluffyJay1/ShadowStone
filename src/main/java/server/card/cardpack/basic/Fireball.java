@@ -3,6 +3,7 @@ package server.card.cardpack.basic;
 import java.util.*;
 
 import client.tooltip.*;
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageFire;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -43,7 +44,7 @@ public class Fireball extends Spell {
                                 }
                             }
                             EffectDamageResolver dr = this.resolve(b, rl, el,
-                                    new EffectDamageResolver(effect, m, d, false));
+                                    new EffectDamageResolver(effect, m, d, false, EventAnimationDamageFire.class));
                             markedForDeath.addAll(dr.destroyed);
                         }
                         this.resolve(b, rl, el, new DestroyResolver(markedForDeath));
