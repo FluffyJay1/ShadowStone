@@ -1,6 +1,7 @@
 package server;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 
@@ -404,7 +405,7 @@ public class Board {
             }
         }
         try {
-            PrintWriter pw = new PrintWriter(f);
+            PrintWriter pw = new PrintWriter(f, StandardCharsets.UTF_16);
             pw.print(this.getHistory());
             pw.close();
         } catch (IOException e) {
@@ -418,7 +419,7 @@ public class Board {
         if (f.exists()) {
             try {
                 this.init();
-                String state = new String(Files.readAllBytes(f.toPath()));
+                String state = Files.readString(f.toPath(), StandardCharsets.UTF_16);
                 this.parseEventString(state);
             } catch (IOException e) {
                 // TODO Auto-generated catch block

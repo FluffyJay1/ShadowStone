@@ -2,6 +2,7 @@ package network;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 
 import client.*;
 import server.card.cardpack.*;
@@ -58,7 +59,7 @@ public class DataStream {
     }
 
     private void pipeOut(PipedOutputStream pos) {
-        this.out = new PrintStream(pos);
+        this.out = new PrintStream(pos, false, StandardCharsets.UTF_16);
         try {
             this.objectOut = new ObjectOutputStream(pos);
         } catch (IOException e) {
@@ -68,7 +69,7 @@ public class DataStream {
     }
 
     private void pipeIn(PipedInputStream pis) {
-        this.in = new BufferedReader(new InputStreamReader(pis));
+        this.in = new BufferedReader(new InputStreamReader(pis, StandardCharsets.UTF_16));
         try {
             this.objectIn = new ObjectInputStream(pis);
         } catch (IOException e) {
