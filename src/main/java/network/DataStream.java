@@ -59,7 +59,7 @@ public class DataStream {
     }
 
     private void pipeOut(PipedOutputStream pos) {
-        this.out = new PrintStream(pos, false, StandardCharsets.UTF_16);
+        this.out = new PrintStream(pos, true, StandardCharsets.UTF_16);
         try {
             this.objectOut = new ObjectOutputStream(pos);
         } catch (IOException e) {
