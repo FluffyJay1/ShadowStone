@@ -11,7 +11,7 @@ import server.resolver.*;
 
 public class Card implements Cloneable {
     public Board board;
-    public boolean alive = true;
+    public boolean alive = true; // alive means not marked for death
     public int cardpos, team;
     private TooltipCard tooltip;
     public CardStatus status;
@@ -24,7 +24,7 @@ public class Card implements Cloneable {
      * basic effects can't get removed unlike additional effects (e.g. bounce
      * effects), but they can be muted
      */
-    private List<Effect> effects = new LinkedList<>(), basicEffects = new LinkedList<>();
+    private List<Effect> effects = new LinkedList<>(), basicEffects = new LinkedList<>(), removedEffects = new LinkedList<>();
     // for convenience, a subset of above effects that are listeners
     public List<Effect> listeners = new LinkedList<>();
 
@@ -49,8 +49,12 @@ public class Card implements Cloneable {
         return basic ? this.basicEffects : this.effects;
     }
 
+    public List<Effect> getRemovedEffects() {
+        return this.removedEffects;
+    }
+
     public List<Effect> getUnmutedEffects(boolean basic) {
-        LinkedList<Effect> list = new LinkedList<Effect>();
+        LinkedList<Effect> list = new LinkedList<>();
         for (Effect e : this.getEffects(basic)) {
             if (!e.mute) {
                 list.add(e);
@@ -60,7 +64,7 @@ public class Card implements Cloneable {
     }
 
     public List<Effect> getFinalEffects(boolean unmutedOnly) {
-        LinkedList<Effect> list = new LinkedList<Effect>();
+        LinkedList<Effect> list = new LinkedList<>();
         if (unmutedOnly) {
             list.addAll(this.getUnmutedEffects(true));
             list.addAll(this.getUnmutedEffects(false));
@@ -83,9 +87,13 @@ public class Card implements Cloneable {
         e.basic = basic;
         e.pos = pos;
         e.owner = this;
+        e.removed = false;
         this.getEffects(basic).add(pos, e);
         if (e.onListenEvent(null) != null) {
             this.listeners.add(e);
+        }
+        if (this.removedEffects.remove(e)) {
+            this.updateRemovedEffectPositions();
         }
         this.updateEffectPositions(basic);
         this.updateEffectStats(basic);
@@ -95,9 +103,15 @@ public class Card implements Cloneable {
         this.addEffect(basic, this.getEffects(basic).size(), e);
     }
 
-    public void removeEffect(Effect e) {
+    // purge: clean remove, don't even put it in the removedEffects
+    public void removeEffect(Effect e, boolean purge) {
         if (this.effects.contains(e)) {
             this.effects.remove(e);
+            if (!purge) {
+                this.removedEffects.add(e);
+                this.updateRemovedEffectPositions();
+            }
+            e.removed = true;
             if (e.onListenEvent(null) != null) {
                 this.listeners.remove(e);
             }
@@ -107,10 +121,10 @@ public class Card implements Cloneable {
     }
 
     public List<Effect> removeAdditionalEffects() {
-        List<Effect> ret = new LinkedList<Effect>();
+        List<Effect> ret = new LinkedList<>();
         while (!this.effects.isEmpty()) {
             ret.add(this.effects.get(0));
-            this.removeEffect(this.effects.get(0));
+            this.removeEffect(this.effects.get(0), false);
         }
         return ret;
     }
@@ -161,6 +175,13 @@ public class Card implements Cloneable {
         }
     }
 
+    private void updateRemovedEffectPositions() {
+        List<Effect> relevant = this.getRemovedEffects();
+        for (int i = 0; i < relevant.size(); i++) {
+            relevant.get(i).pos = i;
+        }
+    }
+
     public List<Resolver> battlecry() {
         List<Resolver> list = new LinkedList<>();
         for (Effect e : this.getFinalEffects(true)) {
@@ -178,11 +199,9 @@ public class Card implements Cloneable {
     }
 
     public List<Target> getBattlecryTargets() {
-        List<Target> list = new LinkedList<Target>();
+        List<Target> list = new LinkedList<>();
         for (Effect e : this.getFinalEffects(true)) {
-            for (Target t : e.battlecryTargets) {
-                list.add(t);
-            }
+            list.addAll(e.battlecryTargets);
         }
         return list;
     }
@@ -192,11 +211,11 @@ public class Card implements Cloneable {
     @Override
     public Card clone() throws CloneNotSupportedException {
         Card c = (Card) super.clone();
-        c.basicEffects = new LinkedList<Effect>();
+        c.basicEffects = new LinkedList<>();
         for (Effect e : this.basicEffects) {
             c.addEffect(true, e.clone());
         }
-        c.effects = new LinkedList<Effect>();
+        c.effects = new LinkedList<>();
         for (Effect e : this.effects) {
             c.addEffect(false, e.clone());
         }
@@ -211,12 +230,12 @@ public class Card implements Cloneable {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.getClass().getName() + " " + this.team + " " + this.alive + " " + this.cardPosToString()
-                + this.basicEffects.size() + " ");
+        builder.append(this.getClass().getName()).append(" ").append(this.team).append(" ")
+                .append(this.alive).append(" ").append(this.cardPosToString()).append(this.basicEffects.size()).append(" ");
         for (Effect e : this.basicEffects) {
             builder.append(e.toString());
         }
-        builder.append(this.effects.size() + " ");
+        builder.append(this.effects.size()).append(" ");
         for (Effect e : this.effects) {
             builder.append(e.toString());
         }

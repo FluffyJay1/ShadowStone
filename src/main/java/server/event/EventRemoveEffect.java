@@ -11,6 +11,7 @@ public class EventRemoveEffect extends Event {
     public List<Effect> effects;
     private List<Integer> prevPos;
     private List<Integer> oldHealth;
+    private List<Boolean> oldRemoved;
     List<Card> markedForDeath;
 
     public EventRemoveEffect(List<Effect> effects, List<Card> markedForDeath) {
@@ -21,27 +22,31 @@ public class EventRemoveEffect extends Event {
 
     @Override
     public void resolve() {
-        this.prevPos = new ArrayList<>();
-        this.oldHealth = new ArrayList<>();
+        this.prevPos = new ArrayList<>(this.effects.size());
+        this.oldHealth = new ArrayList<>(this.effects.size());
+        this.oldRemoved = new ArrayList<>(this.effects.size());
         for (int i = 0; i < this.effects.size(); i++) {
             Effect e = this.effects.get(i);
             this.prevPos.add(e.pos);
             this.oldHealth.add(0);
-            Card c = e.owner;
-            c.removeEffect(e);
-            if (c instanceof Minion) {
-                Minion m = ((Minion) c);
-                this.oldHealth.set(i, m.health);
-                if (c.finalStatEffects.getStat(EffectStats.HEALTH) < m.health) {
-                    m.health = m.finalStatEffects.getStat(EffectStats.HEALTH);
+            this.oldRemoved.add(e.removed);
+            if (!e.removed) {
+                Card c = e.owner;
+                c.removeEffect(e, false);
+                if (c instanceof Minion) {
+                    Minion m = ((Minion) c);
+                    this.oldHealth.set(i, m.health);
+                    if (c.finalStatEffects.getStat(EffectStats.HEALTH) < m.health) {
+                        m.health = m.finalStatEffects.getStat(EffectStats.HEALTH);
+                    }
+                    if (m.health <= 0) {
+                        this.markedForDeath.add(m);
+                    }
                 }
-                if (m.health <= 0) {
-                    this.markedForDeath.add(m);
+                if (c.finalStatEffects.getUse(EffectStats.COUNTDOWN)
+                        && c.finalStatEffects.getStat(EffectStats.COUNTDOWN) <= 0) {
+                    this.markedForDeath.add(c);
                 }
-            }
-            if (c.finalStatEffects.getUse(EffectStats.COUNTDOWN)
-                    && c.finalStatEffects.getStat(EffectStats.COUNTDOWN) <= 0) {
-                this.markedForDeath.add(c);
             }
         }
     }
@@ -51,10 +56,12 @@ public class EventRemoveEffect extends Event {
         for (int i = 0; i < this.effects.size(); i++) {
             Effect e = this.effects.get(i);
             Card c = e.owner;
-            c.addEffect(false, this.prevPos.get(i), e);
-            if (c instanceof Minion) {
-                Minion m = (Minion) c;
-                m.health = this.oldHealth.get(i);
+            if (!this.oldRemoved.get(i)) {
+                c.addEffect(false, this.prevPos.get(i), e);
+                if (c instanceof Minion) {
+                    Minion m = (Minion) c;
+                    m.health = this.oldHealth.get(i);
+                }
             }
         }
 

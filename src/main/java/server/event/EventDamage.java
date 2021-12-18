@@ -45,8 +45,8 @@ public class EventDamage extends Event {
 
     @Override
     public void resolve() {
-        this.oldHealth = new ArrayList<Integer>();
-        this.oldAlive = new ArrayList<>();
+        this.oldHealth = new ArrayList<>(this.m.size());
+        this.oldAlive = new ArrayList<>(this.m.size());
         for (int i = 0; i < this.m.size(); i++) { // sure
             Minion minion = m.get(i);
             this.oldHealth.add(minion.health);

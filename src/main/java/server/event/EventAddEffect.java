@@ -77,7 +77,7 @@ public class EventAddEffect extends Event {
     public void undo() {
         for (int i = 0; i < this.c.size(); i++) {
             Card c = this.c.get(i);
-            c.removeEffect(this.effects.get(i));
+            c.removeEffect(this.effects.get(i), true);
             if (c instanceof Minion) {
                 Minion m = ((Minion) c);
                 m.health = this.oldHealth.get(i);

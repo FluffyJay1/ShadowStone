@@ -2,6 +2,7 @@ package server.card.effect;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import client.*;
 import server.*;
@@ -26,7 +27,7 @@ public class Effect implements Cloneable {
      * Mute means the effect still provides stats, but won't do anything extra, it
      * can't listen for events or battlecry or unleash or anything
      */
-    public boolean basic = false, mute = false;
+    public boolean basic = false, mute = false, removed = false;
 
     public EffectStats set = new EffectStats(), change = new EffectStats();
 
@@ -232,9 +233,9 @@ public class Effect implements Cloneable {
             boolean mute = Boolean.parseBoolean(st.nextToken());
             Effect ef;
             ef = (Effect) c.getDeclaredConstructor(String.class).newInstance(description);
-            ef.loadExtraState(b, st);
             ef.owner = owner;
             ef.mute = mute;
+            ef.loadExtraState(b, st);
             ef.set = EffectStats.fromString(st);
             ef.change = EffectStats.fromString(st);
             return ef;
@@ -278,7 +279,7 @@ public class Effect implements Cloneable {
     }
 
     public String toReference() {
-        return this.owner.toReference() + this.basic + " " + this.pos + " ";
+        return this.owner.toReference() + this.basic + " " + this.removed + " " + this.pos + " ";
     }
 
     public static String referenceOrNull(Effect effect) {
@@ -291,8 +292,11 @@ public class Effect implements Cloneable {
             return null;
         }
         boolean basic = Boolean.parseBoolean(st.nextToken());
+        boolean removed = Boolean.parseBoolean(st.nextToken());
         int pos = Integer.parseInt(st.nextToken());
+        if (removed) {
+            return c.getRemovedEffects().get(pos);
+        }
         return c.getEffects(basic).get(pos);
     }
-
 }

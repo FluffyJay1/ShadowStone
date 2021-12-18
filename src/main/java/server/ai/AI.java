@@ -229,14 +229,9 @@ public class AI extends Thread {
             // TODO give some actions more weight than others (e.g. unleashing)
             int branchIndex = (int) (Math.random() * bsn.unevaluatedBranches.size());
             String actionString = bsn.unevaluatedBranches.get(branchIndex);
-            List<Event> undoStack = new LinkedList<Event>();
-            List<String> turn = new LinkedList<String>();
+            List<Event> undoStack = new LinkedList<>();
+            List<String> turn = new LinkedList<>();
             turn.add(actionString);
-            List<Effect> allEffects = this.b.getEffects();
-            StringBuilder listenerStates = new StringBuilder();
-            for (Effect e : allEffects) {
-                listenerStates.append(e.extraStateString());
-            }
             ResolutionResult result = this.b.executePlayerAction(new StringTokenizer(actionString));
             BoardStateNode nextBsn = this.traverseAction(team, actionString, depth, sampleRate, maxSamples,
                     filterLethal);
@@ -245,14 +240,6 @@ public class AI extends Thread {
             while (!undoStack.isEmpty()) {
                 undoStack.get(undoStack.size() - 1).undo();
                 undoStack.remove(undoStack.size() - 1);
-            }
-            StringTokenizer st = new StringTokenizer(listenerStates.toString());
-            /*
-             * This here assumes that changes to the list of eventlisteners can be fully
-             * undone
-             */
-            for (Effect e : allEffects) {
-                e.loadExtraState(this.b, st);
             }
             String stateAfter = this.b.stateToString();
             if (!state.equals(stateAfter)) {
@@ -273,10 +260,6 @@ public class AI extends Thread {
                 int trials = Math.max(MAX_RNG_TRIALS - depth, MIN_RNG_TRIALS);
                 double score = nextBsn.maxScore * team * nextBsn.team;
                 for (int j = 1; j < trials; j++) {
-                    listenerStates = new StringBuilder();
-                    for (Effect e : allEffects) {
-                        listenerStates.append(e.extraStateString());
-                    }
                     result = this.b.executePlayerAction(new StringTokenizer(actionString));
                     // TODO: make easier difficulties not traverse the tree
                     nextBsn = this.traverseAction(team, actionString, depth, sampleRate, maxSamples, filterLethal);
@@ -286,13 +269,9 @@ public class AI extends Thread {
                         undoStack.get(undoStack.size() - 1).undo();
                         undoStack.remove(undoStack.size() - 1);
                     }
-                    st = new StringTokenizer(listenerStates.toString());
-                    for (Effect e : allEffects) {
-                        e.loadExtraState(this.b, st);
-                    }
                     stateAfter = this.b.stateToString();
                     if (!state.equals(stateAfter)) {
-                        System.out.println("Discrepancy after executing " + turn.get(0) + ", rng = " + !result.rng
+                        System.out.println("Discrepancy after executing " + turn.get(0) + ", rng = " + result.rng
                                 + ", depth = " + depth);
                         for (Event e : result.events) {
                             System.out.println(e.toString());

@@ -36,7 +36,7 @@ public class WoodOfBrambles extends Amulet {
                         AddEffectResolver aer = new AddEffectResolver(
                                 effect.owner.board.getBoardObjects(effect.owner.team, false, true, false), e);
                         this.resolve(b, rl, el, aer);
-                        thisDistributedEffects.addAll(aer.effects);
+                        this.resolve(b, rl, el, new UpdateEffectStateResolver(effect, () -> thisDistributedEffects.addAll(aer.effects)));
                     }
 
                 };
@@ -60,7 +60,7 @@ public class WoodOfBrambles extends Amulet {
                             if (!relevant.isEmpty()) {
                                 AddEffectResolver aer = new AddEffectResolver(relevant, new EffectBrambles());
                                 this.resolve(b, rl, el, aer);
-                                distributedEffects.addAll(aer.effects);
+                                this.resolve(b, rl, el, new UpdateEffectStateResolver(effect, () -> distributedEffects.addAll(aer.effects)));
                             }
                         }
                     }

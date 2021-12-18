@@ -13,7 +13,8 @@ public class DamageResolver extends Resolver {
     List<Integer> damage;
     List<Boolean> poisonous;
     public List<Card> destroyed;
-    Effect source;
+    Effect effectSource;
+    Card cardSource;
     Class<? extends EventAnimationDamage> animation;
 
     /**
@@ -23,10 +24,10 @@ public class DamageResolver extends Resolver {
      */
     boolean resolveDestroy;
 
-    public DamageResolver(Effect source, List<Minion> targets, List<Integer> damage, List<Boolean> poisonous,
+    public DamageResolver(Card source, List<Minion> targets, List<Integer> damage, List<Boolean> poisonous,
             boolean resolveDestroy, Class<? extends EventAnimationDamage> animation) {
         super(false);
-        this.source = source;
+        this.cardSource = source;
         this.targets = targets;
         this.damage = damage;
         this.poisonous = poisonous;
@@ -35,20 +36,35 @@ public class DamageResolver extends Resolver {
         this.animation = animation;
     }
 
-    public DamageResolver(Effect source, Minion target, int damage, boolean poisonous, boolean resolveDestroy, Class<? extends EventAnimationDamage> animation) {
-        this(source, List.of(target), List.of(damage), List.of(poisonous), resolveDestroy, animation);
+    public DamageResolver(Effect source, List<Minion> targets, List<Integer> damage, List<Boolean> poisonous,
+                          boolean resolveDestroy, Class<? extends EventAnimationDamage> animation) {
+        this(source.owner, targets, damage, poisonous, resolveDestroy, animation);
+        this.effectSource = source;
     }
 
     @Override
     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
-        b.processEvent(rl, el, new EventDamage(this.source, this.targets, this.damage, this.poisonous, this.destroyed, this.animation));
+        // filter out the targets that aren't even on the board at time of resolution
+        List<Minion> processedTargets = new ArrayList<>(this.targets.size());
+        List<Integer> processedDamage = new ArrayList<>(this.damage.size());
+        List<Boolean> processedPoisonous = new ArrayList<>(this.poisonous.size());
         for (int i = 0; i < this.targets.size(); i++) {
             Minion m = this.targets.get(i);
-            int damage = this.damage.get(i);
-            List<Resolver> ondamage = m.onDamaged(damage);
-            if (!ondamage.isEmpty()) {
-                this.resolveList(b, ondamage, el, ondamage);
+            if (m.isInPlay()) {
+                processedTargets.add(m);
+                processedDamage.add(this.damage.get(i));
+                processedPoisonous.add(this.poisonous.get(i));
             }
+        }
+        if (this.effectSource != null) {
+            b.processEvent(rl, el, new EventDamage(this.effectSource, processedTargets, processedDamage, processedPoisonous, this.destroyed, this.animation));
+        } else {
+            b.processEvent(rl, el, new EventDamage(this.cardSource, processedTargets, processedDamage, processedPoisonous, this.destroyed, this.animation));
+        }
+        for (int i = 0; i < processedTargets.size(); i++) {
+            Minion m = processedTargets.get(i);
+            int damage = processedDamage.get(i);
+            rl.addAll(m.onDamaged(damage));
         }
         if (this.resolveDestroy) {
             this.resolve(b, rl, el, new DestroyResolver(this.destroyed));

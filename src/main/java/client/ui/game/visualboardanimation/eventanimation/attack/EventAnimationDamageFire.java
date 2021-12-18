@@ -1,11 +1,8 @@
 package client.ui.game.visualboardanimation.eventanimation.attack;
 
-import client.Game;
 import client.VisualBoard;
 import client.ui.Animation;
-import client.ui.interpolation.realvalue.ConstantInterpolation;
 import client.ui.interpolation.realvalue.LinearInterpolation;
-import client.ui.interpolation.realvalue.QuadraticInterpolationA;
 import client.ui.interpolation.realvalue.QuadraticInterpolationB;
 import client.ui.particle.ParticleSystem;
 import client.ui.particle.strategy.EmissionStrategy;
@@ -13,7 +10,6 @@ import client.ui.particle.strategy.property.*;
 import client.ui.particle.strategy.timing.InstantEmissionTimingStrategy;
 import client.ui.particle.strategy.timing.IntervalEmissionTimingStrategy;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.Minion;
 import server.event.EventDamage;

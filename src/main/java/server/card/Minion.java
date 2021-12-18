@@ -58,7 +58,7 @@ public class Minion extends BoardObject {
         if (this.health < 0) {
             return 0;
         }
-        // sqrt(atk * hp) + sqrt(magic) + 1
+        // sqrt(atk * hp) + sqrt(magic * hp^(0.4)) + 1
         int attack = this.finalStatEffects.getStat(EffectStats.ATTACK);
         int magic = this.finalStatEffects.getStat(EffectStats.MAGIC);
         // if bane, add 4 to attack value, if poisonous add 6 if attack > 0, only add the max of these two bonuses
@@ -69,8 +69,9 @@ public class Minion extends BoardObject {
         if (this.finalStatEffects.getStat(EffectStats.POISONOUS) > 0 && attack > 0) {
             bonus = 6;
         }
+        attack += bonus;
         // TODO make it consider shield, etc.
-        return Math.sqrt((attack + bonus) * this.health) + Math.sqrt(magic) + 1;
+        return Math.sqrt(attack * this.health) + Math.sqrt(magic * Math.pow(this.health, 0.4)) + 1;
     }
 
     // remember to change logic in canAttack(Minion)

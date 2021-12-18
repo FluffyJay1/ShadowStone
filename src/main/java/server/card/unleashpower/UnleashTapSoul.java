@@ -28,13 +28,13 @@ public class UnleashTapSoul extends UnleashPower {
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
                         if (e instanceof EventDamage || e instanceof EventRestore || e instanceof EventAddEffect) {
                             if (!vengeance && p.vengeance()) {
-                                vengeance = true;
+                                this.resolve(b, rl, el, new UpdateEffectStateResolver(effect, () -> vengeance = true));
                                 Effect esc = new Effect();
                                 esc.change.setStat(EffectStats.ATTACKS_PER_TURN, 1);
                                 this.resolve(b, rl, el, new SetEffectStatsResolver(effect, esc));
                             }
                             if (vengeance && !p.vengeance()) {
-                                vengeance = false;
+                                this.resolve(b, rl, el, new UpdateEffectStateResolver(effect, () -> vengeance = false));
                                 Effect esc = new Effect();
                                 esc.change.setStat(EffectStats.ATTACKS_PER_TURN, 0);
                                 this.resolve(b, rl, el, new SetEffectStatsResolver(effect, esc));

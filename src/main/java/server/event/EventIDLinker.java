@@ -36,8 +36,8 @@ public class EventIDLinker {
             return EventMill.class;
         case EventMinionAttack.ID:
             return EventMinionAttack.class;
-        case EventMinionBeginAttackPhase.ID:
-            return EventMinionBeginAttackPhase.class;
+        case EventUpdateEffectState.ID:
+            return EventUpdateEffectState.class;
         case EventMuteEffect.ID:
             return EventMuteEffect.class;
         case EventOnAttack.ID:

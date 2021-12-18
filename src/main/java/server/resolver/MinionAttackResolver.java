@@ -46,16 +46,18 @@ public class MinionAttackResolver extends Resolver {
             b.popEventGroup();
         }
         if (this.m1.alive && this.m2.alive) {
-            // beginattackphase event is deprecated
-            // b.processEvent(rl, el, new EventMinionBeginAttackPhase(this.m1, this.m2));
             List<Card> destroyed = new ArrayList<>(2);
             int damage1 = this.m1.finalStatEffects.getStat(EffectStats.ATTACK);
             int damage2 = this.m2.finalStatEffects.getStat(EffectStats.ATTACK);
             b.pushEventGroup(new EventGroup(EventGroupType.MINIONCOMBAT));
-            b.processEvent(rl, el, new EventDamage(this.m1, List.of(this.m2), List.of(damage1),
-                    List.of(this.m1.finalStatEffects.getStat(EffectStats.POISONOUS) > 0), destroyed, m1.getTooltip().attackAnimation));
-            b.processEvent(rl, el, new EventDamage(this.m2, List.of(this.m1), List.of(damage2),
-                    List.of(this.m2.finalStatEffects.getStat(EffectStats.POISONOUS) > 0), destroyed, m2.getTooltip().attackAnimation));
+            DamageResolver d1 = new DamageResolver(this.m1, List.of(this.m2), List.of(damage1),
+                    List.of(this.m1.finalStatEffects.getStat(EffectStats.POISONOUS) > 0), false, m1.getTooltip().attackAnimation);
+            DamageResolver d2 = new DamageResolver(this.m2, List.of(this.m1), List.of(damage2),
+                    List.of(this.m2.finalStatEffects.getStat(EffectStats.POISONOUS) > 0), false, m2.getTooltip().attackAnimation);
+            this.resolve(b, rl, el, d1);
+            this.resolve(b, rl, el, d2);
+            destroyed.addAll(d1.destroyed);
+            destroyed.addAll(d2.destroyed);
             b.popEventGroup();
             if (this.m1.finalStatEffects.getStat(EffectStats.BANE) > 0 && !(this.m2 instanceof Leader)
                     && !destroyed.contains(this.m2)) {

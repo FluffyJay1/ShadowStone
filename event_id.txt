@@ -7,7 +7,7 @@
  6: ManaChange
  7: Mill - DEPRECATED
  8: MinionAttack
- 9: MinionBeginAttackPhase - DEPRECATED
+ 9: UpdateEffectState
 10: CardDamage - DELETED
 11: PlayCard
 12: PutCard
