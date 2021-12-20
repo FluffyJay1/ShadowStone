@@ -11,10 +11,10 @@ import client.ui.UIBox;
 import client.ui.UIElement;
 
 public class CardSelectTooltipPanel extends UIBox {
-    ScrollingContext scroll;
+    final ScrollingContext scroll;
     Tooltip tooltip;
     CardSelectTooltipPanel child;
-    ArrayList<TooltipDisplayPanel> childTooltips = new ArrayList<TooltipDisplayPanel>();
+    final ArrayList<TooltipDisplayPanel> childTooltips = new ArrayList<>();
 
     public CardSelectTooltipPanel(UI ui, Vector2f pos, int layers) {
         super(ui, pos, new Vector2f(400, 500), "res/ui/uiboxborder.png");
@@ -32,35 +32,12 @@ public class CardSelectTooltipPanel extends UIBox {
     public void setTooltip(Tooltip tooltip) {
         if (tooltip == null) {
             this.tooltip = null;
-            this.setHide(true);
+            this.setVisible(false);
         } else {
-            this.scroll.childoffset.y = 0;
             this.tooltip = tooltip;
-            this.setHide(false);
-            if (this.child != null) {
-                this.child.setHide(true);
-            }
-            // purge the children
-            for (UIElement ue : this.scroll.getChildren()) {
-                if (this.childTooltips.contains(ue)) {
-                    this.scroll.removeChild(ue);
-                }
-            }
-            this.childTooltips.clear();
+            this.reset();
             double lasty = this.getLocalTop(true);
-            TooltipDisplayPanel tdp = new TooltipDisplayPanel(this.ui) {
-                @Override
-                public void mouseClicked(int button, int x, int y, int clickCount) {
-                    if (((CardSelectTooltipPanel) this.getParent().getParent()).child != null) {
-                        if (this.pointIsInHitbox(new Vector2f(x, y))) {
-                            ((CardSelectTooltipPanel) this.getParent().getParent()).child.setReferenceTooltip(tooltip);
-                        } else {
-                            ((CardSelectTooltipPanel) this.getParent().getParent()).child.setReferenceTooltip(null);
-                        }
-                    }
-                }
-            };
-            tdp.setTooltip(tooltip);
+            TooltipDisplayPanel tdp = this.createTooltipDisplayPanel(tooltip);
             tdp.setPos(new Vector2f(0, (float) lasty), 1);
             lasty += tdp.getHeight(false);
 
@@ -72,36 +49,13 @@ public class CardSelectTooltipPanel extends UIBox {
     public void setReferenceTooltip(Tooltip tooltip) {
         if (tooltip == null || tooltip.references == null || tooltip.references.length == 0) {
             this.tooltip = null;
-            this.setHide(true);
+            this.setVisible(false);
         } else {
-            this.scroll.childoffset.y = 0;
             this.tooltip = tooltip;
-            this.setHide(false);
-            if (this.child != null) {
-                this.child.setHide(true);
-            }
-            // purge the children
-            for (UIElement ue : this.scroll.getChildren()) {
-                if (this.childTooltips.contains(ue)) {
-                    this.scroll.removeChild(ue);
-                }
-            }
-            this.childTooltips.clear();
+            this.reset();
             double lasty = this.getLocalTop(true);
             for (Tooltip t : tooltip.references) {
-                TooltipDisplayPanel tdp = new TooltipDisplayPanel(this.ui) {
-                    @Override
-                    public void mouseClicked(int button, int x, int y, int clickCount) {
-                        if (((CardSelectTooltipPanel) this.getParent().getParent()).child != null) {
-                            if (this.pointIsInHitbox(new Vector2f(x, y))) {
-                                ((CardSelectTooltipPanel) this.getParent().getParent()).child.setReferenceTooltip(t);
-                            } else {
-                                ((CardSelectTooltipPanel) this.getParent().getParent()).child.setReferenceTooltip(null);
-                            }
-                        }
-                    }
-                };
-                tdp.setTooltip(t);
+                TooltipDisplayPanel tdp = this.createTooltipDisplayPanel(t);
                 tdp.setPos(new Vector2f(0, (float) lasty), 1);
                 lasty += tdp.getHeight(false);
 
@@ -109,6 +63,38 @@ public class CardSelectTooltipPanel extends UIBox {
                 this.scroll.addChild(tdp);
             }
         }
+    }
+
+    private void reset() {
+        this.scroll.childoffset.y = 0;
+        this.setVisible(true);
+        if (this.child != null) {
+            this.child.setVisible(false);
+        }
+        // purge the children
+        for (UIElement ue : this.scroll.getChildren()) {
+            if (this.childTooltips.contains(ue)) {
+                this.scroll.removeChild(ue);
+            }
+        }
+        this.childTooltips.clear();
+    }
+
+    private TooltipDisplayPanel createTooltipDisplayPanel(Tooltip t) {
+        TooltipDisplayPanel tdp = new TooltipDisplayPanel(this.ui) {
+            @Override
+            public void mouseClicked(int button, int x, int y, int clickCount) {
+                if (((CardSelectTooltipPanel) this.getParent().getParent()).child != null) {
+                    if (this.pointIsInHitbox(new Vector2f(x, y))) {
+                        ((CardSelectTooltipPanel) this.getParent().getParent()).child.setReferenceTooltip(t);
+                    } else {
+                        ((CardSelectTooltipPanel) this.getParent().getParent()).child.setReferenceTooltip(null);
+                    }
+                }
+            }
+        };
+        tdp.setTooltip(t);
+        return tdp;
     }
 
 }

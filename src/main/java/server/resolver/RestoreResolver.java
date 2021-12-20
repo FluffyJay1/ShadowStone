@@ -8,9 +8,10 @@ import server.card.effect.*;
 import server.event.*;
 
 public class RestoreResolver extends Resolver {
-    public List<Integer> heal, actualHeal;
-    public List<Minion> m;
-    public Effect source;
+    public final List<Integer> heal;
+    public List<Integer> actualHeal;
+    public final List<Minion> m;
+    public final Effect source;
 
     public RestoreResolver(Effect source, List<Minion> m, List<Integer> heal) {
         super(false);

@@ -3,10 +3,8 @@ package client;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.*;
-import java.util.List;
 
 import org.newdawn.slick.*;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.font.effects.*;
 import org.newdawn.slick.state.*;
 import org.newdawn.slick.util.Log;
@@ -15,16 +13,16 @@ import client.states.*;
 import server.card.cardpack.*;
 
 public class Game extends StateBasedGame {
-    public static int STATE_MENU = 0;
-    public static int STATE_GAME = 1;
+    public static final int STATE_MENU = 0;
+    public static final int STATE_GAME = 1;
     public static int STATE_HELP = 2;
-    public static int STATE_DECKBUILD = 3;
+    public static final int STATE_DECKBUILD = 3;
     public static final int SERVER_PORT = 9091;
 
     public static final String STRING_START = "\u00bc", STRING_END = "\u00bd", BLOCK_END = "\u00be";
-    public static Map<String, Image> images = new HashMap<String, Image>();
+    public static final Map<String, Image> images = new HashMap<>();
 
-    public static Map<String, UnicodeFont> fonts = new HashMap<String, UnicodeFont>();
+    public static final Map<String, UnicodeFont> fonts = new HashMap<>();
 
     public static void main(String[] args) throws SlickException {
         AppGameContainer app = new AppGameContainer(new Game("ShadowStone"));
@@ -41,7 +39,7 @@ public class Game extends StateBasedGame {
     }
 
     @Override
-    public void initStatesList(GameContainer container) throws SlickException {
+    public void initStatesList(GameContainer container) {
         // TODO Auto-generated method stub
         addState(new StateMenu());
         addState(new StateGame());
@@ -69,7 +67,7 @@ public class Game extends StateBasedGame {
     public static UnicodeFont getFont(String font, double size, boolean bold, boolean italic, Color fillc, Color outc) {
         String condensed = font + (int) size + bold + italic + fillc.toString() + outc.toString(); // map
                                                                                                     // lifehack
-        UnicodeFont f = null;
+        UnicodeFont f;
         if (fonts.containsKey(condensed)) {
             f = fonts.get(condensed);
         } else {
@@ -112,9 +110,8 @@ public class Game extends StateBasedGame {
     }
 
     public static <T> List<T> selectRandom(List<T> list, int num) { // helper
-        List<T> copy = new ArrayList<T>();
-        copy.addAll(list);
-        List<T> ret = new ArrayList<T>();
+        List<T> copy = new ArrayList<>(list);
+        List<T> ret = new ArrayList<>();
         for (int i = 0; i < num && !copy.isEmpty(); i++) {
             int randind = (int) (Math.random() * copy.size());
             ret.add(copy.remove(randind));

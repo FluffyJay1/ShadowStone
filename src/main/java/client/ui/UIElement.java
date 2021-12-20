@@ -11,16 +11,16 @@ import utils.*;
 public class UIElement implements DefaultInputListener, UIEventListener, Comparable<UIElement> {
     public static final double EPSILON = 0.0001;
 
-    protected UI ui;
+    protected final UI ui;
     UIElement parent = null;
-    List<UIElement> children = new ArrayList<UIElement>();
-    List<UIElement> childrenAddBuffer = new ArrayList<UIElement>();
-    List<UIElement> childrenRemoveBuffer = new ArrayList<UIElement>();
+    final List<UIElement> children = new ArrayList<>();
+    final List<UIElement> childrenAddBuffer = new ArrayList<>();
+    final List<UIElement> childrenRemoveBuffer = new ArrayList<>();
     // alignment: how the element is placed relative to its pos, takes values (-1, 0, 1)
     // e.g. alignh of -1 means the element is shifted to the right such that the left edge is aligned with the pos
     public int alignh = 0, alignv = 0;
     private int z = 0; // z order is int based because optimization probably
-    private boolean hide = false, updateZOrder = false;
+    private boolean visible = true, updateZOrder = false;
     public boolean draggable = false, ignorehitbox = false, hitcircle = false, clip = false, scrollable = false,
             hasFocus = false, relpos = false;
     // relpos: represent position in terms of proportion of total width/height (considering margin), with (0, 0) being pos
@@ -28,7 +28,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
                                                                             // cuz
                                                                             // fuck
                                                                             // u
-    private Vector2f targetpos = new Vector2f(), pos = new Vector2f();
+    private Vector2f targetpos, pos;
     private double scale = 1, speed = 1, angle = 0;
     Animation animation;
     Image finalImage;
@@ -216,15 +216,15 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         return y;
     }
 
-    public void setHide(boolean hide) {
-        this.hide = hide;
-        if (hide && this.hasFocus) {
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+        if (!visible && this.hasFocus) {
             this.ui.focusElement(this.parent);
         }
     }
 
-    public boolean getHide() {
-        return this.hide;
+    public boolean isVisible() {
+        return this.visible;
     }
 
     // do not override this shit
@@ -317,11 +317,11 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         if (this.animation != null) {
             this.finalImage = this.animation.getCurrentFrame().getScaledCopy((float) this.scale);
             this.finalImage.rotate((float) this.angle);
-            if (!this.hide) {
+            if (this.visible) {
                 g.drawImage(this.finalImage, (float) (this.getLeft(true, false)), (float) (this.getTop(true, false)));
             }
         }
-        if (!this.hide) {
+        if (this.visible) {
             this.drawChildren(g);
         }
     }
@@ -357,14 +357,14 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     public void bringToFront(boolean recursive) {
         this.setZ(this.parent.children.get(this.parent.children.size() - 1).z);
         if (recursive && this.parent != null) {
-            this.parent.bringToFront(recursive);
+            this.parent.bringToFront(true);
         }
     }
 
     // returns the uielement that is top (prioritizes children)
     public UIElement topChildAtPos(Vector2f pos, boolean requirehitbox, boolean requirescrollable,
             boolean requiredraggable) {
-        if (this.hide) {
+        if (!this.visible) {
             return null;
         }
         UIElement u = null;
@@ -373,9 +373,11 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
                 && (this.draggable || !requiredraggable)) {
             if (this.pointIsInHitbox(pos)) {
                 u = this;
-            } else if (this.clip) { // not in hitbox and we are clipping
-                return u; // sucks to suck
             }
+        }
+        // not in hitbox and we are clipping
+        if (!this.pointIsInHitbox(pos) && this.clip) {
+            return null;
         }
         for (UIElement child : this.children) {
             UIElement thing = child.topChildAtPos(pos, requirehitbox, requirescrollable, requiredraggable);
@@ -389,7 +391,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     // PARENTING //////////////////////////
     // massive copy paste fiesta down below
     public List<UIElement> getChildren() {
-        List<UIElement> allchildren = new LinkedList<UIElement>();
+        List<UIElement> allchildren = new LinkedList<>();
         allchildren.addAll(this.children);
         allchildren.addAll(this.childrenAddBuffer);
         allchildren.removeAll(this.childrenRemoveBuffer);

@@ -23,12 +23,13 @@ import server.resolver.*;
  *
  */
 public class ServerGameThread extends Thread {
-    DataStream dsexternal, dslocal;
-    boolean pvp;
+    DataStream dsexternal;
+    final DataStream dslocal;
+    final boolean pvp;
     AI ai;
-    Board b;
-    VisualBoard localBoard;
-    ConstructedDeck[] decks;
+    final Board b;
+    final VisualBoard localBoard;
+    final ConstructedDeck[] decks;
 
     public ServerGameThread(DataStream dsclient, boolean pvp, VisualBoard localBoard) {
         this.b = new Board();
@@ -87,8 +88,7 @@ public class ServerGameThread extends Thread {
 
     private void initializeGame() {
         for (int team = 1; team >= -1; team -= 2) { // deckbuilding 101
-            ArrayList<Card> cards = new ArrayList<Card>();
-            cards.addAll(this.decks[(team - 1) / -2].convertToCards(this.b));
+            ArrayList<Card> cards = new ArrayList<>(this.decks[(team - 1) / -2].convertToCards(this.b));
             while (!cards.isEmpty()) {
                 Card selected = Game.selectRandom(cards);
                 this.b.processEvent(null, null,

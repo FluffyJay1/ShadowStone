@@ -1,6 +1,7 @@
 package server.card.cardpack.basic;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import client.tooltip.*;
 import server.*;
@@ -19,24 +20,19 @@ public class WoodOfBrambles extends Amulet {
     public WoodOfBrambles(Board b) {
         super(b, TOOLTIP);
         Effect e = new Effect(TOOLTIP.description) {
-            List<Effect> distributedEffects = new LinkedList<>();
-
             @Override
             public Resolver battlecry() {
                 Effect effect = this;
-                List<Effect> thisDistributedEffects = this.distributedEffects; // anonymous fuckery
                 return new Resolver(false) {
-
                     @Override
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
                         List<Card> cards = List.of(new Fairy(effect.owner.board), new Fairy(effect.owner.board));
                         List<Integer> pos = List.of(-1, -1);
                         this.resolve(b, rl, el, new CreateCardResolver(cards, effect.owner.team, CardStatus.HAND, pos));
-                        EffectBrambles e = new EffectBrambles();
+                        EffectBrambles e = new EffectBrambles(effect);
                         AddEffectResolver aer = new AddEffectResolver(
                                 effect.owner.board.getBoardObjects(effect.owner.team, false, true, false), e);
                         this.resolve(b, rl, el, aer);
-                        this.resolve(b, rl, el, new UpdateEffectStateResolver(effect, () -> thisDistributedEffects.addAll(aer.effects)));
                     }
 
                 };
@@ -58,9 +54,8 @@ public class WoodOfBrambles extends Amulet {
                                 }
                             }
                             if (!relevant.isEmpty()) {
-                                AddEffectResolver aer = new AddEffectResolver(relevant, new EffectBrambles());
+                                AddEffectResolver aer = new AddEffectResolver(relevant, new EffectBrambles(effect));
                                 this.resolve(b, rl, el, aer);
-                                this.resolve(b, rl, el, new UpdateEffectStateResolver(effect, () -> distributedEffects.addAll(aer.effects)));
                             }
                         }
                     }
@@ -70,26 +65,11 @@ public class WoodOfBrambles extends Amulet {
 
             @Override
             public Resolver onLeavePlay() {
-                return new RemoveEffectResolver(this.distributedEffects);
-            }
-
-            @Override
-            public String extraStateString() {
-                StringBuilder builder = new StringBuilder();
-                builder.append(this.distributedEffects.size()).append(" ");
-                for (Effect e : this.distributedEffects) {
-                    builder.append(e.toReference());
-                }
-                return builder.toString();
-            }
-
-            @Override
-            public void loadExtraState(Board b, StringTokenizer st) {
-                int numEffects = Integer.parseInt(st.nextToken());
-                this.distributedEffects = new ArrayList<>(numEffects);
-                for (int i = 0; i < numEffects; i++) {
-                    this.distributedEffects.add(Effect.fromReference(b, st));
-                }
+                // find the effects that this is responsible for
+                List<Effect> distributedEffects = this.owner.board.getAdditionalEffects().parallelStream()
+                        .filter(e -> e instanceof EffectBrambles && ((EffectBrambles) e).creator == this)
+                        .collect(Collectors.toList());
+                return new RemoveEffectResolver(distributedEffects);
             }
         };
         e.set.setStat(EffectStats.COUNTDOWN, 2);
@@ -97,18 +77,30 @@ public class WoodOfBrambles extends Amulet {
     }
 
     public static class EffectBrambles extends Effect {
+        private Effect creator;
 
         public EffectBrambles(String description) {
             super(description);
         }
 
-        public EffectBrambles() {
+        public EffectBrambles(Effect creator) {
             this("Has <b> Clash: </b> deal 1 damage to the enemy minion until the corresponding Wood of Brambles leaves play.");
+            this.creator = creator;
         }
 
         @Override
         public Resolver clash(Minion target) {
             return new EffectDamageResolver(this, target, 1, true, null);
+        }
+
+        @Override
+        public String extraStateString() {
+            return this.creator.toReference();
+        }
+
+        @Override
+        public void loadExtraState(Board b, StringTokenizer st) {
+            this.creator = Effect.fromReference(b, st);
         }
 
     }

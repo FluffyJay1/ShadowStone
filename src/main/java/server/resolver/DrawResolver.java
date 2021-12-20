@@ -7,8 +7,8 @@ import server.card.*;
 import server.event.*;
 
 public class DrawResolver extends Resolver {
-    Player p;
-    int num;
+    final Player p;
+    final int num;
 
     public DrawResolver(Player p, int num) {
         super(false);

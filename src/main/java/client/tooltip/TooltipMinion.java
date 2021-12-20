@@ -6,12 +6,14 @@ import org.newdawn.slick.geom.*;
 import server.card.*;
 
 public class TooltipMinion extends TooltipCard {
-    public int attack, magic, health;
-    public boolean basicUnleash;
-    public Vector2f artFocusPos;
-    public double artFocusScale; // if <= 0, focused image will be same as
+    public final int attack;
+    public final int magic;
+    public final int health;
+    public final boolean basicUnleash;
+    public final Vector2f artFocusPos;
+    public final double artFocusScale; // if <= 0, focused image will be same as
                                     // original
-    public Class<? extends EventAnimationDamage> attackAnimation;
+    public final Class<? extends EventAnimationDamage> attackAnimation;
 
     public TooltipMinion(String name, String description, String imagepath, ClassCraft craft, int cost, int attack,
                          int magic, int health, boolean basicUnleash, Class<? extends Card> cardClass, Vector2f artFocusPos,

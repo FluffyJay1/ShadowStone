@@ -9,20 +9,20 @@ import server.card.effect.*;
 import server.event.*;
 
 public class DamageResolver extends Resolver {
-    List<Minion> targets;
-    List<Integer> damage;
-    List<Boolean> poisonous;
-    public List<Card> destroyed;
+    final List<Minion> targets;
+    final List<Integer> damage;
+    final List<Boolean> poisonous;
+    public final List<Card> destroyed;
     Effect effectSource;
-    Card cardSource;
-    Class<? extends EventAnimationDamage> animation;
+    final Card cardSource;
+    final Class<? extends EventAnimationDamage> animation;
 
     /**
      * If true, this resolver will handle destruction. If false, hopefully the
      * parent resolver has a plan to eventually destroy what was marked for death by
      * this resolver, else we'll end up in an invalid state
      */
-    boolean resolveDestroy;
+    final boolean resolveDestroy;
 
     public DamageResolver(Card source, List<Minion> targets, List<Integer> damage, List<Boolean> poisonous,
             boolean resolveDestroy, Class<? extends EventAnimationDamage> animation) {

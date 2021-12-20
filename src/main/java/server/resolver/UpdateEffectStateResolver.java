@@ -8,8 +8,8 @@ import server.event.EventUpdateEffectState;
 import java.util.List;
 
 public class UpdateEffectStateResolver extends Resolver {
-    private Effect effect;
-    private Runnable updateStep;
+    private final Effect effect;
+    private final Runnable updateStep;
     public UpdateEffectStateResolver(Effect effect, Runnable updateStep) {
         super(false);
         this.effect = effect;

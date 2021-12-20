@@ -26,9 +26,9 @@ public class BoardStateNode {
     String maxAction;
     boolean lethal; // if guaranteed lethal can be achieved from this node
 
-    int team; // just to be clear which team we're evaluating for
-    Map<String, BoardStateNode> branches; // map PlayerAction to board state
-    List<String> unevaluatedBranches;
+    final int team; // just to be clear which team we're evaluating for
+    final Map<String, BoardStateNode> branches; // map PlayerAction to board state
+    final List<String> unevaluatedBranches;
     int totalBranches; // used to calculate for proportion of branches we need evaluated
     double currScore;
 
@@ -107,13 +107,13 @@ public class BoardStateNode {
 
     @Override
     public String toString() {
-        String ret = "BSN: " + this.totalBranches + " branches, "
+        StringBuilder ret = new StringBuilder("BSN: " + this.totalBranches + " branches, "
                 + (this.definedNext ? this.unevaluatedBranches.size() + " unevaluated, " : "") + this.definedNext
                 + " definedNext, " + this.maxScore + " maxScore"
-                + (this.definedNext ? ", " + this.currScore + " currScore, " + this.maxAction : "");
+                + (this.definedNext ? ", " + this.currScore + " currScore, " + this.maxAction : ""));
         for (Entry<String, BoardStateNode> e : this.branches.entrySet()) {
-            ret += e.getValue().maxScore * this.team * e.getValue().team + " " + e.getKey();
+            ret.append(e.getValue().maxScore * this.team * e.getValue().team).append(" ").append(e.getKey());
         }
-        return ret;
+        return ret.toString();
     }
 }

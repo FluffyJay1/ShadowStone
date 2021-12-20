@@ -4,7 +4,9 @@ import client.ui.interpolation.Interpolation;
 
 public class QuadraticInterpolationB implements Interpolation<Double> {
     // model with a quadratic, setting the a in ax^2 + bx + c
-    double a, b, c;
+    final double a;
+    final double b;
+    final double c;
     public QuadraticInterpolationB(double start, double end, double b) {
         this.b = b;
         this.c = start;

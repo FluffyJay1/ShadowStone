@@ -33,7 +33,7 @@ public class UIBox extends UIElement {
 
     @Override
     public void draw(Graphics g) {
-        if (!this.getHide()) {
+        if (this.isVisible()) {
             if (this.animation != null) {
                 this.finalImage = this.animation.getCurrentFrame().getScaledCopy((int) this.getWidth(false),
                         (int) this.getHeight(false));

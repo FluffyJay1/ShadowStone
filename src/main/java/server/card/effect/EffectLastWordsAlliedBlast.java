@@ -22,15 +22,14 @@ public class EffectLastWordsAlliedBlast extends Effect {
 
     @Override
     public Resolver lastWords() {
-        Effect effect = this; // just being lazy
+        EffectLastWordsAlliedBlast effect = this; // just being lazy
         return new Resolver(true) {
             @Override
             public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
                 List<Minion> minions = b.getMinions(effect.owner.team, false, true);
                 if (!minions.isEmpty()) {
                     Minion victim = Game.selectRandom(minions);
-                    EffectLastWordsAlliedBlast parent = (EffectLastWordsAlliedBlast) effect;
-                    this.resolve(b, rl, el, new EffectDamageResolver(effect, victim, parent.damage, true, null));
+                    this.resolve(b, rl, el, new EffectDamageResolver(effect, victim, effect.damage, true, null));
                 }
             }
         };

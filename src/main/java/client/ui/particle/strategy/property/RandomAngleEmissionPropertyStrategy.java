@@ -5,7 +5,7 @@ import client.ui.particle.Particle;
 
 // apply a random angle to the particle, as well as a random angle velocity
 public class RandomAngleEmissionPropertyStrategy implements EmissionPropertyStrategy {
-    private Interpolation<Double> angleVelRange;
+    private final Interpolation<Double> angleVelRange;
     public RandomAngleEmissionPropertyStrategy(Interpolation<Double> angleVelRange) {
         this.angleVelRange = angleVelRange;
     }

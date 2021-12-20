@@ -9,14 +9,14 @@ import utils.*;
 
 public class UI implements DefaultInputListener { // lets do this right this time
     public static final boolean DEBUG = false;
-    ArrayList<UIElement> parentList = new ArrayList<UIElement>();
-    ArrayList<UIElement> parentListAddBuffer = new ArrayList<UIElement>();
-    ArrayList<UIElement> parentListRemoveBuffer = new ArrayList<UIElement>();
-    ArrayList<UIEventListener> listeners = new ArrayList<UIEventListener>();
+    final List<UIElement> parentList = new ArrayList<>();
+    final List<UIElement> parentListAddBuffer = new ArrayList<>();
+    final List<UIElement> parentListRemoveBuffer = new ArrayList<>();
+    final List<UIEventListener> listeners = new ArrayList<>();
     UIElement pressedElement = null, draggingElement = null, focusedElement = null;
     public Vector2f lastmousepos = new Vector2f();
     private double scale = 1;
-    public boolean[] pressedKeys = new boolean[255];
+    public final boolean[] pressedKeys = new boolean[255];
     public boolean updateZOrder = false;
 
     public UI() {
@@ -165,8 +165,7 @@ public class UI implements DefaultInputListener { // lets do this right this tim
 
     @Override
     public void mouseMoved(int oldx, int oldy, int newx, int newy) {
-        LinkedList<UIElement> temp = new LinkedList<UIElement>();
-        temp.addAll(this.parentList);
+        LinkedList<UIElement> temp = new LinkedList<>(this.parentList);
         while (!temp.isEmpty()) { // who needs recursion
             temp.getFirst().mouseMoved(oldx, oldy, newx, newy);
             temp.addAll(temp.getFirst().getChildren());

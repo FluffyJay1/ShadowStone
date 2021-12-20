@@ -17,12 +17,12 @@ public class StateGame extends BasicGameState {
     DataStream dslocal, dsserver;
 
     @Override
-    public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+    public void init(GameContainer arg0, StateBasedGame arg1) {
         // TODO Auto-generated method stub
     }
 
     @Override
-    public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+    public void enter(GameContainer arg0, StateBasedGame arg1) {
         this.ui = new UI();
         arg0.getInput().addMouseListener(this.ui);
         arg0.getInput().addKeyListener(this.ui);
@@ -38,18 +38,18 @@ public class StateGame extends BasicGameState {
     }
 
     @Override
-    public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+    public void leave(GameContainer arg0, StateBasedGame arg1) {
         arg0.getInput().removeListener(this.ui);
     }
 
     @Override
-    public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
+    public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) {
         // TODO Auto-generated method stub
         this.ui.draw(arg2);
     }
 
     @Override
-    public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
+    public void update(GameContainer arg0, StateBasedGame arg1, int arg2) {
         // TODO Auto-generated method stub
         this.ui.update(arg2 / 1000.);
     }

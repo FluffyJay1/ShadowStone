@@ -4,7 +4,6 @@ import java.util.*;
 
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
 import client.ui.game.visualboardanimation.eventgroupanimation.EventGroupAnimationFactory;
-import org.newdawn.slick.geom.*;
 
 import client.ui.game.*;
 import client.ui.game.visualboardanimation.eventanimation.*;
@@ -26,20 +25,17 @@ import server.resolver.Resolver;
 public class VisualBoard extends Board {
     public static final double MIN_CONCURRENT_EVENT_DELAY = 0.2;
 
-    public UIBoard uiBoard;
-    public Board realBoard;
-    Vector2f mouseDownPos = new Vector2f();
-    ArrayList<Card> targetedCards = new ArrayList<>();
-    int playingX;
-    List<String> inputeventliststrings = new LinkedList<>();
-    public List<VisualBoardAnimation> currentAnimations = new LinkedList<>();
+    public final UIBoard uiBoard;
+    public final Board realBoard;
+    final List<String> inputeventliststrings = new LinkedList<>();
+    public final List<VisualBoardAnimation> currentAnimations = new LinkedList<>();
 
     // whether this board is not accepting input from the player (i.e., only works when it's the player's turn)
     // Currently this is controlled in EventAnimationTurnStart (enable control) and EndTurnButton (disable control)
     public boolean disableInput = false;
 
-    EventAnimationFactory eventAnimationFactory;
-    EventGroupAnimationFactory eventGroupAnimationFactory;
+    final EventAnimationFactory eventAnimationFactory;
+    final EventGroupAnimationFactory eventGroupAnimationFactory;
     public VisualBoard(UIBoard uiBoard) {
         this(uiBoard, 1);
     }
@@ -111,7 +107,7 @@ public class VisualBoard extends Board {
             VisualBoardAnimation vba = i.next();
             if (vba instanceof EventAnimation) {
                 // enforce ordering
-                EventAnimation<Event> ea = (EventAnimation<Event>) vba;
+                EventAnimation<?> ea = (EventAnimation<?>) vba;
                 if (ea.getTimeUntilProcess() >= timeUntilLatestProcess) {
                     ea.update(frametime);
                     timeUntilLatestProcess = ea.getTimeUntilProcess() + MIN_CONCURRENT_EVENT_DELAY;
@@ -159,7 +155,7 @@ public class VisualBoard extends Board {
 
     @Override
     public LinkedList<Card> getTargetableCards(Target t) {
-        LinkedList<Card> list = new LinkedList<Card>();
+        LinkedList<Card> list = new LinkedList<>();
         if (t == null) {
             return list;
         }

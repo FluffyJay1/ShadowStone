@@ -8,10 +8,11 @@ import server.card.effect.*;
 
 public class EventSetEffectStats extends Event {
     public static final int ID = 30;
-    public Effect target;
-    Effect newStats;
+    public final Effect target;
+    final Effect newStats;
     public boolean markedForDeath;
     private Effect oldStats;
+    private boolean oldAlive;
 
     public EventSetEffectStats(Effect target, Effect newStats) {
         super(ID);
@@ -22,10 +23,12 @@ public class EventSetEffectStats extends Event {
     @Override
     public void resolve() {
         this.oldStats = this.target.copyEffectStats();
+        this.oldAlive = this.target.owner.alive;
         this.target.resetStats();
         this.target.applyEffectStats(this.newStats);
         this.target.owner.updateEffectStats(true);
-        if (this.target.owner instanceof Minion && ((Minion) this.target.owner).health <= 0) {
+        if (this.target.owner instanceof Minion && ((Minion) this.target.owner).health <= 0 && target.owner.alive) {
+            target.owner.alive = false;
             markedForDeath = true;
         }
     }
@@ -35,6 +38,7 @@ public class EventSetEffectStats extends Event {
         this.target.resetStats();
         this.target.applyEffectStats(this.oldStats);
         this.target.owner.updateEffectStats(true);
+        this.target.owner.alive = this.oldAlive;
         this.markedForDeath = false;
     }
 

@@ -6,9 +6,10 @@ import server.*;
 
 public class EventManaChange extends Event {
     public static final int ID = 6;
-    Player p;
-    int mana;
-    boolean empty, recover;
+    final Player p;
+    final int mana;
+    final boolean empty;
+    final boolean recover;
     private int prevMana, prevMaxMana;
 
     public EventManaChange(Player p, int mana, boolean empty, boolean recover) {

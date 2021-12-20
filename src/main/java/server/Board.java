@@ -43,15 +43,15 @@ public class Board {
         this.currentPlayerTurn = 1;
         this.localteam = 1;
         this.winner = 0;
-        this.cardsCreated = new LinkedList<Card>();
+        this.cardsCreated = new LinkedList<>();
         this.player1 = new Player(this, 1);
         this.player2 = new Player(this, -1);
-        this.player1side = new ArrayList<BoardObject>();
-        this.player2side = new ArrayList<BoardObject>();
+        this.player1side = new ArrayList<>();
+        this.player2side = new ArrayList<>();
         this.resolveList = new LinkedList<>();
-        this.player1graveyard = new ArrayList<Card>();
-        this.player2graveyard = new ArrayList<Card>();
-        this.banished = new ArrayList<Card>();
+        this.player1graveyard = new ArrayList<>();
+        this.player2graveyard = new ArrayList<>();
+        this.banished = new ArrayList<>();
         this.output = new StringBuilder();
         this.history = new StringBuilder();
         this.eventGroups = new LinkedList<>();
@@ -67,7 +67,7 @@ public class Board {
     }
 
     public List<Card> getTargetableCards() {
-        List<Card> ret = new ArrayList<Card>();
+        List<Card> ret = new ArrayList<>();
         ret.addAll(this.getBoardObjects());
         ret.addAll(this.player1.hand.cards);
         ret.addAll(this.player2.hand.cards);
@@ -76,7 +76,7 @@ public class Board {
 
     // cards that can be added to a Target object
     public List<Card> getTargetableCards(Target t) {
-        List<Card> list = new LinkedList<Card>();
+        List<Card> list = new LinkedList<>();
         if (t == null) {
             return list;
         }
@@ -89,7 +89,7 @@ public class Board {
     }
 
     public List<Card> getCards() {
-        List<Card> ret = new ArrayList<Card>();
+        List<Card> ret = new ArrayList<>();
         ret.addAll(this.getBoardObjects());
         ret.addAll(this.player1.hand.cards);
         ret.addAll(this.player1.deck.cards);
@@ -112,19 +112,17 @@ public class Board {
         case HAND:
             return this.getPlayer(team).hand.cards;
         case BOARD:
-            List<Card> cards = new ArrayList<Card>();
-            cards.addAll(this.getBoardObjects(team)); // gottem
-            return cards;
+            return new ArrayList<>(this.getBoardObjects(team));
         case DECK:
             return this.getPlayer(team).deck.cards;
         case GRAVEYARD:
             return this.getGraveyard(team);
         case UNLEASHPOWER:
-            List<Card> cards2 = new ArrayList<Card>();
+            List<Card> cards2 = new ArrayList<>();
             cards2.add(this.getPlayer(team).unleashPower);
             return cards2;
         case LEADER:
-            List<Card> cards3 = new ArrayList<Card>();
+            List<Card> cards3 = new ArrayList<>();
             cards3.add(this.getPlayer(team).leader);
             return cards3;
         default:
@@ -134,7 +132,7 @@ public class Board {
 
     // with leaders
     public List<BoardObject> getBoardObjects() {
-        ArrayList<BoardObject> ret = new ArrayList<BoardObject>();
+        ArrayList<BoardObject> ret = new ArrayList<>();
         ret.addAll(this.player1side);
         ret.addAll(this.player2side);
         if (this.player1.leader != null) {
@@ -233,22 +231,18 @@ public class Board {
     }
 
     public void removeBoardObject(BoardObject bo) {
-        if (this.player1side.contains(bo)) {
-            this.player1side.remove(bo);
-        }
-        if (this.player2side.contains(bo)) {
+        if (!this.player1side.remove(bo)) {
             this.player2side.remove(bo);
         }
         this.updatePositions();
     }
 
     public void removeBoardObject(int team, int position) {
-        BoardObject bo;
         List<BoardObject> relevantSide = team > 0 ? player1side : player2side;
         if (position >= relevantSide.size()) {
             return;
         }
-        bo = relevantSide.remove(position);
+        relevantSide.remove(position);
         for (int i = position; i < relevantSide.size(); i++) {
             relevantSide.get(i).cardpos--;
         }
@@ -281,6 +275,14 @@ public class Board {
         return effects;
     }
 
+    public List<Effect> getAdditionalEffects() {
+        List<Effect> effects = new LinkedList<>();
+        for (Card c : this.getCards()) {
+            effects.addAll(c.getEffects(false));
+        }
+        return effects;
+    }
+
     public String stateToString() {
         StringBuilder builder = new StringBuilder();
         builder.append("State----------------------------+\n");
@@ -292,7 +294,7 @@ public class Board {
         builder.append(this.player1.toString()).append("\n");
         builder.append(this.player2.toString()).append("\n");
         for (Card c : this.getCards()) {
-            builder.append(c.toString() + "\n");
+            builder.append(c.toString()).append("\n");
         }
         builder.append("---------------------------------+\n");
         return builder.toString();

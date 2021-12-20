@@ -18,7 +18,7 @@ import client.Game;
  *
  */
 public class Animation implements Cloneable {
-    private SpriteSheet sheet;
+    private final SpriteSheet sheet;
     private int frame = 0;
     private double timer = 0, frameInterval = 1;
     public boolean play = false, loop = false, hflip = false, vflip = false;
@@ -109,10 +109,9 @@ public class Animation implements Cloneable {
     @Override
     public Animation clone() {
         try {
-            Animation clone = (Animation) super.clone();
             // TODO: copy mutable state here, so the clone can't change the internals of the original
             // this should be good lol
-            return clone;
+            return (Animation) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }

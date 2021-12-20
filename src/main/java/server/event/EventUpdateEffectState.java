@@ -4,16 +4,15 @@ import java.util.*;
 
 import client.Game;
 import server.*;
-import server.card.*;
 import server.card.effect.Effect;
 
 public class EventUpdateEffectState extends Event {
     // Indicate an update in an effect's extra state
     public static final int ID = 9;
-    Effect effect;
+    final Effect effect;
     private String oldState;
-    private String newState;
-    private boolean alreadyResolved; // if in server and we already computed new state, avoid reloading it during event resolution
+    private final String newState;
+    private final boolean alreadyResolved; // if in server and we already computed new state, avoid reloading it during event resolution
 
     public EventUpdateEffectState(Effect effect, String oldState, String newState, boolean alreadyResolved) {
         super(ID);

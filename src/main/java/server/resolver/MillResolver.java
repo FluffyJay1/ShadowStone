@@ -8,7 +8,7 @@ import server.event.*;
 
 // deprecated resolver?
 public class MillResolver extends Resolver {
-    Card c;
+    final Card c;
 
     public MillResolver(Card c) {
         super(false);

@@ -7,8 +7,8 @@ import server.card.effect.*;
 import server.event.*;
 
 public class SetEffectStatsResolver extends Resolver {
-    Effect target;
-    Effect newStats;
+    final Effect target;
+    final Effect newStats;
 
     public SetEffectStatsResolver(Effect target, Effect newStats) {
         super(false);

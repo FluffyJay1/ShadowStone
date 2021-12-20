@@ -10,7 +10,7 @@ import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
 
 public class TurnStartResolver extends Resolver {
-    Player p;
+    final Player p;
 
     public TurnStartResolver(Player p) {
         super(false);

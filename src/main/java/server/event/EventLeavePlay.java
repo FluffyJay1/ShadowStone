@@ -8,7 +8,7 @@ import server.card.*;
 // deprecated for now
 public class EventLeavePlay extends Event {
     public static final int ID = 24;
-    public Card c;
+    public final Card c;
 
     // this is just used as a hook for effects
     public EventLeavePlay(Card c) {

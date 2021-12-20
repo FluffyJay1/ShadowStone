@@ -7,8 +7,8 @@ import client.ui.UI;
 import client.ui.UIBox;
 
 public class PlayButton extends UIBox {
-    Text text;
-    public DeckSelectPanel deckspanel;
+    final Text text;
+    public final DeckSelectPanel deckspanel;
 
     public PlayButton(UI ui) {
         super(ui, new Vector2f(0, 0), new Vector2f(128, 128), "res/ui/uiboxborder.png");
@@ -16,7 +16,7 @@ public class PlayButton extends UIBox {
         this.text = new Text(ui, new Vector2f(0, 0), "<b> PLAY GAME", 128, 24, "Verdana", 30, 0, 0);
         text.setParent(this);
         this.deckspanel = new DeckSelectPanel(ui, new Vector2f(), false);
-        this.deckspanel.setHide(true);
+        this.deckspanel.setVisible(false);
         this.addChild(this.deckspanel);
     }
 
@@ -29,7 +29,7 @@ public class PlayButton extends UIBox {
     public void mouseReleased(int button, int x, int y) {
         if (this.pointIsInHitbox(new Vector2f(x, y))) {
             this.deckspanel.updateDecks();
-            this.deckspanel.setHide(false);
+            this.deckspanel.setVisible(true);
             this.deckspanel.setPos(new Vector2f(0, -1000), 1);
             this.deckspanel.setPos(new Vector2f(0, 0), 0.99);
         }

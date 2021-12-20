@@ -9,7 +9,8 @@ import client.ui.UIBox;
 
 public class TooltipDisplayPanel extends UIBox {
     Tooltip tooltip;
-    Text name, description;
+    final Text name;
+    final Text description;
 
     public TooltipDisplayPanel(UI ui) {
         super(ui, new Vector2f(0, 0), new Vector2f(380, 0), "res/ui/uiboxborder.png");

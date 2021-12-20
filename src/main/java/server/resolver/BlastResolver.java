@@ -10,11 +10,11 @@ import server.card.effect.*;
 import server.event.*;
 
 public class BlastResolver extends Resolver {
-    Effect source;
-    int damage;
-    Board b;
-    int enemyTeam;
-    Class<? extends EventAnimationDamage> animation;
+    final Effect source;
+    final int damage;
+    final Board b;
+    final int enemyTeam;
+    final Class<? extends EventAnimationDamage> animation;
 
     public BlastResolver(Effect source, int damage, Class<? extends EventAnimationDamage> animation) {
         super(true);
@@ -28,7 +28,7 @@ public class BlastResolver extends Resolver {
     @Override
     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
         List<Minion> minions = this.b.getMinions(this.enemyTeam, false, true);
-        Minion target = null;
+        Minion target;
         if (minions.isEmpty()) {
             target = this.b.getPlayer(this.enemyTeam).leader;
         } else {

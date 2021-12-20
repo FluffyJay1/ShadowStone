@@ -1,8 +1,6 @@
 package client.ui.game.visualboardanimation.eventgroupanimation;
 
 import client.VisualBoard;
-import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
-import server.event.Event;
 import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
 
@@ -11,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EventGroupAnimationFactory {
-    VisualBoard b;
+    final VisualBoard b;
     public EventGroupAnimationFactory(VisualBoard b) {
         this.b = b;
     }
@@ -34,10 +32,11 @@ public class EventGroupAnimationFactory {
                 e.printStackTrace();
             }
         }
+        assert anim != null;
         anim.init(this.b, eventGroup);
         return anim;
     }
-    private static Map<EventGroupType, Class<? extends EventGroupAnimation>> eventGroupToAnimationMap = new HashMap<>() {{
+    private static final Map<EventGroupType, Class<? extends EventGroupAnimation>> eventGroupToAnimationMap = new HashMap<>() {{
         put(EventGroupType.BATTLECRY, EventGroupAnimationBattlecry.class);
         put(EventGroupType.CLASH, EventGroupAnimationClash.class);
         put(EventGroupType.FLAG, EventGroupAnimationFlag.class);

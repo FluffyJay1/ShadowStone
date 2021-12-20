@@ -7,9 +7,9 @@ import server.card.*;
 
 public class EventPlayCard extends Event {
     public static final int ID = 11;
-    public Player p;
-    public Card c;
-    int position;
+    public final Player p;
+    public final Card c;
+    final int position;
 
     public EventPlayCard(Player p, Card c, int position) {
         super(ID);

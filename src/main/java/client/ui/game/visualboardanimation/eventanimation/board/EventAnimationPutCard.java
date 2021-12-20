@@ -14,7 +14,7 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
 
     @Override
     public void onStart() {
-        EventPutCard e = (EventPutCard) this.event;
+        EventPutCard e = this.event;
         for (Card c : e.c) {
             if (e.status.equals(CardStatus.BOARD)) {
                 c.uiCard.setScale(UIBoard.CARD_SCALE_BOARD);

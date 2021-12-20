@@ -1,13 +1,9 @@
 package server.card.cardpack.basic;
 
-import java.util.List;
-
 import client.tooltip.*;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
-import server.event.Event;
-import server.event.EventFlag;
 import server.resolver.*;
 
 public class PuppetRoom extends Amulet {

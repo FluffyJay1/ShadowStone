@@ -14,9 +14,9 @@ public class CardDisplayUnit extends UIBox {
     public static final String CARD_CLICK = "cardclick";
     public static final double SCALE = 0.75;
     private Class<? extends Card> cardClass;
-    Text text;
+    final Text text;
     Card card;
-    UICard uicard;
+    final UICard uicard;
 
     public CardDisplayUnit(UI ui, Vector2f pos) {
         super(ui, pos, UICard.CARD_DIMENSIONS.copy().scale((float) SCALE), "res/ui/uiboxborder.png");

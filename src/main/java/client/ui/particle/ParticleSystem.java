@@ -1,6 +1,5 @@
 package client.ui.particle;
 
-import client.ui.Animation;
 import client.ui.UI;
 import client.ui.UIElement;
 import client.ui.particle.strategy.EmissionStrategy;
@@ -12,7 +11,6 @@ import org.newdawn.slick.geom.Vector2f;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class ParticleSystem extends UIElement {
     private static final int MAX_PARTICLES_PER_FRAME = 20; // just in case
@@ -78,7 +76,7 @@ public class ParticleSystem extends UIElement {
 
     @Override
     public void draw(Graphics g) {
-        if (!this.getHide()) {
+        if (this.isVisible()) {
             for (Particle p : this.particles) {
                 p.draw(g, this.getFinalPos());
             }

@@ -8,11 +8,12 @@ import server.card.effect.*;
 
 public class EventRemoveEffect extends Event {
     public static final int ID = 22;
-    public List<Effect> effects;
+    public final List<Effect> effects;
     private List<Integer> prevPos;
     private List<Integer> oldHealth;
     private List<Boolean> oldRemoved;
-    List<Card> markedForDeath;
+    private List<Boolean> oldAlive;
+    final List<Card> markedForDeath;
 
     public EventRemoveEffect(List<Effect> effects, List<Card> markedForDeath) {
         super(ID);
@@ -25,11 +26,13 @@ public class EventRemoveEffect extends Event {
         this.prevPos = new ArrayList<>(this.effects.size());
         this.oldHealth = new ArrayList<>(this.effects.size());
         this.oldRemoved = new ArrayList<>(this.effects.size());
+        this.oldAlive = new ArrayList<>(this.effects.size());
         for (int i = 0; i < this.effects.size(); i++) {
             Effect e = this.effects.get(i);
             this.prevPos.add(e.pos);
             this.oldHealth.add(0);
             this.oldRemoved.add(e.removed);
+            this.oldAlive.add(e.owner.alive);
             if (!e.removed) {
                 Card c = e.owner;
                 c.removeEffect(e, false);
@@ -39,12 +42,14 @@ public class EventRemoveEffect extends Event {
                     if (c.finalStatEffects.getStat(EffectStats.HEALTH) < m.health) {
                         m.health = m.finalStatEffects.getStat(EffectStats.HEALTH);
                     }
-                    if (m.health <= 0) {
+                    if (m.health <= 0 && c.alive) {
+                        c.alive = false;
                         this.markedForDeath.add(m);
                     }
                 }
                 if (c.finalStatEffects.getUse(EffectStats.COUNTDOWN)
-                        && c.finalStatEffects.getStat(EffectStats.COUNTDOWN) <= 0) {
+                        && c.finalStatEffects.getStat(EffectStats.COUNTDOWN) <= 0 && c.alive) {
+                    c.alive = false;
                     this.markedForDeath.add(c);
                 }
             }
@@ -58,6 +63,7 @@ public class EventRemoveEffect extends Event {
             Card c = e.owner;
             if (!this.oldRemoved.get(i)) {
                 c.addEffect(false, this.prevPos.get(i), e);
+                c.alive = this.oldAlive.get(i);
                 if (c instanceof Minion) {
                     Minion m = (Minion) c;
                     m.health = this.oldHealth.get(i);

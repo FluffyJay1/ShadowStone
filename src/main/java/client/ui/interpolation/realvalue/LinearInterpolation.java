@@ -3,7 +3,8 @@ package client.ui.interpolation.realvalue;
 import client.ui.interpolation.Interpolation;
 
 public class LinearInterpolation implements Interpolation<Double> {
-    double start, end;
+    final double start;
+    final double end;
     public LinearInterpolation(double start, double end) {
         this.start = start;
         this.end = end;

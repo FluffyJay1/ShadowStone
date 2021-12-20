@@ -8,8 +8,8 @@ import server.card.unleashpower.*;
 
 public class EventUnleash extends Event {
     public static final int ID = 16;
-    public Card source;
-    public Minion m;
+    public final Card source;
+    public final Minion m;
     private int prevUnleashes;
 
     public EventUnleash(Card source, Minion m) {
@@ -42,6 +42,7 @@ public class EventUnleash extends Event {
     public static EventUnleash fromString(Board b, StringTokenizer st) {
         Card source = Card.fromReference(b, st);
         Minion m = (Minion) Card.fromReference(b, st);
+        assert m != null;
         Target.setListFromString(m.getUnleashTargets(), b, st);
         return new EventUnleash(source, m);
     }

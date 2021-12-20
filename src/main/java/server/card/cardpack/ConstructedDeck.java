@@ -21,6 +21,7 @@ public class ConstructedDeck implements Serializable {
     /**
      * 
      */
+    @Serial
     private static final long serialVersionUID = 2L;
 
     public static final int MAX_SIZE = 40, MAX_DUPES = 3;
@@ -28,12 +29,12 @@ public class ConstructedDeck implements Serializable {
     /**
      * The working storage for a player's decks
      */
-    public static ArrayList<ConstructedDeck> decks = new ArrayList<ConstructedDeck>();
+    public static ArrayList<ConstructedDeck> decks = new ArrayList<>();
 
     /**
      * The map between a card class and its count in the deck
      */
-    public Map<Class<? extends Card>, Integer> cardClassCounts = new HashMap<>();
+    public final Map<Class<? extends Card>, Integer> cardClassCounts = new HashMap<>();
 
     /**
      * The name of the deck
@@ -134,7 +135,7 @@ public class ConstructedDeck implements Serializable {
      * @return whether or not the deck is playable
      */
     public boolean validate() {
-        int size = 0;
+        this.count = 0;
         boolean dupes = true;
         for (Map.Entry<Class<? extends Card>, Integer> entry : this.cardClassCounts.entrySet()) {
             this.count += entry.getValue();
@@ -142,21 +143,19 @@ public class ConstructedDeck implements Serializable {
                 dupes = false;
             }
         }
-        this.count = size;
-        return size == MAX_SIZE && dupes;
+        return this.count == MAX_SIZE && dupes;
     }
 
     /**
      * Converts a decklist to a list of actual Card objects ready to be used in game
      * 
      * @param b    the board to add the cards to
-     * @param team the team of the player owning the cards
      * @return an arraylist of the created cards;
      */
     public List<Card> convertToCards(Board b) {
-        ArrayList<Card> cards = new ArrayList<Card>(this.count);
+        ArrayList<Card> cards = new ArrayList<>(this.count);
         for (Map.Entry<Class<? extends Card>, Integer> entry : this.cardClassCounts.entrySet()) {
-            Constructor constr = null;
+            Constructor<? extends Card> constr = null;
             try {
                 constr = entry.getKey().getConstructor(Board.class);
             } catch (NoSuchMethodException | SecurityException e) {
@@ -165,7 +164,8 @@ public class ConstructedDeck implements Serializable {
             }
             for (int i = 0; i < entry.getValue(); i++) {
                 try {
-                    Card c = (Card) constr.newInstance(b);
+                    assert constr != null;
+                    Card c = constr.newInstance(b);
                     cards.add(c);
                 } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                         | InvocationTargetException e) {

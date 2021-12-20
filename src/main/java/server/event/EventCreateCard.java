@@ -10,15 +10,15 @@ import server.card.unleashpower.*;
 // Changes references, should not run concurrent with other events
 public class EventCreateCard extends Event {
     public static final int ID = 2;
-    List<Card> cards;
-    CardStatus status;
-    int team;
-    List<Integer> cardpos;
+    final List<Card> cards;
+    final CardStatus status;
+    final int team;
+    final List<Integer> cardpos;
     private UnleashPower prevUP;
     private Leader prevLeader;
-    private List<Boolean> successful;
+    private final List<Boolean> successful;
     public List<Card> markedForDeath;
-    List<BoardObject> cardsEnteringPlay = new ArrayList<>();
+    final List<BoardObject> cardsEnteringPlay = new ArrayList<>();
 
     public EventCreateCard(List<Card> cards, int team, CardStatus status, List<Integer> cardpos,
             List<Card> markedForDeath) {
@@ -46,12 +46,13 @@ public class EventCreateCard extends Event {
             case HAND:
                 Hand relevantHand = b.getPlayer(this.team).hand;
                 if (relevantHand.cards.size() < relevantHand.maxsize) {
-                    int temppos = cardpos == -1 ? (int) relevantHand.cards.size() : cardpos;
+                    int temppos = cardpos == -1 ? relevantHand.cards.size() : cardpos;
                     temppos = Math.min(temppos, relevantHand.cards.size());
                     relevantHand.cards.add(temppos, c);
                     relevantHand.updatePositions();
                     this.successful.add(true);
                 } else {
+                    c.alive = false;
                     this.markedForDeath.add(c);
                     this.successful.add(false);
                 }
@@ -71,7 +72,7 @@ public class EventCreateCard extends Event {
                 break;
             case DECK:
                 Deck relevantDeck = b.getPlayer(this.team).deck;
-                int temppos = cardpos == -1 ? (int) relevantDeck.cards.size() : cardpos;
+                int temppos = cardpos == -1 ? relevantDeck.cards.size() : cardpos;
                 temppos = Math.min(temppos, relevantDeck.cards.size());
                 relevantDeck.cards.add(temppos, c);
                 relevantDeck.updatePositions();
@@ -158,6 +159,7 @@ public class EventCreateCard extends Event {
             Card c = Card.createFromConstructorString(b, st);
             cards.add(c);
             if (b instanceof VisualBoard) {
+                assert c != null;
                 c.realCard = ((VisualBoard) b).realBoard.cardsCreated.remove(0);
                 ((VisualBoard) b).uiBoard.addCard(c);
             }

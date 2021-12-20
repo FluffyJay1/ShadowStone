@@ -2,7 +2,6 @@ package server.card.effect;
 
 import java.lang.reflect.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import client.*;
 import server.*;
@@ -35,9 +34,7 @@ public class Effect implements Cloneable {
      * target specifications are set upon construction, player input fulfills the
      * targets
      */
-    public List<Target> battlecryTargets = new LinkedList<Target>(), unleashTargets = new LinkedList<Target>();
-
-    public String prevState; // utilized by the AI to reset extra state
+    public List<Target> battlecryTargets = new LinkedList<>(), unleashTargets = new LinkedList<>();
 
     public Effect() {
         // TODO lmao
@@ -226,13 +223,13 @@ public class Effect implements Cloneable {
     public static Effect fromString(Board b, StringTokenizer st) {
         try {
             String className = st.nextToken();
-            Class<?> c = Class.forName(className);
+            Class<? extends Effect> c = Class.forName(className).asSubclass(Effect.class);
             Card owner = Card.fromReference(b, st);
             String description = st.nextToken(Game.STRING_END).trim();
             st.nextToken(" \n"); // THANKS STRING TOKENIZER
             boolean mute = Boolean.parseBoolean(st.nextToken());
             Effect ef;
-            ef = (Effect) c.getDeclaredConstructor(String.class).newInstance(description);
+            ef = c.getDeclaredConstructor(String.class).newInstance(description);
             ef.owner = owner;
             ef.mute = mute;
             ef.loadExtraState(b, st);
@@ -263,15 +260,13 @@ public class Effect implements Cloneable {
     @Override
     public Effect clone() throws CloneNotSupportedException {
         Effect e = (Effect) super.clone(); // shallow copy
-        // e.mute = this.mute;
-        // e.basic = this.basic;
         e.set = this.set.clone();
         e.change = this.change.clone();
-        this.battlecryTargets = new LinkedList<Target>();
+        this.battlecryTargets = new LinkedList<>();
         for (Target t : e.battlecryTargets) {
             this.battlecryTargets.add(t.clone());
         }
-        this.unleashTargets = new LinkedList<Target>();
+        this.unleashTargets = new LinkedList<>();
         for (Target t : e.unleashTargets) {
             this.unleashTargets.add(t.clone());
         }

@@ -11,14 +11,16 @@ public class DeckSelectPanel extends UIBox {
     public static final String DECK_CONFIRM = "deckselectpanelconfirm";
     public static final String DECK_CANCEL = "deckselectpanelcancel";
     public static final String DECK_DELETE = "deckselectpaneldelete";
-    ScrollingContext scroll;
-    GenericButton confirmButton, cancelButton, deleteButton;
-    ArrayList<DeckSelectUnit> deckButtons = new ArrayList<DeckSelectUnit>();
+    final ScrollingContext scroll;
+    final GenericButton confirmButton;
+    final GenericButton cancelButton;
+    GenericButton deleteButton;
+    final ArrayList<DeckSelectUnit> deckButtons = new ArrayList<>();
     public DeckSelectUnit selectedDeckUnit;
-    UIBox highlight;
+    final UIBox highlight;
     // who needs inheritance when u can have just one class behave differently
     // depending on what's passed in the constructor
-    boolean deckbuild;
+    final boolean deckbuild;
 
     public DeckSelectPanel(UI ui, Vector2f pos, boolean deckbuild) {
         super(ui, pos, new Vector2f(700, 600), "res/ui/uiboxborder.png");
@@ -54,7 +56,7 @@ public class DeckSelectPanel extends UIBox {
         this.scroll.clip = true;
         this.addChild(this.scroll);
         this.highlight = new UIBox(ui, new Vector2f(), new Vector2f(190, 110), "res/ui/highlight.png");
-        this.highlight.setHide(true);
+        this.highlight.setVisible(false);
         this.highlight.ignorehitbox = true;
         this.scroll.addChild(this.highlight);
         this.updateDecks();
@@ -66,12 +68,12 @@ public class DeckSelectPanel extends UIBox {
         switch (st.nextToken()) {
         case DECK_CONFIRM:
             if (this.selectedDeckUnit != null) {
-                this.setHide(true);
+                this.setVisible(false);
             }
             this.alert(strarg, intarg);
             break;
         case DECK_CANCEL:
-            this.setHide(true);
+            this.setVisible(false);
             this.alert(strarg, intarg);
             break;
         case DECK_DELETE:
@@ -92,17 +94,13 @@ public class DeckSelectPanel extends UIBox {
     public void update(double frametime) {
         super.update(frametime);
         if (this.selectedDeckUnit != null) {
-            this.highlight.setHide(false);
+            this.highlight.setVisible(true);
             this.highlight.setPos(this.selectedDeckUnit.getPos(), 0.99999);
             if (this.deckbuild) {
-                if (this.selectedDeckUnit.deck == null) {
-                    this.deleteButton.setHide(true);
-                } else {
-                    this.deleteButton.setHide(false);
-                }
+                this.deleteButton.setVisible(this.selectedDeckUnit.deck != null);
             }
         } else {
-            this.highlight.setHide(true);
+            this.highlight.setVisible(false);
         }
     }
 

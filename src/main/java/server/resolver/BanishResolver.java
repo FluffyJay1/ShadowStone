@@ -7,7 +7,7 @@ import server.card.*;
 import server.event.*;
 
 public class BanishResolver extends Resolver {
-    public List<Card> c;
+    public final List<Card> c;
 
     public BanishResolver(List<Card> c) {
         super(false);

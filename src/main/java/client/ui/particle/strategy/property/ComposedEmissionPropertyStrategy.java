@@ -5,7 +5,7 @@ import client.ui.particle.Particle;
 import java.util.List;
 
 public class ComposedEmissionPropertyStrategy implements EmissionPropertyStrategy {
-    private List<EmissionPropertyStrategy> strategies;
+    private final List<EmissionPropertyStrategy> strategies;
 
     public ComposedEmissionPropertyStrategy(List<EmissionPropertyStrategy> strategies) {
         this.strategies = strategies;

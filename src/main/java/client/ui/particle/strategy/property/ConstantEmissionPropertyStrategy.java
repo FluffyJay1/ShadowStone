@@ -4,15 +4,13 @@ import client.ui.interpolation.Interpolation;
 import client.ui.particle.Particle;
 import org.newdawn.slick.geom.Vector2f;
 
-import java.util.function.Supplier;
-
 // set the properties on the particle that are likely to be constant
 public class ConstantEmissionPropertyStrategy implements EmissionPropertyStrategy {
-    int drawMode;
-    double velscale;
-    Vector2f accel;
-    Interpolation<Double> opacityInterpolation;
-    Interpolation<Double> scaleInterpolation;
+    final int drawMode;
+    final double velscale;
+    final Vector2f accel;
+    final Interpolation<Double> opacityInterpolation;
+    final Interpolation<Double> scaleInterpolation;
 
     public ConstantEmissionPropertyStrategy(int drawMode, double velscale, Vector2f accel,
                                             Interpolation<Double> opacityInterpolation,

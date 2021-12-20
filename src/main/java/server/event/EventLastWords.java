@@ -8,7 +8,7 @@ import server.card.*;
 // deprecated, see event groups
 public class EventLastWords extends Event {
     public static final int ID = 20;
-    public Card owner;
+    public final Card owner;
 
     public EventLastWords(Card owner) {
         super(ID);

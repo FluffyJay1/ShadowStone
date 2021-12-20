@@ -4,8 +4,9 @@ import client.ui.particle.strategy.timing.EmissionTimingStrategy;
 
 // when composed with another emission timing strategy, this one limits the other one to a max duration
 public class DurationLimitingEmissionTimingStrategy implements EmissionTimingStrategy {
-    private EmissionTimingStrategy ets;
-    double time, maxDuration;
+    private final EmissionTimingStrategy ets;
+    double time;
+    final double maxDuration;
 
     public DurationLimitingEmissionTimingStrategy(double maxDuration, EmissionTimingStrategy ets) {
         this.ets = ets;

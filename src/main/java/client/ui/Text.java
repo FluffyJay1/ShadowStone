@@ -1,6 +1,7 @@
 package client.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.newdawn.slick.Graphics;
@@ -13,14 +14,14 @@ import client.Game;
 
 public class Text extends UIElement {
     private String text = ""; // private cuz fuck you
-    private ArrayList<ArrayList<String>> lines = new ArrayList<ArrayList<String>>();
-    private ArrayList<Double> lineWidths = new ArrayList<Double>();
+    private final List<List<String>> lines = new ArrayList<>();
+    private final List<Double> lineWidths = new ArrayList<>();
     private double maxLineWidth;
     double lineWidth, lineHeight, fontsize;
 
     String font;
     // 0 = normal, 1 = bold, 2 = italics, 3 = both
-    UnicodeFont[] uFontFamily = new UnicodeFont[4];
+    final UnicodeFont[] uFontFamily = new UnicodeFont[4];
 
     private Image cachedRender;
     private Graphics cachedGraphics;
@@ -73,31 +74,28 @@ public class Text extends UIElement {
             // StringTokenizer st = new StringTokenizer(stlines.nextToken(), "
             // ");
             String[] words = stlines.nextToken().split(" ");
-            ArrayList<String> line = new ArrayList<String>();
-            String sameFontStreak = ""; // to reduce calls to drawString
+            List<String> line = new ArrayList<>();
+            StringBuilder sameFontStreak = new StringBuilder(); // to reduce calls to drawString
             double currlinewidth = 0;
 
             for (String token : words) { // why do i do this
                 // String token = st.nextToken();
                 if (token.indexOf('<') > -1 && token.indexOf('>') > -1) {
-                    if (!sameFontStreak.isEmpty()) {
-                        line.add(sameFontStreak);
-                        sameFontStreak = "";
+                    if (sameFontStreak.length() > 0) {
+                        line.add(sameFontStreak.toString());
+                        sameFontStreak = new StringBuilder();
                     }
                     line.add(token);
-                    if (token.equals("<b>")) {
-                        flags = flags | 1;
-                    } else if (token.equals("</b>")) {
-                        flags = flags & ~1;
-                    } else if (token.equals("<i>")) {
-                        flags = flags | 2;
-                    } else if (token.equals("</i>")) {
-                        flags = flags & ~2;
+                    switch (token) {
+                        case "<b>" -> flags = flags | 1;
+                        case "</b>" -> flags = flags & ~1;
+                        case "<i>" -> flags = flags | 2;
+                        case "</i>" -> flags = flags & ~2;
                     }
                 } else {
                     if (currlinewidth == 0) { // first word
                         if (!token.isEmpty()) {
-                            sameFontStreak += token;
+                            sameFontStreak.append(token);
                             currlinewidth += this.uFontFamily[flags].getWidth(token);
                         }
                     } else if (currlinewidth + this.uFontFamily[flags].getWidth(" " + token) > this.lineWidth) { // newline
@@ -106,29 +104,29 @@ public class Text extends UIElement {
                             currlinewidth -= this.uFontFamily[flags].getWidth(" ");
                             line.remove(i);
                         }
-                        if (!sameFontStreak.isEmpty()) {
-                            line.add(sameFontStreak);
+                        if (sameFontStreak.length() > 0) {
+                            line.add(sameFontStreak.toString());
                         }
-                        sameFontStreak = token;
+                        sameFontStreak = new StringBuilder(token);
                         this.lines.add(line);
                         this.lineWidths.add(currlinewidth);
                         if (currlinewidth > maxLineWidth) {
                             maxLineWidth = currlinewidth;
                         }
-                        line = new ArrayList<String>();
+                        line = new ArrayList<>();
                         currlinewidth = this.uFontFamily[flags].getWidth(token);
                     } else {
-                        if (sameFontStreak.isEmpty()) {
-                            sameFontStreak = token;
+                        if (sameFontStreak.length() == 0) {
+                            sameFontStreak = new StringBuilder(token);
                         } else {
-                            sameFontStreak += " " + token;
+                            sameFontStreak.append(" ").append(token);
                         }
                         currlinewidth += this.uFontFamily[flags].getWidth(" " + token);
                     }
                 }
             }
-            if (!sameFontStreak.isEmpty()) {
-                line.add(sameFontStreak);
+            if (sameFontStreak.length() > 0) {
+                line.add(sameFontStreak.toString());
             }
             this.lines.add(line);
             this.lineWidths.add(currlinewidth);
@@ -157,22 +155,18 @@ public class Text extends UIElement {
         for (int i = 0; i < this.lines.size(); i++) {
             double currlinewidth = 0;
             for (String token : this.lines.get(i)) { // why do i do this
-                if (token.equals("<b>")) {
-                    flags = flags | 1;
-                } else if (token.equals("</b>")) {
-                    flags = flags & ~1;
-                } else if (token.equals("<i>")) {
-                    flags = flags | 2;
-                } else if (token.equals("</i>")) {
-                    flags = flags & ~2;
-                } else {
-                    float drawx = (float) (currlinewidth + (this.maxLineWidth - this.lineWidths.get(i)) * (this.alignh + 1) / 2.);
-                    float drawy = (float) (this.lineHeight * i);
-                    cachedGraphics.setFont(this.uFontFamily[flags]);
-                    cachedGraphics.drawString(token, drawx, drawy);
-                    // this.uFontFamily[flags].drawString(drawx, drawy,
-                    // token);
-                    currlinewidth += this.uFontFamily[flags].getWidth(token + " ");
+                switch (token) {
+                    case "<b>" -> flags = flags | 1;
+                    case "</b>" -> flags = flags & ~1;
+                    case "<i>" -> flags = flags | 2;
+                    case "</i>" -> flags = flags & ~2;
+                    default -> {
+                        float drawx = (float) (currlinewidth + (this.maxLineWidth - this.lineWidths.get(i)) * (this.alignh + 1) / 2.);
+                        float drawy = (float) (this.lineHeight * i);
+                        cachedGraphics.setFont(this.uFontFamily[flags]);
+                        cachedGraphics.drawString(token, drawx, drawy);
+                        currlinewidth += this.uFontFamily[flags].getWidth(token + " ");
+                    }
                 }
             }
         }
@@ -192,7 +186,7 @@ public class Text extends UIElement {
 
     @Override
     public void draw(Graphics g) {
-        if (!this.getHide()) {
+        if (this.isVisible()) {
             if (this.isDirty) {
                 this.repaint();
             }

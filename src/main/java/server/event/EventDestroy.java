@@ -9,11 +9,11 @@ import server.card.*;
 public class EventDestroy extends Event {
     // Shouldn't process this event outright, as it ignores lastwords triggers
     public static final int ID = 4;
-    public List<Card> cards;
+    public final List<Card> cards;
     private List<Boolean> alive;
     private List<CardStatus> prevStatus;
     private List<Integer> prevPos;
-    List<BoardObject> cardsLeavingPlay = new ArrayList<>(); // required for listeners
+    final List<BoardObject> cardsLeavingPlay = new ArrayList<>(); // required for listeners
 
     public EventDestroy(List<Card> c) {
         super(ID);
@@ -103,16 +103,16 @@ public class EventDestroy extends Event {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.id + " " + this.cards.size() + " ");
-        for (int i = 0; i < this.cards.size(); i++) {
-            builder.append(this.cards.get(i).toReference());
+        builder.append(this.id).append(" ").append(this.cards.size()).append(" ");
+        for (Card card : this.cards) {
+            builder.append(card.toReference());
         }
         return builder.append("\n").toString();
     }
 
     public static EventDestroy fromString(Board b, StringTokenizer st) {
         int size = Integer.parseInt(st.nextToken());
-        ArrayList<Card> c = new ArrayList<Card>(size);
+        ArrayList<Card> c = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             Card card = Card.fromReference(b, st);
             c.add(card);

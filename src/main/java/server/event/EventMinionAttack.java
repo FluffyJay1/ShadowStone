@@ -8,7 +8,8 @@ import server.card.*;
 public class EventMinionAttack extends Event {
     // start attack
     public static final int ID = 8;
-    public Minion m1, m2;
+    public final Minion m1;
+    public final Minion m2;
     int prevAttacksThisTurn;
 
     public EventMinionAttack(Minion m1, Minion m2) {

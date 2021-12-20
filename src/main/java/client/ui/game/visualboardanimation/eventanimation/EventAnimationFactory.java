@@ -8,20 +8,18 @@ import client.ui.game.visualboardanimation.eventanimation.board.*;
 import client.VisualBoard;
 import client.ui.game.visualboardanimation.eventanimation.attack.*;
 import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationAddEffect;
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamage;
 import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationRemoveEffect;
 import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationRestore;
 import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationSetEffectStats;
 import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationTurnStart;
 import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationUnleash;
-import server.card.Minion;
 import server.event.*;
 
 /**
  * Handles giving the right animations for the right events
  */
 public class EventAnimationFactory {
-    VisualBoard b;
+    final VisualBoard b;
     public EventAnimationFactory(VisualBoard b) {
         this.b = b;
     }
@@ -36,34 +34,35 @@ public class EventAnimationFactory {
     public <T extends Event> EventAnimation<T> newAnimation(T event) {
         // TODO: check to see if we want to use a special animation or not
         EventAnimation<T> anim = null;
-        Class<? extends EventAnimation<? extends Event>> animClass = getAnimationClass(event);
+        Class<? extends EventAnimation<T>> animClass = getAnimationClass(event);
         if (animClass == null) {
             return null;
         } else {
             try {
-                // TODO make this not bad
-                anim = (EventAnimation<T>) animClass.getConstructor().newInstance();
+                anim = animClass.getConstructor().newInstance();
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                     | InvocationTargetException | NoSuchMethodException | SecurityException e) {
                 e.printStackTrace();
             }
         }
+        assert anim != null;
         anim.init(this.b, event);
         return anim;
     }
 
-    private Class<? extends EventAnimation<? extends Event>> getAnimationClass(Event event) {
+    private <T extends Event> Class<? extends EventAnimation<T>> getAnimationClass(T event) {
         if (event instanceof EventDamage) {
             EventDamage ed = (EventDamage) event;
-            Class<? extends EventAnimation<? extends Event>> animClass = ed.animation;
+            Class<? extends EventAnimation<EventDamage>> animClass = ed.animation;
             if (animClass != null) {
-                return animClass;
+                return (Class<? extends EventAnimation<T>>) animClass; // by my analysis, this cast is safe
             }
         }
-        return eventToAnimationMap.get(event.getClass());
+        // by my analysis, this cast is safe
+        return (Class<? extends EventAnimation<T>>) eventToAnimationMap.get(event.getClass());
     }
 
-    private static Map<Class<? extends Event>, Class<? extends EventAnimation<? extends Event>>> eventToAnimationMap = new HashMap<>() {{
+    private static final Map<Class<? extends Event>, Class<? extends EventAnimation<? extends Event>>> eventToAnimationMap = new HashMap<>() {{
         put(EventAddEffect.class, EventAnimationAddEffect.class);
         put(EventDamage.class, EventAnimationDamage.class);
         put(EventRemoveEffect.class, EventAnimationRemoveEffect.class);

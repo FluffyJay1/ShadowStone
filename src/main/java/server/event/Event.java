@@ -19,8 +19,8 @@ import server.card.*;
 public class Event {
     // always go full enterprise, if you start going half enterprise you're
     // fucking done for
-    int id = 0; // id of 0 means no side effects
-    public boolean send = true;
+    final int id;
+    public final boolean send = true;
 
     public Event(int id) {
         this.id = id;
@@ -48,7 +48,7 @@ public class Event {
         if (id == 0) {
             return new Event(0);
         } else {
-            Class c = EventIDLinker.getClass(id);
+            Class<? extends Event> c = EventIDLinker.getClass(id);
             Event e = null;
             try {
                 e = (Event) c.getMethod("fromString", Board.class, StringTokenizer.class).invoke(null, b, st);

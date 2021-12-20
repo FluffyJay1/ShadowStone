@@ -11,9 +11,9 @@ import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
 
 public class UnleashResolver extends Resolver {
-    Card source;
-    Minion m;
-    String unleashTargets;
+    final Card source;
+    final Minion m;
+    final String unleashTargets;
 
     public UnleashResolver(Card source, Minion m, String unleashTargets) {
         super(false);
@@ -37,8 +37,6 @@ public class UnleashResolver extends Resolver {
                     this.resolveList(b, rl, el, this.m.unleash());
                     b.popEventGroup();
                     this.resolveList(b, rl, el, p.unleashPower.onUnleashPost(this.m));
-                } else {
-                    return;
                 }
             } else {
                 b.processEvent(rl, el, new EventUnleash(this.source, this.m));

@@ -28,7 +28,9 @@ public class Tooltip {
     public static final Tooltip BLAST = new Tooltip("Blast",
             "Deal X damage to a random enemy minion. If there are no enemy minions in play, deal X damage to the enemy leader.");
 
-    public String name, description, imagepath;
+    public final String name;
+    public final String description;
+    public String imagepath;
     public Tooltip[] references;
 
     public Tooltip(String name, String description, Tooltip... references) {

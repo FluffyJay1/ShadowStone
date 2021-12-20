@@ -8,7 +8,7 @@ import server.card.*;
 // deprecated, see event groups
 public class EventFlag extends Event {
     public static final int ID = 21;
-    public Card owner;
+    public final Card owner;
 
     public EventFlag(Card owner) {
         super(ID);

@@ -7,14 +7,14 @@ import client.ui.*;
 import server.card.effect.*;
 
 public class CardSelectPanel extends UIBox {
-    UIBoard uib;
-    UnleashButton ub;
-    ScrollingContext scroll;
+    final UIBoard uib;
+    final UnleashButton ub;
+    final ScrollingContext scroll;
     Tooltip currTooltip;
     UICard lastCardSelected;
-    TooltipDisplayPanel tooltipPanel;
-    Text effects;
-    CardSelectTooltipPanel tooltipReferencePanel;
+    final TooltipDisplayPanel tooltipPanel;
+    final Text effects;
+    final CardSelectTooltipPanel tooltipReferencePanel;
 
     public CardSelectPanel(UI ui, UIBoard b) {
         super(ui, new Vector2f(-0.35f, -0.14f), new Vector2f(400, 500), "res/ui/uiboxborder.png");
@@ -56,20 +56,20 @@ public class CardSelectPanel extends UIBox {
         }
         if (this.uib.selectedCard != null) {
             // this.setPos(new Vector2f(200, 400), 1);
-            this.setHide(false);
+            this.setVisible(true);
             if (this.currTooltip != this.uib.selectedCard.getCard().getTooltip()) {
                 this.currTooltip = this.uib.selectedCard.getCard().getTooltip();
                 this.tooltipPanel.setTooltip(this.currTooltip);
                 this.scroll.childoffset.y = 0;
             }
-            String effectstext = "Effects:\n";
+            StringBuilder effectstext = new StringBuilder("Effects:\n");
             for (Effect e : this.uib.selectedCard.getCard().getEffects(false)) {
                 if (!e.description.isEmpty()) {
-                    effectstext += "- " + e.description + (e.mute ? " <b> MUTED </b> " : "") + "\n";
+                    effectstext.append("- ").append(e.description).append(e.mute ? " <b> MUTED </b> " : "").append("\n");
                 }
             }
-            this.effects.setText(effectstext);
-            if (!this.ub.getHide()) {
+            this.effects.setText(effectstext.toString());
+            if (this.ub.isVisible()) {
                 this.ub.setPos(new Vector2f(0, (float) this.tooltipPanel.getBottom(false, false) + 32), 1);
                 this.effects.setPos(
                         new Vector2f((float) this.getLocalLeft(true), (float) this.ub.getBottom(false, false) + 10),
@@ -79,7 +79,7 @@ public class CardSelectPanel extends UIBox {
                         (float) this.tooltipPanel.getBottom(false, false) + 10), 0.99);
             }
         } else {
-            this.setHide(true);
+            this.setVisible(false);
         }
 
     }

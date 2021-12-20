@@ -4,24 +4,15 @@ package server.playeraction;
 // turned into its corresponding object.
 public class ActionIDLinker {
 
-    public ActionIDLinker() {
-        // TODO Auto-generated constructor stub
-    }
-
     public static Class<? extends PlayerAction> getClass(int id) {
         // next id is 5
-        switch (id) {
-        case EndTurnAction.ID:
-            return EndTurnAction.class;
-        case OrderAttackAction.ID:
-            return OrderAttackAction.class;
-        case PlayCardAction.ID:
-            return PlayCardAction.class;
-        case UnleashMinionAction.ID:
-            return UnleashMinionAction.class;
-        default:
-            return null;
-        }
+        return switch (id) {
+            case EndTurnAction.ID -> EndTurnAction.class;
+            case OrderAttackAction.ID -> OrderAttackAction.class;
+            case PlayCardAction.ID -> PlayCardAction.class;
+            case UnleashMinionAction.ID -> UnleashMinionAction.class;
+            default -> null;
+        };
     }
 
 }

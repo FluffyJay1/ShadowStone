@@ -9,13 +9,13 @@ import server.*;
 import server.card.effect.*;
 import server.resolver.*;
 
-public class Card implements Cloneable {
-    public Board board;
+public class Card  {
+    public final Board board;
     public boolean alive = true; // alive means not marked for death
     public int cardpos, team;
-    private TooltipCard tooltip;
+    private final TooltipCard tooltip;
     public CardStatus status;
-    public ClassCraft craft;
+    public final ClassCraft craft;
     public Card realCard; // for visual board
     public UICard uiCard;
 
@@ -24,9 +24,9 @@ public class Card implements Cloneable {
      * basic effects can't get removed unlike additional effects (e.g. bounce
      * effects), but they can be muted
      */
-    private List<Effect> effects = new LinkedList<>(), basicEffects = new LinkedList<>(), removedEffects = new LinkedList<>();
+    private final List<Effect> effects = new LinkedList<>(), basicEffects = new LinkedList<>(), removedEffects = new LinkedList<>();
     // for convenience, a subset of above effects that are listeners
-    public List<Effect> listeners = new LinkedList<>();
+    public final List<Effect> listeners = new LinkedList<>();
 
     public Card(Board board, TooltipCard tooltip) {
         this.board = board;
@@ -149,7 +149,7 @@ public class Card implements Cloneable {
             stats = this.finalStatEffects;
         }
         stats.resetStats();
-        List<Effect> relevant = basic ? this.getEffects(basic) : this.getFinalEffects(false);
+        List<Effect> relevant = basic ? this.getEffects(true) : this.getFinalEffects(false);
         for (Effect e : relevant) {
             stats.applyEffectStats(e);
         }
@@ -206,22 +206,6 @@ public class Card implements Cloneable {
         return list;
     }
 
-    // cloning a card ingame should be done as a create card + copy effect
-    // events
-    @Override
-    public Card clone() throws CloneNotSupportedException {
-        Card c = (Card) super.clone();
-        c.basicEffects = new LinkedList<>();
-        for (Effect e : this.basicEffects) {
-            c.addEffect(true, e.clone());
-        }
-        c.effects = new LinkedList<>();
-        for (Effect e : this.effects) {
-            c.addEffect(false, e.clone());
-        }
-        return c;
-    }
-
     public String cardPosToString() {
         return this.status.toString() + " " + this.cardpos + " ";
     }
@@ -249,7 +233,7 @@ public class Card implements Cloneable {
     public static Card createFromConstructorString(Board b, StringTokenizer st) {
         Class<? extends Card> cardClass;
         try {
-            cardClass = (Class<? extends Card>) Class.forName(st.nextToken());
+            cardClass = Class.forName(st.nextToken()).asSubclass(Card.class);
             return createFromConstructor(b, cardClass);
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
@@ -291,22 +275,15 @@ public class Card implements Cloneable {
         if (cardpos == -1) { // mission failed we'll get em next time
             return null;
         }
-        switch (status) {
-        case "HAND":
-            return p.hand.cards.get(cardpos);
-        case "BOARD":
-            return b.getBoardObject(team, cardpos);
-        case "DECK":
-            return p.deck.cards.get(cardpos);
-        case "GRAVEYARD":
-            return p.board.getGraveyard(team).get(cardpos);
-        case "UNLEASHPOWER":
-            return p.unleashPower;
-        case "LEADER":
-            return p.leader;
-        default:
-            return null;
-        }
+        return switch (status) {
+            case "HAND" -> p.hand.cards.get(cardpos);
+            case "BOARD" -> b.getBoardObject(team, cardpos);
+            case "DECK" -> p.deck.cards.get(cardpos);
+            case "GRAVEYARD" -> p.board.getGraveyard(team).get(cardpos);
+            case "UNLEASHPOWER" -> p.unleashPower;
+            case "LEADER" -> p.leader;
+            default -> null;
+        };
     }
 
     public static int compareDefault(Card a, Card b) {

@@ -11,7 +11,7 @@ public class ResolutionResult {
      * representations is to let the AI keep track of the events that happened so it
      * can undo them
      */
-    public List<Event> events;
+    public final List<Event> events;
     public boolean rng;
 
     public ResolutionResult() {

@@ -8,7 +8,7 @@ import server.card.*;
 // deprecated, see event groups
 public class EventOnAttacked extends Event {
     public static final int ID = 26;
-    public Minion owner;
+    public final Minion owner;
 
     public EventOnAttacked(Minion owner) {
         super(ID);

@@ -15,17 +15,17 @@ import server.card.effect.Effect;
 public class EventDamage extends Event {
     // whenever damage is dealt
     public static final int ID = 3;
-    public List<Integer> damage;
-    public List<Minion> m;
-    public List<Boolean> poisonous;
+    public final List<Integer> damage;
+    public final List<Minion> m;
+    public final List<Boolean> poisonous;
     private List<Integer> oldHealth;
     private List<Boolean> oldAlive;
-    public List<Card> markedForDeath;
-    public Card cardSource; // used for animation probably (relied on for minion attack)
+    public final List<Card> markedForDeath;
+    public final Card cardSource; // used for animation probably (relied on for minion attack)
     public Effect effectSource; // used for animation probably, may be null
 
     // not proud of incorporating client animation logic into serverside game logic, but it's what we have to do
-    public Class<? extends EventAnimationDamage> animation;
+    public final Class<? extends EventAnimationDamage> animation;
 
     public EventDamage(Card source, List<Minion> m, List<Integer> damage, List<Boolean> poisonous,
             List<Card> markedForDeath, Class<? extends EventAnimationDamage> animation) {
@@ -52,7 +52,7 @@ public class EventDamage extends Event {
             this.oldHealth.add(minion.health);
             this.oldAlive.add(minion.alive);
             if ((this.poisonous.get(i) && this.damage.get(i) > 0 && !(minion instanceof Leader))
-                    || (minion.health > 0 && minion.health <= damage.get(i))) {
+                    || (minion.health > 0 && minion.health <= damage.get(i)) && minion.alive) {
                 // TODO poison immunity
                 minion.alive = false;
                 this.markedForDeath.add(minion);
@@ -77,7 +77,7 @@ public class EventDamage extends Event {
                 .append(Card.referenceOrNull(this.cardSource)).append(Effect.referenceOrNull(this.effectSource))
                 .append(this.m.size()).append(" ");
         for (int i = 0; i < this.m.size(); i++) {
-            builder.append(this.m.get(i).toReference() + this.damage.get(i) + " " + this.poisonous.get(i) + " ");
+            builder.append(this.m.get(i).toReference()).append(this.damage.get(i)).append(" ").append(this.poisonous.get(i)).append(" ");
         }
         builder.append("\n");
         return builder.toString();
@@ -89,7 +89,7 @@ public class EventDamage extends Event {
         // only do reflection on this if we may need to draw it
         if (!classname.equals("null") && b instanceof VisualBoard) {
             try {
-                anim = (Class<? extends EventAnimationDamage>) Class.forName(classname);
+                anim = Class.forName(classname).asSubclass(EventAnimationDamage.class);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -97,9 +97,9 @@ public class EventDamage extends Event {
         Card cardSource = Card.fromReference(b, st);
         Effect effectSource = Effect.fromReference(b, st);
         int size = Integer.parseInt(st.nextToken());
-        ArrayList<Minion> m = new ArrayList<Minion>(size);
-        ArrayList<Integer> damage = new ArrayList<Integer>(size);
-        ArrayList<Boolean> poisonous = new ArrayList<Boolean>(size);
+        ArrayList<Minion> m = new ArrayList<>(size);
+        ArrayList<Integer> damage = new ArrayList<>(size);
+        ArrayList<Boolean> poisonous = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             Minion minion = (Minion) Card.fromReference(b, st);
             int d = Integer.parseInt(st.nextToken());

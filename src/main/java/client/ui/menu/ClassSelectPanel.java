@@ -40,11 +40,11 @@ public class ClassSelectPanel extends UIBox {
         StringTokenizer st = new StringTokenizer(strarg);
         switch (st.nextToken()) {
         case SELECT:
-            this.setHide(true);
+            this.setVisible(false);
             this.alert(strarg, intarg);
             break;
         case SELECT_CANCEL:
-            this.setHide(true);
+            this.setVisible(false);
             this.alert(strarg, intarg);
             break;
         default:

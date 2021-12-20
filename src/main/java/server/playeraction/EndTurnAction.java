@@ -9,7 +9,7 @@ public class EndTurnAction extends PlayerAction {
 
     public static final int ID = 4;
 
-    public int team;
+    public final int team;
 
     public EndTurnAction(int team) {
         super(ID);

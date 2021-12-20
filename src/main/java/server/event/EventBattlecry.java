@@ -8,7 +8,7 @@ import server.card.*;
 // deprecated, see event groups
 public class EventBattlecry extends Event {
     public static final int ID = 19;
-    public Card owner;
+    public final Card owner;
 
     public EventBattlecry(Card owner) {
         super(ID);

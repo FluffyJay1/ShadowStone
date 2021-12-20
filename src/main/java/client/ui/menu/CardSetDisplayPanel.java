@@ -15,8 +15,8 @@ public class CardSetDisplayPanel extends UIBox {
     public static final String CARDSET_CLICK = "cardsetclick";
     public static final String BACKGROUND_CLICK = "cardsetbackgroundclick";
     CardSet set;
-    ScrollingContext scroll;
-    List<CardDisplayUnit> cards = new ArrayList<CardDisplayUnit>();
+    final ScrollingContext scroll;
+    final List<CardDisplayUnit> cards = new ArrayList<>();
 
     public CardSetDisplayPanel(UI ui, Vector2f pos) {
         super(ui, pos, new Vector2f(1600, 500), "res/ui/uiboxborder.png");
@@ -63,12 +63,7 @@ public class CardSetDisplayPanel extends UIBox {
     }
 
     public void updateCardPositions() {
-        this.cards.sort(new Comparator<CardDisplayUnit>() {
-            @Override
-            public int compare(CardDisplayUnit a, CardDisplayUnit b) {
-                return Card.compareDefault(a.card, b.card);
-            }
-        });
+        this.cards.sort((a, b) -> Card.compareDefault(a.card, b.card));
         for (int i = 0; i < this.cards.size(); i++) {
             this.cards.get(i).setPos(new Vector2f(i % 8 * 160 - 560, i / 8 * 100 - 70), 0.99);
         }

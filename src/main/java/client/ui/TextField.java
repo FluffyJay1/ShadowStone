@@ -9,7 +9,7 @@ public class TextField extends UIBox {
     public static final double SPAM_INTERVAL = 0.02;
     int cursorPos;
     String text;
-    Text dispText;
+    final Text dispText;
     boolean lctrl, rctrl, lshift, rshift, lalt, ralt, letter;
     int pressedKey;
     char pressedChar;

@@ -12,8 +12,8 @@ import java.util.List;
  * Resolver to wrap a resolver list with a flag eventgroup
  */
 public class FlagResolver extends Resolver {
-    Card c;
-    List<Resolver> resolvers;
+    final Card c;
+    final List<Resolver> resolvers;
     public FlagResolver(Card c, List<Resolver> resolvers) {
         super(false);
         this.c = c;

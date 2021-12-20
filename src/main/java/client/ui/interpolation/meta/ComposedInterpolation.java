@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ComposedInterpolation<T> implements Interpolation<T> {
-    private List<Interpolation<T>> interpolationList;
-    private List<Double> transitionPoints;
+    private final List<Interpolation<T>> interpolationList;
+    private final List<Double> transitionPoints;
     private int currInd; // to avoid having to find which interpolation to use every time
 
     public ComposedInterpolation(List<Interpolation<T>> interpolationList, List<Double> weightList) {
@@ -16,7 +16,7 @@ public class ComposedInterpolation<T> implements Interpolation<T> {
         // process weight list into transition points
         this.transitionPoints = new ArrayList<>(weightList.size() - 1);
         double totalWeight = weightList.stream().reduce(0., Double::sum);
-        for (int i = 0; i < transitionPoints.size(); i++) {
+        for (int i = 0; i < interpolationList.size(); i++) {
             this.transitionPoints.add(weightList.get(i + 1) / totalWeight);
         }
         this.currInd = 0;

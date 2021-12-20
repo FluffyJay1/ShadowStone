@@ -2,13 +2,13 @@ package client.ui.game.visualboardanimation.eventgroupanimation;
 
 import client.VisualBoard;
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
-import org.newdawn.slick.Graphics;
 import server.event.eventgroup.EventGroup;
 
 public abstract class EventGroupAnimation implements VisualBoardAnimation {
     protected VisualBoard visualBoard;
     public EventGroup eventgroup;
-    double time, maxTime;
+    double time;
+    final double maxTime;
 
     public EventGroupAnimation(double time) {
         this.time = 0;

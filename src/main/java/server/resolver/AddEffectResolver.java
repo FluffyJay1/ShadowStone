@@ -8,11 +8,11 @@ import server.card.effect.*;
 import server.event.*;
 
 public class AddEffectResolver extends Resolver {
-    List<? extends Card> c;
-    Effect e;
+    final List<? extends Card> c;
+    final Effect e;
 
     public List<Effect> effects;
-    public List<Card> destroyed;
+    public final List<Card> destroyed;
 
     public AddEffectResolver(List<? extends Card> c, Effect e) {
         super(false);

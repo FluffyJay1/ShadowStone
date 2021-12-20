@@ -20,8 +20,8 @@ import server.card.Card;
 public class EventGroup {
     public static final char PUSH_TOKEN = 'g';
     public static final char POP_TOKEN = 'p';
-    public EventGroupType type;
-    public List<Card> cards; // if there are relevant cards involved
+    public final EventGroupType type;
+    public final List<Card> cards; // if there are relevant cards involved
 
     // Number of events + non-empty groups under this
     // only to be used by the server to determine if empty
@@ -56,8 +56,7 @@ public class EventGroup {
         for (int i = 0; i < ncards; i++) {
             cards.add(Card.fromReference(b, st));
         }
-        EventGroup ret = new EventGroup(type, cards);
-        return ret;
+        return new EventGroup(type, cards);
     }
 
     // determine whether an eventline is a group

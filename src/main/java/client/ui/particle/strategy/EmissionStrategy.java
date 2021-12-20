@@ -6,8 +6,8 @@ import client.ui.particle.strategy.timing.EmissionTimingStrategy;
 // wew design pattern abuse complete with unnecessarily long class names
 // so much abstraction it's a modern art masterpiece
 public class EmissionStrategy {
-    private EmissionTimingStrategy ets;
-    private EmissionPropertyStrategy eps;
+    private final EmissionTimingStrategy ets;
+    private final EmissionPropertyStrategy eps;
     public EmissionStrategy(EmissionTimingStrategy ets, EmissionPropertyStrategy eps) {
         this.ets = ets;
         this.eps = eps;

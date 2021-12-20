@@ -2,11 +2,8 @@ package client.ui.game;
 
 import java.awt.Color;
 import java.util.*;
-import java.util.List;
 
 import org.newdawn.slick.*;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.*;
 
 import client.Game;
@@ -36,8 +33,8 @@ public class UICard extends UIBox {
     public static final String CARD_CLICK = "cardclick";
     private Card card;
     private Image cardImage, subImage;
-    private UIBoard uib;
-    private List<Image> icons;
+    private final UIBoard uib;
+    private final List<Image> icons;
 
     public UICard(UI ui, UIBoard uib, Card c) {
         super(ui, new Vector2f(), CARD_DIMENSIONS, "");
@@ -65,7 +62,7 @@ public class UICard extends UIBox {
 
     public void setCard(Card card) {
         this.card = card;
-        if (card != null && card instanceof UnleashPower) {
+        if (card instanceof UnleashPower) {
             this.setDim(new Vector2f(UNLEASH_POWER_RADIUS * 2, UNLEASH_POWER_RADIUS * 2));
             this.hitcircle = true;
         }
@@ -82,10 +79,8 @@ public class UICard extends UIBox {
     @Override
     public void draw(Graphics g) {
         super.draw(g);
-        if (!this.getHide() && this.card != null) {
+        if (this.isVisible() && this.card != null) {
             this.drawCard(g, this.getFinalPos(), this.getScale());
-            // g.drawString("" + this.getZ(), this.getFinalPos().x,
-            // this.getFinalPos().y);
         }
     }
 
@@ -174,8 +169,8 @@ public class UICard extends UIBox {
             if (this.card.realCard != null && this.card.realCard instanceof Minion
                     && ((Minion) this.card.realCard).canAttack() && this.getMinion().canAttack()) {
                 if (this.getMinion().summoningSickness
-                        && ((Minion) this.card.realCard).finalStatEffects.getStat(EffectStats.RUSH) > 0
-                        && ((Minion) this.card.realCard).finalStatEffects.getStat(EffectStats.STORM) == 0) {
+                        && this.card.realCard.finalStatEffects.getStat(EffectStats.RUSH) > 0
+                        && this.card.realCard.finalStatEffects.getStat(EffectStats.STORM) == 0) {
                     g.setColor(org.newdawn.slick.Color.yellow);
                 } else {
                     g.setColor(org.newdawn.slick.Color.cyan);

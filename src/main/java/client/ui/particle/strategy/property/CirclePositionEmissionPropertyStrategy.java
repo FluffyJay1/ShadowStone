@@ -3,7 +3,7 @@ package client.ui.particle.strategy.property;
 import client.ui.particle.Particle;
 
 public class CirclePositionEmissionPropertyStrategy implements EmissionPropertyStrategy {
-    private double radius;
+    private final double radius;
     public CirclePositionEmissionPropertyStrategy(double radius) {
         this.radius = radius;
     }

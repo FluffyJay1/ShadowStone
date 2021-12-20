@@ -10,8 +10,8 @@ public class OrderAttackAction extends PlayerAction {
 
     public static final int ID = 3;
 
-    public Minion attacker;
-    public Minion victim;
+    public final Minion attacker;
+    public final Minion victim;
 
     public OrderAttackAction(Minion attacker, Minion victim) {
         super(ID);

@@ -4,7 +4,7 @@ import client.ui.interpolation.Interpolation;
 import client.ui.particle.Particle;
 
 public class MaxTimeEmissionPropertyStrategy implements EmissionPropertyStrategy {
-    private Interpolation<Double> timeRange;
+    private final Interpolation<Double> timeRange;
 
     public MaxTimeEmissionPropertyStrategy(Interpolation<Double> timeRange) {
         this.timeRange = timeRange;

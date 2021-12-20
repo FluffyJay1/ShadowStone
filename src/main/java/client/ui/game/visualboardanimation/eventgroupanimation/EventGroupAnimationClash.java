@@ -4,8 +4,6 @@ import client.ui.game.UICard;
 import org.newdawn.slick.*;
 
 import client.Game;
-import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
-import server.event.*;
 
 public class EventGroupAnimationClash extends EventGroupAnimation {
     public EventGroupAnimationClash() {

@@ -8,8 +8,8 @@ public class EffectStats implements Cloneable { // this is literally just a
     // what's an enum
     public static final int COST = 0, ATTACK = 1, MAGIC = 2, HEALTH = 3, ATTACKS_PER_TURN = 4, STORM = 5, RUSH = 6,
             WARD = 7, BANE = 8, POISONOUS = 9, COUNTDOWN = 10;
-    public int[] stats = new int[NUM_STATS];
-    public boolean[] use = new boolean[NUM_STATS];
+    public final int[] stats = new int[NUM_STATS];
+    public final boolean[] use = new boolean[NUM_STATS];
 
     public EffectStats() {
 
@@ -49,11 +49,11 @@ public class EffectStats implements Cloneable { // this is literally just a
 
     @Override
     public String toString() {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (int i = 0; i < NUM_STATS; i++) {
-            s += (use[i] ? "T" : "F") + " " + stats[i] + " ";
+            s.append(use[i] ? "T" : "F").append(" ").append(stats[i]).append(" ");
         }
-        return s;
+        return s.toString();
     }
 
     public static EffectStats fromString(StringTokenizer st) {

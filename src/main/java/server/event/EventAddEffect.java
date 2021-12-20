@@ -12,12 +12,12 @@ import server.card.effect.*;
  */
 public class EventAddEffect extends Event {
     public static final int ID = 1;
-    public List<? extends Card> c = new ArrayList<>();
-    Effect e;
-    public List<Effect> effects;
+    public final List<? extends Card> c;
+    final Effect e;
+    public final List<Effect> effects;
     private List<Integer> oldHealth;
     private List<Boolean> oldAlive;
-    public List<Card> markedForDeath;
+    public final List<Card> markedForDeath;
 
     public EventAddEffect(List<? extends Card> c, Effect e, List<Card> markedForDeath) {
         super(ID);
@@ -60,13 +60,13 @@ public class EventAddEffect extends Event {
                 if (c.finalStatEffects.getStat(EffectStats.HEALTH) < m.health) {
                     m.health = m.finalStatEffects.getStat(EffectStats.HEALTH);
                 }
-                if (m.health <= 0) {
+                if (m.health <= 0 && m.alive) {
                     m.alive = false;
                     this.markedForDeath.add(m);
                 }
             }
             if (c.finalStatEffects.getUse(EffectStats.COUNTDOWN)
-                    && c.finalStatEffects.getStat(EffectStats.COUNTDOWN) <= 0) {
+                    && c.finalStatEffects.getStat(EffectStats.COUNTDOWN) <= 0 && c.alive) {
                 c.alive = false;
                 this.markedForDeath.add(c);
             }
@@ -90,8 +90,8 @@ public class EventAddEffect extends Event {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(this.id).append(" ").append(this.c.size()).append(" ").append(e.toString());
-        for (int i = 0; i < this.c.size(); i++) {
-            builder.append(this.c.get(i).toReference());
+        for (Card card : this.c) {
+            builder.append(card.toReference());
         }
         builder.append("\n");
         return builder.toString();
@@ -100,7 +100,7 @@ public class EventAddEffect extends Event {
     public static EventAddEffect fromString(Board b, StringTokenizer st) {
         int size = Integer.parseInt(st.nextToken());
         Effect e = Effect.fromString(b, st);
-        ArrayList<Card> c = new ArrayList<Card>();
+        ArrayList<Card> c = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             Card card = Card.fromReference(b, st);
             c.add(card);

@@ -31,7 +31,7 @@ public abstract class Resolver {
         if (b.winner == 0) {
             r.onResolve(b, rl, el);
             if (r.rng) {
-                this.rng = r.rng;
+                this.rng = true;
             }
         }
         return r;

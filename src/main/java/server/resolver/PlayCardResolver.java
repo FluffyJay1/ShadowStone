@@ -10,10 +10,10 @@ import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
 
 public class PlayCardResolver extends Resolver {
-    public Player p;
-    public Card c;
-    int position;
-    String battlecryTargets;
+    public final Player p;
+    public final Card c;
+    final int position;
+    final String battlecryTargets;
 
     public PlayCardResolver(Player p, Card c, int position, String battlecryTargets) {
         super(false);

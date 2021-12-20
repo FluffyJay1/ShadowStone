@@ -5,7 +5,7 @@ import java.util.TimerTask;
 import java.util.Date;
 
 class ForceEnd extends TimerTask {
-    Board b;
+    final Board b;
 
     public ForceEnd(Board b) {
         this.b = b;
@@ -19,7 +19,7 @@ class ForceEnd extends TimerTask {
 
 public class TurnTimer extends Thread {
     Timer t;
-    Board b;
+    final Board b;
     Date d;
 
     public TurnTimer(Board b) {

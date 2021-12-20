@@ -10,7 +10,8 @@ import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
 
 public class MinionAttackResolver extends Resolver {
-    Minion m1, m2;
+    final Minion m1;
+    final Minion m2;
 
     public MinionAttackResolver(Minion m1, Minion m2) {
         super(false);

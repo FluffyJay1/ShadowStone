@@ -9,10 +9,11 @@ import server.card.effect.*;
 public class EventRestore extends Event {
     public static final int ID = 13;
     // actualheal is (kind of) for display only
-    public List<Integer> heal, actualHeal;
-    public List<Minion> m;
+    public final List<Integer> heal;
+    public final List<Integer> actualHeal;
+    public final List<Minion> m;
     private List<Integer> oldHealth;
-    public Effect source; // probably for animation purposes
+    public final Effect source; // probably for animation purposes
 
     public EventRestore(Effect source, List<Minion> m, List<Integer> heal) {
         super(ID);
@@ -24,7 +25,7 @@ public class EventRestore extends Event {
 
     @Override
     public void resolve() {
-        this.oldHealth = new ArrayList<Integer>();
+        this.oldHealth = new ArrayList<>();
         for (int i = 0; i < this.m.size(); i++) { // whatever
             Minion minion = this.m.get(i);
             this.oldHealth.add(minion.health);

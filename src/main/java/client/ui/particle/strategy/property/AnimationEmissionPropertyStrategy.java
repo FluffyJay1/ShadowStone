@@ -6,7 +6,7 @@ import client.ui.particle.Particle;
 import java.util.function.Supplier;
 
 public class AnimationEmissionPropertyStrategy implements EmissionPropertyStrategy {
-    Supplier<Animation> animationSupplier;
+    final Supplier<Animation> animationSupplier;
     public AnimationEmissionPropertyStrategy(Supplier<Animation> animationSupplier) {
         this.animationSupplier = animationSupplier;
     }

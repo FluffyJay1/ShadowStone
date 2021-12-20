@@ -25,25 +25,23 @@ public class StateDeckbuild extends BasicGameState {
     CardSelectTooltipPanel cardTooltip;
 
     @Override
-    public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+    public void init(GameContainer arg0, StateBasedGame arg1) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+    public void enter(GameContainer arg0, StateBasedGame arg1) {
         this.ui = new UI();
         arg0.getInput().addListener(this.ui);
-        this.ui.addListener(new UIEventListener() {
-            @Override
-            public void onAlert(String strarg, int... intarg) {
-                StringTokenizer st = new StringTokenizer(strarg);
-                switch (st.nextToken()) {
+        this.ui.addListener((strarg, intarg) -> {
+            StringTokenizer st = new StringTokenizer(strarg);
+            switch (st.nextToken()) {
                 case DeckSelectPanel.DECK_CONFIRM:
                     // selected deck to edit
                     if (deckselectpanel.selectedDeckUnit != null) {
                         if (deckselectpanel.selectedDeckUnit.deck == null) {
-                            classSelect.setHide(false);
+                            classSelect.setVisible(true);
                         } else {
                             newDeck = false;
                             // select and edit deck
@@ -51,7 +49,7 @@ public class StateDeckbuild extends BasicGameState {
                             enterDeckbuilding();
 
                         }
-                        deckselectpanel.setHide(true);
+                        deckselectpanel.setVisible(false);
 
                     }
                     break;
@@ -70,24 +68,24 @@ public class StateDeckbuild extends BasicGameState {
                 case ClassSelectPanel.SELECT_CANCEL:
                     // cancel selecting class
                     currentDeck = null;
-                    deckselectpanel.setHide(false);
-                    deckdisplaypanel.setHide(true);
+                    deckselectpanel.setVisible(true);
+                    deckdisplaypanel.setVisible(false);
                     break;
                 case DeckDisplayPanel.CARD_CLICK:
                     // select card in deckbuilder
                     Class<? extends Card> cardClass;
                     try {
-                        cardClass = (Class<? extends Card>) Class.forName(st.nextToken());
+                        cardClass = Class.forName(st.nextToken()).asSubclass(Card.class);
                         switch (intarg[0]) {
-                        case 1:
-                            // display its tooltip
-                            cardTooltip.setTooltip(CardSet.getCardTooltip(cardClass));
-                            break;
-                        case 2:
-                            deckdisplaypanel.removeCard(cardClass);
-                            break;
-                        default:
-                            break;
+                            case 1:
+                                // display its tooltip
+                                cardTooltip.setTooltip(CardSet.getCardTooltip(cardClass));
+                                break;
+                            case 2:
+                                deckdisplaypanel.removeCard(cardClass);
+                                break;
+                            default:
+                                break;
                         }
                     } catch (ClassNotFoundException e1) {
                         // TODO Auto-generated catch block
@@ -107,28 +105,29 @@ public class StateDeckbuild extends BasicGameState {
                     currentDeck = null;
                     deckselectpanel.selectedDeckUnit = null;
                     deckselectpanel.updateDecks();
-                    deckselectpanel.setHide(false);
-                    deckdisplaypanel.setHide(true);
-                    cardsetpanel.setHide(true);
+                    deckselectpanel.setVisible(true);
+                    deckdisplaypanel.setVisible(false);
+                    cardsetpanel.setVisible(false);
                     break;
                 case DeckDisplayPanel.BACKGROUND_CLICK:
+                case CardSetDisplayPanel.BACKGROUND_CLICK:
                     cardTooltip.setTooltip(null);
                     break;
                 case CardSetDisplayPanel.CARDSET_CLICK:
                     // select card in cards to choose from
                     try {
                         String cardClassString = st.nextToken();
-                        cardClass = (Class<? extends Card>) Class.forName(cardClassString);
+                        cardClass = Class.forName(cardClassString).asSubclass(Card.class);
                         switch (intarg[0]) {
-                        case 1:
-                            // display its tooltip
-                            cardTooltip.setTooltip(CardSet.getCardTooltip(cardClass));
-                            break;
-                        case 2:
-                            deckdisplaypanel.addCard(cardClass);
-                            break;
-                        default:
-                            break;
+                            case 1:
+                                // display its tooltip
+                                cardTooltip.setTooltip(CardSet.getCardTooltip(cardClass));
+                                break;
+                            case 2:
+                                deckdisplaypanel.addCard(cardClass);
+                                break;
+                            default:
+                                break;
                         }
                     } catch (ClassNotFoundException e) {
                         // TODO Auto-generated catch block
@@ -137,53 +136,50 @@ public class StateDeckbuild extends BasicGameState {
                     break;
                 default:
                     break;
-                case CardSetDisplayPanel.BACKGROUND_CLICK:
-                    cardTooltip.setTooltip(null);
-                }
             }
         });
         this.deckdisplaypanel = new DeckDisplayPanel(ui, new Vector2f(0, -0.2f), true);
-        this.deckdisplaypanel.setHide(true);
+        this.deckdisplaypanel.setVisible(false);
         this.deckdisplaypanel.relpos = true;
         this.ui.addUIElementParent(this.deckdisplaypanel);
         this.cardsetpanel = new CardSetDisplayPanel(ui, new Vector2f(0, 0.2f));
-        this.cardsetpanel.setHide(true);
+        this.cardsetpanel.setVisible(false);
         this.cardsetpanel.relpos = true;
         this.ui.addUIElementParent(this.cardsetpanel);
         this.deckselectpanel = new DeckSelectPanel(ui, new Vector2f(0, 0), true);
         this.deckselectpanel.relpos = true;
         this.ui.addUIElementParent(this.deckselectpanel);
         this.classSelect = new ClassSelectPanel(ui, new Vector2f(0, 0));
-        this.classSelect.setHide(true);
+        this.classSelect.setVisible(false);
         this.classSelect.relpos = true;
         this.ui.addUIElementParent(this.classSelect);
         this.cardTooltip = new CardSelectTooltipPanel(this.ui, new Vector2f(200, 300), 5);
-        this.cardTooltip.setHide(true);
+        this.cardTooltip.setVisible(false);
         this.ui.addUIElementParent(this.cardTooltip);
 
     }
 
     private void enterDeckbuilding() {
         currentCardSet = new CardSet(CardSet.PLAYABLE_SET).filterCraft(ClassCraft.NEUTRAL, currentDeck.craft);
-        cardsetpanel.setHide(false);
+        cardsetpanel.setVisible(true);
         cardsetpanel.setCardSet(currentCardSet);
-        deckdisplaypanel.setHide(false);
+        deckdisplaypanel.setVisible(true);
         deckdisplaypanel.setDeck(currentDeck.copy());
     }
 
     @Override
-    public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+    public void leave(GameContainer arg0, StateBasedGame arg1) {
         arg0.getInput().removeListener(this.ui);
     }
 
     @Override
-    public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
+    public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) {
         // TODO Auto-generated method stub
         this.ui.draw(arg2);
     }
 
     @Override
-    public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
+    public void update(GameContainer arg0, StateBasedGame arg1, int arg2) {
         // TODO Auto-generated method stub
         this.ui.update(arg2 / 1000.);
     }

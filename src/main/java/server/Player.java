@@ -6,10 +6,13 @@ import server.card.unleashpower.*;
 
 public class Player {
     public Player realPlayer;
-    public Board board;
-    public Deck deck;
-    public Hand hand;
-    public int team, mana = 0, maxmana = 3, maxmaxmana = 10; // don't ask
+    public final Board board;
+    public final Deck deck;
+    public final Hand hand;
+    public final int team;
+    public int mana = 0;
+    public int maxmana = 3;
+    public int maxmaxmana = 10; // don't ask
     public boolean unleashAllowed = true;
     public Leader leader;
     public UnleashPower unleashPower;
@@ -23,10 +26,8 @@ public class Player {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.team).append(" ").append(this.mana).append(" ").append(this.maxmana).append(" ")
-                .append(this.maxmaxmana).append(" ").append(this.unleashAllowed).append(" ");
-        return sb.toString();
+        return this.team + " " + this.mana + " " + this.maxmana + " " +
+                this.maxmaxmana + " " + this.unleashAllowed + " ";
     }
 
     // uh

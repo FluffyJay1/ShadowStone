@@ -7,8 +7,8 @@ import org.newdawn.slick.geom.Vector2f;
 // set velocity with direction away from (0, 0), or randomly if at (0, 0)
 // depends on current position, i.e. ordering of strategies matters
 public class DirectionalVelocityEmissionPropertyStrategy implements EmissionPropertyStrategy {
-    Interpolation<Double> speedRange;
-    Vector2f direction;
+    final Interpolation<Double> speedRange;
+    final Vector2f direction;
 
     public DirectionalVelocityEmissionPropertyStrategy(Vector2f direction, Interpolation<Double> speedRange) {
         this.direction = direction.copy().normalise();

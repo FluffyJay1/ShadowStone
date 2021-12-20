@@ -10,9 +10,9 @@ public class UnleashMinionAction extends PlayerAction {
 
     public static final int ID = 2;
 
-    public Player p;
-    public Minion m;
-    String unleashTargets;
+    public final Player p;
+    public final Minion m;
+    final String unleashTargets;
 
     public UnleashMinionAction(Player p, Minion m, String unleashTargets) {
         super(ID);
@@ -42,6 +42,7 @@ public class UnleashMinionAction extends PlayerAction {
     public static UnleashMinionAction fromString(Board b, StringTokenizer st) {
         Player p = b.getPlayer(Integer.parseInt(st.nextToken()));
         Minion m = (Minion) Card.fromReference(b, st);
+        assert m != null;
         Target.setListFromString(m.getUnleashTargets(), b, st);
         return new UnleashMinionAction(p, m, Target.listToString(m.getUnleashTargets()));
     }

@@ -4,7 +4,7 @@ import client.ui.interpolation.Interpolation;
 import org.newdawn.slick.geom.Vector2f;
 
 public class CircleInterpolation implements Interpolation<Vector2f> {
-    double radius;
+    final double radius;
 
     public CircleInterpolation() {
         this(1);

@@ -8,7 +8,7 @@ import client.ui.UIBox;
 import server.card.cardpack.ConstructedDeck;
 
 public class DeckSelectUnit extends UIBox {
-    Text text;
+    final Text text;
     public ConstructedDeck deck;
 
     public DeckSelectUnit(UI ui) {

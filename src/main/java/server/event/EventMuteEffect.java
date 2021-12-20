@@ -8,12 +8,13 @@ import server.card.effect.*;
 
 public class EventMuteEffect extends Event {
     public static final int ID = 29;
-    public Card c;
-    Effect e;
-    boolean mute;
+    public final Card c;
+    final Effect e;
+    final boolean mute;
     private boolean prevMute;
     private int prevHealth;
-    List<Card> markedForDeath;
+    private boolean oldAlive;
+    final List<Card> markedForDeath;
 
     public EventMuteEffect(Card c, Effect e, boolean mute, List<Card> markedForDeath) {
         super(ID);
@@ -26,6 +27,7 @@ public class EventMuteEffect extends Event {
     @Override
     public void resolve() {
         this.prevMute = this.e.mute;
+        this.oldAlive = this.c.alive;
         this.c.muteEffect(this.e, this.mute);
         if (this.c instanceof Minion) {
             Minion m = ((Minion) this.c);
@@ -33,12 +35,14 @@ public class EventMuteEffect extends Event {
             if (this.c.finalStatEffects.getStat(EffectStats.HEALTH) < m.health) {
                 m.health = m.finalStatEffects.getStat(EffectStats.HEALTH);
             }
-            if (m.health <= 0) {
+            if (m.health <= 0 && m.alive) {
+                m.alive = false;
                 this.markedForDeath.add(m);
             }
         }
         if (this.c.finalStatEffects.getUse(EffectStats.COUNTDOWN)
-                && this.c.finalStatEffects.getStat(EffectStats.COUNTDOWN) <= 0) {
+                && this.c.finalStatEffects.getStat(EffectStats.COUNTDOWN) <= 0 && this.c.alive) {
+            this.c.alive = false;
             this.markedForDeath.add(this.c);
         }
     }
@@ -46,6 +50,7 @@ public class EventMuteEffect extends Event {
     @Override
     public void undo() {
         this.c.muteEffect(this.e, this.prevMute);
+        this.c.alive = this.oldAlive;
         if (c instanceof Minion) {
             Minion m = ((Minion) c);
             m.health = this.prevHealth;

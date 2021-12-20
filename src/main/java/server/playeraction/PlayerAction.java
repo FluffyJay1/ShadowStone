@@ -7,7 +7,7 @@ import server.*;
 import server.resolver.*;
 
 public abstract class PlayerAction {
-    int id = 0; // literally just copying off of event
+    final int id; // literally just copying off of event
 
     public PlayerAction(int id) {
         this.id = id;
@@ -31,7 +31,7 @@ public abstract class PlayerAction {
 
     public static PlayerAction createFromString(Board b, StringTokenizer st) {
         int id = Integer.parseInt(st.nextToken());
-        Class c = ActionIDLinker.getClass(id);
+        Class<? extends  PlayerAction> c = ActionIDLinker.getClass(id);
         PlayerAction e = null;
         try {
             e = (PlayerAction) c.getMethod("fromString", Board.class, StringTokenizer.class).invoke(null, b, st);

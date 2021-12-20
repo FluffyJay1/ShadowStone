@@ -9,10 +9,10 @@ import server.resolver.*;
 public class PlayCardAction extends PlayerAction {
 
     public static final int ID = 1;
-    public Player p;
-    public Card c;
-    public int pos;
-    String battlecryTargets;
+    public final Player p;
+    public final Card c;
+    public final int pos;
+    final String battlecryTargets;
 
     public PlayCardAction(Player p, Card c, int pos, String battlecryTargets) {
         super(ID);
@@ -43,6 +43,7 @@ public class PlayCardAction extends PlayerAction {
         Player p = b.getPlayer(Integer.parseInt(st.nextToken()));
         Card c = Card.fromReference(b, st);
         int pos = Integer.parseInt(st.nextToken());
+        assert c != null;
         Target.setListFromString(c.getBattlecryTargets(), b, st);
         return new PlayCardAction(p, c, pos, Target.listToString(c.getBattlecryTargets()));
     }

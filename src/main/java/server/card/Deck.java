@@ -5,14 +5,14 @@ import java.util.*;
 import server.*;
 
 public class Deck {
-    Board board;
-    public ArrayList<Card> cards;
-    public int team;
+    final Board board;
+    public final List<Card> cards;
+    public final int team;
 
     public Deck(Board board, int team) {
         this.board = board;
         this.team = team;
-        this.cards = new ArrayList<Card>();
+        this.cards = new ArrayList<>();
     }
 
     public void updatePositions() {

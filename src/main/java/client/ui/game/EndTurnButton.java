@@ -6,8 +6,8 @@ import client.ui.*;
 import server.playeraction.*;
 
 public class EndTurnButton extends UIBox {
-    UIBoard b;
-    Text text;
+    final UIBoard b;
+    final Text text;
 
     public EndTurnButton(UI ui, UIBoard b) {
         super(ui, new Vector2f(0.38f, 0), new Vector2f(128, 128), "res/ui/border.png");
@@ -20,7 +20,7 @@ public class EndTurnButton extends UIBox {
     @Override
     public void update(double frametime) {
         super.update(frametime);
-        this.setHide(this.b.b.disableInput);
+        this.setVisible(!this.b.b.disableInput);
     }
 
     @Override

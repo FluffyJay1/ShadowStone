@@ -14,7 +14,7 @@ import java.util.List;
  * and we also want to wrap the last words resolution with an eventgroup
  */
 public class LastWordsResolver extends Resolver {
-    BoardObject bo;
+    final BoardObject bo;
     public LastWordsResolver(BoardObject bo) {
         super(false);
         this.bo = bo;

@@ -6,7 +6,6 @@ import client.ui.Animation;
 import client.ui.interpolation.realvalue.ConstantInterpolation;
 import client.ui.interpolation.realvalue.LinearInterpolation;
 import client.ui.interpolation.realvalue.QuadraticInterpolationA;
-import client.ui.particle.ParticleSystem;
 import client.ui.particle.strategy.EmissionStrategy;
 import client.ui.particle.strategy.property.*;
 import client.ui.particle.strategy.timing.InstantEmissionTimingStrategy;

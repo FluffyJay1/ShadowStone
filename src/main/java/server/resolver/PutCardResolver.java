@@ -8,11 +8,11 @@ import server.event.*;
 
 public class PutCardResolver extends Resolver {
 
-    private int team;
-    private List<Card> c;
-    private CardStatus status;
-    private List<Integer> pos;
-    public List<Card> destroyed;
+    private final int team;
+    private final List<Card> c;
+    private final CardStatus status;
+    private final List<Integer> pos;
+    public final List<Card> destroyed;
 
     public PutCardResolver(List<Card> c, CardStatus status, int team, List<Integer> pos) {
         super(false);

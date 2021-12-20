@@ -7,7 +7,7 @@ import server.card.*;
 import server.event.*;
 
 public class DestroyResolver extends Resolver {
-    List<Card> cards;
+    final List<Card> cards;
 
     public DestroyResolver(List<Card> cards) {
         super(false);

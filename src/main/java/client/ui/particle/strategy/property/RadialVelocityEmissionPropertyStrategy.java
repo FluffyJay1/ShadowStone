@@ -7,7 +7,7 @@ import org.newdawn.slick.geom.Vector2f;
 // set velocity with direction away from (0, 0), or randomly if at (0, 0)
 // depends on current position, i.e. ordering of strategies matters
 public class RadialVelocityEmissionPropertyStrategy implements EmissionPropertyStrategy {
-    Interpolation<Double> speedRange;
+    final Interpolation<Double> speedRange;
     public RadialVelocityEmissionPropertyStrategy(Interpolation<Double> speedRange) {
         this.speedRange = speedRange;
     }

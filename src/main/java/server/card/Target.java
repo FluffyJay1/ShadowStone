@@ -19,7 +19,7 @@ public class Target implements Cloneable {
     // targets are handled serverside
     private Effect creator;
     public int maxtargets;
-    private List<Card> targets = new ArrayList<Card>();
+    private List<Card> targets = new ArrayList<>();
     public String description;
     boolean ready = false;
 
@@ -70,7 +70,7 @@ public class Target implements Cloneable {
     }
 
     public void setRandomCards() {
-        List<Card> cards = new ArrayList<Card>();
+        List<Card> cards = new ArrayList<>();
         for (Card c : this.creator.owner.board.getTargetableCards()) {
             if (this.canTarget(c) && !this.targets.contains(c)) {
                 cards.add(c);
@@ -84,7 +84,7 @@ public class Target implements Cloneable {
     }
 
     public void fillRandomCards() {
-        ArrayList<Card> cards = new ArrayList<Card>();
+        ArrayList<Card> cards = new ArrayList<>();
         for (Card c : this.creator.owner.board.getTargetableCards()) {
             if (this.canTarget(c) && !this.targets.contains(c)) {
                 cards.add(c);
@@ -166,7 +166,8 @@ public class Target implements Cloneable {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        ret.targets = new LinkedList<Card>();
+        assert ret != null;
+        ret.targets = new LinkedList<>();
         ret.targets.addAll(this.targets);
         return ret;
     }
@@ -214,7 +215,7 @@ public class Target implements Cloneable {
 
     public static String listToString(List<Target> list) {
         StringBuilder builder = new StringBuilder();
-        builder.append(list.size() + " ");
+        builder.append(list.size()).append(" ");
         for (Target t : list) {
             builder.append(t.toString());
         }

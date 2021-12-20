@@ -8,11 +8,11 @@ import server.card.*;
 // Changes references, should not run concurrent with other events
 public class EventBanish extends Event {
     public static final int ID = 18;
-    public List<Card> c;
+    public final List<Card> c;
     private List<Boolean> alive;
     private List<CardStatus> prevStatus;
     private List<Integer> prevPos;
-    List<BoardObject> cardsLeavingPlay = new ArrayList<>(); // required for listeners
+    final List<BoardObject> cardsLeavingPlay = new ArrayList<>(); // required for listeners
 
     public EventBanish(List<Card> c) {
         super(ID);
@@ -91,9 +91,9 @@ public class EventBanish extends Event {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.id + " " + this.c.size() + " ");
-        for (int i = 0; i < this.c.size(); i++) {
-            builder.append(this.c.get(i).toReference());
+        builder.append(this.id).append(" ").append(this.c.size()).append(" ");
+        for (Card card : this.c) {
+            builder.append(card.toReference());
         }
         builder.append("\n");
         return builder.toString();
@@ -101,7 +101,7 @@ public class EventBanish extends Event {
 
     public static EventBanish fromString(Board b, StringTokenizer st) {
         int size = Integer.parseInt(st.nextToken());
-        ArrayList<Card> c = new ArrayList<Card>(size);
+        ArrayList<Card> c = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             Card card = Card.fromReference(b, st);
             c.add(card);

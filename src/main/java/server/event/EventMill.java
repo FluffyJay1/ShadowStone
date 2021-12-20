@@ -8,7 +8,7 @@ import server.card.*;
 // deprecated event?
 public class EventMill extends Event {
     public static final int ID = 7;
-    Card c;
+    final Card c;
 
     public EventMill(Card c) {
         super(ID);

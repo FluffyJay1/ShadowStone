@@ -35,7 +35,7 @@ public class CardSet {
     /**
      * A set of card classes
      */
-    public Set<Class<? extends Card>> cardClasses = new HashSet<>();
+    public final Set<Class<? extends Card>> cardClasses = new HashSet<>();
 
     /**
      * Default constructor
@@ -49,6 +49,7 @@ public class CardSet {
      * 
      * @param cardClasses the cards to construct the set with
      */
+    @SafeVarargs
     public CardSet(Class<? extends Card>... cardClasses) {
         this.cardClasses.addAll(Arrays.asList(cardClasses));
     }
@@ -80,9 +81,7 @@ public class CardSet {
      * @return the modified cardset
      */
     public CardSet filterCraft(ClassCraft... crafts) {
-        Predicate<Class<? extends Card>> notmatch = cardClass -> {
-            return !Arrays.asList(crafts).contains(getCardTooltip(cardClass).craft);
-        };
+        Predicate<Class<? extends Card>> notmatch = cardClass -> !Arrays.asList(crafts).contains(Objects.requireNonNull(getCardTooltip(cardClass)).craft);
         this.cardClasses.removeIf(notmatch);
         return this;
     }
@@ -110,25 +109,16 @@ public class CardSet {
      * @return The class of the default unleash power
      */
     public static Class<? extends Card> getDefaultUnleashPower(ClassCraft craft) {
-        switch (craft) {
-        case FORESTROGUE:
-            return UnleashEmbraceNature.class;
-        case SWORDPALADIN:
-            return UnleashSharpenSword.class;
-        case RUNEMAGE:
-            return UnleashImbueMagic.class;
-        case DRAGONDRUID:
-            return UnleashFeedFervor.class;
-        case SHADOWSHAMAN:
-            return UnleashBegetUndead.class;
-        case BLOODWARLOCK:
-            return UnleashTapSoul.class;
-        case HAVENPRIEST:
-            return UnleashMendWounds.class;
-        case PORTALHUNTER:
-            return UnleashEchoExistence.class;
-        default:
-            return null;
-        }
+        return switch (craft) {
+            case FORESTROGUE -> UnleashEmbraceNature.class;
+            case SWORDPALADIN -> UnleashSharpenSword.class;
+            case RUNEMAGE -> UnleashImbueMagic.class;
+            case DRAGONDRUID -> UnleashFeedFervor.class;
+            case SHADOWSHAMAN -> UnleashBegetUndead.class;
+            case BLOODWARLOCK -> UnleashTapSoul.class;
+            case HAVENPRIEST -> UnleashMendWounds.class;
+            case PORTALHUNTER -> UnleashEchoExistence.class;
+            default -> null;
+        };
     }
 }

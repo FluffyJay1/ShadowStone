@@ -7,8 +7,8 @@ import server.*;
 public class EventGameEnd extends Event {
 
     public static final int ID = 28;
-    public int victory;
-    Board b;
+    public final int victory;
+    final Board b;
 
     public EventGameEnd(Board b, int victory) {
         super(ID);

@@ -7,7 +7,7 @@ import server.card.*;
 
 public class EventTurnStart extends Event {
     public static final int ID = 15;
-    public Player p;
+    public final Player p;
     private int prevCurrentPlayerTurn;
     private int prevUnleashesThisTurn;
     private List<Boolean> prevSickness;

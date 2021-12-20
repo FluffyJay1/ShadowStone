@@ -52,15 +52,20 @@ public class AI extends Thread {
     private static final double REEVALUATION_SAMPLE_RATE_MULTIPLIER = 0.5;
 
     // Statistics to gauge AI evaluation speed
-    private int[] width = new int[REEVALUATION_MAX_DEPTH + 1], maxBranches = new int[REEVALUATION_MAX_DEPTH + 1],
-            cacheHits = new int[REEVALUATION_MAX_DEPTH + 1];
+    private final int[] width = new int[REEVALUATION_MAX_DEPTH + 1];
+    private final int[] maxBranches = new int[REEVALUATION_MAX_DEPTH + 1];
+    private final int[] cacheHits = new int[REEVALUATION_MAX_DEPTH + 1];
 
     // Map board state to cached AI calculations
-    private Map<String, BoardStateNode> nodeMap;
+    private final Map<String, BoardStateNode> nodeMap;
+
+    // When traversing the decision tree, keep track of which nodes we have already traversed, to avoid cycles
+    // highly unlikely that we need this but just to be complete
+    private final Set<BoardStateNode> traversedNodes;
 
     int difficulty;
     Board b;
-    DataStream dslocal;
+    final DataStream dslocal;
     List<String> actionSendQueue;
     boolean waitForEvents, finishedTurn;
 
@@ -68,8 +73,9 @@ public class AI extends Thread {
         this.difficulty = difficulty;
         this.dslocal = dslocal;
         this.b = new Board(team);
-        this.actionSendQueue = new LinkedList<String>();
+        this.actionSendQueue = new LinkedList<>();
         this.nodeMap = new HashMap<>();
+        this.traversedNodes = new HashSet<>();
     }
 
     @Override
@@ -100,7 +106,7 @@ public class AI extends Thread {
                 break;
             case BOARDRESET:
                 this.b = new Board(this.b.localteam);
-                this.actionSendQueue = new LinkedList<String>();
+                this.actionSendQueue = new LinkedList<>();
                 this.waitForEvents = true;
             default:
                 break;
@@ -209,7 +215,12 @@ public class AI extends Thread {
         } else {
             bsn = this.nodeMap.get(state);
             cacheHit = true;
+            if (this.traversedNodes.contains(bsn)) {
+                System.err.println("AI encountered a cycle somehow");
+                return bsn;
+            }
         }
+        this.traversedNodes.add(bsn);
         // start sampling
         int numSamples;
         if (depth >= REEVALUATION_MIN_DEPTH) {
@@ -229,14 +240,13 @@ public class AI extends Thread {
             // TODO give some actions more weight than others (e.g. unleashing)
             int branchIndex = (int) (Math.random() * bsn.unevaluatedBranches.size());
             String actionString = bsn.unevaluatedBranches.get(branchIndex);
-            List<Event> undoStack = new LinkedList<>();
             List<String> turn = new LinkedList<>();
             turn.add(actionString);
             ResolutionResult result = this.b.executePlayerAction(new StringTokenizer(actionString));
             BoardStateNode nextBsn = this.traverseAction(team, actionString, depth, sampleRate, maxSamples,
                     filterLethal);
             boolean assuredLethal = (nextBsn.team == team && nextBsn.lethal) || (!result.rng && this.b.winner == team);
-            undoStack.addAll(result.events);
+            List<Event> undoStack = new LinkedList<>(result.events);
             while (!undoStack.isEmpty()) {
                 undoStack.get(undoStack.size() - 1).undo();
                 undoStack.remove(undoStack.size() - 1);
@@ -293,7 +303,7 @@ public class AI extends Thread {
                 break;
             }
         }
-
+        this.traversedNodes.remove(bsn);
         return bsn;
     }
 
@@ -464,7 +474,7 @@ public class AI extends Thread {
      */
     private List<Target> getPossibleTargets(Target t, List<Card> searchSpace, int startInd) {
         // TODO TEST THAT IT DOESN'T SEARCH THE SAME COMBINATION TWICE
-        List<Target> poss = new LinkedList<Target>();
+        List<Target> poss = new LinkedList<>();
         if (t.isReady()) {
             poss.add(t);
             return poss;
@@ -497,14 +507,14 @@ public class AI extends Thread {
      */
     private List<List<Target>> getPossibleListTargets(List<Target> list) {
         // TODO OPTIMIZE SO IT DOESN'T SEARCH THE SAME COMBINATION TWICE
-        List<List<Target>> poss = new LinkedList<List<Target>>();
+        List<List<Target>> poss = new LinkedList<>();
         if (list.isEmpty()) {
             return poss;
         }
         list.get(0).reset();
         List<Target> searchspace = this.getPossibleTargets(list.get(0), this.b.getTargetableCards(list.get(0)), 0);
         for (Target t : searchspace) {
-            List<Target> posscombo = new LinkedList<Target>();
+            List<Target> posscombo = new LinkedList<>();
             posscombo.add(t.clone());
             for (List<Target> subspace : this.getPossibleListTargets(list.subList(1, list.size()))) {
                 posscombo.addAll(subspace);

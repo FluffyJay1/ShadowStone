@@ -53,14 +53,17 @@ public class UIBoard extends UIBox {
         );
 
     public VisualBoard b;
-    public DataStream ds;
+    public final DataStream ds;
     boolean expandHand = false;
     boolean draggingUnleash = false;
     boolean skipNextEventAnimations = false;
     Vector2f mouseDownPos = new Vector2f();
-    CardSelectPanel cardSelectPanel;
-    EndTurnButton endTurnButton;
-    public Text targetText, player1ManaText, player2ManaText, advantageText;
+    final CardSelectPanel cardSelectPanel;
+    final EndTurnButton endTurnButton;
+    public final Text targetText;
+    public final Text player1ManaText;
+    public final Text player2ManaText;
+    public final Text advantageText;
     public UICard preSelectedCard, selectedCard, draggingCard, playingCard, visualPlayingCard, attackingMinion,
             unleashingMinion;
     // TODO: CARD PLAYING QUEUE AND BOARD POSITIONING
@@ -70,13 +73,13 @@ public class UIBoard extends UIBox {
     public UIBoard(UI ui, int localteam, DataStream ds) {
         super(ui, new Vector2f(Config.WINDOW_WIDTH / 2, Config.WINDOW_HEIGHT / 2),
                 new Vector2f(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT), "res/ui/uibox.png");
-        this.cards = new ArrayList<UICard>();
+        this.cards = new ArrayList<>();
         this.b = new VisualBoard(this, localteam);
         this.ds = ds;
         this.cardSelectPanel = new CardSelectPanel(ui, this);
         this.cardSelectPanel.setZ(10);
         this.addChild(this.cardSelectPanel);
-        this.cardSelectPanel.setHide(true);
+        this.cardSelectPanel.setVisible(false);
         this.endTurnButton = new EndTurnButton(ui, this);
         this.addChild(this.endTurnButton);
         this.targetText = new Text(ui, new Vector2f(), "Target", 400, 24, "Verdana", 30, 0, -1);
@@ -104,7 +107,7 @@ public class UIBoard extends UIBox {
         this.readDataStream();
 
         // handle targeting text
-        this.targetText.setHide(false);
+        this.targetText.setVisible(true);
         UICard relevantCard = this.getCurrentTargetingCard();
         Target relevantTarget = Target.firstUnsetTarget(this.getCurrentTargetingTargetList());
         if (relevantCard != null && relevantTarget != null) {
@@ -115,7 +118,7 @@ public class UIBoard extends UIBox {
                                     + (float) (UICard.CARD_DIMENSIONS.y * CARD_SCALE_ABILITY * CARD_SCALE_HAND / 2)),
                     1);
         } else {
-            this.targetText.setHide(true);
+            this.targetText.setVisible(false);
         }
         // end handling targeting text
 
@@ -127,7 +130,7 @@ public class UIBoard extends UIBox {
 
         // move the cards to their respective positions
         for (UICard c : this.cards) {
-            c.setHide(false);
+            c.setVisible(true);
             switch (c.getCard().status) {
             case BOARD:
                 c.draggable = false;
@@ -191,7 +194,7 @@ public class UIBoard extends UIBox {
                 }
                 break;
             default:
-                c.setHide(true);
+                c.setVisible(false);
                 break;
             }
         }
@@ -271,7 +274,7 @@ public class UIBoard extends UIBox {
         this.attackingMinion = null;
         this.unleashingMinion = null;
         this.removeChildren(this.cards);
-        this.cards = new ArrayList<UICard>();
+        this.cards = new ArrayList<>();
         this.b = new VisualBoard(this, this.b.localteam);
     }
 
@@ -286,7 +289,7 @@ public class UIBoard extends UIBox {
 
     private int XToBoardPos(double x, int team) {
         // TODO: make rotationally symmetrical
-        int pos = 0;
+        int pos;
         if (team == 1) {
             pos = (int) ((x / BO_SPACING) + ((b.getBoardObjects(team).size() - 1) / 2.) + 0.5);
             if (pos >= b.getBoardObjects(team).size()) {
@@ -317,7 +320,7 @@ public class UIBoard extends UIBox {
 
     private int XToPlayBoardPos(double x, int team) {
         // TODO make rotationally symmetrical
-        int pos = 0;
+        int pos;
         if (team == 1) {
             pos = (int) ((x / BO_SPACING) + ((b.getBoardObjects(team).size() - 1) / 2.) + 1);
             if (pos > b.getBoardObjects(team).size()) {
@@ -349,7 +352,7 @@ public class UIBoard extends UIBox {
 
     public UICard cardAtPos(Vector2f pos) {
         for (UICard c : this.cards) {
-            if (!c.getHide() && c.pointIsInHitbox(pos)) {
+            if (c.isVisible() && c.pointIsInHitbox(pos)) {
                 return c;
             }
         }
@@ -357,7 +360,7 @@ public class UIBoard extends UIBox {
     }
 
     public List<UICard> getBoardObjects(int team) {
-        List<UICard> ret = new LinkedList<UICard>();
+        List<UICard> ret = new LinkedList<>();
         for (BoardObject bo : this.b.getBoardObjects(team)) {
             ret.add(bo.uiCard);
         }
@@ -365,7 +368,7 @@ public class UIBoard extends UIBox {
     }
 
     public List<UICard> getBoardObjects(int team, boolean leader, boolean minion, boolean amulet) {
-        List<UICard> ret = new LinkedList<UICard>();
+        List<UICard> ret = new LinkedList<>();
         for (BoardObject bo : this.b.getBoardObjects(team, leader, minion, amulet)) {
             ret.add(bo.uiCard);
         }
@@ -423,7 +426,7 @@ public class UIBoard extends UIBox {
                     this.attackingMinion = c;
                     for (UICard uib : this.getBoardObjects(this.b.localteam * -1, true, true, false)) {
                         if (uib.getCard() instanceof Minion && this.attackingMinion.getMinion().realMinion()
-                                .getAttackableTargets().contains(uib.getCard().realCard)) {
+                                .getAttackableTargets().contains(uib.getMinion().realMinion())) {
                             uib.setScale(CARD_SCALE_TARGET);
                         }
                     }
@@ -445,7 +448,7 @@ public class UIBoard extends UIBox {
         if (this.attackingMinion != null) { // in middle of ordering attack
             if (c != null && (c.getCard() instanceof Minion) && c.getCard().team != this.b.localteam
                     && this.attackingMinion.getMinion().realMinion().getAttackableTargets()
-                            .contains(c.getCard().realCard)) {
+                            .contains(c.getMinion().realMinion())) {
                 this.ds.sendPlayerAction(
                         new OrderAttackAction(this.attackingMinion.getMinion().realMinion(), c.getMinion().realMinion())
                                 .toString());
@@ -453,7 +456,7 @@ public class UIBoard extends UIBox {
             }
             for (UICard uib : this.getBoardObjects(this.b.localteam * -1, true, true, false)) {
                 if (uib.getCard() instanceof Minion && this.attackingMinion.getMinion().realMinion()
-                        .getAttackableTargets().contains(uib.getCard().realCard)) {
+                        .getAttackableTargets().contains(uib.getMinion().realMinion())) {
                     uib.setScale(CARD_SCALE_BOARD);
                 }
             }
@@ -602,7 +605,7 @@ public class UIBoard extends UIBox {
     }
 
     public List<UICard> getTargetableCards(Target t) {
-        List<UICard> list = new LinkedList<UICard>();
+        List<UICard> list = new LinkedList<>();
         if (t == null) {
             return list;
         }

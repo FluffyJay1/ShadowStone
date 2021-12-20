@@ -9,7 +9,7 @@ import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
 
 public class TurnEndResolver extends Resolver {
-    Player p;
+    final Player p;
 
     public TurnEndResolver(Player p) {
         super(false);

@@ -41,7 +41,7 @@ public class Minion extends BoardObject {
                 @Override
                 public boolean canTarget(Card c) {
                     return c.status == CardStatus.BOARD && c instanceof Minion
-                            && ((Minion) c).team != this.getCreator().owner.team;
+                            && c.team != this.getCreator().owner.team;
                 }
             };
             unl.setUnleashTargets(List.of(t));
@@ -78,12 +78,11 @@ public class Minion extends BoardObject {
     public List<Minion> getAttackableTargets() {
         if (this.summoningSickness && (this.finalStatEffects.getStat(EffectStats.STORM) == 0
                 && this.finalStatEffects.getStat(EffectStats.RUSH) == 0)) {
-            return new ArrayList<Minion>();
+            return new ArrayList<>();
         }
-        List<Minion> list = new ArrayList<Minion>();
-        List<BoardObject> poss = new ArrayList<BoardObject>();
-        poss.addAll(this.board.getBoardObjects(this.team * -1));
-        List<Minion> wards = new ArrayList<Minion>();
+        List<Minion> list = new ArrayList<>();
+        List<BoardObject> poss = new ArrayList<>(this.board.getBoardObjects(this.team * -1));
+        List<Minion> wards = new ArrayList<>();
 
         Leader enemyLeader = this.board.getPlayer(this.team * -1).leader;
         if (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.STORM) > 0) {
@@ -99,7 +98,7 @@ public class Minion extends BoardObject {
                     // attacked
                     list.add((Minion) b);
                 }
-                if (((Minion) b).finalStatEffects.getStat(EffectStats.WARD) > 0) {
+                if (b.finalStatEffects.getStat(EffectStats.WARD) > 0) {
                     ward = true;
                     wards.add((Minion) b);
                 }
@@ -203,11 +202,9 @@ public class Minion extends BoardObject {
     }
 
     public List<Target> getUnleashTargets() {
-        List<Target> list = new LinkedList<Target>();
+        List<Target> list = new LinkedList<>();
         for (Effect e : this.getFinalEffects(true)) {
-            for (Target t : e.unleashTargets) {
-                list.add(t);
-            }
+            list.addAll(e.unleashTargets);
         }
         return list;
     }

@@ -1,7 +1,5 @@
 package server.card.cardpack.basic;
 
-import java.util.*;
-
 import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.*;
 
@@ -9,7 +7,6 @@ import client.tooltip.*;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
-import server.event.*;
 import server.resolver.*;
 
 public class Puppet extends Minion {

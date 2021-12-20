@@ -7,11 +7,11 @@ import server.card.*;
 import server.event.*;
 
 public class CreateCardResolver extends Resolver {
-    public List<Card> destroyed;
-    private List<Card> c;
-    private int team;
-    private CardStatus status;
-    private List<Integer> cardpos;
+    public final List<Card> destroyed;
+    private final List<Card> c;
+    private final int team;
+    private final CardStatus status;
+    private final List<Integer> cardpos;
 
     public CreateCardResolver(List<Card> c, int team, CardStatus status, List<Integer> cardpos) {
         super(false);

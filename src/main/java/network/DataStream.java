@@ -38,7 +38,7 @@ public class DataStream {
         }
     }
 
-    public DataStream(String ip, int port) throws UnknownHostException, IOException {
+    public DataStream(String ip, int port) throws IOException {
         this(new Socket(ip, port));
     }
 
@@ -141,12 +141,13 @@ public class DataStream {
 
     public String readEvent() {
         try {
-            String events = "", line = in.readLine();
+            StringBuilder events = new StringBuilder();
+            String line = in.readLine();
             while (!line.equals(Game.BLOCK_END)) {
-                events += line + "\n";
+                events.append(line).append("\n");
                 line = in.readLine();
             }
-            return events;
+            return events.toString();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -155,8 +156,7 @@ public class DataStream {
 
     public String readPlayerAction() {
         try {
-            String action = in.readLine();
-            return action;
+            return in.readLine();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -166,8 +166,7 @@ public class DataStream {
 
     public String readEmote() {
         try {
-            String emote = in.readLine();
-            return emote;
+            return in.readLine();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

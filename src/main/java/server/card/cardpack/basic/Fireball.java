@@ -15,7 +15,7 @@ public class Fireball extends Spell {
     public static final TooltipSpell TOOLTIP = new TooltipSpell("Fireball",
             "Choose 2 enemy minions. Deal 2 damage to them and 1 damage to their adjacent minions.",
             "res/card/basic/fireball.png", CRAFT, 3, Fireball.class);
-    Effect e;
+    final Effect e;
 
     public Fireball(Board b) {
         super(b, TOOLTIP);
@@ -38,7 +38,7 @@ public class Fireball extends Spell {
                             for (int i = -1; i <= 1; i += 2) {
                                 int offsetPos = pos + i;
                                 BoardObject adjacent = b.getBoardObject(owner.team * -1, offsetPos);
-                                if (adjacent != null && adjacent instanceof Minion) {
+                                if (adjacent instanceof Minion) {
                                     m.add((Minion) adjacent);
                                     d.add(1);
                                 }
@@ -56,11 +56,11 @@ public class Fireball extends Spell {
             @Override
             public boolean canTarget(Card c) {
                 return c.status == CardStatus.BOARD && c instanceof Minion
-                        && ((Minion) c).team != this.getCreator().owner.team;
+                        && c.team != this.getCreator().owner.team;
             }
         };
 
-        LinkedList<Target> list = new LinkedList<Target>();
+        LinkedList<Target> list = new LinkedList<>();
         list.add(t);
         e.setBattlecryTargets(list);
         this.addEffect(true, e);

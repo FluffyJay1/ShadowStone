@@ -6,7 +6,7 @@ import server.*;
 
 public class EventTurnEnd extends Event {
     public static final int ID = 14;
-    public Player p;
+    public final Player p;
 
     public EventTurnEnd(Player p) {
         super(ID);

@@ -9,9 +9,9 @@ import server.card.effect.*;
 import server.event.*;
 
 public class EffectDamageResolver extends Resolver {
-    Effect source;
-    List<Minion> targets;
-    List<Integer> damage;
+    final Effect source;
+    final List<Minion> targets;
+    final List<Integer> damage;
     public List<Card> destroyed;
 
     /**
@@ -19,8 +19,8 @@ public class EffectDamageResolver extends Resolver {
      * parent resolver has a plan to eventually destroy what was marked for death by
      * this resolver, else we'll end up in an invalid state
      */
-    boolean resolveDestroy;
-    Class <? extends EventAnimationDamage> animation;
+    final boolean resolveDestroy;
+    final Class <? extends EventAnimationDamage> animation;
 
     public EffectDamageResolver(Effect source, List<Minion> targets, List<Integer> damage, boolean resolveDestroy, Class<? extends EventAnimationDamage> animation) {
         super(false);
@@ -37,7 +37,7 @@ public class EffectDamageResolver extends Resolver {
 
     @Override
     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
-        List<Boolean> poisonous = new ArrayList<Boolean>(this.targets.size());
+        List<Boolean> poisonous = new ArrayList<>(this.targets.size());
         boolean isPoisonous = this.source.owner.finalStatEffects.getStat(EffectStats.POISONOUS) > 0;
         for (int i = 0; i < this.targets.size(); i++) {
             poisonous.add(isPoisonous);

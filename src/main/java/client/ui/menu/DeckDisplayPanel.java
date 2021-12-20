@@ -16,12 +16,12 @@ public class DeckDisplayPanel extends UIBox {
     public static final String DECK_CONFIRM = "deckdisplaydeckconfirm";
     public static final String BACKGROUND_CLICK = "deckdisplaybackgroundclick";
     public ConstructedDeck deck;
-    ScrollingContext scroll;
-    ArrayList<CardDisplayUnit> cards = new ArrayList<CardDisplayUnit>();
-    GenericButton okbutton;
+    final ScrollingContext scroll;
+    final ArrayList<CardDisplayUnit> cards = new ArrayList<>();
+    final GenericButton okbutton;
     TextField textfield;
     Text text;
-    boolean edit;
+    final boolean edit;
 
     public DeckDisplayPanel(UI ui, Vector2f pos, boolean edit) {
         super(ui, pos, new Vector2f(1600, 500), "res/ui/uiboxborder.png");
@@ -106,7 +106,10 @@ public class DeckDisplayPanel extends UIBox {
 
             }
 
-            this.getCardDisplayUnit(cardClass).setCount(this.deck.cardClassCounts.get(cardClass));
+            CardDisplayUnit cdu = this.getCardDisplayUnit(cardClass);
+            if (cdu != null) {
+                cdu.setCount(this.deck.cardClassCounts.get(cardClass));
+            }
             this.updateCardPositions();
         }
     }
@@ -119,19 +122,17 @@ public class DeckDisplayPanel extends UIBox {
                 this.scroll.removeChild(cdu);
                 this.cards.remove(cdu);
             } else {
-                this.getCardDisplayUnit(cardClass).setCount(this.deck.cardClassCounts.get(cardClass));
+                CardDisplayUnit cdu = this.getCardDisplayUnit(cardClass);
+                if (cdu != null) {
+                    cdu.setCount(this.deck.cardClassCounts.get(cardClass));
+                }
             }
             this.updateCardPositions();
         }
     }
 
     public void updateCardPositions() {
-        this.cards.sort(new Comparator<CardDisplayUnit>() {
-            @Override
-            public int compare(CardDisplayUnit a, CardDisplayUnit b) {
-                return Card.compareDefault(a.card, b.card);
-            }
-        });
+        this.cards.sort((a, b) -> Card.compareDefault(a.card, b.card));
         for (int i = 0; i < this.cards.size(); i++) {
             this.cards.get(i).setPos(new Vector2f(i % 8 * 160 - 560, i / 8 * 100 - 70), 0.99);
         }

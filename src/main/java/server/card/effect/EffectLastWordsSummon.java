@@ -63,7 +63,7 @@ public class EffectLastWordsSummon extends Effect {
         this.cardClasses = new LinkedList<>();
         try {
             for (int i = 0; i < numCards; i++) {
-                this.cardClasses.add((Class<? extends Card>) Class.forName(st.nextToken()));
+                this.cardClasses.add(Class.forName(st.nextToken()).asSubclass(Card.class));
             }
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
