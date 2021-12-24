@@ -3,8 +3,6 @@ package server.card;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.newdawn.slick.Graphics;
-
 import server.Board;
 
 public class Hand { // its just a list of cards aaaaaa

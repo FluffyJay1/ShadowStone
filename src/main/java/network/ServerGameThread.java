@@ -145,7 +145,6 @@ public class ServerGameThread extends Thread {
 
     public void sendEvents() {
         String eventstring = this.b.retrieveEventString();
-        System.out.println(eventstring);
         this.sendEvent(1, eventstring);
         this.sendEvent(-1, eventstring);
     }

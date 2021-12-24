@@ -1,9 +1,8 @@
-when sampling, make some actions have more weight (like unleashing and attacking face)
-	attacking with larger attack minions should have more weight
-	also make the end turn action have like no weight at all
 assign a advantage value to effects (like brambles)
 Use scanner instead of stringtokenizer to handle stream input?
-Replace Math.random() with Random.next()
+Optimize AI action sampling?
+    most of the time AI samples only 1 action, can we take advantage of this?
+    do we need generate the full space of possible actions to sample from it?
 update to use slick 1.0.2
 make game fullscreen and fix flickering problem from rendering text
 UnicodeFont deprecated? use AngelCodeFonts
