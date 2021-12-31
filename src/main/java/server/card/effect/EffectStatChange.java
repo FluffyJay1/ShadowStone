@@ -8,8 +8,8 @@ public class EffectStatChange extends Effect {
 
     public EffectStatChange(String description, int attack, int magic, int health) {
         super(description);
-        this.change.setStat(EffectStats.ATTACK, attack);
-        this.change.setStat(EffectStats.MAGIC, magic);
-        this.change.setStat(EffectStats.HEALTH, health);
+        this.effectStats.change.setStat(EffectStats.ATTACK, attack);
+        this.effectStats.change.setStat(EffectStats.MAGIC, magic);
+        this.effectStats.change.setStat(EffectStats.HEALTH, health);
     }
 }

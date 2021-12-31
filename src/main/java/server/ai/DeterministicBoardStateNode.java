@@ -21,9 +21,9 @@ public class DeterministicBoardStateNode extends BoardStateNode {
     private List<String> branchEvaluationQueue; // list of unevaluated branches, in the order that they should be evaluated in
     int evaluatedBranches; // different than branches.size(), if we need to re-evaluate then this goes to 0
     int totalBranches;
-    // The quality of evaluation for this node, with 0 being the highest
+    // The quality of evaluation for this node, with 1 being full sample rate
     // usually corresponds to the depth at which this was evaluated
-    int detailLevel;
+    double sampleRate;
     String state;
 
     public DeterministicBoardStateNode(int team, double currScore, String state, WeightedSampler<String> branchSampler) {
@@ -63,18 +63,29 @@ public class DeterministicBoardStateNode extends BoardStateNode {
 
     /**
      * Compute alpha factor. When evaluating, the true value of a future state
-     * is unknown, but the value of the current state is known. As the future
-     * gets more uncertain, we depend more on what we know about the current
-     * state, and vice versa for if the future gets more certain. The alpha
-     * factor gives what proportion of the node's value is determined by the
-     * value of the current state. Note that when this node is fully evaluated,
-     * we can fully depend on what we know of the immediate children, i.e. alpha
-     * = 0.
+     * is unknown, but the value of the current state is known. Some samples may
+     * reveal some actions really hurt us, but we don't know for sure if every
+     * action will hurt us. If we think our best action hurts us, we need to
+     * dampen it a bit, to counteract the fact that we barely tried anything. If
+     * we know we have an action that leads us to a better outcome, we don't
+     * have to dampen at all. The alpha factor gives what proportion of the
+     * node's value is determined by the value of the current state, if the
+     * node's value is less than the current state. Note that when this node is
+     * fully evaluated, we can fully depend on what we know of the immediate
+     * children, i.e. alpha = 0.
+     *
      * @return The alpha factor
      */
     public double getAlphaFactor() {
+        if (this.lethal) {
+            // if ai detects guaranteed lethal, it won't fully evaluate the branch
+            // this may cause erratic alpha factor behavior e.g. killing itself
+            // if it detects guaranteed lethal against it, which is funny but
+            // also not the best
+            return 0;
+        }
         // behold magics
-        return 0.15 * (1 - ((double) this.branches.size() / this.totalBranches));
+        return 0.5 * (1 - ((double) this.branches.size() / this.totalBranches));
     }
 
     /**
@@ -83,6 +94,9 @@ public class DeterministicBoardStateNode extends BoardStateNode {
      * @return The weighted value, using the alpha factor
      */
     public double alphaBlend(double other) {
+        if (other > this.currScore) {
+            return other;
+        }
         double alpha = this.getAlphaFactor();
         return alpha * this.currScore + (1 - alpha) * other;
     }
@@ -100,7 +114,7 @@ public class DeterministicBoardStateNode extends BoardStateNode {
             if (this.branches.isEmpty()) {
                 this.cachedMax = new Decision(null, this.currScore);
             } else {
-                Optional<Decision> maxDecision = this.branches.entrySet().parallelStream()
+                Optional<Decision> maxDecision = this.branches.entrySet().stream()
                         .map(e -> new Decision(e.getKey(), this.alphaBlend(e.getValue().team * this.team * e.getValue().getScore())))
                         .max(Comparator.comparingDouble(d -> d.score));
                 this.cachedMax = maxDecision.orElse(new Decision(null, this.currScore));

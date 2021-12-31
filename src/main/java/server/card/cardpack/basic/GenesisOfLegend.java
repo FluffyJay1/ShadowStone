@@ -28,16 +28,21 @@ public class GenesisOfLegend extends Amulet {
                         List<Minion> possible = b.getMinions(owner.team, false, true);
                         if (!possible.isEmpty()) {
                             Minion selected = Game.selectRandom(possible);
-                            EffectStatChange e = new EffectStatChange(
+                            EffectStatChange esc = new EffectStatChange(
                                     "Gained +0/+0/+1 and <b> Bane </b> from Genesis of Legend.", 0, 0, 1);
-                            e.set.setStat(EffectStats.BANE, 1);
-                            this.resolve(b, rl, el, new AddEffectResolver(selected, e));
+                            esc.effectStats.set.setStat(EffectStats.BANE, 1);
+                            this.resolve(b, rl, el, new AddEffectResolver(selected, esc));
                         }
                     }
                 };
             }
+
+            @Override
+            public double getPresenceValue() {
+                return this.owner.finalStatEffects.getStat(EffectStats.COUNTDOWN) * 2;
+            }
         };
-        e.set.setStat(EffectStats.COUNTDOWN, 3);
+        e.effectStats.set.setStat(EffectStats.COUNTDOWN, 3);
         this.addEffect(true, e);
     }
 }

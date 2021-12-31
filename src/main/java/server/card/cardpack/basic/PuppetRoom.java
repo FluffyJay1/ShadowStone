@@ -2,6 +2,7 @@ package server.card.cardpack.basic;
 
 import client.tooltip.*;
 import server.*;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.resolver.*;
@@ -23,11 +24,21 @@ public class PuppetRoom extends Amulet {
             }
 
             @Override
+            public double getBattlecryValue() {
+                return AI.VALUE_PER_CARD_IN_HAND / 2.;
+            }
+
+            @Override
             public Resolver onTurnEnd() {
                  return new CreateCardResolver(new Puppet(this.owner.board), this.owner.team, CardStatus.HAND, -1);
             }
+
+            @Override
+            public double getPresenceValue() {
+                return AI.VALUE_PER_CARD_IN_HAND * this.owner.finalStatEffects.getStat(EffectStats.COUNTDOWN) / 2.;
+            }
         };
-        e.set.setStat(EffectStats.COUNTDOWN, 3);
+        e.effectStats.set.setStat(EffectStats.COUNTDOWN, 3);
         this.addEffect(true, e);
     }
 }

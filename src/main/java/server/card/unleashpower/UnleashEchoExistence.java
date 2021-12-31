@@ -31,7 +31,7 @@ public class UnleashEchoExistence extends UnleashPower {
                                             (int) (effect.owner.board.getPlayer(effect.owner.team).deck.cards.size()
                                                     * Math.random())));
                             Effect esc = new Effect("Cost reduced by 2 from <b> Echo Existence. </b>");
-                            esc.change.setStat(EffectStats.COST, -2);
+                            esc.effectStats.change.setStat(EffectStats.COST, -2);
                             this.resolve(b, rl, el, new AddEffectResolver(copy, esc));
                         }
                     }

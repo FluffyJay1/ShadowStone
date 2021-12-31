@@ -5,6 +5,7 @@ import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
 import server.*;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.resolver.*;
@@ -22,6 +23,11 @@ public class Baneling extends Minion {
             @Override
             public Resolver lastWords() {
                 return new BlastResolver(this, 5, null);
+            }
+
+            @Override
+            public double getPresenceValue() {
+                return AI.VALUE_PER_DAMAGE * 5 / 2.;
             }
         };
         this.addEffect(true, e);

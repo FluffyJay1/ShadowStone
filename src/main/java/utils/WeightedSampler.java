@@ -22,8 +22,8 @@ public class WeightedSampler<T> {
     // returns an ordering from doing weighted sampling without replacement
     // see Efraimidis and Spirakis, 2006, Algorithm A for why this works
     public List<T> sample() {
-        this.items.parallelStream().forEach(wsi -> wsi.rand = Math.pow(random.nextDouble(), 1 / wsi.weight));
-        return this.items.parallelStream()
+        this.items.forEach(wsi -> wsi.rand = Math.pow(random.nextDouble(), 1 / wsi.weight));
+        return this.items.stream()
                 .sorted(Comparator.comparingDouble((WeightedSamplerItem a) -> a.rand).reversed())
                 .map(wsi -> wsi.item)
                 .collect(Collectors.toList());

@@ -7,6 +7,7 @@ import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
 import server.*;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
@@ -40,6 +41,13 @@ public class CursedStone extends Minion {
                         this.resolve(b, rl, el, new AddEffectResolver(effect.owner, lw));
                     }
                 };
+            }
+
+            @Override
+            public double getPresenceValue() {
+                Player player = owner.board.getPlayer(owner.team);
+                int missing = player.leader.finalStatEffects.getStat(EffectStats.HEALTH) - player.leader.health;
+                return AI.VALUE_PER_DAMAGE * missing / 2.;
             }
         };
         this.addEffect(true, e);

@@ -32,6 +32,11 @@ public class DragonOracle extends Spell {
                     }
                 };
             }
+
+            @Override
+            public double getBattlecryValue() {
+                return 3;
+            }
         };
         this.addEffect(true, e);
     }

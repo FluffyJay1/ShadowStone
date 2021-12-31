@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import client.tooltip.*;
 import server.*;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
@@ -39,6 +40,11 @@ public class WoodOfBrambles extends Amulet {
             }
 
             @Override
+            public double getBattlecryValue() {
+                return AI.VALUE_PER_CARD_IN_HAND * 2 / 2.;
+            }
+
+            @Override
             public Resolver onListenEvent(Event event) {
                 Effect effect = this;
                 return new Resolver(false) {
@@ -66,13 +72,18 @@ public class WoodOfBrambles extends Amulet {
             @Override
             public Resolver onLeavePlay() {
                 // find the effects that this is responsible for
-                List<Effect> distributedEffects = this.owner.board.getAdditionalEffects().parallelStream()
+                List<Effect> distributedEffects = this.owner.board.getAdditionalEffects().stream()
                         .filter(e -> e instanceof EffectBrambles && ((EffectBrambles) e).creator == this)
                         .collect(Collectors.toList());
                 return new RemoveEffectResolver(distributedEffects);
             }
+
+            @Override
+            public double getPresenceValue() {
+                return this.owner.finalStatEffects.getStat(EffectStats.COUNTDOWN);
+            }
         };
-        e.set.setStat(EffectStats.COUNTDOWN, 2);
+        e.effectStats.set.setStat(EffectStats.COUNTDOWN, 2);
         this.addEffect(true, e);
     }
 
@@ -91,6 +102,11 @@ public class WoodOfBrambles extends Amulet {
         @Override
         public Resolver clash(Minion target) {
             return new EffectDamageResolver(this, target, 1, true, null);
+        }
+
+        @Override
+        public double getPresenceValue() {
+            return AI.VALUE_PER_DAMAGE * 2 / 2.;
         }
 
         @Override

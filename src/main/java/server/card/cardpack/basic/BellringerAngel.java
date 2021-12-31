@@ -5,6 +5,7 @@ import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
 import server.*;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.resolver.*;
@@ -22,8 +23,13 @@ public class BellringerAngel extends Minion {
             public Resolver lastWords() {
                 return new DrawResolver(owner.board.getPlayer(owner.team), 1);
             }
+
+            @Override
+            public double getPresenceValue() {
+                return AI.VALUE_PER_CARD_IN_HAND * 1 / 2.;
+            }
         };
-        e.set.setStat(EffectStats.WARD, 1);
+        e.effectStats.set.setStat(EffectStats.WARD, 1);
         this.addEffect(true, e);
     }
 }

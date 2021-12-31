@@ -1,4 +1,5 @@
-assign a advantage value to effects (like brambles)
+AI smart post-rng sampling: if rng leads to many different post-states, their sample rates should be smaller
+Rework aura effects, formalize them and make them handle the case where it gets muted
 Use scanner instead of stringtokenizer to handle stream input?
 Optimize AI action sampling?
     most of the time AI samples only 1 action, can we take advantage of this?
@@ -6,7 +7,7 @@ Optimize AI action sampling?
 update to use slick 1.0.2
 make game fullscreen and fix flickering problem from rendering text
 UnicodeFont deprecated? use AngelCodeFonts
-Figure out why the game is eating cpu
+Figure out why the game is eating cpu and gpu
 Unforce the Effect(string) constructor, instead allow Effect() constructor?
 unforce every uielement constructor taking in a ui as a parameter
 targeting serverside verification

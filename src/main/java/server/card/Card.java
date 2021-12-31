@@ -2,6 +2,8 @@ package server.card;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import client.tooltip.*;
 import client.ui.game.*;
@@ -9,7 +11,7 @@ import server.*;
 import server.card.effect.*;
 import server.resolver.*;
 
-public class Card  {
+public abstract class Card  {
     public final Board board;
     public boolean alive = true; // alive means not marked for death
     public int cardpos, team;
@@ -19,7 +21,7 @@ public class Card  {
     public Card realCard; // for visual board
     public UICard uiCard;
 
-    public Effect finalStatEffects = new Effect(), finalBasicStatEffects = new Effect();
+    public EffectStats.StatSet finalStatEffects = new EffectStats.StatSet(), finalBasicStatEffects = new EffectStats.StatSet();
     /*
      * basic effects can't get removed unlike additional effects (e.g. bounce
      * effects), but they can be muted
@@ -38,11 +40,16 @@ public class Card  {
     /**
      * Estimates a "power level" of a card, for an AI to use to evaluate board
      * state. Values should be in terms of equivalent mana worth.
-     * 
+     *
      * @return the approximate mana worth of the card
      */
-    public double getValue() {
-        return this.finalBasicStatEffects.getStat(EffectStats.COST) + 1;
+    public abstract double getValue();
+
+    public double getTotalEffectValueOf(Function<Effect, Double> property) {
+        // functional is cool
+        return this.getFinalEffects(true).stream()
+                .map(property)
+                .reduce(0., Double::sum);
     }
 
     public List<Effect> getEffects(boolean basic) {
@@ -142,23 +149,18 @@ public class Card  {
     // numbers for both basic and additional effects, caching the tally for the
     // base stat numbers for future use
     public void updateEffectStats(boolean basic) {
-        Effect stats;
+        EffectStats.StatSet stats;
         if (basic) {
             stats = this.finalBasicStatEffects;
         } else {
             stats = this.finalStatEffects;
         }
-        stats.resetStats();
+        stats.reset();
         List<Effect> relevant = basic ? this.getEffects(true) : this.getFinalEffects(false);
         for (Effect e : relevant) {
-            stats.applyEffectStats(e);
+            e.effectStats.applyToStatSet(stats);
         }
-        for (int i = 0; i < EffectStats.NUM_STATS; i++) {
-            if (stats.getStat(i) < 0) {
-                stats.set.setStat(i, 0);
-                stats.change.setStat(i, 0);
-            }
-        }
+        stats.makeNonNegative();
         if (basic) {
             // update the stat numbers for the additional effects too
             this.updateEffectStats(false);
@@ -182,15 +184,11 @@ public class Card  {
         }
     }
 
-    public List<Resolver> battlecry() {
-        List<Resolver> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            Resolver temp = e.battlecry();
-            if (temp != null) {
-                list.add(temp);
-            }
-        }
-        return list;
+    public List<Resolver> getResolvers(Function<Effect, Resolver> hook) {
+        return this.getFinalEffects(true).stream()
+                .map(hook)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     // TODO refactor to effect
@@ -198,6 +196,7 @@ public class Card  {
         return true;
     }
 
+    // probably not worth the hassle of making functional
     public List<Target> getBattlecryTargets() {
         List<Target> list = new LinkedList<>();
         for (Effect e : this.getFinalEffects(true)) {

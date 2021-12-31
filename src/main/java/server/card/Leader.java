@@ -10,4 +10,9 @@ public class Leader extends Minion {
         super(b, new TooltipMinion(name, "", "res/leader/smile.png", craft, 0, 0, 0, 25, false, cardClass,
                 new Vector2f(), -1, null));
     }
+
+    @Override
+    public boolean isInPlay() {
+        return this.status.equals(CardStatus.LEADER);
+    }
 }

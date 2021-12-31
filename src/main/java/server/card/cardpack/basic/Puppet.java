@@ -24,7 +24,7 @@ public class Puppet extends Minion {
                 return new DestroyResolver(owner);
             }
         };
-        e.set.setStat(EffectStats.RUSH, 1);
+        e.effectStats.set.setStat(EffectStats.RUSH, 1);
         this.addEffect(true, e);
     }
 }

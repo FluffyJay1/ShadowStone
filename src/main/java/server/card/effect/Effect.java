@@ -28,8 +28,7 @@ public class Effect implements Cloneable {
      */
     public boolean basic = false, mute = false, removed = false;
 
-    public EffectStats set = new EffectStats(), change = new EffectStats();
-
+    public EffectStats effectStats = new EffectStats();
     /*
      * target specifications are set upon construction, player input fulfills the
      * targets
@@ -44,67 +43,9 @@ public class Effect implements Cloneable {
         this.description = description;
     }
 
-    public Effect(String description, int cost) {
+    public Effect(String description, EffectStats stats) {
         this(description);
-        this.set.setStat(EffectStats.COST, cost);
-    }
-
-    public Effect(String description, int cost, int attack, int magic, int health) {
-        this(description, cost);
-        this.set.setStat(EffectStats.ATTACK, attack);
-        this.set.setStat(EffectStats.MAGIC, magic);
-        this.set.setStat(EffectStats.HEALTH, health);
-    }
-
-    public Effect(String description, int cost, int attack, int magic, int health, int attacksperturn, boolean storm,
-            boolean rush, boolean ward) {
-        this(description, cost, attack, magic, health);
-        this.set.setStat(EffectStats.ATTACKS_PER_TURN, attacksperturn);
-        this.set.setStat(EffectStats.STORM, storm ? 1 : 0);
-        this.set.setStat(EffectStats.RUSH, rush ? 1 : 0);
-        this.set.setStat(EffectStats.WARD, ward ? 1 : 0);
-    }
-
-    public void applyEffectStats(Effect e) {
-        for (int i = 0; i < e.set.stats.length; i++) {
-            if (e.set.use[i]) {
-                this.set.setStat(i, e.set.stats[i]);
-                this.change.resetStat(i);
-            }
-        }
-        for (int i = 0; i < e.change.stats.length; i++) {
-            if (e.change.use[i]) {
-                this.change.changeStat(i, e.change.stats[i]);
-            }
-        }
-    }
-
-    public Effect copyEffectStats() {
-        Effect ret = new Effect(this.description);
-        ret.applyEffectStats(this);
-        return ret;
-    }
-
-    public void resetStats() {
-        for (int i = 0; i < this.set.stats.length; i++) {
-            this.set.resetStat(i);
-        }
-        for (int i = 0; i < this.change.stats.length; i++) {
-            this.change.resetStat(i);
-        }
-    }
-
-    public int getStat(int index) {
-        return this.set.stats[index] + this.change.stats[index];
-    }
-
-    public boolean getUse(int index) {
-        return this.set.use[index] || this.change.use[index];
-    }
-
-    public String statsToString() {
-        return "(" + this.getStat(EffectStats.COST) + " " + this.getStat(EffectStats.ATTACK) + " "
-                + this.getStat(EffectStats.MAGIC) + " " + this.getStat(EffectStats.HEALTH) + ")";
+        this.effectStats = stats;
     }
 
     public Resolver battlecry() {
@@ -214,10 +155,44 @@ public class Effect implements Cloneable {
         return null;
     }
 
+    /**
+     * Effects can have wacky special effects and hooks, but the value of having
+     * these effects isn't reflected by other means, so we have to manually
+     * ascribe a value to it
+     *
+     * This could be solved if the AI could learn the proper value of the
+     * specific effect, either through extensive high-depth simulation or via
+     * some weights learning process, but fuck it
+     *
+     * Anyway, we pin a value on the special part of the effect, i.e. determine
+     * the value we lose if we were to suddenly mute this effect. These should
+     * not be complex calculations, but instead be mere estimates on the future
+     * value that an effect may bring. A good rule of thumb is (max value)/2.
+     *
+     * @return The approximate value of the special parts of the effect
+     */
+    public double getPresenceValue() {
+        return 0;
+    }
+
+    /**
+     * same deal but for battlecries, we don't consider this value anymore
+     * after we play the card
+     *
+     * This value represents some kind of expected or potential future value of
+     * playing the card, used for the AI to determine basically whether it's
+     * worth playing the card or not
+     *
+     * @return The approximate value of playing the card
+     */
+    public double getBattlecryValue() {
+        return 0;
+    }
+
     @Override
     public String toString() {
         return this.getClass().getName() + " " + Card.referenceOrNull(this.owner) + this.description + Game.STRING_END
-                + " " + this.mute + " " + this.extraStateString() + this.set.toString() + this.change.toString();
+                + " " + this.mute + " " + this.extraStateString() + this.effectStats.toString();
     }
 
     public static Effect fromString(Board b, StringTokenizer st) {
@@ -233,8 +208,7 @@ public class Effect implements Cloneable {
             ef.owner = owner;
             ef.mute = mute;
             ef.loadExtraState(b, st);
-            ef.set = EffectStats.fromString(st);
-            ef.change = EffectStats.fromString(st);
+            ef.effectStats = EffectStats.fromString(st);
             return ef;
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
@@ -260,8 +234,7 @@ public class Effect implements Cloneable {
     @Override
     public Effect clone() throws CloneNotSupportedException {
         Effect e = (Effect) super.clone(); // shallow copy
-        e.set = this.set.clone();
-        e.change = this.change.clone();
+        e.effectStats = this.effectStats.clone();
         this.battlecryTargets = new LinkedList<>();
         for (Target t : e.battlecryTargets) {
             this.battlecryTargets.add(t.clone());

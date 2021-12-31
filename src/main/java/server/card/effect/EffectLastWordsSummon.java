@@ -1,6 +1,7 @@
 package server.card.effect;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import server.*;
 import server.card.*;
@@ -10,6 +11,7 @@ import server.resolver.*;
 public class EffectLastWordsSummon extends Effect {
     int team;
     List<Class<? extends Card>> cardClasses;
+    private List<Card> cachedInstances; // for getPresenceValue, preview the value of the created cards
 
     public EffectLastWordsSummon(String description) {
         super(description);
@@ -44,6 +46,18 @@ public class EffectLastWordsSummon extends Effect {
             }
 
         };
+    }
+
+    @Override
+    public double getPresenceValue() {
+        if (this.cachedInstances == null) {
+            this.cachedInstances = this.cardClasses.stream()
+                    .map(cl -> Card.createFromConstructor(this.owner.board, cl))
+                    .collect(Collectors.toList());
+        }
+        return this.cachedInstances.stream()
+                .map(Card::getValue)
+                .reduce(0., Double::sum) / 2;
     }
 
     @Override

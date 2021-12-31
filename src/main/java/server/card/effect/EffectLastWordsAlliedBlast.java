@@ -4,6 +4,7 @@ import java.util.*;
 
 import client.*;
 import server.*;
+import server.ai.AI;
 import server.card.*;
 import server.event.*;
 import server.resolver.*;
@@ -33,6 +34,11 @@ public class EffectLastWordsAlliedBlast extends Effect {
                 }
             }
         };
+    }
+
+    @Override
+    public double getPresenceValue() {
+        return AI.VALUE_PER_DAMAGE * -this.damage / 2.;
     }
 
     @Override

@@ -367,12 +367,12 @@ public class Board {
         if (rl != null) {
             if (e.cardsEnteringPlay() != null) {
                 for (BoardObject bo : e.cardsEnteringPlay()) {
-                    rl.add(new FlagResolver(bo, bo.onEnterPlay()));
+                    rl.add(new FlagResolver(bo, bo.getResolvers(Effect::onEnterPlay)));
                 }
             }
             if (e.cardsLeavingPlay() != null) {
                 for (BoardObject bo : e.cardsLeavingPlay()) {
-                    rl.addAll(bo.onLeavePlay());
+                    rl.addAll(bo.getResolvers(Effect::onLeavePlay));
                 }
             }
             for (Card c : this.getCards()) {

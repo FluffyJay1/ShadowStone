@@ -7,6 +7,7 @@ import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
 import server.*;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
@@ -28,10 +29,15 @@ public class Tiny extends Minion {
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
                         EffectStatChange ef = new EffectStatChange("Gained +2/+0/+2 and <b> Rush </b> from Unleash", 2,
                                 0, 2);
-                        ef.set.setStat(EffectStats.RUSH, 1);
+                        ef.effectStats.set.setStat(EffectStats.RUSH, 1);
                         this.resolve(b, rl, el, new AddEffectResolver(owner, ef));
                     }
                 };
+            }
+
+            @Override
+            public double getPresenceValue() {
+                return AI.VALUE_PER_1_1_STATS * 2 / 2.;
             }
         };
         this.addEffect(true, e);

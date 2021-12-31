@@ -24,17 +24,17 @@ public class TurnStartResolver extends Resolver {
         b.processEvent(rl, el, new EventManaChange(this.p, this.p.maxmana + 1, false, true));
         for (BoardObject bo : this.p.board.getBoardObjects(this.p.team, true, true, true)) {
             b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
-            this.resolveList(b, rl, el, bo.onTurnStart());
+            this.resolveList(b, rl, el, bo.getResolvers(Effect::onTurnStart));
             b.popEventGroup();
             if (bo.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
                 Effect e = new Effect();
-                e.change.setStat(EffectStats.COUNTDOWN, -1);
+                e.effectStats.change.setStat(EffectStats.COUNTDOWN, -1);
                 this.resolve(b, rl, el, new AddEffectResolver(bo, e));
             }
         }
         for (BoardObject bo : this.p.board.getBoardObjects(this.p.team * -1, true, true, true)) {
             b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
-            this.resolveList(b, rl, el, bo.onTurnStartEnemy());
+            this.resolveList(b, rl, el, bo.getResolvers(Effect::onTurnStartEnemy));
             b.popEventGroup();
         }
         this.resolve(b, rl, el, new DrawResolver(this.p, 1));

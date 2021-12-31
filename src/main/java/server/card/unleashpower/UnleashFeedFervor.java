@@ -29,13 +29,13 @@ public class UnleashFeedFervor extends UnleashPower {
                         if (e instanceof EventManaChange) {
                             if (!overflow && p.overflow()) {
                                 this.resolve(b, rl, el, new UpdateEffectStateResolver(effect, () -> overflow = true));
-                                Effect esc = new Effect();
+                                EffectStats esc = new EffectStats();
                                 esc.change.setStat(EffectStats.COST, -1);
                                 this.resolve(b, rl, el, new SetEffectStatsResolver(effect, esc));
                             }
                             if (overflow && !p.overflow()) {
                                 this.resolve(b, rl, el, new UpdateEffectStateResolver(effect, () -> overflow = false));
-                                Effect esc = new Effect();
+                                EffectStats esc = new EffectStats();
                                 esc.change.setStat(EffectStats.COST, 0);
                                 this.resolve(b, rl, el, new SetEffectStatsResolver(effect, esc));
                             }

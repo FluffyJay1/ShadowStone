@@ -15,85 +15,16 @@ public class BoardObject extends Card {
     }
 
     public boolean isInPlay() {
-        return this.alive && this.status.equals(CardStatus.BOARD);
+        return this.status.equals(CardStatus.BOARD);
     }
 
-    // don't look below
-    public List<Resolver> lastWords() {
-        List<Resolver> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            Resolver temp = e.lastWords();
-            if (temp != null) {
-                list.add(temp);
-            }
+    @Override
+    public double getValue() {
+        double sum = this.getTotalEffectValueOf(Effect::getPresenceValue);
+        if (this.status.equals(CardStatus.HAND)) {
+            sum += this.getTotalEffectValueOf(Effect::getBattlecryValue);
         }
-        return list;
-    }
-
-    public List<Resolver> onTurnStart() {
-        List<Resolver> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            Resolver temp = e.onTurnStart();
-            if (temp != null) {
-                list.add(temp);
-            }
-        }
-        return list;
-    }
-
-    public List<Resolver> onTurnEnd() {
-        List<Resolver> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            Resolver temp = e.onTurnEnd();
-            if (temp != null) {
-                list.add(temp);
-            }
-        }
-        return list;
-    }
-
-    public List<Resolver> onTurnStartEnemy() {
-        List<Resolver> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            Resolver temp = e.onTurnStartEnemy();
-            if (temp != null) {
-                list.add(temp);
-            }
-        }
-        return list;
-    }
-
-    public List<Resolver> onTurnEndEnemy() {
-        List<Resolver> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            Resolver temp = e.onTurnEndEnemy();
-            if (temp != null) {
-                list.add(temp);
-            }
-        }
-        return list;
-    }
-
-    public List<Resolver> onEnterPlay() {
-        List<Resolver> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            Resolver temp = e.onEnterPlay();
-            if (temp != null) {
-                list.add(temp);
-            }
-        }
-        return list;
-    }
-
-    public List<Resolver> onLeavePlay() {
-        List<Resolver> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            Resolver temp = e.onLeavePlay();
-            if (temp != null) {
-                list.add(temp);
-            }
-        }
-        return list;
+        return sum;
     }
 
     @Override

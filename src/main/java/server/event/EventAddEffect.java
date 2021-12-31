@@ -51,11 +51,12 @@ public class EventAddEffect extends Event {
             if (c instanceof Minion) {
                 Minion m = ((Minion) c);
                 this.oldHealth.set(i, m.health);
-                if (e.set.use[EffectStats.HEALTH]) {
-                    m.health = e.set.stats[EffectStats.HEALTH];
+                EffectStats es = e.effectStats;
+                if (es.set.getUse(EffectStats.HEALTH)) {
+                    m.health = es.set.getStat(EffectStats.HEALTH);
                 }
-                if (e.change.use[EffectStats.HEALTH] && e.change.stats[EffectStats.HEALTH] > 0) {
-                    m.health += e.change.stats[EffectStats.HEALTH];
+                if (es.change.getUse(EffectStats.HEALTH) && es.change.getStat(EffectStats.HEALTH) > 0) {
+                    m.health += es.change.getStat(EffectStats.HEALTH);
                 }
                 if (c.finalStatEffects.getStat(EffectStats.HEALTH) < m.health) {
                     m.health = m.finalStatEffects.getStat(EffectStats.HEALTH);

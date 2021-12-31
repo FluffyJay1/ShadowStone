@@ -5,6 +5,7 @@ import java.util.*;
 import client.tooltip.*;
 import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageFire;
 import server.*;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
@@ -50,6 +51,11 @@ public class Fireball extends Spell {
                         this.resolve(b, rl, el, new DestroyResolver(markedForDeath));
                     }
                 };
+            }
+
+            @Override
+            public double getBattlecryValue() {
+                return AI.VALUE_PER_DAMAGE * 8 / 2.;
             }
         };
         Target t = new Target(e, 2, "Deal 2 damage to an enemy minion and 1 damage to adjacent minions.") {

@@ -7,6 +7,7 @@ import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
 import server.*;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
@@ -36,6 +37,11 @@ public class WeatheredVanguard extends Minion {
             }
 
             @Override
+            public double getBattlecryValue() {
+                return 2 / 2.;
+            }
+
+            @Override
             public Resolver unleash() {
                 return new Resolver(false) {
                     @Override
@@ -47,6 +53,11 @@ public class WeatheredVanguard extends Minion {
                         }
                     }
                 };
+            }
+
+            @Override
+            public double getPresenceValue() {
+                return AI.VALUE_PER_1_1_STATS * 3 / 2.;
             }
         };
         this.addEffect(true, e);

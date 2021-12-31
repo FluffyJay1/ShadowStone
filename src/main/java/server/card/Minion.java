@@ -4,6 +4,7 @@ import java.util.*;
 
 import client.tooltip.*;
 import server.*;
+import server.ai.AI;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
@@ -15,7 +16,8 @@ public class Minion extends BoardObject {
     public Minion(Board board, TooltipMinion tooltip) {
         super(board, tooltip);
         this.health = tooltip.health;
-        Effect e = new Effect("", tooltip.cost, tooltip.attack, tooltip.magic, tooltip.health, 1, false, false, false);
+        Effect e = new Effect("", new EffectStats(tooltip.cost, tooltip.attack, tooltip.magic, tooltip.health));
+        e.effectStats.set.setStat(EffectStats.ATTACKS_PER_TURN, 1);
         this.addEffect(true, e);
         if (tooltip.basicUnleash) {
             Effect unl = new Effect(
@@ -35,6 +37,11 @@ public class Minion extends BoardObject {
                             }
                         }
                     };
+                }
+
+                @Override
+                public double getPresenceValue() {
+                    return AI.VALUE_PER_DAMAGE * this.owner.finalStatEffects.getStat(EffectStats.MAGIC) / 2.;
                 }
             };
             Target t = new Target(e, 1, "Deal X damage to an enemy minion. X equals this minion's magic.") {
@@ -58,7 +65,8 @@ public class Minion extends BoardObject {
         if (this.health < 0) {
             return 0;
         }
-        // sqrt(atk * hp) + sqrt(magic * hp^(0.4)) + 1
+        double sum = super.getValue();
+        // 0.9 * sqrt(atk * hp) + 0.1 * sqrt(magic * hp^(0.4)) + 1
         int attack = this.finalStatEffects.getStat(EffectStats.ATTACK);
         int magic = this.finalStatEffects.getStat(EffectStats.MAGIC);
         // if bane, add 4 to attack value, if poisonous add 6 if attack > 0, only add the max of these two bonuses
@@ -71,7 +79,8 @@ public class Minion extends BoardObject {
         }
         attack += bonus;
         // TODO make it consider shield, etc.
-        return Math.sqrt(attack * this.health) + Math.sqrt(magic * Math.pow(this.health, 0.4)) + 1;
+        sum += 0.9 * Math.sqrt(attack * this.health) + 0.1 * Math.sqrt(magic * Math.pow(this.health, 0.4)) + 1;
+        return sum;
     }
 
     // remember to change logic in canAttack(Minion)
@@ -133,12 +142,6 @@ public class Minion extends BoardObject {
         return (!ward || m.finalStatEffects.getStat(EffectStats.WARD) > 0)
                 && (!this.summoningSickness || (this.finalStatEffects.getStat(EffectStats.STORM) > 0
                         || (this.finalStatEffects.getStat(EffectStats.RUSH) > 0 && m.status.equals(CardStatus.BOARD))));
-    }
-
-    @Override
-    public boolean isInPlay() {
-        return this.alive && this.health > 0
-                && (this.status.equals(CardStatus.BOARD) || this.status.equals(CardStatus.LEADER));
     }
 
     public boolean canBeUnleashed() {

@@ -28,7 +28,7 @@ public class UnleashEmbraceNature extends UnleashPower {
                             this.resolve(b, rl, el, new PutCardResolver(m, CardStatus.HAND, effect.owner.team, -1));
                             if (m.alive) {
                                 Effect esc = new Effect("Cost reduced by 1 from <b> Embrace Nature. </b>");
-                                esc.change.setStat(EffectStats.COST, -1);
+                                esc.effectStats.change.setStat(EffectStats.COST, -1);
                                 this.resolve(b, rl, el, new AddEffectResolver(m, esc));
                             }
                         }

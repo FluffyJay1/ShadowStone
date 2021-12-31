@@ -8,9 +8,9 @@ import server.event.*;
 
 public class SetEffectStatsResolver extends Resolver {
     final Effect target;
-    final Effect newStats;
+    final EffectStats newStats;
 
-    public SetEffectStatsResolver(Effect target, Effect newStats) {
+    public SetEffectStatsResolver(Effect target, EffectStats newStats) {
         super(false);
         this.target = target;
         this.newStats = newStats;

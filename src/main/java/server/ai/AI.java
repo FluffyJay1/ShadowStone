@@ -21,6 +21,16 @@ import utils.WeightedSampler;
  */
 public class AI extends Thread {
     private static final boolean DEBUG_PRINT = true;
+
+    // some baseline value things for value estimation of effects
+    public static final double VALUE_PER_DAMAGE = 1;
+
+    public static final double VALUE_PER_HEAL = 0.5;
+
+    public static final double VALUE_PER_CARD_IN_HAND = 1;
+
+    public static final double VALUE_PER_1_1_STATS = 1;
+
     /*
      * We can't expect the AI to traverse every single possible node in the decision
      * tree before making a move (especially considering rng), so after a certain
@@ -32,7 +42,7 @@ public class AI extends Thread {
     private static final int SAMPLING_MIN_DEPTH = 1;
 
     // After this depth, just kinda call it
-    private static final int SAMPLING_MAX_DEPTH = 20;
+    private static final int SAMPLING_MAX_DEPTH = 30;
 
     // The minimum number of branches to sample at each level
     private static final int SAMPLING_MIN_SAMPLES = 1;
@@ -49,8 +59,14 @@ public class AI extends Thread {
     // Multiplier of sample rate at each depth
     private static final double SAMPLING_SAMPLE_RATE_MULTIPLIER = 0.75;
 
+    // The more branches a node has, the less in-depth it should sample them
+    private static final double SAMPLING_SAMPLE_RATE_OVERCROWD_MULTIPLIER = 0.98;
+
+    // After an rng event, we shouldn't care too much about evaluating in detail
+    private static final double SAMPLING_SAMPLE_RATE_RNG_MULTIPLIER = 0.7;
+
     // When revisiting nodes, tolerate lower detail levels up to a certain amount
-    private static final int REEVALUATION_MAX_DETAIL_DIFF = 1;
+    private static final double REEVALUATION_MAX_SAMPLE_RATE_DIFF = 0.33;
 
     // Same idea as sample rate, but for rng
     private static final int RNG_MAX_TRIALS = 12;
@@ -71,7 +87,7 @@ public class AI extends Thread {
     // how much extra weight for the play card action, scales off of the card's cost
     private static final double PLAY_CARD_COST_WEIGHT_MULTIPLIER = 0.5;
 
-    private static final double UNLEASH_TOTAL_WEIGHT = 10;
+    private static final double UNLEASH_TOTAL_WEIGHT = 12;
 
     private static final double ATTACK_TOTAL_WEIGHT = 2;
 
@@ -264,7 +280,7 @@ public class AI extends Thread {
                     evaluateAdvantage(this.b, team),
                     state,
                     filterLethal ? this.getPossibleLethalActions(team) : this.getPossibleActions(team));
-            dbsn.detailLevel = depth;
+            dbsn.sampleRate = sampleRate;
             this.nodeMap.put(state, dbsn);
         } else {
             dbsn = this.nodeMap.get(state);
@@ -285,9 +301,9 @@ public class AI extends Thread {
             numSamples = dbsn.totalBranches;
         }
         // if we are revisiting this node, but it needs to be re-evaluated at a better detail level
-        if (cacheHit && dbsn.detailLevel > depth + REEVALUATION_MAX_DETAIL_DIFF) {
+        if (cacheHit && dbsn.sampleRate < sampleRate - REEVALUATION_MAX_SAMPLE_RATE_DIFF) {
             dbsn.resetEvaluationOrder();
-            dbsn.detailLevel = depth;
+            dbsn.sampleRate = sampleRate;
             this.totalReevaluations++;
         }
 
@@ -363,7 +379,10 @@ public class AI extends Thread {
             nextSampleRate = SAMPLING_SAMPLE_RATE;
         } else if (depth + 1 > SAMPLING_MIN_DEPTH) {
             nextMaxSamples = maxSamples * SAMPLING_MAX_SAMPLES_MULTIPLIER;
-            nextSampleRate = sampleRate * SAMPLING_SAMPLE_RATE_MULTIPLIER;
+            nextSampleRate = sampleRate * SAMPLING_SAMPLE_RATE_MULTIPLIER * Math.pow(SAMPLING_SAMPLE_RATE_OVERCROWD_MULTIPLIER, current.totalBranches);
+            if (result.rng) {
+                nextSampleRate *= SAMPLING_SAMPLE_RATE_RNG_MULTIPLIER;
+            }
         }
         if (this.b.winner != 0 || depth == SAMPLING_MAX_DEPTH) {
             // no more actions can be taken
@@ -629,9 +648,9 @@ public class AI extends Thread {
     /**
      * Health is a resource, attempts to evaluate the mana worth of having high
      * hp/opponent at low hp, factoring in enemy minions and friendly wards. The
-     * formula is mana = 5ln(ehp), making a 12hp heal worth about 4 mana when at 10
+     * formula is mana = 6ln(ehp), making a 12hp heal worth about 4 mana when at 13
      * hp, equivalent to greater healing potion, and a 6hp nuke worth about 4 mana
-     * when opponent is at 11 hp, equivalent to fireball
+     * when opponent is at 12 hp, equivalent to fireball
      * 
      * @param b    The board
      * @param team the team to evaluate for
@@ -688,7 +707,7 @@ public class AI extends Thread {
             }
             ehp -= threatenDamage;
         }
-        return 5 * Math.log(ehp);
+        return 6 * Math.log(ehp);
     }
 
     /**

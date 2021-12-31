@@ -5,6 +5,7 @@ import java.util.*;
 import client.*;
 import client.tooltip.*;
 import server.*;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
@@ -33,6 +34,11 @@ public class WellOfDestination extends Amulet {
                         }
                     }
                 };
+            }
+
+            @Override
+            public double getPresenceValue() {
+                return AI.VALUE_PER_1_1_STATS * 4 / 2.;
             }
         };
         this.addEffect(true, e);

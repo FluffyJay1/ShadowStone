@@ -7,6 +7,7 @@ import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
 import server.*;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
@@ -35,6 +36,11 @@ public class Curate extends Minion {
                         }
                     }
                 };
+            }
+
+            @Override
+            public double getBattlecryValue() {
+                return AI.VALUE_PER_HEAL * 5 / 2.;
             }
         };
         Target t = new Target(e, 1, "Restore 5 health to an ally.") {

@@ -8,7 +8,12 @@ public class Spell extends Card { // yea
 
     public Spell(Board board, TooltipSpell tooltip) {
         super(board, tooltip);
-        this.addEffect(true, new Effect("", tooltip.cost));
+        this.addEffect(true, new Effect("", new EffectStats(tooltip.cost)));
+    }
+
+    @Override
+    public double getValue() {
+        return this.getTotalEffectValueOf(Effect::getBattlecryValue);
     }
 
     @Override
