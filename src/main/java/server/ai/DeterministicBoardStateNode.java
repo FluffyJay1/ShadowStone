@@ -85,7 +85,7 @@ public class DeterministicBoardStateNode extends BoardStateNode {
             return 0;
         }
         // behold magics
-        return 0.5 * (1 - ((double) this.branches.size() / this.totalBranches));
+        return 0.75 * (1 - ((double) this.branches.size() / this.totalBranches));
     }
 
     /**

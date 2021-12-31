@@ -1,4 +1,5 @@
 AI smart post-rng sampling: if rng leads to many different post-states, their sample rates should be smaller
+countdown effect displays as null lol
 Rework aura effects, formalize them and make them handle the case where it gets muted
 Use scanner instead of stringtokenizer to handle stream input?
 Optimize AI action sampling?

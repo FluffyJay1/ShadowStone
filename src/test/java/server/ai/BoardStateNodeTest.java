@@ -46,11 +46,12 @@ public class BoardStateNodeTest {
 
     @Test
     void RNGBoardStateNodeTrialTest() {
-        RNGBoardStateNode rbsn = new RNGBoardStateNode(1, 15, 3);
-        assertEquals(5, rbsn.getScore());
-        rbsn.addTrials(20, 2);
-        assertEquals(7, rbsn.getScore());
-        rbsn.addTrials(5, 5);
-        assertEquals(4, rbsn.getScore());
+        RNGBoardStateNode rbsn = new RNGBoardStateNode(1);
+        rbsn.addTrial(new TerminalBoardStateNode(1, 10));
+        assertEquals(10, rbsn.getScore());
+        rbsn.addTrial(new TerminalBoardStateNode(-1, -20));
+        assertEquals(15, rbsn.getScore());
+        rbsn.addTrial(new TerminalBoardStateNode(1, 30));
+        assertEquals(20, rbsn.getScore());
     }
 }

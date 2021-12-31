@@ -38,7 +38,7 @@ public class AI extends Thread {
      * of the overall turn from there. When the AI commits its decisions and reaches
      * this depth again, we will have to re-evaluate which action is best.
      */
-    // The minimum depth for sampling to occur
+    // The minimum depth for sampling to occur (if rng happens, we do sampling regardless)
     private static final int SAMPLING_MIN_DEPTH = 1;
 
     // After this depth, just kinda call it
@@ -53,20 +53,24 @@ public class AI extends Thread {
     // How much the max number of samples gets multiplied by per level
     private static final double SAMPLING_MAX_SAMPLES_MULTIPLIER = 0.6;
 
-    // Proportion of total possible actions that we sample at min depth
-    private static final double SAMPLING_SAMPLE_RATE = 1;
+    // Proportion of total possible actions that we sample at the start
+    // should be greater than 1 lol
+    private static final double SAMPLING_START_SAMPLE_RATE = 2.5;
 
     // Multiplier of sample rate at each depth
     private static final double SAMPLING_SAMPLE_RATE_MULTIPLIER = 0.75;
 
     // The more branches a node has, the less in-depth it should sample them
-    private static final double SAMPLING_SAMPLE_RATE_OVERCROWD_MULTIPLIER = 0.98;
+    private static final double SAMPLING_SAMPLE_RATE_OVERCROWD_MULTIPLIER = 0.96;
 
     // After an rng event, we shouldn't care too much about evaluating in detail
-    private static final double SAMPLING_SAMPLE_RATE_RNG_MULTIPLIER = 0.7;
+    private static final double SAMPLING_SAMPLE_RATE_RNG_PENALTY_MULTIPLIER = 0.85;
+
+    // how much to multiply the penalty multiplier per extra trial
+    private static final double SAMPLING_SAMPLE_RATE_RNG_PENALTY_REDUCTION = 0.7;
 
     // When revisiting nodes, tolerate lower detail levels up to a certain amount
-    private static final double REEVALUATION_MAX_SAMPLE_RATE_DIFF = 0.33;
+    private static final double REEVALUATION_MAX_SAMPLE_RATE_DIFF = 0.20;
 
     // Same idea as sample rate, but for rng
     private static final int RNG_MAX_TRIALS = 12;
@@ -177,7 +181,7 @@ public class AI extends Thread {
         this.totalReevaluations = 0;
         List<String> actionStack = new LinkedList<>();
         long start = System.nanoTime();
-        DeterministicBoardStateNode dbsn = this.getBestTurn(this.b.localteam, 0, 1, Double.POSITIVE_INFINITY, false);
+        DeterministicBoardStateNode dbsn = this.getBestTurn(this.b.localteam, 0, SAMPLING_START_SAMPLE_RATE, Double.POSITIVE_INFINITY, false);
         if (dbsn == null) {
             System.out.println("AIThink returned from a null best turn, sadge");
             return;
@@ -292,14 +296,9 @@ public class AI extends Thread {
         }
         this.traversedNodes.add(dbsn);
         // start sampling
-        int numSamples;
-        if (depth >= SAMPLING_MIN_DEPTH) {
-            numSamples = (int) Math.min(dbsn.totalBranches * sampleRate, maxSamples);
-            numSamples = Math.max(numSamples, SAMPLING_MIN_SAMPLES);
-            numSamples = Math.min(numSamples, dbsn.totalBranches);
-        } else {
-            numSamples = dbsn.totalBranches;
-        }
+        int numSamples = (int) Math.round(Math.min(dbsn.totalBranches * sampleRate, maxSamples));
+        numSamples = Math.max(numSamples, SAMPLING_MIN_SAMPLES);
+        numSamples = Math.min(numSamples, dbsn.totalBranches);
         // if we are revisiting this node, but it needs to be re-evaluated at a better detail level
         if (cacheHit && dbsn.sampleRate < sampleRate - REEVALUATION_MAX_SAMPLE_RATE_DIFF) {
             dbsn.resetEvaluationOrder();
@@ -318,27 +317,23 @@ public class AI extends Thread {
         while (dbsn.evaluatedBranches < numSamples) {
             String actionString = dbsn.nextBranchToEvaluate();
             TraversalResult traverse = this.traverseAction(dbsn, actionString, depth, sampleRate, maxSamples,
-                    filterLethal);
+                    filterLethal, null);
             if (traverse.rng) {
                 // rng, re-evaluate action many times, channel an average score into an RNGBoardStateNode
                 int trials = Math.max(RNG_MAX_TRIALS - depth * RNG_TRIAL_REDUCTION, RNG_MIN_TRIALS);
-                BoardStateNode oldNextBsn = dbsn.branches.get(actionString);
-                if (oldNextBsn instanceof RNGBoardStateNode) {
+                RNGBoardStateNode nextBsn = (RNGBoardStateNode) dbsn.branches.get(actionString); // trust
+                if (nextBsn != null) {
                     // if previously evaluated this rng branch, see if we can add some trials to it
-                    trials = Math.max(1, trials - ((RNGBoardStateNode) oldNextBsn).trials);
-                }
-                double score = traverse.next.getScore() * team * traverse.next.team;
-                for (int j = 1; j < trials; j++) {
-                    traverse = this.traverseAction(dbsn, actionString, depth, sampleRate, maxSamples, filterLethal);
-                    score += traverse.next.getScore() * team * traverse.next.team;
-                }
-                if (oldNextBsn instanceof RNGBoardStateNode) {
-                    // if previously evaluated, add our new trials
-                    ((RNGBoardStateNode) oldNextBsn).addTrials(score, trials);
-                    dbsn.logEvaluation(actionString, oldNextBsn);
+                    trials = Math.max(1, trials - nextBsn.trials);
                 } else {
-                    dbsn.logEvaluation(actionString, new RNGBoardStateNode(team, score, trials));
+                    nextBsn = new RNGBoardStateNode(team);
+                    nextBsn.addTrial(traverse.next);
                 }
+                for (int j = 1; j < trials; j++) {
+                    traverse = this.traverseAction(dbsn, actionString, depth, sampleRate, maxSamples, filterLethal, nextBsn);
+                    nextBsn.addTrial(traverse.next);
+                }
+                dbsn.logEvaluation(actionString, nextBsn);
             } else {
                 // not rng, whatever
                 dbsn.logEvaluation(actionString, traverse.next);
@@ -366,23 +361,30 @@ public class AI extends Thread {
      * @param sampleRate   The proportion of total actions we sampled
      * @param maxSamples   The max number of samples we used before
      * @param filterLethal Flag to only traverse actions that may result in lethal
+     * @param nextRNG      If we know the action results in rng, this is the rng node seen by the tree, for reference
      * @return The BoardStateNode at the end of the edge traversed
      */
     private TraversalResult traverseAction(DeterministicBoardStateNode current, String action, int depth, double sampleRate, double maxSamples,
-            boolean filterLethal) {
+            boolean filterLethal, RNGBoardStateNode nextRNG) {
         ResolutionResult result = this.b.executePlayerAction(new StringTokenizer(action));
         BoardStateNode node;
         double nextMaxSamples = maxSamples;
         double nextSampleRate = sampleRate;
-        if (depth + 1 == SAMPLING_MIN_DEPTH) {
-            nextMaxSamples = SAMPLING_MAX_SAMPLES;
-            nextSampleRate = SAMPLING_SAMPLE_RATE;
-        } else if (depth + 1 > SAMPLING_MIN_DEPTH) {
-            nextMaxSamples = maxSamples * SAMPLING_MAX_SAMPLES_MULTIPLIER;
-            nextSampleRate = sampleRate * SAMPLING_SAMPLE_RATE_MULTIPLIER * Math.pow(SAMPLING_SAMPLE_RATE_OVERCROWD_MULTIPLIER, current.totalBranches);
-            if (result.rng) {
-                nextSampleRate *= SAMPLING_SAMPLE_RATE_RNG_MULTIPLIER;
+        if (depth + 1 >= SAMPLING_MIN_DEPTH) {
+            if (depth + 1 == SAMPLING_MIN_DEPTH) {
+                nextMaxSamples = SAMPLING_MAX_SAMPLES;
+            } else {
+                nextMaxSamples = maxSamples * SAMPLING_MAX_SAMPLES_MULTIPLIER;
             }
+            nextSampleRate = sampleRate * SAMPLING_SAMPLE_RATE_MULTIPLIER * Math.pow(SAMPLING_SAMPLE_RATE_OVERCROWD_MULTIPLIER, current.totalBranches);
+        }
+        if (result.rng) {
+            // the number of trials we've already done to get to this node
+            int cumTrials = 0;
+            if (nextRNG != null) {
+                cumTrials += nextRNG.getCount(this.nodeMap.get(this.b.stateToString()));
+            }
+            nextSampleRate *= 1 - (SAMPLING_SAMPLE_RATE_RNG_PENALTY_MULTIPLIER * Math.pow(SAMPLING_SAMPLE_RATE_RNG_PENALTY_REDUCTION, cumTrials));
         }
         if (this.b.winner != 0 || depth == SAMPLING_MAX_DEPTH) {
             // no more actions can be taken
@@ -411,8 +413,8 @@ public class AI extends Thread {
             undoStack.get(undoStack.size() - 1).undo();
             undoStack.remove(undoStack.size() - 1);
         }
-        String stateAfter = this.b.stateToString();
-        if (!current.state.equals(stateAfter)) {
+        String stateAfterUndo = this.b.stateToString();
+        if (!current.state.equals(stateAfterUndo)) {
             System.out.println(
                     "Discrepancy after executing " + action + ", rng = " + result.rng + ", depth = " + depth);
             for (Event e : result.events) {
@@ -421,7 +423,7 @@ public class AI extends Thread {
             System.out.println("Before:");
             System.out.println(current.state);
             System.out.println("After:");
-            System.out.println(stateAfter);
+            System.out.println(stateAfterUndo);
             throw new RuntimeException();
         }
         return new TraversalResult(node, result.rng);
