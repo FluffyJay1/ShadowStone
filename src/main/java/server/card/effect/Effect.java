@@ -36,7 +36,7 @@ public class Effect implements Cloneable {
     public List<Target> battlecryTargets = new LinkedList<>(), unleashTargets = new LinkedList<>();
 
     public Effect() {
-        // TODO lmao
+        this.description = "";
     }
 
     public Effect(String description) {

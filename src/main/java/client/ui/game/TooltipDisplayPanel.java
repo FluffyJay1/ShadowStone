@@ -17,11 +17,11 @@ public class TooltipDisplayPanel extends UIBox {
         this.margins.set(10, 10);
         this.alignv = -1;
         this.name = new Text(ui, new Vector2f((float) this.getLocalLeft(true), (float) this.getLocalTop(true)), "name",
-                this.getWidth(true), 40, "Lucida Console", 40, -1, -1);
+                this.getWidth(true), 40, "Verdana", 40, -1, -1);
         this.addChild(name);
         this.description = new Text(ui,
                 new Vector2f((float) this.getLocalLeft(true), (float) this.name.getBottom(false, false) + 10), "jeff",
-                this.getWidth(true), 32, "Lucida Console", 32, -1, -1);
+                this.getWidth(true), 32, "Verdana", 32, -1, -1);
         this.addChild(description);
 
     }

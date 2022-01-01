@@ -80,9 +80,11 @@ public class Text extends UIElement {
 
             for (String token : words) { // why do i do this
                 // String token = st.nextToken();
-                if (token.indexOf('<') > -1 && token.indexOf('>') > -1) {
+                if (token.matches("</?[bi]>")) {
                     if (sameFontStreak.length() > 0) {
-                        line.add(sameFontStreak.toString());
+                        String sameFontStreakString = sameFontStreak.toString();
+                        line.add(sameFontStreakString);
+                        currlinewidth += this.uFontFamily[flags].getWidth(sameFontStreakString);
                         sameFontStreak = new StringBuilder();
                     }
                     line.add(token);
@@ -93,40 +95,40 @@ public class Text extends UIElement {
                         case "</i>" -> flags = flags & ~2;
                     }
                 } else {
-                    if (currlinewidth == 0) { // first word
+                    String sameFontStreakString = sameFontStreak.toString();
+                    if (sameFontStreakString.isEmpty() && currlinewidth == 0) { // first word
                         if (!token.isEmpty()) {
                             sameFontStreak.append(token);
-                            currlinewidth += this.uFontFamily[flags].getWidth(token);
                         }
-                    } else if (currlinewidth + this.uFontFamily[flags].getWidth(" " + token) > this.lineWidth) { // newline
-                        // remove excess spaces at end of line
-                        for (int i = line.size() - 1; i >= 0 && line.get(i).isEmpty(); i--) {
-                            currlinewidth -= this.uFontFamily[flags].getWidth(" ");
-                            line.remove(i);
-                        }
+                    } else if (currlinewidth + this.uFontFamily[flags].getWidth(sameFontStreakString + " " + token) > this.lineWidth) { // newline
                         if (sameFontStreak.length() > 0) {
-                            line.add(sameFontStreak.toString());
+                            line.add(sameFontStreakString);
+                            currlinewidth += this.uFontFamily[flags].getWidth(sameFontStreakString);
+                        }
+                        // remove excess spaces at end of line
+                        if (line.size() > 0) {
+                            String last = line.get(line.size() - 1);
+                            String lastTrimmed = last.replaceAll("\\s+$", "");
+                            currlinewidth += this.uFontFamily[flags].getWidth(lastTrimmed) - this.uFontFamily[flags].getWidth(last);
+                            line.set(line.size() - 1, lastTrimmed);
                         }
                         sameFontStreak = new StringBuilder(token);
                         this.lines.add(line);
                         this.lineWidths.add(currlinewidth);
-                        if (currlinewidth > maxLineWidth) {
-                            maxLineWidth = currlinewidth;
+                        if (currlinewidth > this.maxLineWidth) {
+                            this.maxLineWidth = currlinewidth;
                         }
                         line = new ArrayList<>();
-                        currlinewidth = this.uFontFamily[flags].getWidth(token);
+                        currlinewidth = 0;
                     } else {
-                        if (sameFontStreak.length() == 0) {
-                            sameFontStreak = new StringBuilder(token);
-                        } else {
-                            sameFontStreak.append(" ").append(token);
-                        }
-                        currlinewidth += this.uFontFamily[flags].getWidth(" " + token);
+                        sameFontStreak.append(" ").append(token);
                     }
                 }
             }
             if (sameFontStreak.length() > 0) {
-                line.add(sameFontStreak.toString());
+                String sameFontStreakString = sameFontStreak.toString();
+                line.add(sameFontStreakString);
+                currlinewidth += this.uFontFamily[flags].getWidth(sameFontStreakString);
             }
             this.lines.add(line);
             this.lineWidths.add(currlinewidth);
@@ -165,7 +167,7 @@ public class Text extends UIElement {
                         float drawy = (float) (this.lineHeight * i);
                         cachedGraphics.setFont(this.uFontFamily[flags]);
                         cachedGraphics.drawString(token, drawx, drawy);
-                        currlinewidth += this.uFontFamily[flags].getWidth(token + " ");
+                        currlinewidth += this.uFontFamily[flags].getWidth(token);
                     }
                 }
             }
