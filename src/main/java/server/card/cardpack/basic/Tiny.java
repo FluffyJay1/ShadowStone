@@ -16,7 +16,7 @@ import server.resolver.*;
 public class Tiny extends Minion {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final TooltipMinion TOOLTIP = new TooltipMinion("Tiny",
-            "<b> Unleash: </b> Gain +2/+0/+2 and <b> Rush. </b>", "res/card/basic/tiny.png", CRAFT, 3, 2, 2, 3, false,
+            "<b>Unleash</b>: Gain +2/+0/+2 and <b>Rush</b>.", "res/card/basic/tiny.png", CRAFT, 3, 2, 2, 3, false,
             Tiny.class, new Vector2f(), -1, EventAnimationDamageRocks.class, Tooltip.UNLEASH, Tooltip.RUSH);
 
     public Tiny(Board b) {
@@ -27,7 +27,7 @@ public class Tiny extends Minion {
                 return new Resolver(false) {
                     @Override
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
-                        EffectStatChange ef = new EffectStatChange("Gained +2/+0/+2 and <b> Rush </b> from Unleash", 2,
+                        EffectStatChange ef = new EffectStatChange("+2/+0/+2 and <b>Rush</b> (from <b>Unleash</b>).", 2,
                                 0, 2);
                         ef.effectStats.set.setStat(EffectStats.RUSH, 1);
                         this.resolve(b, rl, el, new AddEffectResolver(owner, ef));

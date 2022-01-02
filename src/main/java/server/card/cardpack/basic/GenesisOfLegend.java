@@ -14,7 +14,7 @@ public class GenesisOfLegend extends Amulet {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
 
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet("Gensis of Legend",
-            "<b> Countdown(3). </b> At the end of your turn, give a random allied minion +0/+0/+1 and <b> Bane. </b>",
+            "<b>Countdown(3)</b>. At the end of your turn, give a random allied minion +0/+0/+1 and <b>Bane</b>.",
             "res/card/basic/genesisoflegend.png", CRAFT, 2, GenesisOfLegend.class, Tooltip.COUNTDOWN, Tooltip.BANE);
 
     public GenesisOfLegend(Board b) {
@@ -29,7 +29,7 @@ public class GenesisOfLegend extends Amulet {
                         if (!possible.isEmpty()) {
                             Minion selected = Game.selectRandom(possible);
                             EffectStatChange esc = new EffectStatChange(
-                                    "Gained +0/+0/+1 and <b> Bane </b> from Genesis of Legend.", 0, 0, 1);
+                                    "+0/+0/+1 and <b>Bane</b> (from <b>Genesis of Legend</b>).", 0, 0, 1);
                             esc.effectStats.set.setStat(EffectStats.BANE, 1);
                             this.resolve(b, rl, el, new AddEffectResolver(selected, esc));
                         }

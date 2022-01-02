@@ -20,7 +20,7 @@ public class TooltipMinion extends TooltipCard {
                          double artFocusScale, Class<? extends EventAnimationDamage> attackAnimation, Tooltip... references) {
         super(name,
                 "minion\nA:" + attack + ", M:" + magic + ", H:" + health + "\n \n" + description + (basicUnleash
-                        ? "\n <b> Unleash: </b> Deal X damage to an enemy minion. X equals this minion's magic.\n"
+                        ? "\n <b>Unleash</b>: Deal X damage to an enemy minion. X equals this minion's magic.\n"
                         : ""),
                 imagepath, craft, cost, cardClass);
         this.basicUnleash = basicUnleash;

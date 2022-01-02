@@ -73,7 +73,7 @@ public class Text extends UIElement {
         while (stlines.hasMoreTokens()) {
             // StringTokenizer st = new StringTokenizer(stlines.nextToken(), "
             // ");
-            String[] words = stlines.nextToken().split(" ");
+            String[] words = stlines.nextToken().split("(?<= )|(?<=</?[bi]>)|(?=</?[bi]>)");
             List<String> line = new ArrayList<>();
             StringBuilder sameFontStreak = new StringBuilder(); // to reduce calls to drawString
             double currlinewidth = 0;
@@ -96,11 +96,12 @@ public class Text extends UIElement {
                     }
                 } else {
                     String sameFontStreakString = sameFontStreak.toString();
+                    String trimmedToken = token.replaceAll("^\\s+", "");
                     if (sameFontStreakString.isEmpty() && currlinewidth == 0) { // first word
-                        if (!token.isEmpty()) {
-                            sameFontStreak.append(token);
+                        if (!trimmedToken.isEmpty()) {
+                            sameFontStreak.append(trimmedToken);
                         }
-                    } else if (currlinewidth + this.uFontFamily[flags].getWidth(sameFontStreakString + " " + token) > this.lineWidth) { // newline
+                    } else if (currlinewidth + this.uFontFamily[flags].getWidth(sameFontStreakString + token) > this.lineWidth) { // newline
                         if (sameFontStreak.length() > 0) {
                             line.add(sameFontStreakString);
                             currlinewidth += this.uFontFamily[flags].getWidth(sameFontStreakString);
@@ -112,7 +113,10 @@ public class Text extends UIElement {
                             currlinewidth += this.uFontFamily[flags].getWidth(lastTrimmed) - this.uFontFamily[flags].getWidth(last);
                             line.set(line.size() - 1, lastTrimmed);
                         }
-                        sameFontStreak = new StringBuilder(token);
+                        sameFontStreak = new StringBuilder();
+                        if (!trimmedToken.isEmpty()) {
+                            sameFontStreak.append(trimmedToken);
+                        }
                         this.lines.add(line);
                         this.lineWidths.add(currlinewidth);
                         if (currlinewidth > this.maxLineWidth) {
@@ -121,7 +125,7 @@ public class Text extends UIElement {
                         line = new ArrayList<>();
                         currlinewidth = 0;
                     } else {
-                        sameFontStreak.append(" ").append(token);
+                        sameFontStreak.append(token);
                     }
                 }
             }

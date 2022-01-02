@@ -14,7 +14,7 @@ import server.resolver.*;
 public class WoodOfBrambles extends Amulet {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet("Wood of Brambles",
-            "<b> Countdown(2). </b> \n <b> Battlecry: </b> add two <b> Faries </b> to your hand. <b> Aura: </b> friendly minions have <b> Clash: </b> deal 1 damage to the enemy minion.",
+            "<b>Countdown(2)</b>.\n<b>Battlecry</b>: add two <b>Faries</b> to your hand.\n<b>Aura</b>: friendly minions have <b>Clash</b>: deal 1 damage to the enemy minion.",
             "res/card/basic/woodofbrambles.png", CRAFT, 2, WoodOfBrambles.class, Tooltip.COUNTDOWN, Tooltip.BATTLECRY,
             Fairy.TOOLTIP, Tooltip.AURA, Tooltip.CLASH);
 
@@ -57,7 +57,7 @@ public class WoodOfBrambles extends Amulet {
 
         // required for reflection
         public EffectBrambles() {
-            super("<b> Clash: </b> deal 1 damage to the enemy minion (from Wood of Bramble's <b> Aura. </b>)");
+            super("<b>Clash</b>: deal 1 damage to the enemy minion (from <b>Wood of Bramble's Aura</b>).");
         }
 
         @Override

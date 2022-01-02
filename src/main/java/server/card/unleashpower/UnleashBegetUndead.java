@@ -13,21 +13,20 @@ import server.resolver.*;
 public class UnleashBegetUndead extends UnleashPower {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Beget Undead",
-            "Give an allied minion <b> Last Words: </b> summon a <b> Skeleton. Unleash </b> it. Then deal 1 damage to it.",
+            "Give an allied minion <b>Last Words</b>: summon a <b>Skeleton</b>. <b>Unleash</b> it. Then deal 1 damage to it.",
             "res/unleashpower/begetundead.png", CRAFT, 2, UnleashBegetUndead.class, Tooltip.UNLEASH, Tooltip.LASTWORDS,
             Skeleton.TOOLTIP);
 
     public UnleashBegetUndead(Board b) {
         super(b, TOOLTIP);
-        Effect e = new Effect(
-                "Gives an allied minion <b> Last Words: </b> summon a <b> Skeleton </b> pre-unleash, then deal 1 damage to it post-unleash.") {
+        Effect e = new Effect(TOOLTIP.description) {
             @Override
             public Resolver onUnleashPre(Minion m) {
                 return new Resolver(false) {
                     @Override
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
                         EffectLastWordsSummon elws = new EffectLastWordsSummon(
-                                "Summons a <b> Skeleton </b> upon death.", Skeleton.class, m.team);
+                                "<b>Last Words</b>: summon a <b>Skeleton</b> (from <b>Beget Undead</b>).", Skeleton.class, m.team);
                         this.resolve(b, rl, el, new AddEffectResolver(m, elws));
                     }
                 };

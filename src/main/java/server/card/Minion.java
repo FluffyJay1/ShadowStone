@@ -21,7 +21,7 @@ public class Minion extends BoardObject {
         this.addEffect(true, e);
         if (tooltip.basicUnleash) {
             Effect unl = new Effect(
-                    "<b> Unleash: </b> Deal X damage to an enemy minion. X equals this minion's magic.") {
+                    "<b>Unleash</b>: Deal X damage to an enemy minion. X equals this minion's magic.") {
                 @Override
                 public Resolver unleash() {
                     Effect effect = this; // anonymous fuckery

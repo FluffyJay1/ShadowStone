@@ -12,7 +12,7 @@ import server.resolver.*;
 
 public class Baneling extends Minion {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
-    public static final TooltipMinion TOOLTIP = new TooltipMinion("Baneling", "<b> Last Words: Blast(5). </b>",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion("Baneling", "<b>Last Words</b>: <b>Blast(5)</b>.",
             "res/card/basic/baneling.png", CRAFT, 3, 1, 0, 1, false, Baneling.class, new Vector2f(253, 271), 1.5,
             EventAnimationDamageSlash.class,
             Tooltip.LASTWORDS, Tooltip.BLAST);

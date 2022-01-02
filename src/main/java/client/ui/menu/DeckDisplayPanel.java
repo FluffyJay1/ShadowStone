@@ -134,7 +134,7 @@ public class DeckDisplayPanel extends UIBox {
     public void updateCardPositions() {
         this.cards.sort((a, b) -> Card.compareDefault(a.card, b.card));
         for (int i = 0; i < this.cards.size(); i++) {
-            this.cards.get(i).setPos(new Vector2f(i % 8 * 160 - 560, i / 8 * 100 - 70), 0.99);
+            this.cards.get(i).setPos(new Vector2f(i % 8 * 160 - 560, i / 8 * 160 - 70), 0.99);
         }
     }
 

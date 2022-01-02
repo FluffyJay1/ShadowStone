@@ -15,8 +15,9 @@ public class EffectLastWordsAlliedBlast extends Effect {
     // required for reflection
     public EffectLastWordsAlliedBlast() { }
 
-    public EffectLastWordsAlliedBlast(int damage) {
-        super("<b> Last Words: </b> Deal " + damage + " damage to a random allied minion.");
+    // sourceString: what to put in the description as where it came from
+    public EffectLastWordsAlliedBlast(String sourceString, int damage) {
+        super("<b>Last Words</b>: deal " + damage + " damage to a random allied minion (from " + sourceString + ").");
         this.damage = damage;
     }
 
@@ -48,6 +49,5 @@ public class EffectLastWordsAlliedBlast extends Effect {
     @Override
     public void loadExtraState(Board b, StringTokenizer st) {
         this.damage = Integer.parseInt(st.nextToken());
-        this.description = "<b> Last Words: </b> Deal " + this.damage + " damage to a random allied minion.";
     }
 }

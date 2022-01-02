@@ -28,7 +28,7 @@ public class TooltipDisplayPanel extends UIBox {
 
     public void setTooltip(Tooltip tooltip) {
         this.tooltip = tooltip;
-        this.name.setText("<b> " + tooltip.name + " </b>");
+        this.name.setText("<b>" + tooltip.name + "</b>");
         this.description.setText(tooltip.description);
         this.description.setPos(
                 new Vector2f((float) this.getLocalLeft(true), (float) this.name.getBottom(false, false) + 10), 1);

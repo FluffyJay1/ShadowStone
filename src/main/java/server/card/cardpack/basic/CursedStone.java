@@ -16,7 +16,7 @@ import server.resolver.*;
 public class CursedStone extends Minion {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final TooltipMinion TOOLTIP = new TooltipMinion("Cursed Stone",
-            "<b> Unleash: Blast(X) </b> and gain <b> Last Words: </b> Deal X damage to a random allied minion. X equals the amount of health your leader is missing.",
+            "<b>Unleash</b>: <b>Blast(X)</b> and gain <b>Last Words</b>: Deal X damage to a random allied minion. X equals the amount of health your leader is missing.",
             "res/card/basic/cursedstone.png", CRAFT, 5, 1, 5, 5, false, CursedStone.class, new Vector2f(), -1,
             EventAnimationDamageSlash.class,
             Tooltip.UNLEASH, Tooltip.BLAST, Tooltip.LASTWORDS);
@@ -37,7 +37,7 @@ public class CursedStone extends Minion {
                         Player player = owner.board.getPlayer(owner.team);
                         int missing = player.leader.finalStatEffects.getStat(EffectStats.HEALTH) - player.leader.health;
                         this.resolve(b, rl, el, new BlastResolver(effect, missing, null));
-                        Effect lw = new EffectLastWordsAlliedBlast(missing);
+                        Effect lw = new EffectLastWordsAlliedBlast("<b>Unleash</b>", missing);
                         this.resolve(b, rl, el, new AddEffectResolver(effect.owner, lw));
                     }
                 };

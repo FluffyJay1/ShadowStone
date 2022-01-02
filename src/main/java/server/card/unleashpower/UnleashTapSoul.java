@@ -12,12 +12,12 @@ import server.resolver.*;
 public class UnleashTapSoul extends UnleashPower {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Tap Soul",
-            " Deal 2 damage to your leader. <b> Unleash </b> an allied minion. If <b> Vengeance </b> is active for you, this can be used once more per turn.",
+            "Deal 2 damage to your leader. <b>Unleash</b> an allied minion. If <b>Vengeance</b> is active for you, this can be used once more per turn.",
             "res/unleashpower/tapsoul.png", CRAFT, 1, UnleashTapSoul.class, Tooltip.UNLEASH, Tooltip.VENGEANCE);
 
     public UnleashTapSoul(Board b) {
         super(b, TOOLTIP);
-        Effect vengeanceBonus = new Effect("When Vengeance is active, this can be used once more per turn.") {
+        Effect vengeanceBonus = new Effect(TOOLTIP.description) {
             boolean vengeance;
 
             @Override

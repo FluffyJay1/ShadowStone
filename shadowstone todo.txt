@@ -1,4 +1,4 @@
-standardize effect texts and fix the <b> token thing
+ai does werid plays if it has a ward up
 Maximum number of board slots
 AI should be able to place minions differently
 Use scanner instead of stringtokenizer to handle stream input?

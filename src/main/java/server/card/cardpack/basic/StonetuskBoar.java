@@ -13,7 +13,7 @@ import server.card.effect.EffectStats;
 public class StonetuskBoar extends Minion {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final TooltipMinion TOOLTIP = new TooltipMinion("Stonetusk Boar",
-            "<b> Storm. </b>", "res/card/basic/stonetuskboar.png", CRAFT, 1, 1, 0,
+            "<b>Storm</b>.", "res/card/basic/stonetuskboar.png", CRAFT, 1, 1, 0,
             1, false, StonetuskBoar.class, new Vector2f(), -1, EventAnimationDamageSlash.class, Tooltip.STORM);
 
     public StonetuskBoar(Board b) {

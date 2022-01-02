@@ -12,7 +12,7 @@ import server.resolver.*;
 public class DragonOracle extends Spell {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final TooltipSpell TOOLTIP = new TooltipSpell("Dragon Oracle",
-            "Gain one empty mana orb. If <b> Overflow </b> is active for you, draw a card.",
+            "Gain one empty mana orb. If <b>Overflow</b> is active for you, draw a card.",
             "res/card/basic/dragonoracle.png", CRAFT, 2, DragonOracle.class);
 
     public DragonOracle(Board b) {

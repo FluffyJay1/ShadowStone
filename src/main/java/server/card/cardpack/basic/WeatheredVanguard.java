@@ -16,7 +16,7 @@ import server.resolver.*;
 public class WeatheredVanguard extends Minion {
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final TooltipMinion TOOLTIP = new TooltipMinion("Weathered Vanguard",
-            "<b> Battlecry: </b> Summon 2 <b> Knights. Unleash: </b> Give all allied minions +1/+0/+1.",
+            "<b>Battlecry</b>: Summon 2 <b>Knights</b>. <b>Unleash</b>: Give all allied minions +1/+0/+1.",
             "res/card/basic/weatheredvanguard.png", CRAFT, 6, 4, 2, 4, false, WeatheredVanguard.class,
             new Vector2f(155, 120), 1.6, EventAnimationDamageSlash.class,
             Tooltip.BATTLECRY, Knight.TOOLTIP, Tooltip.UNLEASH);
@@ -48,7 +48,7 @@ public class WeatheredVanguard extends Minion {
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
                         List<Minion> minions = b.getMinions(owner.team, false, true);
                         if (!minions.isEmpty()) {
-                            Effect stats = new EffectStatChange("+1/+0/+1 from Weathered Vanguard.", 1, 0, 1);
+                            Effect stats = new EffectStatChange("+1/+0/+1 (from <b>Weathered Vanguard's Unleash</b>).", 1, 0, 1);
                             this.resolve(b, rl, el, new AddEffectResolver(minions, stats));
                         }
                     }
