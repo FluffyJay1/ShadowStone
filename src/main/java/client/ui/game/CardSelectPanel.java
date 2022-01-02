@@ -42,7 +42,7 @@ public class CardSelectPanel extends UIBox {
         this.scroll.addChild(this.tooltipPanel);
         this.ub = new UnleashButton(ui, uib);
         this.scroll.addChild(this.ub);
-        this.effects = new Text(ui, new Vector2f((float) this.scroll.getLocalLeft(true), 200), "effects", 260, 20,
+        this.effects = new Text(ui, new Vector2f((float) this.scroll.getLocalLeft(true), 200), "effects", this.getWidth(true), 20,
                 "Verdana", 24, -1, -1);
         this.scroll.addChild(this.effects);
     }

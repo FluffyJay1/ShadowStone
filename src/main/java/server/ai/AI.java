@@ -764,6 +764,17 @@ public class AI extends Thread {
         int localmaxmax = b.getPlayer(team).maxmaxmana;
         int enemymax = b.getPlayer(-team).maxmana;
         int enemymaxmax = b.getPlayer(-team).maxmaxmana;
+        // assumes that team 1 starts
+        if (b.currentPlayerTurn == 1) {
+            // players went an uneven number of turns, counteract that so the
+            // advantage value doesn't change crazily when players end their
+            // turns, making the AI more stable
+            if (team == 1) {
+                enemymax = Math.min(enemymax + 1, enemymaxmax);
+            } else {
+                localmax = Math.min(localmax + 1, localmaxmax);
+            }
+        }
         return (localmax - enemymax) * Math.max(localmaxmax - localmax, enemymaxmax - enemymax);
     }
 

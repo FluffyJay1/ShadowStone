@@ -149,7 +149,10 @@ public class UICard extends UIBox {
                 this.card.finalBasicStatEffects.getStat(EffectStats.COST), COST_POS_UNLEASHPOWER,
                 COST_ALIGN_UNLEASHPOWER, STAT_DEFAULT_SIZE);
 
-        if (this.uib.b.getPlayer(this.card.team).realPlayer.canUnleash() && !this.uib.b.disableInput) {
+        if (this.card.team == this.uib.b.localteam ? // different rules depending on allied team or enemy team
+                this.uib.b.realBoard.getPlayer(this.card.realCard.team).canUnleash() && !this.uib.b.disableInput : // condition for cards on our team (should update instantly)
+                this.uib.b.getPlayer(this.card.team).canUnleash() // condition for cards on the enemy team (should wait for animations)
+        ) {
             g.setColor(org.newdawn.slick.Color.cyan);
             g.drawOval((float) (pos.x - UNLEASH_POWER_RADIUS * scale), (float) (pos.y - UNLEASH_POWER_RADIUS * scale),
                     (float) (UNLEASH_POWER_RADIUS * 2 * scale), (float) (UNLEASH_POWER_RADIUS * 2 * scale));
@@ -163,11 +166,11 @@ public class UICard extends UIBox {
                     COUNTDOWN_ALIGN, 50, Color.white);
         }
         if (this.card instanceof Minion) {
-            // TODO fix this so it looks like it can
-            // attack before unleash animation
-            // finishes
             if (this.card.realCard != null && this.card.realCard instanceof Minion
-                    && ((Minion) this.card.realCard).canAttack() && this.uib.b.currentPlayerTurn == this.card.team) {
+                    && (this.card.team == this.uib.b.localteam ? // different rules depending on allied team or enemy team
+                        ((Minion) this.card.realCard).canAttack() && !this.uib.b.disableInput : // condition for cards on our team (should update instantly)
+                        ((Minion) this.card).canAttack()) // condition for cards on the enemy team (should wait for animations)
+            ) {
                 if (this.getMinion().summoningSickness
                         && this.card.realCard.finalStatEffects.getStat(EffectStats.RUSH) > 0
                         && this.card.realCard.finalStatEffects.getStat(EffectStats.STORM) == 0) {
@@ -234,8 +237,10 @@ public class UICard extends UIBox {
         font.drawString(pos.x - font.getWidth(this.card.getTooltip().name) / 2,
                 pos.y - CARD_DIMENSIONS.y * (float) scale / 2, this.card.getTooltip().name);
         if (this.card.realCard != null
-                && this.card.realCard.board.getPlayer(this.card.team).canPlayCard(this.card.realCard)
-                && this.uib.b.getPlayer(this.card.team).canPlayCard(this.card)) {
+                && (this.card.team == this.uib.b.localteam ? // different rules depending on allied team or enemy team
+                this.uib.b.realBoard.getPlayer(this.card.realCard.team).canPlayCard(this.card.realCard) && !this.uib.b.disableInput : // condition for cards on our team (should update instantly)
+                this.uib.b.getPlayer(this.card.team).canPlayCard(this.card)) // condition for cards on the enemy team (should wait for animations)
+        ) {
             g.setColor(org.newdawn.slick.Color.cyan);
             g.drawRect((float) (pos.x - CARD_DIMENSIONS.x * scale / 2), (float) (pos.y - CARD_DIMENSIONS.y * scale / 2),
                     (float) (CARD_DIMENSIONS.x * scale), (float) (CARD_DIMENSIONS.y * scale));

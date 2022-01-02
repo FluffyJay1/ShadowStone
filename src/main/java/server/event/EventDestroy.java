@@ -13,6 +13,7 @@ public class EventDestroy extends Event {
     private List<Boolean> alive;
     private List<CardStatus> prevStatus;
     private List<Integer> prevPos;
+    private List<Integer> prevLastBoardPos;
     final List<BoardObject> cardsLeavingPlay = new ArrayList<>(); // required for listeners
 
     public EventDestroy(List<Card> c) {
@@ -26,13 +27,19 @@ public class EventDestroy extends Event {
 
     @Override
     public void resolve() {
-        this.alive = new ArrayList<>();
-        this.prevStatus = new ArrayList<>();
-        this.prevPos = new ArrayList<>();
-        for (Card c : this.cards) {
+        this.alive = new ArrayList<>(this.cards.size());
+        this.prevStatus = new ArrayList<>(this.cards.size());
+        this.prevPos = new ArrayList<>(this.cards.size());
+        this.prevLastBoardPos = new ArrayList<>(this.cards.size());
+        for (int i = 0; i < this.cards.size(); i++) {
+            Card c = this.cards.get(i);
             this.alive.add(c.alive);
             this.prevStatus.add(c.status);
             this.prevPos.add(c.cardpos);
+            this.prevLastBoardPos.add(0);
+            if (c instanceof BoardObject) {
+                this.prevLastBoardPos.set(i, ((BoardObject) c).lastBoardPos);
+            }
             if (!c.status.equals(CardStatus.GRAVEYARD)) {
                 // TODO increase shadows by 1
                 c.alive = false;
@@ -44,6 +51,7 @@ public class EventDestroy extends Event {
                 case BOARD:
                     if (c instanceof BoardObject) {
                         BoardObject b = (BoardObject) c;
+                        b.lastBoardPos = b.cardpos;
                         b.board.removeBoardObject(b.team, b.cardpos);
                         this.cardsLeavingPlay.add(b);
                     }
@@ -93,6 +101,9 @@ public class EventDestroy extends Event {
                     break;
                 default: // undestroy leader lmao
                     break;
+                }
+                if (c instanceof BoardObject) {
+                    ((BoardObject) c).lastBoardPos = this.prevLastBoardPos.get(i);
                 }
                 c.cardpos = pos; // just in case
                 c.status = status;

@@ -8,26 +8,33 @@ import server.card.*;
 // Changes references, should not run concurrent with other events
 public class EventBanish extends Event {
     public static final int ID = 18;
-    public final List<Card> c;
+    public final List<Card> cards;
     private List<Boolean> alive;
     private List<CardStatus> prevStatus;
     private List<Integer> prevPos;
+    private List<Integer> prevLastBoardPos;
     final List<BoardObject> cardsLeavingPlay = new ArrayList<>(); // required for listeners
 
     public EventBanish(List<Card> c) {
         super(ID);
-        this.c = c;
+        this.cards = c;
     }
 
     @Override
     public void resolve() {
-        this.alive = new ArrayList<>();
-        this.prevStatus = new ArrayList<>();
-        this.prevPos = new ArrayList<>();
-        for (Card c : this.c) {
+        this.alive = new ArrayList<>(this.cards.size());
+        this.prevStatus = new ArrayList<>(this.cards.size());
+        this.prevPos = new ArrayList<>(this.cards.size());
+        this.prevLastBoardPos = new ArrayList<>(this.cards.size());
+        for (int i = 0; i < this.cards.size(); i++) {
+            Card c = this.cards.get(i);
             this.alive.add(c.alive);
             this.prevStatus.add(c.status);
             this.prevPos.add(c.cardpos);
+            this.prevLastBoardPos.add(0);
+            if (c instanceof BoardObject) {
+                this.prevLastBoardPos.set(i, ((BoardObject) c).lastBoardPos);
+            }
             if (!c.status.equals(CardStatus.GRAVEYARD)) {
                 c.alive = false;
                 switch (c.status) {
@@ -38,6 +45,7 @@ public class EventBanish extends Event {
                 case BOARD:
                     if (c instanceof BoardObject) {
                         BoardObject b = (BoardObject) c;
+                        b.lastBoardPos = b.cardpos;
                         b.board.removeBoardObject(b.team, b.cardpos);
                         this.cardsLeavingPlay.add(b);
                     }
@@ -57,8 +65,8 @@ public class EventBanish extends Event {
 
     @Override
     public void undo() {
-        for (int i = this.c.size() - 1; i >= 0; i--) {
-            Card c = this.c.get(i);
+        for (int i = this.cards.size() - 1; i >= 0; i--) {
+            Card c = this.cards.get(i);
             c.alive = this.alive.get(i);
             CardStatus status = this.prevStatus.get(i);
             int pos = this.prevPos.get(i);
@@ -82,6 +90,9 @@ public class EventBanish extends Event {
                 default: // unbanish leader lmao
                     break;
                 }
+                if (c instanceof BoardObject) {
+                    ((BoardObject) c).lastBoardPos = this.prevLastBoardPos.get(i);
+                }
                 c.cardpos = pos; // just in case
                 c.status = status;
             }
@@ -91,8 +102,8 @@ public class EventBanish extends Event {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.id).append(" ").append(this.c.size()).append(" ");
-        for (Card card : this.c) {
+        builder.append(this.id).append(" ").append(this.cards.size()).append(" ");
+        for (Card card : this.cards) {
             builder.append(card.toReference());
         }
         builder.append("\n");
