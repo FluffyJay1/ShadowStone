@@ -12,11 +12,12 @@ import server.resolver.*;
 /*
  * Few important things:
  * - Jank card effects are pretty much expected to be anonymous instances of this class
- * - Any subclasses must implement the (String) constructor for fromString reflection reasons also fuck you
+ * - Any subclasses must implement the default constructor for fromString reflection reasons also fuck you
  * - Anonymous classes cannot be recreated with fromString, so don't add that effect to other cards or don't make it anonymous
  * -- Anonymous effects solely tied to the construction of a card are fine, since they won't use fromString
  * - If a class saves state of some kind, it must implement extraStateString() and loadExtraState(Board, StringTokenizer)
  * -- This is used to allow AI to undo moves
+ * - Effects should override getBattlecryValue() and getPresenceValue() for the AI
  */
 public class Effect implements Cloneable {
     public int pos = 0;
@@ -204,7 +205,8 @@ public class Effect implements Cloneable {
             st.nextToken(" \n"); // THANKS STRING TOKENIZER
             boolean mute = Boolean.parseBoolean(st.nextToken());
             Effect ef;
-            ef = c.getDeclaredConstructor(String.class).newInstance(description);
+            ef = c.getDeclaredConstructor().newInstance();
+            ef.description = description;
             ef.owner = owner;
             ef.mute = mute;
             ef.loadExtraState(b, st);

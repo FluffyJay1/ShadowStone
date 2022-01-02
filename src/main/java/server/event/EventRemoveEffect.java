@@ -14,11 +14,17 @@ public class EventRemoveEffect extends Event {
     private List<Boolean> oldRemoved;
     private List<Boolean> oldAlive;
     final List<Card> markedForDeath;
+    public EffectAura auraSource;
 
     public EventRemoveEffect(List<Effect> effects, List<Card> markedForDeath) {
         super(ID);
         this.effects = effects;
         this.markedForDeath = Objects.requireNonNullElseGet(markedForDeath, ArrayList::new);
+    }
+
+    public EventRemoveEffect(List<Effect> effects, List<Card> markedForDeath, EffectAura auraSource) {
+        this(effects, markedForDeath);
+        this.auraSource = auraSource;
     }
 
     @Override
@@ -36,6 +42,9 @@ public class EventRemoveEffect extends Event {
             if (!e.removed) {
                 Card c = e.owner;
                 c.removeEffect(e, false);
+                if (this.auraSource != null) {
+                    this.auraSource.currentActiveEffects.remove(c);
+                }
                 if (c instanceof Minion) {
                     Minion m = ((Minion) c);
                     this.oldHealth.set(i, m.health);
@@ -63,6 +72,9 @@ public class EventRemoveEffect extends Event {
             Card c = e.owner;
             if (!this.oldRemoved.get(i)) {
                 c.addEffect(false, this.prevPos.get(i), e);
+                if (this.auraSource != null) {
+                    this.auraSource.currentActiveEffects.put(c, e);
+                }
                 c.alive = this.oldAlive.get(i);
                 if (c instanceof Minion) {
                     Minion m = (Minion) c;
@@ -80,6 +92,7 @@ public class EventRemoveEffect extends Event {
         for (Effect e : this.effects) {
             builder.append(e.toReference());
         }
+        builder.append(Effect.referenceOrNull(this.auraSource));
         builder.append("\n");
         return builder.toString();
     }
@@ -90,7 +103,8 @@ public class EventRemoveEffect extends Event {
         for (int i = 0; i < numEffects; i++) {
             effects.add(Effect.fromReference(b, st));
         }
-        return new EventRemoveEffect(effects, null);
+        EffectAura auraSource = (EffectAura) Effect.fromReference(b, st);
+        return new EventRemoveEffect(effects, null, auraSource);
     }
 
     @Override

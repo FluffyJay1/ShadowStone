@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import server.card.*;
 import server.card.effect.*;
@@ -283,6 +284,14 @@ public class Board {
         return effects;
     }
 
+    public List<EffectAura> getActiveAuras() {
+        List<EffectAura> auras = new LinkedList<>();
+        for (BoardObject bo : this.getBoardObjects()) {
+            auras.addAll(bo.auras);
+        }
+        return auras;
+    }
+
     public String stateToString() {
         StringBuilder builder = new StringBuilder();
         builder.append("State----------------------------+\n");
@@ -345,14 +354,17 @@ public class Board {
         if (this.winner != 0 || !e.conditions()) {
             return e;
         }
-        EventGroup eg = this.peekEventGroup();
-        if (eg != null) {
-            if (eg.numChildren == 0) {
+        for (EventGroup eg : this.eventGroups) {
+            if (!eg.committed) {
                 // commit this event group to output if it isn't empty
                 this.output.append(eg.toString());
                 this.history.append(eg.toString());
+                eg.committed = true;
             }
-            eg.numChildren++;
+        }
+        Set<EffectAura> oldAuras = null;
+        if (rl != null) {
+            oldAuras = new HashSet<>(this.getActiveAuras());
         }
         String eventString = e.toString();
         e.resolve();
@@ -365,6 +377,49 @@ public class Board {
             this.history.append(eventString);
         }
         if (rl != null) {
+            Set<EffectAura> newAuras = new HashSet<>(this.getActiveAuras());
+            Set<EffectAura> removedAuras = new HashSet<>(oldAuras);
+            removedAuras.removeAll(newAuras);
+            Set<EffectAura> addedAuras = new HashSet<>(newAuras);
+            addedAuras.removeAll(oldAuras);
+            // make newAuras store the set of maintained auras, neither added nor removed
+            newAuras.retainAll(oldAuras);
+            for (EffectAura aura : addedAuras) {
+                Set<Card> currentAffected = aura.findAffectedCards();
+                rl.add(new AddEffectResolver(new ArrayList<>(currentAffected), aura.effectToApply, aura));
+                aura.lastCheckedAffectedCards = currentAffected;
+            }
+            for (EffectAura aura : removedAuras) {
+                List<Effect> effectsToRemove = aura.lastCheckedAffectedCards.stream()
+                        .map(unaffected -> aura.currentActiveEffects.get(unaffected))
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+                rl.add(new RemoveEffectResolver(effectsToRemove, aura));
+                aura.lastCheckedAffectedCards.clear();
+            }
+            for (EffectAura aura : newAuras) {
+                Set<Card> currentAffected = aura.findAffectedCards();
+                if (currentAffected.isEmpty() && aura.lastCheckedAffectedCards.isEmpty()) {
+                    // small optimization?
+                    continue;
+                }
+                // obtain set difference
+                Set<Card> newAffected = new HashSet<>(currentAffected);
+                newAffected.removeAll(aura.lastCheckedAffectedCards);
+                if (!newAffected.isEmpty()) {
+                    rl.add(new AddEffectResolver(new ArrayList<>(newAffected), aura.effectToApply, aura));
+                }
+                Set<Card> newUnaffected = new HashSet<>(aura.lastCheckedAffectedCards);
+                newUnaffected.removeAll(currentAffected);
+                if (!newUnaffected.isEmpty()) {
+                    List<Effect> effectsToRemove = newUnaffected.stream()
+                            .map(unaffected -> aura.currentActiveEffects.get(unaffected))
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toList());
+                    rl.add(new RemoveEffectResolver(effectsToRemove, aura));
+                }
+                aura.lastCheckedAffectedCards = currentAffected;
+            }
             if (e.cardsEnteringPlay() != null) {
                 for (BoardObject bo : e.cardsEnteringPlay()) {
                     rl.add(new FlagResolver(bo, bo.getResolvers(Effect::onEnterPlay)));
@@ -381,6 +436,13 @@ public class Board {
                     listenEventResolvers.add(listener.onListenEvent(e));
                 }
                 rl.add(new FlagResolver(c, listenEventResolvers));
+            }
+        } else if (this.isServer) {
+            // rl is null and we are running on the server, we must have gotten kira queened
+            for (Card c : this.getCards()) {
+                for (EffectAura aura : c.auras) {
+                   aura.lastCheckedAffectedCards = aura.findAffectedCards();
+                }
             }
         }
         return e;
@@ -468,15 +530,9 @@ public class Board {
 
     public EventGroup popEventGroup() {
         EventGroup eg = this.eventGroups.remove(this.eventGroups.size() - 1);
-        if (eg.numChildren > 0) {
+        if (eg.committed) {
             this.output.append(EventGroup.POP_TOKEN + "\n");
             this.history.append(EventGroup.POP_TOKEN + "\n");
-
-            // if this wasn't empty, we consider this group as a legitimate child
-            EventGroup parent = this.peekEventGroup();
-            if (parent != null) {
-                parent.numChildren++;
-            }
         }
         return eg;
     }

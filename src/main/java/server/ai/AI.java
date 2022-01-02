@@ -413,6 +413,10 @@ public class AI extends Thread {
             undoStack.get(undoStack.size() - 1).undo();
             undoStack.remove(undoStack.size() - 1);
         }
+        // aura difference checking isn't updated by undoing, we have to update it ourselves
+        for (EffectAura aura : this.b.getActiveAuras()) {
+            aura.lastCheckedAffectedCards = aura.findAffectedCards();
+        }
         String stateAfterUndo = this.b.stateToString();
         if (!current.state.equals(stateAfterUndo)) {
             System.out.println(

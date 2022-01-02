@@ -167,7 +167,7 @@ public class UICard extends UIBox {
             // attack before unleash animation
             // finishes
             if (this.card.realCard != null && this.card.realCard instanceof Minion
-                    && ((Minion) this.card.realCard).canAttack() && this.getMinion().canAttack()) {
+                    && ((Minion) this.card.realCard).canAttack() && this.uib.b.currentPlayerTurn == this.card.team) {
                 if (this.getMinion().summoningSickness
                         && this.card.realCard.finalStatEffects.getStat(EffectStats.RUSH) > 0
                         && this.card.realCard.finalStatEffects.getStat(EffectStats.STORM) == 0) {

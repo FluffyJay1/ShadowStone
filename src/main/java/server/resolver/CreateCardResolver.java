@@ -13,6 +13,7 @@ public class CreateCardResolver extends Resolver {
     private final CardStatus status;
     private final List<Integer> cardpos;
 
+    // cards provided should be freshly constructed
     public CreateCardResolver(List<Card> c, int team, CardStatus status, List<Integer> cardpos) {
         super(false);
         this.c = c;

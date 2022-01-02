@@ -2,9 +2,8 @@ package server.card.effect;
 
 public class EffectStatChange extends Effect {
 
-    public EffectStatChange(String description) {
-        super(description);
-    }
+    // required for reflection
+    public EffectStatChange() { }
 
     public EffectStatChange(String description, int attack, int magic, int health) {
         super(description);

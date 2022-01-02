@@ -23,9 +23,8 @@ public class EventGroup {
     public final EventGroupType type;
     public final List<Card> cards; // if there are relevant cards involved
 
-    // Number of events + non-empty groups under this
-    // only to be used by the server to determine if empty
-    public int numChildren;
+    // whether we have already determined this group is not empty, and have outputted it
+    public boolean committed;
 
     public EventGroup(EventGroupType type) {
         this(type, new LinkedList<>());
@@ -34,7 +33,7 @@ public class EventGroup {
     public EventGroup(EventGroupType type, List<Card> cards) {
         this.type = type;
         this.cards = cards;
-        this.numChildren = 0;
+        this.committed = false;
     }
 
     public String toString() {

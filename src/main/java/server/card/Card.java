@@ -29,6 +29,8 @@ public abstract class Card  {
     private final List<Effect> effects = new LinkedList<>(), basicEffects = new LinkedList<>(), removedEffects = new LinkedList<>();
     // for convenience, a subset of above effects that are listeners
     public final List<Effect> listeners = new LinkedList<>();
+    // same but for auras, however, removing the effect doesn't remove it from this list
+    public final List<EffectAura> auras = new LinkedList<>();
 
     public Card(Board board, TooltipCard tooltip) {
         this.board = board;
@@ -99,6 +101,9 @@ public abstract class Card  {
         if (e.onListenEvent(null) != null) {
             this.listeners.add(e);
         }
+        if (e instanceof EffectAura) {
+            this.auras.add((EffectAura) e);
+        }
         if (this.removedEffects.remove(e)) {
             this.updateRemovedEffectPositions();
         }
@@ -117,6 +122,8 @@ public abstract class Card  {
             if (!purge) {
                 this.removedEffects.add(e);
                 this.updateRemovedEffectPositions();
+            } else if (e instanceof EffectAura) {
+                this.auras.remove((EffectAura) e);
             }
             e.removed = true;
             if (e.onListenEvent(null) != null) {

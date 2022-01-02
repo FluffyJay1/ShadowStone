@@ -12,9 +12,8 @@ import server.resolver.*;
 public class EffectLastWordsAlliedBlast extends Effect {
     int damage = 0;
 
-    public EffectLastWordsAlliedBlast(String description) {
-        super(description);
-    }
+    // required for reflection
+    public EffectLastWordsAlliedBlast() { }
 
     public EffectLastWordsAlliedBlast(int damage) {
         super("<b> Last Words: </b> Deal " + damage + " damage to a random allied minion.");

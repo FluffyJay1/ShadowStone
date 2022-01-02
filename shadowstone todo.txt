@@ -1,10 +1,13 @@
-Rework aura effects, formalize them and make them handle the case where it gets muted
+standardize effect texts and fix the <b> token thing
+Maximum number of board slots
+AI should be able to place minions differently
 Use scanner instead of stringtokenizer to handle stream input?
 Optimize AI action sampling?
     most of the time AI samples only 1 action, can we take advantage of this?
     do we need generate the full space of possible actions to sample from it?
 update to use slick 1.0.2
 make game fullscreen and fix flickering problem from rendering text
+Card art in tooltip
 UnicodeFont deprecated? use AngelCodeFonts
 Figure out why the game is eating cpu and gpu
 Unforce the Effect(string) constructor, instead allow Effect() constructor?

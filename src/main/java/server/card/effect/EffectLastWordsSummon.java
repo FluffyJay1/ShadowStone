@@ -13,9 +13,8 @@ public class EffectLastWordsSummon extends Effect {
     List<Class<? extends Card>> cardClasses;
     private List<Card> cachedInstances; // for getPresenceValue, preview the value of the created cards
 
-    public EffectLastWordsSummon(String description) {
-        super(description);
-    }
+    // required for reflection
+    public EffectLastWordsSummon() { }
 
     public EffectLastWordsSummon(String description, List<Class<? extends Card>> cardClasses, int team) {
         super(description);

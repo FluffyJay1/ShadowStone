@@ -27,6 +27,8 @@ public class Tooltip {
             "At the start of the player's turn, cards in play with <b> Countdown </b> count down by one. When their <b> Countdown </b> goes to 0, the card is destroyed.");
     public static final Tooltip BLAST = new Tooltip("Blast",
             "Deal X damage to a random enemy minion. If there are no enemy minions in play, deal X damage to the enemy leader.");
+    public static final Tooltip AURA = new Tooltip("Aura",
+            "<b> Aura </b> effects grant effects to other cards while the source of the aura is in play.");
 
     public final String name;
     public final String description;
