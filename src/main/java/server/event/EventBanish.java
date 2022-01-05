@@ -28,9 +28,11 @@ public class EventBanish extends Event {
         this.prevLastBoardPos = new ArrayList<>(this.cards.size());
         for (int i = 0; i < this.cards.size(); i++) {
             Card c = this.cards.get(i);
+            Board b = c.board;
+            Player p = b.getPlayer(c.team);
             this.alive.add(c.alive);
             this.prevStatus.add(c.status);
-            this.prevPos.add(c.cardpos);
+            this.prevPos.add(c.getIndex());
             this.prevLastBoardPos.add(0);
             if (c instanceof BoardObject) {
                 this.prevLastBoardPos.set(i, ((BoardObject) c).lastBoardPos);
@@ -38,27 +40,18 @@ public class EventBanish extends Event {
             if (!c.status.equals(CardStatus.GRAVEYARD)) {
                 c.alive = false;
                 switch (c.status) {
-                case HAND:
-                    c.board.getPlayer(c.team).hand.cards.remove(c);
-                    c.board.getPlayer(c.team).hand.updatePositions();
-                    break;
-                case BOARD:
-                    if (c instanceof BoardObject) {
-                        BoardObject b = (BoardObject) c;
-                        b.lastBoardPos = b.cardpos;
-                        b.board.removeBoardObject(b.team, b.cardpos);
-                        this.cardsLeavingPlay.add(b);
+                    case HAND -> p.getHand().remove(c);
+                    case BOARD -> {
+                        if (c instanceof BoardObject) {
+                            BoardObject bo = (BoardObject) c;
+                            bo.lastBoardPos = bo.getIndex();
+                            p.getPlayArea().remove(bo);
+                            this.cardsLeavingPlay.add(bo);
+                        }
                     }
-                    break;
-                case DECK:
-                    c.board.getPlayer(c.team).deck.cards.remove(c);
-                    c.board.getPlayer(c.team).deck.updatePositions();
-                    break;
-                default: // banish leader lmao
-                    break;
+                    case DECK -> p.getDeck().remove(c);
                 }
-                c.cardpos = c.board.banished.size(); // just in case
-                c.board.banished.add(c);
+                b.banished.add(c);
             }
         }
     }
@@ -67,33 +60,26 @@ public class EventBanish extends Event {
     public void undo() {
         for (int i = this.cards.size() - 1; i >= 0; i--) {
             Card c = this.cards.get(i);
+            Board b = c.board;
+            Player p = b.getPlayer(c.team);
             c.alive = this.alive.get(i);
             CardStatus status = this.prevStatus.get(i);
             int pos = this.prevPos.get(i);
             if (!status.equals(CardStatus.GRAVEYARD)) {
-                c.board.banished.remove(c);
+                b.banished.remove(c);
                 switch (status) {
-                case HAND:
-                    c.board.getPlayer(c.team).hand.cards.add(pos, c);
-                    c.board.getPlayer(c.team).hand.updatePositions();
-                    break;
-                case BOARD:
-                    if (c instanceof BoardObject) {
-                        BoardObject b = (BoardObject) c;
-                        b.board.addBoardObject(b, b.team, pos);
+                    case HAND -> p.getHand().add(pos, c);
+                    case BOARD -> {
+                        if (c instanceof BoardObject) {
+                            BoardObject bo = (BoardObject) c;
+                            p.getPlayArea().add(pos, bo);
+                        }
                     }
-                    break;
-                case DECK:
-                    c.board.getPlayer(c.team).deck.cards.add(pos, c);
-                    c.board.getPlayer(c.team).deck.updatePositions();
-                    break;
-                default: // unbanish leader lmao
-                    break;
+                    case DECK -> p.getDeck().add(pos, c);
                 }
                 if (c instanceof BoardObject) {
                     ((BoardObject) c).lastBoardPos = this.prevLastBoardPos.get(i);
                 }
-                c.cardpos = pos; // just in case
                 c.status = status;
             }
         }

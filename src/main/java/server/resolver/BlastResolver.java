@@ -30,7 +30,7 @@ public class BlastResolver extends Resolver {
         List<Minion> minions = this.b.getMinions(this.enemyTeam, false, true);
         Minion target;
         if (minions.isEmpty()) {
-            target = this.b.getPlayer(this.enemyTeam).leader;
+            target = this.b.getPlayer(this.enemyTeam).getLeader();
         } else {
             target = Game.selectRandom(minions);
         }

@@ -27,6 +27,7 @@ public class UnleashTapSoul extends UnleashPower {
                     @Override
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
                         if (e instanceof EventDamage || e instanceof EventRestore || e instanceof EventAddEffect) {
+                            Player p = b.getPlayer(effect.owner.team);
                             if (!vengeance && p.vengeance()) {
                                 this.resolve(b, rl, el, new UpdateEffectStateResolver(effect, () -> vengeance = true));
                                 EffectStats esc = new EffectStats();
@@ -51,7 +52,7 @@ public class UnleashTapSoul extends UnleashPower {
                     @Override
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
                         this.resolve(b, rl, el, new EffectDamageResolver(effect,
-                                effect.owner.board.getPlayer(effect.owner.team).leader, 2, true, null));
+                                effect.owner.board.getPlayer(effect.owner.team).getLeader(), 2, true, null));
                     }
                 };
 

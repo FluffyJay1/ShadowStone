@@ -10,10 +10,10 @@ import server.card.unleashpower.*;
 // Changes references, should not run concurrent with other events
 public class EventCreateCard extends Event {
     public static final int ID = 2;
-    final List<Card> cards;
-    final CardStatus status;
-    final int team;
-    final List<Integer> cardpos;
+    public final List<Card> cards;
+    public final CardStatus status;
+    public final int team;
+    public final List<Integer> cardpos;
     private UnleashPower prevUP;
     private Leader prevLeader;
     private final List<Boolean> successful;
@@ -42,59 +42,50 @@ public class EventCreateCard extends Event {
             c.team = this.team;
             c.status = this.status;
             Board b = c.board;
+            Player p = b.getPlayer(this.team);
             switch (this.status) {
-            case HAND:
-                Hand relevantHand = b.getPlayer(this.team).hand;
-                if (relevantHand.cards.size() < relevantHand.maxsize) {
-                    int temppos = cardpos == -1 ? relevantHand.cards.size() : cardpos;
-                    temppos = Math.min(temppos, relevantHand.cards.size());
-                    relevantHand.cards.add(temppos, c);
-                    relevantHand.updatePositions();
-                    this.successful.add(true);
-                } else {
-                    c.alive = false;
-                    this.markedForDeath.add(c);
-                    this.successful.add(false);
-                }
-                break;
-            case BOARD:
-                // TODO: CHECK IF BOARD IS FULL
-                if (c instanceof BoardObject) {
-                    BoardObject bo = (BoardObject) c;
-                    this.cardsEnteringPlay.add(bo);
-                    b.addBoardObject(bo, this.team, cardpos == -1 ? c.board.getBoardObjects(this.team).size() : cardpos);
-                    bo.lastBoardPos = bo.cardpos;
-                    if (c instanceof Minion) {
-                        ((Minion) c).summoningSickness = true;
+                case HAND -> {
+                    if (p.getHand().size() < p.maxHandSize) {
+                        p.getHand().add(cardpos, c);
+                        this.successful.add(true);
+                    } else {
+                        c.alive = false;
+                        this.markedForDeath.add(c);
+                        this.successful.add(false);
                     }
+                }
+                case BOARD -> {
+                    // TODO: CHECK IF BOARD IS FULL
+                    if (c instanceof BoardObject) {
+                        BoardObject bo = (BoardObject) c;
+                        this.cardsEnteringPlay.add(bo);
+                        p.getPlayArea().add(cardpos, bo);
+                        bo.lastBoardPos = bo.getIndex();
+                        if (c instanceof Minion) {
+                            ((Minion) c).summoningSickness = true;
+                        }
+                        this.successful.add(true);
+                    }
+                }
+                case DECK -> {
+                    p.getDeck().add(cardpos, c);
                     this.successful.add(true);
                 }
-                break;
-            case DECK:
-                Deck relevantDeck = b.getPlayer(this.team).deck;
-                int temppos = cardpos == -1 ? relevantDeck.cards.size() : cardpos;
-                temppos = Math.min(temppos, relevantDeck.cards.size());
-                relevantDeck.cards.add(temppos, c);
-                relevantDeck.updatePositions();
-                this.successful.add(true);
-                break;
-            case UNLEASHPOWER:
-                if (this.prevUP == null) {
-                    this.prevUP = b.getPlayer(this.team).unleashPower;
+                case UNLEASHPOWER -> {
+                    if (this.prevUP == null) {
+                        this.prevUP = p.getUnleashPower();
+                    }
+                    b.getPlayer(this.team).setUnleashPower((UnleashPower) c);
+                    this.successful.add(true);
                 }
-                b.getPlayer(this.team).unleashPower = (UnleashPower) c;
-                ((UnleashPower) c).p = b.getPlayer(this.team);
-                this.successful.add(true);
-                break;
-            case LEADER:
-                if (this.prevLeader == null) {
-                    this.prevLeader = b.getPlayer(this.team).leader;
+                case LEADER -> {
+                    if (this.prevLeader == null) {
+                        this.prevLeader = p.getLeader();
+                    }
+                    p.setLeader((Leader) c);
+                    this.successful.add(true);
                 }
-                b.getPlayer(this.team).leader = (Leader) c;
-                this.successful.add(true);
-            default:
-                this.successful.add(false);
-                break;
+                default -> this.successful.add(false);
             }
             if (b.isClient) {
                 b.cardsCreated.add(c);
@@ -107,31 +98,19 @@ public class EventCreateCard extends Event {
         for (int i = 0; i < this.cards.size(); i++) {
             Card c = this.cards.get(i);
             Board b = c.board;
+            Player p = b.getPlayer(this.team);
             CardStatus status = c.status;
             if (this.successful.get(i)) {
                 switch (status) {
-                case HAND:
-                    Hand relevantHand = b.getPlayer(this.team).hand;
-                    relevantHand.cards.remove(c);
-                    relevantHand.updatePositions();
-                    break;
-                case BOARD:
-                    if (c instanceof BoardObject) {
-                        b.removeBoardObject((BoardObject) c);
+                    case HAND -> p.getHand().remove(c);
+                    case BOARD -> {
+                        if (c instanceof BoardObject) {
+                            p.getPlayArea().remove((BoardObject) c);
+                        }
                     }
-                    break;
-                case DECK:
-                    Deck relevantDeck = b.getPlayer(this.team).deck;
-                    relevantDeck.cards.remove(c);
-                    relevantDeck.updatePositions();
-                    break;
-                case UNLEASHPOWER:
-                    b.getPlayer(this.team).unleashPower = this.prevUP;
-                    break;
-                case LEADER:
-                    b.getPlayer(this.team).leader = this.prevLeader;
-                default:
-                    break;
+                    case DECK -> p.getDeck().remove(c);
+                    case UNLEASHPOWER -> b.getPlayer(this.team).setUnleashPower(this.prevUP);
+                    case LEADER -> b.getPlayer(this.team).setLeader(this.prevLeader);
                 }
             }
         }
@@ -154,7 +133,7 @@ public class EventCreateCard extends Event {
 
     public static EventCreateCard fromString(Board b, StringTokenizer st) {
         int numCards = Integer.parseInt(st.nextToken());
-        List<Card> cards = new LinkedList<>();
+        List<Card> cards = new ArrayList<>(numCards);
         for (int i = 0; i < numCards; i++) {
             Card c = Card.createFromConstructorString(b, st);
             cards.add(c);
@@ -166,13 +145,11 @@ public class EventCreateCard extends Event {
         }
         int team = Integer.parseInt(st.nextToken());
         String sStatus = st.nextToken();
-        CardStatus csStatus = null;
-        for (CardStatus cs : CardStatus.values()) {
-            if (cs.toString().equals(sStatus)) {
-                csStatus = cs;
-            }
+        CardStatus csStatus = CardStatus.valueOf(sStatus);
+        for (Card c : cards) {
+            c.status = csStatus; //shh
         }
-        List<Integer> cardpos = new LinkedList<>();
+        List<Integer> cardpos = new ArrayList<>(numCards);
         for (int i = 0; i < numCards; i++) {
             cardpos.add(Integer.parseInt(st.nextToken()));
         }

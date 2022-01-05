@@ -29,12 +29,12 @@ public class Beastmaster extends Minion {
         Effect e = new EffectAura(TOOLTIP.description, 1, true, false, auraBuff) {
             @Override
             public boolean applyConditions(Card cardToApply) {
-                return cardToApply instanceof Minion && Math.abs(cardToApply.cardpos - this.owner.cardpos) == 1;
+                return cardToApply instanceof Minion && Math.abs(cardToApply.getIndex() - this.owner.getIndex()) == 1;
             }
 
             @Override
             public Resolver unleash() {
-                return new CreateCardResolver(new StonetuskBoar(b), owner.team, CardStatus.BOARD, owner.cardpos + 1);
+                return new CreateCardResolver(new StonetuskBoar(b), owner.team, CardStatus.BOARD, owner.getIndex() + 1);
             }
 
             @Override

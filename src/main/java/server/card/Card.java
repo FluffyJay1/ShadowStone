@@ -10,11 +10,14 @@ import client.ui.game.*;
 import server.*;
 import server.card.effect.*;
 import server.resolver.*;
+import utils.Indexable;
+import utils.PositionedList;
 
-public abstract class Card  {
+public abstract class Card implements Indexable {
     public final Board board;
     public boolean alive = true; // alive means not marked for death
-    public int cardpos, team;
+    public int team;
+    private int cardpos;
     private final TooltipCard tooltip;
     public CardStatus status;
     public final ClassCraft craft;
@@ -26,7 +29,9 @@ public abstract class Card  {
      * basic effects can't get removed unlike additional effects (e.g. bounce
      * effects), but they can be muted
      */
-    private final List<Effect> effects = new LinkedList<>(), basicEffects = new LinkedList<>(), removedEffects = new LinkedList<>();
+    private final PositionedList<Effect> effects = new PositionedList<>(new ArrayList<>()),
+            basicEffects = new PositionedList<>(new ArrayList<>()),
+            removedEffects = new PositionedList<>(new ArrayList<>());
     // for convenience, a subset of above effects that are listeners
     public final List<Effect> listeners = new LinkedList<>();
     // same but for auras, however, removing the effect doesn't remove it from this list
@@ -94,7 +99,6 @@ public abstract class Card  {
      */
     public void addEffect(boolean basic, int pos, Effect e) {
         e.basic = basic;
-        e.pos = pos;
         e.owner = this;
         e.removed = false;
         this.getEffects(basic).add(pos, e);
@@ -104,10 +108,6 @@ public abstract class Card  {
         if (e instanceof EffectAura) {
             this.auras.add((EffectAura) e);
         }
-        if (this.removedEffects.remove(e)) {
-            this.updateRemovedEffectPositions();
-        }
-        this.updateEffectPositions(basic);
         this.updateEffectStats(basic);
     }
 
@@ -121,7 +121,6 @@ public abstract class Card  {
             this.effects.remove(e);
             if (!purge) {
                 this.removedEffects.add(e);
-                this.updateRemovedEffectPositions();
             } else if (e instanceof EffectAura) {
                 this.auras.remove((EffectAura) e);
             }
@@ -129,7 +128,6 @@ public abstract class Card  {
             if (e.onListenEvent(null) != null) {
                 this.listeners.remove(e);
             }
-            this.updateEffectPositions(false);
             this.updateEffectStats(false);
         }
     }
@@ -177,20 +175,6 @@ public abstract class Card  {
         }
     }
 
-    public void updateEffectPositions(boolean basic) {
-        List<Effect> relevant = this.getEffects(basic);
-        for (int i = 0; i < relevant.size(); i++) {
-            relevant.get(i).pos = i;
-        }
-    }
-
-    private void updateRemovedEffectPositions() {
-        List<Effect> relevant = this.getRemovedEffects();
-        for (int i = 0; i < relevant.size(); i++) {
-            relevant.get(i).pos = i;
-        }
-    }
-
     public List<Resolver> getResolvers(Function<Effect, Resolver> hook) {
         return this.getFinalEffects(true).stream()
                 .map(hook)
@@ -213,7 +197,7 @@ public abstract class Card  {
     }
 
     public String cardPosToString() {
-        return this.status.toString() + " " + this.cardpos + " ";
+        return this.status.toString() + " " + this.getIndex() + " ";
     }
 
     // TODO make a corresponding fromString method
@@ -276,25 +260,35 @@ public abstract class Card  {
         }
         int team = Integer.parseInt(firsttoken);
         Player p = b.getPlayer(team);
-        String status = reference.nextToken();
+        String sStatus = reference.nextToken();
+        CardStatus csStatus = CardStatus.valueOf(sStatus);
         int cardpos = Integer.parseInt(reference.nextToken());
         if (cardpos == -1) { // mission failed we'll get em next time
             return null;
         }
-        return switch (status) {
-            case "HAND" -> p.hand.cards.get(cardpos);
-            case "BOARD" -> b.getBoardObject(team, cardpos);
-            case "DECK" -> p.deck.cards.get(cardpos);
-            case "GRAVEYARD" -> p.board.getGraveyard(team).get(cardpos);
-            case "UNLEASHPOWER" -> p.unleashPower;
-            case "LEADER" -> p.leader;
-            default -> null;
+        return switch (csStatus) {
+            case HAND -> p.getHand().get(cardpos);
+            case BOARD -> p.getPlayArea().get(cardpos);
+            case DECK -> p.getDeck().get(cardpos);
+            case GRAVEYARD -> p.getGraveyard().get(cardpos);
+            case UNLEASHPOWER -> p.getUnleashPower();
+            case LEADER -> p.getLeader();
         };
     }
 
     public static int compareDefault(Card a, Card b) {
         return (a.getTooltip().cost == b.getTooltip().cost) ? a.getClass().getName().compareTo(b.getClass().getName())
                 : a.getTooltip().cost - b.getTooltip().cost;
+    }
+
+    @Override
+    public int getIndex() {
+        return this.cardpos;
+    }
+
+    @Override
+    public void setIndex(int index) {
+        this.cardpos = index;
     }
 
     public TooltipCard getTooltip() {

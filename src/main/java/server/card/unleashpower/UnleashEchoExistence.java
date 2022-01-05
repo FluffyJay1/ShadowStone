@@ -28,7 +28,7 @@ public class UnleashEchoExistence extends UnleashPower {
                             Card copy = Card.createFromConstructor(effect.owner.board, m.getClass());
                             this.resolve(b, rl, el,
                                     new CreateCardResolver(copy, effect.owner.team, CardStatus.DECK,
-                                            (int) (effect.owner.board.getPlayer(effect.owner.team).deck.cards.size()
+                                            (int) (effect.owner.board.getPlayer(effect.owner.team).getDeck().size()
                                                     * Math.random())));
                             Effect esc = new Effect("-2 cost (from <b>Echo Existence</b>).");
                             esc.effectStats.change.setStat(EffectStats.COST, -2);

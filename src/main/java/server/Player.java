@@ -3,25 +3,88 @@ package server;
 import server.card.*;
 import server.card.effect.*;
 import server.card.unleashpower.*;
+import utils.PositionedList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Player {
+    public static final int DEFAULT_MAX_HAND_SIZE = 10;
     public Player realPlayer;
     public final Board board;
-    public final Deck deck;
-    public final Hand hand;
+    protected final PositionedList<Card> deck;
+    protected final PositionedList<Card> hand;
+    protected final PositionedList<BoardObject> playArea; // things on board
+    protected final PositionedList<Card> graveyard;
     public final int team;
-    public int mana = 0;
-    public int maxmana = 3;
-    public int maxmaxmana = 10; // don't ask
+    public int mana;
+    public int maxmana;
+    public int maxmaxmana; // don't ask
+    public int maxHandSize;
     public boolean unleashAllowed = true;
-    public Leader leader;
-    public UnleashPower unleashPower;
+    protected Leader leader;
+    protected UnleashPower unleashPower;
 
     public Player(Board board, int team) {
         this.board = board;
         this.team = team;
-        this.deck = new Deck(board, team);
-        this.hand = new Hand(board, team);
+        this.deck = new PositionedList<>(new ArrayList<>());
+        this.hand = new PositionedList<>(new ArrayList<>());
+        this.playArea = new PositionedList<>(new ArrayList<>());
+        this.graveyard = new PositionedList<>(new ArrayList<>());
+        this.mana = 0;
+        this.maxmana = 3;
+        this.maxmaxmana = 10;
+        this.maxHandSize = DEFAULT_MAX_HAND_SIZE;
+    }
+
+    public List<Card> getDeck() {
+        return this.deck;
+    }
+
+    public List<Card> getHand() {
+        return this.hand;
+    }
+
+    public List<BoardObject> getPlayArea() {
+        return this.playArea;
+    }
+
+    public List<Card> getGraveyard() {
+        return this.graveyard;
+    }
+
+    public Leader getLeader() {
+        return this.leader;
+    }
+
+    public void setLeader(Leader leader) {
+        this.leader = leader;
+        if (leader != null) {
+            leader.setIndex(0);
+        }
+    }
+
+    public UnleashPower getUnleashPower() {
+        return this.unleashPower;
+    }
+
+    public void setUnleashPower(UnleashPower up) {
+        this.unleashPower = up;
+        if (up != null) {
+            up.setIndex(0);
+        }
+    }
+
+    public List<Card> getFromStatus(CardStatus status) {
+        return switch (status) {
+            case DECK -> this.getDeck();
+            case HAND -> this.getHand();
+            case BOARD -> new ArrayList<>(this.getPlayArea());
+            case LEADER -> List.of(this.getLeader());
+            case UNLEASHPOWER -> List.of(this.getUnleashPower());
+            case GRAVEYARD -> this.getGraveyard();
+        };
     }
 
     @Override
@@ -53,7 +116,7 @@ public class Player {
     }
 
     private boolean unleashConditions() {
-        return this.unleashAllowed
+        return this.unleashAllowed && this.unleashPower != null
                 && this.unleashPower.unleashesThisTurn < this.unleashPower.finalStatEffects
                         .getStat(EffectStats.ATTACKS_PER_TURN)
                 && this.mana >= this.unleashPower.finalStatEffects.getStat(EffectStats.COST)
@@ -62,7 +125,7 @@ public class Player {
 
     public void printHand() {
         System.out.println("Hand " + this.team + ":");
-        for (Card c : this.hand.cards) {
+        for (Card c : this.hand) {
             System.out.print(c.getClass().getName() + " ");
         }
         System.out.println();
@@ -81,6 +144,6 @@ public class Player {
     }
 
     public boolean resonance() {
-        return this.deck.cards.size() % 2 == 0;
+        return this.deck.size() % 2 == 0;
     }
 }

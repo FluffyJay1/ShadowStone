@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import server.card.*;
@@ -12,6 +13,7 @@ import server.event.*;
 import server.event.eventgroup.EventGroup;
 import server.playeraction.*;
 import server.resolver.*;
+import utils.PositionedList;
 
 public class Board {
     public boolean isServer = true; // true means it is the center of game logic
@@ -23,11 +25,7 @@ public class Board {
     // localteam is the team of the player, i.e. at the bottom of the screen
     public int currentPlayerTurn, localteam, winner;
 
-    protected List<BoardObject> player1side;
-    protected List<BoardObject> player2side;
-    protected List<Card> player1graveyard;
-    protected List<Card> player2graveyard;
-    public List<Card> banished;
+    public PositionedList<Card> banished;
     private List<Resolver> resolveList;
 
     // the hierarchy of groups we are under
@@ -47,12 +45,8 @@ public class Board {
         this.cardsCreated = new LinkedList<>();
         this.player1 = new Player(this, 1);
         this.player2 = new Player(this, -1);
-        this.player1side = new ArrayList<>();
-        this.player2side = new ArrayList<>();
         this.resolveList = new LinkedList<>();
-        this.player1graveyard = new ArrayList<>();
-        this.player2graveyard = new ArrayList<>();
-        this.banished = new ArrayList<>();
+        this.banished = new PositionedList<>(new ArrayList<>());
         this.output = new StringBuilder();
         this.history = new StringBuilder();
         this.eventGroups = new LinkedList<>();
@@ -67,17 +61,53 @@ public class Board {
         return team == 1 ? player1 : player2;
     }
 
+    /**
+     * High level function to gather the cards according to a query to be run on
+     * a player or potentially both.
+     *
+     * @param team Team to get the cards from, or 0 if from both teams
+     * @param queryFunc Function to get what we want form each player
+     * @return A list of the relevant cards
+     */
+    public <T extends Card> List<T> getPlayerCards(int team, Function<Player, List<T>> queryFunc) {
+        List<T> ret = new ArrayList<>();
+        if (team >= 0) {
+            ret.addAll(queryFunc.apply(this.getPlayer(1)));
+        }
+        if (team <= 0) {
+            ret.addAll(queryFunc.apply(this.getPlayer(-1)));
+        }
+        return ret;
+    }
+
+    // same as above but for functions that return single cards
+    public <T extends Card> List<T> getPlayerCard(int team, Function<Player, T> queryFunc) {
+        List<T> ret = new ArrayList<>();
+        if (team >= 0) {
+            T addition = queryFunc.apply(this.getPlayer(1));
+            if (addition != null) {
+                ret.add(addition);
+            }
+        }
+        if (team <= 0) {
+            T addition = queryFunc.apply(this.getPlayer(-1));
+            if (addition != null) {
+                ret.add(addition);
+            }
+        }
+        return ret;
+    }
+
     public List<Card> getTargetableCards() {
         List<Card> ret = new ArrayList<>();
-        ret.addAll(this.getBoardObjects());
-        ret.addAll(this.player1.hand.cards);
-        ret.addAll(this.player2.hand.cards);
+        ret.addAll(this.getPlayerCards(0, Player::getPlayArea));
+        ret.addAll(this.getPlayerCards(0, Player::getHand));
         return ret;
     }
 
     // cards that can be added to a Target object
     public List<Card> getTargetableCards(Target t) {
-        List<Card> list = new LinkedList<>();
+        List<Card> list = new ArrayList<>();
         if (t == null) {
             return list;
         }
@@ -91,179 +121,59 @@ public class Board {
 
     public List<Card> getCards() {
         List<Card> ret = new ArrayList<>();
-        ret.addAll(this.getBoardObjects());
-        ret.addAll(this.player1.hand.cards);
-        ret.addAll(this.player1.deck.cards);
-        ret.addAll(this.player2.hand.cards);
-        ret.addAll(this.player2.deck.cards);
-        ret.addAll(this.player1graveyard);
-        ret.addAll(this.player2graveyard);
-        if (this.player1.unleashPower != null) {
-            ret.add(this.player1.unleashPower);
-        }
-        if (this.player2.unleashPower != null) {
-            ret.add(this.player2.unleashPower);
-        }
+        ret.addAll(this.getPlayerCards(0, Player::getPlayArea));
+        ret.addAll(this.getPlayerCards(0, Player::getHand));
+        ret.addAll(this.getPlayerCards(0, Player::getDeck));
+        ret.addAll(this.getPlayerCards(0, Player::getGraveyard));
+        ret.addAll(this.getPlayerCard(0, Player::getUnleashPower));
+        ret.addAll(this.getPlayerCard(0, Player::getLeader));
         return ret;
     }
 
-    // i don't even know what this is
-    public List<Card> getCollection(int team, CardStatus status) {
-        switch (status) {
-        case HAND:
-            return this.getPlayer(team).hand.cards;
-        case BOARD:
-            return new ArrayList<>(this.getBoardObjects(team));
-        case DECK:
-            return this.getPlayer(team).deck.cards;
-        case GRAVEYARD:
-            return this.getGraveyard(team);
-        case UNLEASHPOWER:
-            List<Card> cards2 = new ArrayList<>();
-            cards2.add(this.getPlayer(team).unleashPower);
-            return cards2;
-        case LEADER:
-            List<Card> cards3 = new ArrayList<>();
-            cards3.add(this.getPlayer(team).leader);
-            return cards3;
-        default:
-            return null;
+    /**
+     * Fetches board objects and does some common filtering on it
+     *
+     * @param team The team to find, or 0 if we want both teams
+     * @param leader Whether to include the leader
+     * @param minion Whether to incude minions
+     * @param amulet Whether to include amulets
+     * @param alive Whether we need our things to be not marked for death
+     * @return The list of board objects that fit the criteria
+     */
+    public List<BoardObject> getBoardObjects(int team, boolean leader, boolean minion, boolean amulet, boolean alive) {
+        List<BoardObject> ret = new ArrayList<>();
+        if (leader) {
+            ret.addAll(this.getPlayerCard(team, Player::getLeader).stream()
+                    .filter(l -> !alive || l.alive)
+                    .collect(Collectors.toList()));
         }
-    }
-
-    // with leaders
-    public List<BoardObject> getBoardObjects() {
-        ArrayList<BoardObject> ret = new ArrayList<>();
-        ret.addAll(this.player1side);
-        ret.addAll(this.player2side);
-        if (this.player1.leader != null) {
-            ret.add(this.player1.leader);
-        }
-        if (this.player2.leader != null) {
-            ret.add(this.player2.leader);
-        }
+        ret.addAll(this.getPlayerCards(team, Player::getPlayArea).stream()
+                .filter(c -> (minion || !(c instanceof Minion)) && (amulet || !(c instanceof Amulet)) && (!alive || c.alive))
+                .collect(Collectors.toList()));
         return ret;
     }
 
-    // no leader
-    public List<BoardObject> getBoardObjects(int team) {
-        if (team > 0) {
-            return this.player1side;
-        } else {
-            return this.player2side;
+    /**
+     * Fetches minions only (excludes amulets by definition) so we don't have to
+     * cast stuff ourselves, otherwise identical to getBoardObjects
+     *
+     * @param team The team to find, or 0 if we want both teams
+     * @param leader Whether to include the leader
+     * @param alive Whether we need our things to be not marked for death
+     * @return The list of minions that fit the criteria
+     */
+    public List<Minion> getMinions(int team, boolean leader, boolean alive) {
+        List<Minion> ret = new ArrayList<>();
+        if (leader) {
+            ret.addAll(this.getPlayerCard(team, Player::getLeader).stream()
+                    .filter(l -> !alive || l.alive)
+                    .collect(Collectors.toList()));
         }
-    }
-
-    public List<BoardObject> getBoardObjects(int team, boolean leader, boolean minion, boolean amulet) {
-        ArrayList<BoardObject> ret = new ArrayList<>();
-        if (leader && this.getPlayer(team).leader != null) {
-            ret.add(this.getPlayer(team).leader);
-        }
-        if (team >= 0) {
-            ret.addAll(this.player1side);
-        }
-        if (team <= 0) {
-            ret.addAll(this.player2side);
-        }
-        if (!minion) {
-            for (int i = 0; i < ret.size(); i++) {
-                if (ret.get(i) instanceof Minion) {
-                    ret.remove(i); // don't worry about this
-                    i--;
-                }
-            }
-        }
-        if (!amulet) {
-            for (int i = 0; i < ret.size(); i++) {
-                if (ret.get(i) instanceof Amulet) {
-                    ret.remove(i);
-                    i--;
-                }
-            }
-        }
+        ret.addAll(this.getPlayerCards(team, Player::getPlayArea).stream()
+                .filter(c -> c instanceof Minion && (!alive || c.alive))
+                .map(bo -> (Minion) bo)
+                .collect(Collectors.toList()));
         return ret;
-    }
-
-    public List<Minion> getMinions(int team, boolean leader, boolean health) {
-        ArrayList<Minion> ret = new ArrayList<>();
-        List<BoardObject> relevantSide = this.getBoardObjects(team);
-        for (BoardObject bo : relevantSide) {
-            if (bo instanceof Minion && (!health || ((Minion) bo).health > 0)) {
-                ret.add((Minion) bo);
-            }
-        }
-        if (leader && (!health || this.getPlayer(team).leader.health > 0)) {
-            ret.add(this.getPlayer(team).leader);
-        }
-        return ret;
-    }
-
-    // returns null if out of bounds
-    public BoardObject getBoardObject(int team, int position) {
-        List<BoardObject> relevantSide = team > 0 ? player1side : player2side;
-        if (position >= relevantSide.size() || position < 0) {
-            return null;
-        }
-        return relevantSide.get(position);
-    }
-
-    public void addBoardObject(BoardObject bo, int team, int position) {
-        List<BoardObject> relevantSide = team > 0 ? player1side : player2side;
-        if (position > relevantSide.size()) {
-            position = relevantSide.size();
-        }
-        bo.cardpos = position;
-        bo.status = CardStatus.BOARD;
-        bo.team = team;
-        relevantSide.add(position, bo);
-        for (int i = position + 1; i < relevantSide.size(); i++) {
-            relevantSide.get(i).cardpos++;
-        }
-    }
-
-    public void addBoardObjectToSide(BoardObject bo, int team) {
-        bo.team = team;
-        if (team > 0) {
-            addBoardObject(bo, 1, player1side.size());
-        }
-        if (team < 0) {
-            addBoardObject(bo, -1, player2side.size());
-        }
-    }
-
-    public void removeBoardObject(BoardObject bo) {
-        if (!this.player1side.remove(bo)) {
-            this.player2side.remove(bo);
-        }
-        this.updatePositions();
-    }
-
-    public void removeBoardObject(int team, int position) {
-        List<BoardObject> relevantSide = team > 0 ? player1side : player2side;
-        if (position >= relevantSide.size()) {
-            return;
-        }
-        relevantSide.remove(position);
-        for (int i = position; i < relevantSide.size(); i++) {
-            relevantSide.get(i).cardpos--;
-        }
-    }
-
-    public void updatePositions() {
-        for (int i = 0; i < player1side.size(); i++) {
-            player1side.get(i).cardpos = i;
-        }
-        for (int i = 0; i < player2side.size(); i++) {
-            player2side.get(i).cardpos = i;
-        }
-    }
-
-    public List<Card> getGraveyard(int team) {
-        if (team == 1) {
-            return this.player1graveyard;
-        } else {
-            return this.player2graveyard;
-        }
     }
 
     // TODO: optimize by caching the result
@@ -286,7 +196,7 @@ public class Board {
 
     public List<EffectAura> getActiveAuras() {
         List<EffectAura> auras = new LinkedList<>();
-        for (BoardObject bo : this.getBoardObjects()) {
+        for (BoardObject bo : this.getBoardObjects(0, true, true, true, false)) {
             auras.addAll(bo.auras);
         }
         return auras;
@@ -399,24 +309,29 @@ public class Board {
             }
             for (EffectAura aura : newAuras) {
                 Set<Card> currentAffected = aura.findAffectedCards();
-                if (currentAffected.isEmpty() && aura.lastCheckedAffectedCards.isEmpty()) {
-                    // small optimization?
-                    continue;
-                }
-                // obtain set difference
-                Set<Card> newAffected = new HashSet<>(currentAffected);
-                newAffected.removeAll(aura.lastCheckedAffectedCards);
-                if (!newAffected.isEmpty()) {
-                    rl.add(new AddEffectResolver(new ArrayList<>(newAffected), aura.effectToApply, aura));
-                }
-                Set<Card> newUnaffected = new HashSet<>(aura.lastCheckedAffectedCards);
-                newUnaffected.removeAll(currentAffected);
-                if (!newUnaffected.isEmpty()) {
-                    List<Effect> effectsToRemove = newUnaffected.stream()
-                            .map(unaffected -> aura.currentActiveEffects.get(unaffected))
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toList());
-                    rl.add(new RemoveEffectResolver(effectsToRemove, aura));
+                if (!currentAffected.equals(aura.lastCheckedAffectedCards)) {
+                    // only add a resolver if something not right
+                    rl.add(new Resolver(false) {
+                        @Override
+                        public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                            // obtain set difference
+                            Set<Card> currentApplied = aura.currentActiveEffects.keySet();
+                            Set<Card> shouldApply = aura.findAffectedCards();
+                            Set<Card> newAffected = new HashSet<>(shouldApply);
+                            newAffected.removeAll(currentApplied);
+                            if (!newAffected.isEmpty()) {
+                                this.resolve(b, rl, el, new AddEffectResolver(new ArrayList<>(newAffected), aura.effectToApply, aura));
+                            }
+                            Set<Card> newUnaffected = new HashSet<>(currentApplied);
+                            newUnaffected.removeAll(shouldApply);
+                            if (!newUnaffected.isEmpty()) {
+                                List<Effect> effectsToRemove = newUnaffected.stream()
+                                        .map(unaffected -> aura.currentActiveEffects.get(unaffected))
+                                        .collect(Collectors.toList());
+                                this.resolve(b, rl, el, new RemoveEffectResolver(effectsToRemove, aura));
+                            }
+                        }
+                    });
                 }
                 aura.lastCheckedAffectedCards = currentAffected;
             }

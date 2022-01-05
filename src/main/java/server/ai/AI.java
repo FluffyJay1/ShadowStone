@@ -447,7 +447,7 @@ public class AI extends Thread {
         Player p = this.b.getPlayer(team);
         WeightedSampler<String> poss = new WeightedSampler<>();
         // playing cards & selecting targets
-        List<Card> hand = p.hand.cards;
+        List<Card> hand = p.getHand();
         for (Card c : hand) {
             // TODO make it consider board positioning
             if (p.canPlayCard(c)) {
@@ -462,9 +462,8 @@ public class AI extends Thread {
                 }
             }
         }
-        List<BoardObject> minions = this.b.getBoardObjects(team, false, true, false);
-        for (BoardObject b : minions) {
-            Minion m = (Minion) b;
+        List<Minion> minions = this.b.getMinions(team, false, true);
+        for (Minion m : minions) {
             // unleashing cards & selecting targets
             if (p.canUnleashCard(m)) {
                 double totalWeight = UNLEASH_TOTAL_WEIGHT; // can't really make any assumptions about which unleashes are better than others
@@ -540,7 +539,7 @@ public class AI extends Thread {
             }
         } else {
             // just go face
-            Leader enemyFace = this.b.getPlayer(team * -1).leader;
+            Leader enemyFace = this.b.getPlayer(team * -1).getLeader();
             for (Minion m : minions) {
                 if (m.canAttack(enemyFace)) {
                     double totalWeight = ATTACK_TOTAL_WEIGHT + ATTACK_WEIGHT_MULTIPLIER * m.finalStatEffects.getStat(EffectStats.ATTACK);
@@ -663,7 +662,7 @@ public class AI extends Thread {
      * @return The approximate mana value of that leader's survivability
      */
     public static double evaluateSurvivability(Board b, int team) {
-        Leader l = b.getPlayer(team).leader;
+        Leader l = b.getPlayer(team).getLeader();
         if (l == null) {
             return 0;
         }
@@ -671,9 +670,8 @@ public class AI extends Thread {
             return -99999 + l.health; // u dont want to be dead
         }
         int potentialDamage = 0, threatenDamage = 0, ehp = l.health, attackers = 0, defenders = 0;
-        for (BoardObject bo : b.getBoardObjects(team * -1, false, true, false)) {
+        for (Minion m : b.getMinions(team * -1,  true, true)) {
             // TODO add if can attack check
-            Minion m = (Minion) bo;
             // TODO factor in damage limiting effects like durandal
             if (m.canAttack()) {
                 potentialDamage += m.finalStatEffects.getStat(EffectStats.ATTACK)
@@ -683,8 +681,7 @@ public class AI extends Thread {
                     * m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN);
             attackers += m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN);
         }
-        for (BoardObject bo : b.getBoardObjects(team, false, true, false)) {
-            Minion m = (Minion) bo;
+        for (Minion m : b.getMinions(team, false, true)) {
             if (m.finalStatEffects.getStat(EffectStats.WARD) > 0) {
                 ehp += m.health;
                 defenders++;
@@ -726,7 +723,7 @@ public class AI extends Thread {
      */
     public static double evaluateBoard(Board b, int team) {
         double total = 0;
-        for (BoardObject bo : b.getBoardObjects(team)) {
+        for (BoardObject bo : b.getPlayer(team).getPlayArea()) {
             total += bo.getValue();
         }
         return total;
@@ -743,9 +740,8 @@ public class AI extends Thread {
      * @return the mana value of having these cards in hand
      */
     public static double evaluateHand(Board b, int team) {
-        Hand hand = b.getPlayer(team).hand;
         double totalPower = 0;
-        for (Card c : hand.cards) {
+        for (Card c : b.getPlayer(team).getHand()) {
             totalPower += c.getValue() / (c.finalStatEffects.getStat(EffectStats.COST) + 1);
         }
         return totalPower;

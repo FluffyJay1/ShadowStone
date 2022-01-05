@@ -74,5 +74,6 @@ public class EventAnimationFactory {
         put(EventPutCard.class, EventAnimationPutCard.class);
         put(EventMinionAttack.class, EventAnimationMinionAttack.class);
         put(EventSetEffectStats.class, EventAnimationSetEffectStats.class);
+        put(EventCreateCard.class, EventAnimationCreateCard.class);
     }};
 }

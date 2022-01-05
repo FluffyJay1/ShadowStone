@@ -35,17 +35,22 @@ public class UICard extends UIBox {
     private Image cardImage, subImage;
     private final UIBoard uib;
     private final List<Image> icons;
+    private boolean flippedOver; // draw the back of the card instead
 
     public UICard(UI ui, UIBoard uib, Card c) {
         super(ui, new Vector2f(), CARD_DIMENSIONS, "");
         this.uib = uib;
         this.setCard(c);
-        this.icons = new LinkedList<>();
+        this.icons = new ArrayList<>();
+        this.flippedOver = false;
     }
 
     @Override
     public void mousePressed(int button, int x, int y) {
         // this.uib.draggingCard = this;
+        if (this.flippedOver) {
+            return;
+        }
         this.uib.mousePressedCard(this, button, x, y);
         this.setZ(UIBoard.CARD_DRAGGING_Z);
     }
@@ -76,6 +81,10 @@ public class UICard extends UIBox {
         return (Minion) this.card;
     }
 
+    public void setFlippedOver(boolean flippedOver) {
+        this.flippedOver = flippedOver;
+    }
+
     @Override
     public void draw(Graphics g) {
         super.draw(g);
@@ -85,21 +94,25 @@ public class UICard extends UIBox {
     }
 
     public void drawCard(Graphics g, Vector2f pos, double scale) {
+        if (this.flippedOver) {
+            this.drawCardBack(g, pos, scale);
+            return;
+        }
         this.drawCardArt(g, pos, scale);
         switch (this.card.status) {
-        case BOARD:
-        case LEADER:
-            this.drawOnBoard(g, pos, scale);
-            break;
-        case UNLEASHPOWER:
-            this.drawUnleashPower(g, pos, scale);
-            break;
-        case HAND:
-            this.drawInHand(g, pos, scale);
-            break;
-        default:
-            break;
+            case BOARD, LEADER -> this.drawOnBoard(g, pos, scale);
+            case UNLEASHPOWER -> this.drawUnleashPower(g, pos, scale);
+            case HAND, DECK -> this.drawInHand(g, pos, scale);
+            default -> {
+            }
         }
+    }
+
+    public void drawCardBack(Graphics g, Vector2f pos, double scale) {
+        Image image = Game.getImage("res/ui/cardback.png").getScaledCopy((int) this.getOriginalDim().x,
+                (int) this.getOriginalDim().y).getScaledCopy((float) scale);
+        g.drawImage(image, (int) (pos.x - image.getWidth() / 2),
+                (int) (pos.y - image.getHeight() / 2));
     }
 
     public void drawCardArt(Graphics g, Vector2f pos, double scale) {

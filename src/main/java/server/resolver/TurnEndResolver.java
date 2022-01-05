@@ -21,12 +21,12 @@ public class TurnEndResolver extends Resolver {
     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
         b.processEvent(rl, el, new EventTurnEnd(p));
         List<Resolver> subList = new LinkedList<>();
-        for (BoardObject bo : this.p.board.getBoardObjects(this.p.team, true, true, true)) {
+        for (BoardObject bo : this.p.board.getBoardObjects(this.p.team, true, true, true, true)) {
             b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
             this.resolveList(b, subList, el, bo.getResolvers(Effect::onTurnEnd));
             b.popEventGroup();
         }
-        for (BoardObject bo : this.p.board.getBoardObjects(this.p.team * -1, true, true, true)) {
+        for (BoardObject bo : this.p.board.getBoardObjects(this.p.team * -1, true, true, true, true)) {
             b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
             this.resolveList(b, subList, el, bo.getResolvers(Effect::onTurnEndEnemy));
             b.popEventGroup();

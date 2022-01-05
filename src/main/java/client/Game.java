@@ -111,7 +111,7 @@ public class Game extends StateBasedGame {
 
     public static <T> List<T> selectRandom(List<T> list, int num) { // helper
         List<T> copy = new ArrayList<>(list);
-        List<T> ret = new ArrayList<>();
+        List<T> ret = new ArrayList<>(num);
         for (int i = 0; i < num && !copy.isEmpty(); i++) {
             int randind = (int) (Math.random() * copy.size());
             ret.add(copy.remove(randind));

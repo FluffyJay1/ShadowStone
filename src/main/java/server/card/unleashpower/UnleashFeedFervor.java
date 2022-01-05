@@ -27,6 +27,7 @@ public class UnleashFeedFervor extends UnleashPower {
                     @Override
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
                         if (e instanceof EventManaChange) {
+                            Player p = b.getPlayer(effect.owner.team);
                             if (!overflow && p.overflow()) {
                                 this.resolve(b, rl, el, new UpdateEffectStateResolver(effect, () -> overflow = true));
                                 EffectStats esc = new EffectStats();

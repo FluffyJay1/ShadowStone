@@ -33,12 +33,12 @@ public class Fireball extends Spell {
                         for (Card targeted : battlecryTargets.get(0).getTargets()) {
                             List<Minion> m = new LinkedList<>();
                             List<Integer> d = new LinkedList<>();
-                            int pos = targeted.cardpos;
+                            int pos = targeted.getIndex();
                             m.add((Minion) targeted);
                             d.add(2);
                             for (int i = -1; i <= 1; i += 2) {
                                 int offsetPos = pos + i;
-                                BoardObject adjacent = b.getBoardObject(owner.team * -1, offsetPos);
+                                BoardObject adjacent = b.getPlayer(owner.team * -1).getPlayArea().get(offsetPos);
                                 if (adjacent instanceof Minion) {
                                     m.add((Minion) adjacent);
                                     d.add(1);

@@ -24,25 +24,25 @@ public class MinionAttackResolver extends Resolver {
         b.processEvent(rl, el, new EventMinionAttack(this.m1, this.m2));
         if (this.m1.alive) {
             b.pushEventGroup(new EventGroup(EventGroupType.ONATTACK, List.of(this.m1)));
-            List<Resolver> list = this.m1.onAttack(this.m2);
+            List<Resolver> list = this.m1.getResolvers(effect -> effect.onAttack(this.m2));
             this.resolveList(b, list, el, list);
             b.popEventGroup();
         }
         if (this.m1.alive && !(this.m2 instanceof Leader)) {
             b.pushEventGroup(new EventGroup(EventGroupType.CLASH, List.of(this.m1)));
-            List<Resolver> list = this.m1.clash(this.m2);
+            List<Resolver> list = this.m1.getResolvers(effect -> effect.clash(this.m2));
             this.resolveList(b, list, el, list);
             b.popEventGroup();
         }
         if (this.m2.alive) {
             b.pushEventGroup(new EventGroup(EventGroupType.ONATTACKED, List.of(this.m2)));
-            List<Resolver> list = this.m2.onAttacked(this.m1);
+            List<Resolver> list = this.m2.getResolvers(effect -> effect.onAttacked(this.m1));
             this.resolveList(b, list, el, list);
             b.popEventGroup();
         }
         if (this.m2.alive && !(this.m1 instanceof Leader)) {
             b.pushEventGroup(new EventGroup(EventGroupType.CLASH, List.of(this.m2)));
-            List<Resolver> list = this.m2.clash(this.m1);
+            List<Resolver> list = this.m2.getResolvers(effect-> effect.clash(this.m1));
             this.resolveList(b, list, el, list);
             b.popEventGroup();
         }

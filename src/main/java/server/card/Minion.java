@@ -90,27 +90,25 @@ public class Minion extends BoardObject {
             return new ArrayList<>();
         }
         List<Minion> list = new ArrayList<>();
-        List<BoardObject> poss = new ArrayList<>(this.board.getBoardObjects(this.team * -1));
+        List<Minion> poss = new ArrayList<>(this.board.getMinions(this.team * -1, false, true));
         List<Minion> wards = new ArrayList<>();
 
-        Leader enemyLeader = this.board.getPlayer(this.team * -1).leader;
+        Leader enemyLeader = this.board.getPlayer(this.team * -1).getLeader();
         if (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.STORM) > 0) {
             list.add(enemyLeader);
         }
         // check for ward
         boolean ward = false;
-        for (BoardObject b : poss) {
-            if (b instanceof Minion) {
-                if (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.RUSH) > 0
-                        || this.finalStatEffects.getStat(EffectStats.STORM) > 0) {
-                    // TODO add if can attack this minion eg stealth or can't be
-                    // attacked
-                    list.add((Minion) b);
-                }
-                if (b.finalStatEffects.getStat(EffectStats.WARD) > 0) {
-                    ward = true;
-                    wards.add((Minion) b);
-                }
+        for (Minion m : poss) {
+            if (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.RUSH) > 0
+                    || this.finalStatEffects.getStat(EffectStats.STORM) > 0) {
+                // TODO add if can attack this minion eg stealth or can't be
+                // attacked
+                list.add(m);
+            }
+            if (m.finalStatEffects.getStat(EffectStats.WARD) > 0) {
+                ward = true;
+                wards.add(m);
             }
             // TODO add restrictions on can't attack leader
         }
@@ -146,62 +144,6 @@ public class Minion extends BoardObject {
 
     public boolean canBeUnleashed() {
         return !(this instanceof Leader) && this.isInPlay();
-    }
-
-    public List<Resolver> onAttack(Minion target) {
-        List<Resolver> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            Resolver temp = e.onAttack(target); // optimization probably
-            if (temp != null) {
-                list.add(temp);
-            }
-        }
-        return list;
-    }
-
-    public List<Resolver> onAttacked(Minion target) {
-        List<Resolver> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            Resolver temp = e.onAttacked(target);
-            if (temp != null) {
-                list.add(temp);
-            }
-        }
-        return list;
-    }
-
-    public List<Resolver> clash(Minion target) {
-        List<Resolver> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            Resolver temp = e.clash(target);
-            if (temp != null) {
-                list.add(temp);
-            }
-        }
-        return list;
-    }
-
-    public List<Resolver> onDamaged(int damage) {
-        List<Resolver> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            Resolver temp = e.onDamaged(damage);
-            if (temp != null) {
-                list.add(temp);
-            }
-        }
-        return list;
-    }
-
-    public List<Resolver> unleash() {
-        List<Resolver> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            Resolver temp = e.unleash();
-            if (temp != null) {
-                list.add(temp);
-            }
-        }
-        return list;
-        // return new LinkedList<Event>();
     }
 
     public List<Target> getUnleashTargets() {

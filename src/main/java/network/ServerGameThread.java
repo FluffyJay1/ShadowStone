@@ -3,6 +3,7 @@ package network;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.stream.IntStream;
 
 import client.*;
 import server.*;
@@ -88,13 +89,14 @@ public class ServerGameThread extends Thread {
 
     private void initializeGame() {
         for (int team = 1; team >= -1; team -= 2) { // deckbuilding 101
-            ArrayList<Card> cards = new ArrayList<>(this.decks[(team - 1) / -2].convertToCards(this.b));
-            while (!cards.isEmpty()) {
-                Card selected = Game.selectRandom(cards);
-                this.b.processEvent(null, null,
-                        new EventCreateCard(List.of(selected), team, CardStatus.DECK, List.of(0), null));
-                cards.remove(selected);
+            List<Card> cards = this.decks[(team - 1) / -2].convertToCards(this.b);
+            List<Card> shuffledCards = Game.selectRandom(cards, cards.size());
+            List<Integer> inds = new ArrayList<>(shuffledCards.size());
+            for (int i = 0; i < shuffledCards.size(); i++) {
+                inds.add(i);
             }
+            this.b.processEvent(null, null,
+                    new EventCreateCard(shuffledCards, team, CardStatus.DECK, inds, null));
             UnleashPower up = (UnleashPower) Card.createFromConstructor(this.b,
                     CardSet.getDefaultUnleashPower(this.decks[(team - 1) / -2].craft));
             this.b.processEvent(null, null,

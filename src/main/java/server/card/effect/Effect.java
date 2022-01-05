@@ -8,6 +8,7 @@ import server.*;
 import server.card.*;
 import server.event.*;
 import server.resolver.*;
+import utils.Indexable;
 
 /*
  * Few important things:
@@ -19,8 +20,8 @@ import server.resolver.*;
  * -- This is used to allow AI to undo moves
  * - Effects should override getBattlecryValue() and getPresenceValue() for the AI
  */
-public class Effect implements Cloneable {
-    public int pos = 0;
+public class Effect implements Indexable, Cloneable {
+    private int pos = 0;
     public Card owner = null;
     public String description;
     /*
@@ -249,7 +250,7 @@ public class Effect implements Cloneable {
     }
 
     public String toReference() {
-        return this.owner.toReference() + this.basic + " " + this.removed + " " + this.pos + " ";
+        return this.owner.toReference() + this.basic + " " + this.removed + " " + this.getIndex() + " ";
     }
 
     public static String referenceOrNull(Effect effect) {
@@ -268,5 +269,15 @@ public class Effect implements Cloneable {
             return c.getRemovedEffects().get(pos);
         }
         return c.getEffects(basic).get(pos);
+    }
+
+    @Override
+    public int getIndex() {
+        return this.pos;
+    }
+
+    @Override
+    public void setIndex(int index) {
+        this.pos = index;
     }
 }

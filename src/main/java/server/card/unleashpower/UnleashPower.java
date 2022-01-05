@@ -9,8 +9,6 @@ import server.card.effect.*;
 import server.resolver.*;
 
 public class UnleashPower extends Card {
-
-    public Player p;
     public int unleashesThisTurn = 0;
 
     public UnleashPower(Board b, TooltipUnleashPower tooltip) {

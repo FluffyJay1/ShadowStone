@@ -105,8 +105,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
                 return new Vector2f((float) ((this.pos.x + 0.5) * Config.WINDOW_WIDTH),
                         (float) ((this.pos.y + 0.5) * Config.WINDOW_HEIGHT));
             } else {
-                return new Vector2f((float) (this.pos.x * this.parent.getWidth(true)),
-                        (float) (this.pos.y * this.parent.getHeight(true)));
+                return this.parent.getLocalPosOfRel(this.pos);
             }
         }
         return this.pos.copy();
@@ -115,7 +114,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     // absolute position on the screen more or less
     public Vector2f getFinalPos() {
         if (this.parent != null) {
-            return this.parent.getFinalPos().copy().add(this.parent.childoffset).add(this.getPos());
+            return this.parent.getAbsPosOfLocal(this.getPos());
         }
         return this.getPos();
     }
@@ -126,8 +125,8 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
                 return new Vector2f((float) ((this.pos.x / Config.WINDOW_WIDTH) - 0.5),
                         (float) ((this.pos.y / Config.WINDOW_HEIGHT) - 0.5));
             } else {
-                return new Vector2f((float) ((this.pos.x / this.parent.getWidth(true)) - 0.5),
-                        (float) ((this.pos.y / this.parent.getHeight(true)) - 0.5));
+                return new Vector2f((float) ((this.pos.x / this.parent.getWidth(true)) - this.alignh / 2.),
+                        (float) ((this.pos.y / this.parent.getHeight(true)) - this.alignv / 2.));
             }
         }
         return this.pos.copy();
@@ -216,6 +215,15 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         return y;
     }
 
+    // get a width value in terms of relpos coordinates
+    public double getWidthInRel(double absWidth) {
+        return absWidth / this.getWidth(true);
+    }
+
+    public double getHeightInRel(double absHeight) {
+        return absHeight / this.getHeight(true);
+    }
+
     public void setVisible(boolean visible) {
         this.visible = visible;
         if (!visible && this.hasFocus) {
@@ -250,6 +258,15 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     public Vector2f getLocalRelPosOf(Vector2f absPos) {
         return new Vector2f((absPos.x - this.getFinalPos().x) / (float) this.getWidth(false),
                 (absPos.y - this.getFinalPos().y) / (float) this.getHeight(false));
+    }
+
+    public Vector2f getLocalPosOfRel(Vector2f relPos) {
+        return new Vector2f((float) ((relPos.x + this.alignh / 2.) * this.getWidth(true)),
+                (float) ((relPos.y + this.alignv / 2.) * this.getHeight(true)));
+    }
+
+    public Vector2f getAbsPosOfLocal(Vector2f localPos) {
+        return this.getFinalPos().add(this.childoffset).add(localPos);
     }
 
     public boolean pointIsInHitbox(Vector2f pos) {

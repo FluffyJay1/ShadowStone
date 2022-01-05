@@ -1,6 +1,7 @@
 package server.card.effect;
 
 import server.Board;
+import server.Player;
 import server.card.BoardObject;
 import server.card.Card;
 import server.card.CardStatus;
@@ -57,21 +58,11 @@ public abstract class EffectAura extends Effect {
         }
         Board b = this.owner.board;
         int targetTeam = this.affectTeam * this.owner.team;
-        if (targetTeam >= 0) {
-            if (this.affectBoard) {
-                filtered.addAll(b.getCollection(1, CardStatus.BOARD).stream().filter(this::applyConditions).collect(Collectors.toSet()));
-            }
-            if (this.affectHand) {
-                filtered.addAll(b.getCollection(1, CardStatus.HAND).stream().filter(this::applyConditions).collect(Collectors.toSet()));
-            }
+        if (this.affectBoard) {
+            filtered.addAll(b.getPlayerCards(targetTeam, Player::getPlayArea).stream().filter(this::applyConditions).collect(Collectors.toSet()));
         }
-        if (targetTeam <= 0) {
-            if (this.affectBoard) {
-                filtered.addAll(b.getCollection(-1, CardStatus.BOARD).stream().filter(this::applyConditions).collect(Collectors.toSet()));
-            }
-            if (this.affectHand) {
-                filtered.addAll(b.getCollection(-1, CardStatus.HAND).stream().filter(this::applyConditions).collect(Collectors.toSet()));
-            }
+        if (this.affectHand) {
+            filtered.addAll(b.getPlayerCards(targetTeam, Player::getHand).stream().filter(this::applyConditions).collect(Collectors.toSet()));
         }
         return filtered;
     }

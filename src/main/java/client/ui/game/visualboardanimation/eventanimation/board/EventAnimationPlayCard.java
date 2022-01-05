@@ -15,9 +15,10 @@ public class EventAnimationPlayCard extends EventAnimation<EventPlayCard> {
     @Override
     public void onStart() {
         this.visualBoard.uiBoard.visualPlayingCard = this.event.c.uiCard;
-        this.visualBoard.uiBoard.visualPlayingCard.setScale(UIBoard.CARDS_SCALE_PLAY);
+        this.visualBoard.uiBoard.visualPlayingCard.setScale(UIBoard.CARD_SCALE_PLAY);
         this.visualBoard.uiBoard.visualPlayingCard.setPos(new Vector2f(0, 0), 0.999f);
         this.visualBoard.uiBoard.visualPlayingCard.setZ(UIBoard.CARD_VISUALPLAYING_Z);
+        this.visualBoard.uiBoard.visualPlayingCard.draggable = false;
     }
 
     @Override

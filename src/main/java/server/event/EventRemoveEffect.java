@@ -35,7 +35,7 @@ public class EventRemoveEffect extends Event {
         this.oldAlive = new ArrayList<>(this.effects.size());
         for (int i = 0; i < this.effects.size(); i++) {
             Effect e = this.effects.get(i);
-            this.prevPos.add(e.pos);
+            this.prevPos.add(e.getIndex());
             this.oldHealth.add(0);
             this.oldRemoved.add(e.removed);
             this.oldAlive.add(e.owner.alive);

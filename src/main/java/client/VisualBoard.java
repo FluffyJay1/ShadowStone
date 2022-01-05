@@ -102,23 +102,6 @@ public class VisualBoard extends Board {
     }
 
     public void updateEventAnimation(double frametime) {
-        double timeUntilLatestProcess = Double.NEGATIVE_INFINITY;
-        for (Iterator<VisualBoardAnimation> i = this.currentAnimations.iterator(); i.hasNext();) {
-            VisualBoardAnimation vba = i.next();
-            if (vba instanceof EventAnimation) {
-                // enforce ordering
-                EventAnimation<?> ea = (EventAnimation<?>) vba;
-                if (ea.getTimeUntilProcess() >= timeUntilLatestProcess) {
-                    ea.update(frametime);
-                    timeUntilLatestProcess = ea.getTimeUntilProcess() + MIN_CONCURRENT_EVENT_DELAY;
-                }
-            } else {
-                vba.update(frametime);
-            }
-            if (vba.isFinished()) {
-                i.remove();
-            }
-        }
         while ((shouldConcurrentlyAnimate() || this.currentAnimations.isEmpty())
                 && !this.inputeventliststrings.isEmpty()) {
             // current set of animations is empty, see what we have to animate
@@ -145,6 +128,23 @@ public class VisualBoard extends Board {
             if (anim != null) {
                 // The animation will take care of when to resolve the event
                 this.currentAnimations.add(anim);
+            }
+        }
+        double timeUntilLatestProcess = Double.NEGATIVE_INFINITY;
+        for (Iterator<VisualBoardAnimation> i = this.currentAnimations.iterator(); i.hasNext();) {
+            VisualBoardAnimation vba = i.next();
+            if (vba instanceof EventAnimation) {
+                // enforce ordering
+                EventAnimation<?> ea = (EventAnimation<?>) vba;
+                if (ea.getTimeUntilProcess() >= timeUntilLatestProcess) {
+                    ea.update(frametime);
+                    timeUntilLatestProcess = ea.getTimeUntilProcess() + MIN_CONCURRENT_EVENT_DELAY;
+                }
+            } else {
+                vba.update(frametime);
+            }
+            if (vba.isFinished()) {
+                i.remove();
             }
         }
     }

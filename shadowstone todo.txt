@@ -1,16 +1,23 @@
-ai does werid plays if it has a ward up
-Maximum number of board slots
+Maximum number of board slots, hand size
+    extra cards get their special animation
+        no space on board -> animate the first card at where it would be, getting thanos snapped
+        no space in hand -> the ones that didn't make it get thanos snapped
+destroy and banish special animations
+ai behaving weirdly while ward is up
+placeholders for playing card positions when u chain them
 AI should be able to place minions differently
 Use scanner instead of stringtokenizer to handle stream input?
 Optimize AI action sampling?
     most of the time AI samples only 1 action, can we take advantage of this?
     do we need generate the full space of possible actions to sample from it?
+unleashpower art focus lol
+rotate cards
+make card scale system more robust, dependent on flags per card
 update to use slick 1.0.2
 make game fullscreen and fix flickering problem from rendering text
 Card art in tooltip
 UnicodeFont deprecated? use AngelCodeFonts
 Figure out why the game is eating cpu and gpu
-Unforce the Effect(string) constructor, instead allow Effect() constructor?
 unforce every uielement constructor taking in a ui as a parameter
 targeting serverside verification
 AI optimize decision tree
