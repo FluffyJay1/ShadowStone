@@ -18,7 +18,6 @@ import org.newdawn.slick.geom.*;
 import client.*;
 import client.ui.*;
 import network.*;
-import server.Player;
 import server.card.*;
 import server.card.unleashpower.UnleashPower;
 import server.playeraction.*;
@@ -67,7 +66,7 @@ public class UIBoard extends UIBox {
     public final Text player1ManaText;
     public final Text player2ManaText;
     public final Text advantageText;
-    public UICard preSelectedCard, selectedCard, draggingCard, playingCard, visualPlayingCard, attackingMinion,
+    public UICard preSelectedCard, selectedCard, draggingCard, playingCard, attackingMinion,
             unleashingMinion;
     // TODO: CARD PLAYING QUEUE AND BOARD POSITIONING
     double playingX;
@@ -136,89 +135,99 @@ public class UIBoard extends UIBox {
             List<BoardObject> bos = this.b.getPlayer(team).getPlayArea();
             for (BoardObject bo : bos) {
                 UICard uic = bo.uiCard;
-                uic.draggable = false;
-                uic.setFlippedOver(false);
-                uic.setVisible(true);
-                if (uic != this.unleashingMinion && uic != this.attackingMinion) {
-                    uic.setZ(CARD_BOARD_Z);
+                if (!uic.isBeingAnimated()) {
+                    uic.draggable = false;
+                    uic.setFlippedOver(false);
+                    uic.setVisible(true);
+                    if (uic != this.unleashingMinion && uic != this.attackingMinion) {
+                        uic.setZ(CARD_BOARD_Z);
+                    }
+                    // exclude cards that haven't been created yet
+                    uic.setPos(this.getBoardPosFor(bo.getIndex(), team, bos.size()), 0.99);
                 }
-                // exclude cards that haven't been created yet
-                uic.setPos(this.getBoardPosFor(bo.getIndex(), team, bos.size()), 0.99);
             }
             Leader leader = this.b.getPlayer(team).getLeader();
             if (leader != null) {
                 UICard uic = leader.uiCard;
-                uic.draggable = false;
-                uic.setFlippedOver(false);
-                uic.setVisible(true);
-                if (uic != this.unleashingMinion && uic != this.attackingMinion) {
-                    uic.setZ(CARD_BOARD_Z);
+                if (!uic.isBeingAnimated()) {
+                    uic.draggable = false;
+                    uic.setFlippedOver(false);
+                    uic.setVisible(true);
+                    if (uic != this.unleashingMinion && uic != this.attackingMinion) {
+                        uic.setZ(CARD_BOARD_Z);
+                    }
+                    uic.setPos(
+                            // oh my this formatting
+                            new Vector2f(0,
+                                    (float) (team == this.b.localteam ? LEADER_Y_LOCAL : LEADER_Y_ENEMY)),
+                            1);
                 }
-                uic.setPos(
-                        // oh my this formatting
-                        new Vector2f(0,
-                                (float) (team == this.b.localteam ? LEADER_Y_LOCAL : LEADER_Y_ENEMY)),
-                        1);
             }
             UnleashPower up = this.b.getPlayer(team).getUnleashPower();
             if (up != null) {
                 UICard uic = up.uiCard;
-                uic.draggable = false;
-                uic.setFlippedOver(false);
-                uic.setVisible(true);
-                uic.setZ(CARD_DEFAULT_Z);
-                uic.setPos(new Vector2f((float) UNLEASHPOWER_X,
-                                (float) (team == this.b.localteam ? UNLEASHPOWER_Y_LOCAL : UNLEASHPOWER_Y_ENEMY)),
-                        1);
+                if (!uic.isBeingAnimated()) {
+                    uic.draggable = false;
+                    uic.setFlippedOver(false);
+                    uic.setVisible(true);
+                    uic.setZ(CARD_DEFAULT_Z);
+                    uic.setPos(new Vector2f((float) UNLEASHPOWER_X,
+                                    (float) (team == this.b.localteam ? UNLEASHPOWER_Y_LOCAL : UNLEASHPOWER_Y_ENEMY)),
+                            1);
+                }
             }
             List<Card> hand = this.b.getPlayer(team).getHand();
             for (Card c : hand) {
                 UICard uic = c.uiCard;
-                if (uic != this.draggingCard) {
-                    uic.setZ(CARD_HAND_Z);
-                }
-                if (team == this.b.localteam && !this.b.disableInput && uic != this.visualPlayingCard) {
-                    uic.draggable = true;
-                }
-                uic.setFlippedOver(false);
-                uic.setVisible(true);
-                // ignore cards that are cards being animated in special ways
-                if (uic != this.playingCard && uic != this.draggingCard && uic != this.visualPlayingCard) {
-                    // ignore the following behemoth of a statement
-                    // dont bother understanding it lol
-                    // if there's a bug then god have mercy
-                    uic.setPos(
-                            new Vector2f(
-                                    (float) (((uic.getCard().getIndex())
-                                            - (this.b.getPlayer(team).getHand().size()) / 2.)
-                                            * (team == this.b.localteam ? (this.expandHand
-                                            ? (HAND_X_SCALE_EXPAND_LOCAL
-                                            + this.b.getPlayer(team).getHand().size()
-                                            * 0.02)
-                                            : HAND_X_SCALE_LOCAL) : HAND_X_SCALE_ENEMY)
-                                            / this.b.getPlayer(team).getHand().size()
-                                            + (team == this.b.localteam ? (this.expandHand
-                                            ? (HAND_X_EXPAND_LOCAL
-                                            - this.b.getPlayer(team).getHand().size()
-                                            * 0.01)
-                                            : HAND_X_LOCAL) : HAND_X_ENEMY)),
-                                    (float) (team == this.b.localteam
-                                            ? (this.expandHand ? HAND_Y_EXPAND_LOCAL : HAND_Y_LOCAL)
-                                            : HAND_Y_ENEMY)),
-                            0.99);
-                    uic.setScale(team == this.b.localteam
-                            ? (this.expandHand ? CARD_SCALE_HAND_EXPAND : CARD_SCALE_HAND)
-                            : CARD_SCALE_HAND);
+                if (!uic.isBeingAnimated()) {
+                    if (uic != this.draggingCard) {
+                        uic.setZ(CARD_HAND_Z);
+                    }
+                    if (team == this.b.localteam && !this.b.disableInput) {
+                        uic.draggable = true;
+                    }
+                    uic.setFlippedOver(false);
+                    uic.setVisible(true);
+                    // ignore cards that are cards being animated in special ways
+                    if (uic != this.playingCard && uic != this.draggingCard) {
+                        // ignore the following behemoth of a statement
+                        // dont bother understanding it lol
+                        // if there's a bug then god have mercy
+                        uic.setPos(
+                                new Vector2f(
+                                        (float) (((uic.getCard().getIndex())
+                                                - (this.b.getPlayer(team).getHand().size()) / 2.)
+                                                * (team == this.b.localteam ? (this.expandHand
+                                                ? (HAND_X_SCALE_EXPAND_LOCAL
+                                                + this.b.getPlayer(team).getHand().size()
+                                                * 0.02)
+                                                : HAND_X_SCALE_LOCAL) : HAND_X_SCALE_ENEMY)
+                                                / this.b.getPlayer(team).getHand().size()
+                                                + (team == this.b.localteam ? (this.expandHand
+                                                ? (HAND_X_EXPAND_LOCAL
+                                                - this.b.getPlayer(team).getHand().size()
+                                                * 0.01)
+                                                : HAND_X_LOCAL) : HAND_X_ENEMY)),
+                                        (float) (team == this.b.localteam
+                                                ? (this.expandHand ? HAND_Y_EXPAND_LOCAL : HAND_Y_LOCAL)
+                                                : HAND_Y_ENEMY)),
+                                0.99);
+                        uic.setScale(team == this.b.localteam
+                                ? (this.expandHand ? CARD_SCALE_HAND_EXPAND : CARD_SCALE_HAND)
+                                : CARD_SCALE_HAND);
+                    }
                 }
             }
             List<Card> deck = this.b.getPlayer(team).getDeck();
             for (Card c : deck) {
                 UICard uic = c.uiCard;
-                uic.setFlippedOver(true);
-                uic.setVisible(true);
-                uic.setScale(CARD_SCALE_DEFAULT);
-                uic.setZ(CARD_DEFAULT_Z);
-                uic.setPos(new Vector2f((float) DECK_X, (float) (team == this.b.localteam ? DECK_Y_LOCAL : DECK_Y_ENEMY)), 0.99);
+                if (!uic.isBeingAnimated()) {
+                    uic.setFlippedOver(true);
+                    uic.setVisible(true);
+                    uic.setScale(CARD_SCALE_DEFAULT);
+                    uic.setZ(CARD_DEFAULT_Z);
+                    uic.setPos(new Vector2f((float) DECK_X, (float) (team == this.b.localteam ? DECK_Y_LOCAL : DECK_Y_ENEMY)), 0.99);
+                }
             }
             List<Card> graveyard = this.b.getPlayer(team).getGraveyard();
             for (Card c : graveyard) {
@@ -244,8 +253,8 @@ public class UIBoard extends UIBox {
             for (Card card : currentTargeting.getTargets()) {
                 UICard c = card.uiCard;
                 g.setColor(org.newdawn.slick.Color.red);
-                g.drawRect((float) (c.getFinalPos().x - UICard.CARD_DIMENSIONS.x * c.getScale() / 2 * 0.9),
-                        (float) (c.getFinalPos().y - UICard.CARD_DIMENSIONS.y * c.getScale() / 2 * 0.9),
+                g.drawRect((float) (c.getAbsPos().x - UICard.CARD_DIMENSIONS.x * c.getScale() / 2 * 0.9),
+                        (float) (c.getAbsPos().y - UICard.CARD_DIMENSIONS.y * c.getScale() / 2 * 0.9),
                         (float) (UICard.CARD_DIMENSIONS.x * c.getScale() * 0.9),
                         (float) (UICard.CARD_DIMENSIONS.y * c.getScale() * 0.9));
                 g.setColor(org.newdawn.slick.Color.white);
@@ -292,7 +301,6 @@ public class UIBoard extends UIBox {
         this.selectedCard = null;
         this.draggingCard = null;
         this.playingCard = null;
-        this.visualPlayingCard = null;
         this.attackingMinion = null;
         this.unleashingMinion = null;
         this.removeChildren(this.cards);
@@ -333,6 +341,12 @@ public class UIBoard extends UIBox {
         this.addChild(uic);
     }
 
+    // only to be called by unsuccessful create
+    public void removeUICard(UICard c) {
+        this.cards.remove(c);
+        this.removeChild(c);
+    }
+
     public UICard cardAtPos(Vector2f pos) {
         for (UICard c : this.cards) {
             if (c.isVisible() && c.pointIsInHitbox(pos)) {
@@ -357,11 +371,11 @@ public class UIBoard extends UIBox {
         this.selectedCard = null;
         this.preSelectedCard = null;
         this.expandHand = y > (HAND_EXPAND_Y + 0.5) * Config.WINDOW_HEIGHT;
-        if (!this.handleTargeting(c)) { // if we clicked on a card
+        if (!this.handleTargeting(c) && !c.isBeingAnimated()) { // if we clicked on a card
             this.preSelectedCard = c;
             switch (c.getCard().status) {
             case HAND:
-                if (c.getCard().team == this.b.localteam && c != this.visualPlayingCard) {
+                if (c.getCard().team == this.b.localteam) {
                     c.setScale(CARD_SCALE_HAND_EXPAND);
                     if (this.b.realBoard.getPlayer(this.b.localteam).canPlayCard(c.getCard().realCard)
                             && !this.b.disableInput) {
@@ -578,13 +592,15 @@ public class UIBoard extends UIBox {
                         : (c.getCard().status.equals(CardStatus.HAND) ? CARD_SCALE_HAND : CARD_SCALE_BOARD));
                 if (c.getCard().status.equals(CardStatus.LEADER) && activate) {
                     this.expandHand = false;
+                } else if (c.getCard().status.equals(CardStatus.HAND) && activate) {
+                    this.expandHand = true;
                 }
             }
         }
     }
 
     public ParticleSystem addParticleSystem(Vector2f absPos, EmissionStrategy es) {
-        ParticleSystem ps = new ParticleSystem(this.getUI(), this.getLocalPosOf(absPos), es);
+        ParticleSystem ps = new ParticleSystem(this.getUI(), this.getLocalPosOfAbs(absPos), es);
         ps.setZ(PARTICLE_Z);
         this.addChild(ps);
         return ps;

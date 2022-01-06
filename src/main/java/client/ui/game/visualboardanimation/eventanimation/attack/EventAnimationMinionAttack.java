@@ -14,8 +14,8 @@ public class EventAnimationMinionAttack extends EventAnimation<EventMinionAttack
 
     @Override
     public void draw(Graphics g) {
-        Vector2f pos = this.event.m2.uiCard.getFinalPos().sub(this.event.m1.uiCard.getFinalPos())
-                .scale((float) (this.normalizedPost())).add(this.event.m1.uiCard.getFinalPos());
+        Vector2f pos = this.event.m2.uiCard.getAbsPos().sub(this.event.m1.uiCard.getAbsPos())
+                .scale((float) (this.normalizedPost())).add(this.event.m1.uiCard.getAbsPos());
         g.fillOval(pos.x - 5, pos.y - 5, 10, 10);
     }
 

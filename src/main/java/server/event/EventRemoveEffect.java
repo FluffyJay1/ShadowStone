@@ -67,7 +67,7 @@ public class EventRemoveEffect extends Event {
 
     @Override
     public void undo() {
-        for (int i = 0; i < this.effects.size(); i++) {
+        for (int i = this.effects.size() - 1; i >= 0; i--) {
             Effect e = this.effects.get(i);
             Card c = e.owner;
             if (!this.oldRemoved.get(i)) {

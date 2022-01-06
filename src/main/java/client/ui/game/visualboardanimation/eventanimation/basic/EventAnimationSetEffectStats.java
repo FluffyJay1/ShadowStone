@@ -30,8 +30,8 @@ public class EventAnimationSetEffectStats extends EventAnimation<EventSetEffectS
             for (int i = 0; i < 4; i++) {
                 double rotvel = (i - 1.5) * 360;
                 img.setRotation((float) (rotvel * this.normalizedPost()));
-                g.drawImage(img, c.uiCard.getFinalPos().x - img.getWidth() / 2,
-                        c.uiCard.getFinalPos().y - img.getHeight() / 2);
+                g.drawImage(img, c.uiCard.getAbsPos().x - img.getWidth() / 2,
+                        c.uiCard.getAbsPos().y - img.getHeight() / 2);
             }
         }
     }

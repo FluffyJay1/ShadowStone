@@ -6,8 +6,9 @@ import server.*;
 import server.card.*;
 import server.event.*;
 
+// when u wanna return a resolver but the only thing u have to do is create card
 public class CreateCardResolver extends Resolver {
-    public final List<Card> destroyed;
+    public EventCreateCard event;
     private final List<Card> c;
     private final int team;
     private final CardStatus status;
@@ -20,7 +21,6 @@ public class CreateCardResolver extends Resolver {
         this.team = team;
         this.status = status;
         this.cardpos = cardpos;
-        this.destroyed = new LinkedList<>();
     }
 
     public CreateCardResolver(Card c, int team, CardStatus status, int cardpos) {
@@ -29,8 +29,7 @@ public class CreateCardResolver extends Resolver {
 
     @Override
     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
-        b.processEvent(rl, el, new EventCreateCard(this.c, this.team, this.status, this.cardpos, destroyed));
-        this.resolve(b, rl, el, new DestroyResolver(destroyed));
+        this.event = b.processEvent(rl, el, new EventCreateCard(this.c, this.team, this.status, this.cardpos));
     }
 
 }

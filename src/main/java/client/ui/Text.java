@@ -197,8 +197,8 @@ public class Text extends UIElement {
                 this.repaint();
             }
             if (this.cachedRender != null) {
-                float drawx = (float) (this.getFinalPos().x - this.maxLineWidth * (this.alignh + 1) / 2.);
-                float drawy = (float) (this.getFinalPos().y - this.getVOff());
+                float drawx = (float) (this.getAbsPos().x - this.maxLineWidth * (this.alignh + 1) / 2.);
+                float drawy = (float) (this.getAbsPos().y - this.getVOff());
                 g.drawImage(this.cachedRender, drawx, drawy);
             }
             this.drawChildren(g);// why not

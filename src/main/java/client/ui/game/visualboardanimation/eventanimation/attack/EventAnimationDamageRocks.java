@@ -55,7 +55,7 @@ public class EventAnimationDamageRocks extends EventAnimationDamage {
     @Override
     public void onProcess() {
         for (Minion m : this.event.m) {
-            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getFinalPos(), EMISSION_STRATEGY.get());
+            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getAbsPos(), EMISSION_STRATEGY.get());
         }
     }
 
@@ -66,9 +66,9 @@ public class EventAnimationDamageRocks extends EventAnimationDamage {
             // do the shooting
             for (int i = 0; i < this.event.m.size(); i++) {
                 ROCK.setRotation(randomAngles.get(i).floatValue() + rotvel * (float) this.normalizedPre());
-                Vector2f pos = this.event.m.get(i).uiCard.getFinalPos()
-                        .sub(this.event.cardSource.uiCard.getFinalPos()).scale((float) (this.normalizedPre()))
-                        .add(this.event.cardSource.uiCard.getFinalPos());
+                Vector2f pos = this.event.m.get(i).uiCard.getAbsPos()
+                        .sub(this.event.cardSource.uiCard.getAbsPos()).scale((float) (this.normalizedPre()))
+                        .add(this.event.cardSource.uiCard.getAbsPos());
                 g.drawImage(ROCK, pos.x - ROCK.getWidth()/2, pos.y - ROCK.getHeight()/2);
             }
         } else {

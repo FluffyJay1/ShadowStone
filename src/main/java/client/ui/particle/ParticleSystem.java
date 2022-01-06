@@ -78,7 +78,7 @@ public class ParticleSystem extends UIElement {
     public void draw(Graphics g) {
         if (this.isVisible()) {
             for (Particle p : this.particles) {
-                p.draw(g, this.getFinalPos());
+                p.draw(g, this.getAbsPos());
             }
             this.drawChildren(g); // i guess
         }

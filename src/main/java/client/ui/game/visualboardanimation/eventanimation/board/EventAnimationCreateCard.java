@@ -8,6 +8,8 @@ import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
 import client.ui.interpolation.realvalue.ConstantInterpolation;
 import client.ui.interpolation.realvalue.LinearInterpolation;
 import client.ui.interpolation.realvalue.QuadraticInterpolationA;
+import client.ui.particle.ParticleSystem;
+import client.ui.particle.ParticleSystemCommon;
 import client.ui.particle.strategy.EmissionStrategy;
 import client.ui.particle.strategy.property.*;
 import client.ui.particle.strategy.timing.InstantEmissionTimingStrategy;
@@ -39,6 +41,9 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
                     new RandomAngleEmissionPropertyStrategy(new LinearInterpolation(-300, 300))
             ))
     );
+
+    private UICard firstFailedOnBoard;
+    private ParticleSystem banishParticles;
     public EventAnimationCreateCard() {
         super(0, 0);
     }
@@ -48,7 +53,7 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
         super.init(b, event);
         switch (event.status) {
             case BOARD -> {
-                this.postTime = 0.25;
+                this.postTime = 0.75;
             }
             case HAND, DECK -> {
                 this.preTime = 0.5;
@@ -76,22 +81,54 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
 
     @Override
     public void onProcess() {
-        if (this.event.status.equals(CardStatus.BOARD)) {
+        // TODO: hand
+        if (this.event.status.equals(CardStatus.HAND)) {
             for (int i = 0; i < this.event.cards.size(); i++) {
                 Card c = this.event.cards.get(i);
                 UICard uic = c.uiCard;
-                Vector2f destPos = this.visualBoard.uiBoard.getBoardPosFor(c.getIndex(), c.team, this.visualBoard.getPlayer(c.team).getPlayArea().size());
-                uic.setPos(destPos.copy().add(new Vector2f(0, ENTRANCE_OFFSET_Y)), 1);
-                Vector2f localPosOfRel = this.visualBoard.uiBoard.getLocalPosOfRel(destPos);
-                Vector2f absPosOfLocal = this.visualBoard.uiBoard.getAbsPosOfLocal(localPosOfRel);
-                this.visualBoard.uiBoard.addParticleSystem(absPosOfLocal, DUST_EMISSION_STRATEGY.get());
+                if (!this.event.successful.get(i)) {
+                    // thanos snap the unsuccessful cards
+                    EmissionStrategy strategy = ParticleSystemCommon.DESTROY.get().composePropertyStrategy(new ScaleEmissionPropertyStrategy(UIBoard.CARD_SCALE_PLAY));
+                    this.visualBoard.uiBoard.addParticleSystem(uic.getAbsPos(), strategy);
+                    this.visualBoard.uiBoard.removeUICard(uic);
+                }
+            }
+        }
+        if (this.event.status.equals(CardStatus.BOARD)) {
+            boolean seenFirstFailed = false;
+            for (int i = 0; i < this.event.cards.size(); i++) {
+                Card c = this.event.cards.get(i);
+                UICard uic = c.uiCard;
+                if (this.event.successful.get(i)) {
+                    Vector2f destPos = this.visualBoard.uiBoard.getBoardPosFor(c.getIndex(), c.team, this.visualBoard.getPlayer(c.team).getPlayArea().size());
+                    uic.setPos(destPos.copy().add(new Vector2f(0, ENTRANCE_OFFSET_Y)), 1);
+                    Vector2f localPosOfRel = this.visualBoard.uiBoard.getLocalPosOfRel(destPos);
+                    Vector2f absPosOfLocal = this.visualBoard.uiBoard.getAbsPosOfLocal(localPosOfRel);
+                    this.visualBoard.uiBoard.addParticleSystem(absPosOfLocal, DUST_EMISSION_STRATEGY.get());
+                } else if (!seenFirstFailed) {
+                    this.firstFailedOnBoard = uic;
+                    Vector2f destPos = this.visualBoard.uiBoard.getBoardPosFor(this.event.cardpos.get(i), c.team, this.visualBoard.getPlayer(c.team).getPlayArea().size() + 1);
+                    uic.setPos(destPos.copy().add(new Vector2f(0, ENTRANCE_OFFSET_Y)), 1);
+                    uic.setPos(destPos, 0.5);
+                    Vector2f localPosOfRel = this.visualBoard.uiBoard.getLocalPosOfRel(destPos);
+                    Vector2f absPosOfLocal = this.visualBoard.uiBoard.getAbsPosOfLocal(localPosOfRel);
+                    this.banishParticles = this.visualBoard.uiBoard.addParticleSystem(absPosOfLocal, ParticleSystemCommon.BANISH.get());
+                    this.banishParticles.followElement(uic, 0.99);
+                    seenFirstFailed = true;
+                } else {
+                    this.visualBoard.uiBoard.removeUICard(uic);
+                }
             }
         }
     }
 
     @Override
     public void onFinish() {
-        // uh maybe add some particles or something
+        if (this.firstFailedOnBoard != null) {
+            this.banishParticles.kill();
+            this.banishParticles.stopFollowing();
+            this.visualBoard.uiBoard.removeUICard(this.firstFailedOnBoard);
+        }
     }
 
     @Override

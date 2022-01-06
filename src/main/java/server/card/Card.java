@@ -101,6 +101,7 @@ public abstract class Card implements Indexable {
         e.basic = basic;
         e.owner = this;
         e.removed = false;
+        this.removedEffects.remove(e);
         this.getEffects(basic).add(pos, e);
         if (e.onListenEvent(null) != null) {
             this.listeners.add(e);

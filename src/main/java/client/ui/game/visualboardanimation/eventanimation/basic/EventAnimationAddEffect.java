@@ -29,12 +29,12 @@ public class EventAnimationAddEffect extends EventAnimation<EventAddEffect> {
     public void draw(Graphics g) {
         Image img = Game.getImage("res/game/battlecry.png");
         for (Card c : this.event.c) {
-            if (!c.status.equals(CardStatus.GRAVEYARD) && !c.status.equals(CardStatus.DECK)) {
+            if (!c.status.equals(CardStatus.GRAVEYARD)) {
                 for (int i = 0; i < 4; i++) {
                     float xoffset = (float) Math.random() * 150 - 75;
                     float yoffset = (float) (-this.normalizedPost() * 160) + 80 + (float) Math.random() * 150 - 75;
-                    g.drawImage(img, c.uiCard.getFinalPos().x - img.getWidth() / 2 + xoffset,
-                            c.uiCard.getFinalPos().y - img.getHeight() / 2 + yoffset);
+                    g.drawImage(img, c.uiCard.getAbsPos().x - img.getWidth() / 2 + xoffset,
+                            c.uiCard.getAbsPos().y - img.getHeight() / 2 + yoffset);
                 }
             }
         }

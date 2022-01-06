@@ -45,9 +45,9 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
             // do the shooting
             g.setColor(Color.red);
             for (int i = 0; i < this.event.m.size(); i++) {
-                Vector2f pos = this.event.m.get(i).uiCard.getFinalPos()
-                        .sub(this.event.cardSource.uiCard.getFinalPos()).scale((float) (this.normalizedPre()))
-                        .add(this.event.cardSource.uiCard.getFinalPos());
+                Vector2f pos = this.event.m.get(i).uiCard.getAbsPos()
+                        .sub(this.event.cardSource.uiCard.getAbsPos()).scale((float) (this.normalizedPre()))
+                        .add(this.event.cardSource.uiCard.getAbsPos());
                 g.fillOval(pos.x - 20, pos.y - 20, 40, 40);
             }
             g.setColor(Color.white);
@@ -64,8 +64,8 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
         float yoff = (float) (Math.min(Math.pow(0.5 - 2 * this.normalizedPost(), 2), 0.25) * 100);
         for (int i = 0; i < this.event.m.size(); i++) {
             String dstring = this.event.damage.get(i) + "";
-            g.drawString(dstring, this.event.m.get(i).uiCard.getFinalPos().x - font.getWidth(dstring) / 2,
-                    this.event.m.get(i).uiCard.getFinalPos().y - font.getHeight(dstring) + yoff);
+            g.drawString(dstring, this.event.m.get(i).uiCard.getAbsPos().x - font.getWidth(dstring) / 2,
+                    this.event.m.get(i).uiCard.getAbsPos().y - font.getHeight(dstring) + yoff);
         }
         g.setColor(Color.white);
     }

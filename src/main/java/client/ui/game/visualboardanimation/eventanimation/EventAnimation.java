@@ -1,10 +1,14 @@
 package client.ui.game.visualboardanimation.eventanimation;
 
+import client.ui.game.UICard;
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
 import org.newdawn.slick.*;
 
 import client.*;
 import server.event.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Base class for handling animations on the board. The general idea is given a
@@ -24,6 +28,7 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
     boolean started;
     protected boolean processedEvent;
     boolean finished;
+    private Set<UICard> animatingCards;
 
     /**
      * Construct an EventAnimation, which when updated, will automatically execute
@@ -41,6 +46,7 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
         this.started = false;
         this.processedEvent = false;
         this.finished = false;
+        this.animatingCards = new HashSet<>();
     }
 
     public void init(VisualBoard b, T event) {
@@ -62,6 +68,21 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
         if (!this.finished && isFinished()) {
             this.onFinish();
             this.finished = true;
+            for (UICard c : this.animatingCards) {
+                this.stopUsingCardInAnimation(c);
+            }
+        }
+    }
+
+    public void useCardInAnimation(UICard c) {
+        if (this.animatingCards.add(c)) {
+            c.useInAnimation();
+        }
+    }
+
+    public void stopUsingCardInAnimation(UICard c) {
+        if (this.animatingCards.remove(c)) {
+            c.stopUsingInAnimation();
         }
     }
 

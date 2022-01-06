@@ -102,6 +102,7 @@ public class Board {
         List<Card> ret = new ArrayList<>();
         ret.addAll(this.getPlayerCards(0, Player::getPlayArea));
         ret.addAll(this.getPlayerCards(0, Player::getHand));
+        ret.addAll(this.getPlayerCard(0, Player::getLeader));
         return ret;
     }
 

@@ -96,14 +96,14 @@ public class ServerGameThread extends Thread {
                 inds.add(i);
             }
             this.b.processEvent(null, null,
-                    new EventCreateCard(shuffledCards, team, CardStatus.DECK, inds, null));
+                    new EventCreateCard(shuffledCards, team, CardStatus.DECK, inds));
             UnleashPower up = (UnleashPower) Card.createFromConstructor(this.b,
                     CardSet.getDefaultUnleashPower(this.decks[(team - 1) / -2].craft));
             this.b.processEvent(null, null,
-                    new EventCreateCard(List.of(up), team, CardStatus.UNLEASHPOWER, List.of(0), null));
+                    new EventCreateCard(List.of(up), team, CardStatus.UNLEASHPOWER, List.of(0)));
             // TODO change leader
             this.b.processEvent(null, null,
-                    new EventCreateCard(List.of(new Rowen(this.b)), team, CardStatus.LEADER, List.of(0), null));
+                    new EventCreateCard(List.of(new Rowen(this.b)), team, CardStatus.LEADER, List.of(0)));
         }
         this.b.resolve(new DrawResolver(this.b.player1, 3));
         this.b.resolve(new DrawResolver(this.b.player2, 3));

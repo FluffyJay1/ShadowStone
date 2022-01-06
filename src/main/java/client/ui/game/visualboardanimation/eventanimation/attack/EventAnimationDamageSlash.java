@@ -45,7 +45,7 @@ public class EventAnimationDamageSlash extends EventAnimationDamage {
         super.init(b, event);
         this.angles = new ArrayList<>(event.m.size());
         for (Minion m : event.m) {
-            Vector2f diff = m.uiCard.getFinalPos().copy().sub(event.cardSource.uiCard.getFinalPos());
+            Vector2f diff = m.uiCard.getAbsPos().copy().sub(event.cardSource.uiCard.getAbsPos());
             double rad = Math.atan2(diff.y, diff.x);
             this.angles.add(rad * 180 / Math.PI);
         }
@@ -54,7 +54,7 @@ public class EventAnimationDamageSlash extends EventAnimationDamage {
     @Override
     public void onProcess() {
         for (Minion m : this.event.m) {
-            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getFinalPos(), EMISSION_STRATEGY.get());
+            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getAbsPos(), EMISSION_STRATEGY.get());
         }
     }
 
@@ -64,9 +64,9 @@ public class EventAnimationDamageSlash extends EventAnimationDamage {
             // do the shooting
             for (int i = 0; i < this.event.m.size(); i++) {
                 SLASH_PROJECTILE.setRotation(this.angles.get(i).floatValue());
-                Vector2f pos = this.event.m.get(i).uiCard.getFinalPos()
-                        .sub(this.event.cardSource.uiCard.getFinalPos()).scale((float) (this.normalizedPre()))
-                        .add(this.event.cardSource.uiCard.getFinalPos());
+                Vector2f pos = this.event.m.get(i).uiCard.getAbsPos()
+                        .sub(this.event.cardSource.uiCard.getAbsPos()).scale((float) (this.normalizedPre()))
+                        .add(this.event.cardSource.uiCard.getAbsPos());
                 g.drawImage(SLASH_PROJECTILE, pos.x - SLASH_PROJECTILE.getWidth()/2, pos.y - SLASH_PROJECTILE.getHeight()/2);
             }
         } else {

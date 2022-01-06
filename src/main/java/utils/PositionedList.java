@@ -33,7 +33,7 @@ public class PositionedList<T extends Indexable> implements List<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return this.indexables.iterator();
+        return new PositionedListIterator(0);
     }
 
     @Override
@@ -218,6 +218,7 @@ public class PositionedList<T extends Indexable> implements List<T> {
         @Override
         public void set(T t) {
             this.wrappedIterator.set(t);
+            updatePositions();
         }
 
         @Override

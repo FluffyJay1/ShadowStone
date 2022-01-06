@@ -33,8 +33,8 @@ public class EventAnimationRemoveEffect extends EventAnimation<EventRemoveEffect
             float yoffset = (float) (this.normalizedPost() * 160) - 80 + (float) Math.random() * 150 - 75;
             for (Effect e : this.event.effects)
                 if (!e.owner.status.equals(CardStatus.GRAVEYARD) && !e.owner.status.equals(CardStatus.DECK)) {
-                    g.drawImage(img, e.owner.uiCard.getFinalPos().x - img.getWidth() / 2 + xoffset,
-                            e.owner.uiCard.getFinalPos().y - img.getHeight() / 2 + yoffset);
+                    g.drawImage(img, e.owner.uiCard.getAbsPos().x - img.getWidth() / 2 + xoffset,
+                            e.owner.uiCard.getAbsPos().y - img.getHeight() / 2 + yoffset);
                 }
         }
     }

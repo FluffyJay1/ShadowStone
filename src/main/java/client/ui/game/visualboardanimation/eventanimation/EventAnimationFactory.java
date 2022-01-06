@@ -4,15 +4,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import client.ui.game.visualboardanimation.eventanimation.basic.*;
 import client.ui.game.visualboardanimation.eventanimation.board.*;
 import client.VisualBoard;
 import client.ui.game.visualboardanimation.eventanimation.attack.*;
-import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationAddEffect;
-import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationRemoveEffect;
-import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationRestore;
-import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationSetEffectStats;
-import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationTurnStart;
-import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationUnleash;
 import server.event.*;
 
 /**
@@ -75,5 +70,6 @@ public class EventAnimationFactory {
         put(EventMinionAttack.class, EventAnimationMinionAttack.class);
         put(EventSetEffectStats.class, EventAnimationSetEffectStats.class);
         put(EventCreateCard.class, EventAnimationCreateCard.class);
+        put(EventDestroy.class, EventAnimationDestroy.class);
     }};
 }

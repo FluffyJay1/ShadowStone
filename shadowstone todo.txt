@@ -1,8 +1,6 @@
-Maximum number of board slots, hand size
-    extra cards get their special animation
-        no space on board -> animate the first card at where it would be, getting thanos snapped
-        no space in hand -> the ones that didn't make it get thanos snapped
-destroy and banish special animations
+put card animation
+little glowy effect for creating cards
+banish special animations
 ai behaving weirdly while ward is up
 placeholders for playing card positions when u chain them
 AI should be able to place minions differently
@@ -21,6 +19,7 @@ Figure out why the game is eating cpu and gpu
 unforce every uielement constructor taking in a ui as a parameter
 targeting serverside verification
 AI optimize decision tree
+relpos lol
 formalize basic effects? createBasicEffect()
 priority
 drain/lifesteal

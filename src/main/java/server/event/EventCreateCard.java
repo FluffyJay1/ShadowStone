@@ -16,26 +16,20 @@ public class EventCreateCard extends Event {
     public final List<Integer> cardpos;
     private UnleashPower prevUP;
     private Leader prevLeader;
-    private final List<Boolean> successful;
-    public List<Card> markedForDeath;
+    public final List<Boolean> successful;
     final List<BoardObject> cardsEnteringPlay = new ArrayList<>();
 
-    public EventCreateCard(List<Card> cards, int team, CardStatus status, List<Integer> cardpos,
-            List<Card> markedForDeath) {
+    public EventCreateCard(List<Card> cards, int team, CardStatus status, List<Integer> cardpos) {
         super(ID);
         this.cards = cards;
         this.team = team;
         this.status = status;
         this.cardpos = cardpos;
-        this.markedForDeath = markedForDeath;
         this.successful = new ArrayList<>();
     }
 
     @Override
     public void resolve() {
-        if (this.markedForDeath == null) {
-            this.markedForDeath = new ArrayList<>();
-        }
         for (int i = 0; i < this.cards.size(); i++) {
             Card c = this.cards.get(i);
             int cardpos = this.cardpos.get(i);
@@ -50,13 +44,12 @@ public class EventCreateCard extends Event {
                         this.successful.add(true);
                     } else {
                         c.alive = false;
-                        this.markedForDeath.add(c);
+                        // TODO: add a shadow
                         this.successful.add(false);
                     }
                 }
                 case BOARD -> {
-                    // TODO: CHECK IF BOARD IS FULL
-                    if (c instanceof BoardObject) {
+                    if (c instanceof BoardObject && p.getPlayArea().size() < p.maxPlayAreaSize) {
                         BoardObject bo = (BoardObject) c;
                         this.cardsEnteringPlay.add(bo);
                         p.getPlayArea().add(cardpos, bo);
@@ -65,6 +58,8 @@ public class EventCreateCard extends Event {
                             ((Minion) c).summoningSickness = true;
                         }
                         this.successful.add(true);
+                    } else {
+                        this.successful.add(false);
                     }
                 }
                 case DECK -> {
@@ -153,7 +148,7 @@ public class EventCreateCard extends Event {
         for (int i = 0; i < numCards; i++) {
             cardpos.add(Integer.parseInt(st.nextToken()));
         }
-        return new EventCreateCard(cards, team, csStatus, cardpos, null);
+        return new EventCreateCard(cards, team, csStatus, cardpos);
     }
 
     @Override

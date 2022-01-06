@@ -62,7 +62,7 @@ public class CardDisplayUnit extends UIBox {
     public void draw(Graphics g) {
         super.draw(g);
         if (this.card != null) {
-            this.uicard.drawCard(g, this.getFinalPos(), SCALE);
+            this.uicard.drawCard(g, this.getAbsPos(), SCALE);
         }
     }
 

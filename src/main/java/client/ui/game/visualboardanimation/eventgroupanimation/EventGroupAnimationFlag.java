@@ -15,7 +15,7 @@ public class EventGroupAnimationFlag extends EventGroupAnimation {
         Image img = Game.getImage("res/game/flag.png");
         UICard uiCard = this.eventgroup.cards.get(0).uiCard;
         float yoffset = (float) (Math.pow(1 - this.normalizedTime(), 2) * 150) - 50;
-        g.drawImage(img, uiCard.getFinalPos().x - img.getWidth() / 2,
-                uiCard.getFinalPos().y - img.getHeight() / 2 + yoffset);
+        g.drawImage(img, uiCard.getAbsPos().x - img.getWidth() / 2,
+                uiCard.getAbsPos().y - img.getHeight() / 2 + yoffset);
     }
 }

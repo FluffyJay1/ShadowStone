@@ -36,6 +36,7 @@ public class UICard extends UIBox {
     private final UIBoard uib;
     private final List<Image> icons;
     private boolean flippedOver; // draw the back of the card instead
+    private int numAnimating; // ref count of how many events are animating this
 
     public UICard(UI ui, UIBoard uib, Card c) {
         super(ui, new Vector2f(), CARD_DIMENSIONS, "");
@@ -85,12 +86,25 @@ public class UICard extends UIBox {
         this.flippedOver = flippedOver;
     }
 
+    public boolean isBeingAnimated() {
+        return this.numAnimating > 0;
+    }
+
+    // tell the uiboard to not do anything with the cards, an event is taking care of it
+    public void useInAnimation() {
+        this.numAnimating++;
+    }
+
+    public void stopUsingInAnimation() {
+        this.numAnimating--;
+    }
+
     @Override
     public void draw(Graphics g) {
-        super.draw(g);
         if (this.isVisible() && this.card != null) {
-            this.drawCard(g, this.getFinalPos(), this.getScale());
+            this.drawCard(g, this.getAbsPos(), this.getScale());
         }
+        this.drawChildren(g);
     }
 
     public void drawCard(Graphics g, Vector2f pos, double scale) {

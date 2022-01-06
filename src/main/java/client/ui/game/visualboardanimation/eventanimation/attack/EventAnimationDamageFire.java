@@ -59,7 +59,7 @@ public class EventAnimationDamageFire extends EventAnimationDamage {
         super.init(b, event);
         this.chargingParticleSystems = new ArrayList<>(event.m.size());
         for (Minion m : event.m) {
-            ParticleSystem ps = this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getFinalPos(), CHARGING_EMISSION_STRATEGY.get());
+            ParticleSystem ps = this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getAbsPos(), CHARGING_EMISSION_STRATEGY.get());
             this.chargingParticleSystems.add(ps);
         }
     }
@@ -70,7 +70,7 @@ public class EventAnimationDamageFire extends EventAnimationDamage {
             ps.kill();
         }
         for (Minion m : this.event.m) {
-            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getFinalPos(), EXPLOSION_EMISSION_STRATEGY.get());
+            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getAbsPos(), EXPLOSION_EMISSION_STRATEGY.get());
         }
     }
 

@@ -10,6 +10,7 @@ import java.util.List;
 
 public class Player {
     public static final int DEFAULT_MAX_HAND_SIZE = 10;
+    public static final int DEFAULT_MAX_BOARD_SIZE = 6;
     public Player realPlayer;
     public final Board board;
     protected final PositionedList<Card> deck;
@@ -21,6 +22,7 @@ public class Player {
     public int maxmana;
     public int maxmaxmana; // don't ask
     public int maxHandSize;
+    public int maxPlayAreaSize;
     public boolean unleashAllowed = true;
     protected Leader leader;
     protected UnleashPower unleashPower;
@@ -36,6 +38,7 @@ public class Player {
         this.maxmana = 3;
         this.maxmaxmana = 10;
         this.maxHandSize = DEFAULT_MAX_HAND_SIZE;
+        this.maxPlayAreaSize = DEFAULT_MAX_BOARD_SIZE;
     }
 
     public List<Card> getDeck() {
@@ -95,6 +98,9 @@ public class Player {
 
     // uh
     public boolean canPlayCard(Card c) {
+        if (c instanceof BoardObject && this.getPlayArea().size() >= this.maxPlayAreaSize) {
+            return false;
+        }
         return c != null && this.board.currentPlayerTurn == this.team && c.conditions()
                 && this.mana >= c.finalStatEffects.getStat(EffectStats.COST) && c.status.equals(CardStatus.HAND);
     }

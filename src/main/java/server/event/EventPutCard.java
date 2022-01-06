@@ -23,6 +23,8 @@ public class EventPutCard extends Event {
     private List<Integer> prevAttacks;
     private List<Boolean> prevSick;
     private List<Boolean> oldAlive;
+    private List<Boolean> attempted; // i.e. removed from original position
+    private List<Boolean> successful; // i.e. added to intended position i.e. not killed
     final List<BoardObject> cardsEnteringPlay = new ArrayList<>();
     final List<BoardObject> cardsLeavingPlay = new ArrayList<>();
     List<Card> markedForDeath;
@@ -55,8 +57,11 @@ public class EventPutCard extends Event {
         this.prevAttacks = new ArrayList<>(this.c.size());
         this.prevSick = new ArrayList<>(this.c.size());
         this.oldAlive = new ArrayList<>(this.c.size());
+        this.attempted = new ArrayList<>(this.c.size());
+        this.successful = new ArrayList<>(this.c.size());
         for (int i = 0; i < this.c.size(); i++) {
             Card card = this.c.get(i);
+            Board b = card.board;
             this.prevStatus.add(card.status);
             this.prevEffects.add(new LinkedList<>());
             this.prevMute.add(new LinkedList<>());
@@ -67,6 +72,8 @@ public class EventPutCard extends Event {
             this.prevAttacks.add(0);
             this.prevSick.add(true);
             this.oldAlive.add(card.alive);
+            this.attempted.add(false);
+            this.successful.add(false);
             if (card instanceof BoardObject) {
                 this.prevLastBoardPos.set(i, ((BoardObject) card).lastBoardPos);
             }
@@ -75,7 +82,20 @@ public class EventPutCard extends Event {
                 this.prevAttacks.set(i, ((Minion) card).attacksThisTurn);
                 this.prevSick.set(i, ((Minion) card).summoningSickness);
             }
-            Player sourceP = card.board.getPlayer(card.team);
+            Player sourceP = b.getPlayer(card.team);
+            Player destP = b.getPlayer(this.targetTeam);
+            if (!this.shouldAttemptMove(card, sourceP, destP)) {
+                continue;
+            }
+            this.attempted.set(i, true);
+            if (!this.willSucceedMove(card, sourceP, destP)) {
+                if (card.alive) {
+                    card.alive = false;
+                    this.markedForDeath.add(card); // mill
+                }
+                continue;
+            }
+            this.successful.set(i, true);
             switch (card.status) { // removing from
                 case HAND -> {
                     sourceP.getHand().remove(card);
@@ -102,13 +122,11 @@ public class EventPutCard extends Event {
                     ((Minion) card).attacksThisTurn = 0;
                 }
             }
-            Player destP = card.board.getPlayer(this.targetTeam);
             card.team = this.targetTeam;
             // now adding to
             switch (this.status) {
                 case BOARD -> {
                     if (card instanceof BoardObject) {
-                        // TODO: CHECK FOR ROOM ON BOARD
                         BoardObject bo = (BoardObject) card;
                         if (!card.status.equals(this.status)) {
                             this.cardsEnteringPlay.add(bo);
@@ -120,22 +138,9 @@ public class EventPutCard extends Event {
                         }
                     }
                 }
-                case HAND -> {
-                    if (destP.getHand().size() >= destP.maxHandSize) {
-                        if (card.alive) {
-                            card.alive = false;
-                            this.markedForDeath.add(card); // mill
-                        }
-                    } else {
-                        destP.getHand().add(this.pos.get(i), card);
-                    }
-                }
-                case DECK -> {
-                    destP.getHand().add(this.pos.get(i), card);
-                }
-                default -> {
-                    System.err.println("uhm i don't know where to put this card");
-                }
+                case HAND -> destP.getHand().add(this.pos.get(i), card);
+                case DECK -> destP.getDeck().add(this.pos.get(i), card);
+                default -> System.err.println("uhm i don't know where to put this card");
             }
             card.status = this.status;
         }
@@ -144,40 +149,42 @@ public class EventPutCard extends Event {
     @Override
     public void undo() {
         for (int i = this.c.size() - 1; i >= 0; i--) {
-            Card card = this.c.get(i);
-            Player p = card.board.getPlayer(card.team); // current player
-            switch (card.status) { // removing from
-                case HAND -> p.getHand().remove(card);
-                case BOARD -> p.getPlayArea().remove((BoardObject) card);
-                case DECK -> p.getDeck().remove(card);
-            }
-            // goes against flow
-            for (Effect e : this.prevEffects.get(i)) {
-                card.addEffect(false, e);
-            }
-            List<Effect> basicEffects = card.getEffects(true);
-            for (int j = 0; j < basicEffects.size(); j++) {
-                basicEffects.get(j).mute = this.prevMute.get(i).get(j);
-            }
-            if (card instanceof BoardObject) {
-                ((BoardObject) card).lastBoardPos = this.prevLastBoardPos.get(i);
-            }
-            if (card instanceof Minion) {
-                ((Minion) card).health = this.prevHealth.get(i);
-                ((Minion) card).attacksThisTurn = this.prevAttacks.get(i);
-                ((Minion) card).summoningSickness = this.prevSick.get(i);
-            }
-            card.team = this.prevTeam.get(i);
-            card.status = this.prevStatus.get(i);
-            card.alive = this.oldAlive.get(i);
-            p = card.board.getPlayer(card.team); // old player
-            switch (this.prevStatus.get(i)) { // adding to
-                case HAND -> p.getHand().add(this.prevPos.get(i), card);
-                case BOARD -> {
-                    assert card instanceof BoardObject;
-                    p.getPlayArea().add(this.prevPos.get(i), (BoardObject) card);
+            if (this.successful.get(i)) {
+                Card card = this.c.get(i);
+                Player p = card.board.getPlayer(card.team); // current player
+                switch (card.status) { // removing from
+                    case HAND -> p.getHand().remove(card);
+                    case BOARD -> p.getPlayArea().remove((BoardObject) card);
+                    case DECK -> p.getDeck().remove(card);
                 }
-                case DECK -> p.getDeck().add(this.prevPos.get(i), card);
+                // goes against flow
+                for (Effect e : this.prevEffects.get(i)) {
+                    card.addEffect(false, e);
+                }
+                List<Effect> basicEffects = card.getEffects(true);
+                for (int j = 0; j < basicEffects.size(); j++) {
+                    basicEffects.get(j).mute = this.prevMute.get(i).get(j);
+                }
+                if (card instanceof BoardObject) {
+                    ((BoardObject) card).lastBoardPos = this.prevLastBoardPos.get(i);
+                }
+                if (card instanceof Minion) {
+                    ((Minion) card).health = this.prevHealth.get(i);
+                    ((Minion) card).attacksThisTurn = this.prevAttacks.get(i);
+                    ((Minion) card).summoningSickness = this.prevSick.get(i);
+                }
+                card.team = this.prevTeam.get(i);
+                card.status = this.prevStatus.get(i);
+                card.alive = this.oldAlive.get(i);
+                p = card.board.getPlayer(card.team); // old player
+                switch (this.prevStatus.get(i)) { // adding to
+                    case HAND -> p.getHand().add(this.prevPos.get(i), card);
+                    case BOARD -> {
+                        assert card instanceof BoardObject;
+                        p.getPlayArea().add(this.prevPos.get(i), (BoardObject) card);
+                    }
+                    case DECK -> p.getDeck().add(this.prevPos.get(i), card);
+                }
             }
         }
     }
@@ -206,6 +213,28 @@ public class EventPutCard extends Event {
             pos.add(poss);
         }
         return new EventPutCard(c, csStatus, targetteam, pos, null);
+    }
+
+    // if we are moving to the board, we shouldn't attempt to move cards if they don't fit on the board
+    private boolean shouldAttemptMove(Card c, Player sourceP, Player destP) {
+        if (this.status.equals(CardStatus.BOARD)) {
+            if (c.status.equals(CardStatus.BOARD) && sourceP.team == destP.team) {
+                return true;
+            }
+            return destP.getPlayArea().size() < destP.maxPlayAreaSize;
+        }
+        return true;
+    }
+
+    // if we overfill the hand, destroy it instead
+    private boolean willSucceedMove(Card c, Player sourceP, Player destP) {
+        if (this.status.equals(CardStatus.HAND)) {
+            if (c.status.equals(CardStatus.HAND) && sourceP.team == destP.team) {
+                return true;
+            }
+            return destP.getHand().size() < destP.maxHandSize;
+        }
+        return true;
     }
 
     @Override
