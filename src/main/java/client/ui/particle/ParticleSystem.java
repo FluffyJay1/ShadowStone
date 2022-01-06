@@ -44,7 +44,6 @@ public class ParticleSystem extends UIElement {
     @Override
     public void update(double frametime) {
         super.update(frametime);
-        this.updateEmission(frametime);
         for (Iterator<Particle> ip = this.particles.iterator(); ip.hasNext();) {
             Particle p = ip.next();
             p.update(frametime);
@@ -52,6 +51,7 @@ public class ParticleSystem extends UIElement {
                 ip.remove();
             }
         }
+        this.updateEmission(frametime);
         if ((this.timingStrategy.isFinished() || this.killed) && this.particles.isEmpty()) {
             // kekbye
             this.removeParent();
@@ -62,16 +62,17 @@ public class ParticleSystem extends UIElement {
         this.nextEmission -= frametime;
         int emittedThisFrame = 0;
         while (!this.timingStrategy.isFinished() && this.nextEmission <= 0 && emittedThisFrame < MAX_PARTICLES_PER_FRAME && !this.killed) {
-            this.emit();
+            this.emit(-this.nextEmission);
             this.nextEmission += this.timingStrategy.getNextEmissionTime();
             emittedThisFrame++;
         }
     }
 
-    private void emit() {
+    private void emit(double lateness) {
         Particle p = new Particle();
         this.propertyStrategy.applyProperties(p);
         this.particles.add(p);
+        p.update(lateness);
     }
 
     @Override

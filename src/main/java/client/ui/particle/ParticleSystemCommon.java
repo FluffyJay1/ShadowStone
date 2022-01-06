@@ -17,13 +17,13 @@ import java.util.function.Supplier;
 
 public class ParticleSystemCommon {
     public static final Supplier<EmissionStrategy> BANISH = () -> new EmissionStrategy(
-            new IntervalEmissionTimingStrategy(1, 0.15),
+            new IntervalEmissionTimingStrategy(1, 0.12),
             new ComposedEmissionPropertyStrategy(List.of(
                     new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/board/banish.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.5)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0.2, new Vector2f(0, 120),
-                            new ConstantInterpolation(0.8),
+                            new QuadraticInterpolationB(1, 0, 0),
                             new QuadraticInterpolationB(2, 0, 0)
                     ),
                     new RandomAngleEmissionPropertyStrategy(new ConstantInterpolation(0))
