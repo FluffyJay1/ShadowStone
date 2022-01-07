@@ -1,4 +1,4 @@
-put card animation
+removing aura's applied effect trips the aura up
 little glowy effect for creating cards
 banish special animations
 ai behaving weirdly while ward is up
@@ -10,7 +10,6 @@ Optimize AI action sampling?
     do we need generate the full space of possible actions to sample from it?
 unleashpower art focus lol
 rotate cards
-make card scale system more robust, dependent on flags per card
 update to use slick 1.0.2
 make game fullscreen and fix flickering problem from rendering text
 Card art in tooltip

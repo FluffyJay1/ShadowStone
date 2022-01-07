@@ -14,6 +14,7 @@ public class EventDestroy extends Event {
     private List<CardStatus> prevStatus;
     private List<Integer> prevPos;
     private List<Integer> prevLastBoardPos;
+    public List<Boolean> successful;
     final List<BoardObject> cardsLeavingPlay = new ArrayList<>(); // required for listeners
 
     public EventDestroy(List<Card> c) {
@@ -31,6 +32,7 @@ public class EventDestroy extends Event {
         this.prevStatus = new ArrayList<>(this.cards.size());
         this.prevPos = new ArrayList<>(this.cards.size());
         this.prevLastBoardPos = new ArrayList<>(this.cards.size());
+        this.successful = new ArrayList<>(this.cards.size());
         for (int i = 0; i < this.cards.size(); i++) {
             Card c = this.cards.get(i);
             Board b = c.board;
@@ -39,10 +41,12 @@ public class EventDestroy extends Event {
             this.prevStatus.add(c.status);
             this.prevPos.add(c.getIndex());
             this.prevLastBoardPos.add(0);
+            this.successful.add(false);
             if (c instanceof BoardObject) {
                 this.prevLastBoardPos.set(i, ((BoardObject) c).lastBoardPos);
             }
             if (!c.status.equals(CardStatus.GRAVEYARD)) {
+                this.successful.set(i, true);
                 // TODO increase shadows by 1
                 c.alive = false;
                 switch (c.status) {
@@ -78,7 +82,7 @@ public class EventDestroy extends Event {
             c.alive = this.alive.get(i);
             CardStatus status = this.prevStatus.get(i);
             int pos = this.prevPos.get(i);
-            if (!status.equals(CardStatus.GRAVEYARD)) {
+            if (this.successful.get(i)) {
                 p.getGraveyard().remove(c);
                 switch (status) {
                     case HAND -> p.getHand().add(pos, c);

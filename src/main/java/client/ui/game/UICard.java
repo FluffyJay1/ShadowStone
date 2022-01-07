@@ -30,6 +30,9 @@ public class UICard extends UIBox {
     public static final double NAME_FONT_SIZE = 30;
     public static final double STAT_DEFAULT_SIZE = 30;
     public static final int ICON_SPACING = 32;
+    public static final double SCALE_DEFAULT = 1, SCALE_HAND = 0.75, SCALE_HAND_EXPAND = 1.2,
+            SCALE_BOARD = 1, SCALE_TARGETING = 1.3, SCALE_POTENTIAL_TARGET = 1.15, SCALE_ORDERING_ATTACK = 1.3,
+            SCALE_COMBAT = 1.2, SCALE_PLAY = 2.5, SCALE_MOVE = 2;
     public static final String CARD_CLICK = "cardclick";
     private Card card;
     private Image cardImage, subImage;
@@ -37,6 +40,10 @@ public class UICard extends UIBox {
     private final List<Image> icons;
     private boolean flippedOver; // draw the back of the card instead
     private int numAnimating; // ref count of how many events are animating this
+    private boolean targeting;
+    private boolean potentialTarget;
+    private boolean orderingAttack;
+    private boolean combat;
 
     public UICard(UI ui, UIBoard uib, Card c) {
         super(ui, new Vector2f(), CARD_DIMENSIONS, "");
@@ -97,6 +104,53 @@ public class UICard extends UIBox {
 
     public void stopUsingInAnimation() {
         this.numAnimating--;
+    }
+
+    public void setTargeting(boolean targeting) {
+        this.targeting = targeting;
+    }
+
+    public void setPotentialTarget(boolean potentialTarget) {
+        this.potentialTarget = potentialTarget;
+    }
+
+    public void setOrderingAttack(boolean orderingAttack) {
+        this.orderingAttack = orderingAttack;
+    }
+
+    public void setCombat(boolean combat) {
+        this.combat = combat;
+    }
+
+    public void updateScale() {
+        double scale = switch (this.card.status) {
+            case BOARD -> SCALE_BOARD;
+            case HAND -> SCALE_HAND;
+            default -> SCALE_DEFAULT;
+        };
+        if (this.targeting) {
+            scale = SCALE_TARGETING;
+        } else if (this.card.status.equals(CardStatus.HAND) && this.card.team == this.uib.b.localteam && this.uib.expandHand) {
+            scale = SCALE_HAND_EXPAND;
+        }
+        if (this.potentialTarget) {
+            scale *= SCALE_POTENTIAL_TARGET;
+        }
+        if (this.orderingAttack) {
+            scale *= SCALE_ORDERING_ATTACK;
+        }
+        if (this.combat) {
+            scale *= SCALE_COMBAT;
+        }
+        this.setScale(scale);
+    }
+
+    @Override
+    public void update(double frametime) {
+        super.update(frametime);
+        if (!this.isBeingAnimated()) {
+            this.updateScale();
+        }
     }
 
     @Override

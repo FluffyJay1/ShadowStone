@@ -99,6 +99,10 @@ public class VisualBoard extends Board {
                 }
             }
         }
+        // if we skip the EventAnimationTurnStart, input doesn't get re-enabled
+        if (this.currentPlayerTurn == this.localteam) {
+            this.disableInput = false;
+        }
     }
 
     public void updateEventAnimation(double frametime) {
@@ -113,9 +117,10 @@ public class VisualBoard extends Board {
                 EventGroup group = EventGroup.fromString(this, st);
                 this.pushEventGroup(group);
                 anim = this.eventGroupAnimationFactory.newAnimation(group);
+                this.uiBoard.onEventGroupPushed(group);
             } else if (EventGroup.isPop(eventOrGroup)) {
                 EventGroup group = this.popEventGroup();
-                // TODO do something special
+                this.uiBoard.onEventGroupPopped(group);
             } else {
                 Event currentEvent = Event.createFromString(this, st);
                 if (currentEvent != null && currentEvent.conditions()) {

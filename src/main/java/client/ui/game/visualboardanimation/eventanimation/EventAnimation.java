@@ -8,6 +8,7 @@ import client.*;
 import server.event.*;
 
 import java.util.HashSet;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 /**
@@ -29,6 +30,8 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
     protected boolean processedEvent;
     boolean finished;
     private Set<UICard> animatingCards;
+    private PriorityQueue<ScheduledAnimation> scheduledPre;
+    private PriorityQueue<ScheduledAnimation> scheduledPost;
 
     /**
      * Construct an EventAnimation, which when updated, will automatically execute
@@ -47,6 +50,8 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
         this.processedEvent = false;
         this.finished = false;
         this.animatingCards = new HashSet<>();
+        this.scheduledPre = new PriorityQueue<>();
+        this.scheduledPost = new PriorityQueue<>();
     }
 
     public void init(VisualBoard b, T event) {
@@ -60,17 +65,30 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
             this.onStart();
             this.started = true;
         }
+        ScheduledAnimation pre = this.scheduledPre.peek();
+        while (pre != null && (this.normalizedPre() > pre.time || !isPre())) {
+            pre.animation.run();
+            this.scheduledPre.remove();
+            pre = this.scheduledPre.peek();
+        }
         if (!this.processedEvent && !this.isPre() && this.event != null) {
             this.visualBoard.processEvent(null, null, this.event);
             this.onProcess();
             this.processedEvent = true;
         }
+        ScheduledAnimation post = this.scheduledPost.peek();
+        while (post != null && (this.normalizedPost() > post.time || isFinished())) {
+            post.animation.run();
+            this.scheduledPost.remove();
+            post = this.scheduledPost.peek();
+        }
         if (!this.finished && isFinished()) {
             this.onFinish();
             this.finished = true;
             for (UICard c : this.animatingCards) {
-                this.stopUsingCardInAnimation(c);
+                c.stopUsingInAnimation();
             }
+            this.animatingCards.clear();
         }
     }
 
@@ -83,6 +101,24 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
     public void stopUsingCardInAnimation(UICard c) {
         if (this.animatingCards.remove(c)) {
             c.stopUsingInAnimation();
+        }
+    }
+
+    /**
+     * Schedule something to run (like setting a card's scale or position) at an
+     * arbitrary time in the animation. Essentially a generalized form of using
+     * the onStart(), onProcess(), and onFinish() hooks.
+     *
+     * @param pre Whether to schedule the thing in the "pre" phase, if false then we use "post"
+     * @param normalizedTime The normalized time in the respective phase in which we should execute the thing to run
+     * @param animation The thing to run
+     */
+    public void scheduleAnimation(boolean pre, double normalizedTime, Runnable animation) {
+        ScheduledAnimation sa = new ScheduledAnimation(normalizedTime, animation);
+        if (pre) {
+            this.scheduledPre.add(sa);
+        } else {
+            this.scheduledPost.add(sa);
         }
     }
 
@@ -133,5 +169,19 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
     // override this placeholder
     public void draw(Graphics g) {
         g.drawString(this.getClass().getName(), 0, 0);
+    }
+
+    private static class ScheduledAnimation implements Comparable<ScheduledAnimation> {
+        double time;
+        Runnable animation;
+        ScheduledAnimation(double time, Runnable animation) {
+            this.time = time;
+            this.animation = animation;
+        }
+
+        @Override
+        public int compareTo(ScheduledAnimation o) {
+            return Double.compare(this.time, o.time);
+        }
     }
 }

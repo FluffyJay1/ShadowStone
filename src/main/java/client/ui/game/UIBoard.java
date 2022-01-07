@@ -20,13 +20,12 @@ import client.ui.*;
 import network.*;
 import server.card.*;
 import server.card.unleashpower.UnleashPower;
+import server.event.eventgroup.EventGroup;
+import server.event.eventgroup.EventGroupType;
 import server.playeraction.*;
 
 public class UIBoard extends UIBox {
     public static final double CLICK_DISTANCE_THRESHOLD = 5;
-    public static final double CARD_SCALE_DEFAULT = 1, CARD_SCALE_HAND = 0.75, CARD_SCALE_HAND_EXPAND = 1.2,
-            CARD_SCALE_BOARD = 1, CARD_SCALE_ABILITY = 1.3, CARD_SCALE_TARGET = 1.15, CARD_SCALE_ATTACK = 1.3,
-            CARD_SCALE_PLAY = 2.5;
     public static final double BO_SPACING = 0.1, BO_Y_LOCAL = 0.105, BO_Y_ENEMY = -0.115;
     public static final double LEADER_Y_LOCAL = 0.38, LEADER_Y_ENEMY = -0.4;
     public static final double UNLEASHPOWER_X = 0.07, UNLEASHPOWER_Y_LOCAL = 0.29, UNLEASHPOWER_Y_ENEMY = -0.31;
@@ -34,7 +33,7 @@ public class UIBoard extends UIBox {
     public static final double HAND_Y_LOCAL = 0.38, HAND_Y_ENEMY = -0.41, HAND_Y_EXPAND_LOCAL = 0.33;
     public static final double HAND_X_SCALE_LOCAL = 0.22, HAND_X_SCALE_ENEMY = 0.26, HAND_X_SCALE_EXPAND_LOCAL = 0.36;
     public static final double CARD_PLAY_Y = 0.2, HAND_EXPAND_Y = 0.30;
-    public static final double DECK_X = 0.3, DECK_Y_LOCAL = 0.2, DECK_Y_ENEMY = -0.2;
+    public static final double DECK_X = 0.35, DECK_Y_LOCAL = 0.2, DECK_Y_ENEMY = -0.2;
     public static final int CARD_DEFAULT_Z = 0, CARD_HAND_Z = 2, CARD_BOARD_Z = 0, CARD_ABILITY_Z = 4,
             CARD_VISUALPLAYING_Z = 4, CARD_DRAGGING_Z = 3, PARTICLE_Z = 1;
     public static final Vector2f TARGETING_CARD_POS = new Vector2f(-0.4f, -0.22f);
@@ -117,7 +116,7 @@ public class UIBoard extends UIBox {
             this.targetText.setPos(
                     new Vector2f(relevantCard.getPos().x,
                             relevantCard.getPos().y
-                                    + (float) (UICard.CARD_DIMENSIONS.y * CARD_SCALE_ABILITY * CARD_SCALE_HAND / 2)),
+                                    + (float) (relevantCard.getHeight(false) / 2)),
                     1);
         } else {
             this.targetText.setVisible(false);
@@ -212,9 +211,6 @@ public class UIBoard extends UIBox {
                                                 ? (this.expandHand ? HAND_Y_EXPAND_LOCAL : HAND_Y_LOCAL)
                                                 : HAND_Y_ENEMY)),
                                 0.99);
-                        uic.setScale(team == this.b.localteam
-                                ? (this.expandHand ? CARD_SCALE_HAND_EXPAND : CARD_SCALE_HAND)
-                                : CARD_SCALE_HAND);
                     }
                 }
             }
@@ -224,7 +220,6 @@ public class UIBoard extends UIBox {
                 if (!uic.isBeingAnimated()) {
                     uic.setFlippedOver(true);
                     uic.setVisible(true);
-                    uic.setScale(CARD_SCALE_DEFAULT);
                     uic.setZ(CARD_DEFAULT_Z);
                     uic.setPos(new Vector2f((float) DECK_X, (float) (team == this.b.localteam ? DECK_Y_LOCAL : DECK_Y_ENEMY)), 0.99);
                 }
@@ -234,14 +229,6 @@ public class UIBoard extends UIBox {
                 UICard uic = c.uiCard;
                 uic.setVisible(false);
             }
-        }
-        if (this.playingCard != null) {
-            this.playingCard.setPos(TARGETING_CARD_POS, 0.999);
-            this.playingCard.setZ(CARD_ABILITY_Z);
-            this.playingCard.setScale(CARD_SCALE_ABILITY * CARD_SCALE_HAND);
-        }
-        if (this.unleashingMinion != null) {
-            this.unleashingMinion.setZ(CARD_ABILITY_Z);
         }
     }
 
@@ -291,6 +278,22 @@ public class UIBoard extends UIBox {
                 }
                 default -> {
                 }
+            }
+        }
+    }
+
+    public void onEventGroupPushed(EventGroup eg) {
+        if (eg.type.equals(EventGroupType.MINIONATTACKORDER)) {
+            for (Card c : eg.cards) {
+                c.uiCard.setCombat(true);
+            }
+        }
+    }
+
+    public void onEventGroupPopped(EventGroup eg) {
+        if (eg.type.equals(EventGroupType.MINIONATTACKORDER)) {
+            for (Card c : eg.cards) {
+                c.uiCard.setCombat(false);
             }
         }
     }
@@ -376,23 +379,21 @@ public class UIBoard extends UIBox {
             switch (c.getCard().status) {
             case HAND:
                 if (c.getCard().team == this.b.localteam) {
-                    c.setScale(CARD_SCALE_HAND_EXPAND);
                     if (this.b.realBoard.getPlayer(this.b.localteam).canPlayCard(c.getCard().realCard)
                             && !this.b.disableInput) {
                         this.draggingCard = c;
                     }
-                    this.preSelectedCard = c;
                     this.expandHand = true;
                 }
                 break;
             case UNLEASHPOWER:
                 if (c.getCard().team == this.b.localteam) {
                     if (this.b.getPlayer(this.b.localteam).canUnleash() && !this.b.disableInput) {
-                        c.setScale(CARD_SCALE_ABILITY);
+                        c.setTargeting(true);
                         this.draggingUnleash = true;
                         this.b.getMinions(this.b.localteam, false, true).stream()
                                 .filter(m -> this.b.getPlayer(this.b.localteam).canUnleashCard(m))
-                                .forEach(m -> m.uiCard.setScale(CARD_SCALE_TARGET));
+                                .forEach(m -> m.uiCard.setPotentialTarget(true));
                     }
                 }
                 break;
@@ -404,8 +405,8 @@ public class UIBoard extends UIBox {
                     this.attackingMinion = c;
                     this.b.getBoardObjects(this.b.localteam * -1, true, true, false, true).stream()
                             .filter(target -> target instanceof Minion && this.attackingMinion.getMinion().realMinion().getAttackableTargets().contains(((Minion) target).realMinion()))
-                            .forEach(target -> target.uiCard.setScale(CARD_SCALE_TARGET));
-                    c.setScale(CARD_SCALE_ATTACK);
+                            .forEach(target -> target.uiCard.setPotentialTarget(true));
+                    c.setOrderingAttack(true);
                 }
                 break;
             default:
@@ -427,18 +428,16 @@ public class UIBoard extends UIBox {
                 this.ds.sendPlayerAction(
                         new OrderAttackAction(this.attackingMinion.getMinion().realMinion(), c.getMinion().realMinion())
                                 .toString());
-                c.setScale(CARD_SCALE_BOARD);
             }
-            this.b.getBoardObjects(this.b.localteam * -1, true, true, false, true).stream()
-                    .filter(target -> target instanceof Minion && this.attackingMinion.getMinion().realMinion().getAttackableTargets().contains(((Minion) target).realMinion()))
-                    .forEach(target -> target.uiCard.setScale(CARD_SCALE_BOARD));
-            this.attackingMinion.setScale(CARD_SCALE_BOARD);
+            this.b.getBoardObjects(this.b.localteam * -1, true, true, false, true)
+                    .forEach(target -> target.uiCard.setPotentialTarget(false));
+            this.attackingMinion.setOrderingAttack(false);
             this.attackingMinion = null;
         } else if (this.draggingUnleash) { // in middle of unleashing
             // preselected card is unleashpower
-            this.preSelectedCard.setScale(CARD_SCALE_DEFAULT);
+            this.preSelectedCard.setTargeting(false);
             this.b.getMinions(this.b.localteam, false, true)
-                    .forEach(m -> m.uiCard.setScale(CARD_SCALE_BOARD));
+                    .forEach(m -> m.uiCard.setPotentialTarget(false));
             this.draggingUnleash = false;
             if (c != null && c.getCard() instanceof Minion && c.getCard().team == this.b.localteam
                     && this.b.getPlayer(this.b.localteam).canUnleashCard(c.getCard())) {
@@ -448,6 +447,9 @@ public class UIBoard extends UIBox {
             if (this.draggingCard.getRelPos().y < CARD_PLAY_Y
                     && this.b.realBoard.getPlayer(this.b.localteam).canPlayCard(this.draggingCard.getCard().realCard)) {
                 this.playingCard = this.draggingCard;
+                this.playingCard.setTargeting(true);
+                this.playingCard.setPos(TARGETING_CARD_POS, 0.999);
+                this.playingCard.setZ(CARD_ABILITY_Z);
                 this.selectedCard = null;
                 // this.resolveNoBattlecryTarget();
                 this.animateTargets(Target.firstUnsetTarget(this.getCurrentTargetingTargetList()), true);
@@ -483,10 +485,11 @@ public class UIBoard extends UIBox {
         Target.resetList(currList);
         Target.resetList(this.getCurrentTargetingRealTargetList());
         if (this.playingCard != null) {
+            this.playingCard.setTargeting(false);
             this.playingCard = null;
         }
         if (this.unleashingMinion != null) {
-            this.unleashingMinion.setScale(CARD_SCALE_BOARD);
+            this.unleashingMinion.setTargeting(false);
             this.unleashingMinion = null;
         }
     }
@@ -569,7 +572,8 @@ public class UIBoard extends UIBox {
         Target.resetList(c.getMinion().getUnleashTargets());
         Target.resetList(c.getMinion().realMinion().getUnleashTargets());
         this.animateTargets(Target.firstUnsetTarget(c.getMinion().getUnleashTargets()), true);
-        c.setScale(CARD_SCALE_ABILITY * CARD_SCALE_BOARD);
+        c.setZ(CARD_ABILITY_Z);
+        c.setTargeting(true);
         this.finishTargeting();
     }
 
@@ -588,8 +592,7 @@ public class UIBoard extends UIBox {
         if (t != null) {
             List<UICard> tc = this.getTargetableCards(t);
             for (UICard c : tc) {
-                c.setScale(activate ? CARD_SCALE_TARGET
-                        : (c.getCard().status.equals(CardStatus.HAND) ? CARD_SCALE_HAND : CARD_SCALE_BOARD));
+                c.setPotentialTarget(activate);
                 if (c.getCard().status.equals(CardStatus.LEADER) && activate) {
                     this.expandHand = false;
                 } else if (c.getCard().status.equals(CardStatus.HAND) && activate) {

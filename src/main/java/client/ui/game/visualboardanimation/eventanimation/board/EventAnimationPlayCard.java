@@ -5,6 +5,7 @@ import org.newdawn.slick.geom.*;
 
 import client.ui.game.*;
 import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
+import server.card.Spell;
 import server.event.*;
 
 public class EventAnimationPlayCard extends EventAnimation<EventPlayCard> {
@@ -16,10 +17,14 @@ public class EventAnimationPlayCard extends EventAnimation<EventPlayCard> {
     public void onStart() {
         UICard uic = this.event.c.uiCard;
         this.useCardInAnimation(this.event.c.uiCard);
-        uic.setScale(UIBoard.CARD_SCALE_PLAY);
+        uic.setScale(UICard.SCALE_PLAY);
         uic.setPos(new Vector2f(0, 0), 0.999f);
         uic.setZ(UIBoard.CARD_VISUALPLAYING_Z);
         uic.draggable = false;
+        if (this.event.c instanceof Spell) {
+            // we're about to destroy this, so don't hand control back over to the uiboard
+            uic.useInAnimation(); // unmactched, will never become unused
+        }
     }
 
     @Override

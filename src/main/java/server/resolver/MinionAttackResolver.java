@@ -21,6 +21,8 @@ public class MinionAttackResolver extends Resolver {
 
     @Override
     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+        EventGroup attackOrdered = new EventGroup(EventGroupType.MINIONATTACKORDER, List.of(this.m1, this.m2));
+        b.pushEventGroup(attackOrdered);
         b.processEvent(rl, el, new EventMinionAttack(this.m1, this.m2));
         if (this.m1.alive) {
             b.pushEventGroup(new EventGroup(EventGroupType.ONATTACK, List.of(this.m1)));
@@ -59,7 +61,8 @@ public class MinionAttackResolver extends Resolver {
             this.resolve(b, rl, el, d2);
             destroyed.addAll(d1.destroyed);
             destroyed.addAll(d2.destroyed);
-            b.popEventGroup();
+            b.popEventGroup(); // minion combat
+            b.popEventGroup(); // attack order
             if (this.m1.finalStatEffects.getStat(EffectStats.BANE) > 0 && !(this.m2 instanceof Leader)
                     && !destroyed.contains(this.m2)) {
                 destroyed.add(this.m2);
@@ -69,6 +72,8 @@ public class MinionAttackResolver extends Resolver {
                 destroyed.add(this.m1);
             }
             this.resolve(b, rl, el, new DestroyResolver(destroyed));
+        } else {
+            b.popEventGroup(); // attack order
         }
     }
 }

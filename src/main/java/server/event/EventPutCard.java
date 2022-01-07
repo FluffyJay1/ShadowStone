@@ -9,7 +9,7 @@ import server.card.effect.*;
 public class EventPutCard extends Event {
     // for effects that put specific cards in hand or just draw cards
     public static final int ID = 12;
-    public final List<Card> c;
+    public final List<Card> cards;
     public final List<Integer> pos; // pos == -1 means last
     public final CardStatus status;
     final int targetTeam;
@@ -23,15 +23,15 @@ public class EventPutCard extends Event {
     private List<Integer> prevAttacks;
     private List<Boolean> prevSick;
     private List<Boolean> oldAlive;
-    private List<Boolean> attempted; // i.e. removed from original position
-    private List<Boolean> successful; // i.e. added to intended position i.e. not killed
+    public List<Boolean> attempted; // i.e. removed from original position
+    public List<Boolean> successful; // i.e. added to intended position i.e. not killed
     final List<BoardObject> cardsEnteringPlay = new ArrayList<>();
     final List<BoardObject> cardsLeavingPlay = new ArrayList<>();
     List<Card> markedForDeath;
 
     public EventPutCard(List<Card> c, CardStatus status, int team, List<Integer> pos, List<Card> markedForDeath) {
         super(ID);
-        this.c = c;
+        this.cards = c;
         this.status = status;
         this.targetTeam = team;
         this.pos = pos;
@@ -47,20 +47,20 @@ public class EventPutCard extends Event {
         if (this.markedForDeath == null) {
             this.markedForDeath = new ArrayList<>();
         }
-        this.prevStatus = new ArrayList<>(this.c.size());
-        this.prevEffects = new ArrayList<>(this.c.size());
-        this.prevMute = new ArrayList<>(this.c.size());
-        this.prevPos = new ArrayList<>(this.c.size());
-        this.prevLastBoardPos = new ArrayList<>(this.c.size());
-        this.prevTeam = new ArrayList<>(this.c.size());
-        this.prevHealth = new ArrayList<>(this.c.size());
-        this.prevAttacks = new ArrayList<>(this.c.size());
-        this.prevSick = new ArrayList<>(this.c.size());
-        this.oldAlive = new ArrayList<>(this.c.size());
-        this.attempted = new ArrayList<>(this.c.size());
-        this.successful = new ArrayList<>(this.c.size());
-        for (int i = 0; i < this.c.size(); i++) {
-            Card card = this.c.get(i);
+        this.prevStatus = new ArrayList<>(this.cards.size());
+        this.prevEffects = new ArrayList<>(this.cards.size());
+        this.prevMute = new ArrayList<>(this.cards.size());
+        this.prevPos = new ArrayList<>(this.cards.size());
+        this.prevLastBoardPos = new ArrayList<>(this.cards.size());
+        this.prevTeam = new ArrayList<>(this.cards.size());
+        this.prevHealth = new ArrayList<>(this.cards.size());
+        this.prevAttacks = new ArrayList<>(this.cards.size());
+        this.prevSick = new ArrayList<>(this.cards.size());
+        this.oldAlive = new ArrayList<>(this.cards.size());
+        this.attempted = new ArrayList<>(this.cards.size());
+        this.successful = new ArrayList<>(this.cards.size());
+        for (int i = 0; i < this.cards.size(); i++) {
+            Card card = this.cards.get(i);
             Board b = card.board;
             this.prevStatus.add(card.status);
             this.prevEffects.add(new LinkedList<>());
@@ -148,9 +148,10 @@ public class EventPutCard extends Event {
 
     @Override
     public void undo() {
-        for (int i = this.c.size() - 1; i >= 0; i--) {
+        for (int i = this.cards.size() - 1; i >= 0; i--) {
+            Card card = this.cards.get(i);
+            card.alive = this.oldAlive.get(i);
             if (this.successful.get(i)) {
-                Card card = this.c.get(i);
                 Player p = card.board.getPlayer(card.team); // current player
                 switch (card.status) { // removing from
                     case HAND -> p.getHand().remove(card);
@@ -175,7 +176,6 @@ public class EventPutCard extends Event {
                 }
                 card.team = this.prevTeam.get(i);
                 card.status = this.prevStatus.get(i);
-                card.alive = this.oldAlive.get(i);
                 p = card.board.getPlayer(card.team); // old player
                 switch (this.prevStatus.get(i)) { // adding to
                     case HAND -> p.getHand().add(this.prevPos.get(i), card);
@@ -192,9 +192,9 @@ public class EventPutCard extends Event {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.id).append(" ").append(this.c.size()).append(" ").append(this.status.toString()).append(" ").append(this.targetTeam).append(" ");
-        for (int i = 0; i < this.c.size(); i++) {
-            builder.append(this.c.get(i).toReference()).append(this.pos.get(i)).append(" ");
+        builder.append(this.id).append(" ").append(this.cards.size()).append(" ").append(this.status.toString()).append(" ").append(this.targetTeam).append(" ");
+        for (int i = 0; i < this.cards.size(); i++) {
+            builder.append(this.cards.get(i).toReference()).append(this.pos.get(i)).append(" ");
         }
         return builder.append("\n").toString();
     }
