@@ -48,6 +48,7 @@ public abstract class EffectAura extends Effect {
         this.affectTeam = affectTeam;
         this.affectBoard = affectBoard;
         this.affectHand = affectHand;
+        effectToApply.auraSource = this;
         this.effectToApply = effectToApply;
     }
 

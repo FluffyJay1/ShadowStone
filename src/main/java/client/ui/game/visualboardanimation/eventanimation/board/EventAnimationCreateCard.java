@@ -128,8 +128,14 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
                     uic.setVisible(false);
                     this.firstFailedPos = this.event.cardpos.get(i);
                     seenFirstFailed = true;
-                    this.postTime = 0.75; // lol changing postTime in the middle of animating
-                    this.scheduleAnimation(false, 0.33, this::showFailedSummon);
+                    if (i == 0) {
+                        // no success, no delay
+                        this.postTime = 0.5;
+                        this.showFailedSummon();
+                    } else {
+                        this.postTime = 0.75; // lol changing postTime in the middle of animating
+                        this.scheduleAnimation(false, 0.33, this::showFailedSummon);
+                    }
                 } else {
                     this.visualBoard.uiBoard.removeUICard(uic);
                 }

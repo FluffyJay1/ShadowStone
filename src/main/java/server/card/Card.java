@@ -109,6 +109,9 @@ public abstract class Card implements Indexable {
         if (e instanceof EffectAura) {
             this.auras.add((EffectAura) e);
         }
+        if (e.auraSource != null) {
+            e.auraSource.currentActiveEffects.put(this, e);
+        }
         this.updateEffectStats(basic);
     }
 
@@ -124,6 +127,9 @@ public abstract class Card implements Indexable {
                 this.removedEffects.add(e);
             } else if (e instanceof EffectAura) {
                 this.auras.remove((EffectAura) e);
+            }
+            if (e.auraSource != null) {
+                e.auraSource.currentActiveEffects.remove(this);
             }
             e.removed = true;
             if (e.onListenEvent(null) != null) {

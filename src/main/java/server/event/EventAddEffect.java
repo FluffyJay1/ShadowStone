@@ -18,7 +18,6 @@ public class EventAddEffect extends Event {
     private List<Integer> oldHealth;
     private List<Boolean> oldAlive;
     public final List<Card> markedForDeath;
-    public EffectAura auraSource;
 
     public EventAddEffect(List<? extends Card> c, Effect e, List<Card> markedForDeath) {
         super(ID);
@@ -26,11 +25,6 @@ public class EventAddEffect extends Event {
         this.e = e;
         this.markedForDeath = Objects.requireNonNullElseGet(markedForDeath, ArrayList::new);
         this.effects = new ArrayList<>();
-    }
-
-    public EventAddEffect(List<? extends Card> c, Effect e, List<Card> markedForDeath, EffectAura auraSource) {
-        this(c, e, markedForDeath);
-        this.auraSource = auraSource;
     }
 
     @Override
@@ -48,9 +42,6 @@ public class EventAddEffect extends Event {
             }
             c.addEffect(false, clonede);
             this.effects.add(clonede);
-            if (this.auraSource != null) {
-                this.auraSource.currentActiveEffects.put(c, clonede);
-            }
             this.oldHealth.add(0);
             this.oldAlive.add(c.alive);
             if (c instanceof Minion) {
@@ -84,9 +75,6 @@ public class EventAddEffect extends Event {
         for (int i = 0; i < this.c.size(); i++) {
             Card c = this.c.get(i);
             c.removeEffect(this.effects.get(i), true);
-            if (this.auraSource != null) {
-                this.auraSource.currentActiveEffects.remove(c);
-            }
             if (c instanceof Minion) {
                 Minion m = ((Minion) c);
                 m.health = this.oldHealth.get(i);
@@ -102,7 +90,6 @@ public class EventAddEffect extends Event {
         for (Card card : this.c) {
             builder.append(card.toReference());
         }
-        builder.append(Effect.referenceOrNull(this.auraSource));
         builder.append("\n");
         return builder.toString();
     }
@@ -115,8 +102,7 @@ public class EventAddEffect extends Event {
             Card card = Card.fromReference(b, st);
             c.add(card);
         }
-        EffectAura auraSource = (EffectAura) Effect.fromReference(b, st);
-        return new EventAddEffect(c, e, null, auraSource);
+        return new EventAddEffect(c, e, null);
     }
 
     @Override

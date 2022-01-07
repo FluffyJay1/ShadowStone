@@ -37,6 +37,8 @@ public class Effect implements Indexable, Cloneable {
      */
     public List<Target> battlecryTargets = new LinkedList<>(), unleashTargets = new LinkedList<>();
 
+    public EffectAura auraSource;
+
     public Effect() {
         this.description = "";
     }
@@ -193,7 +195,7 @@ public class Effect implements Indexable, Cloneable {
 
     @Override
     public String toString() {
-        return this.getClass().getName() + " " + Card.referenceOrNull(this.owner) + this.description + Game.STRING_END
+        return this.getClass().getName() + " " + Card.referenceOrNull(this.owner) + Effect.referenceOrNull(this.auraSource) + this.description + Game.STRING_END
                 + " " + this.mute + " " + this.extraStateString() + this.effectStats.toString();
     }
 
@@ -202,6 +204,7 @@ public class Effect implements Indexable, Cloneable {
             String className = st.nextToken();
             Class<? extends Effect> c = Class.forName(className).asSubclass(Effect.class);
             Card owner = Card.fromReference(b, st);
+            EffectAura aura = (EffectAura) Effect.fromReference(b, st);
             String description = st.nextToken(Game.STRING_END).trim();
             st.nextToken(" \n"); // THANKS STRING TOKENIZER
             boolean mute = Boolean.parseBoolean(st.nextToken());
@@ -209,6 +212,7 @@ public class Effect implements Indexable, Cloneable {
             ef = c.getDeclaredConstructor().newInstance();
             ef.description = description;
             ef.owner = owner;
+            ef.auraSource = aura;
             ef.mute = mute;
             ef.loadExtraState(b, st);
             ef.effectStats = EffectStats.fromString(st);
@@ -257,6 +261,7 @@ public class Effect implements Indexable, Cloneable {
         return effect == null ? "null " : effect.toReference();
     }
 
+    // handles the null case too
     public static Effect fromReference(Board b, StringTokenizer st) {
         Card c = Card.fromReference(b, st);
         if (c == null) {

@@ -297,7 +297,7 @@ public class Board {
             newAuras.retainAll(oldAuras);
             for (EffectAura aura : addedAuras) {
                 Set<Card> currentAffected = aura.findAffectedCards();
-                rl.add(new AddEffectResolver(new ArrayList<>(currentAffected), aura.effectToApply, aura));
+                rl.add(new AddEffectResolver(new ArrayList<>(currentAffected), aura.effectToApply));
                 aura.lastCheckedAffectedCards = currentAffected;
             }
             for (EffectAura aura : removedAuras) {
@@ -305,7 +305,7 @@ public class Board {
                         .map(unaffected -> aura.currentActiveEffects.get(unaffected))
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList());
-                rl.add(new RemoveEffectResolver(effectsToRemove, aura));
+                rl.add(new RemoveEffectResolver(effectsToRemove));
                 aura.lastCheckedAffectedCards.clear();
             }
             for (EffectAura aura : newAuras) {
@@ -321,7 +321,7 @@ public class Board {
                             Set<Card> newAffected = new HashSet<>(shouldApply);
                             newAffected.removeAll(currentApplied);
                             if (!newAffected.isEmpty()) {
-                                this.resolve(b, rl, el, new AddEffectResolver(new ArrayList<>(newAffected), aura.effectToApply, aura));
+                                this.resolve(b, rl, el, new AddEffectResolver(new ArrayList<>(newAffected), aura.effectToApply));
                             }
                             Set<Card> newUnaffected = new HashSet<>(currentApplied);
                             newUnaffected.removeAll(shouldApply);
@@ -329,7 +329,7 @@ public class Board {
                                 List<Effect> effectsToRemove = newUnaffected.stream()
                                         .map(unaffected -> aura.currentActiveEffects.get(unaffected))
                                         .collect(Collectors.toList());
-                                this.resolve(b, rl, el, new RemoveEffectResolver(effectsToRemove, aura));
+                                this.resolve(b, rl, el, new RemoveEffectResolver(effectsToRemove));
                             }
                         }
                     });
