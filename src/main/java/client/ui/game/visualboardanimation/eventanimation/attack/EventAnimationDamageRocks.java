@@ -3,6 +3,7 @@ package client.ui.game.visualboardanimation.eventanimation.attack;
 import client.Game;
 import client.VisualBoard;
 import client.ui.Animation;
+import client.ui.game.UIBoard;
 import client.ui.interpolation.realvalue.ConstantInterpolation;
 import client.ui.interpolation.realvalue.LinearInterpolation;
 import client.ui.interpolation.realvalue.QuadraticInterpolationA;
@@ -55,7 +56,7 @@ public class EventAnimationDamageRocks extends EventAnimationDamage {
     @Override
     public void onProcess() {
         for (Minion m : this.event.m) {
-            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getAbsPos(), EMISSION_STRATEGY.get());
+            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getAbsPos(), UIBoard.PARTICLE_Z_BOARD, EMISSION_STRATEGY.get());
         }
     }
 

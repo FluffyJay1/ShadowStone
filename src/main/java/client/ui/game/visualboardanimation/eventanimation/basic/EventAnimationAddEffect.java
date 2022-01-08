@@ -18,7 +18,7 @@ public class EventAnimationAddEffect extends EventAnimation<EventAddEffect> {
     public void init(VisualBoard b, EventAddEffect event) {
         super.init(b, event);
         for (Card c : event.c) {
-            if (!c.status.equals(CardStatus.GRAVEYARD) && !c.status.equals(CardStatus.DECK)) {
+            if (!c.status.equals(CardStatus.GRAVEYARD)) {
                 this.postTime = 0.3; // if we can see one of them, we animate
                 break;
             }

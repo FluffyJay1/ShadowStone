@@ -1,6 +1,16 @@
 package client.ui.game.visualboardanimation.eventanimation.board;
 
 import client.VisualBoard;
+import client.ui.Animation;
+import client.ui.interpolation.realvalue.ConstantInterpolation;
+import client.ui.interpolation.realvalue.LinearInterpolation;
+import client.ui.interpolation.realvalue.QuadraticInterpolationA;
+import client.ui.interpolation.realvalue.QuadraticInterpolationB;
+import client.ui.particle.ParticleSystemCommon;
+import client.ui.particle.strategy.EmissionStrategy;
+import client.ui.particle.strategy.meta.ScaledEmissionStrategy;
+import client.ui.particle.strategy.property.*;
+import client.ui.particle.strategy.timing.InstantEmissionTimingStrategy;
 import org.newdawn.slick.*;
 
 import client.ui.game.*;
@@ -9,10 +19,29 @@ import org.newdawn.slick.geom.Vector2f;
 import server.card.*;
 import server.event.*;
 
+import java.util.List;
+import java.util.function.Supplier;
+
 public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
     private static final int EDGE_PADDING = 1;
     private static final float TEAM_OFFSET = 0.06f;
     private static final float DECK_ALIGN_WEIGHT = 0.9f; //0 means left, 1 means right
+
+    private static final Supplier<EmissionStrategy> SPARKLE_EMISSION_STRATEGY = () -> new EmissionStrategy(
+            new InstantEmissionTimingStrategy(4),
+            new ComposedEmissionPropertyStrategy(List.of(
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/sparkle.png", new Vector2f(1, 1), 0, 0)),
+                    new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.2, 0.4)),
+                    new ConstantEmissionPropertyStrategy(
+                            Graphics.MODE_ADD, 0.2, new Vector2f(0, 0),
+                            new QuadraticInterpolationB(0.2, 0, 0),
+                            new LinearInterpolation(8, 1)
+                    ),
+                    new CirclePositionEmissionPropertyStrategy(50),
+                    new RadialVelocityEmissionPropertyStrategy(new LinearInterpolation(100, 200)),
+                    new RandomAngleEmissionPropertyStrategy(new LinearInterpolation(-1000, 1000))
+            ))
+    );
     public EventAnimationPutCard() {
         super(0, 0.5);
     }
@@ -39,7 +68,7 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
                 UICard uic = c.uiCard;
                 this.useCardInAnimation(uic);
                 uic.setScale(UICard.SCALE_MOVE);
-                uic.setZ(UIBoard.CARD_VISUALPLAYING_Z);
+                uic.setZ(UICard.Z_MOVE);
                 uic.setFlippedOver(false);
                 // fan the cards between [-0.5, 0.5]
                 float alignWeight = 0.5f;
@@ -56,6 +85,16 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
 
     @Override
     public void onProcess() {
+        if (this.event.status.equals(CardStatus.HAND) || this.event.status.equals(CardStatus.DECK)) {
+            for (int i = 0; i < this.event.cards.size(); i++) {
+                Card c = this.event.cards.get(i);
+                UICard uic = c.uiCard;
+                if (this.event.successful.get(i)) {
+                    EmissionStrategy strategy = new ScaledEmissionStrategy(SPARKLE_EMISSION_STRATEGY.get(), uic.getScale());
+                    this.visualBoard.uiBoard.addParticleSystem(uic.getAbsPos(), UIBoard.PARTICLE_Z_SPECIAL, strategy);
+                }
+            }
+        }
     }
 
     private void sendCards() {

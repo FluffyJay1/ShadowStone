@@ -19,7 +19,7 @@ public class EventAnimationPlayCard extends EventAnimation<EventPlayCard> {
         this.useCardInAnimation(this.event.c.uiCard);
         uic.setScale(UICard.SCALE_PLAY);
         uic.setPos(new Vector2f(0, 0), 0.999f);
-        uic.setZ(UIBoard.CARD_VISUALPLAYING_Z);
+        uic.setZ(UICard.Z_MOVE);
         uic.draggable = false;
         if (this.event.c instanceof Spell) {
             // we're about to destroy this, so don't hand control back over to the uiboard

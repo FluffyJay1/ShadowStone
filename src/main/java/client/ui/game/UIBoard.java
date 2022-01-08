@@ -34,8 +34,7 @@ public class UIBoard extends UIBox {
     public static final double HAND_X_SCALE_LOCAL = 0.22, HAND_X_SCALE_ENEMY = 0.26, HAND_X_SCALE_EXPAND_LOCAL = 0.36;
     public static final double CARD_PLAY_Y = 0.2, HAND_EXPAND_Y = 0.30;
     public static final double DECK_X = 0.35, DECK_Y_LOCAL = 0.2, DECK_Y_ENEMY = -0.2;
-    public static final int CARD_DEFAULT_Z = 0, CARD_HAND_Z = 2, CARD_BOARD_Z = 0, CARD_ABILITY_Z = 4,
-            CARD_VISUALPLAYING_Z = 4, CARD_DRAGGING_Z = 3, PARTICLE_Z = 1;
+    public static final int PARTICLE_Z_BOARD = 1, PARTICLE_Z_SPECIAL = 5;
     public static final Vector2f TARGETING_CARD_POS = new Vector2f(-0.4f, -0.22f);
 
     private static final Supplier<EmissionStrategy> DUST_EMISSION_STRATEGY = () -> new EmissionStrategy(
@@ -138,9 +137,6 @@ public class UIBoard extends UIBox {
                     uic.draggable = false;
                     uic.setFlippedOver(false);
                     uic.setVisible(true);
-                    if (uic != this.unleashingMinion && uic != this.attackingMinion) {
-                        uic.setZ(CARD_BOARD_Z);
-                    }
                     // exclude cards that haven't been created yet
                     uic.setPos(this.getBoardPosFor(bo.getIndex(), team, bos.size()), 0.99);
                 }
@@ -152,9 +148,6 @@ public class UIBoard extends UIBox {
                     uic.draggable = false;
                     uic.setFlippedOver(false);
                     uic.setVisible(true);
-                    if (uic != this.unleashingMinion && uic != this.attackingMinion) {
-                        uic.setZ(CARD_BOARD_Z);
-                    }
                     uic.setPos(
                             // oh my this formatting
                             new Vector2f(0,
@@ -169,7 +162,6 @@ public class UIBoard extends UIBox {
                     uic.draggable = false;
                     uic.setFlippedOver(false);
                     uic.setVisible(true);
-                    uic.setZ(CARD_DEFAULT_Z);
                     uic.setPos(new Vector2f((float) UNLEASHPOWER_X,
                                     (float) (team == this.b.localteam ? UNLEASHPOWER_Y_LOCAL : UNLEASHPOWER_Y_ENEMY)),
                             1);
@@ -179,9 +171,6 @@ public class UIBoard extends UIBox {
             for (Card c : hand) {
                 UICard uic = c.uiCard;
                 if (!uic.isBeingAnimated()) {
-                    if (uic != this.draggingCard) {
-                        uic.setZ(CARD_HAND_Z);
-                    }
                     if (team == this.b.localteam && !this.b.disableInput) {
                         uic.draggable = true;
                     }
@@ -220,7 +209,6 @@ public class UIBoard extends UIBox {
                 if (!uic.isBeingAnimated()) {
                     uic.setFlippedOver(true);
                     uic.setVisible(true);
-                    uic.setZ(CARD_DEFAULT_Z);
                     uic.setPos(new Vector2f((float) DECK_X, (float) (team == this.b.localteam ? DECK_Y_LOCAL : DECK_Y_ENEMY)), 0.99);
                 }
             }
@@ -366,7 +354,7 @@ public class UIBoard extends UIBox {
         this.preSelectedCard = null;
         this.expandHand = x > 800 && y > (HAND_EXPAND_Y + 0.5) * Config.WINDOW_HEIGHT;
         this.handleTargeting(null);
-        this.addParticleSystem(new Vector2f(x, y), DUST_EMISSION_STRATEGY.get());
+        this.addParticleSystem(new Vector2f(x, y), UIBoard.PARTICLE_Z_BOARD, DUST_EMISSION_STRATEGY.get());
     }
 
     public void mousePressedCard(UICard c, int button, int x, int y) {
@@ -382,6 +370,7 @@ public class UIBoard extends UIBox {
                     if (this.b.realBoard.getPlayer(this.b.localteam).canPlayCard(c.getCard().realCard)
                             && !this.b.disableInput) {
                         this.draggingCard = c;
+                        c.setDragging(true);
                     }
                     this.expandHand = true;
                 }
@@ -449,12 +438,12 @@ public class UIBoard extends UIBox {
                 this.playingCard = this.draggingCard;
                 this.playingCard.setTargeting(true);
                 this.playingCard.setPos(TARGETING_CARD_POS, 0.999);
-                this.playingCard.setZ(CARD_ABILITY_Z);
                 this.selectedCard = null;
                 // this.resolveNoBattlecryTarget();
                 this.animateTargets(Target.firstUnsetTarget(this.getCurrentTargetingTargetList()), true);
                 this.playingX = this.draggingCard.getRelPos().x;
             }
+            this.draggingCard.setDragging(false);
             this.draggingCard = null;
         }
         this.finishTargeting();
@@ -572,7 +561,6 @@ public class UIBoard extends UIBox {
         Target.resetList(c.getMinion().getUnleashTargets());
         Target.resetList(c.getMinion().realMinion().getUnleashTargets());
         this.animateTargets(Target.firstUnsetTarget(c.getMinion().getUnleashTargets()), true);
-        c.setZ(CARD_ABILITY_Z);
         c.setTargeting(true);
         this.finishTargeting();
     }
@@ -602,9 +590,9 @@ public class UIBoard extends UIBox {
         }
     }
 
-    public ParticleSystem addParticleSystem(Vector2f absPos, EmissionStrategy es) {
+    public ParticleSystem addParticleSystem(Vector2f absPos, int z, EmissionStrategy es) {
         ParticleSystem ps = new ParticleSystem(this.getUI(), this.getLocalPosOfAbs(absPos), es);
-        ps.setZ(PARTICLE_Z);
+        ps.setZ(z);
         this.addChild(ps);
         return ps;
     }

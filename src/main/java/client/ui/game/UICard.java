@@ -33,6 +33,8 @@ public class UICard extends UIBox {
     public static final double SCALE_DEFAULT = 1, SCALE_HAND = 0.75, SCALE_HAND_EXPAND = 1.2,
             SCALE_BOARD = 1, SCALE_TARGETING = 1.3, SCALE_POTENTIAL_TARGET = 1.15, SCALE_ORDERING_ATTACK = 1.3,
             SCALE_COMBAT = 1.2, SCALE_PLAY = 2.5, SCALE_MOVE = 2;
+    public static final int Z_DEFAULT = 0, Z_HAND = 2, Z_BOARD = 0, Z_TARGETING = 4,
+            Z_MOVE = 4, Z_DRAGGING = 3;
     public static final String CARD_CLICK = "cardclick";
     private Card card;
     private Image cardImage, subImage;
@@ -44,6 +46,7 @@ public class UICard extends UIBox {
     private boolean potentialTarget;
     private boolean orderingAttack;
     private boolean combat;
+    private boolean dragging;
 
     public UICard(UI ui, UIBoard uib, Card c) {
         super(ui, new Vector2f(), CARD_DIMENSIONS, "");
@@ -60,7 +63,6 @@ public class UICard extends UIBox {
             return;
         }
         this.uib.mousePressedCard(this, button, x, y);
-        this.setZ(UIBoard.CARD_DRAGGING_Z);
     }
 
     @Override
@@ -122,14 +124,24 @@ public class UICard extends UIBox {
         this.combat = combat;
     }
 
-    public void updateScale() {
+    public void setDragging(boolean dragging) {
+        this.dragging = dragging;
+    }
+
+    public void updateCardAnimation() {
         double scale = switch (this.card.status) {
-            case BOARD -> SCALE_BOARD;
+            case BOARD, LEADER -> SCALE_BOARD;
             case HAND -> SCALE_HAND;
             default -> SCALE_DEFAULT;
         };
+        int z = switch (this.card.status) {
+            case BOARD, LEADER -> Z_BOARD;
+            case HAND -> Z_HAND;
+            default -> Z_DEFAULT;
+        };
         if (this.targeting) {
             scale = SCALE_TARGETING;
+            z = Z_TARGETING;
         } else if (this.card.status.equals(CardStatus.HAND) && this.card.team == this.uib.b.localteam && this.uib.expandHand) {
             scale = SCALE_HAND_EXPAND;
         }
@@ -142,14 +154,18 @@ public class UICard extends UIBox {
         if (this.combat) {
             scale *= SCALE_COMBAT;
         }
+        if (this.dragging) {
+            z = Math.max(z, Z_DRAGGING);
+        }
         this.setScale(scale);
+        this.setZ(z);
     }
 
     @Override
     public void update(double frametime) {
         super.update(frametime);
         if (!this.isBeingAnimated()) {
-            this.updateScale();
+            this.updateCardAnimation();
         }
     }
 

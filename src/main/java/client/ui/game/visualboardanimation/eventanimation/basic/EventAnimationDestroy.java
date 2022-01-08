@@ -1,5 +1,6 @@
 package client.ui.game.visualboardanimation.eventanimation.basic;
 
+import client.ui.game.UIBoard;
 import client.ui.game.UICard;
 import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
 import client.ui.particle.ParticleSystemCommon;
@@ -18,7 +19,7 @@ public class EventAnimationDestroy extends EventAnimation<EventDestroy> {
             Card c = this.event.cards.get(i);
             if (this.event.successful.get(i)) {
                 UICard uic = c.uiCard;
-                this.visualBoard.uiBoard.addParticleSystem(uic.getAbsPos(), new ScaledEmissionStrategy(ParticleSystemCommon.DESTROY.get(), uic.getScale()));
+                this.visualBoard.uiBoard.addParticleSystem(uic.getAbsPos(), UIBoard.PARTICLE_Z_BOARD, new ScaledEmissionStrategy(ParticleSystemCommon.DESTROY.get(), uic.getScale()));
             }
         }
     }
