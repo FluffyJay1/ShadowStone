@@ -29,6 +29,8 @@ public class Tooltip {
             "Deal X damage to a random enemy minion. If there are no enemy minions in play, deal X damage to the enemy leader.");
     public static final Tooltip AURA = new Tooltip("Aura",
             "<b>Aura</b> effects grant effects to other cards while the source of the aura is in play.");
+    public static final Tooltip BANISH = new Tooltip("Banish",
+            "Remove a card without destroying it. Will not trigger <b>Last Words</b>.", Tooltip.LASTWORDS);
 
     public final String name;
     public final String description;

@@ -29,7 +29,7 @@ public class Curate extends Minion {
                     @Override
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
                         // TODO Auto-generated method stub
-                        List<Card> targets = battlecryTargets.get(0).getTargets();
+                        List<Card> targets = battlecryTargets.get(0).getTargetedCards();
                         if (!targets.isEmpty()) {
                             Minion target = (Minion) targets.get(0);
                             this.resolve(b, rl, el, new RestoreResolver(effect, target, 5));

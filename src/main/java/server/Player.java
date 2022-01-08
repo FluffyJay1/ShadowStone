@@ -17,6 +17,7 @@ public class Player {
     protected final PositionedList<Card> hand;
     protected final PositionedList<BoardObject> playArea; // things on board
     protected final PositionedList<Card> graveyard;
+    protected final PositionedList<Card> banished;
     public final int team;
     public int mana;
     public int maxmana;
@@ -34,6 +35,7 @@ public class Player {
         this.hand = new PositionedList<>(new ArrayList<>());
         this.playArea = new PositionedList<>(new ArrayList<>());
         this.graveyard = new PositionedList<>(new ArrayList<>());
+        this.banished = new PositionedList<>(new ArrayList<>());
         this.mana = 0;
         this.maxmana = 3;
         this.maxmaxmana = 10;
@@ -55,6 +57,10 @@ public class Player {
 
     public List<Card> getGraveyard() {
         return this.graveyard;
+    }
+
+    public List<Card> getBanished() {
+        return this.banished;
     }
 
     public Leader getLeader() {
@@ -87,6 +93,7 @@ public class Player {
             case LEADER -> List.of(this.getLeader());
             case UNLEASHPOWER -> List.of(this.getUnleashPower());
             case GRAVEYARD -> this.getGraveyard();
+            case BANISHED -> this.getBanished();
         };
     }
 

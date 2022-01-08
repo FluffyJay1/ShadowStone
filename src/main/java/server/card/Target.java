@@ -39,10 +39,10 @@ public class Target implements Cloneable {
     }
 
     /*
-     * TODO: this is a horrible name. Returns the list of cards that we have
-     * selected to be targeted by this Target object
+     * Returns the list of cards that we have selected to be targeted by this
+     * Target object
      */
-    public List<Card> getTargets() {
+    public List<Card> getTargetedCards() {
         return this.targets;
     }
 
@@ -88,8 +88,8 @@ public class Target implements Cloneable {
     // if the maximum number of targets is selected, or all targetable cards
     // have been targeted
     public boolean isFullyTargeted(Board b) {
-        return this.getTargets().size() >= this.maxtargets
-                || this.getTargets().size() == b.getTargetableCards(this).size();
+        return this.getTargetedCards().size() >= this.maxtargets
+                || this.getTargetedCards().size() == b.getTargetableCards(this).size();
     }
 
     // when the target is deemed ready for the first time, we assume it stays

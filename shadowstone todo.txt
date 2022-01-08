@@ -1,4 +1,3 @@
-banish special animations
 ai behaving weirdly while ward is up
 placeholders for playing card positions when u chain them
 AI should be able to place minions differently

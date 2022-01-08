@@ -25,7 +25,6 @@ public class Board {
     // localteam is the team of the player, i.e. at the bottom of the screen
     public int currentPlayerTurn, localteam, winner;
 
-    public PositionedList<Card> banished;
     private List<Resolver> resolveList;
 
     // the hierarchy of groups we are under
@@ -46,7 +45,6 @@ public class Board {
         this.player1 = new Player(this, 1);
         this.player2 = new Player(this, -1);
         this.resolveList = new LinkedList<>();
-        this.banished = new PositionedList<>(new ArrayList<>());
         this.output = new StringBuilder();
         this.history = new StringBuilder();
         this.eventGroups = new LinkedList<>();
@@ -126,6 +124,7 @@ public class Board {
         ret.addAll(this.getPlayerCards(0, Player::getHand));
         ret.addAll(this.getPlayerCards(0, Player::getDeck));
         ret.addAll(this.getPlayerCards(0, Player::getGraveyard));
+        ret.addAll(this.getPlayerCards(0, Player::getBanished));
         ret.addAll(this.getPlayerCard(0, Player::getUnleashPower));
         ret.addAll(this.getPlayerCard(0, Player::getLeader));
         return ret;

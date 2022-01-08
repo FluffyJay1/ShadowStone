@@ -71,5 +71,6 @@ public class EventAnimationFactory {
         put(EventSetEffectStats.class, EventAnimationSetEffectStats.class);
         put(EventCreateCard.class, EventAnimationCreateCard.class);
         put(EventDestroy.class, EventAnimationDestroy.class);
+        put(EventBanish.class, EventAnimationBanish.class);
     }};
 }

@@ -30,7 +30,7 @@ public class Fireball extends Spell {
                     @Override
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
                         List<Card> markedForDeath = new LinkedList<>();
-                        for (Card targeted : battlecryTargets.get(0).getTargets()) {
+                        for (Card targeted : battlecryTargets.get(0).getTargetedCards()) {
                             List<Minion> m = new LinkedList<>();
                             List<Integer> d = new LinkedList<>();
                             int pos = targeted.getIndex();

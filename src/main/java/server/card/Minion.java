@@ -28,9 +28,9 @@ public class Minion extends BoardObject {
                     return new Resolver(false) {
                         @Override
                         public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
-                            List<Card> targets = effect.unleashTargets.get(0).getTargets();
+                            List<Card> targets = effect.unleashTargets.get(0).getTargetedCards();
                             if (targets.size() > 0) {
-                                Minion target = (Minion) effect.unleashTargets.get(0).getTargets().get(0);
+                                Minion target = (Minion) effect.unleashTargets.get(0).getTargetedCards().get(0);
                                 EffectDamageResolver edr = new EffectDamageResolver(effect, List.of(target),
                                         List.of(effect.owner.finalStatEffects.getStat(EffectStats.MAGIC)), true, null);
                                 this.resolve(board, rl, el, edr);

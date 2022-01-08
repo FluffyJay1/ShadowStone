@@ -280,6 +280,7 @@ public abstract class Card implements Indexable {
             case GRAVEYARD -> p.getGraveyard().get(cardpos);
             case UNLEASHPOWER -> p.getUnleashPower();
             case LEADER -> p.getLeader();
+            case BANISHED -> p.getBanished().get(cardpos);
         };
     }
 

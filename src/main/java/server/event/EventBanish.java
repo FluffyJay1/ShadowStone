@@ -51,7 +51,8 @@ public class EventBanish extends Event {
                     }
                     case DECK -> p.getDeck().remove(c);
                 }
-                b.banished.add(c);
+                c.status = CardStatus.BANISHED;
+                p.getBanished().add(c);
             }
         }
     }
@@ -66,7 +67,7 @@ public class EventBanish extends Event {
             CardStatus status = this.prevStatus.get(i);
             int pos = this.prevPos.get(i);
             if (!status.equals(CardStatus.GRAVEYARD)) {
-                b.banished.remove(c);
+                p.getBanished().remove(c);
                 switch (status) {
                     case HAND -> p.getHand().add(pos, c);
                     case BOARD -> {
@@ -108,6 +109,6 @@ public class EventBanish extends Event {
 
     @Override
     public boolean conditions() {
-        return true;
+        return !this.cards.isEmpty();
     }
 }

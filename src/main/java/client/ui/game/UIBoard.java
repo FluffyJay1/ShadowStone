@@ -217,6 +217,11 @@ public class UIBoard extends UIBox {
                 UICard uic = c.uiCard;
                 uic.setVisible(false);
             }
+            List<Card> banished = this.b.getPlayer(team).getBanished();
+            for (Card c : banished) {
+                UICard uic = c.uiCard;
+                uic.setVisible(false);
+            }
         }
     }
 
@@ -225,7 +230,7 @@ public class UIBoard extends UIBox {
         super.draw(g);
         Target currentTargeting = Target.firstUnsetTarget(this.getCurrentTargetingTargetList());
         if (currentTargeting != null) {
-            for (Card card : currentTargeting.getTargets()) {
+            for (Card card : currentTargeting.getTargetedCards()) {
                 UICard c = card.uiCard;
                 g.setColor(org.newdawn.slick.Color.red);
                 g.drawRect((float) (c.getAbsPos().x - UICard.CARD_DIMENSIONS.x * c.getScale() / 2 * 0.9),
@@ -509,7 +514,7 @@ public class UIBoard extends UIBox {
                 List<Target> realt = this.getCurrentTargetingRealTargetList();
                 Target.resetList(realt);
                 for (int i = 0; i < visualt.size(); i++) {
-                    for (Card targetc : visualt.get(i).getTargets()) {
+                    for (Card targetc : visualt.get(i).getTargetedCards()) {
                         realt.get(i).addCard(targetc.realCard);
                     }
                 }
@@ -536,7 +541,7 @@ public class UIBoard extends UIBox {
         Target nextRealTarget = Target.firstUnsetTarget(this.getCurrentTargetingRealTargetList());
         if (nextTarget != null) {
             if (c != null && c.getCard().realCard.alive && nextRealTarget.canTarget(c.getCard().realCard)) {
-                if (nextTarget.getTargets().contains(c.getCard())) {
+                if (nextTarget.getTargetedCards().contains(c.getCard())) {
                     nextTarget.removeCards(c.getCard());
                 } else {
                     nextTarget.addCard(c.getCard());

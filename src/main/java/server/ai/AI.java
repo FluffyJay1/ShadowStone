@@ -575,9 +575,9 @@ public class AI extends Thread {
         if (startInd >= searchSpace.size()) {
             System.out.println("this shouldn't happen lmao");
         }
-        for (int i = startInd; i < searchSpace.size() - (t.maxtargets - t.getTargets().size() - 1); i++) {
+        for (int i = startInd; i < searchSpace.size() - (t.maxtargets - t.getTargetedCards().size() - 1); i++) {
             Card c = searchSpace.get(i);
-            if (!t.getTargets().contains(c)) {
+            if (!t.getTargetedCards().contains(c)) {
                 Target copy = t.clone();
                 copy.addCard(c);
                 List<Target> subspace = this.getPossibleTargets(copy, searchSpace, i + 1);
