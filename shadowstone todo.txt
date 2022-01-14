@@ -9,6 +9,7 @@ unleashpower art focus lol
 rotate cards
 indicate which cards have been marked for death
 update to use slick 1.0.2
+formalize "minimum number of targets"
 make game fullscreen and fix flickering problem from rendering text
 Card art in tooltip
 UnicodeFont deprecated? use AngelCodeFonts

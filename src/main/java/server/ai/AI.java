@@ -1,6 +1,8 @@
 package server.ai;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import network.*;
 import server.*;
@@ -414,9 +416,9 @@ public class AI extends Thread {
             undoStack.remove(undoStack.size() - 1);
         }
         // aura difference checking isn't updated by undoing, we have to update it ourselves
-        for (EffectAura aura : this.b.getActiveAuras()) {
+        this.b.getActiveAuras().forEach(aura -> {
             aura.lastCheckedAffectedCards = aura.findAffectedCards();
-        }
+        });
         String stateAfterUndo = this.b.stateToString();
         if (!current.state.equals(stateAfterUndo)) {
             System.out.println(
@@ -462,8 +464,7 @@ public class AI extends Thread {
                 }
             }
         }
-        List<Minion> minions = this.b.getMinions(team, false, true);
-        for (Minion m : minions) {
+        this.b.getMinions(team, false, true).forEachOrdered(m -> {
             // unleashing cards & selecting targets
             if (p.canUnleashCard(m)) {
                 double totalWeight = UNLEASH_TOTAL_WEIGHT; // can't really make any assumptions about which unleashes are better than others
@@ -479,13 +480,14 @@ public class AI extends Thread {
             // minion attack
             if (m.canAttack()) {
                 double totalWeight = ATTACK_TOTAL_WEIGHT + ATTACK_WEIGHT_MULTIPLIER * m.finalStatEffects.getStat(EffectStats.ATTACK);
-                List<Minion> searchSpace = m.getAttackableTargets();
+                List<Minion> searchSpace = m.getAttackableTargets().collect(Collectors.toList());
+                double weight = totalWeight / searchSpace.size();
                 for (Minion target : searchSpace) {
                     double bonus = target instanceof Leader ? ATTACK_TARGET_LEADER_MULTIPLIER : 1;
-                    poss.add(new OrderAttackAction(m, target).toString(), bonus * totalWeight / searchSpace.size());
+                    poss.add(new OrderAttackAction(m, target).toString(), bonus * weight);
                 }
             }
-        }
+        });
         // ending turn
         poss.add(new EndTurnAction(team).toString(), END_TURN_WEIGHT);
         return poss;
@@ -505,14 +507,7 @@ public class AI extends Thread {
         }
         Player p = this.b.getPlayer(team);
         WeightedSampler<String> poss = new WeightedSampler<>();
-        List<Minion> minions = this.b.getMinions(team, false, true);
-        boolean enemyWard = false;
-        for (Minion m : this.b.getMinions(team * -1, false, true)) {
-            if (m.finalStatEffects.getStat(EffectStats.WARD) > 0) {
-                enemyWard = true;
-                break;
-            }
-        }
+        List<Minion> minions = this.b.getMinions(team, false, true).collect(Collectors.toList());
         for (Minion m : minions) {
             if (p.canUnleashCard(m)) {
                 double totalWeight = UNLEASH_TOTAL_WEIGHT; // can't really make any assumptions about which unleashes are better than others
@@ -526,14 +521,15 @@ public class AI extends Thread {
                 }
             }
         }
-        if (enemyWard) {
+        if (minions.stream().anyMatch(m -> m.finalStatEffects.getStat(EffectStats.WARD) > 0)) {
             // find ways to break through the wards
             for (Minion m : minions) {
                 if (m.canAttack()) {
                     double totalWeight = ATTACK_TOTAL_WEIGHT + ATTACK_WEIGHT_MULTIPLIER * m.finalStatEffects.getStat(EffectStats.ATTACK);
-                    List<Minion> searchSpace = m.getAttackableTargets();
+                    List<Minion> searchSpace = m.getAttackableTargets().collect(Collectors.toList());
+                    double weight = totalWeight / searchSpace.size();
                     for (Minion target : searchSpace) {
-                        poss.add(new OrderAttackAction(m, target).toString(), totalWeight / searchSpace.size());
+                        poss.add(new OrderAttackAction(m, target).toString(), weight);
                     }
                 }
             }
@@ -605,7 +601,8 @@ public class AI extends Thread {
             return poss;
         }
         list.get(0).reset();
-        List<Target> searchspace = this.getPossibleTargets(list.get(0), this.b.getTargetableCards(list.get(0)), 0);
+        List<Card> cardSearchSpace = this.b.getTargetableCards(list.get(0)).collect(Collectors.toList());
+        List<Target> searchspace = this.getPossibleTargets(list.get(0), cardSearchSpace, 0);
         for (Target t : searchspace) {
             List<Target> posscombo = new LinkedList<>();
             posscombo.add(t.clone());
@@ -669,25 +666,26 @@ public class AI extends Thread {
         if (l.health <= 0) { // if dead
             return -99999 + l.health; // u dont want to be dead
         }
-        int potentialDamage = 0, threatenDamage = 0, ehp = l.health, attackers = 0, defenders = 0;
-        for (Minion m : b.getMinions(team * -1,  true, true)) {
-            // TODO add if can attack check
-            // TODO factor in damage limiting effects like durandal
-            if (m.canAttack()) {
-                potentialDamage += m.finalStatEffects.getStat(EffectStats.ATTACK)
-                        * (m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN) - m.attacksThisTurn);
-            }
-            threatenDamage += m.finalStatEffects.getStat(EffectStats.ATTACK)
-                    * m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN);
-            attackers += m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN);
-        }
-        for (Minion m : b.getMinions(team, false, true)) {
-            if (m.finalStatEffects.getStat(EffectStats.WARD) > 0) {
-                ehp += m.health;
-                defenders++;
-            }
-        }
-
+        List<Minion> attackingMinions = b.getMinions(team * -1,  true, true).collect(Collectors.toList());
+        // TODO add if can attack check
+        // TODO factor in damage limiting effects like durandal
+        int potentialDamage = attackingMinions.stream()
+                .filter(Minion::canAttack)
+                .map(m -> m.finalStatEffects.getStat(EffectStats.ATTACK) * (m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN) - m.attacksThisTurn))
+                .reduce(0, Integer::sum);
+        int threatenDamage = attackingMinions.stream()
+                .map(m -> m.finalStatEffects.getStat(EffectStats.ATTACK) * m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN))
+                .reduce(0, Integer::sum);
+        int attackers = attackingMinions.stream()
+                .map(m -> m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN))
+                .reduce(0, Integer::sum);
+        List<Minion> defendingMinons = b.getMinions(team, false, true)
+                .filter(m -> m.finalStatEffects.getStat(EffectStats.WARD) > 0)
+                .collect(Collectors.toList());
+        int ehp = defendingMinons.stream()
+                .map(m -> m.health)
+                .reduce(l.health, Integer::sum);
+        long defenders = defendingMinons.size();
         /*
         Turn-dependent evaluation is a bad idea, because of evaluation can get cut off in the middle
         e.g. one branch may look better than another branch, because the first branch didn't evaluate

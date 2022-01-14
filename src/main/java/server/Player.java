@@ -4,11 +4,12 @@ import server.card.*;
 import server.card.effect.*;
 import server.card.unleashpower.*;
 import utils.PositionedList;
+import utils.StringBuildable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
+public class Player implements StringBuildable {
     public static final int DEFAULT_MAX_HAND_SIZE = 10;
     public static final int DEFAULT_MAX_BOARD_SIZE = 6;
     public Player realPlayer;
@@ -99,8 +100,16 @@ public class Player {
 
     @Override
     public String toString() {
-        return this.team + " " + this.mana + " " + this.maxmana + " " +
-                this.maxmaxmana + " " + this.unleashAllowed + " ";
+        StringBuilder builder = new StringBuilder();
+        this.appendStringToBuilder(builder);
+        return builder.toString();
+    }
+
+    @Override
+    public void appendStringToBuilder(StringBuilder builder) {
+        builder.append(this.team).append(" ").append(this.mana).append(" ").append(this.maxmana)
+                .append(" ").append(this.maxmaxmana).append(" ")
+                .append(this.unleashAllowed).append(" ");
     }
 
     // uh
@@ -113,22 +122,10 @@ public class Player {
     }
 
     public boolean canUnleashCard(Card c) {
-        return c instanceof Minion && ((Minion) c).canBeUnleashed() && c.team == this.team && this.unleashConditions();
+        return c instanceof Minion && ((Minion) c).canBeUnleashed() && c.team == this.team && this.canUnleash();
     }
 
     public boolean canUnleash() {
-        if (!unleashConditions()) {
-            return false;
-        }
-        for (Minion m : this.board.getMinions(this.team, false, true)) {
-            if (m.canBeUnleashed()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean unleashConditions() {
         return this.unleashAllowed && this.unleashPower != null
                 && this.unleashPower.unleashesThisTurn < this.unleashPower.finalStatEffects
                         .getStat(EffectStats.ATTACKS_PER_TURN)

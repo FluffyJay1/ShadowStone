@@ -12,8 +12,9 @@ import server.card.effect.*;
 import server.resolver.*;
 import utils.Indexable;
 import utils.PositionedList;
+import utils.StringBuildable;
 
-public abstract class Card implements Indexable {
+public abstract class Card implements Indexable, StringBuildable {
     public final Board board;
     public boolean alive = true; // alive means not marked for death
     public int team;
@@ -211,16 +212,21 @@ public abstract class Card implements Indexable {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
+        this.appendStringToBuilder(builder);
+        return builder.toString();
+    }
+
+    @Override
+    public void appendStringToBuilder(StringBuilder builder) {
         builder.append(this.getClass().getName()).append(" ").append(this.team).append(" ")
                 .append(this.alive).append(" ").append(this.cardPosToString()).append(this.basicEffects.size()).append(" ");
         for (Effect e : this.basicEffects) {
-            builder.append(e.toString());
+            e.appendStringToBuilder(builder);
         }
         builder.append(this.effects.size()).append(" ");
         for (Effect e : this.effects) {
-            builder.append(e.toString());
+            e.appendStringToBuilder(builder);
         }
-        return builder.toString();
     }
 
     public String toConstructorString() {

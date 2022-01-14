@@ -1,6 +1,8 @@
 package server.card;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import client.tooltip.*;
 import server.*;
@@ -84,45 +86,33 @@ public class Minion extends BoardObject {
     }
 
     // remember to change logic in canAttack(Minion)
-    public List<Minion> getAttackableTargets() {
-        if (this.summoningSickness && (this.finalStatEffects.getStat(EffectStats.STORM) == 0
-                && this.finalStatEffects.getStat(EffectStats.RUSH) == 0)) {
-            return new ArrayList<>();
+    // ideally this is functionally equivalent to minions.filter(this::canAttack)
+    // but we do things a bit differently for performance reasons
+    public Stream<Minion> getAttackableTargets() {
+        if (!this.attackMinionConditions()) {
+            return Stream.empty();
         }
-        List<Minion> list = new ArrayList<>();
-        List<Minion> poss = new ArrayList<>(this.board.getMinions(this.team * -1, false, true));
-        List<Minion> wards = new ArrayList<>();
+        List<Minion> minions = this.board.getMinions(this.team * -1, false, true).collect(Collectors.toList());
+        // TODO add if can attack this minion eg stealth
+        Stream<Minion> attackable = minions.stream();
 
+        // TODO add restrictions on can't attack leader
         Leader enemyLeader = this.board.getPlayer(this.team * -1).getLeader();
-        if (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.STORM) > 0) {
-            list.add(enemyLeader);
+        if (this.attackLeaderConditions()) {
+            attackable = Stream.concat(attackable, Stream.of(enemyLeader));
         }
-        // check for ward
-        boolean ward = false;
-        for (Minion m : poss) {
-            if (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.RUSH) > 0
-                    || this.finalStatEffects.getStat(EffectStats.STORM) > 0) {
-                // TODO add if can attack this minion eg stealth or can't be
-                // attacked
-                list.add(m);
-            }
-            if (m.finalStatEffects.getStat(EffectStats.WARD) > 0) {
-                ward = true;
-                wards.add(m);
-            }
-            // TODO add restrictions on can't attack leader
+
+        // love how you can't reuse streams
+        if (minions.stream().anyMatch(m -> m.finalStatEffects.getStat(EffectStats.WARD) > 0)) {
+            return minions.stream().filter(m -> m.finalStatEffects.getStat(EffectStats.WARD) > 0);
         }
-        if (ward) {
-            return wards;
-        }
-        return list;
+        return attackable;
     }
 
     public boolean canAttack() {
         return this.team == this.board.currentPlayerTurn && this.status.equals(CardStatus.BOARD)
                 && this.attacksThisTurn < this.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN)
-                && (!this.summoningSickness || this.finalStatEffects.getStat(EffectStats.RUSH) > 0
-                        || this.finalStatEffects.getStat(EffectStats.STORM) > 0);
+                && this.attackMinionConditions();
     }
 
     // like getAttackableTargets but for a single target
@@ -130,16 +120,20 @@ public class Minion extends BoardObject {
         if (!this.canAttack()) {
             return false;
         }
-        boolean ward = false;
-        for (Minion potentialWard : this.board.getMinions(this.team * -1, true, true)) {
-            if (potentialWard.finalStatEffects.getStat(EffectStats.WARD) > 0) {
-                ward = true;
-                break;
-            }
-        }
+        boolean ward = this.board.getMinions(this.team * -1, true, true)
+                .anyMatch(potentialWard -> potentialWard.finalStatEffects.getStat(EffectStats.WARD) > 0);
+        // TODO add if can attack this minion eg stealth
         return (!ward || m.finalStatEffects.getStat(EffectStats.WARD) > 0)
-                && (!this.summoningSickness || (this.finalStatEffects.getStat(EffectStats.STORM) > 0
-                        || (this.finalStatEffects.getStat(EffectStats.RUSH) > 0 && m.status.equals(CardStatus.BOARD))));
+                && (m.status.equals(CardStatus.BOARD) ? this.attackMinionConditions() : this.attackLeaderConditions());
+    }
+
+    private boolean attackMinionConditions() {
+        return !this.summoningSickness || this.finalStatEffects.getStat(EffectStats.STORM) > 0
+                || this.finalStatEffects.getStat(EffectStats.RUSH) > 0;
+    }
+
+    private boolean attackLeaderConditions() {
+        return !this.summoningSickness || this.finalStatEffects.getStat(EffectStats.STORM) > 0;
     }
 
     public boolean canBeUnleashed() {
@@ -155,8 +149,9 @@ public class Minion extends BoardObject {
     }
 
     @Override
-    public String toString() {
-        return super.toString() + this.health + " " + this.attacksThisTurn + " " + this.summoningSickness + " ";
+    public void appendStringToBuilder(StringBuilder builder) {
+        super.appendStringToBuilder(builder);
+        builder.append(this.health).append(" ").append(this.attacksThisTurn).append(" ").append(this.summoningSickness).append(" ");
     }
 
     @Override

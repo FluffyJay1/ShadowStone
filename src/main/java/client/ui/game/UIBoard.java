@@ -2,6 +2,8 @@ package client.ui.game;
 
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import client.ui.Animation;
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
@@ -385,7 +387,7 @@ public class UIBoard extends UIBox {
                     if (this.b.getPlayer(this.b.localteam).canUnleash() && !this.b.disableInput) {
                         c.setTargeting(true);
                         this.draggingUnleash = true;
-                        this.b.getMinions(this.b.localteam, false, true).stream()
+                        this.b.getMinions(this.b.localteam, false, true)
                                 .filter(m -> this.b.getPlayer(this.b.localteam).canUnleashCard(m))
                                 .forEach(m -> m.uiCard.setPotentialTarget(true));
                     }
@@ -397,8 +399,8 @@ public class UIBoard extends UIBox {
                 if (bo != null && bo instanceof Minion && bo.realCard.team == this.b.localteam
                         && ((Minion) bo.realCard).canAttack() && !this.b.disableInput) {
                     this.attackingMinion = c;
-                    this.b.getBoardObjects(this.b.localteam * -1, true, true, false, true).stream()
-                            .filter(target -> target instanceof Minion && this.attackingMinion.getMinion().realMinion().getAttackableTargets().contains(((Minion) target).realMinion()))
+                    this.b.getBoardObjects(this.b.localteam * -1, true, true, false, true)
+                            .filter(target -> target instanceof Minion && this.attackingMinion.getMinion().realMinion().canAttack(((Minion) target).realMinion()))
                             .forEach(target -> target.uiCard.setPotentialTarget(true));
                     c.setOrderingAttack(true);
                 }
@@ -417,8 +419,7 @@ public class UIBoard extends UIBox {
         UICard c = this.cardAtPos(new Vector2f(x, y));
         if (this.attackingMinion != null) { // in middle of ordering attack
             if (c != null && (c.getCard() instanceof Minion) && c.getCard().team != this.b.localteam
-                    && this.attackingMinion.getMinion().realMinion().getAttackableTargets()
-                            .contains(c.getMinion().realMinion())) {
+                    && this.attackingMinion.getMinion().realMinion().canAttack(c.getMinion().realMinion())) {
                 this.ds.sendPlayerAction(
                         new OrderAttackAction(this.attackingMinion.getMinion().realMinion(), c.getMinion().realMinion())
                                 .toString());
@@ -570,25 +571,18 @@ public class UIBoard extends UIBox {
         this.finishTargeting();
     }
 
-    public List<UICard> getTargetableCards(Target t) {
-        List<UICard> list = new LinkedList<>();
-        if (t == null) {
-            return list;
-        }
-        for (Card c : this.b.getTargetableCards(t)) {
-            list.add(c.uiCard);
-        }
-        return list;
+    public Stream<UICard> getTargetableCards(Target t) {
+        return this.b.getTargetableCards(t).map(c -> c.uiCard);
     }
 
     public void animateTargets(Target t, boolean activate) {
         if (t != null) {
-            List<UICard> tc = this.getTargetableCards(t);
-            for (UICard c : tc) {
-                c.setPotentialTarget(activate);
-                if (c.getCard().status.equals(CardStatus.LEADER) && activate) {
+            List<UICard> targetableCards = this.getTargetableCards(t).collect(Collectors.toList());
+            targetableCards.forEach(c -> c.setPotentialTarget(activate));
+            if (activate) {
+                if (targetableCards.stream().anyMatch(c -> c.getCard().status.equals(CardStatus.LEADER))) {
                     this.expandHand = false;
-                } else if (c.getCard().status.equals(CardStatus.HAND) && activate) {
+                } else if (targetableCards.stream().anyMatch(c -> c.getCard().status.equals(CardStatus.HAND))) {
                     this.expandHand = true;
                 }
             }

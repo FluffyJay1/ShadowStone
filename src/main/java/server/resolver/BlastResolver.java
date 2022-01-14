@@ -1,6 +1,7 @@
 package server.resolver;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import client.*;
 import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamage;
@@ -27,7 +28,7 @@ public class BlastResolver extends Resolver {
 
     @Override
     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
-        List<Minion> minions = this.b.getMinions(this.enemyTeam, false, true);
+        List<Minion> minions = this.b.getMinions(this.enemyTeam, false, true).collect(Collectors.toList());
         Minion target;
         if (minions.isEmpty()) {
             target = this.b.getPlayer(this.enemyTeam).getLeader();

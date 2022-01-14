@@ -1,6 +1,7 @@
 package server.resolver;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import server.*;
 import server.card.*;
@@ -22,7 +23,9 @@ public class TurnStartResolver extends Resolver {
         b.processEvent(rl, el, new EventTurnStart(p));
         b.processEvent(rl, el, new EventManaChange(this.p, 1, true, false));
         b.processEvent(rl, el, new EventManaChange(this.p, this.p.maxmana + 1, false, true));
-        for (BoardObject bo : this.p.board.getBoardObjects(this.p.team, true, true, true, true)) {
+        // avoid concurrent modification
+        List<BoardObject> ours = this.p.board.getBoardObjects(this.p.team, true, true, true, true).collect(Collectors.toList());
+        for (BoardObject bo : ours) {
             b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
             this.resolveList(b, rl, el, bo.getResolvers(Effect::onTurnStart));
             b.popEventGroup();
@@ -32,7 +35,8 @@ public class TurnStartResolver extends Resolver {
                 this.resolve(b, rl, el, new AddEffectResolver(bo, e));
             }
         }
-        for (BoardObject bo : this.p.board.getBoardObjects(this.p.team * -1, true, true, true, true)) {
+        List<BoardObject> theirs = this.p.board.getBoardObjects(this.p.team * -1, true, true, true, true).collect(Collectors.toList());
+        for (BoardObject bo : theirs) {
             b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
             this.resolveList(b, rl, el, bo.getResolvers(Effect::onTurnStartEnemy));
             b.popEventGroup();

@@ -1,6 +1,7 @@
 package client;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
 import client.ui.game.visualboardanimation.eventgroupanimation.EventGroupAnimationFactory;
@@ -159,17 +160,11 @@ public class VisualBoard extends Board {
     }
 
     @Override
-    public LinkedList<Card> getTargetableCards(Target t) {
-        LinkedList<Card> list = new LinkedList<>();
+    public Stream<Card> getTargetableCards(Target t) {
         if (t == null) {
-            return list;
+            return Stream.empty();
         }
-        for (Card c : this.getTargetableCards()) {
-            if (t.canTarget(c.realCard)) {
-                list.add(c);
-            }
-        }
-        return list;
+        return this.getTargetableCards().filter(c -> t.canTarget(c.realCard));
     }
 
 }

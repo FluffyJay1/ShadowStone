@@ -9,6 +9,7 @@ import server.card.*;
 import server.event.*;
 import server.resolver.*;
 import utils.Indexable;
+import utils.StringBuildable;
 
 /*
  * Few important things:
@@ -20,7 +21,7 @@ import utils.Indexable;
  * -- This is used to allow AI to undo moves
  * - Effects should override getBattlecryValue() and getPresenceValue() for the AI
  */
-public class Effect implements Indexable, Cloneable {
+public class Effect implements Indexable, StringBuildable, Cloneable {
     private int pos = 0;
     public Card owner = null;
     public String description;
@@ -195,8 +196,18 @@ public class Effect implements Indexable, Cloneable {
 
     @Override
     public String toString() {
-        return this.getClass().getName() + " " + Card.referenceOrNull(this.owner) + Effect.referenceOrNull(this.auraSource) + this.description + Game.STRING_END
-                + " " + this.mute + " " + this.extraStateString() + this.effectStats.toString();
+        StringBuilder builder = new StringBuilder();
+        this.appendStringToBuilder(builder);
+        return builder.toString();
+    }
+
+    @Override
+    public void appendStringToBuilder(StringBuilder builder) {
+        builder.append(this.getClass().getName()).append(" ").append(Card.referenceOrNull(this.owner))
+                .append(Effect.referenceOrNull(this.auraSource)).append(this.description)
+                .append(Game.STRING_END).append(" ").append(this.mute).append(" ")
+                .append(this.extraStateString());
+        this.effectStats.appendStringToBuilder(builder);
     }
 
     public static Effect fromString(Board b, StringTokenizer st) {

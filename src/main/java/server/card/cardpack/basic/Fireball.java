@@ -74,7 +74,7 @@ public class Fireball extends Spell {
 
     @Override
     public boolean conditions() {
-        return this.board.getTargetableCards(this.e.battlecryTargets.get(0)).size() > 0;
+        return this.board.getTargetableCards(this.e.battlecryTargets.get(0)).findAny().isPresent();
     }
 
 }

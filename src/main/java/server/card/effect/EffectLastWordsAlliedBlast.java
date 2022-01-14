@@ -1,6 +1,7 @@
 package server.card.effect;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import client.*;
 import server.*;
@@ -27,7 +28,7 @@ public class EffectLastWordsAlliedBlast extends Effect {
         return new Resolver(true) {
             @Override
             public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
-                List<Minion> minions = b.getMinions(effect.owner.team, false, true);
+                List<Minion> minions = b.getMinions(effect.owner.team, false, true).collect(Collectors.toList());
                 if (!minions.isEmpty()) {
                     Minion victim = Game.selectRandom(minions);
                     this.resolve(b, rl, el, new EffectDamageResolver(effect, victim, effect.damage, true, null));

@@ -1,6 +1,7 @@
 package server.card.cardpack.basic;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import client.*;
 import client.tooltip.*;
@@ -25,7 +26,7 @@ public class WellOfDestination extends Amulet {
                 return new Resolver(true) {
                     @Override
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
-                        List<Minion> possible = b.getMinions(owner.team, false, true);
+                        List<Minion> possible = b.getMinions(owner.team, false, true).collect(Collectors.toList());
                         if (!possible.isEmpty()) {
                             Minion targeted = Game.selectRandom(possible);
                             EffectStatChange e = new EffectStatChange("+1/+1/+1 (from <b>Well of Destination</b>).", 1, 1,

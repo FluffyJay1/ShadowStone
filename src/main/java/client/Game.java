@@ -105,8 +105,8 @@ public class Game extends StateBasedGame {
     }
 
     public static <T> T selectRandom(List<T> list) {
-        List<T> ret = selectRandom(list, 1);
-        return ret.get(0);
+        int randind = (int) (Math.random() * list.size());
+        return list.get(randind);
     }
 
     public static <T> List<T> selectRandom(List<T> list, int num) { // helper

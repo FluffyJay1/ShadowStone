@@ -1,5 +1,7 @@
 package server.card.effect;
 
+import utils.StringBuildable;
+
 import java.util.*;
 
 /**
@@ -11,8 +13,7 @@ import java.util.*;
  * that sets the attack to 2), and what stats this effect "changes" or adds to
  * (like an effect that buffs health by 2)
  */
-public class EffectStats implements Cloneable { // this is literally just a
-                                                // struct
+public class EffectStats implements Cloneable, StringBuildable {
     public static final int NUM_STATS = 11;
     // what's an enum
     public static final int COST = 0, ATTACK = 1, MAGIC = 2, HEALTH = 3, ATTACKS_PER_TURN = 4, STORM = 5, RUSH = 6,
@@ -74,7 +75,15 @@ public class EffectStats implements Cloneable { // this is literally just a
 
     @Override
     public String toString() {
-        return this.set.toString() + this.change.toString();
+        StringBuilder builder = new StringBuilder();
+        this.appendStringToBuilder(builder);
+        return builder.toString();
+    }
+
+    @Override
+    public void appendStringToBuilder(StringBuilder builder) {
+        this.set.appendStringToBuilder(builder);
+        this.change.appendStringToBuilder(builder);
     }
 
     public static EffectStats fromString(StringTokenizer st) {
@@ -90,7 +99,7 @@ public class EffectStats implements Cloneable { // this is literally just a
      *
      * Why is this an inner class? Who cares?
      */
-    public static class StatSet implements Cloneable {
+    public static class StatSet implements Cloneable, StringBuildable {
         private int numUsed = 0;
         private final int[] stats = new int[NUM_STATS];
         private final boolean[] use = new boolean[NUM_STATS];
@@ -165,14 +174,21 @@ public class EffectStats implements Cloneable { // this is literally just a
 
         @Override
         public String toString() {
+            StringBuilder builder = new StringBuilder();
+            this.appendStringToBuilder(builder);
+            return builder.toString();
+        }
+
+        @Override
+        public void appendStringToBuilder(StringBuilder builder) {
             if (this.numUsed == 0) {
-                return UNUSED_INDICATOR + " ";
+                builder.append(UNUSED_INDICATOR).append(" ");
+            } else {
+                builder.append(USED_INDICATOR).append(" ");
+                for (int i = 0; i < NUM_STATS; i++) {
+                    builder.append(use[i] ? "T" : "F").append(" ").append(stats[i]).append(" ");
+                }
             }
-            StringBuilder s = new StringBuilder(USED_INDICATOR).append(" ");
-            for (int i = 0; i < NUM_STATS; i++) {
-                s.append(use[i] ? "T" : "F").append(" ").append(stats[i]).append(" ");
-            }
-            return s.toString();
         }
 
         public static StatSet fromString(StringTokenizer st) {

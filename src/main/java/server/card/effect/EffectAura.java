@@ -60,10 +60,14 @@ public abstract class EffectAura extends Effect {
         Board b = this.owner.board;
         int targetTeam = this.affectTeam * this.owner.team;
         if (this.affectBoard) {
-            filtered.addAll(b.getPlayerCards(targetTeam, Player::getPlayArea).stream().filter(this::applyConditions).collect(Collectors.toSet()));
+            filtered.addAll(b.getPlayerCards(targetTeam, Player::getPlayArea)
+                    .filter(this::applyConditions)
+                    .collect(Collectors.toSet()));
         }
         if (this.affectHand) {
-            filtered.addAll(b.getPlayerCards(targetTeam, Player::getHand).stream().filter(this::applyConditions).collect(Collectors.toSet()));
+            filtered.addAll(b.getPlayerCards(targetTeam, Player::getHand)
+                    .filter(this::applyConditions)
+                    .collect(Collectors.toSet()));
         }
         return filtered;
     }

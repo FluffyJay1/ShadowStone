@@ -28,7 +28,8 @@ public class BoardObject extends Card {
     }
 
     @Override
-    public String toString() {
-        return super.toString() + this.lastBoardPos + " ";
+    public void appendStringToBuilder(StringBuilder builder) {
+        super.appendStringToBuilder(builder);
+        builder.append(this.lastBoardPos).append(" ");
     }
 }

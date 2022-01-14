@@ -6,6 +6,7 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import server.card.*;
 import server.card.effect.*;
@@ -13,7 +14,6 @@ import server.event.*;
 import server.event.eventgroup.EventGroup;
 import server.playeraction.*;
 import server.resolver.*;
-import utils.PositionedList;
 
 public class Board {
     public boolean isServer = true; // true means it is the center of game logic
@@ -67,19 +67,18 @@ public class Board {
      * @param queryFunc Function to get what we want form each player
      * @return A list of the relevant cards
      */
-    public <T extends Card> List<T> getPlayerCards(int team, Function<Player, List<T>> queryFunc) {
-        List<T> ret = new ArrayList<>();
-        if (team >= 0) {
-            ret.addAll(queryFunc.apply(this.getPlayer(1)));
+    public <T extends Card> Stream<T> getPlayerCards(int team, Function<Player, List<T>> queryFunc) {
+        if (team == 0) {
+            return Stream.concat(queryFunc.apply(this.getPlayer(1)).stream(), queryFunc.apply(this.getPlayer(-1)).stream());
+        } else if (team > 0) {
+            return queryFunc.apply(this.getPlayer(1)).stream();
+        } else {
+            return queryFunc.apply(this.getPlayer(-1)).stream();
         }
-        if (team <= 0) {
-            ret.addAll(queryFunc.apply(this.getPlayer(-1)));
-        }
-        return ret;
     }
 
     // same as above but for functions that return single cards
-    public <T extends Card> List<T> getPlayerCard(int team, Function<Player, T> queryFunc) {
+    public <T extends Card> Stream<T> getPlayerCard(int team, Function<Player, T> queryFunc) {
         List<T> ret = new ArrayList<>();
         if (team >= 0) {
             T addition = queryFunc.apply(this.getPlayer(1));
@@ -93,41 +92,48 @@ public class Board {
                 ret.add(addition);
             }
         }
-        return ret;
+        return ret.stream();
     }
 
-    public List<Card> getTargetableCards() {
-        List<Card> ret = new ArrayList<>();
-        ret.addAll(this.getPlayerCards(0, Player::getPlayArea));
-        ret.addAll(this.getPlayerCards(0, Player::getHand));
-        ret.addAll(this.getPlayerCard(0, Player::getLeader));
-        return ret;
+    public Stream<Card> getTargetableCards() {
+        return Stream.concat(
+                this.getPlayerCards(0, Player::getPlayArea),
+                Stream.concat(
+                        this.getPlayerCards(0, Player::getHand),
+                        this.getPlayerCard(0, Player::getLeader)
+                )
+        );
     }
 
     // cards that can be added to a Target object
-    public List<Card> getTargetableCards(Target t) {
-        List<Card> list = new ArrayList<>();
+    public Stream<Card> getTargetableCards(Target t) {
         if (t == null) {
-            return list;
+            return Stream.empty();
         }
-        for (Card c : this.getTargetableCards()) {
-            if (t.canTarget(c)) {
-                list.add(c);
-            }
-        }
-        return list;
+        return this.getTargetableCards().filter(t::canTarget);
     }
 
-    public List<Card> getCards() {
-        List<Card> ret = new ArrayList<>();
-        ret.addAll(this.getPlayerCards(0, Player::getPlayArea));
-        ret.addAll(this.getPlayerCards(0, Player::getHand));
-        ret.addAll(this.getPlayerCards(0, Player::getDeck));
-        ret.addAll(this.getPlayerCards(0, Player::getGraveyard));
-        ret.addAll(this.getPlayerCards(0, Player::getBanished));
-        ret.addAll(this.getPlayerCard(0, Player::getUnleashPower));
-        ret.addAll(this.getPlayerCard(0, Player::getLeader));
-        return ret;
+    public Stream<Card> getCards() {
+        // love me some stream concatenation
+        return Stream.concat(
+                Stream.concat(
+                        Stream.concat(
+                                this.getPlayerCards(0, Player::getPlayArea),
+                                this.getPlayerCards(0, Player::getHand)
+                        ),
+                        Stream.concat(
+                                this.getPlayerCards(0, Player::getDeck),
+                                this.getPlayerCards(0, Player::getGraveyard)
+                        )
+                ),
+                Stream.concat(
+                        Stream.concat(
+                                this.getPlayerCards(0, Player::getBanished),
+                                this.getPlayerCard(0, Player::getUnleashPower)
+                        ),
+                        this.getPlayerCard(0, Player::getLeader)
+                )
+        );
     }
 
     /**
@@ -140,17 +146,17 @@ public class Board {
      * @param alive Whether we need our things to be not marked for death
      * @return The list of board objects that fit the criteria
      */
-    public List<BoardObject> getBoardObjects(int team, boolean leader, boolean minion, boolean amulet, boolean alive) {
-        List<BoardObject> ret = new ArrayList<>();
+    public Stream<BoardObject> getBoardObjects(int team, boolean leader, boolean minion, boolean amulet, boolean alive) {
+        Stream<BoardObject> stream = Stream.empty();
         if (leader) {
-            ret.addAll(this.getPlayerCard(team, Player::getLeader).stream()
+            stream = this.getPlayerCard(team, Player::getLeader)
                     .filter(l -> !alive || l.alive)
-                    .collect(Collectors.toList()));
+                    .map(l -> l); // this is necessary 100%
         }
-        ret.addAll(this.getPlayerCards(team, Player::getPlayArea).stream()
-                .filter(c -> (minion || !(c instanceof Minion)) && (amulet || !(c instanceof Amulet)) && (!alive || c.alive))
-                .collect(Collectors.toList()));
-        return ret;
+        stream = Stream.concat(stream,
+                this.getPlayerCards(team, Player::getPlayArea)
+                        .filter(c -> (minion || !(c instanceof Minion)) && (amulet || !(c instanceof Amulet)) && (!alive || c.alive)));
+        return stream;
     }
 
     /**
@@ -162,44 +168,23 @@ public class Board {
      * @param alive Whether we need our things to be not marked for death
      * @return The list of minions that fit the criteria
      */
-    public List<Minion> getMinions(int team, boolean leader, boolean alive) {
-        List<Minion> ret = new ArrayList<>();
+    public Stream<Minion> getMinions(int team, boolean leader, boolean alive) {
+        Stream<Minion> stream = Stream.empty();
         if (leader) {
-            ret.addAll(this.getPlayerCard(team, Player::getLeader).stream()
+            stream = this.getPlayerCard(team, Player::getLeader)
                     .filter(l -> !alive || l.alive)
-                    .collect(Collectors.toList()));
+                    .map(l -> l);
         }
-        ret.addAll(this.getPlayerCards(team, Player::getPlayArea).stream()
-                .filter(c -> c instanceof Minion && (!alive || c.alive))
-                .map(bo -> (Minion) bo)
-                .collect(Collectors.toList()));
-        return ret;
+        stream = Stream.concat(stream,
+                this.getPlayerCards(team, Player::getPlayArea)
+                        .filter(c -> c instanceof Minion && (!alive || c.alive))
+                        .map(bo -> (Minion) bo));
+        return stream;
     }
 
-    // TODO: optimize by caching the result
-    public List<Effect> getEffects() {
-        List<Effect> effects = new LinkedList<>();
-        for (Card c : this.getCards()) {
-            effects.addAll(c.getEffects(true));
-            effects.addAll(c.getEffects(false));
-        }
-        return effects;
-    }
-
-    public List<Effect> getAdditionalEffects() {
-        List<Effect> effects = new LinkedList<>();
-        for (Card c : this.getCards()) {
-            effects.addAll(c.getEffects(false));
-        }
-        return effects;
-    }
-
-    public List<EffectAura> getActiveAuras() {
-        List<EffectAura> auras = new LinkedList<>();
-        for (BoardObject bo : this.getBoardObjects(0, true, true, true, false)) {
-            auras.addAll(bo.auras);
-        }
-        return auras;
+    public Stream<EffectAura> getActiveAuras() {
+        return this.getBoardObjects(0, true, true, true, false)
+                .flatMap(bo -> bo.auras.stream());
     }
 
     public String stateToString() {
@@ -210,11 +195,14 @@ public class Board {
         builder.append(", winner: ");
         builder.append(this.winner);
         builder.append("\n");
-        builder.append(this.player1.toString()).append("\n");
-        builder.append(this.player2.toString()).append("\n");
-        for (Card c : this.getCards()) {
-            builder.append(c.toString()).append("\n");
-        }
+        this.player1.appendStringToBuilder(builder);
+        builder.append("\n");
+        this.player2.appendStringToBuilder(builder);
+        builder.append("\n");
+        this.getCards().forEachOrdered(c -> {
+            c.appendStringToBuilder(builder);
+            builder.append("\n");
+        });
         builder.append("---------------------------------+\n");
         return builder.toString();
     }
@@ -274,7 +262,7 @@ public class Board {
         }
         Set<EffectAura> oldAuras = null;
         if (rl != null) {
-            oldAuras = new HashSet<>(this.getActiveAuras());
+            oldAuras = this.getActiveAuras().collect(Collectors.toSet());
         }
         String eventString = e.toString();
         e.resolve();
@@ -287,7 +275,7 @@ public class Board {
             this.history.append(eventString);
         }
         if (rl != null) {
-            Set<EffectAura> newAuras = new HashSet<>(this.getActiveAuras());
+            Set<EffectAura> newAuras = this.getActiveAuras().collect(Collectors.toSet());
             Set<EffectAura> removedAuras = new HashSet<>(oldAuras);
             removedAuras.removeAll(newAuras);
             Set<EffectAura> addedAuras = new HashSet<>(newAuras);
@@ -295,17 +283,31 @@ public class Board {
             // make newAuras store the set of maintained auras, neither added nor removed
             newAuras.retainAll(oldAuras);
             for (EffectAura aura : addedAuras) {
-                Set<Card> currentAffected = aura.findAffectedCards();
-                rl.add(new AddEffectResolver(new ArrayList<>(currentAffected), aura.effectToApply));
-                aura.lastCheckedAffectedCards = currentAffected;
+                aura.lastCheckedAffectedCards = aura.findAffectedCards();
+                rl.add(new Resolver(false) {
+                    @Override
+                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                        Set<Card> shouldApply = aura.findAffectedCards();
+                        if (!shouldApply.isEmpty()) {
+                            this.resolve(b, rl, el, new AddEffectResolver(new ArrayList<>(shouldApply), aura.effectToApply));
+                        }
+                    }
+                });
             }
             for (EffectAura aura : removedAuras) {
-                List<Effect> effectsToRemove = aura.lastCheckedAffectedCards.stream()
-                        .map(unaffected -> aura.currentActiveEffects.get(unaffected))
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
-                rl.add(new RemoveEffectResolver(effectsToRemove));
                 aura.lastCheckedAffectedCards.clear();
+                rl.add(new Resolver(false) {
+                    @Override
+                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                        Set<Card> currentApplied = aura.currentActiveEffects.keySet();
+                        if (!currentApplied.isEmpty()) {
+                            List<Effect> effectsToRemove = currentApplied.stream()
+                                    .map(unaffected -> aura.currentActiveEffects.get(unaffected))
+                                    .collect(Collectors.toList());
+                            this.resolve(b, rl, el, new RemoveEffectResolver(effectsToRemove));
+                        }
+                    }
+                });
             }
             for (EffectAura aura : newAuras) {
                 Set<Card> currentAffected = aura.findAffectedCards();
@@ -345,20 +347,20 @@ public class Board {
                     rl.addAll(bo.getResolvers(Effect::onLeavePlay));
                 }
             }
-            for (Card c : this.getCards()) {
+            this.getCards().forEachOrdered(c -> {
                 List<Resolver> listenEventResolvers = new LinkedList<>();
                 for (Effect listener : c.listeners) {
                     listenEventResolvers.add(listener.onListenEvent(e));
                 }
                 rl.add(new FlagResolver(c, listenEventResolvers));
-            }
+            });
         } else if (this.isServer) {
             // rl is null and we are running on the server, we must have gotten kira queened
-            for (Card c : this.getCards()) {
+            this.getCards().forEach(c -> {
                 for (EffectAura aura : c.auras) {
                    aura.lastCheckedAffectedCards = aura.findAffectedCards();
                 }
-            }
+            });
         }
         return e;
     }

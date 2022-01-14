@@ -1,6 +1,7 @@
 package server.card.cardpack.basic;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.*;
@@ -46,7 +47,7 @@ public class WeatheredVanguard extends Minion {
                 return new Resolver(false) {
                     @Override
                     public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
-                        List<Minion> minions = b.getMinions(owner.team, false, true);
+                        List<Minion> minions = b.getMinions(owner.team, false, true).collect(Collectors.toList());
                         if (!minions.isEmpty()) {
                             Effect stats = new EffectStatChange("+1/+0/+1 (from <b>Weathered Vanguard's Unleash</b>).", 1, 0, 1);
                             this.resolve(b, rl, el, new AddEffectResolver(minions, stats));
@@ -57,7 +58,7 @@ public class WeatheredVanguard extends Minion {
 
             @Override
             public double getPresenceValue() {
-                return AI.VALUE_PER_1_1_STATS * 3 / 2.;
+                return AI.VALUE_PER_1_1_STATS * 6 / 2.;
             }
         };
         this.addEffect(true, e);

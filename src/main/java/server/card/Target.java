@@ -1,6 +1,7 @@
 package server.card;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import client.*;
 import server.*;
@@ -70,12 +71,9 @@ public class Target implements Cloneable {
     }
 
     public void fillRandomCards() {
-        List<Card> cards = new ArrayList<>();
-        for (Card c : this.creator.owner.board.getTargetableCards(this)) {
-            if (this.canTarget(c) && !this.targets.contains(c)) {
-                cards.add(c);
-            }
-        }
+        List<Card> cards = this.creator.owner.board.getTargetableCards(this)
+                .filter(c -> this.canTarget(c) && !this.targets.contains(c))
+                .collect(Collectors.toList());
         for (int i = this.targets.size(); i < this.maxtargets; i++) {
             if (cards.size() > 0) {
                 this.addCard(cards.remove((int) (Math.random() * cards.size())));
@@ -89,7 +87,7 @@ public class Target implements Cloneable {
     // have been targeted
     public boolean isFullyTargeted(Board b) {
         return this.getTargetedCards().size() >= this.maxtargets
-                || this.getTargetedCards().size() == b.getTargetableCards(this).size();
+                || this.getTargetedCards().size() == b.getTargetableCards(this).count();
     }
 
     // when the target is deemed ready for the first time, we assume it stays
