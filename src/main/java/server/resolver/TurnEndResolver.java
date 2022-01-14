@@ -25,15 +25,21 @@ public class TurnEndResolver extends Resolver {
         // avoid concurrent modification
         List<BoardObject> ours = this.p.board.getBoardObjects(this.p.team, true, true, true, true).collect(Collectors.toList());
         for (BoardObject bo : ours) {
-            b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
-            this.resolveList(b, subList, el, bo.getResolvers(Effect::onTurnEnd));
-            b.popEventGroup();
+            // things may happen, this bo might be dead already
+            if (bo.isInPlay()) {
+                b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
+                this.resolveList(b, subList, el, bo.getResolvers(Effect::onTurnEnd));
+                b.popEventGroup();
+            }
         }
         List<BoardObject> theirs = this.p.board.getBoardObjects(this.p.team * -1, true, true, true, true).collect(Collectors.toList());
         for (BoardObject bo : theirs) {
-            b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
-            this.resolveList(b, subList, el, bo.getResolvers(Effect::onTurnEndEnemy));
-            b.popEventGroup();
+            // things may happen, this bo might be dead already
+            if (bo.isInPlay()) {
+                b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
+                this.resolveList(b, subList, el, bo.getResolvers(Effect::onTurnEndEnemy));
+                b.popEventGroup();
+            }
         }
         this.resolveList(b, subList, el, subList);
     }

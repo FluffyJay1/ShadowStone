@@ -1,6 +1,7 @@
 package server.card;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -92,9 +93,9 @@ public class Minion extends BoardObject {
         if (!this.attackMinionConditions()) {
             return Stream.empty();
         }
-        List<Minion> minions = this.board.getMinions(this.team * -1, false, true).collect(Collectors.toList());
+        Supplier<Stream<Minion>> minions = () -> this.board.getMinions(this.team * -1, false, true);
         // TODO add if can attack this minion eg stealth
-        Stream<Minion> attackable = minions.stream();
+        Stream<Minion> attackable = minions.get();
 
         // TODO add restrictions on can't attack leader
         Leader enemyLeader = this.board.getPlayer(this.team * -1).getLeader();
@@ -103,8 +104,8 @@ public class Minion extends BoardObject {
         }
 
         // love how you can't reuse streams
-        if (minions.stream().anyMatch(m -> m.finalStatEffects.getStat(EffectStats.WARD) > 0)) {
-            return minions.stream().filter(m -> m.finalStatEffects.getStat(EffectStats.WARD) > 0);
+        if (minions.get().anyMatch(m -> m.finalStatEffects.getStat(EffectStats.WARD) > 0)) {
+            return minions.get().filter(m -> m.finalStatEffects.getStat(EffectStats.WARD) > 0);
         }
         return attackable;
     }

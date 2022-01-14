@@ -73,7 +73,7 @@ public class Target implements Cloneable {
     public void fillRandomCards() {
         List<Card> cards = this.creator.owner.board.getTargetableCards(this)
                 .filter(c -> this.canTarget(c) && !this.targets.contains(c))
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(ArrayList::new));
         for (int i = this.targets.size(); i < this.maxtargets; i++) {
             if (cards.size() > 0) {
                 this.addCard(cards.remove((int) (Math.random() * cards.size())));

@@ -1,6 +1,7 @@
 package server.ai;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -480,12 +481,11 @@ public class AI extends Thread {
             // minion attack
             if (m.canAttack()) {
                 double totalWeight = ATTACK_TOTAL_WEIGHT + ATTACK_WEIGHT_MULTIPLIER * m.finalStatEffects.getStat(EffectStats.ATTACK);
-                List<Minion> searchSpace = m.getAttackableTargets().collect(Collectors.toList());
-                double weight = totalWeight / searchSpace.size();
-                for (Minion target : searchSpace) {
+                double weight = totalWeight / m.getAttackableTargets().count();
+                m.getAttackableTargets().forEachOrdered(target -> {
                     double bonus = target instanceof Leader ? ATTACK_TARGET_LEADER_MULTIPLIER : 1;
                     poss.add(new OrderAttackAction(m, target).toString(), bonus * weight);
-                }
+                });
             }
         });
         // ending turn
@@ -666,17 +666,17 @@ public class AI extends Thread {
         if (l.health <= 0) { // if dead
             return -99999 + l.health; // u dont want to be dead
         }
-        List<Minion> attackingMinions = b.getMinions(team * -1,  true, true).collect(Collectors.toList());
+        Supplier<Stream<Minion>> attackingMinions = () -> b.getMinions(team * -1,  true, true);
         // TODO add if can attack check
         // TODO factor in damage limiting effects like durandal
-        int potentialDamage = attackingMinions.stream()
+        int potentialDamage = attackingMinions.get()
                 .filter(Minion::canAttack)
                 .map(m -> m.finalStatEffects.getStat(EffectStats.ATTACK) * (m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN) - m.attacksThisTurn))
                 .reduce(0, Integer::sum);
-        int threatenDamage = attackingMinions.stream()
+        int threatenDamage = attackingMinions.get()
                 .map(m -> m.finalStatEffects.getStat(EffectStats.ATTACK) * m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN))
                 .reduce(0, Integer::sum);
-        int attackers = attackingMinions.stream()
+        int attackers = attackingMinions.get()
                 .map(m -> m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN))
                 .reduce(0, Integer::sum);
         List<Minion> defendingMinons = b.getMinions(team, false, true)
