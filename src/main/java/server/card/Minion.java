@@ -124,7 +124,7 @@ public class Minion extends BoardObject {
         boolean ward = this.board.getMinions(this.team * -1, true, true)
                 .anyMatch(potentialWard -> potentialWard.finalStatEffects.getStat(EffectStats.WARD) > 0);
         // TODO add if can attack this minion eg stealth
-        return (!ward || m.finalStatEffects.getStat(EffectStats.WARD) > 0)
+        return m.isInPlay() && (!ward || m.finalStatEffects.getStat(EffectStats.WARD) > 0)
                 && (m.status.equals(CardStatus.BOARD) ? this.attackMinionConditions() : this.attackLeaderConditions());
     }
 
