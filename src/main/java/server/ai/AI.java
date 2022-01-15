@@ -51,7 +51,7 @@ public class AI extends Thread {
     private static final int SAMPLING_MIN_SAMPLES = 1;
 
     // The maximum number of branches to sample at min depth
-    private static final int SAMPLING_MAX_SAMPLES = 24;
+    private static final int SAMPLING_MAX_SAMPLES = 30;
 
     // How much the max number of samples gets multiplied by per level
     private static final double SAMPLING_MAX_SAMPLES_MULTIPLIER = 0.6;
@@ -101,10 +101,14 @@ public class AI extends Thread {
     // how much extra weight to put into the attack action, scales off of the minion's attack
     private static final double ATTACK_WEIGHT_MULTIPLIER = 1;
 
+    // How much to multiply the weight per extra damage overkill from attacking a low health minion
+    // encourage better trades
+    private static final double ATTACK_WEIGHT_OVERKILL_PENALTY = 0.8;
+
     // bonus for attacking the leader
     private static final double ATTACK_TARGET_LEADER_MULTIPLIER = 3;
 
-    private static final double END_TURN_WEIGHT = 1;
+    private static final double END_TURN_WEIGHT = 0.2;
 
     // Statistics to gauge AI evaluation speed
     private final int[] width = new int[SAMPLING_MAX_DEPTH + 1];
@@ -484,7 +488,8 @@ public class AI extends Thread {
                 double weight = totalWeight / m.getAttackableTargets().count();
                 m.getAttackableTargets().forEachOrdered(target -> {
                     double bonus = target instanceof Leader ? ATTACK_TARGET_LEADER_MULTIPLIER : 1;
-                    poss.add(new OrderAttackAction(m, target).toString(), bonus * weight);
+                    double overkillMultiplier = Math.pow(ATTACK_WEIGHT_OVERKILL_PENALTY, Math.max(0, m.finalStatEffects.getStat(EffectStats.ATTACK) - target.health));
+                    poss.add(new OrderAttackAction(m, target).toString(), overkillMultiplier * bonus * weight);
                 });
             }
         });
@@ -529,7 +534,8 @@ public class AI extends Thread {
                     List<Minion> searchSpace = m.getAttackableTargets().collect(Collectors.toList());
                     double weight = totalWeight / searchSpace.size();
                     for (Minion target : searchSpace) {
-                        poss.add(new OrderAttackAction(m, target).toString(), weight);
+                        double overkillMultiplier = Math.pow(ATTACK_WEIGHT_OVERKILL_PENALTY, Math.max(0, m.finalStatEffects.getStat(EffectStats.ATTACK) - target.health));
+                        poss.add(new OrderAttackAction(m, target).toString(), overkillMultiplier * weight);
                     }
                 }
             }
