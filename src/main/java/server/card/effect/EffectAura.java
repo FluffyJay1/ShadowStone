@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * and stop granting the effect as soon as they leave. This type of effect is
  * called an aura, and requires a little extra work and special treatment to
  * make sure it behaves well with our systems. Most of the logic for this is in
- * Board.java, as a result.
+ * ServerBoard.java, as a result.
  */
 public abstract class EffectAura extends Effect {
     public Map<Card, Effect> currentActiveEffects;

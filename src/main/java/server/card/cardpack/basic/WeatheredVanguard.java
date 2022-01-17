@@ -29,7 +29,7 @@ public class WeatheredVanguard extends Minion {
             public Resolver battlecry() {
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         List<Card> knights = List.of(new Knight(b), new Knight(b));
                         List<Integer> pos = List.of(owner.getIndex() + 1, owner.getIndex());
                         this.resolve(b, rl, el, new CreateCardResolver(knights, owner.team, CardStatus.BOARD, pos));
@@ -46,7 +46,7 @@ public class WeatheredVanguard extends Minion {
             public Resolver unleash() {
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         List<Minion> minions = b.getMinions(owner.team, false, true).collect(Collectors.toList());
                         if (!minions.isEmpty()) {
                             Effect stats = new EffectStatChange("+1/+0/+1 (from <b>Weathered Vanguard's Unleash</b>).", 1, 0, 1);

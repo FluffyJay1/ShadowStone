@@ -72,7 +72,7 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
             pre = this.scheduledPre.peek();
         }
         if (!this.processedEvent && !this.isPre() && this.event != null) {
-            this.visualBoard.processEvent(null, null, this.event);
+            this.visualBoard.processEvent(this.event);
             this.onProcess();
             this.processedEvent = true;
         }

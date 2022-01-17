@@ -24,7 +24,7 @@ public class PlayCardResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         if (this.p.canPlayCard(this.c)) {
             /*
             It's convenient to store battlecry targets in a string, however
@@ -37,7 +37,7 @@ public class PlayCardResolver extends Resolver {
             b.processEvent(rl, el,
                     new EventManaChange(this.p, -this.c.finalStatEffects.getStat(EffectStats.COST), false, true));
             if (this.c instanceof BoardObject) {
-                b.processEvent(rl, el, new EventPutCard(this.c, CardStatus.BOARD, this.p.team, this.position, null));
+                b.processEvent(rl, el, new EventPutCard(List.of(this.c), CardStatus.BOARD, this.p.team, List.of(this.position), null));
             } else {
                 b.processEvent(rl, el, new EventDestroy(this.c));
             }

@@ -19,7 +19,7 @@ public class DestroyResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         if (!this.cards.isEmpty()) {
             EventDestroy destroy = new EventDestroy(this.cards);
             b.processEvent(rl, el, destroy);

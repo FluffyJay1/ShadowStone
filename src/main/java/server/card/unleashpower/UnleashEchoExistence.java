@@ -23,7 +23,7 @@ public class UnleashEchoExistence extends UnleashPower {
                 Effect effect = this; // anonymous fuckery
                 return new Resolver(true) {
                     @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         if (m.attacksThisTurn > 0) {
                             Card copy = Card.createFromConstructor(effect.owner.board, m.getClass());
                             this.resolve(b, rl, el,

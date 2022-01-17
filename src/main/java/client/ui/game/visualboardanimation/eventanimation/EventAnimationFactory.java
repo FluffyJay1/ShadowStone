@@ -45,6 +45,7 @@ public class EventAnimationFactory {
         return anim;
     }
 
+    @SuppressWarnings("unchecked")
     private <T extends Event> Class<? extends EventAnimation<T>> getAnimationClass(T event) {
         if (event instanceof EventDamage) {
             EventDamage ed = (EventDamage) event;

@@ -27,7 +27,7 @@ public class EffectLastWordsAlliedBlast extends Effect {
         EffectLastWordsAlliedBlast effect = this; // just being lazy
         return new Resolver(true) {
             @Override
-            public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+            public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                 List<Minion> minions = b.getMinions(effect.owner.team, false, true).collect(Collectors.toList());
                 if (!minions.isEmpty()) {
                     Minion victim = Game.selectRandom(minions);

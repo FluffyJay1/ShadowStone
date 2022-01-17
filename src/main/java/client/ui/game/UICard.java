@@ -1,6 +1,5 @@
 package client.ui.game;
 
-import java.awt.Color;
 import java.util.*;
 
 import org.newdawn.slick.*;
@@ -12,6 +11,11 @@ import client.ui.*;
 import server.card.*;
 import server.card.effect.*;
 import server.card.unleashpower.*;
+import utils.PendingManager;
+
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.newdawn.slick.opengl.renderer.SGL.GL_ONE;
+import static org.newdawn.slick.opengl.renderer.SGL.GL_SRC_ALPHA;
 
 public class UICard extends UIBox {
     public static final Vector2f CARD_DIMENSIONS = new Vector2f(150, 180);
@@ -35,7 +39,11 @@ public class UICard extends UIBox {
             SCALE_COMBAT = 1.2, SCALE_PLAY = 2.5, SCALE_MOVE = 2;
     public static final int Z_DEFAULT = 0, Z_HAND = 2, Z_BOARD = 0, Z_TARGETING = 4,
             Z_MOVE = 4, Z_DRAGGING = 3;
-    public static final String CARD_CLICK = "cardclick";
+    private static final double PENDING_PLAY_TIME_PER_CYCLE = 0.4;
+    private static final float PENDING_PLAY_ELLIPSIS_SPACING = 0.2f;
+    private static final float PENDING_PLAY_ELLIPSIS_SIZE = 20f;
+    private static final Color PENDING_PLAY_COLOR = new Color(0.6f, 0.6f, 0.7f, 1);
+    private static final Color PENDING_PLAY_POSITION_COLOR = new Color(0.8f, 0.8f, 1f, 0.4f);
     private Card card;
     private Image cardImage, subImage;
     private final UIBoard uib;
@@ -47,6 +55,8 @@ public class UICard extends UIBox {
     private boolean orderingAttack;
     private boolean combat;
     private boolean dragging;
+    private final Set<PendingManager<?>> pendingSources;
+    private double pendingTimer;
 
     public UICard(UI ui, UIBoard uib, Card c) {
         super(ui, new Vector2f(), CARD_DIMENSIONS, "");
@@ -54,6 +64,7 @@ public class UICard extends UIBox {
         this.setCard(c);
         this.icons = new ArrayList<>();
         this.flippedOver = false;
+        this.pendingSources = new HashSet<>();
     }
 
     @Override
@@ -128,6 +139,18 @@ public class UICard extends UIBox {
         this.dragging = dragging;
     }
 
+    public void addPendingSource(PendingManager<?> source) {
+        this.pendingSources.add(source);
+    }
+
+    public void removePendingSource(PendingManager<?> source) {
+        this.pendingSources.remove(source);
+    }
+
+    public boolean isPending() {
+        return !this.pendingSources.isEmpty();
+    }
+
     public void updateCardAnimation() {
         double scale = switch (this.card.status) {
             case BOARD, LEADER -> SCALE_BOARD;
@@ -167,12 +190,25 @@ public class UICard extends UIBox {
         if (!this.isBeingAnimated()) {
             this.updateCardAnimation();
         }
+        if (this.isPending()) {
+            this.pendingTimer = (this.pendingTimer + frametime) % PENDING_PLAY_TIME_PER_CYCLE;
+        }
     }
 
     @Override
     public void draw(Graphics g) {
         if (this.isVisible() && this.card != null) {
-            this.drawCard(g, this.getAbsPos(), this.getScale());
+            Vector2f absPos = this.getAbsPos();
+            this.drawCard(g, absPos, this.getScale());
+            if (this.isPending()) {
+                float size = (float) this.getScale() * PENDING_PLAY_ELLIPSIS_SIZE;
+                for (int i = -1; i <= 1; i++) {
+                    Vector2f pos = this.getAbsPosOfLocal(this.getLocalPosOfRel(new Vector2f(i * PENDING_PLAY_ELLIPSIS_SPACING, 0)));
+                    g.setColor(new Color(1f, 1f, 1f, ((1 + (float)Math.sin((-i / 3f + this.pendingTimer / PENDING_PLAY_TIME_PER_CYCLE) * Math.PI * 2)) / 2.f)));
+                    g.fillOval(pos.x - size/2, pos.y - size/2, size, size);
+                }
+                g.setColor(Color.white);
+            }
         }
         this.drawChildren(g);
     }
@@ -182,7 +218,7 @@ public class UICard extends UIBox {
             this.drawCardBack(g, pos, scale);
             return;
         }
-        this.drawCardArt(g, pos, scale);
+        this.drawCardArt(g, pos, scale, this.card.status, this.isPending() ? PENDING_PLAY_COLOR : Color.white);
         switch (this.card.status) {
             case BOARD, LEADER -> this.drawOnBoard(g, pos, scale);
             case UNLEASHPOWER -> this.drawUnleashPower(g, pos, scale);
@@ -199,7 +235,7 @@ public class UICard extends UIBox {
                 (int) (pos.y - image.getHeight() / 2));
     }
 
-    public void drawCardArt(Graphics g, Vector2f pos, double scale) {
+    public void drawCardArt(Graphics g, Vector2f pos, double scale, CardStatus status, Color filter) {
         // get image if it doesn't exist
         if (this.cardImage == null && this.card.getTooltip().imagepath != null) {
             this.cardImage = Game.getImage(this.card.getTooltip().imagepath).getScaledCopy((int) this.getOriginalDim().x,
@@ -210,10 +246,12 @@ public class UICard extends UIBox {
         // for an unleash power, draw it in a circle
         if (this.card instanceof UnleashPower) {
             Circle c = new Circle(pos.x, pos.y, (float) (UNLEASH_POWER_RADIUS * scale));
+            g.setColor(filter);
             g.texture(c, scaledCopy, true);
+            g.setColor(Color.white);
         } else {
             // if its a minion on board, zoom in
-            if (this.card instanceof Minion && this.card.status.equals(CardStatus.BOARD)) {
+            if (this.card instanceof Minion && status.equals(CardStatus.BOARD)) {
                 TooltipMinion tooltip = (TooltipMinion) this.card.getTooltip();
                 if (this.subImage == null) {
                     if (tooltip.artFocusScale <= 0) {
@@ -235,9 +273,9 @@ public class UICard extends UIBox {
                 }
                 scaledCopy = this.subImage.getScaledCopy((float) scale);
             }
-
             g.drawImage(scaledCopy, (int) (pos.x - scaledCopy.getWidth() / 2),
-                    (int) (pos.y - scaledCopy.getHeight() / 2));
+                    (int) (pos.y - scaledCopy.getHeight() / 2),
+                    filter);
         }
     }
 
@@ -363,7 +401,7 @@ public class UICard extends UIBox {
 
     public void drawStatNumber(Graphics g, Vector2f pos, double scale, int stat, Vector2f relpos, Vector2f textoffset,
             double fontsize, Color c) {
-        UnicodeFont font = Game.getFont("Verdana", fontsize * scale, true, false, c, Color.BLACK);
+        UnicodeFont font = Game.getFont("Verdana", fontsize * scale, true, false, c, Color.black);
         font.drawString(
                 pos.x + CARD_DIMENSIONS.x * relpos.x * (float) scale + font.getWidth("" + stat) * (textoffset.x - 0.5f),
                 pos.y + CARD_DIMENSIONS.y * relpos.y * (float) scale
@@ -405,4 +443,44 @@ public class UICard extends UIBox {
         }
         this.drawStatNumber(g, pos, scale, health, relpos, textoffset, fontsize, c);
     }
+
+    public void drawPendingPlayPosition(Graphics g, Vector2f drawPos) {
+        Vector2f absPos = this.getAbsPos();
+        g.setDrawMode(Graphics.MODE_ADD);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE); // major weirdchamp on you slick
+        this.drawCardArt(g, drawPos, SCALE_BOARD, CardStatus.BOARD, PENDING_PLAY_POSITION_COLOR);
+        g.setColor(new Color(0, 1.0f, 0, 0.3f));
+        g.setLineWidth(10);
+        g.drawLine(absPos.x, absPos.y, drawPos.x, drawPos.y);
+        g.setDrawMode(Graphics.MODE_NORMAL);
+        g.setColor(Color.white);
+        g.setLineWidth(1);
+    }
+
+    public void drawPendingAttack(Graphics g, UICard pendingAttackTarget) {
+        Vector2f absPos = this.getAbsPos();
+        Vector2f targetPos = pendingAttackTarget.getAbsPos();
+        g.setDrawMode(Graphics.MODE_ADD);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE); // major weirdchamp on you slick
+        g.setColor(new Color(1.0f, 0.2f, 0, 0.3f));
+        g.setLineWidth(10);
+        g.drawLine(absPos.x, absPos.y, targetPos.x, targetPos.y);
+        g.setDrawMode(Graphics.MODE_NORMAL);
+        g.setColor(Color.white);
+        g.setLineWidth(1);
+    }
+
+    public void drawPendingUnleash(Graphics g, UICard pendingUnleashTarget) {
+        Vector2f absPos = this.getAbsPos();
+        Vector2f targetPos = pendingUnleashTarget.getAbsPos();
+        g.setDrawMode(Graphics.MODE_ADD);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE); // major weirdchamp on you slick
+        g.setColor(new Color(0.9f, 0.9f, 0, 0.3f));
+        g.setLineWidth(10);
+        g.drawLine(absPos.x, absPos.y, targetPos.x, targetPos.y);
+        g.setDrawMode(Graphics.MODE_NORMAL);
+        g.setColor(Color.white);
+        g.setLineWidth(1);
+    }
+
 }

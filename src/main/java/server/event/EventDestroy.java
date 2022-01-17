@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.PendingPlayPositioner;
 import server.*;
 import server.card.*;
 
@@ -55,6 +56,9 @@ public class EventDestroy extends Event {
                         if (c instanceof BoardObject) {
                             BoardObject bo = (BoardObject) c;
                             bo.lastBoardPos = bo.getIndex();
+                            if (bo.team == b.localteam && b instanceof PendingPlayPositioner) {
+                                ((PendingPlayPositioner) b).getPendingPlayPositionProcessor().processOp(bo.getIndex(), null, false);
+                            }
                             p.getPlayArea().remove(bo);
                             this.cardsLeavingPlay.add(bo);
                         }

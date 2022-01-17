@@ -16,7 +16,7 @@ public class MillResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         // simple
         b.processEvent(rl, el, new EventMill(c));
         b.processEvent(rl, el, new EventDestroy(c));

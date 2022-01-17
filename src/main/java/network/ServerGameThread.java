@@ -28,16 +28,15 @@ public class ServerGameThread extends Thread {
     final DataStream dslocal;
     final boolean pvp;
     AI ai;
-    final Board b;
+    final ServerBoard b;
     final VisualBoard localBoard;
     final ConstructedDeck[] decks;
 
     public ServerGameThread(DataStream dsclient, boolean pvp, VisualBoard localBoard) {
-        this.b = new Board();
+        this.b = new ServerBoard(localBoard.localteam);
         this.localBoard = localBoard;
         this.dslocal = dsclient;
         this.pvp = pvp;
-        this.b.localteam = localBoard.localteam;
         this.decks = new ConstructedDeck[2];
     }
 
@@ -88,6 +87,7 @@ public class ServerGameThread extends Thread {
     }
 
     private void initializeGame() {
+        List<Resolver> rl = new ArrayList<>();
         for (int team = 1; team >= -1; team -= 2) { // deckbuilding 101
             List<Card> cards = this.decks[(team - 1) / -2].convertToCards(this.b);
             List<Card> shuffledCards = Game.selectRandom(cards, cards.size());
@@ -95,16 +95,17 @@ public class ServerGameThread extends Thread {
             for (int i = 0; i < shuffledCards.size(); i++) {
                 inds.add(i);
             }
-            this.b.processEvent(null, null,
+            this.b.processEvent(rl, null,
                     new EventCreateCard(shuffledCards, team, CardStatus.DECK, inds));
             UnleashPower up = (UnleashPower) Card.createFromConstructor(this.b,
                     CardSet.getDefaultUnleashPower(this.decks[(team - 1) / -2].craft));
-            this.b.processEvent(null, null,
+            this.b.processEvent(rl, null,
                     new EventCreateCard(List.of(up), team, CardStatus.UNLEASHPOWER, List.of(0)));
             // TODO change leader
-            this.b.processEvent(null, null,
+            this.b.processEvent(rl, null,
                     new EventCreateCard(List.of(new Rowen(this.b)), team, CardStatus.LEADER, List.of(0)));
         }
+        this.b.resolveAll(rl);
         this.b.resolve(new DrawResolver(this.b.player1, 3));
         this.b.resolve(new DrawResolver(this.b.player2, 3));
         this.b.resolve(new TurnStartResolver(this.b.player1));

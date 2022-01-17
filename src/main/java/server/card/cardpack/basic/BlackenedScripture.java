@@ -3,6 +3,7 @@ package server.card.cardpack.basic;
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
 import server.Board;
+import server.ServerBoard;
 import server.card.*;
 import server.card.effect.Effect;
 import server.event.Event;
@@ -26,7 +27,7 @@ public class BlackenedScripture extends Spell {
             public Resolver battlecry() {
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         Target banishTarget = battlecryTargets.get(0);
                         if (banishTarget.getTargetedCards().size() > 0) {
                             Card targeted = banishTarget.getTargetedCards().get(0);

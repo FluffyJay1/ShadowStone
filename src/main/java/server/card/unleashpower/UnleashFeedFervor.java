@@ -25,7 +25,7 @@ public class UnleashFeedFervor extends UnleashPower {
                 Effect effect = this; // anonymous fuckery
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         if (e instanceof EventManaChange) {
                             Player p = b.getPlayer(effect.owner.team);
                             if (!overflow && p.overflow()) {

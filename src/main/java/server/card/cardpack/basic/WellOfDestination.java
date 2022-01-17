@@ -25,7 +25,7 @@ public class WellOfDestination extends Amulet {
             public Resolver onTurnStart() {
                 return new Resolver(true) {
                     @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         List<Minion> possible = b.getMinions(owner.team, false, true).collect(Collectors.toList());
                         if (!possible.isEmpty()) {
                             Minion targeted = Game.selectRandom(possible);

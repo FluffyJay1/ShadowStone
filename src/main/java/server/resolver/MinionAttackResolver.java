@@ -20,7 +20,7 @@ public class MinionAttackResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         EventGroup attackOrdered = new EventGroup(EventGroupType.MINIONATTACKORDER, List.of(this.m1, this.m2));
         b.pushEventGroup(attackOrdered);
         b.processEvent(rl, el, new EventMinionAttack(this.m1, this.m2));

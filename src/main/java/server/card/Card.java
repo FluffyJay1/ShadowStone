@@ -23,6 +23,7 @@ public abstract class Card implements Indexable, StringBuildable {
     public CardStatus status;
     public final ClassCraft craft;
     public Card realCard; // for visual board
+    public Card visualCard; // for client board
     public UICard uiCard;
 
     public EffectStats.StatSet finalStatEffects = new EffectStats.StatSet(), finalBasicStatEffects = new EffectStats.StatSet();

@@ -28,7 +28,7 @@ public class Fireball extends Spell {
                 Effect effect = this;
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         List<Card> markedForDeath = new LinkedList<>();
                         for (Card targeted : battlecryTargets.get(0).getTargetedCards()) {
                             List<Minion> m = new LinkedList<>();

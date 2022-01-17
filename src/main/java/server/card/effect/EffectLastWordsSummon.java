@@ -31,7 +31,7 @@ public class EffectLastWordsSummon extends Effect {
         EffectLastWordsSummon effect = this;
         return new Resolver(false) {
             @Override
-            public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+            public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                 List<Card> newCards = new LinkedList<>();
                 List<Integer> cardpos = new LinkedList<>();
                 int pos = ((BoardObject) effect.owner).lastBoardPos; // startpos

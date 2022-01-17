@@ -19,7 +19,7 @@ public class TurnEndResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         b.processEvent(rl, el, new EventTurnEnd(p));
         List<Resolver> subList = new LinkedList<>();
         // avoid concurrent modification

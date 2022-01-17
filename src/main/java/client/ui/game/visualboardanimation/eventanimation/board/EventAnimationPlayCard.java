@@ -10,7 +10,7 @@ import server.event.*;
 
 public class EventAnimationPlayCard extends EventAnimation<EventPlayCard> {
     public EventAnimationPlayCard() {
-        super(0.7, 0);
+        super(0, 0.7);
     }
 
     @Override

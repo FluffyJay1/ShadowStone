@@ -205,6 +205,7 @@ public class ConstructedDeck implements Serializable {
     /**
      * Deserializes the decks from file and loads them
      */
+    @SuppressWarnings("unchecked")
     public static void loadFromFile() {
         File f = new File("decks.dat");
         if (f.exists()) {

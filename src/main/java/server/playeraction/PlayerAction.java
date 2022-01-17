@@ -20,7 +20,7 @@ public abstract class PlayerAction {
      * @return The results of the action performed, may be empty if nothing happens
      *         but won't be null
      */
-    public ResolutionResult perform(Board b) {
+    public ResolutionResult perform(ServerBoard b) {
         return new ResolutionResult(new LinkedList<>(), false);
     }
 

@@ -5,9 +5,9 @@ import java.util.TimerTask;
 import java.util.Date;
 
 class ForceEnd extends TimerTask {
-    final Board b;
+    final ServerBoard b;
 
-    public ForceEnd(Board b) {
+    public ForceEnd(ServerBoard b) {
         this.b = b;
     }
 
@@ -19,10 +19,10 @@ class ForceEnd extends TimerTask {
 
 public class TurnTimer extends Thread {
     Timer t;
-    final Board b;
+    final ServerBoard b;
     Date d;
 
-    public TurnTimer(Board b) {
+    public TurnTimer(ServerBoard b) {
         this.b = b;
     }
 

@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.PendingPlayPositioner;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -36,10 +37,6 @@ public class EventPutCard extends Event {
         this.targetTeam = team;
         this.pos = pos;
         this.markedForDeath = markedForDeath;
-    }
-
-    public EventPutCard(Card c, CardStatus status, int team, int pos, List<Card> markedForDeath) {
-        this(List.of(c), status, team, List.of(pos), markedForDeath);
     }
 
     @Override
@@ -102,6 +99,9 @@ public class EventPutCard extends Event {
                 }
                 case BOARD -> {
                     assert card instanceof BoardObject;
+                    if (card.team == b.localteam && b instanceof PendingPlayPositioner) {
+                        ((PendingPlayPositioner) b).getPendingPlayPositionProcessor().processOp(card.getIndex(), null, false);
+                    }
                     sourceP.getPlayArea().remove(card);
                     if (!card.status.equals(this.status)) {
                         this.cardsLeavingPlay.add((BoardObject) card);
@@ -136,6 +136,9 @@ public class EventPutCard extends Event {
                         if (card instanceof Minion) {
                             ((Minion) card).summoningSickness = true;
                         }
+                        if (bo.team == b.localteam && b instanceof PendingPlayPositioner) {
+                            ((PendingPlayPositioner) b).getPendingPlayPositionProcessor().processOp(bo.getIndex(), bo, true);
+                        }
                     }
                 }
                 case HAND -> destP.getHand().add(this.pos.get(i), card);
@@ -150,9 +153,10 @@ public class EventPutCard extends Event {
     public void undo() {
         for (int i = this.cards.size() - 1; i >= 0; i--) {
             Card card = this.cards.get(i);
+            Board b = card.board;
             card.alive = this.oldAlive.get(i);
             if (this.successful.get(i)) {
-                Player p = card.board.getPlayer(card.team); // current player
+                Player p = b.getPlayer(card.team); // current player
                 switch (card.status) { // removing from
                     case HAND -> p.getHand().remove(card);
                     case BOARD -> p.getPlayArea().remove((BoardObject) card);
@@ -176,7 +180,7 @@ public class EventPutCard extends Event {
                 }
                 card.team = this.prevTeam.get(i);
                 card.status = this.prevStatus.get(i);
-                p = card.board.getPlayer(card.team); // old player
+                p = b.getPlayer(card.team); // old player
                 switch (this.prevStatus.get(i)) { // adding to
                     case HAND -> p.getHand().add(this.prevPos.get(i), card);
                     case BOARD -> {
@@ -192,7 +196,10 @@ public class EventPutCard extends Event {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.id).append(" ").append(this.cards.size()).append(" ").append(this.status.toString()).append(" ").append(this.targetTeam).append(" ");
+        builder.append(this.id).append(" ")
+                .append(this.cards.size()).append(" ")
+                .append(this.status.toString()).append(" ")
+                .append(this.targetTeam).append(" ");
         for (int i = 0; i < this.cards.size(); i++) {
             builder.append(this.cards.get(i).toReference()).append(this.pos.get(i)).append(" ");
         }

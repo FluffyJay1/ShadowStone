@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.PendingMinionAttack;
 import server.*;
 import server.card.*;
 
@@ -22,6 +23,9 @@ public class EventMinionAttack extends Event {
     public void resolve() {
         this.prevAttacksThisTurn = this.m1.attacksThisTurn;
         this.m1.attacksThisTurn++;
+        if (this.m1.team == this.m1.board.localteam && this.m1.board instanceof PendingMinionAttack.PendingMinionAttacker) {
+            ((PendingMinionAttack.PendingMinionAttacker) this.m1.board).getPendingMinionAttackProcessor().process(new PendingMinionAttack(this.m1, this.m2));
+        }
     }
 
     @Override

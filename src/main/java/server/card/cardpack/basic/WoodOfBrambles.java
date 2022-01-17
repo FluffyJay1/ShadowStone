@@ -1,7 +1,6 @@
 package server.card.cardpack.basic;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import client.tooltip.*;
 import server.*;
@@ -31,7 +30,7 @@ public class WoodOfBrambles extends Amulet {
                 Effect effect = this;
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         List<Card> cards = List.of(new Fairy(effect.owner.board), new Fairy(effect.owner.board));
                         List<Integer> pos = List.of(-1, -1);
                         this.resolve(b, rl, el, new CreateCardResolver(cards, effect.owner.team, CardStatus.HAND, pos));

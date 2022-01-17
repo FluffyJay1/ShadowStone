@@ -22,7 +22,7 @@ public class DragonOracle extends Spell {
             public Resolver battlecry() {
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         Player player = owner.board.getPlayer(owner.team);
                         if (player.overflow()) {
                             this.resolve(b, rl, el, new DrawResolver(player, 1));

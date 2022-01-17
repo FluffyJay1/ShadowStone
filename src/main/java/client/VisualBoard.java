@@ -1,6 +1,7 @@
 package client;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
@@ -14,7 +15,8 @@ import server.card.*;
 import server.event.*;
 import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
-import server.resolver.Resolver;
+import utils.PendingListManager;
+import utils.PendingManager;
 
 /**
  * The VisualBoard is a special type of board that the UI (via the UIBoard
@@ -23,11 +25,18 @@ import server.resolver.Resolver;
  * It only provides the "model" aspect of the animations, the "view" part is
  * done with the UIBoard.
  */
-public class VisualBoard extends Board {
+public class VisualBoard extends Board implements
+        PendingPlay.PendingPlayer, PendingPlayPositioner,
+        PendingMinionAttack.PendingMinionAttacker, PendingUnleash.PendingUnleasher {
     public static final double MIN_CONCURRENT_EVENT_DELAY = 0.2;
 
     public final UIBoard uiBoard;
-    public final Board realBoard;
+    public final ClientBoard realBoard;
+    //shared with realBoard
+    public PendingManager<PendingPlay> pendingPlays;
+    public PendingListManager<BoardObject> pendingPlayPositions;
+    public PendingManager<PendingMinionAttack> pendingMinionAttacks;
+    public PendingManager<PendingUnleash> pendingUnleashes;
     final List<String> inputeventliststrings = new LinkedList<>();
     public final List<VisualBoardAnimation> currentAnimations = new LinkedList<>();
 
@@ -37,22 +46,72 @@ public class VisualBoard extends Board {
 
     final EventAnimationFactory eventAnimationFactory;
     final EventGroupAnimationFactory eventGroupAnimationFactory;
+
     public VisualBoard(UIBoard uiBoard) {
         this(uiBoard, 1);
     }
 
     public VisualBoard(UIBoard uiBoard, int localteam) {
-        super();
+        super(localteam);
         this.uiBoard = uiBoard;
-        this.isClient = true;
-        this.isServer = false;
-        this.realBoard = new Board();
-        this.realBoard.isClient = true;
-        this.realBoard.isServer = false;
+        this.pendingPlays = new PendingManager<>() {
+            @Override
+            public void onProduce(PendingPlay item) {
+                if (item.card.visualCard != null) {
+                    item.card.visualCard.uiCard.addPendingSource(this);
+                }
+            }
+
+            @Override
+            public void onConsume(PendingPlay item) {
+                if (item.card.visualCard != null) {
+                    item.card.visualCard.uiCard.removePendingSource(this);
+                }
+            }
+        };
+        this.pendingPlayPositions = new PendingListManager<>();
+        this.pendingPlayPositions.trackConsumerState(() -> this.getPlayer(this.localteam).getPlayArea().stream()
+                .map(bo -> (BoardObject) bo.realCard)
+                .collect(Collectors.toList()));
+        this.pendingMinionAttacks = new PendingManager<>() {
+            @Override
+            public void onProduce(PendingMinionAttack item) {
+                if (item.m1.visualCard != null) {
+                    item.m1.visualCard.uiCard.addPendingSource(this);
+                }
+            }
+
+            @Override
+            public void onConsume(PendingMinionAttack item) {
+                if (item.m1.visualCard != null) {
+                    item.m1.visualCard.uiCard.removePendingSource(this);
+                }
+            }
+        };
+        this.pendingUnleashes = new PendingManager<>() {
+            @Override
+            public void onProduce(PendingUnleash item) {
+                if (item.source.visualCard != null) {
+                    item.source.visualCard.uiCard.addPendingSource(this);
+                }
+                if (item.m.visualCard != null) {
+                    item.m.visualCard.uiCard.addPendingSource(this);
+                }
+            }
+
+            @Override
+            public void onConsume(PendingUnleash item) {
+                if (item.source.visualCard != null) {
+                    item.source.visualCard.uiCard.removePendingSource(this);
+                }
+                if (item.m.visualCard != null) {
+                    item.m.visualCard.uiCard.removePendingSource(this);
+                }
+            }
+        };
+        this.realBoard = new ClientBoard(localteam, this.pendingPlays, this.pendingPlayPositions, this.pendingMinionAttacks, this.pendingUnleashes);
         this.player1.realPlayer = this.realBoard.player1;
         this.player2.realPlayer = this.realBoard.player2;
-        this.realBoard.localteam = localteam;
-        this.localteam = localteam;
         this.eventAnimationFactory = new EventAnimationFactory(this);
         this.eventGroupAnimationFactory = new EventGroupAnimationFactory(this);
     }
@@ -63,8 +122,8 @@ public class VisualBoard extends Board {
 
     // wrapper override to also set the advantage text
     @Override
-	public <T extends Event> T processEvent(List<Resolver> rl, List<Event> el, T e) {
-        T ret = super.processEvent(rl, el, e);
+	public <T extends Event> T processEvent(T e) {
+        T ret = super.processEvent(e);
 		this.uiBoard.advantageText.setText(String.format("Adv: %.4f", AI.evaluateAdvantage(this, this.localteam)));
         return ret;
     }
@@ -78,7 +137,7 @@ public class VisualBoard extends Board {
             String eventOrGroup = st.nextToken();
             this.inputeventliststrings.add(eventOrGroup);
         }
-
+        this.updateEventAnimation(0);
     }
 
     public void skipCurrentAnimation() {
@@ -96,7 +155,7 @@ public class VisualBoard extends Board {
             if (!EventGroup.isGroup(eventOrGroup)) {
                 Event currentEvent = Event.createFromString(this, new StringTokenizer(eventOrGroup));
                 if (currentEvent != null && currentEvent.conditions()) {
-                    this.processEvent(null, null, currentEvent);
+                    this.processEvent(currentEvent);
                 }
             }
         }
@@ -127,7 +186,7 @@ public class VisualBoard extends Board {
                 if (currentEvent != null && currentEvent.conditions()) {
                     anim = this.eventAnimationFactory.newAnimation(currentEvent);
                     if (anim == null) {
-                        this.processEvent(null, null, currentEvent);
+                        this.processEvent(currentEvent);
                     }
                 }
             }
@@ -167,4 +226,23 @@ public class VisualBoard extends Board {
         return this.getTargetableCards().filter(c -> t.canTarget(c.realCard));
     }
 
+    @Override
+    public PendingListManager.Processor<BoardObject> getPendingPlayPositionProcessor() {
+        return this.pendingPlayPositions.getConsumer();
+    }
+
+    @Override
+    public PendingManager.Processor<PendingMinionAttack> getPendingMinionAttackProcessor() {
+        return this.pendingMinionAttacks.getConsumer();
+    }
+
+    @Override
+    public PendingManager.Processor<PendingUnleash> getPendingUnleashProcessor() {
+        return this.pendingUnleashes.getConsumer();
+    }
+
+    @Override
+    public PendingManager.Processor<PendingPlay> getPendingPlayProcessor() {
+        return this.pendingPlays.getConsumer();
+    }
 }

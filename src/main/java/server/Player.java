@@ -122,7 +122,7 @@ public class Player implements StringBuildable {
     }
 
     public boolean canUnleashCard(Card c) {
-        return c instanceof Minion && ((Minion) c).canBeUnleashed() && c.team == this.team && this.canUnleash();
+        return c instanceof Minion && ((Minion) c).canBeUnleashed() && c.team == this.team && c.alive && this.canUnleash();
     }
 
     public boolean canUnleash() {

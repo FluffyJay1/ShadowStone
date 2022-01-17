@@ -33,7 +33,7 @@ public class CursedStone extends Minion {
                 Effect effect = this; // anonymous fuckery
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         Player player = owner.board.getPlayer(owner.team);
                         int missing = player.getLeader().finalStatEffects.getStat(EffectStats.HEALTH) - player.getLeader().health;
                         this.resolve(b, rl, el, new BlastResolver(effect, missing, null));

@@ -23,7 +23,7 @@ public class UnleashResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         if (this.m.canBeUnleashed()) {
             // see PlayCardResolver for why we set the targets first
             Target.setListFromString(this.m.getUnleashTargets(), b, new StringTokenizer(this.unleashTargets));

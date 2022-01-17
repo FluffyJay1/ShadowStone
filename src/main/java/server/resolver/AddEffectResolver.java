@@ -26,7 +26,7 @@ public class AddEffectResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         EventAddEffect addEffect = new EventAddEffect(this.c, e, this.destroyed);
         b.processEvent(rl, el, addEffect);
         this.effects = addEffect.effects;

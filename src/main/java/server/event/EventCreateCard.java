@@ -58,6 +58,9 @@ public class EventCreateCard extends Event {
                             ((Minion) c).summoningSickness = true;
                         }
                         this.successful.add(true);
+                        if (bo.team == b.localteam && b instanceof PendingPlayPositioner) {
+                            ((PendingPlayPositioner) b).getPendingPlayPositionProcessor().processOp(bo.getIndex(), null, true);
+                        }
                     } else {
                         this.successful.add(false);
                     }
@@ -82,8 +85,8 @@ public class EventCreateCard extends Event {
                 }
                 default -> this.successful.add(false);
             }
-            if (b.isClient) {
-                b.cardsCreated.add(c);
+            if (b instanceof ClientBoard) {
+                ((ClientBoard) b).cardsCreated.add(c);
             }
         }
     }
@@ -134,7 +137,9 @@ public class EventCreateCard extends Event {
             cards.add(c);
             if (b instanceof VisualBoard) {
                 assert c != null;
+                // link the ClientBoard version of the card with the VisualBoard version
                 c.realCard = ((VisualBoard) b).realBoard.cardsCreated.remove(0);
+                c.realCard.visualCard = c;
                 ((VisualBoard) b).uiBoard.addCard(c);
             }
         }

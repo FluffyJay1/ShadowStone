@@ -22,7 +22,7 @@ public class UnleashMendWounds extends UnleashPower {
             public Resolver onUnleashPre(Minion m) {
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         EffectStatChange e = new EffectStatChange("+0/+0/+1 (from <b>Mend Wounds</b>).", 0, 0, 1);
                         this.resolve(b, rl, el, new AddEffectResolver(m, e));
                     }

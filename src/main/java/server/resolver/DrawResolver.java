@@ -17,7 +17,7 @@ public class DrawResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         for (int i = 0; i < num; i++) {
             if (p.getDeck().size() == 0) {
                 // lose the game
@@ -25,8 +25,8 @@ public class DrawResolver extends Resolver {
                 break;
             } else {
                 List<Card> markedForDeath = new LinkedList<>();
-                b.processEvent(rl, el, new EventPutCard(this.p.getDeck().get(0), CardStatus.HAND, this.p.team,
-                        -1, markedForDeath));
+                b.processEvent(rl, el, new EventPutCard(List.of(this.p.getDeck().get(0)), CardStatus.HAND, this.p.team,
+                        List.of(-1), markedForDeath));
                 if (!markedForDeath.isEmpty()) {
                     b.processEvent(rl, el, new EventDestroy(markedForDeath));
                 }

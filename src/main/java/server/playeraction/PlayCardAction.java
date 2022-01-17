@@ -25,7 +25,7 @@ public class PlayCardAction extends PlayerAction {
 
     // remember to set battlecry targets
     @Override
-    public ResolutionResult perform(Board b) {
+    public ResolutionResult perform(ServerBoard b) {
         ResolutionResult result = new ResolutionResult();
         if (!this.p.canPlayCard(this.c)) { // just to be safe
             return result;

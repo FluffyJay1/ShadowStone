@@ -19,7 +19,7 @@ public class EndTurnAction extends PlayerAction {
     }
 
     @Override
-    public ResolutionResult perform(Board b) {
+    public ResolutionResult perform(ServerBoard b) {
         if (team == b.currentPlayerTurn) {
             return b.endCurrentPlayerTurn();
         }

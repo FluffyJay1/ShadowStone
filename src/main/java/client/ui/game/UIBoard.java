@@ -130,17 +130,28 @@ public class UIBoard extends UIBox {
         this.player2ManaText.setText(
                 this.b.getPlayer(this.b.localteam * -1).mana + "/" + this.b.getPlayer(this.b.localteam * -1).maxmana);
 
+        // reset some pending stuff
         // move the cards to their respective positions
         for (int team : List.of(-1, 1)) {
-            List<BoardObject> bos = this.b.getPlayer(team).getPlayArea();
-            for (BoardObject bo : bos) {
-                UICard uic = bo.uiCard;
-                if (!uic.isBeingAnimated()) {
-                    uic.draggable = false;
-                    uic.setFlippedOver(false);
-                    uic.setVisible(true);
-                    // exclude cards that haven't been created yet
-                    uic.setPos(this.getBoardPosFor(bo.getIndex(), team, bos.size()), 0.99);
+            List<BoardObject> bos = team == this.b.localteam ?
+                    this.b.pendingPlayPositions.getConsumerStateWithPending().stream()
+                        .map(bo -> (BoardObject) bo.visualCard)
+                        .collect(Collectors.toList())
+                    : this.b.getPlayer(team).getPlayArea();
+            ListIterator<BoardObject> bosIter = bos.listIterator();
+            while (bosIter.hasNext()) {
+                int i = bosIter.nextIndex();
+                BoardObject bo = bosIter.next();
+                if (bo != null) {
+                    UICard uic = bo.uiCard;
+                    if (!uic.isBeingAnimated()) {
+                        uic.draggable = false;
+                        uic.setFlippedOver(false);
+                        uic.setVisible(true);
+                        if (bo.status.equals(CardStatus.BOARD)) {
+                            uic.setPos(this.getBoardPosFor(i, team, bos.size()), 0.99);
+                        }
+                    }
                 }
             }
             Leader leader = this.b.getPlayer(team).getLeader();
@@ -244,9 +255,33 @@ public class UIBoard extends UIBox {
         }
         if (this.draggingCard != null && this.draggingCard.getCard() instanceof BoardObject
                 && this.draggingCard.getRelPos().y < CARD_PLAY_Y) {
-            int wouldBePos = XToBoardPos(this.ui.lastmousepos.x / Config.WINDOW_WIDTH - 0.5, this.b.localteam, this.b.getPlayer(this.b.localteam).getPlayArea().size() + 1);
-            float wouldBeX = (boardPosToX(wouldBePos, this.b.localteam, this.b.getPlayer(this.b.localteam).getPlayArea().size() + 1) + 0.5f) * Config.WINDOW_WIDTH;
+            int pendingSize = this.b.pendingPlayPositions.getConsumerStateWithPending().size();
+            int wouldBePos = XToBoardPos(this.ui.lastmousepos.x / Config.WINDOW_WIDTH - 0.5, this.b.localteam, pendingSize + 1);
+            float wouldBeX = (boardPosToX(wouldBePos, this.b.localteam, pendingSize + 1) + 0.5f) * Config.WINDOW_WIDTH;
             g.drawLine(wouldBeX, Config.WINDOW_HEIGHT * 0.55f, wouldBeX, Config.WINDOW_HEIGHT * 0.74f);
+        }
+        // draw pending play
+        List<BoardObject> bos = this.b.pendingPlayPositions.getConsumerStateWithPending();
+        ListIterator<BoardObject> bosIter = bos.listIterator();
+        while (bosIter.hasNext()) {
+            int i = bosIter.nextIndex();
+            BoardObject bo = (BoardObject) bosIter.next().visualCard;
+            if (bo != null) {
+                UICard uic = bo.uiCard;
+                if (!bo.status.equals(CardStatus.BOARD)) {
+                    // lol
+                    Vector2f pos = this.getAbsOfPos(this.getPosOfRel(this.getBoardPosFor(i, this.b.localteam, bos.size())));
+                    uic.drawPendingPlayPosition(g, pos);
+                }
+            }
+        }
+        // draw pending attack
+        for (PendingMinionAttack pma : this.b.pendingMinionAttacks.getPending()) {
+            pma.m1.visualCard.uiCard.drawPendingAttack(g, pma.m2.visualCard.uiCard);
+        }
+        // draw pending unleash
+        for (PendingUnleash pu : this.b.pendingUnleashes.getPending()) {
+            pu.source.visualCard.uiCard.drawPendingUnleash(g, pu.m.visualCard.uiCard);
         }
         for (VisualBoardAnimation ea : this.b.currentAnimations) {
             if (ea.isStarted()) {
@@ -308,10 +343,7 @@ public class UIBoard extends UIBox {
 
     // auxiliary function for position on board
     private static float boardPosToX(int i, int team, int numCards) {
-        if (team == 1) {
-            return (float) ((i - (numCards - 1) / 2.) * BO_SPACING);
-        }
-        return (float) (-(i - (numCards - 1) / 2.) * BO_SPACING);
+            return (float) (team * (i - (numCards - 1) / 2.) * BO_SPACING);
     }
 
     public Vector2f getBoardPosFor(int cardpos, int team, int numCards) {
@@ -320,12 +352,7 @@ public class UIBoard extends UIBox {
     }
 
     private static int XToBoardPos(double x, int team, int numCards) {
-        int pos;
-        if (team == 1) {
-            pos = (int) ((x / BO_SPACING) + (numCards / 2.));
-        } else {
-            pos = (int) ((-x / BO_SPACING) + (numCards / 2.));
-        }
+        int pos = (int) ((team * x / BO_SPACING) + (numCards / 2.));
         pos = Math.min(Math.max(pos, 0), numCards - 1);
         return pos;
     }
@@ -520,8 +547,10 @@ public class UIBoard extends UIBox {
                     }
                 }
                 if (this.playingCard != null) {
+                    int pendingSize = this.b.pendingPlayPositions.getConsumerStateWithPending().size();
+                    int realPos = this.b.pendingPlayPositions.pendingToReal(XToBoardPos(this.playingX, this.b.localteam, pendingSize + 1));
                     this.ds.sendPlayerAction(new PlayCardAction(this.b.realBoard.getPlayer(this.b.localteam),
-                            this.playingCard.getCard().realCard, XToBoardPos(this.playingX, this.b.localteam, this.b.getPlayer(this.b.localteam).getPlayArea().size() + 1),
+                            this.playingCard.getCard().realCard, realPos,
                             Target.listToString(realt)).toString());
                 } else if (this.unleashingMinion != null) {
                     // unnecessary check but gets intent across

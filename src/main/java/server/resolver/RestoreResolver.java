@@ -25,7 +25,7 @@ public class RestoreResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         EventRestore er = b.processEvent(rl, el, new EventRestore(this.source, this.m, this.heal));
         this.actualHeal = er.actualHeal;
     }

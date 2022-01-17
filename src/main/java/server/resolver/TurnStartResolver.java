@@ -19,7 +19,7 @@ public class TurnStartResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         b.processEvent(rl, el, new EventTurnStart(p));
         b.processEvent(rl, el, new EventManaChange(this.p, 1, true, false));
         b.processEvent(rl, el, new EventManaChange(this.p, this.p.maxmana + 1, false, true));

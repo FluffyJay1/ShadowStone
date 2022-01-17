@@ -1,4 +1,4 @@
-placeholders for playing card positions when u chain them
+getLeader and getUnleashPower may be null
 AI should be able to place minions differently
 Use scanner instead of stringtokenizer to handle stream input?
 Optimize AI action sampling?
@@ -8,6 +8,8 @@ unleashpower art focus lol
 rotate cards
 indicate which cards have been marked for death
 update to use slick 1.0.2
+separate "minion attack" resolver from the "ordering attack" part
+    e.g. allow an effect that forces minions to attack something, without adding to their attacks per turn
 formalize "minimum number of targets"
 make game fullscreen and fix flickering problem from rendering text
 Card art in tooltip

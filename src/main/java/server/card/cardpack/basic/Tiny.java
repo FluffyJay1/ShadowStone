@@ -26,7 +26,7 @@ public class Tiny extends Minion {
             public Resolver unleash() {
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         EffectStatChange ef = new EffectStatChange("+2/+0/+2 and <b>Rush</b> (from <b>Unleash</b>).", 2,
                                 0, 2);
                         ef.effectStats.set.setStat(EffectStats.RUSH, 1);

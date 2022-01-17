@@ -36,7 +36,7 @@ public class EffectDamageResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         List<Boolean> poisonous = new ArrayList<>(this.targets.size());
         boolean isPoisonous = this.source.owner.finalStatEffects.getStat(EffectStats.POISONOUS) > 0;
         for (int i = 0; i < this.targets.size(); i++) {

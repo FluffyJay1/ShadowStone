@@ -24,7 +24,7 @@ public class UnleashMinionAction extends PlayerAction {
 
     // remember to set targets to unleash upon
     @Override
-    public ResolutionResult perform(Board b) {
+    public ResolutionResult perform(ServerBoard b) {
         ResolutionResult result = new ResolutionResult();
         if (!p.canUnleashCard(m)) {
             return result;

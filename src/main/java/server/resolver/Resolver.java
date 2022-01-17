@@ -19,7 +19,7 @@ public abstract class Resolver {
     // rl = the list of resolvers to add to, if we need to delay resolving
     // el = the list accumulating all the events, upon leaving method all occurred
     // events should be added to el
-    public abstract void onResolve(Board b, List<Resolver> rl, List<Event> el);
+    public abstract void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el);
 
     /*
      * a bit of overhead for transferring resolve contexts, resolve the subresolver
@@ -27,7 +27,7 @@ public abstract class Resolver {
      * it, also if the game is over we try our best to back out, next best solution
      * would be a try/catch for when the game ends
      */
-    protected final <T extends Resolver> T resolve(Board b, List<Resolver> rl, List<Event> el, T r) {
+    protected final <T extends Resolver> T resolve(ServerBoard b, List<Resolver> rl, List<Event> el, T r) {
         if (b.winner == 0) {
             r.onResolve(b, rl, el);
             if (r.rng) {
@@ -42,7 +42,7 @@ public abstract class Resolver {
      * then it keeps resolving until there's nothing, breaks early if the game has
      * ended
      */
-    protected final <T extends Resolver> void resolveList(Board b, List<Resolver> out, List<Event> el,
+    protected final <T extends Resolver> void resolveList(ServerBoard b, List<Resolver> out, List<Event> el,
             List<Resolver> in) {
         // TODO prevent infinite loops
         while (!in.isEmpty()) {

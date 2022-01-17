@@ -27,7 +27,7 @@ public class BlastResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         List<Minion> minions = this.b.getMinions(this.enemyTeam, false, true).collect(Collectors.toList());
         Minion target;
         if (minions.isEmpty()) {

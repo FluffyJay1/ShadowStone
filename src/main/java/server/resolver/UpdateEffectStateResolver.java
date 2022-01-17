@@ -1,6 +1,6 @@
 package server.resolver;
 
-import server.Board;
+import server.ServerBoard;
 import server.card.effect.Effect;
 import server.event.Event;
 import server.event.EventUpdateEffectState;
@@ -17,7 +17,7 @@ public class UpdateEffectStateResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         String oldState = effect.extraStateString();
         updateStep.run();
         String newState = effect.extraStateString();

@@ -25,7 +25,7 @@ public class GenesisOfLegend extends Amulet {
             public Resolver onTurnEnd() {
                 return new Resolver(true) {
                     @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         List<Minion> possible = b.getMinions(owner.team, false, true).collect(Collectors.toList());
                         if (!possible.isEmpty()) {
                             Minion selected = Game.selectRandom(possible);

@@ -24,7 +24,7 @@ public class UnleashBegetUndead extends UnleashPower {
             public Resolver onUnleashPre(Minion m) {
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         EffectLastWordsSummon elws = new EffectLastWordsSummon(
                                 "<b>Last Words</b>: summon a <b>Skeleton</b> (from <b>Beget Undead</b>).", Skeleton.class, m.team);
                         this.resolve(b, rl, el, new AddEffectResolver(m, elws));
@@ -38,7 +38,7 @@ public class UnleashBegetUndead extends UnleashPower {
                 Effect effect = this; // anonymous fuckery
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         this.resolve(b, rl, el, new EffectDamageResolver(effect, m, 1, true, null));
                     }
                 };

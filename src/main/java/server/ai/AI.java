@@ -126,7 +126,7 @@ public class AI extends Thread {
     private final Set<DeterministicBoardStateNode> traversedNodes;
 
     int difficulty;
-    Board b;
+    ServerBoard b;
     final DataStream dslocal;
     List<String> actionSendQueue;
     boolean waitForEvents, finishedTurn;
@@ -134,7 +134,7 @@ public class AI extends Thread {
     public AI(DataStream dslocal, int team, int difficulty) {
         this.difficulty = difficulty;
         this.dslocal = dslocal;
-        this.b = new Board(team);
+        this.b = new ServerBoard(team);
         this.actionSendQueue = new LinkedList<>();
         this.nodeMap = new HashMap<>();
         this.traversedNodes = new HashSet<>();
@@ -167,7 +167,7 @@ public class AI extends Thread {
                 }
                 break;
             case BOARDRESET:
-                this.b = new Board(this.b.localteam);
+                this.b = new ServerBoard(this.b.localteam);
                 this.actionSendQueue = new LinkedList<>();
                 this.waitForEvents = true;
             default:

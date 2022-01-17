@@ -1,6 +1,6 @@
 package server.resolver;
 
-import server.Board;
+import server.ServerBoard;
 import server.card.Card;
 import server.event.Event;
 import server.event.eventgroup.EventGroup;
@@ -21,7 +21,7 @@ public class FlagResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(c)));
         this.resolveList(b, rl, el, resolvers);
         b.popEventGroup();

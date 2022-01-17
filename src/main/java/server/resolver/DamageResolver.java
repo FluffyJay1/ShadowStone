@@ -43,7 +43,7 @@ public class DamageResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(Board b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         // filter out the targets that aren't even on the board at time of resolution
         List<Minion> processedTargets = new ArrayList<>(this.targets.size());
         List<Integer> processedDamage = new ArrayList<>(this.damage.size());

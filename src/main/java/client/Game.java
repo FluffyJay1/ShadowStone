@@ -1,6 +1,5 @@
 package client;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.util.*;
 
@@ -74,8 +73,8 @@ public class Game extends StateBasedGame {
             f = new UnicodeFont(new Font(font, Font.BOLD, (int) size), (int) size, bold, italic);
 
             try {
-                f.getEffects().add(new ColorEffect(fillc));
-                f.getEffects().add(new OutlineEffect(1, outc));
+                f.getEffects().add(new ColorEffect(toAwtColor(fillc)));
+                f.getEffects().add(new OutlineEffect(1, toAwtColor(outc)));
                 f.addAsciiGlyphs();
                 f.loadGlyphs();
             } catch (SlickException e) {
@@ -102,6 +101,14 @@ public class Game extends StateBasedGame {
 
     public static UnicodeFont getFont(String font, double size) {
         return getFont(font, size, false, false);
+    }
+
+    public static java.awt.Color toAwtColor(Color color) {
+        return new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+    }
+
+    public static Color toSlickColor(java.awt.Color color) {
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
     public static <T> T selectRandom(List<T> list) {

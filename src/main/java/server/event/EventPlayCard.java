@@ -2,6 +2,8 @@ package server.event;
 
 import java.util.*;
 
+import client.PendingPlay;
+import client.PendingPlayPositioner;
 import server.*;
 import server.card.*;
 
@@ -16,6 +18,14 @@ public class EventPlayCard extends Event {
         this.p = p;
         this.c = c;
         this.position = position;
+    }
+
+    @Override
+    public void resolve() {
+        Board b = this.c.board;
+        if (this.c.team == b.localteam && b instanceof PendingPlay.PendingPlayer) {
+            ((PendingPlay.PendingPlayer) b).getPendingPlayProcessor().process(new PendingPlay(this.c));
+        }
     }
 
     @Override
