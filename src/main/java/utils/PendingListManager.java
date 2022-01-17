@@ -28,6 +28,10 @@ public class PendingListManager<T> {
     // when player queues up multiple play card actions, we have to preview them
     private final List<Pending<T>> pendingQueue;
 
+    // if things are removed, multiple pending positions can lead to the same
+    // final position, this keeps track if we have a preferred one
+    private final Map<T, Integer> pendingPositionPreference;
+
     private Supplier<List<T>> consumerStateSupplier;
     private boolean dirtyPending;
     private List<T> cachedWithPending;
@@ -35,6 +39,7 @@ public class PendingListManager<T> {
     public PendingListManager() {
         this.localListOps = new LinkedList<>();
         this.pendingQueue = new LinkedList<>();
+        this.pendingPositionPreference = new HashMap<>();
         this.dirtyPending = true;
     }
 
@@ -62,6 +67,10 @@ public class PendingListManager<T> {
             this.dirtyPending = false;
         }
         return this.cachedWithPending;
+    }
+
+    public void addPendingPositionPreference(int preferredIndex, T item) {
+        this.pendingPositionPreference.put(item, preferredIndex);
     }
 
     /**
@@ -257,7 +266,10 @@ public class PendingListManager<T> {
          * @param realPos The position to add it in (in the future)
          */
         private void addPending(T item, int realPos) {
-            int playPos = realToPending(realPos);
+            Integer playPos = pendingPositionPreference.remove(item);
+            if (playPos == null || pendingToReal(playPos) != realPos) {
+                playPos = realToPending(realPos);
+            }
             Pending<T> pp = new Pending<>(item, playPos);
             pendingQueue.add(pp);
             localListOps.add(new ListOp<>(realPos, true, pp));

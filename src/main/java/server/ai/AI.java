@@ -526,7 +526,7 @@ public class AI extends Thread {
                 }
             }
         }
-        if (minions.stream().anyMatch(m -> m.finalStatEffects.getStat(EffectStats.WARD) > 0)) {
+        if (this.b.getMinions(team * -1, false, true).anyMatch(m -> m.finalStatEffects.getStat(EffectStats.WARD) > 0)) {
             // find ways to break through the wards
             for (Minion m : minions) {
                 if (m.canAttack()) {

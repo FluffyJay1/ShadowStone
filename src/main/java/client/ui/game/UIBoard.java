@@ -411,11 +411,11 @@ public class UIBoard extends UIBox {
                 break;
             case UNLEASHPOWER:
                 if (c.getCard().team == this.b.localteam) {
-                    if (this.b.getPlayer(this.b.localteam).canUnleash() && !this.b.disableInput) {
+                    if (this.b.realBoard.getPlayer(this.b.localteam).canUnleash() && !this.b.disableInput) {
                         c.setTargeting(true);
                         this.draggingUnleash = true;
                         this.b.getMinions(this.b.localteam, false, true)
-                                .filter(m -> this.b.getPlayer(this.b.localteam).canUnleashCard(m))
+                                .filter(m -> this.b.realBoard.getPlayer(this.b.localteam).canUnleashCard(m.realMinion()))
                                 .forEach(m -> m.uiCard.setPotentialTarget(true));
                     }
                 }
@@ -472,7 +472,8 @@ public class UIBoard extends UIBox {
                 this.playingCard.setTargeting(true);
                 this.playingCard.setPos(TARGETING_CARD_POS, 0.999);
                 this.selectedCard = null;
-                // this.resolveNoBattlecryTarget();
+                Target.resetList(this.playingCard.getCard().getBattlecryTargets());
+                Target.resetList(this.playingCard.getCard().realCard.getBattlecryTargets());
                 this.animateTargets(Target.firstUnsetTarget(this.getCurrentTargetingTargetList()), true);
                 this.playingX = this.draggingCard.getRelPos().x;
             }
@@ -547,10 +548,15 @@ public class UIBoard extends UIBox {
                     }
                 }
                 if (this.playingCard != null) {
-                    int pendingSize = this.b.pendingPlayPositions.getConsumerStateWithPending().size();
-                    int realPos = this.b.pendingPlayPositions.pendingToReal(XToBoardPos(this.playingX, this.b.localteam, pendingSize + 1));
+                    int playPos = 0;
+                    if (this.playingCard.getCard() instanceof BoardObject) {
+                        int pendingSize = this.b.pendingPlayPositions.getConsumerStateWithPending().size();
+                        int pendingPos = XToBoardPos(this.playingX, this.b.localteam, pendingSize + 1);
+                        playPos = this.b.pendingPlayPositions.pendingToReal(pendingPos);
+                        this.b.pendingPlayPositions.addPendingPositionPreference(pendingPos, (BoardObject) this.playingCard.getCard().realCard);
+                    }
                     this.ds.sendPlayerAction(new PlayCardAction(this.b.realBoard.getPlayer(this.b.localteam),
-                            this.playingCard.getCard().realCard, realPos,
+                            this.playingCard.getCard().realCard, playPos,
                             Target.listToString(realt)).toString());
                 } else if (this.unleashingMinion != null) {
                     // unnecessary check but gets intent across
