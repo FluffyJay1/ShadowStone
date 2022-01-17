@@ -31,10 +31,12 @@ public class BlastResolver extends Resolver {
         List<Minion> minions = this.b.getMinions(this.enemyTeam, false, true).collect(Collectors.toList());
         Minion target;
         if (minions.isEmpty()) {
-            target = this.b.getPlayer(this.enemyTeam).getLeader();
+            target = this.b.getPlayer(this.enemyTeam).getLeader().orElse(null);
         } else {
             target = Game.selectRandom(minions);
         }
-        this.resolve(b, rl, el, new EffectDamageResolver(this.source, List.of(target), List.of(this.damage), true, this.animation));
+        if (target != null) {
+            this.resolve(b, rl, el, new EffectDamageResolver(this.source, List.of(target), List.of(this.damage), true, this.animation));
+        }
     }
 }

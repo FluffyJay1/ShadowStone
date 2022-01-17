@@ -8,6 +8,7 @@ import utils.StringBuildable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Player implements StringBuildable {
     public static final int DEFAULT_MAX_HAND_SIZE = 10;
@@ -64,8 +65,8 @@ public class Player implements StringBuildable {
         return this.banished;
     }
 
-    public Leader getLeader() {
-        return this.leader;
+    public Optional<Leader> getLeader() {
+        return Optional.ofNullable(this.leader);
     }
 
     public void setLeader(Leader leader) {
@@ -75,8 +76,8 @@ public class Player implements StringBuildable {
         }
     }
 
-    public UnleashPower getUnleashPower() {
-        return this.unleashPower;
+    public Optional<UnleashPower> getUnleashPower() {
+        return Optional.ofNullable(this.unleashPower);
     }
 
     public void setUnleashPower(UnleashPower up) {
@@ -91,8 +92,8 @@ public class Player implements StringBuildable {
             case DECK -> this.getDeck();
             case HAND -> this.getHand();
             case BOARD -> new ArrayList<>(this.getPlayArea());
-            case LEADER -> List.of(this.getLeader());
-            case UNLEASHPOWER -> List.of(this.getUnleashPower());
+            case LEADER -> this.getLeader().map(l -> List.of((Card) l)).orElse(List.of());
+            case UNLEASHPOWER -> this.getUnleashPower().map(up -> List.of((Card) up)).orElse(List.of());
             case GRAVEYARD -> this.getGraveyard();
             case BANISHED -> this.getBanished();
         };

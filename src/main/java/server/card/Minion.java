@@ -97,9 +97,8 @@ public class Minion extends BoardObject {
         Stream<Minion> attackable = minions.get();
 
         // TODO add restrictions on can't attack leader
-        Leader enemyLeader = this.board.getPlayer(this.team * -1).getLeader();
         if (this.attackLeaderConditions()) {
-            attackable = Stream.concat(attackable, Stream.of(enemyLeader));
+            attackable = Stream.concat(attackable, this.board.getPlayer(this.team * -1).getLeader().stream());
         }
 
         // love how you can't reuse streams

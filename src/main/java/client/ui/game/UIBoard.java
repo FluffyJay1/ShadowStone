@@ -154,8 +154,7 @@ public class UIBoard extends UIBox {
                     }
                 }
             }
-            Leader leader = this.b.getPlayer(team).getLeader();
-            if (leader != null) {
+            this.b.getPlayer(team).getLeader().ifPresent(leader -> {
                 UICard uic = leader.uiCard;
                 if (!uic.isBeingAnimated()) {
                     uic.draggable = false;
@@ -167,9 +166,8 @@ public class UIBoard extends UIBox {
                                     (float) (team == this.b.localteam ? LEADER_Y_LOCAL : LEADER_Y_ENEMY)),
                             1);
                 }
-            }
-            UnleashPower up = this.b.getPlayer(team).getUnleashPower();
-            if (up != null) {
+            });
+            this.b.getPlayer(team).getUnleashPower().ifPresent(up -> {
                 UICard uic = up.uiCard;
                 if (!uic.isBeingAnimated()) {
                     uic.draggable = false;
@@ -179,7 +177,7 @@ public class UIBoard extends UIBox {
                                     (float) (team == this.b.localteam ? UNLEASHPOWER_Y_LOCAL : UNLEASHPOWER_Y_ENEMY)),
                             1);
                 }
-            }
+            });
             List<Card> hand = this.b.getPlayer(team).getHand();
             for (Card c : hand) {
                 UICard uic = c.uiCard;

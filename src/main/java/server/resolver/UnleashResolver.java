@@ -32,11 +32,11 @@ public class UnleashResolver extends Resolver {
                 if (p.canUnleashCard(m)) {
                     b.processEvent(rl, el, new EventManaChange(p, -this.source.finalStatEffects.getStat(EffectStats.COST), false, true));
                     b.processEvent(rl, el, new EventUnleash(this.source, this.m));
-                    this.resolveList(b, rl, el, p.getUnleashPower().onUnleashPre(this.m));
+                    p.getUnleashPower().ifPresent(up -> this.resolveList(b, rl, el, up.onUnleashPre(this.m)));
                     b.pushEventGroup(new EventGroup(EventGroupType.UNLEASH, List.of(this.m)));
                     this.resolveList(b, rl, el, this.m.getResolvers(Effect::unleash));
                     b.popEventGroup();
-                    this.resolveList(b, rl, el, p.getUnleashPower().onUnleashPost(this.m));
+                    p.getUnleashPower().ifPresent(up -> this.resolveList(b, rl, el, up.onUnleashPost(this.m)));
                 }
             } else {
                 b.processEvent(rl, el, new EventUnleash(this.source, this.m));

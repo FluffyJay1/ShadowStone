@@ -52,7 +52,7 @@ public class UnleashTapSoul extends UnleashPower {
                     @Override
                     public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         this.resolve(b, rl, el, new EffectDamageResolver(effect,
-                                effect.owner.board.getPlayer(effect.owner.team).getLeader(), 2, true, null));
+                                effect.owner.board.getPlayer(effect.owner.team).getLeader().orElse(null), 2, true, null));
                     }
                 };
 

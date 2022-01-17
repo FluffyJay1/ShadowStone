@@ -285,8 +285,8 @@ public abstract class Card implements Indexable, StringBuildable {
             case BOARD -> p.getPlayArea().get(cardpos);
             case DECK -> p.getDeck().get(cardpos);
             case GRAVEYARD -> p.getGraveyard().get(cardpos);
-            case UNLEASHPOWER -> p.getUnleashPower();
-            case LEADER -> p.getLeader();
+            case UNLEASHPOWER -> p.getUnleashPower().orElse(null);
+            case LEADER -> p.getLeader().orElse(null);
             case BANISHED -> p.getBanished().get(cardpos);
         };
     }

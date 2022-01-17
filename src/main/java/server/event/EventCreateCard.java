@@ -70,16 +70,12 @@ public class EventCreateCard extends Event {
                     this.successful.add(true);
                 }
                 case UNLEASHPOWER -> {
-                    if (this.prevUP == null) {
-                        this.prevUP = p.getUnleashPower();
-                    }
+                    this.prevUP = p.getUnleashPower().orElse(null);
                     b.getPlayer(this.team).setUnleashPower((UnleashPower) c);
                     this.successful.add(true);
                 }
                 case LEADER -> {
-                    if (this.prevLeader == null) {
-                        this.prevLeader = p.getLeader();
-                    }
+                    this.prevLeader = p.getLeader().orElse(null);
                     p.setLeader((Leader) c);
                     this.successful.add(true);
                 }

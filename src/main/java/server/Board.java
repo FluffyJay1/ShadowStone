@@ -61,19 +61,13 @@ public abstract class Board {
     }
 
     // same as above but for functions that return single cards
-    public <T extends Card> Stream<T> getPlayerCard(int team, Function<Player, T> queryFunc) {
+    public <T extends Card> Stream<T> getPlayerCard(int team, Function<Player, Optional<T>> queryFunc) {
         List<T> ret = new ArrayList<>();
         if (team >= 0) {
-            T addition = queryFunc.apply(this.getPlayer(1));
-            if (addition != null) {
-                ret.add(addition);
-            }
+            queryFunc.apply(this.getPlayer(1)).ifPresent(ret::add);
         }
         if (team <= 0) {
-            T addition = queryFunc.apply(this.getPlayer(-1));
-            if (addition != null) {
-                ret.add(addition);
-            }
+            queryFunc.apply(this.getPlayer(-1)).ifPresent(ret::add);
         }
         return ret.stream();
     }

@@ -1,4 +1,3 @@
-getLeader and getUnleashPower may be null
 AI should be able to place minions differently
 Use scanner instead of stringtokenizer to handle stream input?
 Optimize AI action sampling?

@@ -541,13 +541,14 @@ public class AI extends Thread {
             }
         } else {
             // just go face
-            Leader enemyFace = this.b.getPlayer(team * -1).getLeader();
-            for (Minion m : minions) {
-                if (m.canAttack(enemyFace)) {
-                    double totalWeight = ATTACK_TOTAL_WEIGHT + ATTACK_WEIGHT_MULTIPLIER * m.finalStatEffects.getStat(EffectStats.ATTACK);
-                    poss.add(new OrderAttackAction(m, enemyFace).toString(), totalWeight);
+            this.b.getPlayer(team * -1).getLeader().ifPresent(l -> {
+                for (Minion m : minions) {
+                    if (m.canAttack(l)) {
+                        double totalWeight = ATTACK_TOTAL_WEIGHT + ATTACK_WEIGHT_MULTIPLIER * m.finalStatEffects.getStat(EffectStats.ATTACK);
+                        poss.add(new OrderAttackAction(m, l).toString(), totalWeight);
+                    }
                 }
-            }
+            });
         }
         poss.add(new EndTurnAction(team).toString(), END_TURN_WEIGHT);
         return poss;
@@ -665,10 +666,11 @@ public class AI extends Thread {
      * @return The approximate mana value of that leader's survivability
      */
     public static double evaluateSurvivability(Board b, int team) {
-        Leader l = b.getPlayer(team).getLeader();
-        if (l == null) {
+        Optional<Leader> ol = b.getPlayer(team).getLeader();
+        if (ol.isEmpty()) {
             return 0;
         }
+        Leader l = ol.get();
         if (l.health <= 0) { // if dead
             return -99999 + l.health; // u dont want to be dead
         }
