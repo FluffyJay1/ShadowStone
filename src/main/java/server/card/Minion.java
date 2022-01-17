@@ -89,7 +89,7 @@ public class Minion extends BoardObject {
     // ideally this is functionally equivalent to minions.filter(this::canAttack)
     // but we do things a bit differently for performance reasons
     public Stream<Minion> getAttackableTargets() {
-        if (!this.attackMinionConditions()) {
+        if (!this.canAttack()) {
             return Stream.empty();
         }
         Supplier<Stream<Minion>> minions = () -> this.board.getMinions(this.team * -1, false, true);

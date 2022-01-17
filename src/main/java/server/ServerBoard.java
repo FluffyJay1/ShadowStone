@@ -140,7 +140,7 @@ public class ServerBoard extends Board {
                 }
             });
         }
-        for (EffectAura aura : newAuras) {
+        for (EffectAura aura : retainedAuras) {
             Set<Card> currentAffected = aura.findAffectedCards();
             if (!currentAffected.equals(aura.lastCheckedAffectedCards)) {
                 // only add a resolver if something not right
@@ -196,6 +196,12 @@ public class ServerBoard extends Board {
         this.output.append(s);
         this.history.append(s);
         // we must have gotten kira queened, keep auras consistent
+        this.updateAuraCheckLastCheck();
+    }
+
+    // changing board state all willy nilly outside of the resolver can mess
+    // things up with aura checking optimizations, explicity sync here
+    public void updateAuraCheckLastCheck() {
         this.lastCheckedActiveAuras = this.getActiveAuras().collect(Collectors.toSet());
         this.getCards().forEach(c -> {
             for (EffectAura aura : c.auras) {

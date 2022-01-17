@@ -64,7 +64,7 @@ public class AI extends Thread {
     private static final double SAMPLING_SAMPLE_RATE_MULTIPLIER = 0.75;
 
     // The more branches a node has, the less in-depth it should sample them
-    private static final double SAMPLING_SAMPLE_RATE_OVERCROWD_MULTIPLIER = 0.96;
+    private static final double SAMPLING_SAMPLE_RATE_OVERCROWD_MULTIPLIER = 0.95;
 
     // After an rng event, we shouldn't care too much about evaluating in detail
     private static final double SAMPLING_SAMPLE_RATE_RNG_PENALTY_MULTIPLIER = 0.85;
@@ -421,9 +421,7 @@ public class AI extends Thread {
             undoStack.remove(undoStack.size() - 1);
         }
         // aura difference checking isn't updated by undoing, we have to update it ourselves
-        this.b.getActiveAuras().forEach(aura -> {
-            aura.lastCheckedAffectedCards = aura.findAffectedCards();
-        });
+        this.b.updateAuraCheckLastCheck();
         String stateAfterUndo = this.b.stateToString();
         if (!current.state.equals(stateAfterUndo)) {
             System.out.println(
@@ -456,16 +454,19 @@ public class AI extends Thread {
         // playing cards & selecting targets
         List<Card> hand = p.getHand();
         for (Card c : hand) {
-            // TODO make it consider board positioning
             if (p.canPlayCard(c)) {
                 double totalWeight = PLAY_CARD_TOTAL_WEIGHT + PLAY_CARD_COST_WEIGHT_MULTIPLIER * c.finalStatEffects.getStat(EffectStats.COST);
-                if (!c.getBattlecryTargets().isEmpty()) {
-                    List<List<Target>> targetSearchSpace = this.getPossibleListTargets(c.getBattlecryTargets());
-                    for (List<Target> targets : targetSearchSpace) {
-                        poss.add(new PlayCardAction(p, c, 0, Target.listToString(targets)).toString(), totalWeight / targetSearchSpace.size());
+                double weightPerPos = totalWeight / (p.getPlayArea().size() + 1);
+                // rip my branching factor lol
+                for (int playPos = 0; playPos <= p.getPlayArea().size(); playPos++) {
+                    if (!c.getBattlecryTargets().isEmpty()) {
+                        List<List<Target>> targetSearchSpace = this.getPossibleListTargets(c.getBattlecryTargets());
+                        for (List<Target> targets : targetSearchSpace) {
+                            poss.add(new PlayCardAction(p, c, playPos, Target.listToString(targets)).toString(), weightPerPos / targetSearchSpace.size());
+                        }
+                    } else { // no targets to set
+                        poss.add(new PlayCardAction(p, c, playPos, "0").toString(), weightPerPos);
                     }
-                } else { // no targets to set
-                    poss.add(new PlayCardAction(p, c, 0, "0").toString(), totalWeight);
                 }
             }
         }

@@ -1,4 +1,3 @@
-AI should be able to place minions differently
 Use scanner instead of stringtokenizer to handle stream input?
 Optimize AI action sampling?
     most of the time AI samples only 1 action, can we take advantage of this?
