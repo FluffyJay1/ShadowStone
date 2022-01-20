@@ -161,7 +161,8 @@ public abstract class Board {
 
     public Stream<EffectAura> getActiveAuras() {
         return this.getBoardObjects(0, true, true, true, false)
-                .flatMap(bo -> bo.auras.stream());
+                .flatMap(bo -> bo.auras.stream())
+                .filter(aura -> !aura.mute);
     }
 
     public String stateToString() {

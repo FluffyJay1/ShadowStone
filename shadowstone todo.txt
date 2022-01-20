@@ -1,4 +1,3 @@
-effectaura mute?
 Use scanner instead of stringtokenizer to handle stream input?
 unleashpower art focus lol
 add LastWordsValue, distinct from PresenceValue, because it makes countdown value different
