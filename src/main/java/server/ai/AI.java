@@ -12,6 +12,8 @@ import server.card.effect.*;
 import server.event.*;
 import server.playeraction.*;
 import server.resolver.*;
+import utils.WeightedOrderedSampler;
+import utils.WeightedRandomSampler;
 import utils.WeightedSampler;
 
 /**
@@ -53,18 +55,21 @@ public class AI extends Thread {
     // The maximum number of branches to sample at min depth
     private static final int SAMPLING_MAX_SAMPLES = 30;
 
+    // When switching over to the enemy turn, reset the max samples
+    private static final int SAMPLING_MAX_SAMPLES_ENEMY = 3;
+
     // How much the max number of samples gets multiplied by per level
-    private static final double SAMPLING_MAX_SAMPLES_MULTIPLIER = 0.6;
+    private static final double SAMPLING_MAX_SAMPLES_MULTIPLIER = 0.8;
 
     // Proportion of total possible actions that we sample at the start
+    // This value get split amongst the branches, proportionally to their weight
     // should be greater than 1 lol
-    private static final double SAMPLING_START_SAMPLE_RATE = 2.5;
+    private static final double SAMPLING_START_SAMPLE_RATE = 8;
+    private static final double SAMPLING_ENEMY_SAMPLE_RATE = 2;
 
-    // Multiplier of sample rate at each depth
-    private static final double SAMPLING_SAMPLE_RATE_MULTIPLIER = 0.75;
-
-    // The more branches a node has, the less in-depth it should sample them
-    private static final double SAMPLING_SAMPLE_RATE_OVERCROWD_MULTIPLIER = 0.95;
+    // Multiplier of sample rate at each depth, after the above "splitting" thing
+    // Should reflect expected branching factor
+    private static final double SAMPLING_SAMPLE_RATE_MULTIPLIER = 1.5;
 
     // After an rng event, we shouldn't care too much about evaluating in detail
     private static final double SAMPLING_SAMPLE_RATE_RNG_PENALTY_MULTIPLIER = 0.85;
@@ -96,6 +101,9 @@ public class AI extends Thread {
 
     private static final double UNLEASH_TOTAL_WEIGHT = 12;
 
+    // extra weight for unleash, scales off of presence value
+    private static final double UNLEASH_WEIGHT_PER_PRESENCE = 1;
+
     private static final double ATTACK_TOTAL_WEIGHT = 2;
 
     // how much extra weight to put into the attack action, scales off of the minion's attack
@@ -108,7 +116,7 @@ public class AI extends Thread {
     // bonus for attacking the leader
     private static final double ATTACK_TARGET_LEADER_MULTIPLIER = 3;
 
-    private static final double END_TURN_WEIGHT = 0.2;
+    private static final double END_TURN_WEIGHT = 1;
 
     // Statistics to gauge AI evaluation speed
     private final int[] width = new int[SAMPLING_MAX_DEPTH + 1];
@@ -322,13 +330,13 @@ public class AI extends Thread {
             this.totalCacheHits++;
         }
         while (dbsn.evaluatedBranches < numSamples) {
-            String actionString = dbsn.nextBranchToEvaluate();
-            TraversalResult traverse = this.traverseAction(dbsn, actionString, depth, sampleRate, maxSamples,
+            String action = dbsn.nextBranchToEvaluate();
+            TraversalResult traverse = this.traverseAction(dbsn, action, depth, sampleRate, maxSamples,
                     filterLethal, null);
             if (traverse.rng) {
                 // rng, re-evaluate action many times, channel an average score into an RNGBoardStateNode
                 int trials = Math.max(RNG_MAX_TRIALS - depth * RNG_TRIAL_REDUCTION, RNG_MIN_TRIALS);
-                RNGBoardStateNode nextBsn = (RNGBoardStateNode) dbsn.branches.get(actionString); // trust
+                RNGBoardStateNode nextBsn = (RNGBoardStateNode) dbsn.branches.get(action); // trust
                 if (nextBsn != null) {
                     // if previously evaluated this rng branch, see if we can add some trials to it
                     trials = Math.max(1, trials - nextBsn.trials);
@@ -337,13 +345,13 @@ public class AI extends Thread {
                     nextBsn.addTrial(traverse.next);
                 }
                 for (int j = 1; j < trials; j++) {
-                    traverse = this.traverseAction(dbsn, actionString, depth, sampleRate, maxSamples, filterLethal, nextBsn);
+                    traverse = this.traverseAction(dbsn, action, depth, sampleRate, maxSamples, filterLethal, nextBsn);
                     nextBsn.addTrial(traverse.next);
                 }
-                dbsn.logEvaluation(actionString, nextBsn);
+                dbsn.logEvaluation(action, nextBsn);
             } else {
                 // not rng, whatever
-                dbsn.logEvaluation(actionString, traverse.next);
+                dbsn.logEvaluation(action, traverse.next);
                 if (dbsn.lethal) {
                     break;
                 }
@@ -383,7 +391,7 @@ public class AI extends Thread {
             } else {
                 nextMaxSamples = maxSamples * SAMPLING_MAX_SAMPLES_MULTIPLIER;
             }
-            nextSampleRate = sampleRate * SAMPLING_SAMPLE_RATE_MULTIPLIER * Math.pow(SAMPLING_SAMPLE_RATE_OVERCROWD_MULTIPLIER, current.totalBranches);
+            nextSampleRate = sampleRate * current.getWeightedProportionOfAction(action) * SAMPLING_SAMPLE_RATE_MULTIPLIER;
         }
         if (result.rng) {
             // the number of trials we've already done to get to this node
@@ -405,7 +413,10 @@ public class AI extends Thread {
                 // not part of my pay grade
                 node = new TerminalBoardStateNode(current.team * -1, evaluateAdvantage(this.b, current.team * -1));
             } else {
-                node = this.getBestTurn(current.team * -1, depth + 1, nextSampleRate, nextMaxSamples, true);
+                node = this.getBestTurn(current.team * -1, depth + 1,
+                        Math.max(nextSampleRate, SAMPLING_ENEMY_SAMPLE_RATE),
+                        Math.max(nextMaxSamples, SAMPLING_MAX_SAMPLES_ENEMY),
+                        true);
             }
         } else {
             DeterministicBoardStateNode dbsn = this.getBestTurn(current.team, depth + 1, nextSampleRate, nextMaxSamples, filterLethal);
@@ -421,7 +432,7 @@ public class AI extends Thread {
             undoStack.remove(undoStack.size() - 1);
         }
         // aura difference checking isn't updated by undoing, we have to update it ourselves
-        this.b.updateAuraCheckLastCheck();
+        this.b.updateAuraLastCheck();
         String stateAfterUndo = this.b.stateToString();
         if (!current.state.equals(stateAfterUndo)) {
             System.out.println(
@@ -450,22 +461,34 @@ public class AI extends Thread {
             return null;
         }
         Player p = this.b.getPlayer(team);
-        WeightedSampler<String> poss = new WeightedSampler<>();
+        WeightedSampler<String> poss = new WeightedRandomSampler<>();
         // playing cards & selecting targets
         List<Card> hand = p.getHand();
         for (Card c : hand) {
             if (p.canPlayCard(c)) {
                 double totalWeight = PLAY_CARD_TOTAL_WEIGHT + PLAY_CARD_COST_WEIGHT_MULTIPLIER * c.finalStatEffects.getStat(EffectStats.COST);
-                double weightPerPos = totalWeight / (p.getPlayArea().size() + 1);
-                // rip my branching factor lol
-                for (int playPos = 0; playPos <= p.getPlayArea().size(); playPos++) {
+                if (c instanceof BoardObject) {
+                    double weightPerPos = totalWeight / (p.getPlayArea().size() + 1);
+                    // rip my branching factor lol
+                    for (int playPos = 0; playPos <= p.getPlayArea().size(); playPos++) {
+                        if (!c.getBattlecryTargets().isEmpty()) {
+                            List<List<Target>> targetSearchSpace = this.getPossibleListTargets(c.getBattlecryTargets());
+                            for (List<Target> targets : targetSearchSpace) {
+                                poss.add(new PlayCardAction(p, c, playPos, Target.listToString(targets)).toString(), weightPerPos / targetSearchSpace.size());
+                            }
+                        } else { // no targets to set
+                            poss.add(new PlayCardAction(p, c, playPos, "0").toString(), weightPerPos);
+                        }
+                    }
+                } else {
+                    // spells don't require positioning
                     if (!c.getBattlecryTargets().isEmpty()) {
                         List<List<Target>> targetSearchSpace = this.getPossibleListTargets(c.getBattlecryTargets());
                         for (List<Target> targets : targetSearchSpace) {
-                            poss.add(new PlayCardAction(p, c, playPos, Target.listToString(targets)).toString(), weightPerPos / targetSearchSpace.size());
+                            poss.add(new PlayCardAction(p, c, 0, Target.listToString(targets)).toString(), totalWeight / targetSearchSpace.size());
                         }
                     } else { // no targets to set
-                        poss.add(new PlayCardAction(p, c, playPos, "0").toString(), weightPerPos);
+                        poss.add(new PlayCardAction(p, c, 0, "0").toString(), totalWeight);
                     }
                 }
             }
@@ -502,7 +525,10 @@ public class AI extends Thread {
     /**
      * Given the current board state, return the obvious actions that could lead to
      * a lethal. Intended to be a subset of all possible actions that are openly
-     * visible on the board, i.e. unleashing minions and attacking face.
+     * visible on the board, i.e. unleashing minions and attacking face. Unlike
+     * the more complete counterpart, this will not use random sampling; we
+     * won't really get a chance to resample, and instead we prefer consistent
+     * results, so upstream decision making is more consistent.
      * 
      * @param team The team to evaluate for
      * @return Some weighted set of actions that the team could take that could lead to lethal, to be sampled
@@ -512,11 +538,11 @@ public class AI extends Thread {
             return null;
         }
         Player p = this.b.getPlayer(team);
-        WeightedSampler<String> poss = new WeightedSampler<>();
+        WeightedSampler<String> poss = new WeightedOrderedSampler<>();
         List<Minion> minions = this.b.getMinions(team, false, true).collect(Collectors.toList());
         for (Minion m : minions) {
             if (p.canUnleashCard(m)) {
-                double totalWeight = UNLEASH_TOTAL_WEIGHT; // can't really make any assumptions about which unleashes are better than others
+                double totalWeight = UNLEASH_TOTAL_WEIGHT + UNLEASH_WEIGHT_PER_PRESENCE * m.getTotalEffectValueOf(Effect::getPresenceValue);
                 if (!m.getUnleashTargets().isEmpty()) {
                     List<List<Target>> targetSearchSpace = this.getPossibleListTargets(m.getUnleashTargets());
                     for (List<Target> targets : targetSearchSpace) {

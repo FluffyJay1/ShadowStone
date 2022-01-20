@@ -1,8 +1,7 @@
+effectaura mute?
 Use scanner instead of stringtokenizer to handle stream input?
-Optimize AI action sampling?
-    most of the time AI samples only 1 action, can we take advantage of this?
-    do we need generate the full space of possible actions to sample from it?
 unleashpower art focus lol
+add LastWordsValue, distinct from PresenceValue, because it makes countdown value different
 rotate cards
 indicate which cards have been marked for death
 update to use slick 1.0.2
@@ -13,9 +12,7 @@ make game fullscreen and fix flickering problem from rendering text
 Card art in tooltip
 UnicodeFont deprecated? use AngelCodeFonts
 Figure out why the game is eating cpu and gpu
-unforce every uielement constructor taking in a ui as a parameter
 targeting serverside verification
-AI optimize decision tree
 relpos lol
 formalize basic effects? createBasicEffect()
 priority

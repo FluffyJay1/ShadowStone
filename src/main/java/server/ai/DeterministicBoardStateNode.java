@@ -169,6 +169,17 @@ public class DeterministicBoardStateNode extends BoardStateNode {
         return this.branchEvaluationQueue.isEmpty();
     }
 
+    /**
+     * Find out what proportion of importance a branch holds, according to the
+     * weight we assigned the branch. Should sum to 1 over all actions on this
+     * branch.
+     * @param action The action to query
+     * @return The weighted proportion this action occupies
+     */
+    public double getWeightedProportionOfAction(String action) {
+        return this.branchSampler.getWeightOfItem(action) / this.branchSampler.getTotalWeight();
+    }
+
     @Override
     public String toString() {
         StringBuilder ret = new StringBuilder(this.debugString()).append("\n");

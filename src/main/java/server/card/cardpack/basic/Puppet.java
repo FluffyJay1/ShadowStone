@@ -12,19 +12,15 @@ import server.resolver.*;
 public class Puppet extends Minion {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final TooltipMinion TOOLTIP = new TooltipMinion("Puppet",
-            "<b>Rush</b>. At the end of your opponent's turn, destroy this minion.", "res/card/basic/puppet.png",
+            "<b>Rush</b>. <b>Countdown(1)</b>.", "res/card/basic/puppet.png",
             CRAFT, 0, 1, 0, 1, false, Puppet.class, new Vector2f(161, 143), 1.4,
-            EventAnimationDamageSlash.class, Tooltip.RUSH);
+            EventAnimationDamageSlash.class, Tooltip.RUSH, Tooltip.COUNTDOWN);
 
     public Puppet(Board b) {
         super(b, TOOLTIP);
-        Effect e = new Effect(TOOLTIP.description) {
-            @Override
-            public Resolver onTurnEndEnemy() {
-                return new DestroyResolver(owner);
-            }
-        };
+        Effect e = new Effect(TOOLTIP.description);
         e.effectStats.set.setStat(EffectStats.RUSH, 1);
+        e.effectStats.set.setStat(EffectStats.COUNTDOWN, 1);
         this.addEffect(true, e);
     }
 }

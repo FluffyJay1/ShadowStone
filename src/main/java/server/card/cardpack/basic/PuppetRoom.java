@@ -11,7 +11,7 @@ public class PuppetRoom extends Amulet {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
 
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet("Puppet Room",
-            "<b>Countdown(3)</b>. <b>Battlecry</b>: put a <b>Puppet</b> in your hand. At the end of your turn, put a <b>Puppet</b> in your hand.",
+            "<b>Countdown(3)</b>.\n<b>Battlecry</b>: put a <b>Puppet</b> in your hand.\nAt the end of your turn, put a <b>Puppet</b> in your hand.",
             "res/card/basic/puppetroom.png", CRAFT, 3, PuppetRoom.class, Tooltip.COUNTDOWN, Tooltip.BATTLECRY,
             Puppet.TOOLTIP);
 

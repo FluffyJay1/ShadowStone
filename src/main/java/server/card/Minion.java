@@ -81,7 +81,7 @@ public class Minion extends BoardObject {
         }
         attack += bonus;
         // TODO make it consider shield, etc.
-        sum += 0.9 * Math.sqrt(attack * this.health) + 0.1 * Math.sqrt(magic * Math.pow(this.health, 0.4)) + 1;
+        sum += (0.9 * Math.sqrt(attack * this.health) + 0.1 * Math.sqrt(magic * Math.pow(this.health, 0.4)) + 1) * this.getCountdownValueMultiplier();
         return sum;
     }
 

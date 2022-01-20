@@ -45,7 +45,7 @@ public class WoodOfBrambles extends Amulet {
 
             @Override
             public double getPresenceValue() {
-                return this.owner.finalStatEffects.getStat(EffectStats.COUNTDOWN);
+                return 2;
             }
         };
         e.effectStats.set.setStat(EffectStats.COUNTDOWN, 2);

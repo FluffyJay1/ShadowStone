@@ -20,11 +20,20 @@ public class BoardObject extends Card {
 
     @Override
     public double getValue() {
-        double sum = this.getTotalEffectValueOf(Effect::getPresenceValue);
+        double sum = this.getTotalEffectValueOf(Effect::getPresenceValue) * this.getCountdownValueMultiplier();
         if (this.status.equals(CardStatus.HAND)) {
             sum += this.getTotalEffectValueOf(Effect::getBattlecryValue);
         }
         return sum;
+    }
+
+    // having the countdown effect means u'll die in a few turns
+    public double getCountdownValueMultiplier() {
+        if (this.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
+            return 1 - Math.pow(0.5, this.finalStatEffects.getStat(EffectStats.COUNTDOWN));
+        } else {
+            return 1;
+        }
     }
 
     @Override

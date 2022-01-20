@@ -40,7 +40,7 @@ public class GenesisOfLegend extends Amulet {
 
             @Override
             public double getPresenceValue() {
-                return this.owner.finalStatEffects.getStat(EffectStats.COUNTDOWN) * 2;
+                return 4;
             }
         };
         e.effectStats.set.setStat(EffectStats.COUNTDOWN, 3);

@@ -196,12 +196,12 @@ public class ServerBoard extends Board {
         this.output.append(s);
         this.history.append(s);
         // we must have gotten kira queened, keep auras consistent
-        this.updateAuraCheckLastCheck();
+        this.updateAuraLastCheck();
     }
 
     // changing board state all willy nilly outside of the resolver can mess
     // things up with aura checking optimizations, explicity sync here
-    public void updateAuraCheckLastCheck() {
+    public void updateAuraLastCheck() {
         this.lastCheckedActiveAuras = this.getActiveAuras().collect(Collectors.toSet());
         this.getCards().forEach(c -> {
             for (EffectAura aura : c.auras) {
