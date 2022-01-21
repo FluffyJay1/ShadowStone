@@ -29,7 +29,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
                                                                             // fuck
                                                                             // u
     private Vector2f targetpos, pos;
-    private double scale = 1, speed = 1, angle = 0;
+    private double scale = 1, speed = 1, angle = 0, alpha = 1;
     private UIElement followTarget;
     Animation animation;
     Image finalImage;
@@ -56,6 +56,10 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
 
     public void setImage(String imagepath) {
         this.setAnimation(imagepath, new Vector2f(1, 1), 0, 0);
+    }
+
+    public void setImage(Image image) {
+        this.setAnimation(new Animation(image));
     }
 
     public void setAnimation(Animation animation) {
@@ -195,7 +199,11 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     public double getChildLocalTop(double offset) {
         double y = this.getLocalTop(false) + offset;
         for (UIElement u : this.getChildren()) {
-            y = Math.min(y, u.getChildLocalTop(offset + u.getPos().y));
+            double childTop = u.getChildLocalTop(offset + u.getPos().y);
+            if (u.clip) {
+                childTop = u.getLocalTop(false) + u.getPos().y + offset;
+            }
+            y = Math.min(y, childTop);
         }
         return y;
     }
@@ -203,8 +211,11 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     public double getChildLocalBottom(double offset) {
         double y = this.getLocalBottom(false) + offset;
         for (UIElement u : this.getChildren()) {
-            y = Math.max(y, u.getChildLocalBottom(offset + u.getPos().y));
-
+            double childBottom = u.getChildLocalBottom(offset + u.getPos().y);
+            if (u.clip) {
+                childBottom = u.getLocalBottom(false) + u.getPos().y + offset;
+            }
+            y = Math.max(y, childBottom);
         }
         return y;
     }
@@ -232,8 +243,8 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
             return new Vector2f((float) ((pos.x / Config.WINDOW_WIDTH) - 0.5),
                     (float) ((pos.y / Config.WINDOW_HEIGHT) - 0.5));
         } else {
-            return new Vector2f((float) ((pos.x / this.parent.getWidth(true)) - this.alignh / 2.),
-                    (float) ((pos.y / this.parent.getHeight(true)) - this.alignv / 2.));
+            return new Vector2f((float) ((pos.x / this.parent.getWidth(true)) + this.alignh / 2.),
+                    (float) ((pos.y / this.parent.getHeight(true)) + this.alignv / 2.));
         }
     }
 
@@ -262,6 +273,14 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         return this.visible;
     }
 
+    public void setAlpha(double alpha) {
+        this.alpha = alpha;
+    }
+
+    public double getAlpha() {
+        return this.alpha;
+    }
+
     // do not override this shit
     public void alert(String strarg, int... intarg) {
         if (this.parent != null) {
@@ -288,8 +307,8 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     }
 
     public Vector2f getLocalPosOfRel(Vector2f relPos) {
-        return new Vector2f((float) ((relPos.x + this.alignh / 2.) * this.getWidth(true)),
-                (float) ((relPos.y + this.alignv / 2.) * this.getHeight(true)));
+        return new Vector2f((float) ((relPos.x - this.alignh / 2.) * this.getWidth(true)),
+                (float) ((relPos.y - this.alignv / 2.) * this.getHeight(true)));
     }
 
     public Vector2f getAbsPosOfLocal(Vector2f localPos) {
@@ -374,6 +393,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         if (this.animation != null) {
             this.finalImage = this.animation.getCurrentFrame().getScaledCopy((float) this.scale);
             this.finalImage.rotate((float) this.angle);
+            this.finalImage.setAlpha((float) this.alpha);
             if (this.visible) {
                 g.drawImage(this.finalImage, (float) (this.getLeft(true, false)), (float) (this.getTop(true, false)));
             }
@@ -384,16 +404,35 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     }
 
     public void drawChildren(Graphics g) {
-        Rectangle prevClip = g.getClip();
+        Rectangle prevClip = g.getClip(); // did u know that the rectangle returned is mutable by future calls to setClip
+        Rectangle prevClipCloned = null;
         if (this.clip) {
-            g.setClip((int) (this.getLeft(true, true)), (int) (this.getTop(true, true)), (int) this.getWidth(true),
-                    (int) this.getHeight(true));
+            if (prevClip != null) {
+                prevClipCloned = new Rectangle(prevClip.getX(), prevClip.getY(), prevClip.getWidth(), prevClip.getHeight());
+                int left = (int) Math.max(prevClip.getMinX(), this.getLeft(true, true));
+                int top = (int) Math.max(prevClip.getMinY(), this.getTop(true, true));
+                int right = (int) Math.min(prevClip.getMaxX(), this.getRight(true, true));
+                int bot = (int) Math.min(prevClip.getMaxY(), this.getBottom(true, true));
+                if (bot < top || right < left) {
+                    return;
+                }
+                g.setClip(left, top, right - left, bot - top);
+            } else {
+                g.setClip((int) (this.getLeft(true, true)),
+                        (int) (this.getTop(true, true)),
+                        (int) this.getWidth(true),
+                        (int) this.getHeight(true));
+            }
         }
         for (UIElement u : this.getChildren()) {
             u.draw(g);
 
         }
-        g.setClip(prevClip);
+        if (prevClipCloned != null) {
+            g.setClip(prevClipCloned);
+        } else {
+            g.setClip(prevClip);
+        }
     }
 
     public void setZ(int z) {

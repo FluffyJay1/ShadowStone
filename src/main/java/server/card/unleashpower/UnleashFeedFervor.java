@@ -3,6 +3,7 @@ package server.card.unleashpower;
 import java.util.*;
 
 import client.tooltip.*;
+import org.newdawn.slick.geom.Vector2f;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -13,7 +14,8 @@ public class UnleashFeedFervor extends UnleashPower {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Feed Fervor",
             "<b>Unleash</b> an allied minion. If <b>Overflow</b> is active for you, this costs 1 less.",
-            "res/unleashpower/feedfervor.png", CRAFT, 2, UnleashFeedFervor.class, Tooltip.UNLEASH, Tooltip.OVERFLOW);
+            "res/unleashpower/feedfervor.png", CRAFT, 2, UnleashFeedFervor.class, new Vector2f(420, 210), 8,
+            Tooltip.UNLEASH, Tooltip.OVERFLOW);
 
     public UnleashFeedFervor(Board b) {
         super(b, TOOLTIP);

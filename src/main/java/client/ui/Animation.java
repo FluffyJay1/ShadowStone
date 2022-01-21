@@ -42,6 +42,14 @@ public class Animation implements Cloneable {
     }
 
     /**
+     * Simple constructor for a single image animation
+     * @param i The image
+     */
+    public Animation(Image i) {
+        this.sheet = new SpriteSheet(i, i.getWidth(), i.getHeight(), 0, 0);
+    }
+
+    /**
      * Set the amount of time between each frame
      * 
      * @param interval

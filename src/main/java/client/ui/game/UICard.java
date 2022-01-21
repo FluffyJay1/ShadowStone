@@ -241,41 +241,49 @@ public class UICard extends UIBox {
             this.cardImage = Game.getImage(this.card.getTooltip().imagepath).getScaledCopy((int) this.getOriginalDim().x,
                     (int) this.getOriginalDim().y);
         }
-        // scale it
-        Image scaledCopy = this.cardImage.getScaledCopy((float) scale);
+        // generate the zoomed in image if we don't have one yet
+        if (this.subImage == null) {
+            this.subImage = this.generateZoomedSubImage(this.getOriginalDim());
+        }
         // for an unleash power, draw it in a circle
         if (this.card instanceof UnleashPower) {
+            // scale it
+            Image scaledCopy = this.subImage.getScaledCopy((float) scale);
             Circle c = new Circle(pos.x, pos.y, (float) (UNLEASH_POWER_RADIUS * scale));
             g.setColor(filter);
             g.texture(c, scaledCopy, true);
             g.setColor(Color.white);
         } else {
-            // if its a minion on board, zoom in
-            if (this.card instanceof Minion && status.equals(CardStatus.BOARD)) {
-                TooltipMinion tooltip = (TooltipMinion) this.card.getTooltip();
-                if (this.subImage == null) {
-                    if (tooltip.artFocusScale <= 0) {
-                        // use original art
-                        this.subImage = this.cardImage.copy();
-                    } else {
-                        // for maximum resolution
-                        Image originalImage = Game.getImage(this.card.getTooltip().imagepath);
-                        Image scaledOriginal = originalImage.getScaledCopy(
-                                (int) (CARD_DIMENSIONS.x * tooltip.artFocusScale),
-                                (int) (CARD_DIMENSIONS.y * tooltip.artFocusScale));
-                        double normalizedFocusX = tooltip.artFocusPos.x / originalImage.getWidth() * CARD_DIMENSIONS.x;
-                        double normalizedFocusY = tooltip.artFocusPos.y / originalImage.getHeight() * CARD_DIMENSIONS.y;
-                        this.subImage = scaledOriginal.getSubImage(
-                                (int) (normalizedFocusX * tooltip.artFocusScale - CARD_DIMENSIONS.x / 2),
-                                (int) (normalizedFocusY * tooltip.artFocusScale - CARD_DIMENSIONS.y / 2),
-                                (int) (CARD_DIMENSIONS.x), (int) (CARD_DIMENSIONS.y));
-                    }
-                }
+            Image scaledCopy;
+            // if its a thing on board, zoom in
+            if (status.equals(CardStatus.BOARD)) {
                 scaledCopy = this.subImage.getScaledCopy((float) scale);
+            } else {
+                scaledCopy = this.cardImage.getScaledCopy((float) scale);
             }
             g.drawImage(scaledCopy, (int) (pos.x - scaledCopy.getWidth() / 2),
                     (int) (pos.y - scaledCopy.getHeight() / 2),
                     filter);
+        }
+    }
+
+    private Image generateZoomedSubImage(Vector2f intendedDimensions) {
+        TooltipCard tooltip = this.card.getTooltip();
+        if (tooltip.artFocusScale <= 0) {
+            // use original art
+            return this.cardImage.copy();
+        } else {
+            // for maximum resolution
+            Image originalImage = Game.getImage(tooltip.imagepath);
+            Image scaledOriginal = originalImage.getScaledCopy(
+                    (int) (CARD_DIMENSIONS.x * tooltip.artFocusScale),
+                    (int) (CARD_DIMENSIONS.y * tooltip.artFocusScale));
+            double normalizedFocusX = tooltip.artFocusPos.x / originalImage.getWidth() * CARD_DIMENSIONS.x;
+            double normalizedFocusY = tooltip.artFocusPos.y / originalImage.getHeight() * CARD_DIMENSIONS.y;
+            return scaledOriginal.getSubImage(
+                    (int) (normalizedFocusX * tooltip.artFocusScale - intendedDimensions.x / 2),
+                    (int) (normalizedFocusY * tooltip.artFocusScale - intendedDimensions.y / 2),
+                    (int) (intendedDimensions.x), (int) (intendedDimensions.y));
         }
     }
 

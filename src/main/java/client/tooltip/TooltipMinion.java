@@ -10,9 +10,6 @@ public class TooltipMinion extends TooltipCard {
     public final int magic;
     public final int health;
     public final boolean basicUnleash;
-    public final Vector2f artFocusPos;
-    public final double artFocusScale; // if <= 0, focused image will be same as
-                                    // original
     public final Class<? extends EventAnimationDamage> attackAnimation;
 
     public TooltipMinion(String name, String description, String imagepath, ClassCraft craft, int cost, int attack,
@@ -22,7 +19,7 @@ public class TooltipMinion extends TooltipCard {
                 "minion\nA:" + attack + ", M:" + magic + ", H:" + health + "\n \n" + description + (basicUnleash
                         ? "\n <b>Unleash</b>: Deal X damage to an enemy minion. X equals this minion's magic.\n"
                         : ""),
-                imagepath, craft, cost, cardClass);
+                imagepath, craft, cost, cardClass, artFocusPos, artFocusScale);
         this.basicUnleash = basicUnleash;
         if (basicUnleash) {
             this.references = new Tooltip[references.length + 1];
@@ -34,8 +31,6 @@ public class TooltipMinion extends TooltipCard {
         this.attack = attack;
         this.magic = magic;
         this.health = health;
-        this.artFocusPos = artFocusPos;
-        this.artFocusScale = artFocusScale;
         this.attackAnimation = attackAnimation;
     }
 }

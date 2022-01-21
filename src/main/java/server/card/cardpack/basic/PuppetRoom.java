@@ -1,6 +1,7 @@
 package server.card.cardpack.basic;
 
 import client.tooltip.*;
+import org.newdawn.slick.geom.Vector2f;
 import server.*;
 import server.ai.AI;
 import server.card.*;
@@ -12,7 +13,8 @@ public class PuppetRoom extends Amulet {
 
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet("Puppet Room",
             "<b>Countdown(3)</b>.\n<b>Battlecry</b>: put a <b>Puppet</b> in your hand.\nAt the end of your turn, put a <b>Puppet</b> in your hand.",
-            "res/card/basic/puppetroom.png", CRAFT, 3, PuppetRoom.class, Tooltip.COUNTDOWN, Tooltip.BATTLECRY,
+            "res/card/basic/puppetroom.png", CRAFT, 3, PuppetRoom.class, new Vector2f(), -1,
+            Tooltip.COUNTDOWN, Tooltip.BATTLECRY,
             Puppet.TOOLTIP);
 
     public PuppetRoom(Board b) {

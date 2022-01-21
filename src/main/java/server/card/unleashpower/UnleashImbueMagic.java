@@ -3,6 +3,7 @@ package server.card.unleashpower;
 import java.util.*;
 
 import client.tooltip.*;
+import org.newdawn.slick.geom.Vector2f;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -13,7 +14,8 @@ public class UnleashImbueMagic extends UnleashPower {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Imbue Magic",
             "Give an allied minion +0/+1/+0, then <b>Unleash</b> it.", "res/unleashpower/imbuemagic.png", CRAFT, 2,
-            UnleashImbueMagic.class, Tooltip.UNLEASH);
+            UnleashImbueMagic.class, new Vector2f(393, 733), 1.5,
+            Tooltip.UNLEASH);
 
     public UnleashImbueMagic(Board b) {
         super(b, TOOLTIP);

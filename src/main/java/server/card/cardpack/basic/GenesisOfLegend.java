@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import client.*;
 import client.tooltip.*;
+import org.newdawn.slick.geom.Vector2f;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -16,7 +17,8 @@ public class GenesisOfLegend extends Amulet {
 
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet("Gensis of Legend",
             "<b>Countdown(3)</b>. At the end of your turn, give a random allied minion +0/+0/+1 and <b>Bane</b>.",
-            "res/card/basic/genesisoflegend.png", CRAFT, 2, GenesisOfLegend.class, Tooltip.COUNTDOWN, Tooltip.BANE);
+            "res/card/basic/genesisoflegend.png", CRAFT, 2, GenesisOfLegend.class, new Vector2f(), -1,
+            Tooltip.COUNTDOWN, Tooltip.BANE);
 
     public GenesisOfLegend(Board b) {
         super(b, TOOLTIP);

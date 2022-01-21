@@ -34,17 +34,11 @@ public class Tooltip {
 
     public final String name;
     public final String description;
-    public String imagepath;
     public Tooltip[] references;
 
     public Tooltip(String name, String description, Tooltip... references) {
         this.name = name;
         this.description = description;
         this.references = references;
-    }
-
-    public Tooltip(String name, String description, String imagepath, Tooltip... references) {
-        this(name, description, references);
-        this.imagepath = imagepath;
     }
 }

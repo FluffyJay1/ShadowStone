@@ -3,6 +3,7 @@ package server.card.unleashpower;
 import java.util.*;
 
 import client.tooltip.*;
+import org.newdawn.slick.geom.Vector2f;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -13,7 +14,8 @@ public class UnleashEchoExistence extends UnleashPower {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Echo Existence",
             "<b>Unleash</b> an allied minion. If it has already attacked this turn, add a copy of it to your deck and subtract 2 from its cost.",
-            "res/unleashpower/echoexistence.png", CRAFT, 2, UnleashEchoExistence.class, Tooltip.UNLEASH);
+            "res/unleashpower/echoexistence.png", CRAFT, 2, UnleashEchoExistence.class, new Vector2f(430, 445), 1.5,
+            Tooltip.UNLEASH);
 
     public UnleashEchoExistence(Board b) {
         super(b, TOOLTIP);

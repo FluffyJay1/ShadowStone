@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import client.*;
 import client.tooltip.*;
+import org.newdawn.slick.geom.Vector2f;
 import server.*;
 import server.ai.AI;
 import server.card.*;
@@ -16,7 +17,7 @@ public class WellOfDestination extends Amulet {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet("Well of Destination",
             "At the start of your turn, give a random allied minion +1/+1/+1.", "res/card/basic/wellofdestination.png",
-            CRAFT, 2, WellOfDestination.class);
+            CRAFT, 2, WellOfDestination.class, new Vector2f(), -1);
 
     public WellOfDestination(Board b) {
         super(b, TOOLTIP);

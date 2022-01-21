@@ -63,6 +63,7 @@ public class Game extends StateBasedGame {
         return i;
     }
 
+    @SuppressWarnings("unchecked")
     public static UnicodeFont getFont(String font, double size, boolean bold, boolean italic, Color fillc, Color outc) {
         String condensed = font + (int) size + bold + italic + fillc.toString() + outc.toString(); // map
                                                                                                     // lifehack

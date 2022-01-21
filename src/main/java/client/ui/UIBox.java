@@ -34,13 +34,18 @@ public class UIBox extends UIElement {
     @Override
     public void draw(Graphics g) {
         if (this.isVisible()) {
-            if (this.animation != null) {
-                this.finalImage = this.animation.getCurrentFrame().getScaledCopy((int) this.getWidth(false),
-                        (int) this.getHeight(false));
-                // this.finalImage.rotate((float) this.angle);
-                g.drawImage(this.finalImage, (float) this.getLeft(true, false), (float) this.getTop(true, false));
-            }
+            this.drawSelf(g);
             this.drawChildren(g);
+        }
+    }
+
+    public void drawSelf(Graphics g) {
+        if (this.animation != null) {
+            this.finalImage = this.animation.getCurrentFrame().getScaledCopy((int) this.getWidth(false),
+                    (int) this.getHeight(false));
+            // this.finalImage.rotate((float) this.angle);
+            this.finalImage.setAlpha((float) this.getAlpha());
+            g.drawImage(this.finalImage, (float) this.getLeft(true, false), (float) this.getTop(true, false));
         }
     }
 

@@ -3,6 +3,7 @@ package server.card.unleashpower;
 import java.util.*;
 
 import client.tooltip.*;
+import org.newdawn.slick.geom.Vector2f;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -13,7 +14,8 @@ public class UnleashSharpenSword extends UnleashPower {
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Sharpen Sword",
             "Give an allied minion +1/+0/+0, then <b>Unleash</b> it.", "res/unleashpower/sharpensword.png", CRAFT, 2,
-            UnleashSharpenSword.class, Tooltip.UNLEASH);
+            UnleashSharpenSword.class, new Vector2f(500, 330), 3,
+            Tooltip.UNLEASH);
 
     public UnleashSharpenSword(Board b) {
         super(b, TOOLTIP);
