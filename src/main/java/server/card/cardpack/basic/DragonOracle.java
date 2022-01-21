@@ -34,7 +34,7 @@ public class DragonOracle extends Spell {
             }
 
             @Override
-            public double getBattlecryValue() {
+            public double getBattlecryValue(int refs) {
                 return 3;
             }
         };

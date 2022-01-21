@@ -38,8 +38,8 @@ public class Beastmaster extends Minion {
             }
 
             @Override
-            public double getPresenceValue() {
-                return 2;
+            public double getPresenceValue(int refs) {
+                return 3;
             }
         };
         this.addEffect(true, e);

@@ -26,7 +26,7 @@ public class Baneling extends Minion {
             }
 
             @Override
-            public double getPresenceValue() {
+            public double getLastWordsValue(int refs) {
                 return AI.VALUE_PER_DAMAGE * 5 / 2.;
             }
         };

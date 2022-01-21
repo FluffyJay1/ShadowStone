@@ -39,7 +39,7 @@ public class WellOfDestination extends Amulet {
             }
 
             @Override
-            public double getPresenceValue() {
+            public double getPresenceValue(int refs) {
                 return AI.VALUE_PER_1_1_STATS * 4 / 2.;
             }
         };

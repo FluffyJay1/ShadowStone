@@ -542,7 +542,7 @@ public class AI extends Thread {
         List<Minion> minions = this.b.getMinions(team, false, true).collect(Collectors.toList());
         for (Minion m : minions) {
             if (p.canUnleashCard(m)) {
-                double totalWeight = UNLEASH_TOTAL_WEIGHT + UNLEASH_WEIGHT_PER_PRESENCE * m.getTotalEffectValueOf(Effect::getPresenceValue);
+                double totalWeight = UNLEASH_TOTAL_WEIGHT + UNLEASH_WEIGHT_PER_PRESENCE * m.getTotalEffectValueOf(e -> e.getPresenceValue(5));
                 if (!m.getUnleashTargets().isEmpty()) {
                     List<List<Target>> targetSearchSpace = this.getPossibleListTargets(m.getUnleashTargets());
                     for (List<Target> targets : targetSearchSpace) {

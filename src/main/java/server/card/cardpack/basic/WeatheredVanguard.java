@@ -38,8 +38,8 @@ public class WeatheredVanguard extends Minion {
             }
 
             @Override
-            public double getBattlecryValue() {
-                return 2 / 2.;
+            public double getBattlecryValue(int refs) {
+                return 2.;
             }
 
             @Override
@@ -57,8 +57,9 @@ public class WeatheredVanguard extends Minion {
             }
 
             @Override
-            public double getPresenceValue() {
-                return AI.VALUE_PER_1_1_STATS * 6 / 2.;
+            public double getPresenceValue(int refs) {
+                // can hit 6 units, avg probably hit half of them, and unleash costs 2
+                return AI.VALUE_PER_1_1_STATS * 6 / 2. / 2.;
             }
         };
         this.addEffect(true, e);

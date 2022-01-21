@@ -15,6 +15,9 @@ import utils.PositionedList;
 import utils.StringBuildable;
 
 public abstract class Card implements Indexable, StringBuildable {
+    // getValue may depend on the value of other cards, put a limit to how many
+    // other cards it needs to calculate
+    private static final int VALUE_MAX_REF_DEPTH = 5;
     public final Board board;
     public boolean alive = true; // alive means not marked for death
     public int team;
@@ -52,7 +55,11 @@ public abstract class Card implements Indexable, StringBuildable {
      *
      * @return the approximate mana worth of the card
      */
-    public abstract double getValue();
+    public final double getValue() {
+        return this.getValue(VALUE_MAX_REF_DEPTH);
+    }
+
+    public abstract double getValue(int refs);
 
     public double getTotalEffectValueOf(Function<Effect, Double> property) {
         // functional is cool

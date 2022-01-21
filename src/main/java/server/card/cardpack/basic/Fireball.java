@@ -54,7 +54,7 @@ public class Fireball extends Spell {
             }
 
             @Override
-            public double getBattlecryValue() {
+            public double getBattlecryValue(int refs) {
                 return AI.VALUE_PER_DAMAGE * 8 / 2.;
             }
         };

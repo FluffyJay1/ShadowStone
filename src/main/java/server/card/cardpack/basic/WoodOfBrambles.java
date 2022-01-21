@@ -40,12 +40,12 @@ public class WoodOfBrambles extends Amulet {
             }
 
             @Override
-            public double getBattlecryValue() {
-                return AI.VALUE_PER_CARD_IN_HAND * 2 / 2.;
+            public double getBattlecryValue(int refs) {
+                return AI.VALUE_PER_CARD_IN_HAND * 2;
             }
 
             @Override
-            public double getPresenceValue() {
+            public double getPresenceValue(int refs) {
                 return 2;
             }
         };
@@ -66,7 +66,7 @@ public class WoodOfBrambles extends Amulet {
         }
 
         @Override
-        public double getPresenceValue() {
+        public double getPresenceValue(int refs) {
             return AI.VALUE_PER_DAMAGE * 2 / 2.;
         }
     }

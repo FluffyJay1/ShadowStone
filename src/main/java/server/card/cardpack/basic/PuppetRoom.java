@@ -26,8 +26,8 @@ public class PuppetRoom extends Amulet {
             }
 
             @Override
-            public double getBattlecryValue() {
-                return AI.VALUE_PER_CARD_IN_HAND / 2.;
+            public double getBattlecryValue(int refs) {
+                return AI.VALUE_PER_CARD_IN_HAND;
             }
 
             @Override
@@ -36,8 +36,8 @@ public class PuppetRoom extends Amulet {
             }
 
             @Override
-            public double getPresenceValue() {
-                return AI.VALUE_PER_CARD_IN_HAND * this.owner.finalStatEffects.getStat(EffectStats.COUNTDOWN) / 2.;
+            public double getPresenceValue(int refs) {
+                return AI.VALUE_PER_CARD_IN_HAND * 3;
             }
         };
         e.effectStats.set.setStat(EffectStats.COUNTDOWN, 3);

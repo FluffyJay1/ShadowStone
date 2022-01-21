@@ -48,15 +48,19 @@ public class EffectLastWordsSummon extends Effect {
     }
 
     @Override
-    public double getPresenceValue() {
+    public double getLastWordsValue(int refs) {
         if (this.cachedInstances == null) {
             this.cachedInstances = this.cardClasses.stream()
                     .map(cl -> Card.createFromConstructor(this.owner.board, cl))
                     .collect(Collectors.toList());
         }
-        return this.cachedInstances.stream()
-                .map(Card::getValue)
-                .reduce(0., Double::sum) / 2;
+        double sum = 0;
+        double multiplier = 0.9;
+        for (Card c : this.cachedInstances) {
+            sum += c.getValue(refs - 1) * multiplier;
+            multiplier *= multiplier; // each card has lower and lower chance of being able to fit
+        }
+        return sum;
     }
 
     @Override

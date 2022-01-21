@@ -44,7 +44,7 @@ public class CursedStone extends Minion {
             }
 
             @Override
-            public double getPresenceValue() {
+            public double getPresenceValue(int refs) {
                 Player player = owner.board.getPlayer(owner.team);
                 int missing = player.getLeader().map(l ->l.finalStatEffects.getStat(EffectStats.HEALTH) - l.health).orElse(0);
                 return AI.VALUE_PER_DAMAGE * missing / 2.;

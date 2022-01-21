@@ -42,7 +42,7 @@ public class Minion extends BoardObject {
                 }
 
                 @Override
-                public double getPresenceValue() {
+                public double getPresenceValue(int refs) {
                     return AI.VALUE_PER_DAMAGE * this.owner.finalStatEffects.getStat(EffectStats.MAGIC) / 2.;
                 }
             };
@@ -63,11 +63,14 @@ public class Minion extends BoardObject {
     }
 
     @Override
-    public double getValue() {
+    public double getValue(int refs) {
+        if (refs < 0) {
+            return 0;
+        }
         if (this.health < 0) {
             return 0;
         }
-        double sum = super.getValue();
+        double sum = super.getValue(refs);
         // 0.9 * sqrt(atk * hp) + 0.1 * sqrt(magic * hp^(0.4)) + 1
         int attack = this.finalStatEffects.getStat(EffectStats.ATTACK);
         int magic = this.finalStatEffects.getStat(EffectStats.MAGIC);
@@ -81,10 +84,24 @@ public class Minion extends BoardObject {
         }
         attack += bonus;
         // TODO make it consider shield, etc.
-        sum += (0.9 * Math.sqrt(attack * this.health) + 0.1 * Math.sqrt(magic * Math.pow(this.health, 0.4)) + 1) * this.getCountdownValueMultiplier();
+        sum += (0.9 * Math.sqrt(attack * this.health) + 0.1 * Math.sqrt(magic * Math.pow(this.health, 0.4)) + 1) * super.getPresenceValueMultiplier();
         return sum;
     }
 
+    @Override
+    public double getPresenceValueMultiplier() {
+        return super.getPresenceValueMultiplier() * (1 - Math.pow(0.5, this.health));
+    }
+
+    @Override
+    public double getLastWordsValueMultiplier() {
+        double a = 0.25, w = 0.75;
+        if (this.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
+            return a + (1 - a) * (1 - (1 - Math.pow(w, this.finalStatEffects.getStat(EffectStats.COUNTDOWN))) * (1 - Math.pow(w, this.health)));
+        } else {
+            return a + (1 - a) * Math.pow(w, this.health);
+        }
+    }
     // remember to change logic in canAttack(Minion)
     // ideally this is functionally equivalent to minions.filter(this::canAttack)
     // but we do things a bit differently for performance reasons

@@ -39,7 +39,7 @@ public class Curate extends Minion {
             }
 
             @Override
-            public double getBattlecryValue() {
+            public double getBattlecryValue(int refs) {
                 return AI.VALUE_PER_HEAL * 5 / 2.;
             }
         };

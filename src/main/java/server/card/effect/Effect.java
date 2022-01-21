@@ -172,11 +172,13 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
      * Anyway, we pin a value on the special part of the effect, i.e. determine
      * the value we lose if we were to suddenly mute this effect. These should
      * not be complex calculations, but instead be mere estimates on the future
-     * value that an effect may bring. A good rule of thumb is (max value)/2.
+     * value that an effect may bring. A good rule of thumb for effects with
+     * varying outcomes is (max value)/2.
      *
+     * @param refs The depth of how many other cards we're allowed to refer to for value calculation
      * @return The approximate value of the special parts of the effect
      */
-    public double getPresenceValue() {
+    public double getPresenceValue(int refs) {
         return 0;
     }
 
@@ -188,9 +190,23 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
      * playing the card, used for the AI to determine basically whether it's
      * worth playing the card or not
      *
+     * @param refs The depth of how many other cards we're allowed to refer to for value calculation
      * @return The approximate value of playing the card
      */
-    public double getBattlecryValue() {
+    public double getBattlecryValue(int refs) {
+        return 0;
+    }
+
+    /**
+     * Same deal but for last words
+     *
+     * Some cards we want to die to trigger the juicy last words effect, so we
+     * make this score increase as the card gets closer to dying.
+     *
+     * @param refs The depth of how many other cards we're allowed to refer to for value calculation
+     * @return The approximate mana value of this card being destroyed
+     */
+    public double getLastWordsValue(int refs) {
         return 0;
     }
 

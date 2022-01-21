@@ -36,7 +36,7 @@ public class Tiny extends Minion {
             }
 
             @Override
-            public double getPresenceValue() {
+            public double getPresenceValue(int refs) {
                 return AI.VALUE_PER_1_1_STATS * 2 / 2.;
             }
         };

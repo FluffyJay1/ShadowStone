@@ -41,7 +41,7 @@ public class UnleashPower extends Card {
     }
 
     @Override
-    public double getValue() {
+    public double getValue(int refs) {
         return 0;
     }
 }

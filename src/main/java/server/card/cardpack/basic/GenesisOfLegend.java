@@ -41,7 +41,7 @@ public class GenesisOfLegend extends Amulet {
             }
 
             @Override
-            public double getPresenceValue() {
+            public double getPresenceValue(int refs) {
                 return 4;
             }
         };

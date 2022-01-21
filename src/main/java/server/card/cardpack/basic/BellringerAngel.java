@@ -25,8 +25,8 @@ public class BellringerAngel extends Minion {
             }
 
             @Override
-            public double getPresenceValue() {
-                return AI.VALUE_PER_CARD_IN_HAND * 1 / 2.;
+            public double getLastWordsValue(int refs) {
+                return AI.VALUE_PER_CARD_IN_HAND * 1;
             }
         };
         e.effectStats.set.setStat(EffectStats.WARD, 1);

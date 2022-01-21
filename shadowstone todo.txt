@@ -1,10 +1,9 @@
-add LastWordsValue, distinct from PresenceValue, because it makes countdown value different
 rotate cards
 indicate which cards have been marked for death
 update to use slick 1.0.2
 separate "minion attack" resolver from the "ordering attack" part
     e.g. allow an effect that forces minions to attack something, without adding to their attacks per turn
-formalize "minimum number of targets"
+formalize "minimum number of targets" and other play conditions
 make game fullscreen and fix flickering problem from rendering text
 UnicodeFont deprecated? use AngelCodeFonts
 Figure out why the game is eating cpu and gpu
