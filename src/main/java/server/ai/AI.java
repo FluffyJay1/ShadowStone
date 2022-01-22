@@ -75,7 +75,7 @@ public class AI extends Thread {
     private static final double SAMPLING_SAMPLE_RATE_RNG_PENALTY_MULTIPLIER = 0.85;
 
     // how much to multiply the penalty multiplier per extra trial
-    private static final double SAMPLING_SAMPLE_RATE_RNG_PENALTY_REDUCTION = 0.7;
+    private static final double SAMPLING_SAMPLE_RATE_RNG_PENALTY_REDUCTION = 0.8;
 
     // When revisiting nodes, tolerate lower detail levels up to a certain amount
     private static final double REEVALUATION_MAX_SAMPLE_RATE_DIFF = 0.20;

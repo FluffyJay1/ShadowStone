@@ -1,4 +1,3 @@
-make ai rng sampling less intense
 target with newline in description?? make special delimeter for events??
 use supplier thing for tooltips to allow cyclic dependencies
 rotate cards
