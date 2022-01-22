@@ -7,10 +7,11 @@ public abstract class CardSetBasic {
             WellOfDestination.class, BellringerAngel.class, GenesisOfLegend.class, WoodOfBrambles.class, Fairy.class,
             Skeleton.class, Baneling.class, CursedStone.class, Knight.class, WeatheredVanguard.class,
             DragonOracle.class, Curate.class, Puppet.class, PuppetRoom.class, Beastmaster.class, StonetuskBoar.class,
-            BlackenedScripture.class);
+            BlackenedScripture.class, MordecaiTheDuelist.class, HallowedDogma.class, HolyFalcon.class, HolyflameTiger.class,
+            BeastcallAria.class);
     public static final CardSet PLAYABLE_SET = new CardSet(Goblin.class, Fighter.class, Fireball.class, Tiny.class,
             WellOfDestination.class, BellringerAngel.class, GenesisOfLegend.class, WoodOfBrambles.class, Baneling.class,
             CursedStone.class, WeatheredVanguard.class, DragonOracle.class, Curate.class, PuppetRoom.class, Beastmaster.class,
-            StonetuskBoar.class, BlackenedScripture.class);
+            StonetuskBoar.class, BlackenedScripture.class, MordecaiTheDuelist.class, HallowedDogma.class, BeastcallAria.class);
 
 }

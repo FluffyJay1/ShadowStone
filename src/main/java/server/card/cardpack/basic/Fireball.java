@@ -12,17 +12,18 @@ import server.event.*;
 import server.resolver.*;
 
 public class Fireball extends Spell {
+    public static final String NAME = "Fireball";
+    public static final String DESCRIPTION = "Choose 2 enemy minions. Deal 2 damage to them and 1 damage to their adjacent minions.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
-    public static final TooltipSpell TOOLTIP = new TooltipSpell("Fireball",
-            "Choose 2 enemy minions. Deal 2 damage to them and 1 damage to their adjacent minions.",
-            "res/card/basic/fireball.png", CRAFT, 3, Fireball.class);
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/fireball.png",
+            CRAFT, 3, Fireball.class);
     final Effect e;
 
     public Fireball(Board b) {
         super(b, TOOLTIP);
         // anonymous classes within anonymous classes
 
-        this.e = new Effect(TOOLTIP.description) {
+        this.e = new Effect(DESCRIPTION) {
             @Override
             public Resolver battlecry() {
                 Effect effect = this;
@@ -58,7 +59,7 @@ public class Fireball extends Spell {
                 return AI.VALUE_PER_DAMAGE * 8 / 2.;
             }
         };
-        Target t = new Target(e, 2, "Deal 2 damage to an enemy minion and 1 damage to adjacent minions.") {
+        Target t = new Target(e, 2, DESCRIPTION) {
             @Override
             public boolean canTarget(Card c) {
                 return c.status == CardStatus.BOARD && c instanceof Minion

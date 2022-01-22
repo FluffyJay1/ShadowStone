@@ -13,16 +13,16 @@ import server.event.*;
 import server.resolver.*;
 
 public class GenesisOfLegend extends Amulet {
+    public static final String NAME = "Gensis of Legend";
+    public static final String DESCRIPTION = "<b>Countdown(3)</b>. At the end of your turn, give a random allied minion +0/+0/+1 and <b>Bane</b>.";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
-
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet("Gensis of Legend",
-            "<b>Countdown(3)</b>. At the end of your turn, give a random allied minion +0/+0/+1 and <b>Bane</b>.",
-            "res/card/basic/genesisoflegend.png", CRAFT, 2, GenesisOfLegend.class, new Vector2f(), -1,
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/genesisoflegend.png",
+            CRAFT, 2, GenesisOfLegend.class, new Vector2f(), -1,
             Tooltip.COUNTDOWN, Tooltip.BANE);
 
     public GenesisOfLegend(Board b) {
         super(b, TOOLTIP);
-        Effect e = new Effect(TOOLTIP.description) {
+        Effect e = new Effect(DESCRIPTION) {
             @Override
             public Resolver onTurnEnd() {
                 return new Resolver(true) {

@@ -55,12 +55,14 @@ public class CardSelectTooltipPanel extends UIBox {
             this.reset();
             double lasty = this.getLocalTop(true);
             for (Tooltip t : tooltip.references) {
-                TooltipDisplayPanel tdp = this.createTooltipDisplayPanel(t);
-                tdp.setPos(new Vector2f(0, (float) lasty), 1);
-                lasty += tdp.getHeight(false);
+                if (t != null) {
+                    TooltipDisplayPanel tdp = this.createTooltipDisplayPanel(t);
+                    tdp.setPos(new Vector2f(0, (float) lasty), 1);
+                    lasty += tdp.getHeight(false);
 
-                this.childTooltips.add(tdp);
-                this.scroll.addChild(tdp);
+                    this.childTooltips.add(tdp);
+                    this.scroll.addChild(tdp);
+                }
             }
         }
     }

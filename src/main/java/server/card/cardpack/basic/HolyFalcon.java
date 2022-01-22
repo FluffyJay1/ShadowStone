@@ -10,15 +10,17 @@ import server.card.Minion;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 
-public class StonetuskBoar extends Minion {
-    public static final String NAME = "Stonetusk Boar";
+import java.util.function.Supplier;
+
+public class HolyFalcon extends Minion {
+    public static final String NAME = "Holy Falcon";
     public static final String DESCRIPTION = "<b>Storm</b>.";
-    public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/stonetuskboar.png",
-            CRAFT, 1, 1, 0, 1, false, StonetuskBoar.class, new Vector2f(), -1, EventAnimationDamageSlash.class,
+    public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/holyfalcon.png",
+            CRAFT, 3, 2, 0, 1, false, HolyFalcon.class, new Vector2f(150, 150), 1.3, EventAnimationDamageSlash.class,
             Tooltip.STORM);
 
-    public StonetuskBoar(Board b) {
+    public HolyFalcon(Board b) {
         super(b, TOOLTIP);
         Effect e = new Effect(DESCRIPTION);
         e.effectStats.set.setStat(EffectStats.STORM, 1);

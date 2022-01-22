@@ -9,21 +9,21 @@ import server.event.*;
 import server.resolver.*;
 
 public class EffectLastWordsSummon extends Effect {
-    int team;
+    int teamMultiplier;
     List<Class<? extends Card>> cardClasses;
     private List<Card> cachedInstances; // for getPresenceValue, preview the value of the created cards
 
     // required for reflection
     public EffectLastWordsSummon() { }
 
-    public EffectLastWordsSummon(String description, List<Class<? extends Card>> cardClasses, int team) {
+    public EffectLastWordsSummon(String description, List<Class<? extends Card>> cardClasses, int teamMultiplier) {
         super(description);
         this.cardClasses = cardClasses;
-        this.team = team;
+        this.teamMultiplier = teamMultiplier;
     }
 
-    public EffectLastWordsSummon(String description, Class<? extends Card> cardClass, int team) {
-        this(description, List.of(cardClass), team);
+    public EffectLastWordsSummon(String description, Class<? extends Card> cardClass, int teamMultiplier) {
+        this(description, List.of(cardClass), teamMultiplier);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class EffectLastWordsSummon extends Effect {
                     cardpos.add(pos);
                     pos++;
                 }
-                this.resolve(b, rl, el, new CreateCardResolver(newCards, effect.team, CardStatus.BOARD, cardpos));
+                this.resolve(b, rl, el, new CreateCardResolver(newCards, effect.owner.team * effect.teamMultiplier, CardStatus.BOARD, cardpos));
             }
 
         };
@@ -54,10 +54,11 @@ public class EffectLastWordsSummon extends Effect {
                     .map(cl -> Card.createFromConstructor(this.owner.board, cl))
                     .collect(Collectors.toList());
         }
+        // behold magic numbers
         double sum = 0;
         double multiplier = 0.9;
         for (Card c : this.cachedInstances) {
-            sum += c.getValue(refs - 1) * multiplier;
+            sum += c.getValue(refs - 1) * multiplier * 0.8;
             multiplier *= multiplier; // each card has lower and lower chance of being able to fit
         }
         return sum;
@@ -70,7 +71,7 @@ public class EffectLastWordsSummon extends Effect {
         for (Class<? extends Card> cardClass : this.cardClasses) {
             builder.append(cardClass.getName()).append(" ");
         }
-        builder.append(this.team).append(" ");
+        builder.append(this.teamMultiplier).append(" ");
         return builder.toString();
     }
 
@@ -86,6 +87,6 @@ public class EffectLastWordsSummon extends Effect {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        this.team = Integer.parseInt(st.nextToken());
+        this.teamMultiplier = Integer.parseInt(st.nextToken());
     }
 }

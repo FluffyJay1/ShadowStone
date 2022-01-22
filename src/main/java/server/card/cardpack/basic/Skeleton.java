@@ -7,9 +7,11 @@ import server.*;
 import server.card.*;
 
 public class Skeleton extends Minion {
+    public static final String NAME = "Skeleton";
+    public static final String DESCRIPTION = "";
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
-    public static final TooltipMinion TOOLTIP = new TooltipMinion("Skeleton", "", "res/card/basic/skeleton.png", CRAFT,
-            1, 1, 1, 1, true, Skeleton.class, new Vector2f(), -1, null);
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/skeleton.png",
+            CRAFT, 1, 1, 1, 1, true, Skeleton.class, new Vector2f(), -1, null);
 
     public Skeleton(Board b) {
         super(b, TOOLTIP);

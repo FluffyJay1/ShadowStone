@@ -1,9 +1,15 @@
+make ai rng sampling less intense
+target with newline in description?? make special delimeter for events??
+use supplier thing for tooltips to allow cyclic dependencies
 rotate cards
 indicate which cards have been marked for death
+make text more readable
 update to use slick 1.0.2
 separate "minion attack" resolver from the "ordering attack" part
     e.g. allow an effect that forces minions to attack something, without adding to their attacks per turn
+add a really cool claw slashing attack animation :D
 formalize "minimum number of targets" and other play conditions
+allow anonymous Targets (with their targeting schemes) to be fromStringed
 make game fullscreen and fix flickering problem from rendering text
 UnicodeFont deprecated? use AngelCodeFonts
 Figure out why the game is eating cpu and gpu

@@ -39,7 +39,7 @@ public class EffectLastWordsAlliedBlast extends Effect {
 
     @Override
     public double getLastWordsValue(int refs) {
-        return AI.VALUE_PER_DAMAGE * -this.damage / 2.;
+        return AI.VALUE_PER_DAMAGE * -this.damage / 3.;
     }
 
     @Override

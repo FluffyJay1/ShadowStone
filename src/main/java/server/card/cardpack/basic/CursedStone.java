@@ -14,11 +14,11 @@ import server.event.*;
 import server.resolver.*;
 
 public class CursedStone extends Minion {
+    public static final String NAME = "Cursed Stone";
+    public static final String DESCRIPTION = "<b>Unleash</b>: <b>Blast(X)</b> and gain <b>Last Words</b>: Deal X damage to a random allied minion. X equals the amount of health your leader is missing.";
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
-    public static final TooltipMinion TOOLTIP = new TooltipMinion("Cursed Stone",
-            "<b>Unleash</b>: <b>Blast(X)</b> and gain <b>Last Words</b>: Deal X damage to a random allied minion. X equals the amount of health your leader is missing.",
-            "res/card/basic/cursedstone.png", CRAFT, 5, 1, 5, 5, false, CursedStone.class, new Vector2f(), -1,
-            EventAnimationDamageSlash.class,
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/cursedstone.png",
+            CRAFT, 5, 1, 5, 5, false, CursedStone.class, new Vector2f(), -1, EventAnimationDamageSlash.class,
             Tooltip.UNLEASH, Tooltip.BLAST, Tooltip.LASTWORDS);
 
     public CursedStone(Board b) {
@@ -27,7 +27,7 @@ public class CursedStone extends Minion {
          * it's called cursed stone not because of the stone itself, but because of the
          * anonymous classes
          */
-        Effect e = new Effect(TOOLTIP.description) {
+        Effect e = new Effect(DESCRIPTION) {
             @Override
             public Resolver unleash() {
                 Effect effect = this; // anonymous fuckery

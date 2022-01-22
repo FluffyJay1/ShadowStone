@@ -14,14 +14,16 @@ import server.event.*;
 import server.resolver.*;
 
 public class Curate extends Minion {
+    public static final String NAME = "Curate";
+    public static final String DESCRIPTION = "<b>Battlecry</b>: Restore 5 health to an ally.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
-    public static final TooltipMinion TOOLTIP = new TooltipMinion("Curate",
-            "<b>Battlecry</b>: Restore 5 health to an ally.", "res/card/basic/curate.png", CRAFT, 7, 5, 3, 5, true,
-            Curate.class, new Vector2f(169, 143), 1.4, EventAnimationDamageSlash.class, Tooltip.BATTLECRY);
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/curate.png",
+            CRAFT, 7, 5, 3, 5, true, Curate.class, new Vector2f(169, 143), 1.4, EventAnimationDamageSlash.class,
+            Tooltip.BATTLECRY);
 
     public Curate(Board b) {
         super(b, TOOLTIP);
-        Effect e = new Effect(TOOLTIP.description) {
+        Effect e = new Effect(DESCRIPTION) {
             @Override
             public Resolver battlecry() {
                 Effect effect = this; // anonymous fuckery

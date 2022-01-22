@@ -41,7 +41,7 @@ public class BoardObject extends Card {
     public double getLastWordsValueMultiplier() {
         double a = 0.25, w = 0.75;
         if (this.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
-            return a + (1 - a) * Math.pow(w, this.finalStatEffects.getStat(EffectStats.COUNTDOWN));
+            return a + (1 - a) * Math.pow(w, 2 * this.finalStatEffects.getStat(EffectStats.COUNTDOWN));
         } else {
             return a;
         }

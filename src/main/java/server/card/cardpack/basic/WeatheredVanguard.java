@@ -15,16 +15,16 @@ import server.event.*;
 import server.resolver.*;
 
 public class WeatheredVanguard extends Minion {
+    public static final String NAME = "Weathered Vanguard";
+    public static final String DESCRIPTION = "<b>Battlecry</b>: Summon 2 <b>Knights</b>.\n<b>Unleash</b>: Give all allied minions +1/+0/+1.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
-    public static final TooltipMinion TOOLTIP = new TooltipMinion("Weathered Vanguard",
-            "<b>Battlecry</b>: Summon 2 <b>Knights</b>.\n<b>Unleash</b>: Give all allied minions +1/+0/+1.",
-            "res/card/basic/weatheredvanguard.png", CRAFT, 6, 4, 2, 4, false, WeatheredVanguard.class,
-            new Vector2f(155, 120), 1.6, EventAnimationDamageSlash.class,
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/weatheredvanguard.png",
+            CRAFT, 6, 4, 2, 4, false, WeatheredVanguard.class, new Vector2f(155, 120), 1.6, EventAnimationDamageSlash.class,
             Tooltip.BATTLECRY, Knight.TOOLTIP, Tooltip.UNLEASH);
 
     public WeatheredVanguard(Board b) {
         super(b, TOOLTIP);
-        Effect e = new Effect(TOOLTIP.description) {
+        Effect e = new Effect(DESCRIPTION) {
             @Override
             public Resolver battlecry() {
                 return new Resolver(false) {

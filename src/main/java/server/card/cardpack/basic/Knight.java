@@ -8,9 +8,11 @@ import server.*;
 import server.card.*;
 
 public class Knight extends Minion {
+    public static final String NAME = "Knight";
+    public static final String DESCRIPTION = "";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
-    public static final TooltipMinion TOOLTIP = new TooltipMinion("Knight", "", "res/card/basic/knight.png", CRAFT, 1,
-            1, 1, 1, true, Knight.class, new Vector2f(), -1, EventAnimationDamageSlash.class);
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/knight.png",
+            CRAFT, 1, 1, 1, 1, true, Knight.class, new Vector2f(), -1, EventAnimationDamageSlash.class);
 
     public Knight(Board b) {
         super(b, TOOLTIP);

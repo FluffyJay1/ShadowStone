@@ -308,6 +308,7 @@ public class UICard extends UIBox {
             this.drawStatNumber(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COUNTDOWN), COUNTDOWN_POS,
                     COUNTDOWN_ALIGN, 50, Color.white);
         }
+        this.drawIcons(g, pos, scale);
         if (this.card instanceof Minion) {
             if (this.card.realCard != null && this.card.realCard instanceof Minion
                     && (this.card.team == this.uib.b.localteam ? // different rules depending on allied team or enemy team
@@ -332,7 +333,6 @@ public class UICard extends UIBox {
                 i = i.getScaledCopy((float) scale);
                 g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
             }
-            this.drawIcons(g, pos, scale);
             this.drawOffensiveStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.ATTACK),
                     this.card.finalBasicStatEffects.getStat(EffectStats.ATTACK),
                     new Vector2f(-MINION_STAT_POS_OFFSET_BOARD, 0.5f), MINION_STAT_ALIGN_BOARD, STAT_DEFAULT_SIZE);
@@ -355,7 +355,7 @@ public class UICard extends UIBox {
         if (this.card.finalStatEffects.getStat(EffectStats.POISONOUS) > 0) {
             this.icons.add(Game.getImage("res/game/poisonousicon.png"));
         }
-        if (this.card instanceof Minion && !this.getMinion().getResolvers(Effect::lastWords).isEmpty()) {
+        if (this.card instanceof BoardObject && !this.getCard().getResolvers(Effect::lastWords).isEmpty()) {
             this.icons.add(Game.getImage("res/game/lastwordsicon.png"));
         }
     }

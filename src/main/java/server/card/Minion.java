@@ -97,7 +97,7 @@ public class Minion extends BoardObject {
     public double getLastWordsValueMultiplier() {
         double a = 0.25, w = 0.75;
         if (this.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
-            return a + (1 - a) * (1 - (1 - Math.pow(w, this.finalStatEffects.getStat(EffectStats.COUNTDOWN))) * (1 - Math.pow(w, this.health)));
+            return a + (1 - a) * (1 - (1 - Math.pow(w, 2 * this.finalStatEffects.getStat(EffectStats.COUNTDOWN))) * (1 - Math.pow(w, this.health)));
         } else {
             return a + (1 - a) * Math.pow(w, this.health);
         }

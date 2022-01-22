@@ -13,16 +13,17 @@ import server.resolver.Resolver;
 import java.util.List;
 
 public class BlackenedScripture extends Spell {
+    public static final String NAME = "Blackened Scripture";
+    public static final String DESCRIPTION = "<b>Banish</b> an enemy minion with 3 health or less.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
-    public static final TooltipSpell TOOLTIP = new TooltipSpell("Blackened Scripture",
-            "<b>Banish</b> an enemy minion with 3 health or less.",
-            "res/card/basic/blackenedscripture.png", CRAFT, 2, BlackenedScripture.class,
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/blackenedscripture.png",
+            CRAFT, 2, BlackenedScripture.class,
             Tooltip.BANISH);
     final Effect e;
 
     public BlackenedScripture(Board b) {
         super(b, TOOLTIP);
-        this.e = new Effect(TOOLTIP.description) {
+        this.e = new Effect(DESCRIPTION) {
             @Override
             public Resolver battlecry() {
                 return new Resolver(false) {
@@ -42,7 +43,7 @@ public class BlackenedScripture extends Spell {
                 return 3;
             }
         };
-        Target t = new Target(e, 1, "Banish a card with 3 health or less.") {
+        Target t = new Target(e, 1, DESCRIPTION) {
             @Override
             public boolean canTarget(Card c) {
                 return c.status.equals(CardStatus.BOARD) && c instanceof Minion

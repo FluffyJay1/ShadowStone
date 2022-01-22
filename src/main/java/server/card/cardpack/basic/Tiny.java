@@ -14,14 +14,16 @@ import server.event.*;
 import server.resolver.*;
 
 public class Tiny extends Minion {
+    public static final String NAME = "Tiny";
+    public static final String DESCRIPTION = "<b>Unleash</b>: Gain +2/+0/+2 and <b>Rush</b>.";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
-    public static final TooltipMinion TOOLTIP = new TooltipMinion("Tiny",
-            "<b>Unleash</b>: Gain +2/+0/+2 and <b>Rush</b>.", "res/card/basic/tiny.png", CRAFT, 3, 2, 2, 3, false,
-            Tiny.class, new Vector2f(), -1, EventAnimationDamageRocks.class, Tooltip.UNLEASH, Tooltip.RUSH);
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/tiny.png",
+            CRAFT, 3, 2, 2, 3, false, Tiny.class, new Vector2f(), -1, EventAnimationDamageRocks.class,
+            Tooltip.UNLEASH, Tooltip.RUSH);
 
     public Tiny(Board b) {
         super(b, TOOLTIP);
-        Effect e = new Effect(TOOLTIP.description) {
+        Effect e = new Effect(DESCRIPTION) {
             @Override
             public Resolver unleash() {
                 return new Resolver(false) {

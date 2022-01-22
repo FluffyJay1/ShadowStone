@@ -16,9 +16,10 @@ import server.resolver.CreateCardResolver;
 import server.resolver.Resolver;
 
 public class Beastmaster extends Minion {
+    public static final String NAME = "Beastmaster";
+    public static final String DESCRIPTION = "<b>Aura</b>: adjacent minions have +1 attacks per turn.\n<b>Unleash</b>: summon a <b>Stonetusk Boar</b>.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
-    public static final TooltipMinion TOOLTIP = new TooltipMinion("Beastmaster",
-            "<b>Aura</b>: adjacent minions have +1 attacks per turn.\n<b>Unleash</b>: summon a <b>Stonetusk Boar</b>.", "res/card/basic/beastmaster.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/beastmaster.png",
             CRAFT, 4, 2, 0, 4, false, Beastmaster.class, new Vector2f(140, 100), 2, EventAnimationDamageSlash.class,
             Tooltip.AURA, Tooltip.UNLEASH, StonetuskBoar.TOOLTIP);
 
@@ -26,7 +27,7 @@ public class Beastmaster extends Minion {
         super(b, TOOLTIP);
         Effect auraBuff = new Effect("+1 attacks per turn (from <b>Beastmaster's Aura</b>).");
         auraBuff.effectStats.change.setStat(EffectStats.ATTACKS_PER_TURN, 1);
-        Effect e = new EffectAura(TOOLTIP.description, 1, true, false, auraBuff) {
+        Effect e = new EffectAura(DESCRIPTION, 1, true, false, auraBuff) {
             @Override
             public boolean applyConditions(Card cardToApply) {
                 return cardToApply instanceof Minion && Math.abs(cardToApply.getIndex() - this.owner.getIndex()) == 1;
