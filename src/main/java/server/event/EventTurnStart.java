@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.Game;
 import server.*;
 import server.card.*;
 
@@ -56,7 +57,7 @@ public class EventTurnStart extends Event {
 
     @Override
     public String toString() {
-        return this.id + " " + this.p.team + "\n";
+        return this.id + " " + this.p.team + Game.EVENT_END;
     }
 
     public static EventTurnStart fromString(Board b, StringTokenizer st) {

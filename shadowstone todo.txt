@@ -1,18 +1,23 @@
-target with newline in description?? make special delimeter for events??
+target refactoring
+    make the "target object" itself and the "target selection" have different string representations
+    allow anonymous Targets (with their targeting schemes) to be fromStringed
+    targeting serverside verification
+    somehow incorporate the targeting API more elegantly in the effect itself
+    formalize "minimum number of targets" and other play conditions
+    add modal targeting?
 use supplier thing for tooltips to allow cyclic dependencies
 rotate cards
 indicate which cards have been marked for death
 make text more readable
+    like icons underneath attack, magic, health
+    use a better font
 update to use slick 1.0.2
 separate "minion attack" resolver from the "ordering attack" part
     e.g. allow an effect that forces minions to attack something, without adding to their attacks per turn
 add a really cool claw slashing attack animation :D
-formalize "minimum number of targets" and other play conditions
-allow anonymous Targets (with their targeting schemes) to be fromStringed
 make game fullscreen and fix flickering problem from rendering text
 UnicodeFont deprecated? use AngelCodeFonts
 Figure out why the game is eating cpu and gpu
-targeting serverside verification
 relpos lol
 formalize basic effects? createBasicEffect()
 priority

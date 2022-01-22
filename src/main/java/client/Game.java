@@ -18,7 +18,7 @@ public class Game extends StateBasedGame {
     public static final int STATE_DECKBUILD = 3;
     public static final int SERVER_PORT = 9091;
 
-    public static final String STRING_START = "\u00bc", STRING_END = "\u00bd", BLOCK_END = "\u00be";
+    public static final String STRING_START = "\u00bc", STRING_END = "\u00bd", BLOCK_END = "\u00be", EVENT_END = "\u00b6";
     public static final Map<String, Image> images = new HashMap<>();
 
     public static final Map<String, UnicodeFont> fonts = new HashMap<>();

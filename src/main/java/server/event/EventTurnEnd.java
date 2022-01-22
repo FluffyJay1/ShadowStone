@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.Game;
 import server.*;
 
 public class EventTurnEnd extends Event {
@@ -15,7 +16,7 @@ public class EventTurnEnd extends Event {
 
     @Override
     public String toString() {
-        return this.id + " " + this.p.team + "\n";
+        return this.id + " " + this.p.team + Game.EVENT_END;
     }
 
     public static EventTurnEnd fromString(Board b, StringTokenizer st) {

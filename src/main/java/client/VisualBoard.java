@@ -132,11 +132,7 @@ public class VisualBoard extends Board implements
     @Override
     public synchronized void parseEventString(String s) {
         this.realBoard.parseEventString(s);
-        StringTokenizer st = new StringTokenizer(s, "\n");
-        while (st.hasMoreTokens()) {
-            String eventOrGroup = st.nextToken();
-            this.inputeventliststrings.add(eventOrGroup);
-        }
+        this.inputeventliststrings.addAll(List.of(s.split(Game.EVENT_END)));
         this.updateEventAnimation(0);
     }
 

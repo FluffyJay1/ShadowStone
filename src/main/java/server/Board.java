@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import client.Game;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
@@ -191,7 +192,7 @@ public abstract class Board {
      */
     public synchronized void parseEventString(String s) {
         if (!s.isEmpty()) {
-            String[] lines = s.split("\n");
+            String[] lines = s.split(Game.EVENT_END);
             for (String line : lines) {
                 StringTokenizer st = new StringTokenizer(line);
                 char firstChar = line.charAt(0);

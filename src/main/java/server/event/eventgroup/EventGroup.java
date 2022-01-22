@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import client.Game;
 import server.Board;
 import server.card.Card;
 
@@ -42,7 +43,7 @@ public class EventGroup {
         for (Card c : this.cards) {
             sb.append(c.toReference());
         }
-        return sb.append("\n").toString();
+        return sb.append(Game.EVENT_END).toString();
     }
 
     public static EventGroup fromString(Board b, StringTokenizer st) {

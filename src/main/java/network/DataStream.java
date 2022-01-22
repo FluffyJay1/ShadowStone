@@ -80,7 +80,8 @@ public class DataStream {
 
     public void sendEvent(String eventstring) {
         this.out.println(MessageType.EVENT);
-        this.out.println(eventstring + Game.BLOCK_END);
+        this.out.println(eventstring);
+        this.out.println(Game.BLOCK_END);
     }
 
     public void sendPlayerAction(String action) {
@@ -144,10 +145,18 @@ public class DataStream {
             StringBuilder events = new StringBuilder();
             String line = in.readLine();
             while (!line.equals(Game.BLOCK_END)) {
-                events.append(line).append("\n");
+                if (!events.isEmpty()) {
+                    events.append("\n");
+                }
+                events.append(line);
                 line = in.readLine();
             }
-            return events.toString();
+            String s = events.toString();
+            int lastEventDelim = s.lastIndexOf(Game.EVENT_END);
+            if (lastEventDelim >= 0) {
+                return s.substring(0, lastEventDelim);
+            }
+            return s;
         } catch (IOException e) {
             e.printStackTrace();
         }

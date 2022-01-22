@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.Game;
 import server.*;
 
 public class EventManaChange extends Event {
@@ -52,7 +53,7 @@ public class EventManaChange extends Event {
 
     @Override
     public String toString() {
-        return this.id + " " + this.p.team + " " + this.mana + " " + this.empty + " " + this.recover + "\n";
+        return this.id + " " + this.p.team + " " + this.mana + " " + this.empty + " " + this.recover + Game.EVENT_END;
     }
 
     public static EventManaChange fromString(Board b, StringTokenizer st) {

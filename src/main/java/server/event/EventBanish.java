@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.Game;
 import client.PendingPlayPositioner;
 import server.*;
 import server.card.*;
@@ -91,13 +92,18 @@ public class EventBanish extends Event {
     }
 
     @Override
+    public List<BoardObject> cardsLeavingPlay() {
+        return this.cardsLeavingPlay;
+    }
+
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(this.id).append(" ").append(this.cards.size()).append(" ");
         for (Card card : this.cards) {
             builder.append(card.toReference());
         }
-        builder.append("\n");
+        builder.append(Game.EVENT_END);
         return builder.toString();
     }
 

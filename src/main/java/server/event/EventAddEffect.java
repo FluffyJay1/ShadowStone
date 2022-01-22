@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.Game;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -90,7 +91,7 @@ public class EventAddEffect extends Event {
         for (Card card : this.c) {
             builder.append(card.toReference());
         }
-        builder.append("\n");
+        builder.append(Game.EVENT_END);
         return builder.toString();
     }
 

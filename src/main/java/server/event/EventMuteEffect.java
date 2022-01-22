@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.Game;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -59,7 +60,7 @@ public class EventMuteEffect extends Event {
 
     @Override
     public String toString() {
-        return this.id + " " + this.c.toReference() + this.e.toReference() + this.mute + "\n";
+        return this.id + " " + this.c.toReference() + this.e.toReference() + this.mute + Game.EVENT_END;
     }
 
     public static EventMuteEffect fromString(Board b, StringTokenizer st) {

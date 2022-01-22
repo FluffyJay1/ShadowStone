@@ -3,6 +3,7 @@ package server.event;
 import java.lang.reflect.*;
 import java.util.*;
 
+import client.Game;
 import server.*;
 import server.card.*;
 
@@ -40,7 +41,7 @@ public class Event {
 
     @Override
     public String toString() {
-        return this.id + "\n";
+        return this.id + Game.EVENT_END;
     }
 
     public static Event createFromString(Board b, StringTokenizer st) {
@@ -65,23 +66,13 @@ public class Event {
         return true;
     }
 
+    // overridden
     public List<BoardObject> cardsEnteringPlay() {
-        if (this instanceof EventCreateCard) {
-            return ((EventCreateCard) this).cardsEnteringPlay;
-        } else if (this instanceof EventPutCard) {
-            return ((EventPutCard) this).cardsEnteringPlay;
-        }
         return null;
     }
 
+    // overridden
     public List<BoardObject> cardsLeavingPlay() {
-        if (this instanceof EventBanish) {
-            return ((EventBanish) this).cardsLeavingPlay;
-        } else if (this instanceof EventDestroy) {
-            return ((EventDestroy) this).cardsLeavingPlay;
-        } else if (this instanceof EventPutCard) {
-            return ((EventPutCard) this).cardsLeavingPlay;
-        }
         return null;
     }
 }

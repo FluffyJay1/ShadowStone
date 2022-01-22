@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.Game;
 import client.VisualBoard;
 import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamage;
 import server.*;
@@ -79,7 +80,7 @@ public class EventDamage extends Event {
         for (int i = 0; i < this.m.size(); i++) {
             builder.append(this.m.get(i).toReference()).append(this.damage.get(i)).append(" ").append(this.poisonous.get(i)).append(" ");
         }
-        builder.append("\n");
+        builder.append(Game.EVENT_END);
         return builder.toString();
     }
 

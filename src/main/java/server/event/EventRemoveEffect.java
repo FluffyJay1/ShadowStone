@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.Game;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -80,7 +81,7 @@ public class EventRemoveEffect extends Event {
         for (Effect e : this.effects) {
             builder.append(e.toReference());
         }
-        builder.append("\n");
+        builder.append(Game.EVENT_END);
         return builder.toString();
     }
 

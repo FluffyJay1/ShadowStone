@@ -41,7 +41,7 @@ public class EventUpdateEffectState extends Event {
 
     @Override
     public String toString() {
-        return this.id + " " + this.effect.toReference() + this.newState + Game.STRING_END + "\n";
+        return this.id + " " + this.effect.toReference() + this.newState + Game.STRING_END + Game.EVENT_END;
     }
 
     public static EventUpdateEffectState fromString(Board b, StringTokenizer st) {

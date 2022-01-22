@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.Game;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -57,7 +58,7 @@ public class EventRestore extends Event {
         for (int i = 0; i < this.m.size(); i++) {
             builder.append(this.m.get(i).toReference()).append(this.heal.get(i)).append(" ");
         }
-        return builder.append("\n").toString();
+        return builder.append(Game.EVENT_END).toString();
     }
 
     public static EventRestore fromString(Board b, StringTokenizer st) {

@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.Game;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -42,7 +43,7 @@ public class EventSetEffectStats extends Event {
 
     @Override
     public String toString() {
-        return this.id + " " + this.target.toReference() + this.newStats.toString() + "\n";
+        return this.id + " " + this.target.toReference() + this.newStats.toString() + Game.EVENT_END;
     }
 
     public static EventSetEffectStats fromString(Board b, StringTokenizer st) {

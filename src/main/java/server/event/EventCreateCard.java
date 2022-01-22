@@ -111,6 +111,11 @@ public class EventCreateCard extends Event {
     }
 
     @Override
+    public List<BoardObject> cardsEnteringPlay() {
+        return this.cardsEnteringPlay;
+    }
+
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(this.id).append(" ").append(this.cards.size()).append(" ");
@@ -121,7 +126,7 @@ public class EventCreateCard extends Event {
         for (Integer i : this.cardpos) {
             builder.append(" ").append(i);
         }
-        builder.append("\n");
+        builder.append(Game.EVENT_END);
         return builder.toString();
     }
 

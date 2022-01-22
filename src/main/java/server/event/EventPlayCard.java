@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.Game;
 import client.PendingPlay;
 import client.PendingPlayPositioner;
 import server.*;
@@ -30,7 +31,7 @@ public class EventPlayCard extends Event {
 
     @Override
     public String toString() {
-        return this.id + " " + p.team + " " + position + " " + this.c.toReference() + "\n";
+        return this.id + " " + p.team + " " + position + " " + this.c.toReference() + Game.EVENT_END;
     }
 
     public static EventPlayCard fromString(Board b, StringTokenizer st) {

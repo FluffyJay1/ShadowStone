@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.Game;
 import server.*;
 import server.card.*;
 
@@ -18,7 +19,7 @@ public class EventEnterPlay extends Event {
 
     @Override
     public String toString() {
-        return this.id + " " + this.c.toReference() + "\n";
+        return this.id + " " + this.c.toReference() + Game.EVENT_END;
     }
 
     public static EventEnterPlay fromString(Board b, StringTokenizer st) {

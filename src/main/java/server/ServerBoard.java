@@ -1,5 +1,6 @@
 package server;
 
+import client.Game;
 import server.card.BoardObject;
 import server.card.Card;
 import server.card.effect.Effect;
@@ -214,8 +215,8 @@ public class ServerBoard extends Board {
     public EventGroup popEventGroup() {
         EventGroup eg = super.popEventGroup();
         if (eg.committed) {
-            this.output.append(EventGroup.POP_TOKEN + "\n");
-            this.history.append(EventGroup.POP_TOKEN + "\n");
+            this.output.append(EventGroup.POP_TOKEN + Game.EVENT_END);
+            this.history.append(EventGroup.POP_TOKEN + Game.EVENT_END);
         }
         return eg;
     }
@@ -230,19 +231,13 @@ public class ServerBoard extends Board {
     }
 
     public void saveBoardState() {
-        File f = new File("board.dat");
-        if (!f.exists()) {
-            try {
-                f.createNewFile();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
         try {
-            PrintWriter pw = new PrintWriter(f, StandardCharsets.UTF_16);
+            PrintWriter pw = new PrintWriter("board.dat", StandardCharsets.UTF_16);
+            PrintWriter pwreadable = new PrintWriter("board_readable.txt", StandardCharsets.UTF_16);
             pw.print(this.getHistory());
+            pwreadable.print(this.getHistory().replaceAll(Game.EVENT_END, "\n"));
             pw.close();
+            pwreadable.close();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -256,14 +251,6 @@ public class ServerBoard extends Board {
                 this.init();
                 String state = Files.readString(f.toPath(), StandardCharsets.UTF_16);
                 this.parseEventString(state);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-        } else {
-            try {
-                f.createNewFile();
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

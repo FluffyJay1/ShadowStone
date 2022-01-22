@@ -65,7 +65,7 @@ public class CardSelectPanel extends UIBox {
             StringBuilder effectstext = new StringBuilder("Effects:\n");
             for (Effect e : this.uib.selectedCard.getCard().getEffects(false)) {
                 if (!e.description.isEmpty()) {
-                    effectstext.append("- ").append(e.description).append(e.mute ? " [<b>MUTED</b>]" : "").append("\n");
+                    effectstext.append("<b>></b> ").append(e.description).append(e.mute ? " [<b>MUTED</b>]" : "").append("\n");
                 }
             }
             this.effects.setText(effectstext.toString());

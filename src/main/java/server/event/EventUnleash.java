@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.Game;
 import client.PendingUnleash;
 import server.*;
 import server.card.*;
@@ -40,7 +41,7 @@ public class EventUnleash extends Event {
     @Override
     public String toString() {
         return this.id + " " + this.source.toReference() + m.toReference() + Target.listToString(m.getUnleashTargets())
-                + "\n";
+                + Game.EVENT_END;
     }
 
     public static EventUnleash fromString(Board b, StringTokenizer st) {

@@ -2,6 +2,7 @@ package server.event;
 
 import java.util.*;
 
+import client.Game;
 import client.PendingPlayPositioner;
 import server.*;
 import server.card.*;
@@ -194,6 +195,16 @@ public class EventPutCard extends Event {
     }
 
     @Override
+    public List<BoardObject> cardsEnteringPlay() {
+        return this.cardsEnteringPlay;
+    }
+
+    @Override
+    public List<BoardObject> cardsLeavingPlay() {
+        return this.cardsLeavingPlay;
+    }
+
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(this.id).append(" ")
@@ -203,7 +214,7 @@ public class EventPutCard extends Event {
         for (int i = 0; i < this.cards.size(); i++) {
             builder.append(this.cards.get(i).toReference()).append(this.pos.get(i)).append(" ");
         }
-        return builder.append("\n").toString();
+        return builder.append(Game.EVENT_END).toString();
     }
 
     public static EventPutCard fromString(Board b, StringTokenizer st) {
