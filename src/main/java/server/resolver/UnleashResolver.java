@@ -5,6 +5,8 @@ import java.util.*;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
+import server.card.target.CardTargetingScheme;
+import server.card.target.TargetList;
 import server.card.unleashpower.*;
 import server.event.*;
 import server.event.eventgroup.EventGroup;
@@ -13,9 +15,9 @@ import server.event.eventgroup.EventGroupType;
 public class UnleashResolver extends Resolver {
     final Card source;
     final Minion m;
-    final String unleashTargets;
+    final List<TargetList<?>> unleashTargets;
 
-    public UnleashResolver(Card source, Minion m, String unleashTargets) {
+    public UnleashResolver(Card source, Minion m, List<TargetList<?>> unleashTargets) {
         super(false);
         this.source = source;
         this.m = m;
@@ -25,8 +27,7 @@ public class UnleashResolver extends Resolver {
     @Override
     public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         if (this.m.canBeUnleashed()) {
-            // see PlayCardResolver for why we set the targets first
-            Target.setListFromString(this.m.getUnleashTargets(), b, new StringTokenizer(this.unleashTargets));
+            this.m.setUnleashTargets(this.unleashTargets);
             if (this.source instanceof UnleashPower) {
                 Player p = this.source.board.getPlayer(this.source.team);
                 if (p.canUnleashCard(m)) {

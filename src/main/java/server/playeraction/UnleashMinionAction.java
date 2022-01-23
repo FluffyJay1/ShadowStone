@@ -4,6 +4,8 @@ import java.util.*;
 
 import server.*;
 import server.card.*;
+import server.card.target.CardTargetingScheme;
+import server.card.target.TargetList;
 import server.resolver.*;
 
 public class UnleashMinionAction extends PlayerAction {
@@ -12,9 +14,9 @@ public class UnleashMinionAction extends PlayerAction {
 
     public final Player p;
     public final Minion m;
-    final String unleashTargets;
+    final List<TargetList<?>> unleashTargets;
 
-    public UnleashMinionAction(Player p, Minion m, String unleashTargets) {
+    public UnleashMinionAction(Player p, Minion m, List<TargetList<?>> unleashTargets) {
         super(ID);
         // TODO Auto-generated constructor stub
         this.p = p;
@@ -26,7 +28,7 @@ public class UnleashMinionAction extends PlayerAction {
     @Override
     public ResolutionResult perform(ServerBoard b) {
         ResolutionResult result = new ResolutionResult();
-        if (!p.canUnleashCard(m)) {
+        if (!p.canUnleashCard(m) || !this.m.validateTargets(this.m.getUnleashTargetingSchemes(), this.unleashTargets)) {
             return result;
         }
         // get special unleash power thing
@@ -36,15 +38,15 @@ public class UnleashMinionAction extends PlayerAction {
 
     @Override
     public String toString() {
-        return ID + " " + p.team + " " + m.toReference() + this.unleashTargets + "\n";
+        return ID + " " + p.team + " " + m.toReference() + this.m.unleashTargetsToString(this.unleashTargets) + "\n";
     }
 
     public static UnleashMinionAction fromString(Board b, StringTokenizer st) {
         Player p = b.getPlayer(Integer.parseInt(st.nextToken()));
         Minion m = (Minion) Card.fromReference(b, st);
         assert m != null;
-        Target.setListFromString(m.getUnleashTargets(), b, st);
-        return new UnleashMinionAction(p, m, Target.listToString(m.getUnleashTargets()));
+        List<TargetList<?>> unleashTargets = m.parseUnleashTargets(st);
+        return new UnleashMinionAction(p, m, unleashTargets);
     }
 
 }

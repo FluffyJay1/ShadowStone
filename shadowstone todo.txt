@@ -1,10 +1,6 @@
 target refactoring
-    make the "target object" itself and the "target selection" have different string representations
-    allow anonymous Targets (with their targeting schemes) to be fromStringed
-    targeting serverside verification
-    somehow incorporate the targeting API more elegantly in the effect itself
-    formalize "minimum number of targets" and other play conditions
     add modal targeting?
+adjust value calculations while in hand?
 use supplier thing for tooltips to allow cyclic dependencies
 rotate cards
 indicate which cards have been marked for death

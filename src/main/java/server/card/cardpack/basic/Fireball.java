@@ -8,6 +8,9 @@ import server.*;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
+import server.card.target.CardTargetList;
+import server.card.target.CardTargetingScheme;
+import server.card.target.TargetingScheme;
 import server.event.*;
 import server.resolver.*;
 
@@ -25,13 +28,23 @@ public class Fireball extends Spell {
 
         this.e = new Effect(DESCRIPTION) {
             @Override
+            public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
+                return List.of(new CardTargetingScheme(this, 1, 2, DESCRIPTION) {
+                    @Override
+                    public boolean canTarget(Card c) {
+                        return c.status == CardStatus.BOARD && c instanceof Minion
+                                && c.team != this.getCreator().owner.team;
+                    }
+                });
+            }
+            @Override
             public Resolver battlecry() {
                 Effect effect = this;
                 return new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         List<Card> markedForDeath = new LinkedList<>();
-                        for (Card targeted : battlecryTargets.get(0).getTargetedCards()) {
+                        getStillTargetableBattlecryCardTargets(0).forEach(targeted -> {
                             List<Minion> m = new LinkedList<>();
                             List<Integer> d = new LinkedList<>();
                             int pos = targeted.getIndex();
@@ -48,7 +61,7 @@ public class Fireball extends Spell {
                             EffectDamageResolver dr = this.resolve(b, rl, el,
                                     new EffectDamageResolver(effect, m, d, false, EventAnimationDamageFire.class));
                             markedForDeath.addAll(dr.destroyed);
-                        }
+                        });
                         this.resolve(b, rl, el, new DestroyResolver(markedForDeath));
                     }
                 };
@@ -59,23 +72,6 @@ public class Fireball extends Spell {
                 return AI.VALUE_PER_DAMAGE * 8 / 2.;
             }
         };
-        Target t = new Target(e, 2, DESCRIPTION) {
-            @Override
-            public boolean canTarget(Card c) {
-                return c.status == CardStatus.BOARD && c instanceof Minion
-                        && c.team != this.getCreator().owner.team;
-            }
-        };
-
-        LinkedList<Target> list = new LinkedList<>();
-        list.add(t);
-        e.setBattlecryTargets(list);
         this.addEffect(true, e);
     }
-
-    @Override
-    public boolean conditions() {
-        return this.board.getTargetableCards(this.e.battlecryTargets.get(0)).findAny().isPresent();
-    }
-
 }

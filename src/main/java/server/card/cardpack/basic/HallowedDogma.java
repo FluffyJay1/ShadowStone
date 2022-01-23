@@ -7,6 +7,9 @@ import server.ServerBoard;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.target.CardTargetList;
+import server.card.target.CardTargetingScheme;
+import server.card.target.TargetingScheme;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
 import server.resolver.DrawResolver;
@@ -14,7 +17,6 @@ import server.resolver.Resolver;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 public class HallowedDogma extends Spell {
     public static final String NAME = "Hallowed Dogma";
@@ -28,12 +30,21 @@ public class HallowedDogma extends Spell {
         super(b, TOOLTIP);
         this.e = new Effect(DESCRIPTION) {
             @Override
+            public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
+                return List.of(new CardTargetingScheme(this, 1, 1, DESCRIPTION) {
+                    @Override
+                    public boolean canTarget(Card c) {
+                        return c.status.equals(CardStatus.BOARD);
+                    }
+                });
+            }
+            @Override
             public Resolver battlecry() {
                 return new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         // lmao
-                        battlecryTargets.get(0).getTargetedCards().stream().findFirst().ifPresent(c -> {
+                        getStillTargetableBattlecryCardTargets(0).findFirst().ifPresent(c -> {
                             if (c.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
                                 Effect countdownAdd = new Effect();
                                 countdownAdd.effectStats.change.setStat(EffectStats.COUNTDOWN, -2);
@@ -54,21 +65,6 @@ public class HallowedDogma extends Spell {
                 return 3;
             }
         };
-        Target t = new Target(this.e, 1, DESCRIPTION) {
-            @Override
-            public boolean canTarget(Card c) {
-                return c.status.equals(CardStatus.BOARD);
-            }
-        };
-
-        LinkedList<Target> list = new LinkedList<>();
-        list.add(t);
-        e.setBattlecryTargets(list);
         this.addEffect(true, e);
-    }
-
-    @Override
-    public boolean conditions() {
-        return this.board.getTargetableCards(this.e.battlecryTargets.get(0)).findAny().isPresent();
     }
 }

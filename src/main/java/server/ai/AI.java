@@ -1,5 +1,6 @@
 package server.ai;
 
+import java.lang.annotation.Target;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -9,6 +10,9 @@ import network.*;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
+import server.card.target.CardTargetingScheme;
+import server.card.target.TargetList;
+import server.card.target.TargetingScheme;
 import server.event.*;
 import server.playeraction.*;
 import server.resolver.*;
@@ -467,28 +471,29 @@ public class AI extends Thread {
         for (Card c : hand) {
             if (p.canPlayCard(c)) {
                 double totalWeight = PLAY_CARD_TOTAL_WEIGHT + PLAY_CARD_COST_WEIGHT_MULTIPLIER * c.finalStatEffects.getStat(EffectStats.COST);
+                List<TargetingScheme<?>> targetingSchemes = c.getBattlecryTargetingSchemes();
                 if (c instanceof BoardObject) {
                     double weightPerPos = totalWeight / (p.getPlayArea().size() + 1);
                     // rip my branching factor lol
                     for (int playPos = 0; playPos <= p.getPlayArea().size(); playPos++) {
-                        if (!c.getBattlecryTargets().isEmpty()) {
-                            List<List<Target>> targetSearchSpace = this.getPossibleListTargets(c.getBattlecryTargets());
-                            for (List<Target> targets : targetSearchSpace) {
-                                poss.add(new PlayCardAction(p, c, playPos, Target.listToString(targets)).toString(), weightPerPos / targetSearchSpace.size());
+                        if (!targetingSchemes.isEmpty()) {
+                            List<List<TargetList<?>>> targetSearchSpace = this.getPossibleListTargets(targetingSchemes);
+                            for (List<TargetList<?>> targets : targetSearchSpace) {
+                                poss.add(new PlayCardAction(p, c, playPos, targets).toString(), weightPerPos / targetSearchSpace.size());
                             }
                         } else { // no targets to set
-                            poss.add(new PlayCardAction(p, c, playPos, "0").toString(), weightPerPos);
+                            poss.add(new PlayCardAction(p, c, playPos, List.of()).toString(), weightPerPos);
                         }
                     }
                 } else {
                     // spells don't require positioning
-                    if (!c.getBattlecryTargets().isEmpty()) {
-                        List<List<Target>> targetSearchSpace = this.getPossibleListTargets(c.getBattlecryTargets());
-                        for (List<Target> targets : targetSearchSpace) {
-                            poss.add(new PlayCardAction(p, c, 0, Target.listToString(targets)).toString(), totalWeight / targetSearchSpace.size());
+                    if (!targetingSchemes.isEmpty()) {
+                        List<List<TargetList<?>>> targetSearchSpace = this.getPossibleListTargets(targetingSchemes);
+                        for (List<TargetList<?>> targets : targetSearchSpace) {
+                            poss.add(new PlayCardAction(p, c, 0, targets).toString(), totalWeight / targetSearchSpace.size());
                         }
                     } else { // no targets to set
-                        poss.add(new PlayCardAction(p, c, 0, "0").toString(), totalWeight);
+                        poss.add(new PlayCardAction(p, c, 0, List.of()).toString(), totalWeight);
                     }
                 }
             }
@@ -497,13 +502,14 @@ public class AI extends Thread {
             // unleashing cards & selecting targets
             if (p.canUnleashCard(m)) {
                 double totalWeight = UNLEASH_TOTAL_WEIGHT; // can't really make any assumptions about which unleashes are better than others
-                if (!m.getUnleashTargets().isEmpty()) {
-                    List<List<Target>> targetSearchSpace = this.getPossibleListTargets(m.getUnleashTargets());
-                    for (List<Target> targets : targetSearchSpace) {
-                        poss.add(new UnleashMinionAction(p, m, Target.listToString(targets)).toString(), totalWeight / targetSearchSpace.size());
+                List<TargetingScheme<?>> targetingSchemes = m.getUnleashTargetingSchemes();
+                if (!targetingSchemes.isEmpty()) {
+                    List<List<TargetList<?>>> targetSearchSpace = this.getPossibleListTargets(targetingSchemes);
+                    for (List<TargetList<?>> targets : targetSearchSpace) {
+                        poss.add(new UnleashMinionAction(p, m, targets).toString(), totalWeight / targetSearchSpace.size());
                     }
                 } else { // no targets to set
-                    poss.add(new UnleashMinionAction(p, m, "0").toString(), totalWeight);
+                    poss.add(new UnleashMinionAction(p, m, List.of()).toString(), totalWeight);
                 }
             }
             // minion attack
@@ -543,13 +549,14 @@ public class AI extends Thread {
         for (Minion m : minions) {
             if (p.canUnleashCard(m)) {
                 double totalWeight = UNLEASH_TOTAL_WEIGHT + UNLEASH_WEIGHT_PER_PRESENCE * m.getTotalEffectValueOf(e -> e.getPresenceValue(5));
-                if (!m.getUnleashTargets().isEmpty()) {
-                    List<List<Target>> targetSearchSpace = this.getPossibleListTargets(m.getUnleashTargets());
-                    for (List<Target> targets : targetSearchSpace) {
-                        poss.add(new UnleashMinionAction(p, m, Target.listToString(targets)).toString(), totalWeight / targetSearchSpace.size());
+                List<TargetingScheme<?>> targetingSchemes = m.getUnleashTargetingSchemes();
+                if (!targetingSchemes.isEmpty()) {
+                    List<List<TargetList<?>>> targetSearchSpace = this.getPossibleListTargets(targetingSchemes);
+                    for (List<TargetList<?>> targets : targetSearchSpace) {
+                        poss.add(new UnleashMinionAction(p, m, targets).toString(), totalWeight / targetSearchSpace.size());
                     }
                 } else { // no targets to set
-                    poss.add(new UnleashMinionAction(p, m, "0").toString(), totalWeight);
+                    poss.add(new UnleashMinionAction(p, m, List.of()).toString(), totalWeight);
                 }
             }
         }
@@ -586,7 +593,8 @@ public class AI extends Thread {
      * recursively finds every possible combination of targets, returns null if it
      * cannot fully target because startInd was too large
      * 
-     * @param t           The target to fill
+     * @param t           The target schema to follow
+     * @param current     Currently selected cards, for recursive purposes
      * @param searchSpace the list of cards to search through that are possible
      *                    targets, for optimization purposes, usually it's just
      *                    this.b.getTargetableCards(t)
@@ -595,22 +603,22 @@ public class AI extends Thread {
      *                    just 0
      * @return A list of possible targets
      */
-    private List<Target> getPossibleTargets(Target t, List<Card> searchSpace, int startInd) {
+    private <T> List<TargetList<T>> getPossibleTargets(TargetingScheme<T> t, TargetList<T> current, List<? extends T> searchSpace, int startInd) {
         // TODO TEST THAT IT DOESN'T SEARCH THE SAME COMBINATION TWICE
-        List<Target> poss = new LinkedList<>();
-        if (t.isReady()) {
-            poss.add(t);
+        List<TargetList<T>> poss = new LinkedList<>();
+        if (t.isFullyTargeted(current)) {
+            poss.add(current);
             return poss;
         }
         if (startInd >= searchSpace.size()) {
             System.out.println("this shouldn't happen lmao");
         }
-        for (int i = startInd; i < searchSpace.size() - (t.maxtargets - t.getTargetedCards().size() - 1); i++) {
-            Card c = searchSpace.get(i);
-            if (!t.getTargetedCards().contains(c)) {
-                Target copy = t.clone();
-                copy.addCard(c);
-                List<Target> subspace = this.getPossibleTargets(copy, searchSpace, i + 1);
+        for (int i = startInd; i < searchSpace.size() - (t.getMaxTargets() - current.list.size() - 1); i++) {
+            T c = searchSpace.get(i);
+            if (!current.list.contains(c)) {
+                TargetList<T> copy = current.clone();
+                copy.list.add(c);
+                List<TargetList<T>> subspace = this.getPossibleTargets(t, copy, searchSpace, i + 1);
                 poss.addAll(subspace);
             }
         }
@@ -628,19 +636,19 @@ public class AI extends Thread {
      * @return A list of possible sets of targets. Each element in the list is a set
      *         of targets to be used by the card.
      */
-    private List<List<Target>> getPossibleListTargets(List<Target> list) {
+    @SuppressWarnings("unchecked")
+    private List<List<TargetList<?>>> getPossibleListTargets(List<TargetingScheme<?>> list) {
         // TODO OPTIMIZE SO IT DOESN'T SEARCH THE SAME COMBINATION TWICE
-        List<List<Target>> poss = new LinkedList<>();
+        List<List<TargetList<?>>> poss = new LinkedList<>();
         if (list.isEmpty()) {
             return poss;
         }
-        list.get(0).reset();
-        List<Card> cardSearchSpace = this.b.getTargetableCards(list.get(0)).collect(Collectors.toList());
-        List<Target> searchspace = this.getPossibleTargets(list.get(0), cardSearchSpace, 0);
-        for (Target t : searchspace) {
-            List<Target> posscombo = new LinkedList<>();
+        TargetingScheme<Object> scheme = (TargetingScheme<Object>) list.get(0);
+        List<TargetList<Object>> searchspace = this.getPossibleTargets(scheme, scheme.makeList(), scheme.getPossibleChoices(), 0);
+        for (TargetList<?> t : searchspace) {
+            List<TargetList<?>> posscombo = new LinkedList<>();
             posscombo.add(t.clone());
-            for (List<Target> subspace : this.getPossibleListTargets(list.subList(1, list.size()))) {
+            for (List<TargetList<?>> subspace : this.getPossibleListTargets(list.subList(1, list.size()))) {
                 posscombo.addAll(subspace);
             }
             poss.add(posscombo);

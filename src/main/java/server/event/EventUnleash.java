@@ -6,6 +6,7 @@ import client.Game;
 import client.PendingUnleash;
 import server.*;
 import server.card.*;
+import server.card.target.CardTargetingScheme;
 import server.card.unleashpower.*;
 
 public class EventUnleash extends Event {
@@ -40,15 +41,12 @@ public class EventUnleash extends Event {
 
     @Override
     public String toString() {
-        return this.id + " " + this.source.toReference() + m.toReference() + Target.listToString(m.getUnleashTargets())
-                + Game.EVENT_END;
+        return this.id + " " + this.source.toReference() + m.toReference() + Game.EVENT_END;
     }
 
     public static EventUnleash fromString(Board b, StringTokenizer st) {
         Card source = Card.fromReference(b, st);
         Minion m = (Minion) Card.fromReference(b, st);
-        assert m != null;
-        Target.setListFromString(m.getUnleashTargets(), b, st);
         return new EventUnleash(source, m);
     }
 

@@ -8,6 +8,10 @@ import client.tooltip.*;
 import server.*;
 import server.ai.AI;
 import server.card.effect.*;
+import server.card.target.CardTargetList;
+import server.card.target.CardTargetingScheme;
+import server.card.target.TargetList;
+import server.card.target.TargetingScheme;
 import server.event.*;
 import server.resolver.*;
 
@@ -24,19 +28,28 @@ public class Minion extends BoardObject {
         if (tooltip.basicUnleash) {
             Effect unl = new Effect(
                     "<b>Unleash</b>: Deal X damage to an enemy minion. X equals this minion's magic.") {
+                public List<TargetingScheme<?>> getUnleashTargetingSchemes() {
+                    return List.of(new CardTargetingScheme(this, 0, 1, "Deal X damage to an enemy minion. X equals this minion's magic.") {
+                        @Override
+                        public boolean canTarget(Card c) {
+                            return c.status == CardStatus.BOARD && c instanceof Minion
+                                    && c.team != this.getCreator().owner.team;
+                        }
+                    });
+                }
+
                 @Override
                 public Resolver unleash() {
                     Effect effect = this; // anonymous fuckery
                     return new Resolver(false) {
                         @Override
                         public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
-                            List<Card> targets = effect.unleashTargets.get(0).getTargetedCards();
-                            if (targets.size() > 0) {
-                                Minion target = (Minion) effect.unleashTargets.get(0).getTargetedCards().get(0);
+                            getStillTargetableUnleashCardTargets(0).findFirst().ifPresent(c -> {
+                                Minion target = (Minion) c;
                                 EffectDamageResolver edr = new EffectDamageResolver(effect, List.of(target),
                                         List.of(effect.owner.finalStatEffects.getStat(EffectStats.MAGIC)), true, null);
                                 this.resolve(b, rl, el, edr);
-                            }
+                            });
                         }
                     };
                 }
@@ -46,14 +59,6 @@ public class Minion extends BoardObject {
                     return AI.VALUE_PER_DAMAGE * this.owner.finalStatEffects.getStat(EffectStats.MAGIC) / 2.;
                 }
             };
-            Target t = new Target(e, 1, "Deal X damage to an enemy minion. X equals this minion's magic.") {
-                @Override
-                public boolean canTarget(Card c) {
-                    return c.status == CardStatus.BOARD && c instanceof Minion
-                            && c.team != this.getCreator().owner.team;
-                }
-            };
-            unl.setUnleashTargets(List.of(t));
             this.addEffect(true, unl);
         }
     }
@@ -156,12 +161,42 @@ public class Minion extends BoardObject {
         return !(this instanceof Leader) && this.isInPlay();
     }
 
-    public List<Target> getUnleashTargets() {
-        List<Target> list = new LinkedList<>();
+    public List<TargetingScheme<?>> getUnleashTargetingSchemes() {
+        List<TargetingScheme<?>> list = new LinkedList<>();
         for (Effect e : this.getFinalEffects(true)) {
-            list.addAll(e.unleashTargets);
+            list.addAll(e.getUnleashTargetingSchemes());
         }
         return list;
+    }
+
+    public void setUnleashTargets(List<TargetList<?>> targets) {
+        int start = 0;
+        for (Effect e : this.getFinalEffects(true)) {
+            int end = start + e.getUnleashTargetingSchemes().size();
+            e.setUnleashTargets(targets.subList(start, end));
+            start = end;
+        }
+        assert start == targets.size();
+    }
+
+    public String unleashTargetsToString(List<TargetList<?>> targets) {
+        int start = 0;
+        StringBuilder builder = new StringBuilder();
+        for (Effect e : this.getFinalEffects(true)) {
+            List<TargetingScheme<?>> unleashTargetingSchemes = e.getUnleashTargetingSchemes();
+            int end = start + unleashTargetingSchemes.size();
+            builder.append(Effect.targetsToString(unleashTargetingSchemes, targets.subList(start, end)));
+            start = end;
+        }
+        return builder.toString();
+    }
+
+    public List<TargetList<?>> parseUnleashTargets(StringTokenizer st) {
+        List<TargetList<?>> ret = new ArrayList<>();
+        for (Effect e : this.getFinalEffects(true)) {
+            Effect.parseTargets(st, e.getUnleashTargetingSchemes(), ret);
+        }
+        return ret;
     }
 
     @Override

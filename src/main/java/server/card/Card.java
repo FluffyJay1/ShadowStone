@@ -1,5 +1,6 @@
 package server.card;
 
+import java.lang.annotation.Target;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.function.Function;
@@ -9,6 +10,9 @@ import client.tooltip.*;
 import client.ui.game.*;
 import server.*;
 import server.card.effect.*;
+import server.card.target.CardTargetingScheme;
+import server.card.target.TargetList;
+import server.card.target.TargetingScheme;
 import server.resolver.*;
 import utils.Indexable;
 import utils.PositionedList;
@@ -198,18 +202,65 @@ public abstract class Card implements Indexable, StringBuildable {
                 .collect(Collectors.toList());
     }
 
-    // TODO refactor to effect
-    public boolean conditions() { // to be able to even begin to play
-        return true;
+    public boolean canBePlayed() {
+        return this.getBattlecryTargetingSchemes().stream().allMatch(TargetingScheme::conditions);
     }
 
     // probably not worth the hassle of making functional
-    public List<Target> getBattlecryTargets() {
-        List<Target> list = new LinkedList<>();
+    public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
+        List<TargetingScheme<?>> list = new LinkedList<>();
         for (Effect e : this.getFinalEffects(true)) {
-            list.addAll(e.battlecryTargets);
+            list.addAll(e.getBattlecryTargetingSchemes());
         }
         return list;
+    }
+
+    public List<TargetList<?>> getTargets(Function<Effect, List<TargetList<?>>> targetGetter) {
+        List<TargetList<?>> list = new LinkedList<>();
+        for (Effect e : this.getFinalEffects(true)) {
+            list.addAll(targetGetter.apply(e));
+        }
+        return list;
+    }
+
+    @SuppressWarnings("unchecked")
+    public boolean validateTargets(List<TargetingScheme<?>> schemes, List<TargetList<?>> targets) {
+        for (int i = 0; i < schemes.size(); i++) {
+            if (!schemes.get(i).isValid((TargetList) targets.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void setBattlecryTargets(List<TargetList<?>> targets) {
+        int start = 0;
+        for (Effect e : this.getFinalEffects(true)) {
+            int end = start + e.getBattlecryTargetingSchemes().size();
+            e.setBattlecryTargets(targets.subList(start, end));
+            start = end;
+        }
+        assert start == targets.size();
+    }
+
+    public String battlecryTargetsToString(List<TargetList<?>> targets) {
+        int start = 0;
+        StringBuilder builder = new StringBuilder();
+        for (Effect e : this.getFinalEffects(true)) {
+            List<TargetingScheme<?>> battlecryTargetingSchemes = e.getBattlecryTargetingSchemes();
+            int end = start + battlecryTargetingSchemes.size();
+            builder.append(Effect.targetsToString(battlecryTargetingSchemes, targets.subList(start, end)));
+            start = end;
+        }
+        return builder.toString();
+    }
+
+    public List<TargetList<?>> parseBattlecryTargets(StringTokenizer st) {
+        List<TargetList<?>> ret = new ArrayList<>();
+        for (Effect e : this.getFinalEffects(true)) {
+            Effect.parseTargets(st, e.getBattlecryTargetingSchemes(), ret);
+        }
+        return ret;
     }
 
     public String cardPosToString() {

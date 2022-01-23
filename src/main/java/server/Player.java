@@ -118,12 +118,16 @@ public class Player implements StringBuildable {
         if (c instanceof BoardObject && this.getPlayArea().size() >= this.maxPlayAreaSize) {
             return false;
         }
-        return c != null && this.board.currentPlayerTurn == this.team && c.conditions()
+        return c != null && c.canBePlayed() && this.board.currentPlayerTurn == this.team
                 && this.mana >= c.finalStatEffects.getStat(EffectStats.COST) && c.status.equals(CardStatus.HAND);
     }
 
     public boolean canUnleashCard(Card c) {
-        return c instanceof Minion && ((Minion) c).canBeUnleashed() && c.team == this.team && c.alive && this.canUnleash();
+        if (!(c instanceof Minion)) {
+            return false;
+        }
+        Minion m = (Minion) c;
+        return m.canBeUnleashed() && m.team == this.team && m.alive && this.canUnleash();
     }
 
     public boolean canUnleash() {

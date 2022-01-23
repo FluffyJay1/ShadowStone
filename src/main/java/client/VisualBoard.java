@@ -12,6 +12,7 @@ import client.ui.game.visualboardanimation.eventanimation.*;
 import server.*;
 import server.ai.*;
 import server.card.*;
+import server.card.target.CardTargetingScheme;
 import server.event.*;
 import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
@@ -215,7 +216,7 @@ public class VisualBoard extends Board implements
     }
 
     @Override
-    public Stream<Card> getTargetableCards(Target t) {
+    public Stream<Card> getTargetableCards(CardTargetingScheme t) {
         if (t == null) {
             return Stream.empty();
         }

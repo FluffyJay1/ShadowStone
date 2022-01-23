@@ -7,9 +7,9 @@ import java.util.stream.Stream;
 import client.Game;
 import server.card.*;
 import server.card.effect.*;
+import server.card.target.CardTargetingScheme;
 import server.event.*;
 import server.event.eventgroup.EventGroup;
-import server.resolver.Resolver;
 
 // must use either ClientBoard or ServerBoard
 public abstract class Board {
@@ -84,7 +84,7 @@ public abstract class Board {
     }
 
     // cards that can be added to a Target object
-    public Stream<Card> getTargetableCards(Target t) {
+    public Stream<Card> getTargetableCards(CardTargetingScheme t) {
         if (t == null) {
             return Stream.empty();
         }

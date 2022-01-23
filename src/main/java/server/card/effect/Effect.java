@@ -2,10 +2,16 @@ package server.card.effect;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import client.*;
 import server.*;
 import server.card.*;
+import server.card.target.CardTargetList;
+import server.card.target.CardTargetingScheme;
+import server.card.target.TargetList;
+import server.card.target.TargetingScheme;
 import server.event.*;
 import server.resolver.*;
 import utils.Indexable;
@@ -36,7 +42,7 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
      * target specifications are set upon construction, player input fulfills the
      * targets
      */
-    public List<Target> battlecryTargets = new LinkedList<>(), unleashTargets = new LinkedList<>();
+    private List<TargetList<?>> battlecryTargets = new LinkedList<>(), unleashTargets = new LinkedList<>();
 
     public EffectAura auraSource;
 
@@ -57,46 +63,60 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
         return null;
     }
 
-    public void setBattlecryTargets(List<Target> targets) {
+    public void setBattlecryTargets(List<TargetList<?>> targets) {
         this.battlecryTargets = targets;
     }
 
-    public void resetBattlecryTargets() {
-        for (Target t : this.battlecryTargets) {
-            t.reset();
-        }
+    public List<TargetList<?>> getBattlecryTargets() {
+        return this.battlecryTargets;
     }
 
-    public Target getNextNeededBattlecryTarget() {
-        for (Target t : this.battlecryTargets) {
-            if (!t.isReady()) {
-                return t;
-            }
-        }
-        return null;
+    public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
+        return List.of();
+    }
+
+    // shameful glue
+    public Stream<Card> getStillTargetableBattlecryCardTargets(int index) {
+        return ((CardTargetList) this.getBattlecryTargets().get(index)).getStillTargetable((CardTargetingScheme) this.getBattlecryTargetingSchemes().get(index));
     }
 
     public Resolver unleash() {
         return null;
     }
 
-    public void setUnleashTargets(List<Target> targets) {
+    public void setUnleashTargets(List<TargetList<?>> targets) {
         this.unleashTargets = targets;
     }
 
-    public void resetUnleashTargets() {
-        for (Target t : this.unleashTargets) {
-            t.reset();
+    public List<TargetList<?>> getUnleashTargets() {
+        return this.unleashTargets;
+    }
+
+    public List<TargetingScheme<?>> getUnleashTargetingSchemes() {
+        return List.of();
+    }
+
+    // shameful glue
+    public Stream<Card> getStillTargetableUnleashCardTargets(int index) {
+        return ((CardTargetList) this.getUnleashTargets().get(index)).getStillTargetable((CardTargetingScheme) this.getUnleashTargetingSchemes().get(index));
+    }
+
+    public static void parseTargets(StringTokenizer st, List<TargetingScheme<?>> schemes, List<TargetList<?>> listToAddTo) {
+        for (TargetingScheme<?> scheme : schemes) {
+            listToAddTo.add(scheme.parseToList(st));
         }
     }
 
-    public Target getNextNeededUnleashTarget() {
-        for (Target t : this.unleashTargets) {
-            if (!t.isReady()) {
-                return t;
-            }
+    // bruh
+    @SuppressWarnings("unchecked")
+    public static String targetsToString(List<TargetingScheme<?>> schemes, List<TargetList<?>> targetsList) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < schemes.size(); i++) {
+            TargetingScheme<?> scheme = schemes.get(i);
+            TargetList targets = targetsList.get(i);
+            builder.append(scheme.listToString(targets));
         }
-        return null;
+        return builder.toString();
     }
 
     // these two are for the unleash power unleashing on a minion
@@ -270,11 +290,11 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
         Effect e = (Effect) super.clone(); // shallow copy
         e.effectStats = this.effectStats.clone();
         this.battlecryTargets = new LinkedList<>();
-        for (Target t : e.battlecryTargets) {
+        for (TargetList<?> t : e.battlecryTargets) {
             this.battlecryTargets.add(t.clone());
         }
         this.unleashTargets = new LinkedList<>();
-        for (Target t : e.unleashTargets) {
+        for (TargetList<?> t : e.unleashTargets) {
             this.unleashTargets.add(t.clone());
         }
         return e;

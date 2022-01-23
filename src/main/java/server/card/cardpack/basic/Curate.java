@@ -10,6 +10,9 @@ import server.*;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
+import server.card.target.CardTargetList;
+import server.card.target.CardTargetingScheme;
+import server.card.target.TargetingScheme;
 import server.event.*;
 import server.resolver.*;
 
@@ -25,17 +28,25 @@ public class Curate extends Minion {
         super(b, TOOLTIP);
         Effect e = new Effect(DESCRIPTION) {
             @Override
+            public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
+                return List.of(new CardTargetingScheme(this, 0, 1, "Restore 5 health to an ally.") {
+                    @Override
+                    public boolean canTarget(Card c) {
+                        return c instanceof Minion && ((Minion) c).isInPlay() && c.team == this.getCreator().owner.team;
+                    }
+                });
+            }
+
+            @Override
             public Resolver battlecry() {
                 Effect effect = this; // anonymous fuckery
                 return new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
-                        // TODO Auto-generated method stub
-                        List<Card> targets = battlecryTargets.get(0).getTargetedCards();
-                        if (!targets.isEmpty()) {
-                            Minion target = (Minion) targets.get(0);
+                        getStillTargetableBattlecryCardTargets(0).findFirst().ifPresent(c -> {
+                            Minion target = (Minion) c;
                             this.resolve(b, rl, el, new RestoreResolver(effect, target, 5));
-                        }
+                        });
                     }
                 };
             }
@@ -45,15 +56,6 @@ public class Curate extends Minion {
                 return AI.VALUE_PER_HEAL * 5 / 2.;
             }
         };
-        Target t = new Target(e, 1, "Restore 5 health to an ally.") {
-            @Override
-            public boolean canTarget(Card c) {
-                return c instanceof Minion && ((Minion) c).isInPlay() && c.team == this.getCreator().owner.team;
-            }
-        };
-        List<Target> list = new LinkedList<>();
-        list.add(t);
-        e.setBattlecryTargets(list);
         this.addEffect(true, e);
     }
 }

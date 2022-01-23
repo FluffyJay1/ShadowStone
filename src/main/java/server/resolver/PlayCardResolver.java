@@ -5,6 +5,8 @@ import java.util.*;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
+import server.card.target.CardTargetingScheme;
+import server.card.target.TargetList;
 import server.event.*;
 import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
@@ -13,9 +15,9 @@ public class PlayCardResolver extends Resolver {
     public final Player p;
     public final Card c;
     final int position;
-    final String battlecryTargets;
+    final List<TargetList<?>> battlecryTargets;
 
-    public PlayCardResolver(Player p, Card c, int position, String battlecryTargets) {
+    public PlayCardResolver(Player p, Card c, int position, List<TargetList<?>> battlecryTargets) {
         super(false);
         this.p = p;
         this.c = c;
@@ -26,13 +28,7 @@ public class PlayCardResolver extends Resolver {
     @Override
     public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         if (this.p.canPlayCard(this.c)) {
-            /*
-            It's convenient to store battlecry targets in a string, however
-            if the state of the board changes, the string version can be obsolete
-            therefore we set the targets before any state changes happen,
-            even if the battlecry occurs afterwards
-            */
-            Target.setListFromString(this.c.getBattlecryTargets(), b, new StringTokenizer(this.battlecryTargets));
+            c.setBattlecryTargets(this.battlecryTargets);
             b.processEvent(rl, el, new EventPlayCard(this.p, this.c, this.position));
             b.processEvent(rl, el,
                     new EventManaChange(this.p, -this.c.finalStatEffects.getStat(EffectStats.COST), false, true));

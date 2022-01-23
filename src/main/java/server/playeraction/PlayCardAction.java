@@ -4,6 +4,8 @@ import java.util.*;
 
 import server.*;
 import server.card.*;
+import server.card.target.CardTargetingScheme;
+import server.card.target.TargetList;
 import server.resolver.*;
 
 public class PlayCardAction extends PlayerAction {
@@ -12,9 +14,9 @@ public class PlayCardAction extends PlayerAction {
     public final Player p;
     public final Card c;
     public final int pos;
-    final String battlecryTargets;
+    final List<TargetList<?>> battlecryTargets;
 
-    public PlayCardAction(Player p, Card c, int pos, String battlecryTargets) {
+    public PlayCardAction(Player p, Card c, int pos, List<TargetList<?>> battlecryTargets) {
         super(ID);
 
         this.p = p;
@@ -27,7 +29,7 @@ public class PlayCardAction extends PlayerAction {
     @Override
     public ResolutionResult perform(ServerBoard b) {
         ResolutionResult result = new ResolutionResult();
-        if (!this.p.canPlayCard(this.c)) { // just to be safe
+        if (!this.p.canPlayCard(this.c) || !this.c.validateTargets(this.c.getBattlecryTargetingSchemes(), this.battlecryTargets)) { // just to be safe
             return result;
         }
         result.concat(b.resolve(new PlayCardResolver(this.p, this.c, this.pos, this.battlecryTargets)));
@@ -36,7 +38,7 @@ public class PlayCardAction extends PlayerAction {
 
     @Override
     public String toString() {
-        return ID + " " + this.p.team + " " + this.c.toReference() + this.pos + " " + this.battlecryTargets + "\n"; // YEAHH
+        return ID + " " + this.p.team + " " + this.c.toReference() + this.pos + " " + this.c.battlecryTargetsToString(this.battlecryTargets) + "\n"; // YEAHH
     }
 
     public static PlayCardAction fromString(Board b, StringTokenizer st) {
@@ -44,8 +46,8 @@ public class PlayCardAction extends PlayerAction {
         Card c = Card.fromReference(b, st);
         int pos = Integer.parseInt(st.nextToken());
         assert c != null;
-        Target.setListFromString(c.getBattlecryTargets(), b, st);
-        return new PlayCardAction(p, c, pos, Target.listToString(c.getBattlecryTargets()));
+        List<TargetList<?>> battlecryTargets = c.parseBattlecryTargets(st);
+        return new PlayCardAction(p, c, pos, battlecryTargets);
     }
 
 }
