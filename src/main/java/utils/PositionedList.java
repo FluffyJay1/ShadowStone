@@ -14,6 +14,7 @@ public class PositionedList<T extends Indexable> implements List<T> {
 
     public PositionedList(List<T> listToWrap) {
         this.indexables = listToWrap;
+        this.updatePositions();
     }
 
     @Override

@@ -5,7 +5,6 @@ import java.util.*;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
-import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.event.*;
 import server.event.eventgroup.EventGroup;
@@ -15,9 +14,9 @@ public class PlayCardResolver extends Resolver {
     public final Player p;
     public final Card c;
     final int position;
-    final List<TargetList<?>> battlecryTargets;
+    final List<List<TargetList<?>>> battlecryTargets;
 
-    public PlayCardResolver(Player p, Card c, int position, List<TargetList<?>> battlecryTargets) {
+    public PlayCardResolver(Player p, Card c, int position, List<List<TargetList<?>>> battlecryTargets) {
         super(false);
         this.p = p;
         this.c = c;

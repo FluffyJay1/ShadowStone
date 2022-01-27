@@ -7,7 +7,6 @@ import server.ServerBoard;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
-import server.card.target.CardTargetList;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetingScheme;
 import server.event.Event;
@@ -15,7 +14,6 @@ import server.resolver.AddEffectResolver;
 import server.resolver.DrawResolver;
 import server.resolver.Resolver;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class HallowedDogma extends Spell {

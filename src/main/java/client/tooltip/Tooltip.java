@@ -31,6 +31,9 @@ public class Tooltip {
             "<b>Aura</b> effects grant effects to other cards while the source of the aura is in play.");
     public static final Tooltip BANISH = new Tooltip("Banish",
             "Remove a card without destroying it. Will not trigger <b>Last Words</b>.", Tooltip.LASTWORDS);
+    public static final Tooltip CHOOSE = new Tooltip("Choose",
+            "Cards with <b>Choose</b> effects allow you to choose what happens in either a <b>Battlecry</b> or an <b>Unleash</b>.",
+            Tooltip.BATTLECRY, Tooltip.UNLEASH);
 
     public final String name;
     public final String description;

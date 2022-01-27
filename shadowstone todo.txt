@@ -1,6 +1,6 @@
-target refactoring
-    add modal targeting?
 adjust value calculations while in hand?
+correct lastboardpos if e.g. multiple countdown amulets go off at once
+    in general, something may happen between the card dying and the last words summoning
 use supplier thing for tooltips to allow cyclic dependencies
 rotate cards
 indicate which cards have been marked for death

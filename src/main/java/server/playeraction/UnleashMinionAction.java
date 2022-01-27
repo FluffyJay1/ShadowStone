@@ -4,7 +4,6 @@ import java.util.*;
 
 import server.*;
 import server.card.*;
-import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.resolver.*;
 
@@ -14,9 +13,9 @@ public class UnleashMinionAction extends PlayerAction {
 
     public final Player p;
     public final Minion m;
-    final List<TargetList<?>> unleashTargets;
+    final List<List<TargetList<?>>> unleashTargets;
 
-    public UnleashMinionAction(Player p, Minion m, List<TargetList<?>> unleashTargets) {
+    public UnleashMinionAction(Player p, Minion m, List<List<TargetList<?>>> unleashTargets) {
         super(ID);
         // TODO Auto-generated constructor stub
         this.p = p;
@@ -45,7 +44,7 @@ public class UnleashMinionAction extends PlayerAction {
         Player p = b.getPlayer(Integer.parseInt(st.nextToken()));
         Minion m = (Minion) Card.fromReference(b, st);
         assert m != null;
-        List<TargetList<?>> unleashTargets = m.parseUnleashTargets(st);
+        List<List<TargetList<?>>> unleashTargets = m.parseUnleashTargets(st);
         return new UnleashMinionAction(p, m, unleashTargets);
     }
 

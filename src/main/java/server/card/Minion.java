@@ -8,7 +8,6 @@ import client.tooltip.*;
 import server.*;
 import server.ai.AI;
 import server.card.effect.*;
-import server.card.target.CardTargetList;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
@@ -161,40 +160,37 @@ public class Minion extends BoardObject {
         return !(this instanceof Leader) && this.isInPlay();
     }
 
-    public List<TargetingScheme<?>> getUnleashTargetingSchemes() {
-        List<TargetingScheme<?>> list = new LinkedList<>();
+    public List<List<TargetingScheme<?>>> getUnleashTargetingSchemes() {
+        List<List<TargetingScheme<?>>> list = new LinkedList<>();
         for (Effect e : this.getFinalEffects(true)) {
-            list.addAll(e.getUnleashTargetingSchemes());
+            list.add(e.getUnleashTargetingSchemes());
         }
         return list;
     }
 
-    public void setUnleashTargets(List<TargetList<?>> targets) {
-        int start = 0;
-        for (Effect e : this.getFinalEffects(true)) {
-            int end = start + e.getUnleashTargetingSchemes().size();
-            e.setUnleashTargets(targets.subList(start, end));
-            start = end;
+    public void setUnleashTargets(List<List<TargetList<?>>> targets) {
+        List<Effect> es = this.getFinalEffects(true);
+        for (int i = 0; i < es.size(); i++) {
+            Effect e = es.get(i);
+            e.setUnleashTargets(targets.get(i));
         }
-        assert start == targets.size();
     }
 
-    public String unleashTargetsToString(List<TargetList<?>> targets) {
-        int start = 0;
+    public String unleashTargetsToString(List<List<TargetList<?>>> targets) {
         StringBuilder builder = new StringBuilder();
-        for (Effect e : this.getFinalEffects(true)) {
+        List<Effect> es = this.getFinalEffects(true);
+        for (int i = 0; i < es.size(); i++) {
+            Effect e = es.get(i);
             List<TargetingScheme<?>> unleashTargetingSchemes = e.getUnleashTargetingSchemes();
-            int end = start + unleashTargetingSchemes.size();
-            builder.append(Effect.targetsToString(unleashTargetingSchemes, targets.subList(start, end)));
-            start = end;
+            builder.append(Effect.targetsToString(unleashTargetingSchemes, targets.get(i)));
         }
         return builder.toString();
     }
 
-    public List<TargetList<?>> parseUnleashTargets(StringTokenizer st) {
-        List<TargetList<?>> ret = new ArrayList<>();
+    public List<List<TargetList<?>>> parseUnleashTargets(StringTokenizer st) {
+        List<List<TargetList<?>>> ret = new ArrayList<>();
         for (Effect e : this.getFinalEffects(true)) {
-            Effect.parseTargets(st, e.getUnleashTargetingSchemes(), ret);
+            ret.add(Effect.parseTargets(st, e.getUnleashTargetingSchemes()));
         }
         return ret;
     }

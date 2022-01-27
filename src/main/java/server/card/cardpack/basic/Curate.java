@@ -10,7 +10,6 @@ import server.*;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
-import server.card.target.CardTargetList;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetingScheme;
 import server.event.*;

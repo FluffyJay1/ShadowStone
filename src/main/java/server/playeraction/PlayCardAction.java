@@ -4,7 +4,6 @@ import java.util.*;
 
 import server.*;
 import server.card.*;
-import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.resolver.*;
 
@@ -14,9 +13,9 @@ public class PlayCardAction extends PlayerAction {
     public final Player p;
     public final Card c;
     public final int pos;
-    final List<TargetList<?>> battlecryTargets;
+    final List<List<TargetList<?>>> battlecryTargets;
 
-    public PlayCardAction(Player p, Card c, int pos, List<TargetList<?>> battlecryTargets) {
+    public PlayCardAction(Player p, Card c, int pos, List<List<TargetList<?>>> battlecryTargets) {
         super(ID);
 
         this.p = p;
@@ -30,6 +29,7 @@ public class PlayCardAction extends PlayerAction {
     public ResolutionResult perform(ServerBoard b) {
         ResolutionResult result = new ResolutionResult();
         if (!this.p.canPlayCard(this.c) || !this.c.validateTargets(this.c.getBattlecryTargetingSchemes(), this.battlecryTargets)) { // just to be safe
+            System.out.println(this.c.validateTargets(this.c.getBattlecryTargetingSchemes(), this.battlecryTargets));
             return result;
         }
         result.concat(b.resolve(new PlayCardResolver(this.p, this.c, this.pos, this.battlecryTargets)));
@@ -46,7 +46,7 @@ public class PlayCardAction extends PlayerAction {
         Card c = Card.fromReference(b, st);
         int pos = Integer.parseInt(st.nextToken());
         assert c != null;
-        List<TargetList<?>> battlecryTargets = c.parseBattlecryTargets(st);
+        List<List<TargetList<?>>> battlecryTargets = c.parseBattlecryTargets(st);
         return new PlayCardAction(p, c, pos, battlecryTargets);
     }
 

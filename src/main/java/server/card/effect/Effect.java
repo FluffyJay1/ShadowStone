@@ -2,7 +2,6 @@ package server.card.effect;
 
 import java.lang.reflect.*;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import client.*;
@@ -101,10 +100,12 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
         return ((CardTargetList) this.getUnleashTargets().get(index)).getStillTargetable((CardTargetingScheme) this.getUnleashTargetingSchemes().get(index));
     }
 
-    public static void parseTargets(StringTokenizer st, List<TargetingScheme<?>> schemes, List<TargetList<?>> listToAddTo) {
+    public static List<TargetList<?>> parseTargets(StringTokenizer st, List<TargetingScheme<?>> schemes) {
+        List<TargetList<?>> ret = new ArrayList<>(schemes.size());
         for (TargetingScheme<?> scheme : schemes) {
-            listToAddTo.add(scheme.parseToList(st));
+            ret.add(scheme.parseToList(st));
         }
+        return ret;
     }
 
     // bruh

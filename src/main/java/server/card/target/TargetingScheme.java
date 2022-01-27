@@ -13,6 +13,7 @@ public interface TargetingScheme<T> {
     boolean isValid(TargetList<T> targets);
     void fillRandom(TargetList<T> targetsToFill);
     List<T> getPossibleChoices();
+    boolean isApplicable(List<TargetList<?>> alreadyTargeted);
     boolean conditions();
     TargetList<T> parseToList(StringTokenizer st);
     String listToString(TargetList<T> targets);

@@ -10,7 +10,7 @@ public abstract class CardTargetingScheme implements TargetingScheme<Card> {
     private final Effect creator;
     private final int minTargets;
     private final int maxtargets;
-    public String description;
+    private final String description;
 
     public CardTargetingScheme(Effect creator, int minTargets, int maxtargets, String description) {
         this.creator = creator;
@@ -35,23 +35,26 @@ public abstract class CardTargetingScheme implements TargetingScheme<Card> {
     }
 
     // override this shit with anonymous functions
-    public boolean canTarget(Card c) {
-        return true;
-    }
+    public abstract boolean canTarget(Card c);
 
     @Override
     public void fillRandom(TargetList<Card> targetsToFill) {
         List<Card> cards = this.creator.owner.board.getTargetableCards(this)
-                .filter(c -> this.canTarget(c) && !targetsToFill.list.contains(c))
+                .filter(c -> this.canTarget(c) && !targetsToFill.targeted.contains(c))
                 .collect(Collectors.toCollection(ArrayList::new));
-        for (int i = targetsToFill.list.size(); i < this.maxtargets && cards.size() > 0; i++) {
-            targetsToFill.list.add(cards.remove((int) (Math.random() * cards.size())));
+        for (int i = targetsToFill.targeted.size(); i < this.maxtargets && cards.size() > 0; i++) {
+            targetsToFill.targeted.add(cards.remove((int) (Math.random() * cards.size())));
         }
     }
 
     @Override
     public List<Card> getPossibleChoices() {
         return this.creator.owner.board.getTargetableCards(this).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isApplicable(List<TargetList<?>> alreadyTargeted) {
+        return this.getPossibleChoices().size() > 0;
     }
 
     @Override
@@ -63,20 +66,20 @@ public abstract class CardTargetingScheme implements TargetingScheme<Card> {
     // have been targeted
     @Override
     public boolean isFullyTargeted(TargetList<Card> targets) {
-        return targets.list.size() == this.maxtargets || targets.list.size() == this.creator.owner.board.getTargetableCards(this).count();
+        return targets.targeted.size() == this.maxtargets || targets.targeted.size() == this.creator.owner.board.getTargetableCards(this).count();
     }
 
     @Override
     public boolean isValid(TargetList<Card> targets) {
-        if (targets.list.stream().anyMatch(c -> !this.canTarget(c))) {
+        if (targets.targeted.stream().anyMatch(c -> !this.canTarget(c))) {
             // can't target
             return false;
         }
-        if (targets.list.size() != new HashSet<>(targets.list).size()) {
+        if (targets.targeted.size() != new HashSet<>(targets.targeted).size()) {
             // has duplicates
             return false;
         }
-        return targets.list.size() >= this.minTargets && targets.list.size() <= this.maxtargets;
+        return targets.targeted.size() >= this.minTargets && targets.targeted.size() <= this.maxtargets;
     }
 
     @Override
@@ -91,8 +94,8 @@ public abstract class CardTargetingScheme implements TargetingScheme<Card> {
 
     @Override
     public String listToString(TargetList<Card> targets) {
-        StringBuilder builder = new StringBuilder(targets.list.size() + " ");
-        for (Card c : targets.list) {
+        StringBuilder builder = new StringBuilder(targets.targeted.size() + " ");
+        for (Card c : targets.targeted) {
             builder.append(c.toReference());
         }
         return builder.toString();

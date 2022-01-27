@@ -5,7 +5,6 @@ import java.util.*;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
-import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.unleashpower.*;
 import server.event.*;
@@ -15,9 +14,9 @@ import server.event.eventgroup.EventGroupType;
 public class UnleashResolver extends Resolver {
     final Card source;
     final Minion m;
-    final List<TargetList<?>> unleashTargets;
+    final List<List<TargetList<?>>> unleashTargets;
 
-    public UnleashResolver(Card source, Minion m, List<TargetList<?>> unleashTargets) {
+    public UnleashResolver(Card source, Minion m, List<List<TargetList<?>>> unleashTargets) {
         super(false);
         this.source = source;
         this.m = m;

@@ -6,7 +6,6 @@ import server.Board;
 import server.ServerBoard;
 import server.card.*;
 import server.card.effect.Effect;
-import server.card.target.CardTargetList;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetingScheme;
 import server.event.Event;

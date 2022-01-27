@@ -1,6 +1,5 @@
 package server.ai;
 
-import java.lang.annotation.Target;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -10,7 +9,6 @@ import network.*;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
-import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.event.*;
@@ -471,29 +469,23 @@ public class AI extends Thread {
         for (Card c : hand) {
             if (p.canPlayCard(c)) {
                 double totalWeight = PLAY_CARD_TOTAL_WEIGHT + PLAY_CARD_COST_WEIGHT_MULTIPLIER * c.finalStatEffects.getStat(EffectStats.COST);
-                List<TargetingScheme<?>> targetingSchemes = c.getBattlecryTargetingSchemes();
+                List<List<List<TargetList<?>>>> targetSearchSpace = new LinkedList<>();
+                this.getPossibleListTargets(c.getBattlecryTargetingSchemes(), new LinkedList<>(), targetSearchSpace);
+                if (targetSearchSpace.isEmpty()) {
+                    targetSearchSpace.add(List.of());
+                }
                 if (c instanceof BoardObject) {
                     double weightPerPos = totalWeight / (p.getPlayArea().size() + 1);
                     // rip my branching factor lol
                     for (int playPos = 0; playPos <= p.getPlayArea().size(); playPos++) {
-                        if (!targetingSchemes.isEmpty()) {
-                            List<List<TargetList<?>>> targetSearchSpace = this.getPossibleListTargets(targetingSchemes);
-                            for (List<TargetList<?>> targets : targetSearchSpace) {
-                                poss.add(new PlayCardAction(p, c, playPos, targets).toString(), weightPerPos / targetSearchSpace.size());
-                            }
-                        } else { // no targets to set
-                            poss.add(new PlayCardAction(p, c, playPos, List.of()).toString(), weightPerPos);
+                        for (List<List<TargetList<?>>> targets : targetSearchSpace) {
+                            poss.add(new PlayCardAction(p, c, playPos, targets).toString(), weightPerPos / targetSearchSpace.size());
                         }
                     }
                 } else {
                     // spells don't require positioning
-                    if (!targetingSchemes.isEmpty()) {
-                        List<List<TargetList<?>>> targetSearchSpace = this.getPossibleListTargets(targetingSchemes);
-                        for (List<TargetList<?>> targets : targetSearchSpace) {
-                            poss.add(new PlayCardAction(p, c, 0, targets).toString(), totalWeight / targetSearchSpace.size());
-                        }
-                    } else { // no targets to set
-                        poss.add(new PlayCardAction(p, c, 0, List.of()).toString(), totalWeight);
+                    for (List<List<TargetList<?>>> targets : targetSearchSpace) {
+                        poss.add(new PlayCardAction(p, c, 0, targets).toString(), totalWeight / targetSearchSpace.size());
                     }
                 }
             }
@@ -501,15 +493,13 @@ public class AI extends Thread {
         this.b.getMinions(team, false, true).forEachOrdered(m -> {
             // unleashing cards & selecting targets
             if (p.canUnleashCard(m)) {
-                double totalWeight = UNLEASH_TOTAL_WEIGHT; // can't really make any assumptions about which unleashes are better than others
-                List<TargetingScheme<?>> targetingSchemes = m.getUnleashTargetingSchemes();
-                if (!targetingSchemes.isEmpty()) {
-                    List<List<TargetList<?>>> targetSearchSpace = this.getPossibleListTargets(targetingSchemes);
-                    for (List<TargetList<?>> targets : targetSearchSpace) {
-                        poss.add(new UnleashMinionAction(p, m, targets).toString(), totalWeight / targetSearchSpace.size());
-                    }
-                } else { // no targets to set
-                    poss.add(new UnleashMinionAction(p, m, List.of()).toString(), totalWeight);
+                List<List<List<TargetList<?>>>> targetSearchSpace = new LinkedList<>();
+                this.getPossibleListTargets(m.getUnleashTargetingSchemes(), new LinkedList<>(), targetSearchSpace);
+                if (targetSearchSpace.isEmpty()) {
+                    targetSearchSpace.add(List.of());
+                }
+                for (List<List<TargetList<?>>> targets : targetSearchSpace) {
+                    poss.add(new UnleashMinionAction(p, m, targets).toString(), UNLEASH_TOTAL_WEIGHT / targetSearchSpace.size());
                 }
             }
             // minion attack
@@ -549,14 +539,13 @@ public class AI extends Thread {
         for (Minion m : minions) {
             if (p.canUnleashCard(m)) {
                 double totalWeight = UNLEASH_TOTAL_WEIGHT + UNLEASH_WEIGHT_PER_PRESENCE * m.getTotalEffectValueOf(e -> e.getPresenceValue(5));
-                List<TargetingScheme<?>> targetingSchemes = m.getUnleashTargetingSchemes();
-                if (!targetingSchemes.isEmpty()) {
-                    List<List<TargetList<?>>> targetSearchSpace = this.getPossibleListTargets(targetingSchemes);
-                    for (List<TargetList<?>> targets : targetSearchSpace) {
-                        poss.add(new UnleashMinionAction(p, m, targets).toString(), totalWeight / targetSearchSpace.size());
-                    }
-                } else { // no targets to set
-                    poss.add(new UnleashMinionAction(p, m, List.of()).toString(), totalWeight);
+                List<List<List<TargetList<?>>>> targetSearchSpace = new LinkedList<>();
+                this.getPossibleListTargets(m.getUnleashTargetingSchemes(), new LinkedList<>(), targetSearchSpace);
+                if (targetSearchSpace.isEmpty()) {
+                    targetSearchSpace.add(List.of());
+                }
+                for (List<List<TargetList<?>>> targets : targetSearchSpace) {
+                    poss.add(new UnleashMinionAction(p, m, targets).toString(), totalWeight / targetSearchSpace.size());
                 }
             }
         }
@@ -601,59 +590,93 @@ public class AI extends Thread {
      * @param startInd    the first index of targets in the searchspace that haven't
      *                    been considered, for optimization purposes, usually it's
      *                    just 0
-     * @return A list of possible targets
+     * @param outputList  List to output results to, for optimization purposes
      */
-    private <T> List<TargetList<T>> getPossibleTargets(TargetingScheme<T> t, TargetList<T> current, List<? extends T> searchSpace, int startInd) {
-        // TODO TEST THAT IT DOESN'T SEARCH THE SAME COMBINATION TWICE
-        List<TargetList<T>> poss = new LinkedList<>();
+    private <T> void getPossibleTargets(TargetingScheme<T> t, TargetList<T> current, List<? extends T> searchSpace, int startInd,
+                                        List<TargetList<T>> outputList) {
         if (t.isFullyTargeted(current)) {
-            poss.add(current);
-            return poss;
+            outputList.add(current);
+            return;
         }
         if (startInd >= searchSpace.size()) {
             System.out.println("this shouldn't happen lmao");
         }
-        for (int i = startInd; i < searchSpace.size() - (t.getMaxTargets() - current.list.size() - 1); i++) {
+        int numToSelect = Math.min(searchSpace.size(), t.getMaxTargets());
+        for (int i = startInd; i < searchSpace.size() - (numToSelect - current.targeted.size() - 1); i++) {
             T c = searchSpace.get(i);
-            if (!current.list.contains(c)) {
+            if (!current.targeted.contains(c)) {
                 TargetList<T> copy = current.clone();
-                copy.list.add(c);
-                List<TargetList<T>> subspace = this.getPossibleTargets(t, copy, searchSpace, i + 1);
-                poss.addAll(subspace);
+                copy.targeted.add(c);
+                this.getPossibleTargets(t, copy, searchSpace, i + 1, outputList);
             }
         }
-        return poss;
     }
 
     /**
-     * Given the current board state and a list of targets, recursively finds every
-     * possible combination of target combos, e.g. if a card has 3 battlecry effects
-     * each with their own targeting scheme, this will find every possible
-     * combination of targets of those 3 effects, like (0, 1, 2), (0, 1, 3), (0, 2,
-     * 1), etc.
-     * 
+     * Given the targeting schemes for 1 effect, conjure up all the possible
+     * ways to target with that scheme. Assumes that order of targeting doesn't
+     * matter.
+     *
      * @param list The list of targets to fill
-     * @return A list of possible sets of targets. Each element in the list is a set
-     *         of targets to be used by the card.
+     * @param alreadyTargeted List of targets selected by previous schemes in
+     *                        the same effect, for recursion purposes and
+     *                        determines if the target is applicable
+     * @param outputList List to populate with results, for optimization purposes
+     *                   Each element is a way to assign targets for one
+     *                   effect's targeting schemes
      */
     @SuppressWarnings("unchecked")
-    private List<List<TargetList<?>>> getPossibleListTargets(List<TargetingScheme<?>> list) {
-        // TODO OPTIMIZE SO IT DOESN'T SEARCH THE SAME COMBINATION TWICE
-        List<List<TargetList<?>>> poss = new LinkedList<>();
+    private void getPossibleListTargetsPerEffect(List<TargetingScheme<?>> list, List<TargetList<?>> alreadyTargeted, List<List<TargetList<?>>> outputList) {
         if (list.isEmpty()) {
-            return poss;
+            outputList.add(new ArrayList<>(alreadyTargeted));
+            return;
         }
         TargetingScheme<Object> scheme = (TargetingScheme<Object>) list.get(0);
-        List<TargetList<Object>> searchspace = this.getPossibleTargets(scheme, scheme.makeList(), scheme.getPossibleChoices(), 0);
-        for (TargetList<?> t : searchspace) {
-            List<TargetList<?>> posscombo = new LinkedList<>();
-            posscombo.add(t.clone());
-            for (List<TargetList<?>> subspace : this.getPossibleListTargets(list.subList(1, list.size()))) {
-                posscombo.addAll(subspace);
-            }
-            poss.add(posscombo);
+        List<TargetList<Object>> searchSpace = new LinkedList<>();
+        if (scheme.isApplicable(alreadyTargeted)) {
+            this.getPossibleTargets(scheme, scheme.makeList(), scheme.getPossibleChoices(), 0, searchSpace);
         }
-        return poss;
+        if (searchSpace.isEmpty()) {
+            searchSpace.add(scheme.makeList());
+        }
+        for (TargetList<?> t : searchSpace) {
+            alreadyTargeted.add(t);
+            this.getPossibleListTargetsPerEffect(list.subList(1, list.size()), alreadyTargeted, outputList);
+            alreadyTargeted.remove(alreadyTargeted.size() - 1);
+        }
+    }
+
+    /**
+     * Given the current board state and a list of targets, recursively finds
+     * every possible combination of target combos, e.g. if a card has 3
+     * battlecry effects each with their own targeting scheme, this will find
+     * every possible combination of targets of those 3 effects, like (0, 1, 2),
+     * (0, 1, 3), (0, 2, 1), etc.
+     *
+     * @param list The list of targets to fill
+     * @param alreadyTargeted List of already filled targets for recursion purposes
+     * @param outputList List to populate with results, for optimization
+     *                   purposes, each element in the list is a way to set
+     *                   targets for a card
+     */
+    private void getPossibleListTargets(List<List<TargetingScheme<?>>> list, List<List<TargetList<?>>> alreadyTargeted, List<List<List<TargetList<?>>>> outputList) {
+        // and the lord said let there be triple nested lists, trust me bro
+        if (list.isEmpty()) {
+            outputList.add(new ArrayList<>(alreadyTargeted));
+            return;
+        }
+        List<TargetingScheme<?>> schemesForFirstEffect = list.get(0);
+        List<List<TargetList<?>>> searchSpace = new LinkedList<>();
+        this.getPossibleListTargetsPerEffect(schemesForFirstEffect, new LinkedList<>(), searchSpace);
+        if (searchSpace.isEmpty()) {
+            // if no targets, add that possibility to our search space
+            searchSpace.add(List.of());
+        }
+        for (List<TargetList<?>> t : searchSpace) {
+            alreadyTargeted.add(t);
+            this.getPossibleListTargets(list.subList(1, list.size()), alreadyTargeted, outputList);
+            alreadyTargeted.remove(alreadyTargeted.size() - 1);
+        }
     }
 
     /**
