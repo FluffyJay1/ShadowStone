@@ -20,9 +20,11 @@ public class EventPutCard extends Event {
     private List<List<Boolean>> prevMute;
     private List<Integer> prevPos;
     private List<Integer> prevLastBoardPos;
+    private List<Integer> prevLastBoardEpoch;
     private List<Integer> prevTeam;
     private List<Integer> prevHealth;
     private List<Integer> prevAttacks;
+    private int prevEpoch1, prevEpoch2;
     private List<Boolean> prevSick;
     private List<Boolean> oldAlive;
     public List<Boolean> attempted; // i.e. removed from original position
@@ -50,6 +52,7 @@ public class EventPutCard extends Event {
         this.prevMute = new ArrayList<>(this.cards.size());
         this.prevPos = new ArrayList<>(this.cards.size());
         this.prevLastBoardPos = new ArrayList<>(this.cards.size());
+        this.prevLastBoardEpoch = new ArrayList<>(this.cards.size());
         this.prevTeam = new ArrayList<>(this.cards.size());
         this.prevHealth = new ArrayList<>(this.cards.size());
         this.prevAttacks = new ArrayList<>(this.cards.size());
@@ -57,6 +60,10 @@ public class EventPutCard extends Event {
         this.oldAlive = new ArrayList<>(this.cards.size());
         this.attempted = new ArrayList<>(this.cards.size());
         this.successful = new ArrayList<>(this.cards.size());
+        if (this.cards.size() > 0) {
+            this.prevEpoch1 = this.cards.get(0).board.getPlayer(1).getPlayArea().getCurrentEpoch();
+            this.prevEpoch2 = this.cards.get(0).board.getPlayer(-1).getPlayArea().getCurrentEpoch();
+        }
         for (int i = 0; i < this.cards.size(); i++) {
             Card card = this.cards.get(i);
             Board b = card.board;
@@ -65,6 +72,7 @@ public class EventPutCard extends Event {
             this.prevMute.add(new LinkedList<>());
             this.prevPos.add(card.getIndex());
             this.prevLastBoardPos.add(0);
+            this.prevLastBoardEpoch.add(0);
             this.prevTeam.add(card.team);
             this.prevHealth.add(0);
             this.prevAttacks.add(0);
@@ -73,12 +81,15 @@ public class EventPutCard extends Event {
             this.attempted.add(false);
             this.successful.add(false);
             if (card instanceof BoardObject) {
-                this.prevLastBoardPos.set(i, ((BoardObject) card).lastBoardPos);
+                BoardObject bo = (BoardObject) card;
+                this.prevLastBoardPos.set(i, bo.lastBoardPos);
+                this.prevLastBoardEpoch.set(i, bo.lastBoardEpoch);
             }
             if (card instanceof Minion) {
-                this.prevHealth.set(i, ((Minion) card).health);
-                this.prevAttacks.set(i, ((Minion) card).attacksThisTurn);
-                this.prevSick.set(i, ((Minion) card).summoningSickness);
+                Minion m = (Minion) card;
+                this.prevHealth.set(i, m.health);
+                this.prevAttacks.set(i, m.attacksThisTurn);
+                this.prevSick.set(i, m.summoningSickness);
             }
             Player sourceP = b.getPlayer(card.team);
             Player destP = b.getPlayer(this.targetTeam);
@@ -100,12 +111,15 @@ public class EventPutCard extends Event {
                 }
                 case BOARD -> {
                     assert card instanceof BoardObject;
+                    BoardObject bo = (BoardObject) card;
                     if (card.team == b.localteam && b instanceof PendingPlayPositioner) {
                         ((PendingPlayPositioner) b).getPendingPlayPositionProcessor().processOp(card.getIndex(), null, false);
                     }
                     sourceP.getPlayArea().remove(card);
-                    if (!card.status.equals(this.status)) {
-                        this.cardsLeavingPlay.add((BoardObject) card);
+                    if (!card.status.equals(CardStatus.BOARD)) {
+                        bo.lastBoardPos = bo.getIndex();
+                        bo.lastBoardEpoch = sourceP.getPlayArea().getCurrentEpoch();
+                        this.cardsLeavingPlay.add(bo);
                     }
                 }
                 case DECK -> {
@@ -133,7 +147,6 @@ public class EventPutCard extends Event {
                             this.cardsEnteringPlay.add(bo);
                         }
                         destP.getPlayArea().add(this.pos.get(i), bo);
-                        bo.lastBoardPos = bo.getIndex();
                         if (card instanceof Minion) {
                             ((Minion) card).summoningSickness = true;
                         }
@@ -172,12 +185,15 @@ public class EventPutCard extends Event {
                     basicEffects.get(j).mute = this.prevMute.get(i).get(j);
                 }
                 if (card instanceof BoardObject) {
-                    ((BoardObject) card).lastBoardPos = this.prevLastBoardPos.get(i);
+                    BoardObject bo = (BoardObject) card;
+                    bo.lastBoardPos = this.prevLastBoardPos.get(i);
+                    bo.lastBoardEpoch = this.prevLastBoardEpoch.get(i);
                 }
                 if (card instanceof Minion) {
-                    ((Minion) card).health = this.prevHealth.get(i);
-                    ((Minion) card).attacksThisTurn = this.prevAttacks.get(i);
-                    ((Minion) card).summoningSickness = this.prevSick.get(i);
+                    Minion m = (Minion) card;
+                    m.health = this.prevHealth.get(i);
+                    m.attacksThisTurn = this.prevAttacks.get(i);
+                    m.summoningSickness = this.prevSick.get(i);
                 }
                 card.team = this.prevTeam.get(i);
                 card.status = this.prevStatus.get(i);
@@ -191,6 +207,10 @@ public class EventPutCard extends Event {
                     case DECK -> p.getDeck().add(this.prevPos.get(i), card);
                 }
             }
+        }
+        if (this.cards.size() > 0) {
+            this.cards.get(0).board.getPlayer(1).getPlayArea().resetHistoryToEpoch(this.prevEpoch1);
+            this.cards.get(0).board.getPlayer(-1).getPlayArea().resetHistoryToEpoch(this.prevEpoch2);
         }
     }
 

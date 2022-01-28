@@ -14,7 +14,7 @@ public class PositionedList<T extends Indexable> implements List<T> {
 
     public PositionedList(List<T> listToWrap) {
         this.indexables = listToWrap;
-        this.updatePositions();
+        this.updatePositions(0);
     }
 
     @Override
@@ -51,18 +51,20 @@ public class PositionedList<T extends Indexable> implements List<T> {
     public boolean add(T card) {
         boolean success = this.indexables.add(card);
         if (success) {
-            this.updatePositions();
+            this.updatePositions(this.indexables.size() - 1);
         }
         return success;
     }
 
     @Override
     public boolean remove(Object o) {
-        boolean success = this.indexables.remove(o);
-        if (success) {
-            this.updatePositions();
+        int index = this.indexables.indexOf(o);
+        if (index >= 0) {
+            this.indexables.remove(index);
+            this.updatePositions(index);
+            return true;
         }
-        return success;
+        return false;
     }
 
     @Override
@@ -72,9 +74,10 @@ public class PositionedList<T extends Indexable> implements List<T> {
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
+        int oldSize = this.indexables.size();
         boolean changed = this.indexables.addAll(c);
         if (changed) {
-            this.updatePositions();
+            this.updatePositions(oldSize - 1);
         }
         return changed;
     }
@@ -83,7 +86,7 @@ public class PositionedList<T extends Indexable> implements List<T> {
     public boolean addAll(int index, Collection<? extends T> c) {
         boolean changed = this.indexables.addAll(index, c);
         if (changed) {
-            this.updatePositions();
+            this.updatePositions(index);
         }
         return changed;
     }
@@ -92,7 +95,7 @@ public class PositionedList<T extends Indexable> implements List<T> {
     public boolean removeAll(Collection<?> c) {
         boolean changed = this.indexables.removeAll(c);
         if (changed) {
-            this.updatePositions();
+            this.updatePositions(0);
         }
         return changed;
     }
@@ -101,7 +104,7 @@ public class PositionedList<T extends Indexable> implements List<T> {
     public boolean retainAll(Collection<?> c) {
         boolean changed = this.indexables.retainAll(c);
         if (changed) {
-            this.updatePositions();
+            this.updatePositions(0);
         }
         return changed;
     }
@@ -122,7 +125,7 @@ public class PositionedList<T extends Indexable> implements List<T> {
     @Override
     public T set(int index, T element) {
         T ret = this.indexables.set(index, element);
-        this.updatePositions();
+        element.setIndex(index);
         return ret;
     }
 
@@ -132,13 +135,13 @@ public class PositionedList<T extends Indexable> implements List<T> {
             index = this.indexables.size();
         }
         this.indexables.add(index, element);
-        this.updatePositions();
+        this.updatePositions(index);
     }
 
     @Override
     public T remove(int index) {
         T ret = this.indexables.remove(index);
-        this.updatePositions();
+        this.updatePositions(index);
         return ret;
     }
 
@@ -167,14 +170,18 @@ public class PositionedList<T extends Indexable> implements List<T> {
         return this.indexables.subList(fromIndex, toIndex);
     }
 
-    public void updatePositions() {
-        for (int i = 0; i < this.indexables.size(); i++) {
-            this.indexables.get(i).setIndex(i);
+    private void updatePositions(int startIndex) {
+        ListIterator<T> iterator = this.indexables.listIterator(startIndex);
+        int i = startIndex;
+        while (iterator.hasNext()) {
+            iterator.next().setIndex(i);
+            i++;
         }
     }
 
     private class PositionedListIterator implements ListIterator<T> {
         ListIterator<T> wrappedIterator;
+        T current;
 
         PositionedListIterator(int index) {
             this.wrappedIterator = indexables.listIterator(index);
@@ -187,7 +194,8 @@ public class PositionedList<T extends Indexable> implements List<T> {
 
         @Override
         public T next() {
-            return this.wrappedIterator.next();
+            this.current = this.wrappedIterator.next();
+            return this.current;
         }
 
         @Override
@@ -197,7 +205,8 @@ public class PositionedList<T extends Indexable> implements List<T> {
 
         @Override
         public T previous() {
-            return this.wrappedIterator.previous();
+            this.current = this.wrappedIterator.previous();
+            return this.current;
         }
 
         @Override
@@ -213,19 +222,19 @@ public class PositionedList<T extends Indexable> implements List<T> {
         @Override
         public void remove() {
             this.wrappedIterator.remove();
-            updatePositions();
+            updatePositions(this.current.getIndex());
         }
 
         @Override
         public void set(T t) {
             this.wrappedIterator.set(t);
-            updatePositions();
+            t.setIndex(this.current.getIndex());
         }
 
         @Override
         public void add(T t) {
             this.wrappedIterator.add(t);
-            updatePositions();
+            updatePositions(this.current.getIndex());
         }
     }
 }

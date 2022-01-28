@@ -34,7 +34,7 @@ public class EffectLastWordsSummon extends Effect {
             public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                 List<Card> newCards = new LinkedList<>();
                 List<Integer> cardpos = new LinkedList<>();
-                int pos = ((BoardObject) effect.owner).lastBoardPos; // startpos
+                int pos = ((BoardObject) effect.owner).getRelevantBoardPos(); // startpos
                 for (Class<? extends Card> cardClass : effect.cardClasses) {
                     Minion m = (Minion) Card.createFromConstructor(effect.owner.board, cardClass);
                     newCards.add(m);

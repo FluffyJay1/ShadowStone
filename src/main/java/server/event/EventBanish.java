@@ -15,6 +15,8 @@ public class EventBanish extends Event {
     private List<CardStatus> prevStatus;
     private List<Integer> prevPos;
     private List<Integer> prevLastBoardPos;
+    private List<Integer> prevLastBoardEpoch;
+    private int prevEpoch1, prevEpoch2;
     final List<BoardObject> cardsLeavingPlay = new ArrayList<>(); // required for listeners
 
     public EventBanish(List<Card> c) {
@@ -28,6 +30,11 @@ public class EventBanish extends Event {
         this.prevStatus = new ArrayList<>(this.cards.size());
         this.prevPos = new ArrayList<>(this.cards.size());
         this.prevLastBoardPos = new ArrayList<>(this.cards.size());
+        this.prevLastBoardEpoch = new ArrayList<>(this.cards.size());
+        if (this.cards.size() > 0) {
+            this.prevEpoch1 = this.cards.get(0).board.getPlayer(1).getPlayArea().getCurrentEpoch();
+            this.prevEpoch2 = this.cards.get(0).board.getPlayer(-1).getPlayArea().getCurrentEpoch();
+        }
         for (int i = 0; i < this.cards.size(); i++) {
             Card c = this.cards.get(i);
             Board b = c.board;
@@ -36,8 +43,11 @@ public class EventBanish extends Event {
             this.prevStatus.add(c.status);
             this.prevPos.add(c.getIndex());
             this.prevLastBoardPos.add(0);
+            this.prevLastBoardEpoch.add(0);
             if (c instanceof BoardObject) {
-                this.prevLastBoardPos.set(i, ((BoardObject) c).lastBoardPos);
+                BoardObject bo = (BoardObject) c;
+                this.prevLastBoardPos.set(i, bo.lastBoardPos);
+                this.prevLastBoardEpoch.set(i, bo.lastBoardEpoch);
             }
             if (!c.status.equals(CardStatus.GRAVEYARD)) {
                 c.alive = false;
@@ -51,6 +61,7 @@ public class EventBanish extends Event {
                                 ((PendingPlayPositioner) b).getPendingPlayPositionProcessor().processOp(bo.getIndex(), null, false);
                             }
                             p.getPlayArea().remove(bo);
+                            bo.lastBoardEpoch = p.getPlayArea().getCurrentEpoch();
                             this.cardsLeavingPlay.add(bo);
                         }
                     }
@@ -84,10 +95,16 @@ public class EventBanish extends Event {
                     case DECK -> p.getDeck().add(pos, c);
                 }
                 if (c instanceof BoardObject) {
-                    ((BoardObject) c).lastBoardPos = this.prevLastBoardPos.get(i);
+                    BoardObject bo = (BoardObject) c;
+                    bo.lastBoardPos = this.prevLastBoardPos.get(i);
+                    bo.lastBoardEpoch = this.prevLastBoardEpoch.get(i);
                 }
                 c.status = status;
             }
+        }
+        if (this.cards.size() > 0) {
+            this.cards.get(0).board.getPlayer(1).getPlayArea().resetHistoryToEpoch(this.prevEpoch1);
+            this.cards.get(0).board.getPlayer(-1).getPlayArea().resetHistoryToEpoch(this.prevEpoch2);
         }
     }
 

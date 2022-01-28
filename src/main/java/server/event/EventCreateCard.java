@@ -16,6 +16,7 @@ public class EventCreateCard extends Event {
     public final List<Integer> cardpos;
     private UnleashPower prevUP;
     private Leader prevLeader;
+    private int prevEpoch;
     public final List<Boolean> successful;
     final List<BoardObject> cardsEnteringPlay = new ArrayList<>();
 
@@ -30,6 +31,9 @@ public class EventCreateCard extends Event {
 
     @Override
     public void resolve() {
+        if (this.cards.size() > 0 && this.status.equals(CardStatus.BOARD)) {
+            this.prevEpoch = this.cards.get(0).board.getPlayer(this.cards.get(0).team).getPlayArea().getCurrentEpoch();
+        }
         for (int i = 0; i < this.cards.size(); i++) {
             Card c = this.cards.get(i);
             int cardpos = this.cardpos.get(i);
@@ -53,7 +57,6 @@ public class EventCreateCard extends Event {
                         BoardObject bo = (BoardObject) c;
                         this.cardsEnteringPlay.add(bo);
                         p.getPlayArea().add(cardpos, bo);
-                        bo.lastBoardPos = bo.getIndex();
                         if (c instanceof Minion) {
                             ((Minion) c).summoningSickness = true;
                         }
@@ -107,6 +110,9 @@ public class EventCreateCard extends Event {
                     case LEADER -> b.getPlayer(this.team).setLeader(this.prevLeader);
                 }
             }
+        }
+        if (this.cards.size() > 0 && this.status.equals(CardStatus.BOARD)) {
+            this.cards.get(0).board.getPlayer(this.cards.get(0).team).getPlayArea().resetHistoryToEpoch(this.prevEpoch);
         }
     }
 

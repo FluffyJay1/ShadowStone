@@ -3,9 +3,11 @@ package server.card;
 import client.tooltip.*;
 import server.*;
 import server.card.effect.*;
+import utils.HistoricalList;
 
 public class BoardObject extends Card {
     public int lastBoardPos = 0; // After leaving board (e.g. to graveyard), keep a record of where it was last
+    public int lastBoardEpoch = 0; // see HistoricalList.java
 
     public BoardObject(Board b, TooltipCard tooltip) {
         super(b, tooltip);
@@ -13,6 +15,20 @@ public class BoardObject extends Card {
 
     public boolean isInPlay() {
         return this.status.equals(CardStatus.BOARD);
+    }
+
+    /**
+     * Get current board pos if on the board, or the last board pos (translated
+     * to current times) if not on board currently
+     *
+     * @return The position on board
+     */
+    public int getRelevantBoardPos() {
+        if (this.status.equals(CardStatus.BOARD)) {
+            return this.getIndex();
+        }
+        HistoricalList<BoardObject> playArea = this.board.getPlayer(this.team).getPlayArea();
+        return playArea.forecastPosition(this.lastBoardPos, this.lastBoardEpoch);
     }
 
     @Override
@@ -50,6 +66,6 @@ public class BoardObject extends Card {
     @Override
     public void appendStringToBuilder(StringBuilder builder) {
         super.appendStringToBuilder(builder);
-        builder.append(this.lastBoardPos).append(" ");
+        builder.append(this.lastBoardPos).append(" ").append(this.lastBoardEpoch).append(" ");
     }
 }

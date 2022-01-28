@@ -3,6 +3,7 @@ package server;
 import server.card.*;
 import server.card.effect.*;
 import server.card.unleashpower.*;
+import utils.HistoricalList;
 import utils.PositionedList;
 import utils.StringBuildable;
 
@@ -17,7 +18,7 @@ public class Player implements StringBuildable {
     public final Board board;
     protected final PositionedList<Card> deck;
     protected final PositionedList<Card> hand;
-    protected final PositionedList<BoardObject> playArea; // things on board
+    protected final HistoricalList<BoardObject> playArea; // things on board
     protected final PositionedList<Card> graveyard;
     protected final PositionedList<Card> banished;
     public final int team;
@@ -35,7 +36,7 @@ public class Player implements StringBuildable {
         this.team = team;
         this.deck = new PositionedList<>(new ArrayList<>());
         this.hand = new PositionedList<>(new ArrayList<>());
-        this.playArea = new PositionedList<>(new ArrayList<>());
+        this.playArea = new HistoricalList<>(new PositionedList<>(new ArrayList<>()));
         this.graveyard = new PositionedList<>(new ArrayList<>());
         this.banished = new PositionedList<>(new ArrayList<>());
         this.mana = 0;
@@ -53,7 +54,7 @@ public class Player implements StringBuildable {
         return this.hand;
     }
 
-    public List<BoardObject> getPlayArea() {
+    public HistoricalList<BoardObject> getPlayArea() {
         return this.playArea;
     }
 
