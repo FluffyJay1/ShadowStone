@@ -149,7 +149,14 @@ public class VisualBoard extends Board implements
         this.skipCurrentAnimation();
         while (!this.inputeventliststrings.isEmpty()) {
             String eventOrGroup = this.inputeventliststrings.remove(0);
-            if (!EventGroup.isGroup(eventOrGroup)) {
+            if (EventGroup.isPush(eventOrGroup)) {
+                EventGroup group = EventGroup.fromString(this, new StringTokenizer(eventOrGroup));
+                this.pushEventGroup(group);
+                this.uiBoard.onEventGroupPushed(group);
+            } else if (EventGroup.isPop(eventOrGroup)) {
+                EventGroup group = this.popEventGroup();
+                this.uiBoard.onEventGroupPopped(group);
+            } else {
                 Event currentEvent = Event.createFromString(this, new StringTokenizer(eventOrGroup));
                 if (currentEvent != null && currentEvent.conditions()) {
                     this.processEvent(currentEvent);

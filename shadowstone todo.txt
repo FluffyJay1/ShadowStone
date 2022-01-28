@@ -1,4 +1,3 @@
-fix king crimson skip messing up animations
 use supplier thing for tooltips to allow cyclic dependencies
 rotate cards
 indicate which cards have been marked for death
