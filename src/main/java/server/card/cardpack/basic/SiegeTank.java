@@ -24,7 +24,7 @@ public class SiegeTank extends Minion {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/siegetank.png",
             CRAFT, 5, 2, 2, 5, false, SiegeTank.class, new Vector2f(), -1, null,
-            Tooltip.UNLEASH, Tooltip.CHOOSE, Tooltip.BLAST);
+            () -> List.of(Tooltip.UNLEASH, Tooltip.CHOOSE, Tooltip.BLAST));
 
     public SiegeTank(Board b) {
         super(b, TOOLTIP);

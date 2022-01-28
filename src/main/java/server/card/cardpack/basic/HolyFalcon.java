@@ -10,6 +10,7 @@ import server.card.Minion;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public class HolyFalcon extends Minion {
@@ -18,7 +19,7 @@ public class HolyFalcon extends Minion {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/holyfalcon.png",
             CRAFT, 3, 2, 0, 1, false, HolyFalcon.class, new Vector2f(150, 150), 1.3, EventAnimationDamageSlash.class,
-            Tooltip.STORM);
+            () -> List.of(Tooltip.STORM));
 
     public HolyFalcon(Board b) {
         super(b, TOOLTIP);

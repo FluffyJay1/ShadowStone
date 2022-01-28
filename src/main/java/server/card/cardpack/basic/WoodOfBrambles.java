@@ -17,7 +17,7 @@ public class WoodOfBrambles extends Amulet {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/woodofbrambles.png",
             CRAFT, 2, WoodOfBrambles.class, new Vector2f(), -1,
-            Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Fairy.TOOLTIP, Tooltip.AURA, Tooltip.CLASH);
+            () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Fairy.TOOLTIP, Tooltip.AURA, Tooltip.CLASH));
 
     public WoodOfBrambles(Board b) {
         super(b, TOOLTIP);

@@ -19,7 +19,7 @@ public class CursedStone extends Minion {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/cursedstone.png",
             CRAFT, 5, 1, 5, 5, false, CursedStone.class, new Vector2f(), -1, EventAnimationDamageSlash.class,
-            Tooltip.UNLEASH, Tooltip.BLAST, Tooltip.LASTWORDS);
+            () -> List.of(Tooltip.UNLEASH, Tooltip.BLAST, Tooltip.LASTWORDS));
 
     public CursedStone(Board b) {
         super(b, TOOLTIP);

@@ -15,7 +15,7 @@ public class UnleashImbueMagic extends UnleashPower {
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Imbue Magic",
             "Give an allied minion +0/+1/+0, then <b>Unleash</b> it.", "res/unleashpower/imbuemagic.png", CRAFT, 2,
             UnleashImbueMagic.class, new Vector2f(393, 733), 1.5,
-            Tooltip.UNLEASH);
+            () -> List.of(Tooltip.UNLEASH));
 
     public UnleashImbueMagic(Board b) {
         super(b, TOOLTIP);

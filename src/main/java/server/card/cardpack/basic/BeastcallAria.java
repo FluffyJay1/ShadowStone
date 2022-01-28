@@ -18,6 +18,7 @@ import server.resolver.AddEffectResolver;
 import server.resolver.Resolver;
 
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class BeastcallAria extends Amulet {
@@ -26,7 +27,7 @@ public class BeastcallAria extends Amulet {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/beastcallaria.png",
             CRAFT, 2, BeastcallAria.class, new Vector2f(150, 130), 1.4,
-            Tooltip.COUNTDOWN, HolyFalcon.TOOLTIP, HolyflameTiger.TOOLTIP);
+            () -> List.of(Tooltip.COUNTDOWN, HolyFalcon.TOOLTIP, HolyflameTiger.TOOLTIP));
 
     public BeastcallAria(Board b) {
         super(b, TOOLTIP);

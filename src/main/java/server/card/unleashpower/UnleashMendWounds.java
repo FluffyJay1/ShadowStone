@@ -15,7 +15,7 @@ public class UnleashMendWounds extends UnleashPower {
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Mend Wounds",
             "Give an allied minion +0/+0/+1, <b>Unleash</b> it, then restore 1 health to it.",
             "res/unleashpower/mendwounds.png", CRAFT, 2, UnleashMendWounds.class, new Vector2f(655, 535), 4.6,
-            Tooltip.UNLEASH);
+            () -> List.of(Tooltip.UNLEASH));
 
     public UnleashMendWounds(Board b) {
         super(b, TOOLTIP);

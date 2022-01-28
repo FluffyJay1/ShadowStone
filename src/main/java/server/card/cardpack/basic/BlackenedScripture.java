@@ -20,7 +20,7 @@ public class BlackenedScripture extends Spell {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/blackenedscripture.png",
             CRAFT, 2, BlackenedScripture.class,
-            Tooltip.BANISH);
+            () -> List.of(Tooltip.BANISH));
     final Effect e;
 
     public BlackenedScripture(Board b) {

@@ -9,13 +9,15 @@ import server.card.*;
 import server.card.effect.*;
 import server.resolver.*;
 
+import java.util.List;
+
 public class Puppet extends Minion {
     public static final String NAME = "Puppet";
     public static final String DESCRIPTION = "<b>Rush</b>. <b>Countdown(1)</b>.";
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/puppet.png",
             CRAFT, 0, 1, 0, 1, false, Puppet.class, new Vector2f(161, 143), 1.4, EventAnimationDamageSlash.class,
-            Tooltip.RUSH, Tooltip.COUNTDOWN);
+            () -> List.of(Tooltip.RUSH, Tooltip.COUNTDOWN));
 
     public Puppet(Board b) {
         super(b, TOOLTIP);

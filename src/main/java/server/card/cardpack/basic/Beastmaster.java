@@ -15,13 +15,16 @@ import server.card.effect.EffectStats;
 import server.resolver.CreateCardResolver;
 import server.resolver.Resolver;
 
+import java.util.List;
+import java.util.function.Supplier;
+
 public class Beastmaster extends Minion {
     public static final String NAME = "Beastmaster";
     public static final String DESCRIPTION = "<b>Aura</b>: adjacent minions have +1 attacks per turn.\n<b>Unleash</b>: summon a <b>Stonetusk Boar</b>.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/beastmaster.png",
             CRAFT, 4, 2, 0, 4, false, Beastmaster.class, new Vector2f(140, 100), 2, EventAnimationDamageSlash.class,
-            Tooltip.AURA, Tooltip.UNLEASH, StonetuskBoar.TOOLTIP);
+            () -> List.of(Tooltip.AURA, Tooltip.UNLEASH, StonetuskBoar.TOOLTIP));
 
     public Beastmaster(Board b) {
         super(b, TOOLTIP);

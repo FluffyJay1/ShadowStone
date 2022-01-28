@@ -1,6 +1,7 @@
 package client.ui.game;
 
 import java.util.ArrayList;
+import java.util.function.Supplier;
 
 import org.newdawn.slick.geom.Vector2f;
 
@@ -47,22 +48,20 @@ public class CardSelectTooltipPanel extends UIBox {
     }
 
     public void setReferenceTooltip(Tooltip tooltip) {
-        if (tooltip == null || tooltip.references == null || tooltip.references.length == 0) {
+        if (tooltip == null || tooltip.references == null || tooltip.references.get().size() == 0) {
             this.tooltip = null;
             this.setVisible(false);
         } else {
             this.tooltip = tooltip;
             this.reset();
             double lasty = this.getLocalTop(true);
-            for (Tooltip t : tooltip.references) {
-                if (t != null) {
-                    TooltipDisplayPanel tdp = this.createTooltipDisplayPanel(t);
-                    tdp.setPos(new Vector2f(0, (float) lasty), 1);
-                    lasty += tdp.getHeight(false);
+            for (Tooltip t : tooltip.references.get()) {
+                TooltipDisplayPanel tdp = this.createTooltipDisplayPanel(t);
+                tdp.setPos(new Vector2f(0, (float) lasty), 1);
+                lasty += tdp.getHeight(false);
 
-                    this.childTooltips.add(tdp);
-                    this.scroll.addChild(tdp);
-                }
+                this.childTooltips.add(tdp);
+                this.scroll.addChild(tdp);
             }
         }
     }

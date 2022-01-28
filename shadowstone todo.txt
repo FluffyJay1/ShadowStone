@@ -1,4 +1,3 @@
-use supplier thing for tooltips to allow cyclic dependencies
 rotate cards
 indicate which cards have been marked for death
 make text more readable

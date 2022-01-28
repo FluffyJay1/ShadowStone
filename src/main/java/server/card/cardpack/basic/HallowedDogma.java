@@ -22,7 +22,7 @@ public class HallowedDogma extends Spell {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/halloweddogma.png",
             CRAFT, 2, HallowedDogma.class,
-            Tooltip.COUNTDOWN);
+            () -> List.of(Tooltip.COUNTDOWN));
     final Effect e;
     public HallowedDogma(Board b) {
         super(b, TOOLTIP);

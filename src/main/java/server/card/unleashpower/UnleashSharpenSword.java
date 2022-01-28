@@ -15,7 +15,7 @@ public class UnleashSharpenSword extends UnleashPower {
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Sharpen Sword",
             "Give an allied minion +1/+0/+0, then <b>Unleash</b> it.", "res/unleashpower/sharpensword.png", CRAFT, 2,
             UnleashSharpenSword.class, new Vector2f(500, 330), 3,
-            Tooltip.UNLEASH);
+            () -> List.of(Tooltip.UNLEASH));
 
     public UnleashSharpenSword(Board b) {
         super(b, TOOLTIP);

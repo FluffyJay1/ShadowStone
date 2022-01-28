@@ -20,7 +20,7 @@ public class WeatheredVanguard extends Minion {
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/weatheredvanguard.png",
             CRAFT, 6, 4, 2, 4, false, WeatheredVanguard.class, new Vector2f(155, 120), 1.6, EventAnimationDamageSlash.class,
-            Tooltip.BATTLECRY, Knight.TOOLTIP, Tooltip.UNLEASH);
+            () -> List.of(Tooltip.BATTLECRY, Knight.TOOLTIP, Tooltip.UNLEASH));
 
     public WeatheredVanguard(Board b) {
         super(b, TOOLTIP);

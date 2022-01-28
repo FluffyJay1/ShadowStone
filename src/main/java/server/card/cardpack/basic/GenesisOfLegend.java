@@ -18,7 +18,7 @@ public class GenesisOfLegend extends Amulet {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/genesisoflegend.png",
             CRAFT, 2, GenesisOfLegend.class, new Vector2f(), -1,
-            Tooltip.COUNTDOWN, Tooltip.BANE);
+            () -> List.of(Tooltip.COUNTDOWN, Tooltip.BANE));
 
     public GenesisOfLegend(Board b) {
         super(b, TOOLTIP);

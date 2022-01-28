@@ -16,7 +16,7 @@ public class UnleashBegetUndead extends UnleashPower {
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Beget Undead",
             "Give an allied minion <b>Last Words</b>: summon a <b>Skeleton</b>. <b>Unleash</b> it. Then deal 1 damage to it.",
             "res/unleashpower/begetundead.png", CRAFT, 2, UnleashBegetUndead.class, new Vector2f(410, 460), 4,
-            Tooltip.UNLEASH, Tooltip.LASTWORDS, Skeleton.TOOLTIP);
+            () -> List.of(Tooltip.UNLEASH, Tooltip.LASTWORDS, Skeleton.TOOLTIP));
 
     public UnleashBegetUndead(Board b) {
         super(b, TOOLTIP);

@@ -15,7 +15,7 @@ public class UnleashFeedFervor extends UnleashPower {
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Feed Fervor",
             "<b>Unleash</b> an allied minion. If <b>Overflow</b> is active for you, this costs 1 less.",
             "res/unleashpower/feedfervor.png", CRAFT, 2, UnleashFeedFervor.class, new Vector2f(420, 210), 8,
-            Tooltip.UNLEASH, Tooltip.OVERFLOW);
+            () -> List.of(Tooltip.UNLEASH, Tooltip.OVERFLOW));
 
     public UnleashFeedFervor(Board b) {
         super(b, TOOLTIP);

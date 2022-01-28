@@ -15,7 +15,7 @@ public class UnleashTapSoul extends UnleashPower {
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Tap Soul",
             "Deal 2 damage to your leader. <b>Unleash</b> an allied minion. If <b>Vengeance</b> is active for you, this can be used once more per turn.",
             "res/unleashpower/tapsoul.png", CRAFT, 1, UnleashTapSoul.class, new Vector2f(445, 515), 1,
-            Tooltip.UNLEASH, Tooltip.VENGEANCE);
+            () -> List.of(Tooltip.UNLEASH, Tooltip.VENGEANCE));
 
     public UnleashTapSoul(Board b) {
         super(b, TOOLTIP);

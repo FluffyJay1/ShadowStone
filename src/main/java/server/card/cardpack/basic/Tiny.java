@@ -19,7 +19,7 @@ public class Tiny extends Minion {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/tiny.png",
             CRAFT, 3, 2, 2, 3, false, Tiny.class, new Vector2f(), -1, EventAnimationDamageRocks.class,
-            Tooltip.UNLEASH, Tooltip.RUSH);
+            () -> List.of(Tooltip.UNLEASH, Tooltip.RUSH));
 
     public Tiny(Board b) {
         super(b, TOOLTIP);

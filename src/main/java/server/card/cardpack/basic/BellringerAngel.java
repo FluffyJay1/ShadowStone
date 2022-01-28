@@ -10,13 +10,15 @@ import server.card.*;
 import server.card.effect.*;
 import server.resolver.*;
 
+import java.util.List;
+
 public class BellringerAngel extends Minion {
     public static final String NAME = "Bellringer Angel";
     public static final String DESCRIPTION = "<b>Ward</b>.\n<b>Last Words</b>: draw a card.";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/bellringerangel.png",
             CRAFT, 2, 0, 0, 2, false, BellringerAngel.class, new Vector2f(), -1, EventAnimationDamageSlash.class,
-            Tooltip.WARD, Tooltip.LASTWORDS);
+            () -> List.of(Tooltip.WARD, Tooltip.LASTWORDS));
 
     public BellringerAngel(Board b) {
         super(b, TOOLTIP);
