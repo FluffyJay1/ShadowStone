@@ -172,12 +172,18 @@ public class ServerBoard extends Board {
         this.lastCheckedActiveAuras = newAuras;
         if (e.cardsEnteringPlay() != null) {
             for (BoardObject bo : e.cardsEnteringPlay()) {
-                rl.add(new FlagResolver(bo, bo.getResolvers(Effect::onEnterPlay)));
+                List<Resolver> resolvers = bo.getResolvers(Effect::onEnterPlay);
+                if (!resolvers.isEmpty()) {
+                    rl.add(new FlagResolver(bo, resolvers));
+                }
             }
         }
         if (e.cardsLeavingPlay() != null) {
             for (BoardObject bo : e.cardsLeavingPlay()) {
-                rl.addAll(bo.getResolvers(Effect::onLeavePlay));
+                List<Resolver> resolvers = bo.getResolvers(Effect::onLeavePlay);
+                if (!resolvers.isEmpty()) {
+                    rl.add(new FlagResolver(bo, resolvers));
+                }
             }
         }
         this.getCards().forEachOrdered(c -> {

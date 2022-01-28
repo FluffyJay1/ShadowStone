@@ -23,7 +23,7 @@ public class FlagResolver extends Resolver {
     @Override
     public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(c)));
-        this.resolveList(b, rl, el, resolvers);
+        this.resolveList(b, rl, el, this.resolvers);
         b.popEventGroup();
     }
 }
