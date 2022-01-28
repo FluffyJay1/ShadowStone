@@ -795,8 +795,11 @@ public class AI extends Thread {
 
     /**
      * More cards in hand is better, but you also want playable stuff. The power of
-     * a card is value/(cost + 1), which usually comes to about 1 mana per card. A
-     * more powerful hand would have higher value cards with lower cost.
+     * a card is value/(cost + 1.1), which usually comes to about 1 mana per
+     * card. A more powerful hand would have higher value cards with lower cost.
+     * The 1.1 is there to dissuade the AI from obsessively holding on to 0-cost
+     * cards because there might be a time in the future where it can get better
+     * value.
      * 
      * @param b    The board
      * @param team the team to evaluate for. can cheat by looking at opponents hand
@@ -806,7 +809,7 @@ public class AI extends Thread {
     public static double evaluateHand(Board b, int team) {
         double totalPower = 0;
         for (Card c : b.getPlayer(team).getHand()) {
-            totalPower += c.getValue() / (c.finalStatEffects.getStat(EffectStats.COST) + 1);
+            totalPower += c.getValue() / (c.finalStatEffects.getStat(EffectStats.COST) + 1.1);
         }
         return totalPower;
     }
