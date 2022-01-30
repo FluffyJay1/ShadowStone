@@ -18,10 +18,10 @@ public class CardSelectTooltipPanel extends UIBox {
     final ArrayList<TooltipDisplayPanel> childTooltips = new ArrayList<>();
 
     public CardSelectTooltipPanel(UI ui, Vector2f pos, int layers) {
-        super(ui, pos, new Vector2f(400, 500), "res/ui/uiboxborder.png");
+        super(ui, pos, new Vector2f(450, 550), "res/ui/uiboxborder.png");
         this.margins.set(10, 10);
         if (layers > 0) {
-            this.child = new CardSelectTooltipPanel(ui, new Vector2f(400, 0), layers - 1);
+            this.child = new CardSelectTooltipPanel(ui, new Vector2f(450, 0), layers - 1);
             this.addChild(this.child);
         }
         this.scroll = new ScrollingContext(ui, new Vector2f(), this.getDim(true));

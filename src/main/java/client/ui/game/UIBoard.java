@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import client.Game;
 import client.ui.Animation;
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
 import client.ui.interpolation.realvalue.ConstantInterpolation;
@@ -91,16 +92,16 @@ public class UIBoard extends UIBox {
         this.cardSelectPanel.setVisible(false);
         this.endTurnButton = new EndTurnButton(ui, this);
         this.addChild(this.endTurnButton);
-        this.targetText = new Text(ui, new Vector2f(), "Target", 400, 24, "Verdana", 30, 0, -1);
+        this.targetText = new Text(ui, new Vector2f(), "Target", 400, 24, Game.DEFAULT_FONT, 30, 0, -1);
         this.targetText.setZ(999);
-        this.player1ManaText = new Text(ui, new Vector2f(-0.25f, 0.34f), "Player 1 Mana", 400, 24, "Verdana", 30, 0, 0);
+        this.player1ManaText = new Text(ui, new Vector2f(-0.25f, 0.34f), "Player 1 Mana", 400, 24, Game.DEFAULT_FONT, 30, 0, 0);
         this.player1ManaText.relpos = true;
         this.player1ManaText.setZ(1);
-        this.player2ManaText = new Text(ui, new Vector2f(-0.25f, -0.44f), "Player 2 Mana", 400, 24, "Verdana", 30, 0,
+        this.player2ManaText = new Text(ui, new Vector2f(-0.25f, -0.44f), "Player 2 Mana", 400, 24, Game.DEFAULT_FONT, 30, 0,
                 0);
         this.player2ManaText.relpos = true;
         this.player2ManaText.setZ(1);
-        this.advantageText = new Text(ui, new Vector2f(-0.4f, -0.4f), "Advantage Text", 400, 24, "Verdana", 30, -1, -1);
+        this.advantageText = new Text(ui, new Vector2f(-0.4f, -0.4f), "Advantage Text", 400, 24, Game.DEFAULT_FONT, 30, -1, -1);
         this.advantageText.relpos = true;
         this.advantageText.setZ(1);
         this.addChild(this.targetText);

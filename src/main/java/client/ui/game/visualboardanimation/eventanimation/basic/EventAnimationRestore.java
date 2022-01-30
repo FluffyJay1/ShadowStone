@@ -15,7 +15,7 @@ public class EventAnimationRestore extends EventAnimation<EventRestore> {
     public void draw(Graphics g) {
         if (this.processedEvent) {
             g.setColor(Color.green);
-            UnicodeFont font = Game.getFont("Verdana", 80, true, false);
+            UnicodeFont font = Game.getFont(Game.DEFAULT_FONT, 80, true, false);
             g.setFont(font);
             float yoff = (float) (Math.pow(1 - this.normalizedPost(), 2) * 50) - 12.5f;
             for (int i = 0; i < this.event.m.size(); i++) {

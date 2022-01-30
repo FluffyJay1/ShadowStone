@@ -19,16 +19,13 @@ import static org.newdawn.slick.opengl.renderer.SGL.GL_SRC_ALPHA;
 
 public class UICard extends UIBox {
     public static final Vector2f CARD_DIMENSIONS = new Vector2f(150, 180);
-    public static final Vector2f COST_POS = new Vector2f(-0.5f, -0.5f);
-    public static final Vector2f COST_ALIGN = new Vector2f(0.5f, 0.5f);
-    public static final Vector2f COST_POS_UNLEASHPOWER = new Vector2f(0, -0.25f);
-    public static final Vector2f COST_ALIGN_UNLEASHPOWER = new Vector2f(0, 0.5f);
+    public static final Vector2f COST_POS = new Vector2f(-0.4f, -0.4f);
+    public static final Vector2f COST_POS_UNLEASHPOWER = new Vector2f(0, -0.3f);
     public static final Vector2f COUNTDOWN_POS = new Vector2f(0.3f, 0.3f);
-    public static final Vector2f COUNTDOWN_ALIGN = new Vector2f(-0.5f, -0.5f);
-    public static final Vector2f MINION_STAT_ALIGN_BOARD = new Vector2f(0, -0.5f);
+    public static final float MINION_STAT_POS_BASE_BOARD = 0.4f;
     public static final float MINION_STAT_POS_OFFSET_BOARD = 0.4f;
-    public static final Vector2f MINION_STAT_ALIGN_HAND = new Vector2f(0.5f, -0.5f);
-    public static final float MINION_STAT_POS_CENTER_HAND = 0.25f;
+    public static final float MINION_STAT_POS_BASE_HAND = -0.4f;
+    public static final float MINION_STAT_POS_CENTER_HAND = 0.2f;
     public static final float MINION_STAT_POS_OFFSET_HAND = 0.25f;
     public static final float UNLEASH_POWER_RADIUS = 50;
     public static final double NAME_FONT_SIZE = 30;
@@ -44,6 +41,11 @@ public class UICard extends UIBox {
     private static final float PENDING_PLAY_ELLIPSIS_SIZE = 20f;
     private static final Color PENDING_PLAY_COLOR = new Color(0.6f, 0.6f, 0.7f, 1);
     private static final Color PENDING_PLAY_POSITION_COLOR = new Color(0.8f, 0.8f, 1f, 0.4f);
+    private static final float STAT_ICON_DEFAULT_SCALE = 0.6f;
+    private static final float STAT_ICON_COUNTDOWN_SCALE = 1;
+    private static final float HAND_TITLE_OFFSET = 0.2f;
+    private static final float ICON_Y = 0.6f;
+
     private Card card;
     private Image cardImage, subImage;
     private final UIBoard uib;
@@ -219,6 +221,10 @@ public class UICard extends UIBox {
             return;
         }
         this.drawCardArt(g, pos, scale, this.card.status, this.isPending() ? PENDING_PLAY_COLOR : Color.white);
+        if (this.card.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
+            this.drawStatNumber(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COUNTDOWN), COUNTDOWN_POS,
+                    50, Color.white, Game.getImage("res/game/statcountdown.png"), STAT_ICON_COUNTDOWN_SCALE);
+        }
         switch (this.card.status) {
             case BOARD, LEADER -> this.drawOnBoard(g, pos, scale);
             case UNLEASHPOWER -> this.drawUnleashPower(g, pos, scale);
@@ -288,10 +294,6 @@ public class UICard extends UIBox {
     }
 
     public void drawUnleashPower(Graphics g, Vector2f pos, double scale) {
-        this.drawCostStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COST),
-                this.card.finalBasicStatEffects.getStat(EffectStats.COST), COST_POS_UNLEASHPOWER,
-                COST_ALIGN_UNLEASHPOWER, STAT_DEFAULT_SIZE);
-
         if (this.card.team == this.uib.b.localteam ? // different rules depending on allied team or enemy team
                 this.uib.b.realBoard.getPlayer(this.card.realCard.team).canUnleash() && !this.uib.b.disableInput : // condition for cards on our team (should update instantly)
                 this.uib.b.getPlayer(this.card.team).canUnleash() // condition for cards on the enemy team (should wait for animations)
@@ -301,13 +303,11 @@ public class UICard extends UIBox {
                     (float) (UNLEASH_POWER_RADIUS * 2 * scale), (float) (UNLEASH_POWER_RADIUS * 2 * scale));
             g.setColor(org.newdawn.slick.Color.white);
         }
+        this.drawCostStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COST),
+                this.card.finalBasicStatEffects.getStat(EffectStats.COST), COST_POS_UNLEASHPOWER, STAT_DEFAULT_SIZE);
     }
 
     public void drawOnBoard(Graphics g, Vector2f pos, double scale) {
-        if (this.card.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
-            this.drawStatNumber(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COUNTDOWN), COUNTDOWN_POS,
-                    COUNTDOWN_ALIGN, 50, Color.white);
-        }
         this.drawIcons(g, pos, scale);
         if (this.card instanceof Minion) {
             if (this.card.realCard != null && this.card.realCard instanceof Minion
@@ -335,14 +335,14 @@ public class UICard extends UIBox {
             }
             this.drawOffensiveStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.ATTACK),
                     this.card.finalBasicStatEffects.getStat(EffectStats.ATTACK),
-                    new Vector2f(-MINION_STAT_POS_OFFSET_BOARD, 0.5f), MINION_STAT_ALIGN_BOARD, STAT_DEFAULT_SIZE);
+                    new Vector2f(-MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE, Game.getImage("res/game/statattack.png"));
             this.drawOffensiveStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.MAGIC),
-                    this.card.finalBasicStatEffects.getStat(EffectStats.MAGIC), new Vector2f(0, 0.5f),
-                    MINION_STAT_ALIGN_BOARD, STAT_DEFAULT_SIZE);
+                    this.card.finalBasicStatEffects.getStat(EffectStats.MAGIC),
+                    new Vector2f(0, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE, Game.getImage("res/game/statmagic.png"));
             this.drawHealthStat(g, pos, scale, this.getMinion().health,
                     this.card.finalStatEffects.getStat(EffectStats.HEALTH),
                     this.card.finalBasicStatEffects.getStat(EffectStats.HEALTH),
-                    new Vector2f(MINION_STAT_POS_OFFSET_BOARD, 0.5f), MINION_STAT_ALIGN_BOARD, STAT_DEFAULT_SIZE);
+                    new Vector2f(MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE);
         }
         // if marked for death
         if (!this.card.alive) {
@@ -371,19 +371,19 @@ public class UICard extends UIBox {
         for (int i = 0; i < numIcons; i++) {
             Image scaled = this.icons.get(i).getScaledCopy((float) scale);
             g.drawImage(scaled, pos.x - scaled.getWidth() / 2 - (i - (numIcons - 1f) / 2) * ICON_SPACING,
-                    pos.y - scaled.getHeight() / 2 + CARD_DIMENSIONS.y * (float) scale / 2);
+                    pos.y - scaled.getHeight() / 2 + CARD_DIMENSIONS.y * ICON_Y * (float) scale);
         }
     }
 
     public void drawInHand(Graphics g, Vector2f pos, double scale) {
-        UnicodeFont font = Game.getFont("Verdana", (NAME_FONT_SIZE * scale), true, false);
-        // TODO: magic number below is space to display mana cost
-        if (font.getWidth(this.card.getTooltip().name) > (CARD_DIMENSIONS.x - 20) * scale) {
-            font = Game.getFont("Verdana",
-                    (NAME_FONT_SIZE * scale * (CARD_DIMENSIONS.x - 20) * scale / font.getWidth(this.card.getTooltip().name)),
+        UnicodeFont font = Game.getFont(Game.DEFAULT_FONT, (NAME_FONT_SIZE * scale), true, false);
+        double targetWidth = CARD_DIMENSIONS.x * scale * (1 - HAND_TITLE_OFFSET);
+        if (font.getWidth(this.card.getTooltip().name) > targetWidth) {
+            font = Game.getFont(Game.DEFAULT_FONT,
+                    (NAME_FONT_SIZE * scale * targetWidth / font.getWidth(this.card.getTooltip().name)),
                     true, false);
         }
-        font.drawString(pos.x - font.getWidth(this.card.getTooltip().name) / 2,
+        font.drawString(pos.x - font.getWidth(this.card.getTooltip().name) / 2f + HAND_TITLE_OFFSET / 2 * CARD_DIMENSIONS.x * (float) scale,
                 pos.y - CARD_DIMENSIONS.y * (float) scale / 2, this.card.getTooltip().name);
         if (this.card.realCard != null
                 && (this.card.team == this.uib.b.localteam ? // different rules depending on allied team or enemy team
@@ -396,35 +396,33 @@ public class UICard extends UIBox {
             g.setColor(org.newdawn.slick.Color.white);
         }
         this.drawCostStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COST),
-                this.card.finalBasicStatEffects.getStat(EffectStats.COST), COST_POS, COST_ALIGN, STAT_DEFAULT_SIZE);
+                this.card.finalBasicStatEffects.getStat(EffectStats.COST), COST_POS, STAT_DEFAULT_SIZE);
         if (this.card instanceof Minion) {
             this.drawOffensiveStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.ATTACK),
                     this.card.finalBasicStatEffects.getStat(EffectStats.ATTACK),
-                    new Vector2f(-0.5f, MINION_STAT_POS_CENTER_HAND - MINION_STAT_POS_OFFSET_HAND),
-                    MINION_STAT_ALIGN_HAND, STAT_DEFAULT_SIZE);
+                    new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND - MINION_STAT_POS_OFFSET_HAND), STAT_DEFAULT_SIZE, Game.getImage("res/game/statattack.png"));
             this.drawOffensiveStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.MAGIC),
                     this.card.finalBasicStatEffects.getStat(EffectStats.MAGIC),
-                    new Vector2f(-0.5f, MINION_STAT_POS_CENTER_HAND), MINION_STAT_ALIGN_HAND, STAT_DEFAULT_SIZE);
+                    new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND), STAT_DEFAULT_SIZE, Game.getImage("res/game/statmagic.png"));
             this.drawHealthStat(g, pos, scale, this.getMinion().health,
                     this.card.finalStatEffects.getStat(EffectStats.HEALTH),
                     this.card.finalBasicStatEffects.getStat(EffectStats.HEALTH),
-                    new Vector2f(-0.5f, MINION_STAT_POS_CENTER_HAND + MINION_STAT_POS_OFFSET_HAND),
-                    MINION_STAT_ALIGN_HAND, STAT_DEFAULT_SIZE);
+                    new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND + MINION_STAT_POS_OFFSET_HAND), STAT_DEFAULT_SIZE);
         }
     }
 
-    public void drawStatNumber(Graphics g, Vector2f pos, double scale, int stat, Vector2f relpos, Vector2f textoffset,
-            double fontsize, Color c) {
-        UnicodeFont font = Game.getFont("Verdana", fontsize * scale, true, false, c, Color.black);
-        font.drawString(
-                pos.x + CARD_DIMENSIONS.x * relpos.x * (float) scale + font.getWidth("" + stat) * (textoffset.x - 0.5f),
-                pos.y + CARD_DIMENSIONS.y * relpos.y * (float) scale
-                        + font.getHeight("" + stat) * (textoffset.y - 0.5f),
-                "" + stat);
+    public void drawStatNumber(Graphics g, Vector2f pos, double scale, int stat, Vector2f relpos,
+            double fontsize, Color c, Image icon, double iconScale) {
+        UnicodeFont font = Game.getFont(Game.DEFAULT_FONT, fontsize * scale, true, false, c, Color.black);
+        float x = pos.x + CARD_DIMENSIONS.x * relpos.x * (float) scale;
+        float y = pos.y + CARD_DIMENSIONS.y * relpos.y * (float) scale;
+        Image i = icon.getScaledCopy((float) (scale * iconScale));
+        g.drawImage(i, x - i.getWidth() / 2, y - i.getHeight() / 2);
+        String text = "" + stat;
+        font.drawString( x - font.getWidth(text) / 2f, y - font.getLineHeight() / 2f, text);
     }
 
-    public void drawCostStat(Graphics g, Vector2f pos, double scale, int cost, int basecost, Vector2f relpos,
-            Vector2f textoffset, double fontsize) {
+    public void drawCostStat(Graphics g, Vector2f pos, double scale, int cost, int basecost, Vector2f relpos, double fontsize) {
         Color c = Color.white;
         if (cost > basecost) {
             c = Color.red;
@@ -432,11 +430,10 @@ public class UICard extends UIBox {
         if (cost < basecost) {
             c = Color.green;
         }
-        this.drawStatNumber(g, pos, scale, cost, relpos, textoffset, fontsize, c);
+        this.drawStatNumber(g, pos, scale, cost, relpos, fontsize, c, Game.getImage("res/game/statcost.png"), STAT_ICON_DEFAULT_SCALE);
     }
 
-    public void drawOffensiveStat(Graphics g, Vector2f pos, double scale, int stat, int basestat, Vector2f relpos,
-            Vector2f textoffset, double fontsize) {
+    public void drawOffensiveStat(Graphics g, Vector2f pos, double scale, int stat, int basestat, Vector2f relpos, double fontsize, Image icon) {
         Color c = Color.white;
         if (stat > basestat) {
             c = Color.green;
@@ -444,18 +441,18 @@ public class UICard extends UIBox {
         if (stat < basestat) {
             c = Color.orange;
         }
-        this.drawStatNumber(g, pos, scale, stat, relpos, textoffset, fontsize, c);
+        this.drawStatNumber(g, pos, scale, stat, relpos, fontsize, c, icon, STAT_ICON_DEFAULT_SCALE);
     }
 
     public void drawHealthStat(Graphics g, Vector2f pos, double scale, int health, int maxhealth, int basehealth,
-            Vector2f relpos, Vector2f textoffset, double fontsize) {
+            Vector2f relpos, double fontsize) {
         Color c = Color.white;
         if (health < maxhealth) {
             c = Color.red;
         } else if (health > basehealth) {
             c = Color.green;
         }
-        this.drawStatNumber(g, pos, scale, health, relpos, textoffset, fontsize, c);
+        this.drawStatNumber(g, pos, scale, health, relpos, fontsize, c, Game.getImage("res/game/stathealth.png"), STAT_ICON_DEFAULT_SCALE);
     }
 
     public void drawPendingPlayPosition(Graphics g, Vector2f drawPos) {

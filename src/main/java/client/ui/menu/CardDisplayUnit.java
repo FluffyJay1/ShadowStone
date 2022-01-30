@@ -1,6 +1,7 @@
 package client.ui.menu;
 
-import org.newdawn.slick.*;
+import client.Game;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.*;
 
 import client.ui.*;
@@ -21,7 +22,7 @@ public class CardDisplayUnit extends UIBox {
     public CardDisplayUnit(UI ui, Vector2f pos) {
         super(ui, pos, UICard.CARD_DIMENSIONS.copy().scale((float) SCALE), "res/ui/uiboxborder.png");
         this.text = new Text(ui, new Vector2f((float) this.getLocalRight(false), (float) this.getLocalTop(false)), "0",
-                50, 14, "Verdana", 20, -1, 1);
+                50, 14, Game.DEFAULT_FONT, 20, -1, 1);
         this.addChild(this.text);
         this.uicard = new UICard(ui, null, null);
         this.setCardClass(null);

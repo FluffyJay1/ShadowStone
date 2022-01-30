@@ -153,7 +153,7 @@ public class StateDeckbuild extends BasicGameState {
         this.classSelect.setVisible(false);
         this.classSelect.relpos = true;
         this.ui.addUIElementParent(this.classSelect);
-        this.cardTooltip = new CardSelectTooltipPanel(this.ui, new Vector2f(200, 300), 5);
+        this.cardTooltip = new CardSelectTooltipPanel(this.ui, new Vector2f(250, 300), 3);
         this.cardTooltip.setVisible(false);
         this.ui.addUIElementParent(this.cardTooltip);
 

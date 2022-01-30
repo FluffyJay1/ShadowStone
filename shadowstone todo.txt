@@ -1,6 +1,3 @@
-make text more readable
-    like icons underneath attack, magic, health
-    use a better font
 update to use slick 1.0.2
 separate "minion attack" resolver from the "ordering attack" part
     e.g. allow an effect that forces minions to attack something, without adding to their attacks per turn

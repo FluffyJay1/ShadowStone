@@ -2,6 +2,7 @@ package client.ui.menu;
 
 import java.util.*;
 
+import client.Game;
 import org.newdawn.slick.geom.*;
 
 import client.ui.*;
@@ -21,7 +22,7 @@ public class CardSetDisplayPanel extends UIBox {
     public CardSetDisplayPanel(UI ui, Vector2f pos) {
         super(ui, pos, new Vector2f(1600, 500), "res/ui/uiboxborder.png");
         this.margins.set(10, 10);
-        this.addChild(new Text(ui, new Vector2f(0, -225), "Cards", 300, 20, "Verdana", 34, 0, 0));
+        this.addChild(new Text(ui, new Vector2f(0, -225), "Cards", 300, 20, Game.DEFAULT_FONT, 34, 0, 0));
         this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f((float) this.getWidth(true), 400));
         this.scroll.clip = true;
         this.addChild(this.scroll);

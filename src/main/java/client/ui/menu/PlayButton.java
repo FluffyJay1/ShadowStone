@@ -1,5 +1,6 @@
 package client.ui.menu;
 
+import client.Game;
 import org.newdawn.slick.geom.Vector2f;
 
 import client.ui.Text;
@@ -13,7 +14,7 @@ public class PlayButton extends UIBox {
     public PlayButton(UI ui) {
         super(ui, new Vector2f(0, 0), new Vector2f(128, 128), "res/ui/uiboxborder.png");
         this.relpos = true;
-        this.text = new Text(ui, new Vector2f(0, 0), "<b>PLAY GAME</b>", 128, 24, "Verdana", 30, 0, 0);
+        this.text = new Text(ui, new Vector2f(0, 0), "<b>PLAY GAME</b>", 128, 24, Game.DEFAULT_FONT, 30, 0, 0);
         text.setParent(this);
         this.deckspanel = new DeckSelectPanel(ui, new Vector2f(), false);
         this.deckspanel.setVisible(false);

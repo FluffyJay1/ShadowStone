@@ -1,5 +1,6 @@
 package client.ui.game;
 
+import client.Game;
 import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
@@ -17,11 +18,11 @@ public class CardSelectPanel extends UIBox {
     final CardSelectTooltipPanel tooltipReferencePanel;
 
     public CardSelectPanel(UI ui, UIBoard b) {
-        super(ui, new Vector2f(-0.35f, -0.14f), new Vector2f(400, 500), "res/ui/uiboxborder.png");
+        super(ui, new Vector2f(-0.35f, -0.14f), new Vector2f(450, 550), "res/ui/uiboxborder.png");
         this.relpos = true;
         this.uib = b;
         this.margins.set(10, 10);
-        this.tooltipReferencePanel = new CardSelectTooltipPanel(ui, new Vector2f(400, 0), 3);
+        this.tooltipReferencePanel = new CardSelectTooltipPanel(ui, new Vector2f(450, 0), 2);
         this.tooltipReferencePanel.setReferenceTooltip(null);
         this.addChild(tooltipReferencePanel);
         this.scroll = new ScrollingContext(ui, new Vector2f(), this.getDim(true));
@@ -43,7 +44,7 @@ public class CardSelectPanel extends UIBox {
         this.ub = new UnleashButton(ui, uib);
         this.scroll.addChild(this.ub);
         this.effects = new Text(ui, new Vector2f((float) this.scroll.getLocalLeft(true), 200), "effects", this.getWidth(true), 20,
-                "Verdana", 24, -1, -1);
+                Game.DEFAULT_FONT, 24, -1, -1);
         this.scroll.addChild(this.effects);
     }
 

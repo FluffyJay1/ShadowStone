@@ -1,5 +1,6 @@
 package client.ui;
 
+import client.Game;
 import org.newdawn.slick.geom.*;
 
 public class GenericButton extends UIBox {
@@ -12,7 +13,7 @@ public class GenericButton extends UIBox {
         super(ui, pos, dim, new Animation("res/ui/button.png", new Vector2f(2, 1), 0, 0));
         this.index = index;
         this.originalDim = dim.copy();
-        this.text = new Text(ui, new Vector2f(0, 0), message, dim.x * 0.8, 20, "Verdana", 24, 0, 0);
+        this.text = new Text(ui, new Vector2f(0, 0), message, dim.x * 0.8, 20, Game.DEFAULT_FONT, 24, 0, 0);
         text.setParent(this);
     }
 

@@ -19,7 +19,7 @@ public class EventAnimationTurnStart extends EventAnimation<EventTurnStart> {
 
     @Override
     public void draw(Graphics g) {
-        UnicodeFont font = Game.getFont("Verdana", 80, true, false);
+        UnicodeFont font = Game.getFont(Game.DEFAULT_FONT, 80, true, false);
         String dstring = "TURN START";
         switch (this.event.p.team * this.event.p.board.localteam) { // ez hack
         case 1:

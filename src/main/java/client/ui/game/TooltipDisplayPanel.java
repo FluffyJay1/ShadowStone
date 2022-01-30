@@ -19,20 +19,20 @@ public class TooltipDisplayPanel extends UIBox {
     final UIBox cardImageDisplayer;
 
     public TooltipDisplayPanel(UI ui) {
-        super(ui, new Vector2f(0, 0), new Vector2f(380, 0), "res/ui/uiboxborder.png");
+        super(ui, new Vector2f(0, 0), new Vector2f(430, 0), "res/ui/uiboxborder.png");
         this.margins.set(10, 10);
         this.alignv = -1;
         this.cardImageDisplayer = new UIBox(ui, new Vector2f(), new Vector2f( 300, 360));
         this.cardImageDisplayer.relpos = true;
-        this.cardImageDisplayer.setAlpha(0.15);
+        this.cardImageDisplayer.setAlpha(0.12);
         this.cardImageDisplayer.ignorehitbox = true;
         this.addChild(this.cardImageDisplayer);
         this.name = new Text(ui, new Vector2f((float) this.getLocalLeft(true), (float) this.getLocalTop(true)), "name",
-                this.getWidth(true), 40, "Verdana", 40, -1, -1);
+                this.getWidth(true), 40, Game.DEFAULT_FONT, 46, -1, -1);
         this.addChild(name);
         this.description = new Text(ui,
                 new Vector2f((float) this.getLocalLeft(true), (float) this.name.getBottom(false, false) + 10), "jeff",
-                this.getWidth(true), 32, "Verdana", 32, -1, -1);
+                this.getWidth(true), 32, Game.DEFAULT_FONT, 36, -1, -1);
         this.addChild(description);
         this.clip = true;
     }

@@ -1,5 +1,6 @@
 package client.ui.game;
 
+import client.Game;
 import org.newdawn.slick.geom.*;
 
 import client.ui.*;
@@ -11,7 +12,7 @@ public class EndTurnButton extends UIBox {
 
     public EndTurnButton(UI ui, UIBoard b) {
         super(ui, new Vector2f(0.38f, 0), new Vector2f(128, 128), "res/ui/border.png");
-        this.text = new Text(ui, new Vector2f(0, 0), "<b>END TURN</b>", 128, 24, "Verdana", 30, 0, 0);
+        this.text = new Text(ui, new Vector2f(0, 0), "<b>END TURN</b>", 128, 24, Game.DEFAULT_FONT, 30, 0, 0);
         text.setParent(this);
         this.b = b;
         this.relpos = true;

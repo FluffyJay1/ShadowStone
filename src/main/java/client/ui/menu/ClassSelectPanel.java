@@ -2,6 +2,7 @@ package client.ui.menu;
 
 import java.util.*;
 
+import client.Game;
 import org.newdawn.slick.geom.*;
 
 import client.ui.*;
@@ -13,7 +14,7 @@ public class ClassSelectPanel extends UIBox {
 
     public ClassSelectPanel(UI ui, Vector2f pos) {
         super(ui, pos, new Vector2f(500, 600), "res/ui/uiboxborder.png");
-        this.addChild(new Text(ui, new Vector2f(0, -250), "Select a class", 300, 20, "Verdana", 34, 0, 0));
+        this.addChild(new Text(ui, new Vector2f(0, -250), "Select a class", 300, 20, Game.DEFAULT_FONT, 34, 0, 0));
         for (int i = 0; i < ClassCraft.values().length - 1; i++) {
             GenericButton gb = new GenericButton(ui, new Vector2f(i % 2 * 240 - 120, i / 2 * 100 - 150),
                     new Vector2f(240, 80), ClassCraft.values()[i + 1].toString(), i + 1) {
