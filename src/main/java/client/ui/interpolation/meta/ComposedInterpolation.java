@@ -16,8 +16,10 @@ public class ComposedInterpolation<T> implements Interpolation<T> {
         // process weight list into transition points
         this.transitionPoints = new ArrayList<>(weightList.size() - 1);
         double totalWeight = weightList.stream().reduce(0., Double::sum);
-        for (int i = 0; i < interpolationList.size(); i++) {
-            this.transitionPoints.add(weightList.get(i + 1) / totalWeight);
+        double cumWeight = 0;
+        for (int i = 0; i < interpolationList.size() - 1; i++) {
+            cumWeight += weightList.get(i);
+            this.transitionPoints.add(cumWeight / totalWeight);
         }
         this.currInd = 0;
     }

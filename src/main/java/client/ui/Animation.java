@@ -92,7 +92,7 @@ public class Animation implements Cloneable {
                 this.frame += (int) (this.timer / this.frameInterval);
                 this.timer %= this.frameInterval;
             }
-            if (this.frame > this.sheet.getHorizontalCount() * this.sheet.getVerticalCount()) {
+            if (this.frame >= this.sheet.getHorizontalCount() * this.sheet.getVerticalCount()) {
                 if (this.loop) {
                     this.frame %= this.sheet.getHorizontalCount() * this.sheet.getVerticalCount();
                 } else {

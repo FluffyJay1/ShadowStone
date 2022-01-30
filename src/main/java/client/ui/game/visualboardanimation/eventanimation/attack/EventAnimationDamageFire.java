@@ -59,7 +59,11 @@ public class EventAnimationDamageFire extends EventAnimationDamage {
     public void init(VisualBoard b, EventDamage event) {
         super.init(b, event);
         this.chargingParticleSystems = new ArrayList<>(event.m.size());
-        for (Minion m : event.m) {
+    }
+
+    @Override
+    public void onStart() {
+        for (Minion m : this.event.m) {
             ParticleSystem ps = this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getAbsPos(), UIBoard.PARTICLE_Z_BOARD, CHARGING_EMISSION_STRATEGY.get());
             this.chargingParticleSystems.add(ps);
         }
