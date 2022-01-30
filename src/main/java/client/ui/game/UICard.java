@@ -21,7 +21,7 @@ public class UICard extends UIBox {
     public static final Vector2f CARD_DIMENSIONS = new Vector2f(150, 180);
     public static final Vector2f COST_POS = new Vector2f(-0.4f, -0.4f);
     public static final Vector2f COST_POS_UNLEASHPOWER = new Vector2f(0, -0.3f);
-    public static final Vector2f COUNTDOWN_POS = new Vector2f(0.3f, 0.3f);
+    public static final Vector2f COUNTDOWN_POS = new Vector2f(0.3f, 0.1f);
     public static final float MINION_STAT_POS_BASE_BOARD = 0.4f;
     public static final float MINION_STAT_POS_OFFSET_BOARD = 0.4f;
     public static final float MINION_STAT_POS_BASE_HAND = -0.4f;
