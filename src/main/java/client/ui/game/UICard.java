@@ -344,6 +344,12 @@ public class UICard extends UIBox {
                     this.card.finalBasicStatEffects.getStat(EffectStats.HEALTH),
                     new Vector2f(MINION_STAT_POS_OFFSET_BOARD, 0.5f), MINION_STAT_ALIGN_BOARD, STAT_DEFAULT_SIZE);
         }
+        // if marked for death
+        if (!this.card.alive) {
+            Image i = Game.getImage("res/game/markedfordeath.png");
+            i = i.getScaledCopy((float) scale);
+            g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
+        }
     }
 
     // called by updateEffectStats in Card

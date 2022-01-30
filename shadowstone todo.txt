@@ -1,5 +1,3 @@
-rotate cards
-indicate which cards have been marked for death
 make text more readable
     like icons underneath attack, magic, health
     use a better font
