@@ -32,15 +32,15 @@ public class EventAnimationDamageClaw extends EventAnimationDamage {
                                     new ConstantInterpolation(1),
                                     new QuadraticInterpolationB(1, 0, 0)
                             ), List.of(0.5, 1.)),
-                            new ConstantInterpolation(1)
+                            new ConstantInterpolation(0.8)
                     ),
                     new RandomAngleEmissionPropertyStrategy(new ConstantInterpolation(0))
             ))
     );
-    private static final double BIG_CLAW_SCALE = 1.2;
+    private static final double BIG_CLAW_SCALE = 1.5;
 
     public EventAnimationDamageClaw() {
-        super(0.2);
+        super(0.25);
     }
 
     @Override
