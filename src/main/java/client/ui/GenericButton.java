@@ -14,7 +14,8 @@ public class GenericButton extends UIBox {
         this.index = index;
         this.originalDim = dim.copy();
         this.text = new Text(ui, new Vector2f(0, 0), message, dim.x * 0.8, 20, Game.DEFAULT_FONT, 24, 0, 0);
-        text.setParent(this);
+        this.text.relpos = true;
+        this.text.setParent(this);
     }
 
     @Override

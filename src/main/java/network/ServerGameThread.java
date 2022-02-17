@@ -60,30 +60,22 @@ public class ServerGameThread extends Thread {
         }
         // accept decklists
         while (this.decks[0] == null && this.decks[1] == null) {
-            if (this.dsexternal.ready()) {
-                MessageType mtype = this.dsexternal.receive();
-                if (mtype == MessageType.DECK) {
-                    this.setDecklist(this.localBoard.localteam * -1, this.dsexternal.readDecklist());
-                } else {
-                    this.dsexternal.discardMessage();
-                }
+            MessageType mtype = this.dsexternal.receive();
+            if (mtype == MessageType.DECK) {
+                this.setDecklist(this.localBoard.localteam * -1, this.dsexternal.readDecklist());
+            } else {
+                this.dsexternal.discardMessage();
             }
         }
         this.initializeGame();
         // TODO mulligan phase
         // game loop
-        while (this.b.winner == 0) {
+        while (this.b.winner == 0 && !this.isInterrupted()) {
             this.handleGameInput(this.dsexternal, this.localBoard.localteam * -1);
             this.handleGameInput(this.dslocal, this.localBoard.localteam);
         }
-        if (this.dsexternal.socket != null) { // aka if pvp
-            try {
-                this.dsexternal.socket.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
+        this.dsexternal.close();
+        this.dslocal.close();
     }
 
     private void initializeGame() {

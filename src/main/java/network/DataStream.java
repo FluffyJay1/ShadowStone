@@ -108,6 +108,10 @@ public class DataStream {
         this.out.println(MessageType.BOARDRESET);
     }
 
+    /**
+     * Return whether the next read won't block
+     * @return true if the next read won't block
+     */
     public boolean ready() {
         try {
             return this.in.ready();
@@ -121,6 +125,7 @@ public class DataStream {
     /*
      * two parter, first use this method to determine message type, then use a
      * corresponding read...() method to finish reading the message
+     * returns null if the connection was closed
      */
     public MessageType receive() {
         String header = "";
@@ -129,6 +134,9 @@ public class DataStream {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+        if (header == null) { // connection closed by peer
+            return null;
         }
         try {
             MessageType mtype = MessageType.valueOf(header);
@@ -217,7 +225,11 @@ public class DataStream {
 
     public void close() {
         try {
-            socket.close();
+            if (this.socket != null) {
+                this.socket.close();
+            }
+            this.out.close();
+            this.in.close();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

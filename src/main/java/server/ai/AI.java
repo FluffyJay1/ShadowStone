@@ -152,9 +152,9 @@ public class AI extends Thread {
 
     @Override
     public void run() {
-        while (this.b.winner == 0) {
+        while (this.b.winner == 0 && !this.isInterrupted()) {
             this.readDataStream();
-            if (this.b.currentPlayerTurn == this.b.localteam && !this.finishedTurn && !this.waitForEvents) {
+            if (!this.isInterrupted() && this.b.currentPlayerTurn == this.b.localteam && !this.finishedTurn && !this.waitForEvents) {
                 if (this.actionSendQueue.isEmpty() && this.b.winner == 0) {
                     this.AIThink();
                 }
@@ -165,9 +165,12 @@ public class AI extends Thread {
     }
 
     private void readDataStream() {
-        if (this.dslocal.ready()) {
-            MessageType mtype = this.dslocal.receive();
-            switch (mtype) {
+        MessageType mtype = this.dslocal.receive();
+        if (mtype == null) {
+            this.interrupt();
+            return;
+        }
+        switch (mtype) {
             case EVENT:
                 String eventstring = this.dslocal.readEvent();
                 this.b.parseEventString(eventstring);
@@ -182,7 +185,6 @@ public class AI extends Thread {
                 this.waitForEvents = true;
             default:
                 break;
-            }
         }
     }
 

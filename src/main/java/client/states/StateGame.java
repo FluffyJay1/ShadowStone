@@ -1,6 +1,7 @@
 package client.states;
 
 import org.newdawn.slick.*;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.*;
 
 import client.Game;
@@ -31,14 +32,25 @@ public class StateGame extends BasicGameState {
         DataStream.pair(dslocal, dsserver);
         this.uiBoard = new UIBoard(this.ui, 1, this.dslocal);
         this.ui.addUIElementParent(this.uiBoard);
-        game = new ServerGameThread(this.dsserver, false, this.uiBoard.b);
-        game.setDecklist(1, tempdeck);
-        game.setDecklist(-1, Game.selectRandom(ConstructedDeck.decks));
-        game.start();
+        GenericButton quitButton = new GenericButton(this.ui, new Vector2f(0.5f, -0.5f), new Vector2f(150, 50), "Quit", 0) {
+            @Override
+            public void mouseClicked(int button, int x, int y, int clickCount) {
+                arg1.enterState(Game.STATE_MENU);
+            }
+        };
+        quitButton.alignh = 1;
+        quitButton.alignv = -1;
+        quitButton.relpos = true;
+        this.ui.addUIElementParent(quitButton);
+        this.game = new ServerGameThread(this.dsserver, false, this.uiBoard.b);
+        this.game.setDecklist(1, tempdeck);
+        this.game.setDecklist(-1, Game.selectRandom(ConstructedDeck.decks));
+        this.game.start();
     }
 
     @Override
     public void leave(GameContainer arg0, StateBasedGame arg1) {
+        this.game.interrupt();
         arg0.getInput().removeListener(this.ui);
     }
 
