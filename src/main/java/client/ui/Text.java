@@ -4,15 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import client.Config;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
 import client.Game;
+import utils.UninvertibleImage;
 
 public class Text extends UIElement {
+    private static final int CACHED_RENDER_PADDING = 10;
+    private static Image tempRender;
+    private static Graphics tempGraphics;
     private String text = ""; // private cuz fuck you
     private final List<List<String>> lines = new ArrayList<>();
     private final List<Double> lineWidths = new ArrayList<>();
@@ -23,8 +29,7 @@ public class Text extends UIElement {
     // 0 = normal, 1 = bold, 2 = italics, 3 = both
     final UnicodeFont[] uFontFamily = new UnicodeFont[4];
 
-    private Image cachedRender;
-    private Graphics cachedGraphics;
+    private UninvertibleImage cachedRender;
     private boolean isDirty;
 
     public Text(UI ui, Vector2f pos, String text, double linewidth, double lineheight, String font, double fontsize,
@@ -145,14 +150,13 @@ public class Text extends UIElement {
 
     public void repaint() {
         try {
-            cachedRender = new Image((int) this.getWidth(true), (int) this.getHeight(true));
-            cachedGraphics = cachedRender.getGraphics();
-            /*
-             * so there's this wonderful feature where the clipping of the game's graphics context
-             * affects the clipping of completely unrelated graphics contexts created on
-             * images 
-             */
-            cachedGraphics.setClip(null); // so despite how dumb this line looks, it's completely necessary
+            if (tempGraphics == null) {
+                tempRender = new Image(Config.WINDOW_WIDTH + CACHED_RENDER_PADDING * 2, Config.WINDOW_HEIGHT + CACHED_RENDER_PADDING * 2);
+                tempGraphics = tempRender.getGraphics();
+            }
+            // The clipping of the current render context is inherited on new images, so outside this method we need to temporarily disable clipping
+            this.cachedRender = new UninvertibleImage((int) this.getWidth(true) + CACHED_RENDER_PADDING * 2,
+                    (int) this.getHeight(true) + CACHED_RENDER_PADDING * 2);
         } catch (SlickException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -167,16 +171,21 @@ public class Text extends UIElement {
                     case "<i>" -> flags = flags | 2;
                     case "</i>" -> flags = flags & ~2;
                     default -> {
-                        float drawx = (float) (currlinewidth + (this.maxLineWidth - this.lineWidths.get(i)) * (this.alignh + 1) / 2.);
-                        float drawy = (float) (this.lineHeight * i);
-                        cachedGraphics.setFont(this.uFontFamily[flags]);
-                        cachedGraphics.drawString(token, drawx, drawy);
+                        float drawx = CACHED_RENDER_PADDING + (float) (currlinewidth + (this.maxLineWidth - this.lineWidths.get(i)) * (this.alignh + 1) / 2.);
+                        float drawy = CACHED_RENDER_PADDING + (float) (this.lineHeight * i);
+                        tempGraphics.setFont(this.uFontFamily[flags]);
+                        tempGraphics.drawString(token, drawx, drawy);
                         currlinewidth += this.uFontFamily[flags].getWidth(token);
                     }
                 }
             }
         }
-        cachedGraphics.flush();
+        // the maths assume y=0 starts at the bottom of the texture, and that the image is flipped
+        tempGraphics.copyArea(this.cachedRender, 0, tempRender.getTexture().getTextureHeight() - this.cachedRender.getHeight());
+        // the bottom two lines must happen in this order to prevent the text from flashing white for the frame it's being rendered
+        // why? who knows
+        tempGraphics.flush();
+        tempGraphics.clear();
         this.isDirty = false;
     }
 
@@ -194,11 +203,21 @@ public class Text extends UIElement {
     public void draw(Graphics g) {
         if (this.isVisible()) {
             if (this.isDirty) {
+                // due to slick spaghetti, the cached render will inherit the current clip, so we need to temporarily disable it
+                Rectangle prevClip = g.getClip();
+                Rectangle prevClipCloned = null;
+                if (prevClip != null) {
+                    prevClipCloned = new Rectangle(prevClip.getX(), prevClip.getY(), prevClip.getWidth(), prevClip.getHeight());
+                }
+                g.setClip(null);
                 this.repaint();
+                if (prevClipCloned != null) {
+                    g.setClip(prevClipCloned);
+                }
             }
             if (this.cachedRender != null) {
-                float drawx = (float) (this.getAbsPos().x - this.maxLineWidth * (this.alignh + 1) / 2.);
-                float drawy = (float) (this.getAbsPos().y - this.getVOff());
+                float drawx = (float) (this.getAbsPos().x - this.maxLineWidth * (this.alignh + 1) / 2.) - CACHED_RENDER_PADDING;
+                float drawy = (float) (this.getAbsPos().y - this.getVOff()) - CACHED_RENDER_PADDING;
                 this.cachedRender.setAlpha((float) this.getAlpha());
                 g.drawImage(this.cachedRender, drawx, drawy);
             }

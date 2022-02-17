@@ -1,5 +1,3 @@
-make game fullscreen and fix flickering problem from rendering text
-UnicodeFont deprecated? use AngelCodeFonts
 Figure out why the game is eating cpu and gpu
 relpos lol
 formalize basic effects? createBasicEffect()
