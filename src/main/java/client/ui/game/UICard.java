@@ -19,6 +19,7 @@ import static org.newdawn.slick.opengl.renderer.SGL.GL_SRC_ALPHA;
 
 public class UICard extends UIBox {
     public static final Vector2f CARD_DIMENSIONS = new Vector2f(150, 180);
+    public static final Vector2f BORDER_DIMENSIONS = new Vector2f(158, 188);
     public static final Vector2f COST_POS = new Vector2f(-0.4f, -0.4f);
     public static final Vector2f COST_POS_UNLEASHPOWER = new Vector2f(0, -0.3f);
     public static final Vector2f COUNTDOWN_POS = new Vector2f(0.3f, 0.1f);
@@ -45,6 +46,8 @@ public class UICard extends UIBox {
     private static final float STAT_ICON_COUNTDOWN_SCALE = 1;
     private static final float HAND_TITLE_OFFSET = 0.2f;
     private static final float ICON_Y = 0.6f;
+    private static final int READY_BORDER_WIDTH = 2;
+    private static final int READY_BORDER_PADDING = 4;
 
     private Card card;
     private Image cardImage, subImage;
@@ -221,6 +224,9 @@ public class UICard extends UIBox {
             return;
         }
         this.drawCardArt(g, pos, scale, this.card.status, this.isPending() ? PENDING_PLAY_COLOR : Color.white);
+        if (!(this.card instanceof UnleashPower) && !(this.card instanceof Leader)) {
+            this.drawCardBorder(g, pos, scale);
+        }
         if (this.card.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
             this.drawStatNumber(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COUNTDOWN), COUNTDOWN_POS,
                     50, Color.white, Game.getImage("res/game/statcountdown.png"), STAT_ICON_COUNTDOWN_SCALE);
@@ -293,14 +299,30 @@ public class UICard extends UIBox {
         }
     }
 
+    public void drawCardBorder(Graphics g, Vector2f pos, double scale) {
+        String imagePath = null;
+        switch (this.card.getTooltip().rarity) {
+            case BRONZE -> imagePath = "res/game/borderbronze.png";
+            case SILVER -> imagePath = "res/game/bordersilver.png";
+            case GOLD -> imagePath = "res/game/bordergold.png";
+            case LEGENDARY -> imagePath = "res/game/borderlegendary.png";
+        }
+        Image borderImage = Game.getImage(imagePath).getScaledCopy((int) (scale * BORDER_DIMENSIONS.x), (int) (scale * BORDER_DIMENSIONS.y));
+        g.drawImage(borderImage, (int) (pos.x - borderImage.getWidth() / 2),
+                (int) (pos.y - borderImage.getHeight() / 2));
+    }
+
     public void drawUnleashPower(Graphics g, Vector2f pos, double scale) {
         if (this.card.team == this.uib.b.localteam ? // different rules depending on allied team or enemy team
                 this.uib.b.realBoard.getPlayer(this.card.realCard.team).canUnleash() && !this.uib.b.disableInput : // condition for cards on our team (should update instantly)
                 this.uib.b.getPlayer(this.card.team).canUnleash() // condition for cards on the enemy team (should wait for animations)
         ) {
-            g.setColor(org.newdawn.slick.Color.cyan);
-            g.drawOval((float) (pos.x - UNLEASH_POWER_RADIUS * scale), (float) (pos.y - UNLEASH_POWER_RADIUS * scale),
-                    (float) (UNLEASH_POWER_RADIUS * 2 * scale), (float) (UNLEASH_POWER_RADIUS * 2 * scale));
+            g.setColor(Color.cyan);
+            g.setLineWidth(READY_BORDER_WIDTH);
+            g.drawOval((float) (pos.x - UNLEASH_POWER_RADIUS * scale - READY_BORDER_PADDING),
+                    (float) (pos.y - UNLEASH_POWER_RADIUS * scale - READY_BORDER_PADDING),
+                    (float) (UNLEASH_POWER_RADIUS * 2 * scale + READY_BORDER_PADDING * 2),
+                    (float) (UNLEASH_POWER_RADIUS * 2 * scale + READY_BORDER_PADDING * 2));
             g.setColor(org.newdawn.slick.Color.white);
         }
         this.drawCostStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COST),
@@ -315,18 +337,15 @@ public class UICard extends UIBox {
                         ((Minion) this.card.realCard).canAttack() && !this.uib.b.disableInput : // condition for cards on our team (should update instantly)
                         ((Minion) this.card).canAttack()) // condition for cards on the enemy team (should wait for animations)
             ) {
+                Color borderColor;
                 if (this.getMinion().summoningSickness
                         && this.card.realCard.finalStatEffects.getStat(EffectStats.RUSH) > 0
                         && this.card.realCard.finalStatEffects.getStat(EffectStats.STORM) == 0) {
-                    g.setColor(org.newdawn.slick.Color.yellow);
+                    borderColor = Color.yellow;
                 } else {
-                    g.setColor(org.newdawn.slick.Color.cyan);
+                    borderColor = Color.cyan;
                 }
-
-                g.drawRect((float) (pos.x - CARD_DIMENSIONS.x * scale / 2),
-                        (float) (pos.y - CARD_DIMENSIONS.y * scale / 2), (float) (CARD_DIMENSIONS.x * scale),
-                        (float) (CARD_DIMENSIONS.y * scale));
-                g.setColor(org.newdawn.slick.Color.white);
+                drawReadyBorder(g, pos, scale, borderColor);
             }
             if (this.card.finalStatEffects.getStat(EffectStats.WARD) > 0) {
                 Image i = Game.getImage("res/game/shield.png");
@@ -350,6 +369,16 @@ public class UICard extends UIBox {
             i = i.getScaledCopy((float) scale);
             g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
         }
+    }
+
+    private void drawReadyBorder(Graphics g, Vector2f pos, double scale, Color color) {
+        g.setLineWidth(READY_BORDER_WIDTH);
+        g.setColor(color);
+        g.drawRect((float) (pos.x - BORDER_DIMENSIONS.x * scale / 2 - READY_BORDER_PADDING),
+                (float) (pos.y - BORDER_DIMENSIONS.y * scale / 2 - READY_BORDER_PADDING),
+                (float) (BORDER_DIMENSIONS.x * scale + READY_BORDER_PADDING * 2),
+                (float) (BORDER_DIMENSIONS.y * scale + READY_BORDER_PADDING * 2));
+        g.setColor(Color.white);
     }
 
     // called by updateEffectStats in Card
@@ -390,10 +419,7 @@ public class UICard extends UIBox {
                 this.uib.b.realBoard.getPlayer(this.card.realCard.team).canPlayCard(this.card.realCard) && !this.uib.b.disableInput : // condition for cards on our team (should update instantly)
                 this.uib.b.getPlayer(this.card.team).canPlayCard(this.card)) // condition for cards on the enemy team (should wait for animations)
         ) {
-            g.setColor(org.newdawn.slick.Color.cyan);
-            g.drawRect((float) (pos.x - CARD_DIMENSIONS.x * scale / 2), (float) (pos.y - CARD_DIMENSIONS.y * scale / 2),
-                    (float) (CARD_DIMENSIONS.x * scale), (float) (CARD_DIMENSIONS.y * scale));
-            g.setColor(org.newdawn.slick.Color.white);
+            drawReadyBorder(g, pos, scale, Color.cyan);
         }
         this.drawCostStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COST),
                 this.card.finalBasicStatEffects.getStat(EffectStats.COST), COST_POS, STAT_DEFAULT_SIZE);

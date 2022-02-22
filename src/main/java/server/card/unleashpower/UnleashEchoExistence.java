@@ -11,15 +11,18 @@ import server.event.*;
 import server.resolver.*;
 
 public class UnleashEchoExistence extends UnleashPower {
+    public static final String NAME = "Echo Existence";
+    public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. If it has already attacked this turn, add a copy of it to your deck and subtract 2 from its cost.";
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Echo Existence",
-            "<b>Unleash</b> an allied minion. If it has already attacked this turn, add a copy of it to your deck and subtract 2 from its cost.",
-            "res/unleashpower/echoexistence.png", CRAFT, 2, UnleashEchoExistence.class, new Vector2f(430, 445), 1.5,
+    public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/echoexistence.png",
+            CRAFT, RARITY, 2, UnleashEchoExistence.class,
+            new Vector2f(430, 445), 1.5,
             () -> List.of(Tooltip.UNLEASH));
 
     public UnleashEchoExistence(Board b) {
         super(b, TOOLTIP);
-        Effect e = new Effect(TOOLTIP.description) {
+        Effect e = new Effect(DESCRIPTION) {
             @Override
             public Resolver onUnleashPost(Minion m) {
                 Effect effect = this; // anonymous fuckery

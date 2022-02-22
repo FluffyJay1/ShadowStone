@@ -11,15 +11,18 @@ import server.event.*;
 import server.resolver.*;
 
 public class UnleashEmbraceNature extends UnleashPower {
+    public static final String NAME = "Embrace Nature";
+    public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. If it has already attacked this turn, return it to your hand and subtract 1 from its cost.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Embrace Nature",
-            "<b>Unleash</b> an allied minion. If it has already attacked this turn, return it to your hand and subtract 1 from its cost.",
-            "res/unleashpower/embracenature.png", CRAFT, 2, UnleashEmbraceNature.class, new Vector2f(653, 565), 3,
+    public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/embracenature.png",
+            CRAFT, RARITY, 2, UnleashEmbraceNature.class,
+            new Vector2f(653, 565), 3,
             () -> List.of(Tooltip.UNLEASH));
 
     public UnleashEmbraceNature(Board b) {
         super(b, TOOLTIP);
-        Effect e = new Effect(TOOLTIP.description) {
+        Effect e = new Effect(DESCRIPTION) {
             @Override
             public Resolver onUnleashPost(Minion m) {
                 Effect effect = this; // anonymous fuckery

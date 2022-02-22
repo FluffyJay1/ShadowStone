@@ -44,4 +44,10 @@ public class UnleashPower extends Card {
     public double getValue(int refs) {
         return 0;
     }
+
+    @Override
+    public void appendStringToBuilder(StringBuilder builder) {
+        super.appendStringToBuilder(builder);
+        builder.append(this.unleashesThisTurn).append(" ");
+    }
 }

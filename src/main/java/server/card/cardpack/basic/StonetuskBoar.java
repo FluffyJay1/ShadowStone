@@ -5,6 +5,7 @@ import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.Board;
+import server.card.CardRarity;
 import server.card.ClassCraft;
 import server.card.Minion;
 import server.card.effect.Effect;
@@ -16,8 +17,10 @@ public class StonetuskBoar extends Minion {
     public static final String NAME = "Stonetusk Boar";
     public static final String DESCRIPTION = "<b>Storm</b>.";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
+    public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/stonetuskboar.png",
-            CRAFT, 1, 1, 0, 1, false, StonetuskBoar.class, new Vector2f(), -1, EventAnimationDamageSlash.class,
+            CRAFT, RARITY, 1, 1, 0, 1, false, StonetuskBoar.class,
+            new Vector2f(), -1, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.STORM));
 
     public StonetuskBoar(Board b) {

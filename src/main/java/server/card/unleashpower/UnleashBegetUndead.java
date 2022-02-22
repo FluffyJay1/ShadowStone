@@ -12,15 +12,18 @@ import server.event.*;
 import server.resolver.*;
 
 public class UnleashBegetUndead extends UnleashPower {
+    public static final String NAME = "Beget Undead";
+    public static final String DESCRIPTION = "Give an allied minion <b>Last Words</b>: summon a <b>Skeleton</b>. <b>Unleash</b> it. Then deal 1 damage to it.";
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Beget Undead",
-            "Give an allied minion <b>Last Words</b>: summon a <b>Skeleton</b>. <b>Unleash</b> it. Then deal 1 damage to it.",
-            "res/unleashpower/begetundead.png", CRAFT, 2, UnleashBegetUndead.class, new Vector2f(410, 460), 4,
+    public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/begetundead.png",
+            CRAFT, RARITY, 2, UnleashBegetUndead.class,
+            new Vector2f(410, 460), 4,
             () -> List.of(Tooltip.UNLEASH, Tooltip.LASTWORDS, Skeleton.TOOLTIP));
 
     public UnleashBegetUndead(Board b) {
         super(b, TOOLTIP);
-        Effect e = new Effect(TOOLTIP.description) {
+        Effect e = new Effect(DESCRIPTION) {
             @Override
             public Resolver onUnleashPre(Minion m) {
                 return new Resolver(false) {

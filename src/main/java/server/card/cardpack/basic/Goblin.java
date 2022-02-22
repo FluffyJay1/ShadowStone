@@ -13,8 +13,10 @@ public class Goblin extends Minion {
     public static final String NAME = "Goblin";
     public static final String DESCRIPTION = "";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
+    public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/goblin.png",
-            CRAFT, 1, 1, 0, 2, true, Goblin.class, new Vector2f(), -1, EventAnimationDamageSlash.class,
+            CRAFT, RARITY, 1, 1, 0, 2, true, Goblin.class,
+            new Vector2f(), -1, EventAnimationDamageSlash.class,
             List::of);
 
     public Goblin(Board b) {

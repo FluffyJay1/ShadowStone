@@ -310,7 +310,7 @@ public class AI extends Thread {
             cacheHit = true;
             if (this.traversedNodes.contains(dbsn)) {
                 System.err.println("AI encountered a cycle somehow");
-                return dbsn;
+                return null;
             }
         }
         this.traversedNodes.add(dbsn);
@@ -424,11 +424,15 @@ public class AI extends Thread {
             }
         } else {
             DeterministicBoardStateNode dbsn = this.getBestTurn(current.team, depth + 1, nextSampleRate, nextMaxSamples, filterLethal);
-            assert dbsn != null;
-            if (dbsn.lethal) {
-                current.lethal = true; // the current node has an action that leads to a node that eventually results in lethal
+            if (dbsn == null) {
+                // something went wrong, here's a bandaid
+                node = new TerminalBoardStateNode(current.team, evaluateAdvantage(this.b, current.team));
+            } else {
+                if (dbsn.lethal) {
+                    current.lethal = true; // the current node has an action that leads to a node that eventually results in lethal
+                }
+                node = dbsn;
             }
-            node = dbsn;
         }
         List<Event> undoStack = new LinkedList<>(result.events);
         while (!undoStack.isEmpty()) {

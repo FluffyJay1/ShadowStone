@@ -17,8 +17,10 @@ public class CursedStone extends Minion {
     public static final String NAME = "Cursed Stone";
     public static final String DESCRIPTION = "<b>Unleash</b>: <b>Blast(X)</b> and gain <b>Last Words</b>: Deal X damage to a random allied minion. X equals the amount of health your leader is missing.";
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
+    public static final CardRarity RARITY = CardRarity.GOLD;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/cursedstone.png",
-            CRAFT, 5, 1, 5, 5, false, CursedStone.class, new Vector2f(), -1, EventAnimationDamageSlash.class,
+            CRAFT, RARITY, 8, 1, 5, 8, false, CursedStone.class,
+            new Vector2f(), -1, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.UNLEASH, Tooltip.BLAST, Tooltip.LASTWORDS));
 
     public CursedStone(Board b) {

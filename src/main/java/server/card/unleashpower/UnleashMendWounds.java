@@ -11,15 +11,18 @@ import server.event.*;
 import server.resolver.*;
 
 public class UnleashMendWounds extends UnleashPower {
+    public static final String NAME = "Mend Wounds";
+    public static final String DESCRIPTION = "Give an allied minion +0/+0/+1, <b>Unleash</b> it, then restore 1 health to it.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Mend Wounds",
-            "Give an allied minion +0/+0/+1, <b>Unleash</b> it, then restore 1 health to it.",
-            "res/unleashpower/mendwounds.png", CRAFT, 2, UnleashMendWounds.class, new Vector2f(655, 535), 4.6,
+    public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/mendwounds.png",
+            CRAFT, RARITY, 2, UnleashMendWounds.class,
+            new Vector2f(655, 535), 4.6,
             () -> List.of(Tooltip.UNLEASH));
 
     public UnleashMendWounds(Board b) {
         super(b, TOOLTIP);
-        Effect e = new Effect(TOOLTIP.description) {
+        Effect e = new Effect(DESCRIPTION) {
             @Override
             public Resolver onUnleashPre(Minion m) {
                 return new Resolver(false) {

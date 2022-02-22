@@ -17,8 +17,10 @@ public class Tiny extends Minion {
     public static final String NAME = "Tiny";
     public static final String DESCRIPTION = "<b>Unleash</b>: Gain +2/+0/+2 and <b>Rush</b>.";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
+    public static final CardRarity RARITY = CardRarity.SILVER;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/tiny.png",
-            CRAFT, 3, 2, 2, 3, false, Tiny.class, new Vector2f(), -1, EventAnimationDamageRocks.class,
+            CRAFT, RARITY, 3, 2, 2, 3, false, Tiny.class,
+            new Vector2f(), -1, EventAnimationDamageRocks.class,
             () -> List.of(Tooltip.UNLEASH, Tooltip.RUSH));
 
     public Tiny(Board b) {

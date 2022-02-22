@@ -16,10 +16,11 @@ public class StateGame extends BasicGameState {
     UIBoard uiBoard;
     ServerGameThread game;
     DataStream dslocal, dsserver;
+    GameContainer container;
 
     @Override
     public void init(GameContainer arg0, StateBasedGame arg1) {
-        // TODO Auto-generated method stub
+        this.container = arg0;
     }
 
     @Override
@@ -72,4 +73,10 @@ public class StateGame extends BasicGameState {
         return Game.STATE_GAME;
     }
 
+    @Override
+    public void keyPressed(int key, char c) {
+        if (key == Input.KEY_ESCAPE) {
+            this.container.exit();
+        }
+    }
 }

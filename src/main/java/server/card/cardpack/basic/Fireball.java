@@ -17,8 +17,9 @@ public class Fireball extends Spell {
     public static final String NAME = "Fireball";
     public static final String DESCRIPTION = "Choose 2 enemy minions. Deal 2 damage to them and 1 damage to their adjacent minions.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
+    public static final CardRarity RARITY = CardRarity.GOLD;
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/fireball.png",
-            CRAFT, 3, Fireball.class,
+            CRAFT, RARITY, 3, Fireball.class,
             List::of);
     final Effect e;
 

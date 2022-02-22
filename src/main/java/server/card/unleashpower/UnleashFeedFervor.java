@@ -11,15 +11,18 @@ import server.event.*;
 import server.resolver.*;
 
 public class UnleashFeedFervor extends UnleashPower {
+    public static final String NAME = "Feed Fervor";
+    public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. If <b>Overflow</b> is active for you, this costs 1 less.";
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Feed Fervor",
-            "<b>Unleash</b> an allied minion. If <b>Overflow</b> is active for you, this costs 1 less.",
-            "res/unleashpower/feedfervor.png", CRAFT, 2, UnleashFeedFervor.class, new Vector2f(420, 210), 8,
+    public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/feedfervor.png",
+            CRAFT, RARITY, 2, UnleashFeedFervor.class,
+            new Vector2f(420, 210), 8,
             () -> List.of(Tooltip.UNLEASH, Tooltip.OVERFLOW));
 
     public UnleashFeedFervor(Board b) {
         super(b, TOOLTIP);
-        Effect overflowDiscount = new Effect("When Overflow is active, this costs 1 less") {
+        Effect overflowDiscount = new Effect(DESCRIPTION) {
             boolean overflow;
 
             @Override

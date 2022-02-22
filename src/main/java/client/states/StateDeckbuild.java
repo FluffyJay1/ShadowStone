@@ -23,11 +23,11 @@ public class StateDeckbuild extends BasicGameState {
     DeckDisplayPanel deckdisplaypanel;
     ClassSelectPanel classSelect;
     CardSelectTooltipPanel cardTooltip;
+    GameContainer container;
 
     @Override
     public void init(GameContainer arg0, StateBasedGame arg1) {
-        // TODO Auto-generated method stub
-
+        this.container = arg0;
     }
 
     @Override
@@ -188,5 +188,12 @@ public class StateDeckbuild extends BasicGameState {
     public int getID() {
         // TODO Auto-generated method stub
         return Game.STATE_DECKBUILD;
+    }
+
+    @Override
+    public void keyPressed(int key, char c) {
+        if (key == Input.KEY_ESCAPE) {
+            this.container.exit();
+        }
     }
 }

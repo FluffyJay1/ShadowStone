@@ -11,15 +11,19 @@ import server.event.*;
 import server.resolver.*;
 
 public class UnleashTapSoul extends UnleashPower {
+    public static final String NAME = "Tap Soul";
+    public static final String DESCRIPTION = "Deal 2 damage to your leader if <b>Vengeance</b> isn't active for you. " +
+            "<b>Unleash</b> an allied minion. If <b>Vengeance</b> is active for you, this costs 2 less.";
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower("Tap Soul",
-            "Deal 2 damage to your leader. <b>Unleash</b> an allied minion. If <b>Vengeance</b> is active for you, this can be used once more per turn.",
-            "res/unleashpower/tapsoul.png", CRAFT, 1, UnleashTapSoul.class, new Vector2f(445, 515), 1,
-            () -> List.of(Tooltip.UNLEASH, Tooltip.VENGEANCE));
+    public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/tapsoul.png",
+            CRAFT, RARITY, 2, UnleashTapSoul.class,
+            new Vector2f(445, 515), 1,
+            () -> List.of(Tooltip.VENGEANCE, Tooltip.UNLEASH));
 
     public UnleashTapSoul(Board b) {
         super(b, TOOLTIP);
-        Effect vengeanceBonus = new Effect(TOOLTIP.description) {
+        Effect vengeanceBonus = new Effect(DESCRIPTION) {
             boolean vengeance;
 
             @Override
@@ -33,13 +37,13 @@ public class UnleashTapSoul extends UnleashPower {
                             if (!vengeance && p.vengeance()) {
                                 this.resolve(b, rl, el, new UpdateEffectStateResolver(effect, () -> vengeance = true));
                                 EffectStats esc = new EffectStats();
-                                esc.change.setStat(EffectStats.ATTACKS_PER_TURN, 1);
+                                esc.change.setStat(EffectStats.COST, -2);
                                 this.resolve(b, rl, el, new SetEffectStatsResolver(effect, esc));
                             }
                             if (vengeance && !p.vengeance()) {
                                 this.resolve(b, rl, el, new UpdateEffectStateResolver(effect, () -> vengeance = false));
                                 EffectStats esc = new EffectStats();
-                                esc.change.setStat(EffectStats.ATTACKS_PER_TURN, 0);
+                                esc.change.setStat(EffectStats.COST, 0);
                                 this.resolve(b, rl, el, new SetEffectStatsResolver(effect, esc));
                             }
                         }
@@ -53,8 +57,11 @@ public class UnleashTapSoul extends UnleashPower {
                 return new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
-                        this.resolve(b, rl, el, new EffectDamageResolver(effect,
-                                effect.owner.board.getPlayer(effect.owner.team).getLeader().orElse(null), 2, true, null));
+                        Player p = b.getPlayer(effect.owner.team);
+                        if (!p.vengeance()) {
+                            this.resolve(b, rl, el, new EffectDamageResolver(effect,
+                                    effect.owner.board.getPlayer(effect.owner.team).getLeader().orElse(null), 2, true, null));
+                        }
                     }
                 };
 

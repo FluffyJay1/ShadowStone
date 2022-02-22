@@ -17,8 +17,10 @@ public class WellOfDestination extends Amulet {
     public static final String NAME = "Well of Destination";
     public static final String DESCRIPTION = "At the start of your turn, give a random allied minion +1/+1/+1.";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
+    public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/wellofdestination.png",
-            CRAFT, 2, WellOfDestination.class, new Vector2f(), -1,
+            CRAFT, RARITY, 2, WellOfDestination.class,
+            new Vector2f(), -1,
             List::of);
 
     public WellOfDestination(Board b) {

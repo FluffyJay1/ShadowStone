@@ -18,8 +18,9 @@ public class BlackenedScripture extends Spell {
     public static final String NAME = "Blackened Scripture";
     public static final String DESCRIPTION = "<b>Banish</b> an enemy minion with 3 health or less.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
+    public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/blackenedscripture.png",
-            CRAFT, 2, BlackenedScripture.class,
+            CRAFT, RARITY, 2, BlackenedScripture.class,
             () -> List.of(Tooltip.BANISH));
     final Effect e;
 

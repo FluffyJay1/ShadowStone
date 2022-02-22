@@ -22,8 +22,10 @@ public class SiegeTank extends Minion {
     public static final String NAME = "Siege Tank";
     public static final String DESCRIPTION = "<b>Unleash</b>: <b>Choose</b> to <b>Blast(5)</b> or deal 3 damage to a minion and 2 to its neighbors.";
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
+    public static final CardRarity RARITY = CardRarity.GOLD;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/siegetank.png",
-            CRAFT, 5, 2, 2, 5, false, SiegeTank.class, new Vector2f(), -1, null,
+            CRAFT, RARITY, 5, 2, 2, 5, false, SiegeTank.class,
+            new Vector2f(), -1, null,
             () -> List.of(Tooltip.UNLEASH, Tooltip.CHOOSE, Tooltip.BLAST));
 
     public SiegeTank(Board b) {

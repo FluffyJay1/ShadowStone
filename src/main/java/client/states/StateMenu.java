@@ -13,11 +13,11 @@ import client.ui.menu.*;
 public class StateMenu extends BasicGameState {
     UI ui;
     PlayButton playButton;
+    GameContainer container;
 
     @Override
     public void init(GameContainer arg0, StateBasedGame arg1) {
-        // TODO Auto-generated method stub
-
+        this.container = arg0;
     }
 
     @Override
@@ -78,4 +78,10 @@ public class StateMenu extends BasicGameState {
         return Game.STATE_MENU;
     }
 
+    @Override
+    public void keyPressed(int key, char c) {
+        if (key == Input.KEY_ESCAPE) {
+            this.container.exit();
+        }
+    }
 }

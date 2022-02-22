@@ -7,6 +7,7 @@ import org.newdawn.slick.geom.Vector2f;
 import server.Board;
 import server.ServerBoard;
 import server.card.Amulet;
+import server.card.CardRarity;
 import server.card.ClassCraft;
 import server.card.Minion;
 import server.card.effect.Effect;
@@ -25,8 +26,10 @@ public class BeastcallAria extends Amulet {
     public static final String NAME = "Beastcall Aria";
     public static final String DESCRIPTION = "<b>Countdown(3)</b>.\n<b>Last Words</b>: Summon a <b>Holy Falcon</b> and a <b>Holyflame Tiger</b>.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
+    public static final CardRarity RARITY = CardRarity.SILVER;
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/beastcallaria.png",
-            CRAFT, 2, BeastcallAria.class, new Vector2f(150, 130), 1.4,
+            CRAFT, RARITY, 2, BeastcallAria.class,
+            new Vector2f(150, 130), 1.4,
             () -> List.of(Tooltip.COUNTDOWN, HolyFalcon.TOOLTIP, HolyflameTiger.TOOLTIP));
 
     public BeastcallAria(Board b) {

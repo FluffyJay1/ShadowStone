@@ -16,8 +16,10 @@ public class GenesisOfLegend extends Amulet {
     public static final String NAME = "Gensis of Legend";
     public static final String DESCRIPTION = "<b>Countdown(3)</b>. At the end of your turn, give a random allied minion +0/+0/+1 and <b>Bane</b>.";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
+    public static final CardRarity RARITY = CardRarity.SILVER;
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/genesisoflegend.png",
-            CRAFT, 2, GenesisOfLegend.class, new Vector2f(), -1,
+            CRAFT, RARITY, 2, GenesisOfLegend.class,
+            new Vector2f(), -1,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.BANE));
 
     public GenesisOfLegend(Board b) {

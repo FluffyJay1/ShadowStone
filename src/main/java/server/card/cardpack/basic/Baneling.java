@@ -16,9 +16,10 @@ public class Baneling extends Minion {
     public static final String NAME = "Baneling";
     public static final String DESCRIPTION = "<b>Last Words</b>: <b>Blast(5)</b>.";
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
+    public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/baneling.png",
-            CRAFT, 3, 1, 0, 1, false, Baneling.class, new Vector2f(253, 271), 1.5,
-            EventAnimationDamageSlash.class,
+            CRAFT, RARITY, 3, 1, 0, 1, false, Baneling.class,
+            new Vector2f(253, 271), 1.5, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.LASTWORDS, Tooltip.BLAST));
 
     public Baneling(Board b) {
