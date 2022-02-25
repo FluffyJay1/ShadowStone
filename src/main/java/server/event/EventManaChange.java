@@ -22,7 +22,7 @@ public class EventManaChange extends Event {
     }
 
     @Override
-    public void resolve() {
+    public void resolve(Board b) {
         this.prevMana = this.p.mana;
         this.prevMaxMana = this.p.maxmana;
         if (!this.recover) { // change max mana
@@ -46,7 +46,7 @@ public class EventManaChange extends Event {
     }
 
     @Override
-    public void undo() {
+    public void undo(Board b) {
         this.p.mana = this.prevMana;
         this.p.maxmana = this.prevMaxMana;
     }

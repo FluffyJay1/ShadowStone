@@ -9,8 +9,8 @@ public class BoardObject extends Card {
     public int lastBoardPos = 0; // After leaving board (e.g. to graveyard), keep a record of where it was last
     public int lastBoardEpoch = 0; // see HistoricalList.java
 
-    public BoardObject(Board b, TooltipCard tooltip) {
-        super(b, tooltip);
+    public BoardObject(Board b, CardText cardText) {
+        super(b, cardText);
     }
 
     public boolean isInPlay() {

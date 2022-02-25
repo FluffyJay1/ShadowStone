@@ -13,7 +13,7 @@ import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
 
-public class Tiny extends Minion {
+public class Tiny extends MinionText {
     public static final String NAME = "Tiny";
     public static final String DESCRIPTION = "<b>Unleash</b>: Gain +2/+0/+2 and <b>Rush</b>.";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
@@ -23,9 +23,9 @@ public class Tiny extends Minion {
             new Vector2f(), -1, EventAnimationDamageRocks.class,
             () -> List.of(Tooltip.UNLEASH, Tooltip.RUSH));
 
-    public Tiny(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             @Override
             public Resolver unleash() {
                 return new Resolver(false) {
@@ -43,7 +43,11 @@ public class Tiny extends Minion {
             public double getPresenceValue(int refs) {
                 return AI.VALUE_PER_1_1_STATS * 2 / 2.;
             }
-        };
-        this.addEffect(true, e);
+        });
+    }
+
+    @Override
+    public TooltipMinion getTooltip() {
+        return TOOLTIP;
     }
 }

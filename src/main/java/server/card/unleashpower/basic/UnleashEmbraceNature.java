@@ -1,4 +1,4 @@
-package server.card.unleashpower;
+package server.card.unleashpower.basic;
 
 import java.util.*;
 
@@ -10,7 +10,7 @@ import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
 
-public class UnleashEmbraceNature extends UnleashPower {
+public class UnleashEmbraceNature extends UnleashPowerText {
     public static final String NAME = "Embrace Nature";
     public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. If it has already attacked this turn, return it to your hand and subtract 1 from its cost.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
@@ -20,9 +20,9 @@ public class UnleashEmbraceNature extends UnleashPower {
             new Vector2f(653, 565), 3,
             () -> List.of(Tooltip.UNLEASH));
 
-    public UnleashEmbraceNature(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             @Override
             public Resolver onUnleashPost(Minion m) {
                 Effect effect = this; // anonymous fuckery
@@ -40,7 +40,11 @@ public class UnleashEmbraceNature extends UnleashPower {
                     }
                 };
             }
-        };
-        this.addEffect(true, e);
+        });
+    }
+
+    @Override
+    public TooltipUnleashPower getTooltip() {
+        return TOOLTIP;
     }
 }

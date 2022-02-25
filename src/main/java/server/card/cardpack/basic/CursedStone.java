@@ -13,7 +13,7 @@ import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
 
-public class CursedStone extends Minion {
+public class CursedStone extends MinionText {
     public static final String NAME = "Cursed Stone";
     public static final String DESCRIPTION = "<b>Unleash</b>: <b>Blast(X)</b> and gain <b>Last Words</b>: Deal X damage to a random allied minion. X equals the amount of health your leader is missing.";
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
@@ -23,13 +23,9 @@ public class CursedStone extends Minion {
             new Vector2f(), -1, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.UNLEASH, Tooltip.BLAST, Tooltip.LASTWORDS));
 
-    public CursedStone(Board b) {
-        super(b, TOOLTIP);
-        /*
-         * it's called cursed stone not because of the stone itself, but because of the
-         * anonymous classes
-         */
-        Effect e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             @Override
             public Resolver unleash() {
                 Effect effect = this; // anonymous fuckery
@@ -51,8 +47,11 @@ public class CursedStone extends Minion {
                 int missing = player.getLeader().map(l ->l.finalStatEffects.getStat(EffectStats.HEALTH) - l.health).orElse(0);
                 return AI.VALUE_PER_DAMAGE * missing / 2.;
             }
-        };
-        this.addEffect(true, e);
+        });
     }
 
+    @Override
+    public TooltipMinion getTooltip() {
+        return TOOLTIP;
+    }
 }

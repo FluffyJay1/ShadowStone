@@ -21,7 +21,7 @@ public class EventMinionAttack extends Event {
     }
 
     @Override
-    public void resolve() {
+    public void resolve(Board b) {
         this.prevAttacksThisTurn = this.m1.attacksThisTurn;
         this.m1.attacksThisTurn++;
         if (this.m1.team == this.m1.board.localteam && this.m1.board instanceof PendingMinionAttack.PendingMinionAttacker) {
@@ -30,7 +30,7 @@ public class EventMinionAttack extends Event {
     }
 
     @Override
-    public void undo() {
+    public void undo(Board b) {
         this.m1.attacksThisTurn = this.prevAttacksThisTurn;
     }
 

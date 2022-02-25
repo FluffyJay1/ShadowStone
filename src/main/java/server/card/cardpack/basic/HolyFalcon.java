@@ -8,13 +8,14 @@ import server.Board;
 import server.card.CardRarity;
 import server.card.ClassCraft;
 import server.card.Minion;
+import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-public class HolyFalcon extends Minion {
+public class HolyFalcon extends MinionText {
     public static final String NAME = "Holy Falcon";
     public static final String DESCRIPTION = "<b>Storm</b>.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
@@ -24,10 +25,15 @@ public class HolyFalcon extends Minion {
             new Vector2f(150, 150), 1.3, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.STORM));
 
-    public HolyFalcon(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION);
-        e.effectStats.set.setStat(EffectStats.STORM, 1);
-        this.addEffect(true, e);
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION, new EffectStats(
+                new EffectStats.Setter(EffectStats.STORM, false, 1)
+        )));
+    }
+
+    @Override
+    public TooltipMinion getTooltip() {
+        return TOOLTIP;
     }
 }

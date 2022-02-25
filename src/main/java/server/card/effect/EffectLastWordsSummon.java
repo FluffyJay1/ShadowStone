@@ -1,5 +1,6 @@
 package server.card.effect;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -10,20 +11,20 @@ import server.resolver.*;
 
 public class EffectLastWordsSummon extends Effect {
     int teamMultiplier;
-    List<Class<? extends Card>> cardClasses;
+    List<BoardObjectText> boardObjectTexts;
     private List<Card> cachedInstances; // for getPresenceValue, preview the value of the created cards
 
     // required for reflection
     public EffectLastWordsSummon() { }
 
-    public EffectLastWordsSummon(String description, List<Class<? extends Card>> cardClasses, int teamMultiplier) {
+    public EffectLastWordsSummon(String description, List<? extends BoardObjectText> boardObjectTexts, int teamMultiplier) {
         super(description);
-        this.cardClasses = cardClasses;
+        this.boardObjectTexts = new ArrayList<>(boardObjectTexts);
         this.teamMultiplier = teamMultiplier;
     }
 
-    public EffectLastWordsSummon(String description, Class<? extends Card> cardClass, int teamMultiplier) {
-        this(description, List.of(cardClass), teamMultiplier);
+    public EffectLastWordsSummon(String description, BoardObjectText boardObjectText, int teamMultiplier) {
+        this(description, List.of(boardObjectText), teamMultiplier);
     }
 
     @Override
@@ -32,16 +33,13 @@ public class EffectLastWordsSummon extends Effect {
         return new Resolver(false) {
             @Override
             public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
-                List<Card> newCards = new LinkedList<>();
                 List<Integer> cardpos = new LinkedList<>();
                 int pos = ((BoardObject) effect.owner).getRelevantBoardPos(); // startpos
-                for (Class<? extends Card> cardClass : effect.cardClasses) {
-                    Minion m = (Minion) Card.createFromConstructor(effect.owner.board, cardClass);
-                    newCards.add(m);
+                for (BoardObjectText cardText : effect.boardObjectTexts) {
                     cardpos.add(pos);
                     pos++;
                 }
-                this.resolve(b, rl, el, new CreateCardResolver(newCards, effect.owner.team * effect.teamMultiplier, CardStatus.BOARD, cardpos));
+                this.resolve(b, rl, el, new CreateCardResolver(boardObjectTexts, effect.owner.team * effect.teamMultiplier, CardStatus.BOARD, cardpos));
             }
 
         };
@@ -50,8 +48,8 @@ public class EffectLastWordsSummon extends Effect {
     @Override
     public double getLastWordsValue(int refs) {
         if (this.cachedInstances == null) {
-            this.cachedInstances = this.cardClasses.stream()
-                    .map(cl -> Card.createFromConstructor(this.owner.board, cl))
+            this.cachedInstances = this.boardObjectTexts.stream()
+                    .map(bot -> bot.constructInstance(this.owner.board))
                     .collect(Collectors.toList());
         }
         // behold magic numbers
@@ -67,9 +65,9 @@ public class EffectLastWordsSummon extends Effect {
     @Override
     public String extraStateString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.cardClasses.size()).append(" ");
-        for (Class<? extends Card> cardClass : this.cardClasses) {
-            builder.append(cardClass.getName()).append(" ");
+        builder.append(this.boardObjectTexts.size()).append(" ");
+        for (BoardObjectText bot : this.boardObjectTexts) {
+            builder.append(bot.getClass().getName()).append(" ");
         }
         builder.append(this.teamMultiplier).append(" ");
         return builder.toString();
@@ -78,12 +76,12 @@ public class EffectLastWordsSummon extends Effect {
     @Override
     public void loadExtraState(Board b, StringTokenizer st) {
         int numCards = Integer.parseInt(st.nextToken());
-        this.cardClasses = new LinkedList<>();
+        this.boardObjectTexts = new LinkedList<>();
         try {
             for (int i = 0; i < numCards; i++) {
-                this.cardClasses.add(Class.forName(st.nextToken()).asSubclass(Card.class));
+                this.boardObjectTexts.add(Class.forName(st.nextToken()).asSubclass(BoardObjectText.class).getConstructor().newInstance());
             }
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

@@ -8,12 +8,13 @@ import server.Board;
 import server.card.CardRarity;
 import server.card.ClassCraft;
 import server.card.Minion;
+import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectLastWordsSummon;
 
 import java.util.List;
 
-public class MordecaiTheDuelist extends Minion {
+public class MordecaiTheDuelist extends MinionText {
     public static final String NAME = "Mordecai the Duelist";
     public static final String DESCRIPTION = "<b>Last Words</b>: Summon a <b>Mordecai the Duelist</b>.";
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
@@ -23,9 +24,13 @@ public class MordecaiTheDuelist extends Minion {
             new Vector2f(150, 155), 1.5, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.LASTWORDS));
 
-    public MordecaiTheDuelist(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new EffectLastWordsSummon(DESCRIPTION, MordecaiTheDuelist.class, 1);
-        this.addEffect(true, e);
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new EffectLastWordsSummon(DESCRIPTION, new MordecaiTheDuelist(), 1));
+    }
+
+    @Override
+    public TooltipMinion getTooltip() {
+        return TOOLTIP;
     }
 }

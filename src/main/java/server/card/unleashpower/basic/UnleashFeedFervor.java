@@ -1,4 +1,4 @@
-package server.card.unleashpower;
+package server.card.unleashpower.basic;
 
 import java.util.*;
 
@@ -10,7 +10,7 @@ import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
 
-public class UnleashFeedFervor extends UnleashPower {
+public class UnleashFeedFervor extends UnleashPowerText {
     public static final String NAME = "Feed Fervor";
     public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. If <b>Overflow</b> is active for you, this costs 1 less.";
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
@@ -20,9 +20,9 @@ public class UnleashFeedFervor extends UnleashPower {
             new Vector2f(420, 210), 8,
             () -> List.of(Tooltip.UNLEASH, Tooltip.OVERFLOW));
 
-    public UnleashFeedFervor(Board b) {
-        super(b, TOOLTIP);
-        Effect overflowDiscount = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             boolean overflow;
 
             @Override
@@ -60,7 +60,11 @@ public class UnleashFeedFervor extends UnleashPower {
                 this.overflow = Boolean.parseBoolean(st.nextToken());
 
             }
-        };
-        this.addEffect(true, overflowDiscount);
+        });
+    }
+
+    @Override
+    public TooltipUnleashPower getTooltip() {
+        return TOOLTIP;
     }
 }

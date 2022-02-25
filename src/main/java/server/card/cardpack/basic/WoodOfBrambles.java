@@ -11,7 +11,7 @@ import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
 
-public class WoodOfBrambles extends Amulet {
+public class WoodOfBrambles extends AmuletText {
     public static final String NAME = "Wood of Brambles";
     public static final String DESCRIPTION = "<b>Countdown(2)</b>.\n<b>Battlecry</b>: add two <b>Faries</b> to your hand.\n<b>Aura</b>: friendly minions have <b>Clash</b>: deal 1 damage to the enemy minion.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
@@ -21,9 +21,9 @@ public class WoodOfBrambles extends Amulet {
             new Vector2f(), -1,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Fairy.TOOLTIP, Tooltip.AURA, Tooltip.CLASH));
 
-    public WoodOfBrambles(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new EffectAura(TOOLTIP.description, 1, true, false, new EffectBrambles()) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new EffectAura(TOOLTIP.description, 1, true, false, new EffectBrambles()) {
             @Override
             public boolean applyConditions(Card cardToApply) {
                 return cardToApply instanceof Minion;
@@ -35,7 +35,7 @@ public class WoodOfBrambles extends Amulet {
                 return new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
-                        List<Card> cards = List.of(new Fairy(effect.owner.board), new Fairy(effect.owner.board));
+                        List<CardText> cards = List.of(new Fairy(), new Fairy());
                         List<Integer> pos = List.of(-1, -1);
                         this.resolve(b, rl, el, new CreateCardResolver(cards, effect.owner.team, CardStatus.HAND, pos));
                     }
@@ -51,9 +51,14 @@ public class WoodOfBrambles extends Amulet {
             public double getPresenceValue(int refs) {
                 return 2;
             }
-        };
-        e.effectStats.set.setStat(EffectStats.COUNTDOWN, 2);
-        this.addEffect(true, e);
+        }, new Effect("", new EffectStats(
+                new EffectStats.Setter(EffectStats.COUNTDOWN, false, 2)
+        )));
+    }
+
+    @Override
+    public TooltipAmulet getTooltip() {
+        return TOOLTIP;
     }
 
     public static class EffectBrambles extends Effect {

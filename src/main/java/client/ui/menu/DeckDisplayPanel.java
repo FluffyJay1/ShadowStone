@@ -85,47 +85,47 @@ public class DeckDisplayPanel extends UIBox {
         this.cards.clear();
         this.deck = deck;
         if (deck != null) {
-            for (Map.Entry<Class<? extends Card>, Integer> entry : deck.cardClassCounts.entrySet()) {
+            for (Map.Entry<CardText, Integer> entry : deck.cardClassCounts.entrySet()) {
                 CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f());
                 this.scroll.addChild(cdu);
                 this.cards.add(cdu);
-                cdu.setCardClass(entry.getKey());
+                cdu.setCardText(entry.getKey());
                 cdu.setCount(entry.getValue());
             }
         }
         this.updateCardPositions();
     }
 
-    public void addCard(Class<? extends Card> cardClass) {
-        boolean newpanel = !this.deck.cardClassCounts.containsKey(cardClass);
-        if (this.deck.addCard(cardClass)) {
+    public void addCard(CardText cardText) {
+        boolean newpanel = !this.deck.cardClassCounts.containsKey(cardText);
+        if (this.deck.addCard(cardText)) {
             if (newpanel) {
                 CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f());
-                cdu.setCardClass(cardClass);
+                cdu.setCardText(cardText);
                 this.scroll.addChild(cdu);
                 this.cards.add(cdu);
 
             }
 
-            CardDisplayUnit cdu = this.getCardDisplayUnit(cardClass);
+            CardDisplayUnit cdu = this.getCardDisplayUnit(cardText);
             if (cdu != null) {
-                cdu.setCount(this.deck.cardClassCounts.get(cardClass));
+                cdu.setCount(this.deck.cardClassCounts.get(cardText));
             }
             this.updateCardPositions();
         }
     }
 
-    public void removeCard(Class<? extends Card> cardClass) {
-        if (this.deck.removeCard(cardClass)) {
+    public void removeCard(CardText cardText) {
+        if (this.deck.removeCard(cardText)) {
 
-            if (!this.deck.cardClassCounts.containsKey(cardClass)) {
-                CardDisplayUnit cdu = this.getCardDisplayUnit(cardClass);
+            if (!this.deck.cardClassCounts.containsKey(cardText)) {
+                CardDisplayUnit cdu = this.getCardDisplayUnit(cardText);
                 this.scroll.removeChild(cdu);
                 this.cards.remove(cdu);
             } else {
-                CardDisplayUnit cdu = this.getCardDisplayUnit(cardClass);
+                CardDisplayUnit cdu = this.getCardDisplayUnit(cardText);
                 if (cdu != null) {
-                    cdu.setCount(this.deck.cardClassCounts.get(cardClass));
+                    cdu.setCount(this.deck.cardClassCounts.get(cardText));
                 }
             }
             this.updateCardPositions();
@@ -139,9 +139,9 @@ public class DeckDisplayPanel extends UIBox {
         }
     }
 
-    private CardDisplayUnit getCardDisplayUnit(Class<? extends Card> cardClass) {
+    private CardDisplayUnit getCardDisplayUnit(CardText cardText) {
         for (CardDisplayUnit cdu : this.cards) {
-            if (cdu.getCardClass().equals(cardClass)) {
+            if (cdu.getCardText().equals(cardText)) {
                 return cdu;
             }
         }

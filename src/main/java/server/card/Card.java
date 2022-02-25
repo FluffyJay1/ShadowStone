@@ -3,7 +3,6 @@ package server.card;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import client.tooltip.*;
@@ -25,9 +24,9 @@ public abstract class Card implements Indexable, StringBuildable {
     public boolean alive = true; // alive means not marked for death
     public int team;
     private int cardpos;
+    public final CardText cardText;
     private final TooltipCard tooltip;
     public CardStatus status;
-    public final ClassCraft craft;
     public Card realCard; // for visual board
     public Card visualCard; // for client board
     public UICard uiCard;
@@ -45,11 +44,14 @@ public abstract class Card implements Indexable, StringBuildable {
     // same but for auras, however, removing the effect doesn't remove it from this list
     public final List<EffectAura> auras = new LinkedList<>();
 
-    public Card(Board board, TooltipCard tooltip) {
+    public Card(Board board, CardText cardText) {
         this.board = board;
-        this.tooltip = tooltip;
+        this.cardText = cardText;
+        this.tooltip = cardText.getTooltip();
+        for (Effect e : cardText.getEffects()) {
+            this.addEffect(true, e);
+        }
         this.status = CardStatus.DECK;
-        this.craft = tooltip.craft;
     }
 
     /**
@@ -276,35 +278,6 @@ public abstract class Card implements Indexable, StringBuildable {
         for (Effect e : this.effects) {
             e.appendStringToBuilder(builder);
         }
-    }
-
-    public String toConstructorString() {
-        return this.getClass().getName() + " ";
-    }
-
-    public static Card createFromConstructorString(Board b, StringTokenizer st) {
-        Class<? extends Card> cardClass;
-        try {
-            cardClass = Class.forName(st.nextToken()).asSubclass(Card.class);
-            return createFromConstructor(b, cardClass);
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
-
-    }
-
-    public static Card createFromConstructor(Board b, Class<? extends Card> cardClass) {
-        Card card = null;
-        try {
-            card = cardClass.getConstructor(Board.class).newInstance(b);
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return card;
     }
 
     public String toReference() {

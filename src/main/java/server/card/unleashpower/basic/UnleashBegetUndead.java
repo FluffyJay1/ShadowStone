@@ -1,4 +1,4 @@
-package server.card.unleashpower;
+package server.card.unleashpower.basic;
 
 import java.util.*;
 
@@ -11,7 +11,7 @@ import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
 
-public class UnleashBegetUndead extends UnleashPower {
+public class UnleashBegetUndead extends UnleashPowerText {
     public static final String NAME = "Beget Undead";
     public static final String DESCRIPTION = "Give an allied minion <b>Last Words</b>: summon a <b>Skeleton</b>. <b>Unleash</b> it. Then deal 1 damage to it.";
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
@@ -21,16 +21,16 @@ public class UnleashBegetUndead extends UnleashPower {
             new Vector2f(410, 460), 4,
             () -> List.of(Tooltip.UNLEASH, Tooltip.LASTWORDS, Skeleton.TOOLTIP));
 
-    public UnleashBegetUndead(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             @Override
             public Resolver onUnleashPre(Minion m) {
                 return new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         EffectLastWordsSummon elws = new EffectLastWordsSummon(
-                                "<b>Last Words</b>: summon a <b>Skeleton</b> (from <b>Beget Undead</b>).", Skeleton.class, 1);
+                                "<b>Last Words</b>: summon a <b>Skeleton</b> (from <b>Beget Undead</b>).", new Skeleton(), 1);
                         this.resolve(b, rl, el, new AddEffectResolver(m, elws));
                     }
                 };
@@ -47,7 +47,11 @@ public class UnleashBegetUndead extends UnleashPower {
                     }
                 };
             }
-        };
-        this.addEffect(true, e);
+        });
+    }
+
+    @Override
+    public TooltipUnleashPower getTooltip() {
+        return TOOLTIP;
     }
 }

@@ -8,9 +8,9 @@ import org.newdawn.slick.geom.*;
 import client.Game;
 import client.tooltip.*;
 import client.ui.*;
+import server.UnleashPower;
 import server.card.*;
 import server.card.effect.*;
-import server.card.unleashpower.*;
 import utils.PendingManager;
 
 import static org.lwjgl.opengl.GL11.glBlendFunc;

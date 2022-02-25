@@ -22,7 +22,7 @@ public class EventSetEffectStats extends Event {
     }
 
     @Override
-    public void resolve() {
+    public void resolve(Board b) {
         this.oldStats = this.target.effectStats.clone();
         this.oldAlive = this.target.owner.alive;
         this.target.effectStats.copy(this.newStats);
@@ -34,7 +34,7 @@ public class EventSetEffectStats extends Event {
     }
 
     @Override
-    public void undo() {
+    public void undo(Board b) {
         this.target.effectStats.copy(this.oldStats);
         this.target.owner.updateEffectStats(true);
         this.target.owner.alive = this.oldAlive;

@@ -11,7 +11,7 @@ import server.resolver.*;
 
 import java.util.List;
 
-public class Puppet extends Minion {
+public class Puppet extends MinionText {
     public static final String NAME = "Puppet";
     public static final String DESCRIPTION = "<b>Rush</b>. <b>Countdown(1)</b>.";
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
@@ -21,11 +21,16 @@ public class Puppet extends Minion {
             new Vector2f(161, 143), 1.4, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.RUSH, Tooltip.COUNTDOWN));
 
-    public Puppet(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION);
-        e.effectStats.set.setStat(EffectStats.RUSH, 1);
-        e.effectStats.set.setStat(EffectStats.COUNTDOWN, 1);
-        this.addEffect(true, e);
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION, new EffectStats(
+                new EffectStats.Setter(EffectStats.RUSH, false, 1),
+                new EffectStats.Setter(EffectStats.COUNTDOWN, false, 1)
+        )));
+    }
+
+    @Override
+    public TooltipMinion getTooltip() {
+        return TOOLTIP;
     }
 }

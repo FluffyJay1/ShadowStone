@@ -160,6 +160,15 @@ public class VisualBoard extends Board implements
                 Event currentEvent = Event.createFromString(this, new StringTokenizer(eventOrGroup));
                 if (currentEvent != null && currentEvent.conditions()) {
                     this.processEvent(currentEvent);
+                    // EventCreateCard automatically creates some uicards, we need to cleanup
+                    if (currentEvent instanceof EventCreateCard) {
+                        EventCreateCard evc = (EventCreateCard) currentEvent;
+                        for (int i = 0; i < evc.cards.size(); i++) {
+                            if (!evc.successful.get(i)) {
+                                this.uiBoard.removeUICard(evc.cards.get(i).uiCard);
+                            }
+                        }
+                    }
                 }
             }
         }

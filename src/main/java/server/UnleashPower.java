@@ -1,4 +1,4 @@
-package server.card.unleashpower;
+package server;
 
 import java.util.*;
 
@@ -11,11 +11,8 @@ import server.resolver.*;
 public class UnleashPower extends Card {
     public int unleashesThisTurn = 0;
 
-    public UnleashPower(Board b, TooltipUnleashPower tooltip) {
-        super(b, tooltip);
-        Effect e = new Effect("", new EffectStats(tooltip.cost));
-        e.effectStats.set.setStat(EffectStats.ATTACKS_PER_TURN, 1);
-        this.addEffect(true, e);
+    public UnleashPower(Board b, UnleashPowerText unleashPowerText) {
+        super(b, unleashPowerText);
     }
 
     public List<Resolver> onUnleashPre(Minion m) {

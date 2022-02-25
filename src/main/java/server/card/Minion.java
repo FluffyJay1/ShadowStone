@@ -6,60 +6,17 @@ import java.util.stream.Stream;
 
 import client.tooltip.*;
 import server.*;
-import server.ai.AI;
 import server.card.effect.*;
-import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
-import server.event.*;
-import server.resolver.*;
 
 public class Minion extends BoardObject {
     public int health, attacksThisTurn = 0; // tempted to make damage an effect
     public boolean summoningSickness = true;
 
-    public Minion(Board board, TooltipMinion tooltip) {
-        super(board, tooltip);
-        this.health = tooltip.health;
-        Effect e = new Effect("", new EffectStats(tooltip.cost, tooltip.attack, tooltip.magic, tooltip.health));
-        e.effectStats.set.setStat(EffectStats.ATTACKS_PER_TURN, 1);
-        this.addEffect(true, e);
-        if (tooltip.basicUnleash) {
-            Effect unl = new Effect(
-                    "<b>Unleash</b>: Deal X damage to an enemy minion. X equals this minion's magic.") {
-                public List<TargetingScheme<?>> getUnleashTargetingSchemes() {
-                    return List.of(new CardTargetingScheme(this, 0, 1, "Deal X damage to an enemy minion. X equals this minion's magic.") {
-                        @Override
-                        public boolean canTarget(Card c) {
-                            return c.status == CardStatus.BOARD && c instanceof Minion
-                                    && c.team != this.getCreator().owner.team;
-                        }
-                    });
-                }
-
-                @Override
-                public Resolver unleash() {
-                    Effect effect = this; // anonymous fuckery
-                    return new Resolver(false) {
-                        @Override
-                        public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
-                            getStillTargetableUnleashCardTargets(0).findFirst().ifPresent(c -> {
-                                Minion target = (Minion) c;
-                                EffectDamageResolver edr = new EffectDamageResolver(effect, List.of(target),
-                                        List.of(effect.owner.finalStatEffects.getStat(EffectStats.MAGIC)), true, null);
-                                this.resolve(b, rl, el, edr);
-                            });
-                        }
-                    };
-                }
-
-                @Override
-                public double getPresenceValue(int refs) {
-                    return AI.VALUE_PER_DAMAGE * this.owner.finalStatEffects.getStat(EffectStats.MAGIC) / 2.;
-                }
-            };
-            this.addEffect(true, unl);
-        }
+    public Minion(Board board, MinionText minionText) {
+        super(board, minionText);
+        this.health = this.getTooltip().health;
     }
 
     public Minion realMinion() {

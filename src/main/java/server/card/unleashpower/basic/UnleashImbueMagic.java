@@ -1,4 +1,4 @@
-package server.card.unleashpower;
+package server.card.unleashpower.basic;
 
 import java.util.*;
 
@@ -10,7 +10,7 @@ import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
 
-public class UnleashImbueMagic extends UnleashPower {
+public class UnleashImbueMagic extends UnleashPowerText {
     public static final String NAME = "Imbue Magic";
     public static final String DESCRIPTION = "Give an allied minion +0/+1/+0, then <b>Unleash</b> it.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
@@ -20,9 +20,9 @@ public class UnleashImbueMagic extends UnleashPower {
             new Vector2f(393, 733), 1.5,
             () -> List.of(Tooltip.UNLEASH));
 
-    public UnleashImbueMagic(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             @Override
             public Resolver onUnleashPre(Minion m) {
                 return new Resolver(false) {
@@ -33,7 +33,11 @@ public class UnleashImbueMagic extends UnleashPower {
                     }
                 };
             }
-        };
-        this.addEffect(true, e);
+        });
+    }
+
+    @Override
+    public TooltipUnleashPower getTooltip() {
+        return TOOLTIP;
     }
 }

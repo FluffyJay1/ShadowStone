@@ -6,7 +6,6 @@ import server.*;
 import server.card.*;
 import server.card.effect.*;
 import server.card.target.TargetList;
-import server.card.unleashpower.*;
 import server.event.*;
 import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;

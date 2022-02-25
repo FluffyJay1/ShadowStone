@@ -97,7 +97,7 @@ public class ServerBoard extends Board {
             }
         }
         String eventString = e.toString();
-        e.resolve();
+        e.resolve(this);
         if (el != null) {
             el.add(e);
         }

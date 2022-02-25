@@ -1,4 +1,4 @@
-package server.card.unleashpower;
+package server.card.unleashpower.basic;
 
 import java.util.*;
 
@@ -10,7 +10,7 @@ import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
 
-public class UnleashMendWounds extends UnleashPower {
+public class UnleashMendWounds extends UnleashPowerText {
     public static final String NAME = "Mend Wounds";
     public static final String DESCRIPTION = "Give an allied minion +0/+0/+1, <b>Unleash</b> it, then restore 1 health to it.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
@@ -20,9 +20,9 @@ public class UnleashMendWounds extends UnleashPower {
             new Vector2f(655, 535), 4.6,
             () -> List.of(Tooltip.UNLEASH));
 
-    public UnleashMendWounds(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             @Override
             public Resolver onUnleashPre(Minion m) {
                 return new Resolver(false) {
@@ -38,7 +38,11 @@ public class UnleashMendWounds extends UnleashPower {
             public Resolver onUnleashPost(Minion m) {
                 return new RestoreResolver(this, m, 1);
             }
-        };
-        this.addEffect(true, e);
+        });
+    }
+
+    @Override
+    public TooltipUnleashPower getTooltip() {
+        return TOOLTIP;
     }
 }

@@ -3,7 +3,6 @@ package network;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.util.stream.IntStream;
 
 import client.*;
 import server.*;
@@ -11,7 +10,6 @@ import server.ai.*;
 import server.card.*;
 import server.card.cardpack.*;
 import server.card.leader.*;
-import server.card.unleashpower.*;
 import server.event.*;
 import server.playeraction.*;
 import server.resolver.*;
@@ -89,13 +87,12 @@ public class ServerGameThread extends Thread {
             }
             this.b.processEvent(rl, null,
                     new EventCreateCard(shuffledCards, team, CardStatus.DECK, inds));
-            UnleashPower up = (UnleashPower) Card.createFromConstructor(this.b,
-                    CardSet.getDefaultUnleashPower(this.decks[(team - 1) / -2].craft));
+            UnleashPower up = CardSet.getDefaultUnleashPower(this.decks[(team - 1) / -2].craft).constructInstance(this.b);
             this.b.processEvent(rl, null,
                     new EventCreateCard(List.of(up), team, CardStatus.UNLEASHPOWER, List.of(0)));
             // TODO change leader
             this.b.processEvent(rl, null,
-                    new EventCreateCard(List.of(new Rowen(this.b)), team, CardStatus.LEADER, List.of(0)));
+                    new EventCreateCard(List.of(new Rowen().constructInstance(this.b)), team, CardStatus.LEADER, List.of(0)));
         }
         this.b.resolveAll(rl);
         this.b.resolve(new DrawResolver(this.b.player1, 3));

@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 
-public class SiegeTank extends Minion {
+public class SiegeTank extends MinionText {
     public static final String NAME = "Siege Tank";
     public static final String DESCRIPTION = "<b>Unleash</b>: <b>Choose</b> to <b>Blast(5)</b> or deal 3 damage to a minion and 2 to its neighbors.";
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
@@ -28,16 +28,16 @@ public class SiegeTank extends Minion {
             new Vector2f(), -1, null,
             () -> List.of(Tooltip.UNLEASH, Tooltip.CHOOSE, Tooltip.BLAST));
 
-    public SiegeTank(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             @Override
             public List<TargetingScheme<?>> getUnleashTargetingSchemes() {
-                Function<Effect, Boolean> hasMinion = e -> e.owner.board.getMinions(e.owner.team * -1, false, true).findAny().isPresent();
                 return List.of(
                         new ModalTargetingScheme(this, 1, "<b>Choose 1</b>", List.of(
                                 new ModalOption("<b>Blast(5)</b>"),
-                                new ModalOption("Deal 3 damage to a minion and 2 to its neighbors", hasMinion)
+                                new ModalOption("Deal 3 damage to a minion and 2 to its neighbors",
+                                        e -> e.owner.board.getMinions(e.owner.team * -1, false, true).findAny().isPresent())
                         )),
                         new CardTargetingScheme(this, 0, 1, "Deal 3 damage to a minion and 2 to its neighbors") {
                             @Override
@@ -92,7 +92,11 @@ public class SiegeTank extends Minion {
             public double getPresenceValue(int refs) {
                 return 6 / 2.;
             }
-        };
-        this.addEffect(true, e);
+        });
+    }
+
+    @Override
+    public TooltipMinion getTooltip() {
+        return TOOLTIP;
     }
 }

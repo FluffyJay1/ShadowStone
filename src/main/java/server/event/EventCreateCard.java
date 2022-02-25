@@ -1,11 +1,11 @@
 package server.event;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import client.*;
 import server.*;
 import server.card.*;
-import server.card.unleashpower.*;
 
 // Changes references, should not run concurrent with other events
 public class EventCreateCard extends Event {
@@ -18,6 +18,7 @@ public class EventCreateCard extends Event {
     private Leader prevLeader;
     private int prevEpoch;
     public final List<Boolean> successful;
+    public final List<Card> successfullyCreatedCards;
     final List<BoardObject> cardsEnteringPlay = new ArrayList<>();
 
     public EventCreateCard(List<Card> cards, int team, CardStatus status, List<Integer> cardpos) {
@@ -26,26 +27,27 @@ public class EventCreateCard extends Event {
         this.team = team;
         this.status = status;
         this.cardpos = cardpos;
-        this.successful = new ArrayList<>();
+        this.successful = new ArrayList<>(cards.size());
+        this.successfullyCreatedCards = new ArrayList<>(cards.size());
     }
 
     @Override
-    public void resolve() {
+    public void resolve(Board b) {
         if (this.cards.size() > 0 && this.status.equals(CardStatus.BOARD)) {
-            this.prevEpoch = this.cards.get(0).board.getPlayer(this.cards.get(0).team).getPlayArea().getCurrentEpoch();
+            this.prevEpoch = b.getPlayer(this.team).getPlayArea().getCurrentEpoch();
         }
         for (int i = 0; i < this.cards.size(); i++) {
             Card c = this.cards.get(i);
             int cardpos = this.cardpos.get(i);
             c.team = this.team;
             c.status = this.status;
-            Board b = c.board;
             Player p = b.getPlayer(this.team);
             switch (this.status) {
                 case HAND -> {
                     if (p.getHand().size() < p.maxHandSize) {
                         p.getHand().add(cardpos, c);
                         this.successful.add(true);
+                        this.successfullyCreatedCards.add(c);
                     } else {
                         c.alive = false;
                         // TODO: add a shadow
@@ -61,6 +63,7 @@ public class EventCreateCard extends Event {
                             ((Minion) c).summoningSickness = true;
                         }
                         this.successful.add(true);
+                        this.successfullyCreatedCards.add(c);
                         if (bo.team == b.localteam && b instanceof PendingPlayPositioner) {
                             ((PendingPlayPositioner) b).getPendingPlayPositionProcessor().processOp(bo.getIndex(), null, true);
                         }
@@ -71,16 +74,19 @@ public class EventCreateCard extends Event {
                 case DECK -> {
                     p.getDeck().add(cardpos, c);
                     this.successful.add(true);
+                    this.successfullyCreatedCards.add(c);
                 }
                 case UNLEASHPOWER -> {
                     this.prevUP = p.getUnleashPower().orElse(null);
                     b.getPlayer(this.team).setUnleashPower((UnleashPower) c);
                     this.successful.add(true);
+                    this.successfullyCreatedCards.add(c);
                 }
                 case LEADER -> {
                     this.prevLeader = p.getLeader().orElse(null);
                     p.setLeader((Leader) c);
                     this.successful.add(true);
+                    this.successfullyCreatedCards.add(c);
                 }
                 default -> this.successful.add(false);
             }
@@ -91,10 +97,9 @@ public class EventCreateCard extends Event {
     }
 
     @Override
-    public void undo() {
+    public void undo(Board b) {
         for (int i = 0; i < this.cards.size(); i++) {
             Card c = this.cards.get(i);
-            Board b = c.board;
             Player p = b.getPlayer(this.team);
             CardStatus status = c.status;
             if (this.successful.get(i)) {
@@ -126,7 +131,7 @@ public class EventCreateCard extends Event {
         StringBuilder builder = new StringBuilder();
         builder.append(this.id).append(" ").append(this.cards.size()).append(" ");
         for (Card c : this.cards) {
-            builder.append(c.toConstructorString());
+            builder.append(c.cardText.getClass().getName()).append(" ");
         }
         builder.append(this.team).append(" ").append(this.status.toString());
         for (Integer i : this.cardpos) {
@@ -140,14 +145,19 @@ public class EventCreateCard extends Event {
         int numCards = Integer.parseInt(st.nextToken());
         List<Card> cards = new ArrayList<>(numCards);
         for (int i = 0; i < numCards; i++) {
-            Card c = Card.createFromConstructorString(b, st);
-            cards.add(c);
-            if (b instanceof VisualBoard) {
-                assert c != null;
-                // link the ClientBoard version of the card with the VisualBoard version
-                c.realCard = ((VisualBoard) b).realBoard.cardsCreated.remove(0);
-                c.realCard.visualCard = c;
-                ((VisualBoard) b).uiBoard.addCard(c);
+            try {
+                CardText cardText = Class.forName(st.nextToken()).asSubclass(CardText.class).getConstructor().newInstance();
+                Card c = cardText.constructInstance(b);
+                cards.add(c);
+                if (b instanceof VisualBoard) {
+                    assert c != null;
+                    // link the ClientBoard version of the card with the VisualBoard version
+                    c.realCard = ((VisualBoard) b).realBoard.cardsCreated.remove(0);
+                    c.realCard.visualCard = c;
+                    ((VisualBoard) b).uiBoard.addCard(c);
+                }
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+                e.printStackTrace();
             }
         }
         int team = Integer.parseInt(st.nextToken());

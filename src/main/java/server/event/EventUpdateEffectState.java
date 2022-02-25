@@ -23,7 +23,7 @@ public class EventUpdateEffectState extends Event {
     }
 
     @Override
-    public void resolve() {
+    public void resolve(Board b) {
         if (this.oldState == null) {
             this.oldState = this.effect.extraStateString();
         }
@@ -33,7 +33,7 @@ public class EventUpdateEffectState extends Event {
     }
 
     @Override
-    public void undo() {
+    public void undo(Board b) {
         if (this.oldState != null) {
             this.effect.loadExtraState(this.effect.owner.board, new StringTokenizer(this.oldState));
         }

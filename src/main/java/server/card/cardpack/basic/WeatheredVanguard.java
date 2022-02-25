@@ -14,7 +14,7 @@ import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
 
-public class WeatheredVanguard extends Minion {
+public class WeatheredVanguard extends MinionText {
     public static final String NAME = "Weathered Vanguard";
     public static final String DESCRIPTION = "<b>Battlecry</b>: Summon 2 <b>Knights</b>.\n<b>Unleash</b>: Give all allied minions +1/+0/+1.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
@@ -24,15 +24,15 @@ public class WeatheredVanguard extends Minion {
             new Vector2f(155, 120), 1.6, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.BATTLECRY, Knight.TOOLTIP, Tooltip.UNLEASH));
 
-    public WeatheredVanguard(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             @Override
             public Resolver battlecry() {
                 return new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
-                        List<Card> knights = List.of(new Knight(b), new Knight(b));
+                        List<CardText> knights = List.of(new Knight(), new Knight());
                         List<Integer> pos = List.of(owner.getIndex() + 1, owner.getIndex());
                         this.resolve(b, rl, el, new CreateCardResolver(knights, owner.team, CardStatus.BOARD, pos));
                     }
@@ -63,8 +63,11 @@ public class WeatheredVanguard extends Minion {
                 // can hit 6 units, avg probably hit half of them, and unleash costs 2
                 return AI.VALUE_PER_1_1_STATS * 6 / 2. / 2.;
             }
-        };
-        this.addEffect(true, e);
+        });
     }
 
+    @Override
+    public TooltipMinion getTooltip() {
+        return TOOLTIP;
+    }
 }

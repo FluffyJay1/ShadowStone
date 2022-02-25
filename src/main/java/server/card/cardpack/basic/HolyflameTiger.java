@@ -7,10 +7,12 @@ import server.Board;
 import server.card.CardRarity;
 import server.card.ClassCraft;
 import server.card.Minion;
+import server.card.MinionText;
+import server.card.effect.Effect;
 
 import java.util.List;
 
-public class HolyflameTiger extends Minion {
+public class HolyflameTiger extends MinionText {
     public static final String NAME = "Holyflame Tiger";
     public static final String DESCRIPTION = "";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
@@ -20,7 +22,13 @@ public class HolyflameTiger extends Minion {
             new Vector2f(163, 128), 1.5, EventAnimationDamageClaw.class,
             List::of);
 
-    public HolyflameTiger(Board b) {
-        super(b, TOOLTIP);
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of();
+    }
+
+    @Override
+    public TooltipMinion getTooltip() {
+        return TOOLTIP;
     }
 }

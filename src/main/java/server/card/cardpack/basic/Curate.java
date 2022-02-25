@@ -15,7 +15,7 @@ import server.card.target.TargetingScheme;
 import server.event.*;
 import server.resolver.*;
 
-public class Curate extends Minion {
+public class Curate extends MinionText {
     public static final String NAME = "Curate";
     public static final String DESCRIPTION = "<b>Battlecry</b>: Restore 5 health to an ally.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
@@ -25,9 +25,9 @@ public class Curate extends Minion {
             new Vector2f(169, 143), 1.4, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.BATTLECRY));
 
-    public Curate(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             @Override
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
                 return List.of(new CardTargetingScheme(this, 0, 1, "Restore 5 health to an ally.") {
@@ -56,7 +56,11 @@ public class Curate extends Minion {
             public double getBattlecryValue(int refs) {
                 return AI.VALUE_PER_HEAL * 5 / 2.;
             }
-        };
-        this.addEffect(true, e);
+        });
+    }
+
+    @Override
+    public TooltipMinion getTooltip() {
+        return TOOLTIP;
     }
 }

@@ -16,7 +16,7 @@ import server.resolver.Resolver;
 
 import java.util.List;
 
-public class HallowedDogma extends Spell {
+public class HallowedDogma extends SpellText {
     public static final String NAME = "Hallowed Dogma";
     public static final String DESCRIPTION = "Choose a card. If it has <b>Countdown</b>, subtract 2 from it and draw a card. Otherwise, give it <b>Countdown(2)</b>.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
@@ -24,10 +24,10 @@ public class HallowedDogma extends Spell {
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/halloweddogma.png",
             CRAFT, RARITY, 2, HallowedDogma.class,
             () -> List.of(Tooltip.COUNTDOWN));
-    final Effect e;
-    public HallowedDogma(Board b) {
-        super(b, TOOLTIP);
-        this.e = new Effect(DESCRIPTION) {
+
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             @Override
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
                 return List.of(new CardTargetingScheme(this, 1, 1, DESCRIPTION) {
@@ -63,7 +63,11 @@ public class HallowedDogma extends Spell {
             public double getBattlecryValue(int refs) {
                 return 3;
             }
-        };
-        this.addEffect(true, e);
+        });
+    }
+
+    @Override
+    public TooltipSpell getTooltip() {
+        return TOOLTIP;
     }
 }

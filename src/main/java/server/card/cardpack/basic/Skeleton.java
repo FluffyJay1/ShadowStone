@@ -5,10 +5,11 @@ import org.newdawn.slick.geom.*;
 import client.tooltip.*;
 import server.*;
 import server.card.*;
+import server.card.effect.Effect;
 
 import java.util.List;
 
-public class Skeleton extends Minion {
+public class Skeleton extends MinionText {
     public static final String NAME = "Skeleton";
     public static final String DESCRIPTION = "";
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
@@ -18,7 +19,13 @@ public class Skeleton extends Minion {
             new Vector2f(), -1, null,
             List::of);
 
-    public Skeleton(Board b) {
-        super(b, TOOLTIP);
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of();
+    }
+
+    @Override
+    public TooltipMinion getTooltip() {
+        return TOOLTIP;
     }
 }

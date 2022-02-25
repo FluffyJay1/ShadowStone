@@ -20,19 +20,19 @@ public class EventTurnStart extends Event {
     }
 
     @Override
-    public void resolve() {
+    public void resolve(Board b) {
         this.prevCurrentPlayerTurn = this.p.board.currentPlayerTurn;
         this.prevUnleashesThisTurn = this.p.getUnleashPower().map(up -> up.unleashesThisTurn).orElse(0);
         this.prevSickness = new ArrayList<>();
         this.prevAttacks = new ArrayList<>();
         this.p.board.currentPlayerTurn = this.p.team;
         this.p.getUnleashPower().ifPresent(up -> up.unleashesThisTurn = 0);
-        for (BoardObject b : this.p.getPlayArea()) {
-            if (b instanceof Minion) {
-                this.prevSickness.add(((Minion) b).summoningSickness);
-                this.prevAttacks.add(((Minion) b).attacksThisTurn);
-                ((Minion) b).summoningSickness = false;
-                ((Minion) b).attacksThisTurn = 0;
+        for (BoardObject bo : this.p.getPlayArea()) {
+            if (bo instanceof Minion) {
+                this.prevSickness.add(((Minion) bo).summoningSickness);
+                this.prevAttacks.add(((Minion) bo).attacksThisTurn);
+                ((Minion) bo).summoningSickness = false;
+                ((Minion) bo).attacksThisTurn = 0;
             } else {
                 this.prevSickness.add(false);
                 this.prevAttacks.add(0);
@@ -41,8 +41,8 @@ public class EventTurnStart extends Event {
     }
 
     @Override
-    public void undo() {
-        this.p.board.currentPlayerTurn = this.prevCurrentPlayerTurn;
+    public void undo(Board b) {
+        b.currentPlayerTurn = this.prevCurrentPlayerTurn;
         this.p.getUnleashPower().ifPresent(up -> up.unleashesThisTurn = this.prevUnleashesThisTurn);
         List<BoardObject> boardObjects = this.p.getPlayArea();
         for (int i = 0; i < boardObjects.size(); i++) {

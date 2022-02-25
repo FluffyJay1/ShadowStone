@@ -15,7 +15,7 @@ import server.resolver.Resolver;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class Beastmaster extends Minion {
+public class Beastmaster extends MinionText {
     public static final String NAME = "Beastmaster";
     public static final String DESCRIPTION = "<b>Aura</b>: adjacent minions have +1 attacks per turn.\n<b>Unleash</b>: summon a <b>Stonetusk Boar</b>.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
@@ -25,11 +25,11 @@ public class Beastmaster extends Minion {
             new Vector2f(140, 100), 2, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.AURA, Tooltip.UNLEASH, StonetuskBoar.TOOLTIP));
 
-    public Beastmaster(Board b) {
-        super(b, TOOLTIP);
+    @Override
+    protected List<Effect> getSpecialEffects() {
         Effect auraBuff = new Effect("+1 attacks per turn (from <b>Beastmaster's Aura</b>).");
         auraBuff.effectStats.change.setStat(EffectStats.ATTACKS_PER_TURN, 1);
-        Effect e = new EffectAura(DESCRIPTION, 1, true, false, auraBuff) {
+        return List.of(new EffectAura(DESCRIPTION, 1, true, false, auraBuff) {
             @Override
             public boolean applyConditions(Card cardToApply) {
                 return cardToApply instanceof Minion && Math.abs(cardToApply.getIndex() - this.owner.getIndex()) == 1;
@@ -37,14 +37,18 @@ public class Beastmaster extends Minion {
 
             @Override
             public Resolver unleash() {
-                return new CreateCardResolver(new StonetuskBoar(b), owner.team, CardStatus.BOARD, owner.getIndex() + 1);
+                return new CreateCardResolver(new StonetuskBoar(), owner.team, CardStatus.BOARD, owner.getIndex() + 1);
             }
 
             @Override
             public double getPresenceValue(int refs) {
                 return 3;
             }
-        };
-        this.addEffect(true, e);
+        });
+    }
+
+    @Override
+    public TooltipMinion getTooltip() {
+        return TOOLTIP;
     }
 }

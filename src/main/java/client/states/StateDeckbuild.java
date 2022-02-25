@@ -1,5 +1,6 @@
 package client.states;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import org.newdawn.slick.*;
@@ -73,21 +74,22 @@ public class StateDeckbuild extends BasicGameState {
                     break;
                 case DeckDisplayPanel.CARD_CLICK:
                     // select card in deckbuilder
-                    Class<? extends Card> cardClass;
                     try {
-                        cardClass = Class.forName(st.nextToken()).asSubclass(Card.class);
+                        Class<? extends CardText> cardTextClass;
+                        cardTextClass = Class.forName(st.nextToken()).asSubclass(CardText.class);
+                        CardText cardText = cardTextClass.getConstructor().newInstance();
                         switch (intarg[0]) {
                             case 1:
                                 // display its tooltip
-                                cardTooltip.setTooltip(CardSet.getCardTooltip(cardClass));
+                                cardTooltip.setTooltip(cardText.getTooltip());
                                 break;
                             case 2:
-                                deckdisplaypanel.removeCard(cardClass);
+                                deckdisplaypanel.removeCard(cardText);
                                 break;
                             default:
                                 break;
                         }
-                    } catch (ClassNotFoundException e1) {
+                    } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
@@ -116,20 +118,21 @@ public class StateDeckbuild extends BasicGameState {
                 case CardSetDisplayPanel.CARDSET_CLICK:
                     // select card in cards to choose from
                     try {
-                        String cardClassString = st.nextToken();
-                        cardClass = Class.forName(cardClassString).asSubclass(Card.class);
+                        Class<? extends CardText> cardTextClass;
+                        cardTextClass = Class.forName(st.nextToken()).asSubclass(CardText.class);
+                        CardText cardText = cardTextClass.getConstructor().newInstance();
                         switch (intarg[0]) {
                             case 1:
                                 // display its tooltip
-                                cardTooltip.setTooltip(CardSet.getCardTooltip(cardClass));
+                                cardTooltip.setTooltip(cardText.getTooltip());
                                 break;
                             case 2:
-                                deckdisplaypanel.addCard(cardClass);
+                                deckdisplaypanel.addCard(cardText);
                                 break;
                             default:
                                 break;
                         }
-                    } catch (ClassNotFoundException e) {
+                    } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }

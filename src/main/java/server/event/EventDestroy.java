@@ -31,7 +31,7 @@ public class EventDestroy extends Event {
     }
 
     @Override
-    public void resolve() {
+    public void resolve(Board b) {
         this.alive = new ArrayList<>(this.cards.size());
         this.prevStatus = new ArrayList<>(this.cards.size());
         this.prevPos = new ArrayList<>(this.cards.size());
@@ -44,7 +44,6 @@ public class EventDestroy extends Event {
         }
         for (int i = 0; i < this.cards.size(); i++) {
             Card c = this.cards.get(i);
-            Board b = c.board;
             Player p = b.getPlayer(c.team);
             this.alive.add(c.alive);
             this.prevStatus.add(c.status);
@@ -90,10 +89,9 @@ public class EventDestroy extends Event {
     }
 
     @Override
-    public void undo() {
+    public void undo(Board b) {
         for (int i = this.cards.size() - 1; i >= 0; i--) {
             Card c = this.cards.get(i);
-            Board b = c.board;
             Player p = b.getPlayer(c.team);
             c.alive = this.alive.get(i);
             CardStatus status = this.prevStatus.get(i);

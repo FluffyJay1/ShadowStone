@@ -14,7 +14,7 @@ import server.resolver.Resolver;
 
 import java.util.List;
 
-public class BlackenedScripture extends Spell {
+public class BlackenedScripture extends SpellText {
     public static final String NAME = "Blackened Scripture";
     public static final String DESCRIPTION = "<b>Banish</b> an enemy minion with 3 health or less.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
@@ -22,11 +22,10 @@ public class BlackenedScripture extends Spell {
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/blackenedscripture.png",
             CRAFT, RARITY, 2, BlackenedScripture.class,
             () -> List.of(Tooltip.BANISH));
-    final Effect e;
 
-    public BlackenedScripture(Board b) {
-        super(b, TOOLTIP);
-        this.e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             @Override
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
                 return List.of(new CardTargetingScheme(this, 1, 1, DESCRIPTION) {
@@ -54,7 +53,11 @@ public class BlackenedScripture extends Spell {
             public double getBattlecryValue(int refs) {
                 return 3;
             }
-        };
-        this.addEffect(true, e);
+        });
+    }
+
+    @Override
+    public TooltipSpell getTooltip() {
+        return TOOLTIP;
     }
 }

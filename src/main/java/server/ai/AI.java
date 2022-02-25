@@ -436,7 +436,7 @@ public class AI extends Thread {
         }
         List<Event> undoStack = new LinkedList<>(result.events);
         while (!undoStack.isEmpty()) {
-            undoStack.get(undoStack.size() - 1).undo();
+            undoStack.get(undoStack.size() - 1).undo(this.b);
             undoStack.remove(undoStack.size() - 1);
         }
         // aura difference checking isn't updated by undoing, we have to update it ourselves

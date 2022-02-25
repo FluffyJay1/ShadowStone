@@ -29,7 +29,7 @@ public class EventAddEffect extends Event {
     }
 
     @Override
-    public void resolve() {
+    public void resolve(Board b) {
         this.oldHealth = new ArrayList<>();
         this.oldAlive = new ArrayList<>();
         for (int i = 0; i < this.c.size(); i++) {
@@ -72,7 +72,7 @@ public class EventAddEffect extends Event {
     }
 
     @Override
-    public void undo() {
+    public void undo(Board b) {
         for (int i = 0; i < this.c.size(); i++) {
             Card c = this.c.get(i);
             c.removeEffect(this.effects.get(i), true);

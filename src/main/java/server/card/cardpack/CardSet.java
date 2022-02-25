@@ -1,12 +1,13 @@
 package server.card.cardpack;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.function.*;
 
 import client.tooltip.*;
+import server.UnleashPowerText;
 import server.card.*;
 import server.card.cardpack.basic.*;
-import server.card.unleashpower.*;
+import server.card.unleashpower.basic.*;
 
 /**
  * 
@@ -35,7 +36,7 @@ public class CardSet {
     /**
      * A set of card classes
      */
-    public final Set<Class<? extends Card>> cardClasses = new HashSet<>();
+    public final Set<CardText> cardTexts = new HashSet<>();
 
     /**
      * Default constructor
@@ -47,11 +48,10 @@ public class CardSet {
     /**
      * Constructor for a CardSet using a series of classes
      * 
-     * @param cardClasses the cards to construct the set with
+     * @param cardTexts the cards to construct the set with
      */
-    @SafeVarargs
-    public CardSet(Class<? extends Card>... cardClasses) {
-        this.cardClasses.addAll(Arrays.asList(cardClasses));
+    public CardSet(CardText... cardTexts) {
+        this.cardTexts.addAll(Arrays.asList(cardTexts));
     }
 
     /**
@@ -71,7 +71,7 @@ public class CardSet {
      * @param other the other CardSet to add
      */
     public void add(CardSet other) {
-        this.cardClasses.addAll(other.cardClasses);
+        this.cardTexts.addAll(other.cardTexts);
     }
 
     /**
@@ -81,21 +81,21 @@ public class CardSet {
      * @return the modified cardset
      */
     public CardSet filterCraft(ClassCraft... crafts) {
-        Predicate<Class<? extends Card>> notmatch = cardClass -> !Arrays.asList(crafts).contains(Objects.requireNonNull(getCardTooltip(cardClass)).craft);
-        this.cardClasses.removeIf(notmatch);
+        this.cardTexts.removeIf(cardText -> !Arrays.asList(crafts).contains(cardText.getTooltip().craft));
         return this;
     }
 
     /**
      * Maps a card class to its tooltip
      * 
-     * @param cardClass the class of the card
+     * @param cardTextClass the class of the card
      * @return the tooltip of the card
      */
-    public static TooltipCard getCardTooltip(Class<? extends Card> cardClass) {
+    public static TooltipCard getCardTooltip(Class<? extends CardText> cardTextClass) {
         try {
-            return (TooltipCard) cardClass.getField("TOOLTIP").get(null);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            CardText text = cardTextClass.getConstructor().newInstance();
+            return text.getTooltip();
+        } catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException | InstantiationException | InvocationTargetException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -108,16 +108,16 @@ public class CardSet {
      * @param craft The craft to get the unleash power of
      * @return The class of the default unleash power
      */
-    public static Class<? extends Card> getDefaultUnleashPower(ClassCraft craft) {
+    public static UnleashPowerText getDefaultUnleashPower(ClassCraft craft) {
         return switch (craft) {
-            case FORESTROGUE -> UnleashEmbraceNature.class;
-            case SWORDPALADIN -> UnleashSharpenSword.class;
-            case RUNEMAGE -> UnleashImbueMagic.class;
-            case DRAGONDRUID -> UnleashFeedFervor.class;
-            case SHADOWSHAMAN -> UnleashBegetUndead.class;
-            case BLOODWARLOCK -> UnleashTapSoul.class;
-            case HAVENPRIEST -> UnleashMendWounds.class;
-            case PORTALHUNTER -> UnleashEchoExistence.class;
+            case FORESTROGUE -> new UnleashEmbraceNature();
+            case SWORDPALADIN -> new UnleashSharpenSword();
+            case RUNEMAGE -> new UnleashImbueMagic();
+            case DRAGONDRUID -> new UnleashFeedFervor();
+            case SHADOWSHAMAN -> new UnleashBegetUndead();
+            case BLOODWARLOCK -> new UnleashTapSoul();
+            case HAVENPRIEST -> new UnleashMendWounds();
+            case PORTALHUNTER -> new UnleashEchoExistence();
             default -> null;
         };
     }

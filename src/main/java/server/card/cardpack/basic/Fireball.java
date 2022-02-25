@@ -13,7 +13,7 @@ import server.card.target.TargetingScheme;
 import server.event.*;
 import server.resolver.*;
 
-public class Fireball extends Spell {
+public class Fireball extends SpellText {
     public static final String NAME = "Fireball";
     public static final String DESCRIPTION = "Choose 2 enemy minions. Deal 2 damage to them and 1 damage to their adjacent minions.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
@@ -21,13 +21,10 @@ public class Fireball extends Spell {
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/fireball.png",
             CRAFT, RARITY, 3, Fireball.class,
             List::of);
-    final Effect e;
 
-    public Fireball(Board b) {
-        super(b, TOOLTIP);
-        // anonymous classes within anonymous classes
-
-        this.e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             @Override
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
                 return List.of(new CardTargetingScheme(this, 1, 2, DESCRIPTION) {
@@ -72,7 +69,11 @@ public class Fireball extends Spell {
             public double getBattlecryValue(int refs) {
                 return AI.VALUE_PER_DAMAGE * 8 / 2.;
             }
-        };
-        this.addEffect(true, e);
+        });
+    }
+
+    @Override
+    public TooltipSpell getTooltip() {
+        return TOOLTIP;
     }
 }

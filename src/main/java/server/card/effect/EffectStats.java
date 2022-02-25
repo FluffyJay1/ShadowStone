@@ -23,17 +23,19 @@ public class EffectStats implements Cloneable, StringBuildable {
 
     public StatSet set = new StatSet(), change = new StatSet();
 
-    public EffectStats() {
-
+    public EffectStats(Setter... setters) {
+        for (Setter s : setters) {
+            (s.change ? this.change : this.set).setStat(s.statToSet, s.value);
+        }
     }
 
-    public EffectStats(int cost) {
-        this();
+    public EffectStats(int cost, Setter... setters) {
+        this(setters);
         this.set.setStat(COST, cost);
     }
 
-    public EffectStats(int cost, int attack, int magic, int health) {
-        this(cost);
+    public EffectStats(int cost, int attack, int magic, int health, Setter... setters) {
+        this(cost, setters);
         this.set.setStat(ATTACK, attack);
         this.set.setStat(MAGIC, magic);
         this.set.setStat(HEALTH, health);
@@ -205,6 +207,17 @@ public class EffectStats implements Cloneable, StringBuildable {
                 }
             }
             return ret;
+        }
+    }
+
+    // bean
+    public static class Setter {
+        int statToSet, value;
+        boolean change;
+        public Setter(int statToSet, boolean change, int value) {
+            this.statToSet = statToSet;
+            this.change = change;
+            this.value = value;
         }
     }
 }

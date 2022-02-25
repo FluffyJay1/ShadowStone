@@ -10,7 +10,7 @@ import server.resolver.*;
 
 import java.util.List;
 
-public class PuppetRoom extends Amulet {
+public class PuppetRoom extends AmuletText {
     public static final String NAME = "Puppet Room";
     public static final String DESCRIPTION = "<b>Countdown(3)</b>.\n<b>Battlecry</b>: put a <b>Puppet</b> in your hand.\nAt the end of your turn, put a <b>Puppet</b> in your hand.";
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
@@ -20,12 +20,14 @@ public class PuppetRoom extends Amulet {
             new Vector2f(), -1,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Puppet.TOOLTIP));
 
-    public PuppetRoom(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        Effect e = new Effect(DESCRIPTION, new EffectStats(
+                new EffectStats.Setter(EffectStats.COUNTDOWN, false, 3)
+        )) {
             @Override
             public Resolver battlecry() {
-                return new CreateCardResolver(new Puppet(this.owner.board), this.owner.team, CardStatus.HAND, -1);
+                return new CreateCardResolver(new Puppet(), this.owner.team, CardStatus.HAND, -1);
             }
 
             @Override
@@ -35,7 +37,7 @@ public class PuppetRoom extends Amulet {
 
             @Override
             public Resolver onTurnEnd() {
-                 return new CreateCardResolver(new Puppet(this.owner.board), this.owner.team, CardStatus.HAND, -1);
+                return new CreateCardResolver(new Puppet(), this.owner.team, CardStatus.HAND, -1);
             }
 
             @Override
@@ -44,6 +46,11 @@ public class PuppetRoom extends Amulet {
             }
         };
         e.effectStats.set.setStat(EffectStats.COUNTDOWN, 3);
-        this.addEffect(true, e);
+        return List.of(e);
+    }
+
+    @Override
+    public TooltipAmulet getTooltip() {
+        return TOOLTIP;
     }
 }

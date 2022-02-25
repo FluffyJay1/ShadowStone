@@ -25,7 +25,7 @@ public class EventRestore extends Event {
     }
 
     @Override
-    public void resolve() {
+    public void resolve(Board b) {
         this.oldHealth = new ArrayList<>();
         for (int i = 0; i < this.m.size(); i++) { // whatever
             Minion minion = this.m.get(i);
@@ -43,7 +43,7 @@ public class EventRestore extends Event {
     }
 
     @Override
-    public void undo() {
+    public void undo(Board b) {
         for (int i = 0; i < this.m.size(); i++) {
             Minion minion = this.m.get(i);
             minion.health = this.oldHealth.get(i);

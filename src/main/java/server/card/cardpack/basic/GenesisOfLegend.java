@@ -12,7 +12,7 @@ import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
 
-public class GenesisOfLegend extends Amulet {
+public class GenesisOfLegend extends AmuletText {
     public static final String NAME = "Gensis of Legend";
     public static final String DESCRIPTION = "<b>Countdown(3)</b>. At the end of your turn, give a random allied minion +0/+0/+1 and <b>Bane</b>.";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
@@ -22,9 +22,11 @@ public class GenesisOfLegend extends Amulet {
             new Vector2f(), -1,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.BANE));
 
-    public GenesisOfLegend(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION, new EffectStats(
+                new EffectStats.Setter(EffectStats.COUNTDOWN, false, 3)
+        )) {
             @Override
             public Resolver onTurnEnd() {
                 return new Resolver(true) {
@@ -46,8 +48,11 @@ public class GenesisOfLegend extends Amulet {
             public double getPresenceValue(int refs) {
                 return 4;
             }
-        };
-        e.effectStats.set.setStat(EffectStats.COUNTDOWN, 3);
-        this.addEffect(true, e);
+        });
+    }
+
+    @Override
+    public TooltipAmulet getTooltip() {
+        return TOOLTIP;
     }
 }

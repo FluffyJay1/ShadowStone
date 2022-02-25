@@ -43,7 +43,7 @@ public class EventPutCard extends Event {
     }
 
     @Override
-    public void resolve() {
+    public void resolve(Board b) {
         if (this.markedForDeath == null) {
             this.markedForDeath = new ArrayList<>();
         }
@@ -66,7 +66,6 @@ public class EventPutCard extends Event {
         }
         for (int i = 0; i < this.cards.size(); i++) {
             Card card = this.cards.get(i);
-            Board b = card.board;
             this.prevStatus.add(card.status);
             this.prevEffects.add(new LinkedList<>());
             this.prevMute.add(new LinkedList<>());
@@ -164,10 +163,9 @@ public class EventPutCard extends Event {
     }
 
     @Override
-    public void undo() {
+    public void undo(Board b) {
         for (int i = this.cards.size() - 1; i >= 0; i--) {
             Card card = this.cards.get(i);
-            Board b = card.board;
             card.alive = this.oldAlive.get(i);
             if (this.successful.get(i)) {
                 Player p = b.getPlayer(card.team); // current player

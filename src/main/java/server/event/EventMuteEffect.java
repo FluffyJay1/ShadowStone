@@ -26,7 +26,7 @@ public class EventMuteEffect extends Event {
     }
 
     @Override
-    public void resolve() {
+    public void resolve(Board b) {
         this.prevMute = this.e.mute;
         this.oldAlive = this.c.alive;
         this.c.muteEffect(this.e, this.mute);
@@ -49,7 +49,7 @@ public class EventMuteEffect extends Event {
     }
 
     @Override
-    public void undo() {
+    public void undo(Board b) {
         this.c.muteEffect(this.e, this.prevMute);
         this.c.alive = this.oldAlive;
         if (c instanceof Minion) {

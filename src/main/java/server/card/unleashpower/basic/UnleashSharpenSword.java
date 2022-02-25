@@ -1,4 +1,4 @@
-package server.card.unleashpower;
+package server.card.unleashpower.basic;
 
 import java.util.*;
 
@@ -10,7 +10,7 @@ import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
 
-public class UnleashSharpenSword extends UnleashPower {
+public class UnleashSharpenSword extends UnleashPowerText {
     public static final String NAME = "Sharpen Sword";
     public static final String DESCRIPTION = "Give an allied minion +1/+0/+0, then <b>Unleash</b> it.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
@@ -20,9 +20,9 @@ public class UnleashSharpenSword extends UnleashPower {
             new Vector2f(500, 330), 3,
             () -> List.of(Tooltip.UNLEASH));
 
-    public UnleashSharpenSword(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             @Override
             public Resolver onUnleashPre(Minion m) {
                 return new Resolver(false) {
@@ -33,7 +33,11 @@ public class UnleashSharpenSword extends UnleashPower {
                     }
                 };
             }
-        };
-        this.addEffect(true, e);
+        });
+    }
+
+    @Override
+    public TooltipUnleashPower getTooltip() {
+        return TOOLTIP;
     }
 }

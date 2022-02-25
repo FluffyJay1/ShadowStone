@@ -13,7 +13,7 @@ import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
 
-public class WellOfDestination extends Amulet {
+public class WellOfDestination extends AmuletText {
     public static final String NAME = "Well of Destination";
     public static final String DESCRIPTION = "At the start of your turn, give a random allied minion +1/+1/+1.";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
@@ -23,9 +23,9 @@ public class WellOfDestination extends Amulet {
             new Vector2f(), -1,
             List::of);
 
-    public WellOfDestination(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             @Override
             public Resolver onTurnStart() {
                 return new Resolver(true) {
@@ -46,8 +46,11 @@ public class WellOfDestination extends Amulet {
             public double getPresenceValue(int refs) {
                 return AI.VALUE_PER_1_1_STATS * 7 / 2.;
             }
-        };
-        this.addEffect(true, e);
+        });
     }
 
+    @Override
+    public TooltipAmulet getTooltip() {
+        return TOOLTIP;
+    }
 }

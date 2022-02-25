@@ -1,4 +1,4 @@
-package server.card.unleashpower;
+package server.card.unleashpower.basic;
 
 import java.util.*;
 
@@ -10,7 +10,7 @@ import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
 
-public class UnleashEchoExistence extends UnleashPower {
+public class UnleashEchoExistence extends UnleashPowerText {
     public static final String NAME = "Echo Existence";
     public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. If it has already attacked this turn, add a copy of it to your deck and subtract 2 from its cost.";
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
@@ -20,9 +20,9 @@ public class UnleashEchoExistence extends UnleashPower {
             new Vector2f(430, 445), 1.5,
             () -> List.of(Tooltip.UNLEASH));
 
-    public UnleashEchoExistence(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of( new Effect(DESCRIPTION) {
             @Override
             public Resolver onUnleashPost(Minion m) {
                 Effect effect = this; // anonymous fuckery
@@ -30,19 +30,21 @@ public class UnleashEchoExistence extends UnleashPower {
                     @Override
                     public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
                         if (m.attacksThisTurn > 0) {
-                            Card copy = Card.createFromConstructor(effect.owner.board, m.getClass());
-                            this.resolve(b, rl, el,
-                                    new CreateCardResolver(copy, effect.owner.team, CardStatus.DECK,
-                                            (int) (effect.owner.board.getPlayer(effect.owner.team).getDeck().size()
-                                                    * Math.random())));
+                            CreateCardResolver ccr = new CreateCardResolver(m.cardText, effect.owner.team, CardStatus.DECK,
+                                    (int) (effect.owner.board.getPlayer(effect.owner.team).getDeck().size() * Math.random()));
+                            this.resolve(b, rl, el, ccr);
                             Effect esc = new Effect("-2 cost (from <b>Echo Existence</b>).");
                             esc.effectStats.change.setStat(EffectStats.COST, -2);
-                            this.resolve(b, rl, el, new AddEffectResolver(copy, esc));
+                            this.resolve(b, rl, el, new AddEffectResolver(ccr.event.successfullyCreatedCards, esc));
                         }
                     }
                 };
             }
-        };
-        this.addEffect(true, e);
+        });
+    }
+
+    @Override
+    public TooltipUnleashPower getTooltip() {
+        return TOOLTIP;
     }
 }

@@ -6,8 +6,6 @@ import client.Game;
 import client.PendingUnleash;
 import server.*;
 import server.card.*;
-import server.card.target.CardTargetingScheme;
-import server.card.unleashpower.*;
 
 public class EventUnleash extends Event {
     public static final int ID = 16;
@@ -22,7 +20,7 @@ public class EventUnleash extends Event {
     }
 
     @Override
-    public void resolve() {
+    public void resolve(Board b) {
         if (this.source instanceof UnleashPower) { // quality
             this.prevUnleashes = ((UnleashPower) this.source).unleashesThisTurn;
             ((UnleashPower) this.source).unleashesThisTurn++;
@@ -33,7 +31,7 @@ public class EventUnleash extends Event {
     }
 
     @Override
-    public void undo() {
+    public void undo(Board b) {
         if (this.source instanceof UnleashPower) { // quality
             ((UnleashPower) this.source).unleashesThisTurn = this.prevUnleashes;
         }

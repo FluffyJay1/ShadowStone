@@ -9,7 +9,7 @@ import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
 
-public class DragonOracle extends Spell {
+public class DragonOracle extends SpellText {
     public static final String NAME = "Dragon Oracle";
     public static final String DESCRIPTION = "Gain one empty mana orb. If <b>Overflow</b> is active for you, draw a card.";
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
@@ -18,9 +18,9 @@ public class DragonOracle extends Spell {
             CRAFT, RARITY, 2, DragonOracle.class,
             List::of);
 
-    public DragonOracle(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             @Override
             public Resolver battlecry() {
                 return new Resolver(false) {
@@ -40,7 +40,11 @@ public class DragonOracle extends Spell {
             public double getBattlecryValue(int refs) {
                 return 3;
             }
-        };
-        this.addEffect(true, e);
+        });
+    }
+
+    @Override
+    public TooltipSpell getTooltip() {
+        return TOOLTIP;
     }
 }

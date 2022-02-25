@@ -213,7 +213,7 @@ public abstract class Board {
         if (this.winner != 0 || !e.conditions()) {
             return e;
         }
-        e.resolve();
+        e.resolve(this);
         return e;
     }
 

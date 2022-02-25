@@ -3,16 +3,16 @@ package server.card.cardpack.basic;
 import server.card.cardpack.*;
 
 public abstract class CardSetBasic {
-    public static final CardSet SET = new CardSet(Goblin.class, Fighter.class, Fireball.class, Tiny.class,
-            WellOfDestination.class, BellringerAngel.class, GenesisOfLegend.class, WoodOfBrambles.class, Fairy.class,
-            Skeleton.class, Baneling.class, CursedStone.class, Knight.class, WeatheredVanguard.class,
-            DragonOracle.class, Curate.class, Puppet.class, PuppetRoom.class, Beastmaster.class, StonetuskBoar.class,
-            BlackenedScripture.class, MordecaiTheDuelist.class, HallowedDogma.class, HolyFalcon.class, HolyflameTiger.class,
-            BeastcallAria.class, SiegeTank.class);
-    public static final CardSet PLAYABLE_SET = new CardSet(Goblin.class, Fighter.class, Fireball.class, Tiny.class,
-            WellOfDestination.class, BellringerAngel.class, GenesisOfLegend.class, WoodOfBrambles.class, Baneling.class,
-            CursedStone.class, WeatheredVanguard.class, DragonOracle.class, Curate.class, PuppetRoom.class, Beastmaster.class,
-            StonetuskBoar.class, BlackenedScripture.class, MordecaiTheDuelist.class, HallowedDogma.class, BeastcallAria.class,
-            SiegeTank.class);
+    public static final CardSet SET = new CardSet(new Goblin(), new Fighter(), new Fireball(), new Tiny(),
+            new WellOfDestination(), new BellringerAngel(), new GenesisOfLegend(), new WoodOfBrambles(), new Fairy(),
+            new Skeleton(), new Baneling(), new CursedStone(), new Knight(), new WeatheredVanguard(),
+            new DragonOracle(), new Curate(), new Puppet(), new PuppetRoom(), new Beastmaster(), new StonetuskBoar(),
+            new BlackenedScripture(), new MordecaiTheDuelist(), new HallowedDogma(), new HolyFalcon(), new HolyflameTiger(),
+            new BeastcallAria(), new SiegeTank());
+    public static final CardSet PLAYABLE_SET = new CardSet(new Goblin(), new Fighter(), new Fireball(), new Tiny(),
+            new WellOfDestination(), new BellringerAngel(), new GenesisOfLegend(), new WoodOfBrambles(), new Baneling(),
+            new CursedStone(), new WeatheredVanguard(), new DragonOracle(), new Curate(), new PuppetRoom(), new Beastmaster(),
+            new StonetuskBoar(), new BlackenedScripture(), new MordecaiTheDuelist(), new HallowedDogma(), new BeastcallAria(),
+            new SiegeTank());
 
 }

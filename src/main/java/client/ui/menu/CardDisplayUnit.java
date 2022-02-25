@@ -14,7 +14,7 @@ public class CardDisplayUnit extends UIBox {
      */
     public static final String CARD_CLICK = "cardclick";
     public static final double SCALE = 0.75;
-    private Class<? extends Card> cardClass;
+    private CardText cardText;
     final Text text;
     Card card;
     final UICard uicard;
@@ -25,30 +25,30 @@ public class CardDisplayUnit extends UIBox {
                 50, 14, Game.DEFAULT_FONT, 20, -1, 1);
         this.addChild(this.text);
         this.uicard = new UICard(ui, null, null);
-        this.setCardClass(null);
+        this.setCardText(null);
         this.setCount(-1);
 
     }
 
     @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
-        this.alert(CARD_CLICK + " " + cardClass.getName(), clickCount);
+        this.alert(CARD_CLICK + " " + cardText.getClass().getName(), clickCount);
 
     }
 
-    public void setCardClass(Class<? extends Card> cardClass) {
-        this.cardClass = cardClass;
-        if (cardClass == null) {
+    public void setCardText(CardText cardText) {
+        this.cardText = cardText;
+        if (this.cardText == null) {
             this.card = null;
         } else {
-            this.card = Card.createFromConstructor(null, cardClass);
+            this.card = cardText.constructInstance(null);
             this.card.status = CardStatus.HAND;
             this.uicard.setCard(this.card);
         }
     }
 
-    public Class<? extends Card> getCardClass() {
-        return this.cardClass;
+    public CardText getCardText() {
+        return this.cardText;
     }
 
     public void setCount(int count) {

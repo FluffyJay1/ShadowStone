@@ -5,9 +5,8 @@ import server.*;
 import server.card.effect.*;
 
 public class Amulet extends BoardObject {
-    public Amulet(Board b, TooltipAmulet tooltip) {
-        super(b, tooltip);
-        this.addEffect(true, new Effect("", new EffectStats(tooltip.cost)));
+    public Amulet(Board b, AmuletText amuletText) {
+        super(b, amuletText);
     }
 
     @Override

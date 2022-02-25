@@ -34,7 +34,7 @@ public class ConstructedDeck implements Serializable {
     /**
      * The map between a card class and its count in the deck
      */
-    public final Map<Class<? extends Card>, Integer> cardClassCounts = new HashMap<>();
+    public final Map<CardText, Integer> cardClassCounts = new HashMap<>();
 
     /**
      * The name of the deck
@@ -94,14 +94,14 @@ public class ConstructedDeck implements Serializable {
     /**
      * Method for adding a card to the deck
      * 
-     * @param cardClass the class of the card to add
+     * @param cardText the cardtext of the card to add
      * @return whether or not the operation was successful
      */
-    public boolean addCard(Class<? extends Card> cardClass) {
-        if (!this.cardClassCounts.containsKey(cardClass)) {
-            this.cardClassCounts.put(cardClass, 1);
-        } else if (this.cardClassCounts.get(cardClass) < MAX_DUPES) {
-            this.cardClassCounts.put(cardClass, this.cardClassCounts.get(cardClass) + 1);
+    public boolean addCard(CardText cardText) {
+        if (!this.cardClassCounts.containsKey(cardText)) {
+            this.cardClassCounts.put(cardText, 1);
+        } else if (this.cardClassCounts.get(cardText) < MAX_DUPES) {
+            this.cardClassCounts.put(cardText, this.cardClassCounts.get(cardText) + 1);
         } else {
             // ye fucked up
             return false;
@@ -113,16 +113,16 @@ public class ConstructedDeck implements Serializable {
     /**
      * Method for removing a card from the deck
      * 
-     * @param cardClass the class of the card to remove
+     * @param cardText the cardtext of the card to remove
      * @return if it returns false then you did something special
      */
-    public boolean removeCard(Class<? extends Card> cardClass) {
-        if (!this.cardClassCounts.containsKey(cardClass)) {
+    public boolean removeCard(CardText cardText) {
+        if (!this.cardClassCounts.containsKey(cardText)) {
             return false;
         }
-        this.cardClassCounts.put(cardClass, this.cardClassCounts.get(cardClass) - 1);
-        if (this.cardClassCounts.get(cardClass) <= 0) {
-            this.cardClassCounts.remove(cardClass);
+        this.cardClassCounts.put(cardText, this.cardClassCounts.get(cardText) - 1);
+        if (this.cardClassCounts.get(cardText) <= 0) {
+            this.cardClassCounts.remove(cardText);
         }
         this.count--;
         return true;
@@ -137,7 +137,7 @@ public class ConstructedDeck implements Serializable {
     public boolean validate() {
         this.count = 0;
         boolean dupes = true;
-        for (Map.Entry<Class<? extends Card>, Integer> entry : this.cardClassCounts.entrySet()) {
+        for (Map.Entry<CardText, Integer> entry : this.cardClassCounts.entrySet()) {
             this.count += entry.getValue();
             if (entry.getValue() > MAX_DUPES) {
                 dupes = false;
@@ -154,24 +154,10 @@ public class ConstructedDeck implements Serializable {
      */
     public List<Card> convertToCards(Board b) {
         ArrayList<Card> cards = new ArrayList<>(this.count);
-        for (Map.Entry<Class<? extends Card>, Integer> entry : this.cardClassCounts.entrySet()) {
-            Constructor<? extends Card> constr = null;
-            try {
-                constr = entry.getKey().getConstructor(Board.class);
-            } catch (NoSuchMethodException | SecurityException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+        for (Map.Entry<CardText, Integer> entry : this.cardClassCounts.entrySet()) {
             for (int i = 0; i < entry.getValue(); i++) {
-                try {
-                    assert constr != null;
-                    Card c = constr.newInstance(b);
-                    cards.add(c);
-                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                Card c = entry.getKey().constructInstance(b);
+                cards.add(c);
             }
         }
         return cards;

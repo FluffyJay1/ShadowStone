@@ -45,7 +45,7 @@ public class EventDamage extends Event {
     }
 
     @Override
-    public void resolve() {
+    public void resolve(Board b) {
         this.oldHealth = new ArrayList<>(this.m.size());
         this.oldAlive = new ArrayList<>(this.m.size());
         for (int i = 0; i < this.m.size(); i++) { // sure
@@ -63,7 +63,7 @@ public class EventDamage extends Event {
     }
 
     @Override
-    public void undo() {
+    public void undo(Board b) {
         for (int i = 0; i < this.m.size(); i++) { // sure
             Minion minion = m.get(i);
             minion.health = this.oldHealth.get(i);

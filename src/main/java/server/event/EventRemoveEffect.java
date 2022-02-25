@@ -23,7 +23,7 @@ public class EventRemoveEffect extends Event {
     }
 
     @Override
-    public void resolve() {
+    public void resolve(Board b) {
         this.prevPos = new ArrayList<>(this.effects.size());
         this.oldHealth = new ArrayList<>(this.effects.size());
         this.oldRemoved = new ArrayList<>(this.effects.size());
@@ -58,7 +58,7 @@ public class EventRemoveEffect extends Event {
     }
 
     @Override
-    public void undo() {
+    public void undo(Board b) {
         for (int i = this.effects.size() - 1; i >= 0; i--) {
             Effect e = this.effects.get(i);
             Card c = e.owner;

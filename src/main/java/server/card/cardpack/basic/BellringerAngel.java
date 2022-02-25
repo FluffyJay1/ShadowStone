@@ -12,7 +12,7 @@ import server.resolver.*;
 
 import java.util.List;
 
-public class BellringerAngel extends Minion {
+public class BellringerAngel extends MinionText {
     public static final String NAME = "Bellringer Angel";
     public static final String DESCRIPTION = "<b>Ward</b>.\n<b>Last Words</b>: draw a card.";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
@@ -22,9 +22,11 @@ public class BellringerAngel extends Minion {
             new Vector2f(), -1, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.WARD, Tooltip.LASTWORDS));
 
-    public BellringerAngel(Board b) {
-        super(b, TOOLTIP);
-        Effect e = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION, new EffectStats(
+                new EffectStats.Setter(EffectStats.WARD, false, 1)
+        )) {
             @Override
             public Resolver lastWords() {
                 return new DrawResolver(owner.board.getPlayer(owner.team), 1);
@@ -34,8 +36,11 @@ public class BellringerAngel extends Minion {
             public double getLastWordsValue(int refs) {
                 return AI.VALUE_PER_CARD_IN_HAND * 1;
             }
-        };
-        e.effectStats.set.setStat(EffectStats.WARD, 1);
-        this.addEffect(true, e);
+        });
+    }
+
+    @Override
+    public TooltipMinion getTooltip() {
+        return TOOLTIP;
     }
 }

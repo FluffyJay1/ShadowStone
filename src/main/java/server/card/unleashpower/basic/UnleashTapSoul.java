@@ -1,4 +1,4 @@
-package server.card.unleashpower;
+package server.card.unleashpower.basic;
 
 import java.util.*;
 
@@ -10,7 +10,7 @@ import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
 
-public class UnleashTapSoul extends UnleashPower {
+public class UnleashTapSoul extends UnleashPowerText {
     public static final String NAME = "Tap Soul";
     public static final String DESCRIPTION = "Deal 2 damage to your leader if <b>Vengeance</b> isn't active for you. " +
             "<b>Unleash</b> an allied minion. If <b>Vengeance</b> is active for you, this costs 2 less.";
@@ -21,9 +21,9 @@ public class UnleashTapSoul extends UnleashPower {
             new Vector2f(445, 515), 1,
             () -> List.of(Tooltip.VENGEANCE, Tooltip.UNLEASH));
 
-    public UnleashTapSoul(Board b) {
-        super(b, TOOLTIP);
-        Effect vengeanceBonus = new Effect(DESCRIPTION) {
+    @Override
+    protected List<Effect> getSpecialEffects() {
+        return List.of(new Effect(DESCRIPTION) {
             boolean vengeance;
 
             @Override
@@ -76,8 +76,11 @@ public class UnleashTapSoul extends UnleashPower {
             public void loadExtraState(Board b, StringTokenizer st) {
                 this.vengeance = Boolean.parseBoolean(st.nextToken());
             }
-        };
-        this.addEffect(true, vengeanceBonus);
+        });
+    }
 
+    @Override
+    public TooltipUnleashPower getTooltip() {
+        return TOOLTIP;
     }
 }

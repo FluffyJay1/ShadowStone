@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 // used to store metadata on a card
 public abstract class TooltipCard extends Tooltip {
-    public final Class<? extends Card> cardClass;
+    public final Class<? extends CardText> cardTextClass;
     public String imagepath;
     public final int cost;
     public final ClassCraft craft;
@@ -18,13 +18,13 @@ public abstract class TooltipCard extends Tooltip {
     // original
 
     public TooltipCard(String name, String description, String imagepath, ClassCraft craft, CardRarity rarity, int cost,
-                       Class<? extends Card> cardClass, Vector2f artFocusPos, double artFocusScale, Supplier<List<Tooltip>> references) {
+                       Class<? extends CardText> cardTextClass, Vector2f artFocusPos, double artFocusScale, Supplier<List<Tooltip>> references) {
         super(name, cost + "-cost " + craft.toString() + " " + description, references);
         this.imagepath = imagepath;
         this.craft = craft;
         this.rarity = rarity;
         this.cost = cost;
-        this.cardClass = cardClass;
+        this.cardTextClass = cardTextClass;
         this.artFocusPos = artFocusPos;
         this.artFocusScale = artFocusScale;
     }

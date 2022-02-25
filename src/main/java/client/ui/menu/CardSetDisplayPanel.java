@@ -53,11 +53,11 @@ public class CardSetDisplayPanel extends UIBox {
         this.cards.clear();
         this.set = set;
         if (set != null) {
-            for (Class<? extends Card> cardClass : set.cardClasses) {
+            for (CardText cardText : set.cardTexts) {
                 CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f());
                 this.scroll.addChild(cdu);
                 this.cards.add(cdu);
-                cdu.setCardClass(cardClass);
+                cdu.setCardText(cardText);
             }
         }
         this.updateCardPositions();
@@ -72,7 +72,7 @@ public class CardSetDisplayPanel extends UIBox {
 
     private CardDisplayUnit getCardDisplayUnit(Class<? extends Card> cardClass) {
         for (CardDisplayUnit cdu : this.cards) {
-            if (cdu.getCardClass().equals(cardClass)) {
+            if (cdu.getCardText().equals(cardClass)) {
                 return cdu;
             }
         }

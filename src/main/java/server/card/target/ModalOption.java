@@ -4,12 +4,13 @@ import server.card.effect.Effect;
 import utils.Indexable;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class ModalOption implements Indexable {
     int index;
     String option;
-    private Function<Effect, Boolean> conditions;
-    public ModalOption(String option, Function<Effect, Boolean> conditions) {
+    private Predicate<Effect> conditions;
+    public ModalOption(String option, Predicate<Effect> conditions) {
         this.option = option;
         this.conditions = conditions;
     }
@@ -26,7 +27,7 @@ public class ModalOption implements Indexable {
         if (this.conditions == null) {
             return true;
         }
-        return this.conditions.apply(origin.getCreator());
+        return this.conditions.test(origin.getCreator());
     }
 
     @Override
