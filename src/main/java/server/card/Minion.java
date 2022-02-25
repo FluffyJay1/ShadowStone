@@ -119,36 +119,36 @@ public class Minion extends BoardObject {
 
     public List<List<TargetingScheme<?>>> getUnleashTargetingSchemes() {
         List<List<TargetingScheme<?>>> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            list.add(e.getUnleashTargetingSchemes());
-        }
+        this.getFinalEffects(true).forEachOrdered(e -> list.add(e.getUnleashTargetingSchemes()));
         return list;
     }
 
     public void setUnleashTargets(List<List<TargetList<?>>> targets) {
-        List<Effect> es = this.getFinalEffects(true);
-        for (int i = 0; i < es.size(); i++) {
-            Effect e = es.get(i);
+        Iterator<Effect> effectIterator = this.getFinalEffects(true).iterator();
+        int i = 0;
+        while (effectIterator.hasNext()) {
+            Effect e = effectIterator.next();
             e.setUnleashTargets(targets.get(i));
+            i++;
         }
     }
 
     public String unleashTargetsToString(List<List<TargetList<?>>> targets) {
         StringBuilder builder = new StringBuilder();
-        List<Effect> es = this.getFinalEffects(true);
-        for (int i = 0; i < es.size(); i++) {
-            Effect e = es.get(i);
+        Iterator<Effect> effectIterator = this.getFinalEffects(true).iterator();
+        int i = 0;
+        while (effectIterator.hasNext()) {
+            Effect e = effectIterator.next();
             List<TargetingScheme<?>> unleashTargetingSchemes = e.getUnleashTargetingSchemes();
             builder.append(Effect.targetsToString(unleashTargetingSchemes, targets.get(i)));
+            i++;
         }
         return builder.toString();
     }
 
     public List<List<TargetList<?>>> parseUnleashTargets(StringTokenizer st) {
         List<List<TargetList<?>>> ret = new ArrayList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            ret.add(Effect.parseTargets(st, e.getUnleashTargetingSchemes()));
-        }
+        this.getFinalEffects(true).forEachOrdered(e -> ret.add(Effect.parseTargets(st, e.getUnleashTargetingSchemes())));
         return ret;
     }
 

@@ -1,6 +1,7 @@
 package server;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import client.tooltip.*;
 import server.*;
@@ -13,28 +14,6 @@ public class UnleashPower extends Card {
 
     public UnleashPower(Board b, UnleashPowerText unleashPowerText) {
         super(b, unleashPowerText);
-    }
-
-    public List<Resolver> onUnleashPre(Minion m) {
-        List<Resolver> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            Resolver temp = e.onUnleashPre(m);
-            if (temp != null) {
-                list.add(temp);
-            }
-        }
-        return list;
-    }
-
-    public List<Resolver> onUnleashPost(Minion m) {
-        List<Resolver> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            Resolver temp = e.onUnleashPost(m);
-            if (temp != null) {
-                list.add(temp);
-            }
-        }
-        return list;
     }
 
     @Override

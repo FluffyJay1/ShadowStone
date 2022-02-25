@@ -4,6 +4,7 @@ import java.lang.reflect.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import client.tooltip.*;
 import client.ui.game.*;
@@ -68,7 +69,7 @@ public abstract class Card implements Indexable, StringBuildable {
 
     public double getTotalEffectValueOf(Function<Effect, Double> property) {
         // functional is cool
-        return this.getFinalEffects(true).stream()
+        return this.getFinalEffects(true)
                 .map(property)
                 .reduce(0., Double::sum);
     }
@@ -81,26 +82,18 @@ public abstract class Card implements Indexable, StringBuildable {
         return this.removedEffects;
     }
 
-    public List<Effect> getUnmutedEffects(boolean basic) {
-        LinkedList<Effect> list = new LinkedList<>();
-        for (Effect e : this.getEffects(basic)) {
-            if (!e.mute) {
-                list.add(e);
-            }
-        }
-        return list;
+    public Stream<Effect> getUnmutedEffects(boolean basic) {
+        return this.getEffects(basic).stream()
+                .filter(e -> !e.mute);
     }
 
-    public List<Effect> getFinalEffects(boolean unmutedOnly) {
-        LinkedList<Effect> list = new LinkedList<>();
+    public Stream<Effect> getFinalEffects(boolean unmutedOnly) {
+        Stream<Effect> ret = Stream.concat(this.getEffects(true).stream(), this.getEffects(false).stream());
         if (unmutedOnly) {
-            list.addAll(this.getUnmutedEffects(true));
-            list.addAll(this.getUnmutedEffects(false));
+            return ret.filter(e -> !e.mute);
         } else {
-            list.addAll(this.getEffects(true));
-            list.addAll(this.getEffects(false));
+            return ret;
         }
-        return list;
     }
 
     /**
@@ -182,10 +175,8 @@ public abstract class Card implements Indexable, StringBuildable {
             stats = this.finalStatEffects;
         }
         stats.reset();
-        List<Effect> relevant = basic ? this.getEffects(true) : this.getFinalEffects(false);
-        for (Effect e : relevant) {
-            e.effectStats.applyToStatSet(stats);
-        }
+        Stream<Effect> relevant = basic ? this.getEffects(true).stream() : this.getFinalEffects(false);
+        relevant.forEachOrdered(e -> e.effectStats.applyToStatSet(stats));
         stats.makeNonNegative();
         if (basic) {
             // update the stat numbers for the additional effects too
@@ -197,7 +188,7 @@ public abstract class Card implements Indexable, StringBuildable {
     }
 
     public List<Resolver> getResolvers(Function<Effect, Resolver> hook) {
-        return this.getFinalEffects(true).stream()
+        return this.getFinalEffects(true)
                 .map(hook)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
@@ -210,9 +201,7 @@ public abstract class Card implements Indexable, StringBuildable {
     // probably not worth the hassle of making functional
     public List<List<TargetingScheme<?>>> getBattlecryTargetingSchemes() {
         List<List<TargetingScheme<?>>> list = new LinkedList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            list.add(e.getBattlecryTargetingSchemes());
-        }
+        this.getFinalEffects(true).forEachOrdered(e -> list.add(e.getBattlecryTargetingSchemes()));
         return list;
     }
 
@@ -229,29 +218,31 @@ public abstract class Card implements Indexable, StringBuildable {
     }
 
     public void setBattlecryTargets(List<List<TargetList<?>>> targets) {
-        List<Effect> es = this.getFinalEffects(true);
-        for (int i = 0; i < es.size(); i++) {
-            Effect e = es.get(i);
+        Iterator<Effect> effectIterator = this.getFinalEffects(true).iterator();
+        int i = 0;
+        while (effectIterator.hasNext()) {
+            Effect e = effectIterator.next();
             e.setBattlecryTargets(targets.get(i));
+            i++;
         }
     }
 
     public String battlecryTargetsToString(List<List<TargetList<?>>> targets) {
         StringBuilder builder = new StringBuilder();
-        List<Effect> es = this.getFinalEffects(true);
-        for (int i = 0; i < es.size(); i++) {
-            Effect e = es.get(i);
+        Iterator<Effect> effectIterator = this.getFinalEffects(true).iterator();
+        int i = 0;
+        while (effectIterator.hasNext()) {
+            Effect e = effectIterator.next();
             List<TargetingScheme<?>> battlecryTargetingSchemes = e.getBattlecryTargetingSchemes();
             builder.append(Effect.targetsToString(battlecryTargetingSchemes, targets.get(i)));
+            i++;
         }
         return builder.toString();
     }
 
     public List<List<TargetList<?>>> parseBattlecryTargets(StringTokenizer st) {
         List<List<TargetList<?>>> ret = new ArrayList<>();
-        for (Effect e : this.getFinalEffects(true)) {
-            ret.add(Effect.parseTargets(st, e.getBattlecryTargetingSchemes()));
-        }
+        this.getFinalEffects(true).forEachOrdered(e -> ret.add(Effect.parseTargets(st, e.getBattlecryTargetingSchemes())));
         return ret;
     }
 
