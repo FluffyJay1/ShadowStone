@@ -28,7 +28,7 @@ public class TurnEndResolver extends Resolver {
             // things may happen, this bo might be dead already
             if (bo.isInPlay()) {
                 b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
-                this.resolveList(b, subList, el, bo.getResolvers(Effect::onTurnEnd));
+                this.resolveList(b, subList, el, bo.onTurnEnd());
                 b.popEventGroup();
             }
         }
@@ -37,7 +37,7 @@ public class TurnEndResolver extends Resolver {
             // things may happen, this bo might be dead already
             if (bo.isInPlay()) {
                 b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
-                this.resolveList(b, subList, el, bo.getResolvers(Effect::onTurnEndEnemy));
+                this.resolveList(b, subList, el, bo.onTurnEndEnemy());
                 b.popEventGroup();
             }
         }

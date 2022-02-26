@@ -16,6 +16,14 @@ public class UnleashPower extends Card {
         super(b, unleashPowerText);
     }
 
+    public List<Resolver> onUnleashPre(Minion target) {
+        return this.getResolvers(e -> e.onUnleashPre(target), eff -> !eff.removed && ((UnleashPower) eff.owner).isInPlay() && target.isInPlay());
+    }
+
+    public List<Resolver> onUnleashPost(Minion target) {
+        return this.getResolvers(e -> e.onUnleashPost(target), eff -> !eff.removed && ((UnleashPower) eff.owner).isInPlay() && target.isInPlay());
+    }
+
     @Override
     public double getValue(int refs) {
         return 0;
@@ -25,5 +33,9 @@ public class UnleashPower extends Card {
     public void appendStringToBuilder(StringBuilder builder) {
         super.appendStringToBuilder(builder);
         builder.append(this.unleashesThisTurn).append(" ");
+    }
+
+    public boolean isInPlay() {
+        return this.status.equals(CardStatus.UNLEASHPOWER);
     }
 }

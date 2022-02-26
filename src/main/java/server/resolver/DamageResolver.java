@@ -64,7 +64,7 @@ public class DamageResolver extends Resolver {
         for (int i = 0; i < processedTargets.size(); i++) {
             Minion m = processedTargets.get(i);
             int damage = processedDamage.get(i);
-            rl.addAll(m.getResolvers(effect -> effect.onDamaged(damage)));
+            rl.addAll(m.onDamaged(damage));
         }
         if (this.resolveDestroy) {
             this.resolve(b, rl, el, new DestroyResolver(this.destroyed));

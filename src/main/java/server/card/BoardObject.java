@@ -3,7 +3,10 @@ package server.card;
 import client.tooltip.*;
 import server.*;
 import server.card.effect.*;
+import server.resolver.Resolver;
 import utils.HistoricalList;
+
+import java.util.List;
 
 public class BoardObject extends Card {
     public int lastBoardPos = 0; // After leaving board (e.g. to graveyard), keep a record of where it was last
@@ -61,6 +64,39 @@ public class BoardObject extends Card {
         } else {
             return a;
         }
+    }
+
+    @Override
+    public List<Resolver> battlecry() {
+        return this.getResolvers(Effect::battlecry, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
+    }
+
+    public List<Resolver> onTurnStart() {
+        return this.getResolvers(Effect::onTurnStart, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
+    }
+
+    public List<Resolver> onTurnEnd() {
+        return this.getResolvers(Effect::onTurnEnd, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
+    }
+
+    public List<Resolver> onTurnStartEnemy() {
+        return this.getResolvers(Effect::onTurnStartEnemy, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
+    }
+
+    public List<Resolver> onTurnEndEnemy() {
+        return this.getResolvers(Effect::onTurnEndEnemy, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
+    }
+
+    public List<Resolver> lastWords() {
+        return this.getResolvers(Effect::lastWords);
+    }
+
+    public List<Resolver> onEnterPlay() {
+        return this.getResolvers(Effect::onEnterPlay, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
+    }
+
+    public List<Resolver> onLeavePlay() {
+        return this.getResolvers(Effect::onLeavePlay, eff -> !eff.removed && !((BoardObject) eff.owner).isInPlay());
     }
 
     @Override

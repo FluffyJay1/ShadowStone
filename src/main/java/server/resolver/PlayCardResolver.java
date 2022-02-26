@@ -36,7 +36,7 @@ public class PlayCardResolver extends Resolver {
             } else {
                 b.processEvent(rl, el, new EventDestroy(this.c));
             }
-            List<Resolver> battlecryList = c.getResolvers(Effect::battlecry);
+            List<Resolver> battlecryList = this.c.battlecry();
             if (!(this.c instanceof Spell)) {
                 b.pushEventGroup(new EventGroup(EventGroupType.BATTLECRY, List.of(this.c)));
             }

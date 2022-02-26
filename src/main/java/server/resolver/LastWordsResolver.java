@@ -24,7 +24,7 @@ public class LastWordsResolver extends Resolver {
     @Override
     public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
         b.pushEventGroup(new EventGroup(EventGroupType.LASTWORDS, List.of(this.bo)));
-        this.resolveList(b, rl, el, this.bo.getResolvers(Effect::lastWords));
+        this.resolveList(b, rl, el, this.bo.lastWords());
         b.popEventGroup();
     }
 }

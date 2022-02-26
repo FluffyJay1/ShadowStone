@@ -390,7 +390,7 @@ public class UICard extends UIBox {
         if (this.card.finalStatEffects.getStat(EffectStats.POISONOUS) > 0) {
             this.icons.add(Game.getImage("res/game/poisonousicon.png"));
         }
-        if (this.card instanceof BoardObject && !this.getCard().getResolvers(Effect::lastWords).isEmpty()) {
+        if (this.card instanceof BoardObject && !((BoardObject) this.card).lastWords().isEmpty()) {
             this.icons.add(Game.getImage("res/game/lastwordsicon.png"));
         }
     }

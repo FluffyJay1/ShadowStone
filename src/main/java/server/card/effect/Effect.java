@@ -121,54 +121,67 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     }
 
     // these two are for the unleash power unleashing on a minion
+    // can assume that the unleash power and the minion is in play
     public Resolver onUnleashPre(Minion target) {
         return null;
     }
 
+    // can assume that the unleash power and the minion is in play
     public Resolver onUnleashPost(Minion target) {
         return null;
     }
 
+    // can assume that both minions are in play
     public Resolver onAttack(Minion target) {
         return null;
     }
 
+    // can assume that both minions are in play
     public Resolver onAttacked(Minion target) {
         return null;
     }
 
+    // can assume that both minions are in play
     public Resolver clash(Minion target) {
         return null;
     }
 
+    // can assume that minion is in play
     public Resolver onDamaged(int damage) {
         return null;
     }
 
+    // can assume that boardobject is in play
     public Resolver onTurnStart() {
         return null;
     }
 
+    // can assume that boardobject is in play
     public Resolver onTurnEnd() {
         return null;
     }
 
+    // can assume that boardobject is in play
     public Resolver onTurnStartEnemy() {
         return null;
     }
 
+    // can assume that boardobject is in play
     public Resolver onTurnEndEnemy() {
         return null;
     }
 
+    // anything goes
     public Resolver lastWords() {
         return null;
     }
 
+    // can assume that boardobject is in play
     public Resolver onEnterPlay() {
         return null;
     }
 
+    // can assume that boardobject is not in play
     public Resolver onLeavePlay() {
         return null;
     }

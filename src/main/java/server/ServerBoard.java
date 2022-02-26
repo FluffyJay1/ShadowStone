@@ -9,6 +9,7 @@ import server.event.Event;
 import server.event.eventgroup.EventGroup;
 import server.playeraction.PlayerAction;
 import server.resolver.*;
+import server.resolver.meta.FlagResolver;
 
 import java.io.File;
 import java.io.IOException;
@@ -172,7 +173,7 @@ public class ServerBoard extends Board {
         this.lastCheckedActiveAuras = newAuras;
         if (e.cardsEnteringPlay() != null) {
             for (BoardObject bo : e.cardsEnteringPlay()) {
-                List<Resolver> resolvers = bo.getResolvers(Effect::onEnterPlay);
+                List<Resolver> resolvers = bo.onEnterPlay();
                 if (!resolvers.isEmpty()) {
                     rl.add(new FlagResolver(bo, resolvers));
                 }
@@ -180,7 +181,7 @@ public class ServerBoard extends Board {
         }
         if (e.cardsLeavingPlay() != null) {
             for (BoardObject bo : e.cardsLeavingPlay()) {
-                List<Resolver> resolvers = bo.getResolvers(Effect::onLeavePlay);
+                List<Resolver> resolvers = bo.onLeavePlay();
                 if (!resolvers.isEmpty()) {
                     rl.add(new FlagResolver(bo, resolvers));
                 }

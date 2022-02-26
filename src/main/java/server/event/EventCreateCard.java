@@ -78,6 +78,10 @@ public class EventCreateCard extends Event {
                 }
                 case UNLEASHPOWER -> {
                     this.prevUP = p.getUnleashPower().orElse(null);
+                    if (this.prevUP != null) {
+                        this.prevUP.status = CardStatus.GRAVEYARD;
+                        p.getGraveyard().add(this.prevUP);
+                    }
                     b.getPlayer(this.team).setUnleashPower((UnleashPower) c);
                     this.successful.add(true);
                     this.successfullyCreatedCards.add(c);
@@ -111,7 +115,13 @@ public class EventCreateCard extends Event {
                         }
                     }
                     case DECK -> p.getDeck().remove(c);
-                    case UNLEASHPOWER -> b.getPlayer(this.team).setUnleashPower(this.prevUP);
+                    case UNLEASHPOWER -> {
+                        if (this.prevUP != null) {
+                            p.getGraveyard().remove(this.prevUP);
+                            this.prevUP.status = CardStatus.UNLEASHPOWER;
+                        }
+                        b.getPlayer(this.team).setUnleashPower(this.prevUP);
+                    }
                     case LEADER -> b.getPlayer(this.team).setLeader(this.prevLeader);
                 }
             }

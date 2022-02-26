@@ -1,10 +1,11 @@
-package server.resolver;
+package server.resolver.meta;
 
 import server.ServerBoard;
 import server.card.Card;
 import server.event.Event;
 import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
+import server.resolver.Resolver;
 
 import java.util.List;
 

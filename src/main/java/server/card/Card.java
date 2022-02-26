@@ -3,6 +3,7 @@ package server.card;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -12,7 +13,9 @@ import server.*;
 import server.card.effect.*;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
+import server.event.Event;
 import server.resolver.*;
+import server.resolver.meta.EffectPredicateResolver;
 import utils.Indexable;
 import utils.PositionedList;
 import utils.StringBuildable;
@@ -187,9 +190,23 @@ public abstract class Card implements Indexable, StringBuildable {
         }
     }
 
-    public List<Resolver> getResolvers(Function<Effect, Resolver> hook) {
+    protected List<Resolver> getResolvers(Function<Effect, Resolver> hook) {
         return this.getFinalEffects(true)
                 .map(hook)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    // like above method, but each returned resolver is wrapped to check for the predicate before execution
+    protected List<Resolver> getResolvers(Function<Effect, Resolver> hook, Predicate<Effect> predicate) {
+        return this.getFinalEffects(true)
+                .map(e -> {
+                    Resolver r = hook.apply(e);
+                    if (r == null) {
+                        return null;
+                    }
+                    return new EffectPredicateResolver(r, e, predicate);
+                })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
@@ -244,6 +261,10 @@ public abstract class Card implements Indexable, StringBuildable {
         List<List<TargetList<?>>> ret = new ArrayList<>();
         this.getFinalEffects(true).forEachOrdered(e -> ret.add(Effect.parseTargets(st, e.getBattlecryTargetingSchemes())));
         return ret;
+    }
+
+    public List<Resolver> battlecry() {
+        return this.getResolvers(Effect::battlecry, eff -> !eff.removed);
     }
 
     public String cardPosToString() {

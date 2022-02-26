@@ -29,7 +29,7 @@ public class TurnStartResolver extends Resolver {
             // things may happen, this bo might be dead already
             if (bo.isInPlay()) {
                 b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
-                this.resolveList(b, rl, el, bo.getResolvers(Effect::onTurnStart));
+                this.resolveList(b, rl, el, bo.onTurnStart());
                 b.popEventGroup();
                 if (bo.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
                     Effect e = new Effect();
@@ -43,7 +43,7 @@ public class TurnStartResolver extends Resolver {
             // things may happen, this bo might be dead already
             if (bo.isInPlay()) {
                 b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
-                this.resolveList(b, rl, el, bo.getResolvers(Effect::onTurnStartEnemy));
+                this.resolveList(b, rl, el, bo.onTurnStartEnemy());
                 b.popEventGroup();
             }
         }
