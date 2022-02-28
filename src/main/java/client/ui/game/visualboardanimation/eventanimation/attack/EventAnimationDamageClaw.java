@@ -46,7 +46,7 @@ public class EventAnimationDamageClaw extends EventAnimationDamage {
     @Override
     public void onStart() {
         for (Minion m : this.event.m) {
-            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getAbsPos(),UIBoard.PARTICLE_Z_BOARD,
+            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getPos(),UIBoard.PARTICLE_Z_BOARD,
                     new ScaledEmissionStrategy(CLAW_EMISSION_STRATEGY.get(), m.uiCard.getScale()));
         }
     }
@@ -54,7 +54,7 @@ public class EventAnimationDamageClaw extends EventAnimationDamage {
     @Override
     public void onProcess() {
         for (Minion m : this.event.m) {
-            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getAbsPos(),UIBoard.PARTICLE_Z_BOARD,
+            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getPos(),UIBoard.PARTICLE_Z_BOARD,
                     new ScaledEmissionStrategy(CLAW_EMISSION_STRATEGY.get(), BIG_CLAW_SCALE * m.uiCard.getScale()));
         }
     }

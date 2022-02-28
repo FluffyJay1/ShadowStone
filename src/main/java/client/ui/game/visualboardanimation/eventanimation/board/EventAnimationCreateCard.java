@@ -89,6 +89,7 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
                 Card c = this.event.cards.get(i);
                 UICard uic = c.uiCard;
                 this.useCardInAnimation(uic);
+                uic.setVisible(true);
                 uic.setScale(UICard.SCALE_MOVE);
                 uic.setZ(UICard.Z_MOVE);
                 // fan the cards between [-PRE_FAN_WIDTH/2, PRE_FAN_WIDTH/2]
@@ -97,7 +98,7 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
                 uic.setPos(new Vector2f(0, ENTRANCE_OFFSET_Y), 1);
                 uic.setPos(new Vector2f(fanX, 0), 0.999);
             }
-            this.visualBoard.uiBoard.addParticleSystem(this.visualBoard.uiBoard.getAbsPosOfLocal(new Vector2f()), UIBoard.PARTICLE_Z_SPECIAL, GLOW_EMISSION_STRATEGY.get());
+            this.visualBoard.uiBoard.addParticleSystem(new Vector2f(), UIBoard.PARTICLE_Z_SPECIAL, GLOW_EMISSION_STRATEGY.get());
         }
     }
 
@@ -121,7 +122,7 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
                 if (!this.event.successful.get(i)) {
                     // thanos snap the unsuccessful cards
                     EmissionStrategy strategy = new ScaledEmissionStrategy(ParticleSystemCommon.DESTROY.get(), uic.getScale());
-                    this.visualBoard.uiBoard.addParticleSystem(uic.getAbsPos(), UIBoard.PARTICLE_Z_SPECIAL, strategy);
+                    this.visualBoard.uiBoard.addParticleSystem(uic.getPos(), UIBoard.PARTICLE_Z_SPECIAL, strategy);
                     this.visualBoard.uiBoard.removeUICard(uic);
                 }
                 this.stopUsingCardInAnimation(uic);
@@ -134,12 +135,12 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
                 UICard uic = c.uiCard;
                 this.useCardInAnimation(uic);
                 if (this.event.successful.get(i)) {
+                    uic.setVisible(true);
                     Vector2f destPos = this.visualBoard.uiBoard.getBoardPosFor(c.getIndex(), c.team, this.visualBoard.getPlayer(c.team).getPlayArea().size());
                     uic.setPos(destPos.copy().add(new Vector2f(0, ENTRANCE_OFFSET_Y)), 1);
                     uic.setPos(destPos, 0.999);
                     Vector2f localPosOfRel = this.visualBoard.uiBoard.getLocalPosOfRel(destPos);
-                    Vector2f absPosOfLocal = this.visualBoard.uiBoard.getAbsPosOfLocal(localPosOfRel);
-                    this.visualBoard.uiBoard.addParticleSystem(absPosOfLocal, UIBoard.PARTICLE_Z_BOARD, DUST_EMISSION_STRATEGY.get());
+                    this.visualBoard.uiBoard.addParticleSystem(localPosOfRel, UIBoard.PARTICLE_Z_BOARD, DUST_EMISSION_STRATEGY.get());
                 } else if (!seenFirstFailed) {
                     this.firstFailedOnBoard = uic;
                     uic.setVisible(false);
@@ -158,6 +159,7 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
                 }
             }
         }
+        this.visualBoard.uiBoard.refreshAnimatedTargets();
     }
 
     private void showFailedSummon() {
@@ -167,8 +169,7 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
             this.firstFailedOnBoard.setPos(destPos.copy().add(new Vector2f(0, ENTRANCE_OFFSET_Y)), 1);
             this.firstFailedOnBoard.setPos(destPos, 0.99);
             Vector2f localPosOfRel = this.visualBoard.uiBoard.getLocalPosOfRel(destPos);
-            Vector2f absPosOfLocal = this.visualBoard.uiBoard.getAbsPosOfLocal(localPosOfRel);
-            this.banishParticles = this.visualBoard.uiBoard.addParticleSystem(absPosOfLocal, UIBoard.PARTICLE_Z_BOARD, ParticleSystemCommon.BANISH.get());
+            this.banishParticles = this.visualBoard.uiBoard.addParticleSystem(localPosOfRel, UIBoard.PARTICLE_Z_BOARD, ParticleSystemCommon.BANISH.get());
             this.banishParticles.followElement(this.firstFailedOnBoard, 0.99);
         }
     }

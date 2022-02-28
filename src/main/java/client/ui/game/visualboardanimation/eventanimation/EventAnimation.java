@@ -168,7 +168,7 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
 
     // override this placeholder
     public void draw(Graphics g) {
-        g.drawString(this.getClass().getName(), 0, 0);
+
     }
 
     private static class ScheduledAnimation implements Comparable<ScheduledAnimation> {

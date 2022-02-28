@@ -91,7 +91,7 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
                 UICard uic = c.uiCard;
                 if (this.event.successful.get(i)) {
                     EmissionStrategy strategy = new ScaledEmissionStrategy(SPARKLE_EMISSION_STRATEGY.get(), uic.getScale());
-                    this.visualBoard.uiBoard.addParticleSystem(uic.getAbsPos(), UIBoard.PARTICLE_Z_SPECIAL, strategy);
+                    this.visualBoard.uiBoard.addParticleSystem(uic.getPos(), UIBoard.PARTICLE_Z_SPECIAL, strategy);
                 }
             }
         }

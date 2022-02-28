@@ -28,6 +28,7 @@ public class EventIDLinker {
             case EventPutCard.ID -> EventPutCard.class;
             case EventRemoveEffect.ID -> EventRemoveEffect.class;
             case EventRestore.ID -> EventRestore.class;
+            case EventTransform.ID -> EventTransform.class;
             case EventTurnEnd.ID -> EventTurnEnd.class;
             case EventTurnStart.ID -> EventTurnStart.class;
             case EventUnleash.ID -> EventUnleash.class;

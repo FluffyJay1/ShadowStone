@@ -244,6 +244,12 @@ public class PendingListManager<T> {
          * @param add Whether to add or remove at that index
          */
         void processOp(int pos, T pendingItem, boolean add);
+
+        /**
+         * Tell the pending play manager that board state changed, but no list
+         * ops happened
+         */
+        void invalidate();
     }
 
     public class Producer implements Processor<T> {
@@ -284,6 +290,11 @@ public class PendingListManager<T> {
                 this.addListOp(pos, add);
             }
         }
+
+        @Override
+        public void invalidate() {
+            dirtyPending = true;
+        }
     }
 
     public class Consumer implements Processor<T> {
@@ -322,6 +333,11 @@ public class PendingListManager<T> {
         @Override
         public void processOp(int pos, T pendingItem, boolean add) {
             this.consumeListOp(); //kekl
+        }
+
+        @Override
+        public void invalidate() {
+            dirtyPending = true;
         }
     }
 

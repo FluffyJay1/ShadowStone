@@ -1,6 +1,5 @@
 package server.card.effect;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,7 +66,7 @@ public class EffectLastWordsSummon extends Effect {
         StringBuilder builder = new StringBuilder();
         builder.append(this.boardObjectTexts.size()).append(" ");
         for (BoardObjectText bot : this.boardObjectTexts) {
-            builder.append(bot.getClass().getName()).append(" ");
+            builder.append(bot.toString());
         }
         builder.append(this.teamMultiplier).append(" ");
         return builder.toString();
@@ -77,13 +76,8 @@ public class EffectLastWordsSummon extends Effect {
     public void loadExtraState(Board b, StringTokenizer st) {
         int numCards = Integer.parseInt(st.nextToken());
         this.boardObjectTexts = new LinkedList<>();
-        try {
-            for (int i = 0; i < numCards; i++) {
-                this.boardObjectTexts.add(Class.forName(st.nextToken()).asSubclass(BoardObjectText.class).getConstructor().newInstance());
-            }
-        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        for (int i = 0; i < numCards; i++) {
+            this.boardObjectTexts.add(BoardObjectText.fromString(st.nextToken()));
         }
         this.teamMultiplier = Integer.parseInt(st.nextToken());
     }

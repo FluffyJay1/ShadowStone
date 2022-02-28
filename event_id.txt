@@ -3,7 +3,7 @@
  2: CreateCard
  3: Damage
  4: Destroy
- 5: Draw - DELETED
+ 5: Transform
  6: ManaChange
  7: Mill - DEPRECATED
  8: MinionAttack

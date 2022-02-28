@@ -32,7 +32,7 @@ public class CardDisplayUnit extends UIBox {
 
     @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
-        this.alert(CARD_CLICK + " " + cardText.getClass().getName(), clickCount);
+        this.alert(CARD_CLICK + " " + cardText.toString(), clickCount);
 
     }
 

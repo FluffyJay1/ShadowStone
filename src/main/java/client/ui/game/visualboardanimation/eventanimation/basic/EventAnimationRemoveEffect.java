@@ -18,7 +18,7 @@ public class EventAnimationRemoveEffect extends EventAnimation<EventRemoveEffect
     public void init(VisualBoard b, EventRemoveEffect event) {
         super.init(b, event);
         for (Effect e : event.effects) {
-            if (!e.owner.status.equals(CardStatus.GRAVEYARD) && !e.owner.status.equals(CardStatus.DECK)) {
+            if (e.owner.isVisible()) {
                 this.postTime = 0.3; // if we can see one of them, we animate
                 break;
             }
@@ -32,7 +32,7 @@ public class EventAnimationRemoveEffect extends EventAnimation<EventRemoveEffect
             float xoffset = (float) Math.random() * 150 - 75;
             float yoffset = (float) (this.normalizedPost() * 160) - 80 + (float) Math.random() * 150 - 75;
             for (Effect e : this.event.effects)
-                if (!e.owner.status.equals(CardStatus.GRAVEYARD) && !e.owner.status.equals(CardStatus.DECK)) {
+                if (e.owner.isVisible()) {
                     g.drawImage(img, e.owner.uiCard.getAbsPos().x - img.getWidth() / 2 + xoffset,
                             e.owner.uiCard.getAbsPos().y - img.getHeight() / 2 + yoffset);
                 }

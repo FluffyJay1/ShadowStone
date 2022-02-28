@@ -86,23 +86,6 @@ public class CardSet {
     }
 
     /**
-     * Maps a card class to its tooltip
-     * 
-     * @param cardTextClass the class of the card
-     * @return the tooltip of the card
-     */
-    public static TooltipCard getCardTooltip(Class<? extends CardText> cardTextClass) {
-        try {
-            CardText text = cardTextClass.getConstructor().newInstance();
-            return text.getTooltip();
-        } catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException | InstantiationException | InvocationTargetException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
      * Get a craft's respective default unleash power that they start out with
      * 
      * @param craft The craft to get the unleash power of

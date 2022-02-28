@@ -18,7 +18,7 @@ public class EventAnimationAddEffect extends EventAnimation<EventAddEffect> {
     public void init(VisualBoard b, EventAddEffect event) {
         super.init(b, event);
         for (Card c : event.c) {
-            if (!c.status.equals(CardStatus.GRAVEYARD)) {
+            if (c.isVisible()) {
                 this.postTime = 0.3; // if we can see one of them, we animate
                 break;
             }
@@ -29,7 +29,7 @@ public class EventAnimationAddEffect extends EventAnimation<EventAddEffect> {
     public void draw(Graphics g) {
         Image img = Game.getImage("res/game/battlecry.png");
         for (Card c : this.event.c) {
-            if (!c.status.equals(CardStatus.GRAVEYARD)) {
+            if (c.isVisible()) {
                 for (int i = 0; i < 4; i++) {
                     float xoffset = (float) Math.random() * 150 - 75;
                     float yoffset = (float) (-this.normalizedPost() * 160) + 80 + (float) Math.random() * 150 - 75;

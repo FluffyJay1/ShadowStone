@@ -70,7 +70,6 @@ public class UIBoard extends UIBox {
     public UICard preSelectedCard, selectedCard, draggingCard, playingCard, attackingMinion,
             unleashingMinion;
     ModalSelectionPanel modalSelectionPanel;
-    // TODO: CARD PLAYING QUEUE AND BOARD POSITIONING
     Iterator<List<TargetingScheme<?>>> effectTargetingSchemeIterator; // REAL SCHEMES per effect iterator
     Iterator<TargetingScheme<?>> targetingSchemeIterator; // REAL SCHEMES
     TargetingScheme<?> currentTargetingScheme; // REAL SCHEMES
@@ -384,6 +383,7 @@ public class UIBoard extends UIBox {
 
     public void addCard(Card c) {
         UICard uic = new UICard(this.ui, this, c);
+        uic.setVisible(false);
         uic.relpos = true;
         c.uiCard = uic;
         uic.updateIconList();
@@ -413,7 +413,7 @@ public class UIBoard extends UIBox {
         this.preSelectedCard = null;
         this.expandHand = x > 800 && y > (HAND_EXPAND_Y + 0.5) * Config.WINDOW_HEIGHT;
         this.handleTargeting(null);
-        this.addParticleSystem(new Vector2f(x, y), UIBoard.PARTICLE_Z_BOARD, DUST_EMISSION_STRATEGY.get());
+        this.addParticleSystem(this.getLocalPosOfAbs(new Vector2f(x, y)), UIBoard.PARTICLE_Z_BOARD, DUST_EMISSION_STRATEGY.get());
     }
 
     public void mousePressedCard(UICard c, int button, int x, int y) {
@@ -653,7 +653,9 @@ public class UIBoard extends UIBox {
     }
 
     public Stream<UICard> getTargetableCards(CardTargetingScheme t) {
-        return this.b.realBoard.getTargetableCards(t).map(c -> c.visualCard.uiCard);
+        return this.b.realBoard.getTargetableCards(t)
+                .filter(c -> c.visualCard != null)
+                .map(c -> c.visualCard.uiCard);
     }
 
     public void animateTargets(CardTargetingScheme t, boolean activate) {
@@ -670,8 +672,14 @@ public class UIBoard extends UIBox {
         }
     }
 
-    public ParticleSystem addParticleSystem(Vector2f absPos, int z, EmissionStrategy es) {
-        ParticleSystem ps = new ParticleSystem(this.getUI(), this.getLocalPosOfAbs(absPos), es);
+    public void refreshAnimatedTargets() {
+        if (this.currentTargetingScheme instanceof CardTargetingScheme) {
+            this.animateTargets((CardTargetingScheme) this.currentTargetingScheme, true);
+        }
+    }
+
+    public ParticleSystem addParticleSystem(Vector2f localPos, int z, EmissionStrategy es) {
+        ParticleSystem ps = new ParticleSystem(this.getUI(), localPos, es);
         ps.setZ(z);
         this.addChild(ps);
         return ps;

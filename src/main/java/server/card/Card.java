@@ -58,6 +58,14 @@ public abstract class Card implements Indexable, StringBuildable {
         this.status = CardStatus.DECK;
     }
 
+    // if card can be seen on the board
+    public boolean isVisible() {
+        return switch (this.status) {
+            case HAND, BOARD, LEADER, UNLEASHPOWER -> true;
+            default -> false;
+        };
+    }
+
     /**
      * Estimates a "power level" of a card, for an AI to use to evaluate board
      * state. Values should be in terms of equivalent mana worth.

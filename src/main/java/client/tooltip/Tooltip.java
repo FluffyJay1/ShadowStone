@@ -52,6 +52,9 @@ public class Tooltip {
     public static final Tooltip CHOOSE = new Tooltip("Choose",
             "Cards with <b>Choose</b> effects allow you to choose what happens in either a <b>Battlecry</b> or an <b>Unleash</b>.",
             () -> List.of(Tooltip.BATTLECRY, Tooltip.UNLEASH));
+    public static final Tooltip TRANSFORM = new Tooltip("Transform",
+            "Replace a card with another card. Any process pertaining to the replaced card is cancelled. Does not count as the card leaving/entering play.",
+            List::of);
 
     public final String name;
     public final String description;

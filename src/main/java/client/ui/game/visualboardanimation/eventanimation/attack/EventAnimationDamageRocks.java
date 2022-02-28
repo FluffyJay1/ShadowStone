@@ -56,7 +56,7 @@ public class EventAnimationDamageRocks extends EventAnimationDamage {
     @Override
     public void onProcess() {
         for (Minion m : this.event.m) {
-            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getAbsPos(), UIBoard.PARTICLE_Z_BOARD, EMISSION_STRATEGY.get());
+            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getPos(), UIBoard.PARTICLE_Z_BOARD, EMISSION_STRATEGY.get());
         }
     }
 

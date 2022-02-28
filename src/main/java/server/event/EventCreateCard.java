@@ -141,7 +141,7 @@ public class EventCreateCard extends Event {
         StringBuilder builder = new StringBuilder();
         builder.append(this.id).append(" ").append(this.cards.size()).append(" ");
         for (Card c : this.cards) {
-            builder.append(c.cardText.getClass().getName()).append(" ");
+            builder.append(c.cardText.toString());
         }
         builder.append(this.team).append(" ").append(this.status.toString());
         for (Integer i : this.cardpos) {
@@ -155,19 +155,16 @@ public class EventCreateCard extends Event {
         int numCards = Integer.parseInt(st.nextToken());
         List<Card> cards = new ArrayList<>(numCards);
         for (int i = 0; i < numCards; i++) {
-            try {
-                CardText cardText = Class.forName(st.nextToken()).asSubclass(CardText.class).getConstructor().newInstance();
-                Card c = cardText.constructInstance(b);
-                cards.add(c);
-                if (b instanceof VisualBoard) {
-                    assert c != null;
-                    // link the ClientBoard version of the card with the VisualBoard version
-                    c.realCard = ((VisualBoard) b).realBoard.cardsCreated.remove(0);
-                    c.realCard.visualCard = c;
-                    ((VisualBoard) b).uiBoard.addCard(c);
-                }
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
-                e.printStackTrace();
+            CardText cardText = CardText.fromString(st.nextToken());
+            assert cardText != null;
+            Card c = cardText.constructInstance(b);
+            cards.add(c);
+            if (b instanceof VisualBoard) {
+                assert c != null;
+                // link the ClientBoard version of the card with the VisualBoard version
+                c.realCard = ((VisualBoard) b).realBoard.cardsCreated.remove(0);
+                c.realCard.visualCard = c;
+                ((VisualBoard) b).uiBoard.addCard(c);
             }
         }
         int team = Integer.parseInt(st.nextToken());
