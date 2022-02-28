@@ -4,6 +4,7 @@ import client.tooltip.*;
 import server.*;
 import server.card.effect.*;
 import server.resolver.Resolver;
+import server.resolver.util.ResolverQueue;
 import utils.HistoricalList;
 
 import java.util.List;
@@ -67,35 +68,35 @@ public class BoardObject extends Card {
     }
 
     @Override
-    public List<Resolver> battlecry() {
+    public ResolverQueue battlecry() {
         return this.getResolvers(Effect::battlecry, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
     }
 
-    public List<Resolver> onTurnStart() {
+    public ResolverQueue onTurnStart() {
         return this.getResolvers(Effect::onTurnStart, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
     }
 
-    public List<Resolver> onTurnEnd() {
+    public ResolverQueue onTurnEnd() {
         return this.getResolvers(Effect::onTurnEnd, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
     }
 
-    public List<Resolver> onTurnStartEnemy() {
+    public ResolverQueue onTurnStartEnemy() {
         return this.getResolvers(Effect::onTurnStartEnemy, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
     }
 
-    public List<Resolver> onTurnEndEnemy() {
+    public ResolverQueue onTurnEndEnemy() {
         return this.getResolvers(Effect::onTurnEndEnemy, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
     }
 
-    public List<Resolver> lastWords() {
+    public ResolverQueue lastWords() {
         return this.getResolvers(Effect::lastWords);
     }
 
-    public List<Resolver> onEnterPlay() {
+    public ResolverQueue onEnterPlay() {
         return this.getResolvers(Effect::onEnterPlay, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
     }
 
-    public List<Resolver> onLeavePlay() {
+    public ResolverQueue onLeavePlay() {
         return this.getResolvers(Effect::onLeavePlay, eff -> !eff.removed && !((BoardObject) eff.owner).isInPlay());
     }
 

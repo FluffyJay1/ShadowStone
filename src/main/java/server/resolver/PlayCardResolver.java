@@ -9,6 +9,7 @@ import server.card.target.TargetList;
 import server.event.*;
 import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
+import server.resolver.util.ResolverQueue;
 
 public class PlayCardResolver extends Resolver {
     public final Player p;
@@ -25,22 +26,21 @@ public class PlayCardResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         if (this.p.canPlayCard(this.c)) {
             c.setBattlecryTargets(this.battlecryTargets);
-            b.processEvent(rl, el, new EventPlayCard(this.p, this.c, this.position));
-            b.processEvent(rl, el,
+            b.processEvent(rq, el, new EventPlayCard(this.p, this.c, this.position));
+            b.processEvent(rq, el,
                     new EventManaChange(this.p, -this.c.finalStatEffects.getStat(EffectStats.COST), false, true));
             if (this.c instanceof BoardObject) {
-                b.processEvent(rl, el, new EventPutCard(List.of(this.c), CardStatus.BOARD, this.p.team, List.of(this.position), null));
+                b.processEvent(rq, el, new EventPutCard(List.of(this.c), CardStatus.BOARD, this.p.team, List.of(this.position), null));
             } else {
-                b.processEvent(rl, el, new EventDestroy(this.c));
+                b.processEvent(rq, el, new EventDestroy(this.c));
             }
-            List<Resolver> battlecryList = this.c.battlecry();
             if (!(this.c instanceof Spell)) {
                 b.pushEventGroup(new EventGroup(EventGroupType.BATTLECRY, List.of(this.c)));
             }
-            this.resolveList(b, rl, el, battlecryList);
+            this.resolveQueue(b, rq, el, this.c.battlecry());
             if (!(this.c instanceof Spell)) {
                 b.popEventGroup();
             }

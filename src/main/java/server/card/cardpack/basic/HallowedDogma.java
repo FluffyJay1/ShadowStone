@@ -2,7 +2,6 @@ package server.card.cardpack.basic;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
-import server.Board;
 import server.ServerBoard;
 import server.card.*;
 import server.card.effect.Effect;
@@ -13,6 +12,7 @@ import server.event.Event;
 import server.resolver.AddEffectResolver;
 import server.resolver.DrawResolver;
 import server.resolver.Resolver;
+import server.resolver.util.ResolverQueue;
 
 import java.util.List;
 
@@ -41,18 +41,18 @@ public class HallowedDogma extends SpellText {
             public Resolver battlecry() {
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         // lmao
                         getStillTargetableBattlecryCardTargets(0).findFirst().ifPresent(c -> {
                             if (c.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
                                 Effect countdownAdd = new Effect();
                                 countdownAdd.effectStats.change.setStat(EffectStats.COUNTDOWN, -2);
-                                this.resolve(b, rl, el, new AddEffectResolver(c, countdownAdd));
-                                this.resolve(b, rl, el, new DrawResolver(owner.board.getPlayer(owner.team), 1));
+                                this.resolve(b, rq, el, new AddEffectResolver(c, countdownAdd));
+                                this.resolve(b, rq, el, new DrawResolver(owner.board.getPlayer(owner.team), 1));
                             } else {
                                 Effect countdownSet = new Effect();
                                 countdownSet.effectStats.set.setStat(EffectStats.COUNTDOWN, 2);
-                                this.resolve(b, rl, el, new AddEffectResolver(c, countdownSet));
+                                this.resolve(b, rq, el, new AddEffectResolver(c, countdownSet));
                             }
                         });
                     }

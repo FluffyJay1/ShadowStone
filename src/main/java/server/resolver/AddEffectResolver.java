@@ -6,6 +6,7 @@ import server.*;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
+import server.resolver.util.ResolverQueue;
 
 public class AddEffectResolver extends Resolver {
     final List<? extends Card> c;
@@ -19,6 +20,7 @@ public class AddEffectResolver extends Resolver {
         this.c = c;
         this.e = e;
         this.destroyed = new LinkedList<>();
+        this.essential = true;
     }
 
     public AddEffectResolver(Card c, Effect e) {
@@ -26,11 +28,11 @@ public class AddEffectResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         EventAddEffect addEffect = new EventAddEffect(this.c, e, this.destroyed);
-        b.processEvent(rl, el, addEffect);
+        b.processEvent(rq, el, addEffect);
         this.effects = addEffect.effects;
-        this.resolve(b, rl, el, new DestroyResolver(this.destroyed));
+        this.resolve(b, rq, el, new DestroyResolver(this.destroyed));
     }
 
 }

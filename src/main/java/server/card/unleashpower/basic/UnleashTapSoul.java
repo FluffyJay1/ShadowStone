@@ -9,6 +9,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class UnleashTapSoul extends UnleashPowerText {
     public static final String NAME = "Tap Soul";
@@ -31,20 +32,20 @@ public class UnleashTapSoul extends UnleashPowerText {
                 Effect effect = this; // anonymous fuckery
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (e instanceof EventDamage || e instanceof EventRestore || e instanceof EventAddEffect) {
                             Player p = b.getPlayer(effect.owner.team);
                             if (!vengeance && p.vengeance()) {
-                                this.resolve(b, rl, el, new UpdateEffectStateResolver(effect, () -> vengeance = true));
+                                this.resolve(b, rq, el, new UpdateEffectStateResolver(effect, () -> vengeance = true));
                                 EffectStats esc = new EffectStats();
                                 esc.change.setStat(EffectStats.COST, -2);
-                                this.resolve(b, rl, el, new SetEffectStatsResolver(effect, esc));
+                                this.resolve(b, rq, el, new SetEffectStatsResolver(effect, esc));
                             }
                             if (vengeance && !p.vengeance()) {
-                                this.resolve(b, rl, el, new UpdateEffectStateResolver(effect, () -> vengeance = false));
+                                this.resolve(b, rq, el, new UpdateEffectStateResolver(effect, () -> vengeance = false));
                                 EffectStats esc = new EffectStats();
                                 esc.change.setStat(EffectStats.COST, 0);
-                                this.resolve(b, rl, el, new SetEffectStatsResolver(effect, esc));
+                                this.resolve(b, rq, el, new SetEffectStatsResolver(effect, esc));
                             }
                         }
                     }
@@ -56,10 +57,10 @@ public class UnleashTapSoul extends UnleashPowerText {
                 Effect effect = this; // anonymous fuckery
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         Player p = b.getPlayer(effect.owner.team);
                         if (!p.vengeance()) {
-                            this.resolve(b, rl, el, new EffectDamageResolver(effect,
+                            this.resolve(b, rq, el, new EffectDamageResolver(effect,
                                     effect.owner.board.getPlayer(effect.owner.team).getLeader().orElse(null), 2, true, null));
                         }
                     }

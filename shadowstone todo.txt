@@ -1,4 +1,3 @@
-Max resolver depth to prevent infinite loops
 Figure out why the game is eating cpu and gpu
 relpos lol
 formalize basic effects? createBasicEffect()

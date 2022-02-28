@@ -13,6 +13,7 @@ import server.card.leader.*;
 import server.event.*;
 import server.playeraction.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 /**
  * thread for p2p battles on same network, one computer acts as server, each
@@ -77,7 +78,7 @@ public class ServerGameThread extends Thread {
     }
 
     private void initializeGame() {
-        List<Resolver> rl = new ArrayList<>();
+        ResolverQueue rq = new ResolverQueue();
         for (int team = 1; team >= -1; team -= 2) { // deckbuilding 101
             List<Card> cards = this.decks[(team - 1) / -2].convertToCards(this.b);
             List<Card> shuffledCards = Game.selectRandom(cards, cards.size());
@@ -85,16 +86,16 @@ public class ServerGameThread extends Thread {
             for (int i = 0; i < shuffledCards.size(); i++) {
                 inds.add(i);
             }
-            this.b.processEvent(rl, null,
+            this.b.processEvent(rq, null,
                     new EventCreateCard(shuffledCards, team, CardStatus.DECK, inds));
             UnleashPower up = CardSet.getDefaultUnleashPower(this.decks[(team - 1) / -2].craft).constructInstance(this.b);
-            this.b.processEvent(rl, null,
+            this.b.processEvent(rq, null,
                     new EventCreateCard(List.of(up), team, CardStatus.UNLEASHPOWER, List.of(0)));
             // TODO change leader
-            this.b.processEvent(rl, null,
+            this.b.processEvent(rq, null,
                     new EventCreateCard(List.of(new Rowen().constructInstance(this.b)), team, CardStatus.LEADER, List.of(0)));
         }
-        this.b.resolveAll(rl);
+        this.b.resolveAll(rq);
         this.b.resolve(new DrawResolver(this.b.player1, 3));
         this.b.resolve(new DrawResolver(this.b.player2, 3));
         this.b.resolve(new TurnStartResolver(this.b.player1));

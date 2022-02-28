@@ -2,7 +2,6 @@ package server.card.cardpack.basic;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
-import server.Board;
 import server.ServerBoard;
 import server.card.*;
 import server.card.effect.Effect;
@@ -11,6 +10,7 @@ import server.card.target.TargetingScheme;
 import server.event.Event;
 import server.resolver.BanishResolver;
 import server.resolver.Resolver;
+import server.resolver.util.ResolverQueue;
 
 import java.util.List;
 
@@ -41,9 +41,9 @@ public class BlackenedScripture extends SpellText {
             public Resolver battlecry() {
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableBattlecryCardTargets(0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rl, el, new BanishResolver((c)));
+                            this.resolve(b, rq, el, new BanishResolver((c)));
                         });
                     }
                 };

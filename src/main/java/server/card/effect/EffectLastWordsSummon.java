@@ -7,6 +7,7 @@ import server.*;
 import server.card.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class EffectLastWordsSummon extends Effect {
     int teamMultiplier;
@@ -31,14 +32,14 @@ public class EffectLastWordsSummon extends Effect {
         EffectLastWordsSummon effect = this;
         return new Resolver(false) {
             @Override
-            public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+            public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                 List<Integer> cardpos = new LinkedList<>();
                 int pos = ((BoardObject) effect.owner).getRelevantBoardPos(); // startpos
                 for (BoardObjectText cardText : effect.boardObjectTexts) {
                     cardpos.add(pos);
                     pos++;
                 }
-                this.resolve(b, rl, el, new CreateCardResolver(boardObjectTexts, effect.owner.team * effect.teamMultiplier, CardStatus.BOARD, cardpos));
+                this.resolve(b, rq, el, new CreateCardResolver(boardObjectTexts, effect.owner.team * effect.teamMultiplier, CardStatus.BOARD, cardpos));
             }
 
         };

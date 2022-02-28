@@ -12,6 +12,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class CursedStone extends MinionText {
     public static final String NAME = "Cursed Stone";
@@ -31,12 +32,12 @@ public class CursedStone extends MinionText {
                 Effect effect = this; // anonymous fuckery
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         Player player = owner.board.getPlayer(owner.team);
                         int missing = player.getLeader().map(l -> l.finalStatEffects.getStat(EffectStats.HEALTH) - l.health).orElse(0);
-                        this.resolve(b, rl, el, new BlastResolver(effect, missing, null));
+                        this.resolve(b, rq, el, new BlastResolver(effect, missing, null));
                         Effect lw = new EffectLastWordsAlliedBlast("<b>Unleash</b>", missing);
-                        this.resolve(b, rl, el, new AddEffectResolver(effect.owner, lw));
+                        this.resolve(b, rq, el, new AddEffectResolver(effect.owner, lw));
                     }
                 };
             }

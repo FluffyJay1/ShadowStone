@@ -12,6 +12,7 @@ import server.card.target.TargetingScheme;
 import server.event.Event;
 import server.resolver.EffectDamageResolver;
 import server.resolver.Resolver;
+import server.resolver.util.ResolverQueue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,12 +48,12 @@ public abstract class MinionText extends BoardObjectText {
                     Effect effect = this; // anonymous fuckery
                     return new Resolver(false) {
                         @Override
-                        public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                        public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                             getStillTargetableUnleashCardTargets(0).findFirst().ifPresent(c -> {
                                 Minion target = (Minion) c;
                                 EffectDamageResolver edr = new EffectDamageResolver(effect, List.of(target),
                                         List.of(effect.owner.finalStatEffects.getStat(EffectStats.MAGIC)), true, null);
-                                this.resolve(b, rl, el, edr);
+                                this.resolve(b, rq, el, edr);
                             });
                         }
                     };

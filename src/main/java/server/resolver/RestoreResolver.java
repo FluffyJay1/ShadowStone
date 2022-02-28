@@ -6,6 +6,7 @@ import server.*;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
+import server.resolver.util.ResolverQueue;
 
 public class RestoreResolver extends Resolver {
     public final List<Integer> heal;
@@ -25,8 +26,8 @@ public class RestoreResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
-        EventRestore er = b.processEvent(rl, el, new EventRestore(this.source, this.m, this.heal));
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+        EventRestore er = b.processEvent(rq, el, new EventRestore(this.source, this.m, this.heal));
         this.actualHeal = er.actualHeal;
     }
 

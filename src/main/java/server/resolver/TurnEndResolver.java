@@ -5,10 +5,10 @@ import java.util.stream.Collectors;
 
 import server.*;
 import server.card.*;
-import server.card.effect.Effect;
 import server.event.*;
 import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
+import server.resolver.util.ResolverQueue;
 
 public class TurnEndResolver extends Resolver {
     final Player p;
@@ -19,16 +19,16 @@ public class TurnEndResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
-        b.processEvent(rl, el, new EventTurnEnd(p));
-        List<Resolver> subList = new LinkedList<>();
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+        b.processEvent(rq, el, new EventTurnEnd(p));
+        ResolverQueue subList = new ResolverQueue();
         // avoid concurrent modification
         List<BoardObject> ours = this.p.board.getBoardObjects(this.p.team, true, true, true, true).collect(Collectors.toList());
         for (BoardObject bo : ours) {
             // things may happen, this bo might be dead already
             if (bo.isInPlay()) {
                 b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
-                this.resolveList(b, subList, el, bo.onTurnEnd());
+                this.resolveQueue(b, subList, el, bo.onTurnEnd());
                 b.popEventGroup();
             }
         }
@@ -37,11 +37,11 @@ public class TurnEndResolver extends Resolver {
             // things may happen, this bo might be dead already
             if (bo.isInPlay()) {
                 b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(bo)));
-                this.resolveList(b, subList, el, bo.onTurnEndEnemy());
+                this.resolveQueue(b, subList, el, bo.onTurnEndEnemy());
                 b.popEventGroup();
             }
         }
-        this.resolveList(b, subList, el, subList);
+        this.resolveQueue(b, subList, el, subList);
     }
 
 }

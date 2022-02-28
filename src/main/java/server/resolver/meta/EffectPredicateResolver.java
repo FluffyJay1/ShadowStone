@@ -4,6 +4,7 @@ import server.ServerBoard;
 import server.card.effect.Effect;
 import server.event.Event;
 import server.resolver.Resolver;
+import server.resolver.util.ResolverQueue;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -26,9 +27,9 @@ public class EffectPredicateResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         if (this.predicate.test(this.e)) {
-            this.resolve(b, rl, el, this.resolverToWrap);
+            this.resolve(b, rq, el, this.resolverToWrap);
         }
     }
 }

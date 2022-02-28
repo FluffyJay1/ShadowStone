@@ -6,6 +6,7 @@ import server.event.Event;
 import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
 import server.resolver.Resolver;
+import server.resolver.util.ResolverQueue;
 
 import java.util.List;
 
@@ -14,17 +15,17 @@ import java.util.List;
  */
 public class FlagResolver extends Resolver {
     final Card c;
-    final List<Resolver> resolvers;
-    public FlagResolver(Card c, List<Resolver> resolvers) {
+    final ResolverQueue resolvers;
+    public FlagResolver(Card c, ResolverQueue resolvers) {
         super(false);
         this.c = c;
         this.resolvers = resolvers;
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         b.pushEventGroup(new EventGroup(EventGroupType.FLAG, List.of(c)));
-        this.resolveList(b, rl, el, this.resolvers);
+        this.resolveQueue(b, rq, el, this.resolvers);
         b.popEventGroup();
     }
 }

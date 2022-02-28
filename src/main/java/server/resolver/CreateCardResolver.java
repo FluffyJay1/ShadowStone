@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import server.*;
 import server.card.*;
 import server.event.*;
+import server.resolver.util.ResolverQueue;
 
 // when u wanna return a resolver but the only thing u have to do is create card
 public class CreateCardResolver extends Resolver {
@@ -29,11 +30,11 @@ public class CreateCardResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         List<Card> cards = this.c.stream()
                 .map(ct -> ct.constructInstance(b))
                 .collect(Collectors.toList());;
-        this.event = b.processEvent(rl, el, new EventCreateCard(cards, this.team, this.status, this.cardpos));
+        this.event = b.processEvent(rq, el, new EventCreateCard(cards, this.team, this.status, this.cardpos));
     }
 
 }

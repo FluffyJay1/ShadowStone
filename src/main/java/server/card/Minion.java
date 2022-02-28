@@ -10,6 +10,7 @@ import server.card.effect.*;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.resolver.Resolver;
+import server.resolver.util.ResolverQueue;
 
 public class Minion extends BoardObject {
     public int health, attacksThisTurn = 0; // tempted to make damage an effect
@@ -153,23 +154,23 @@ public class Minion extends BoardObject {
         return ret;
     }
 
-    public List<Resolver> unleash() {
+    public ResolverQueue unleash() {
         return this.getResolvers(Effect::unleash, eff -> !eff.removed && ((Minion) eff.owner).isInPlay());
     }
 
-    public List<Resolver> onAttack(Minion target) {
+    public ResolverQueue onAttack(Minion target) {
         return this.getResolvers(e -> e.onAttack(target), eff -> !eff.removed && ((Minion) eff.owner).isInPlay() && target.isInPlay());
     }
 
-    public List<Resolver> onAttacked(Minion target) {
+    public ResolverQueue onAttacked(Minion target) {
         return this.getResolvers(e -> e.onAttacked(target), eff -> !eff.removed && ((Minion) eff.owner).isInPlay() && target.isInPlay());
     }
 
-    public List<Resolver> clash(Minion target) {
+    public ResolverQueue clash(Minion target) {
         return this.getResolvers(e -> e.clash(target), eff -> !eff.removed && ((Minion) eff.owner).isInPlay() && target.isInPlay());
     }
 
-    public List<Resolver> onDamaged(int damage) {
+    public ResolverQueue onDamaged(int damage) {
         return this.getResolvers(e -> e.onDamaged(damage), eff -> !eff.removed && ((Minion) eff.owner).isInPlay());
     }
 

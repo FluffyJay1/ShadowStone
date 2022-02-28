@@ -14,6 +14,7 @@ import server.card.target.CardTargetingScheme;
 import server.card.target.TargetingScheme;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class Curate extends MinionText {
     public static final String NAME = "Curate";
@@ -43,10 +44,10 @@ public class Curate extends MinionText {
                 Effect effect = this; // anonymous fuckery
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableBattlecryCardTargets(0).findFirst().ifPresent(c -> {
                             Minion target = (Minion) c;
-                            this.resolve(b, rl, el, new RestoreResolver(effect, target, 5));
+                            this.resolve(b, rq, el, new RestoreResolver(effect, target, 5));
                         });
                     }
                 };

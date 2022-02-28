@@ -11,6 +11,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class GenesisOfLegend extends AmuletText {
     public static final String NAME = "Gensis of Legend";
@@ -31,14 +32,14 @@ public class GenesisOfLegend extends AmuletText {
             public Resolver onTurnEnd() {
                 return new Resolver(true) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> possible = b.getMinions(owner.team, false, true).collect(Collectors.toList());
                         if (!possible.isEmpty()) {
                             Minion selected = Game.selectRandom(possible);
                             EffectStatChange esc = new EffectStatChange(
                                     "+0/+0/+1 and <b>Bane</b> (from <b>Genesis of Legend</b>).", 0, 0, 1);
                             esc.effectStats.set.setStat(EffectStats.BANE, 1);
-                            this.resolve(b, rl, el, new AddEffectResolver(selected, esc));
+                            this.resolve(b, rq, el, new AddEffectResolver(selected, esc));
                         }
                     }
                 };

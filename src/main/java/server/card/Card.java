@@ -16,6 +16,7 @@ import server.card.target.TargetingScheme;
 import server.event.Event;
 import server.resolver.*;
 import server.resolver.meta.EffectPredicateResolver;
+import server.resolver.util.ResolverQueue;
 import utils.Indexable;
 import utils.PositionedList;
 import utils.StringBuildable;
@@ -198,16 +199,16 @@ public abstract class Card implements Indexable, StringBuildable {
         }
     }
 
-    protected List<Resolver> getResolvers(Function<Effect, Resolver> hook) {
-        return this.getFinalEffects(true)
+    protected ResolverQueue getResolvers(Function<Effect, Resolver> hook) {
+        return new ResolverQueue(this.getFinalEffects(true)
                 .map(hook)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     // like above method, but each returned resolver is wrapped to check for the predicate before execution
-    protected List<Resolver> getResolvers(Function<Effect, Resolver> hook, Predicate<Effect> predicate) {
-        return this.getFinalEffects(true)
+    protected ResolverQueue getResolvers(Function<Effect, Resolver> hook, Predicate<Effect> predicate) {
+        return new ResolverQueue(this.getFinalEffects(true)
                 .map(e -> {
                     Resolver r = hook.apply(e);
                     if (r == null) {
@@ -216,7 +217,7 @@ public abstract class Card implements Indexable, StringBuildable {
                     return new EffectPredicateResolver(r, e, predicate);
                 })
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     public boolean canBePlayed() {
@@ -271,7 +272,7 @@ public abstract class Card implements Indexable, StringBuildable {
         return ret;
     }
 
-    public List<Resolver> battlecry() {
+    public ResolverQueue battlecry() {
         return this.getResolvers(Effect::battlecry, eff -> !eff.removed);
     }
 

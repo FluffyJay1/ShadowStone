@@ -2,9 +2,7 @@ package server.card.cardpack.basic;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageFire;
 import org.newdawn.slick.geom.Vector2f;
-import server.Board;
 import server.ServerBoard;
 import server.card.*;
 import server.card.effect.Effect;
@@ -13,10 +11,10 @@ import server.event.Event;
 import server.resolver.BlastResolver;
 import server.resolver.EffectDamageResolver;
 import server.resolver.Resolver;
+import server.resolver.util.ResolverQueue;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Function;
 
 public class SiegeTank extends MinionText {
     public static final String NAME = "Siege Tank";
@@ -59,11 +57,11 @@ public class SiegeTank extends MinionText {
                 Effect effect = this; // anonymous fuckery
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         int option = ((ModalTargetList) getUnleashTargets().get(0)).targeted.get(0);
                         switch (option) {
                             case 0 -> {
-                                this.resolve(b, rl, el, new BlastResolver(effect, 5, null));
+                                this.resolve(b, rq, el, new BlastResolver(effect, 5, null));
                             }
                             case 1 -> {
                                 getStillTargetableUnleashCardTargets(1).findFirst().ifPresent(targeted -> {
@@ -80,7 +78,7 @@ public class SiegeTank extends MinionText {
                                             d.add(2);
                                         }
                                     }
-                                    this.resolve(b, rl, el, new EffectDamageResolver(effect, m, d, true, null));
+                                    this.resolve(b, rq, el, new EffectDamageResolver(effect, m, d, true, null));
                                 });
                             }
                         }

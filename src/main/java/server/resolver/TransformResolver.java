@@ -5,6 +5,7 @@ import server.card.Card;
 import server.card.CardText;
 import server.event.Event;
 import server.event.EventTransform;
+import server.resolver.util.ResolverQueue;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,10 +31,10 @@ public class TransformResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         List<Card> transformInto = this.into.stream()
                 .map(ct -> ct.constructInstance(b))
                 .collect(Collectors.toList());
-        this.event = b.processEvent(rl, el, new EventTransform(this.c, transformInto));
+        this.event = b.processEvent(rq, el, new EventTransform(this.c, transformInto));
     }
 }

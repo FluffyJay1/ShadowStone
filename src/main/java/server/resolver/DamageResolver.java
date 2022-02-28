@@ -7,6 +7,7 @@ import server.*;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
+import server.resolver.util.ResolverQueue;
 
 public class DamageResolver extends Resolver {
     final List<Minion> targets;
@@ -43,7 +44,7 @@ public class DamageResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         // filter out the targets that aren't even on the board at time of resolution
         List<Minion> processedTargets = new ArrayList<>(this.targets.size());
         List<Integer> processedDamage = new ArrayList<>(this.damage.size());
@@ -57,17 +58,17 @@ public class DamageResolver extends Resolver {
             }
         }
         if (this.effectSource != null) {
-            b.processEvent(rl, el, new EventDamage(this.effectSource, processedTargets, processedDamage, processedPoisonous, this.destroyed, this.animation));
+            b.processEvent(rq, el, new EventDamage(this.effectSource, processedTargets, processedDamage, processedPoisonous, this.destroyed, this.animation));
         } else {
-            b.processEvent(rl, el, new EventDamage(this.cardSource, processedTargets, processedDamage, processedPoisonous, this.destroyed, this.animation));
+            b.processEvent(rq, el, new EventDamage(this.cardSource, processedTargets, processedDamage, processedPoisonous, this.destroyed, this.animation));
         }
         for (int i = 0; i < processedTargets.size(); i++) {
             Minion m = processedTargets.get(i);
             int damage = processedDamage.get(i);
-            rl.addAll(m.onDamaged(damage));
+            rq.addAll(m.onDamaged(damage));
         }
         if (this.resolveDestroy) {
-            this.resolve(b, rl, el, new DestroyResolver(this.destroyed));
+            this.resolve(b, rq, el, new DestroyResolver(this.destroyed));
         }
     }
 }

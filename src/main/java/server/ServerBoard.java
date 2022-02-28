@@ -10,6 +10,7 @@ import server.event.eventgroup.EventGroup;
 import server.playeraction.PlayerAction;
 import server.resolver.*;
 import server.resolver.meta.FlagResolver;
+import server.resolver.util.ResolverQueue;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,9 +26,6 @@ import java.util.stream.Collectors;
  * mirrors are ClientBoards.
  */
 public class ServerBoard extends Board {
-
-    private List<Resolver> resolveList;
-
     StringBuilder output, history;
 
     Set<EffectAura> lastCheckedActiveAuras;
@@ -39,7 +37,6 @@ public class ServerBoard extends Board {
     @Override
     public void init() {
         super.init();
-        this.resolveList = new LinkedList<>();
         this.output = new StringBuilder();
         this.history = new StringBuilder();
         this.lastCheckedActiveAuras = new HashSet<>();
@@ -48,25 +45,22 @@ public class ServerBoard extends Board {
     // quality helper methods
     public ResolutionResult resolve(Resolver r) {
         List<Event> l = new LinkedList<>();
-        r.onResolve(this, this.resolveList, l);
+        ResolverQueue rq = new ResolverQueue();
+        r.onResolve(this, rq, l);
         ResolutionResult result = new ResolutionResult(l, r.rng);
-        result.concat(this.resolveAll());
+        result.concat(this.resolveAll(rq));
         return result;
     }
 
-    public ResolutionResult resolveAll() {
-        return this.resolveAll(this.resolveList);
-    }
-
-    public ResolutionResult resolveAll(List<Resolver> resolveList) {
+    public ResolutionResult resolveAll(ResolverQueue resolveQueue) {
         List<Event> l = new LinkedList<>();
         ResolutionResult result = new ResolutionResult(l, false);
-        while (!resolveList.isEmpty()) {
+        while (!resolveQueue.isEmpty()) {
             if (this.winner != 0) {
                 break;
             }
-            Resolver r = resolveList.remove(0);
-            r.onResolve(this, resolveList, l);
+            Resolver r = resolveQueue.remove();
+            r.onResolve(this, resolveQueue, l);
             if (r.rng) {
                 result.rng = true;
             }
@@ -85,7 +79,7 @@ public class ServerBoard extends Board {
      * in summary don't add the return value to el, the method does it for you
      *
      */
-    public <T extends Event> T processEvent(List<Resolver> rl, List<Event> el, T e) {
+    public <T extends Event> T processEvent(ResolverQueue rq, List<Event> el, T e) {
         if (this.winner != 0 || !e.conditions()) {
             return e;
         }
@@ -117,45 +111,49 @@ public class ServerBoard extends Board {
         retainedAuras.retainAll(this.lastCheckedActiveAuras);
         for (EffectAura aura : addedAuras) {
             aura.lastCheckedAffectedCards = aura.findAffectedCards();
-            rl.add(new Resolver(false) {
-                @Override
-                public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
-                    Set<Card> shouldApply = aura.findAffectedCards();
-                    if (!shouldApply.isEmpty()) {
-                        this.resolve(b, rl, el, new AddEffectResolver(new ArrayList<>(shouldApply), aura.effectToApply));
+            if (!aura.lastCheckedAffectedCards.isEmpty()) {
+                rq.add(new Resolver(false) {
+                    @Override
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                        Set<Card> shouldApply = aura.findAffectedCards();
+                        if (!shouldApply.isEmpty()) {
+                            this.resolve(b, rq, el, new AddEffectResolver(new ArrayList<>(shouldApply), aura.effectToApply));
+                        }
                     }
-                }
-            });
+                });
+            }
         }
         for (EffectAura aura : removedAuras) {
-            aura.lastCheckedAffectedCards.clear();
-            rl.add(new Resolver(false) {
-                @Override
-                public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
-                    Set<Card> currentApplied = aura.currentActiveEffects.keySet();
-                    if (!currentApplied.isEmpty()) {
-                        List<Effect> effectsToRemove = currentApplied.stream()
-                                .map(unaffected -> aura.currentActiveEffects.get(unaffected))
-                                .collect(Collectors.toList());
-                        this.resolve(b, rl, el, new RemoveEffectResolver(effectsToRemove));
+            if (!aura.findAffectedCards().isEmpty()) {
+                rq.add(new Resolver(false) {
+                    @Override
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                        Set<Card> currentApplied = aura.currentActiveEffects.keySet();
+                        if (!currentApplied.isEmpty()) {
+                            List<Effect> effectsToRemove = currentApplied.stream()
+                                    .map(unaffected -> aura.currentActiveEffects.get(unaffected))
+                                    .collect(Collectors.toList());
+                            this.resolve(b, rq, el, new RemoveEffectResolver(effectsToRemove));
+                        }
                     }
-                }
-            });
+                });
+            }
+            aura.lastCheckedAffectedCards.clear();
         }
         for (EffectAura aura : retainedAuras) {
             Set<Card> currentAffected = aura.findAffectedCards();
             if (!currentAffected.equals(aura.lastCheckedAffectedCards)) {
                 // only add a resolver if something not right
-                rl.add(new Resolver(false) {
+                rq.add(new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         // obtain set difference
                         Set<Card> currentApplied = aura.currentActiveEffects.keySet();
                         Set<Card> shouldApply = aura.findAffectedCards();
                         Set<Card> newAffected = new HashSet<>(shouldApply);
                         newAffected.removeAll(currentApplied);
                         if (!newAffected.isEmpty()) {
-                            this.resolve(b, rl, el, new AddEffectResolver(new ArrayList<>(newAffected), aura.effectToApply));
+                            this.resolve(b, rq, el, new AddEffectResolver(new ArrayList<>(newAffected), aura.effectToApply));
                         }
                         Set<Card> newUnaffected = new HashSet<>(currentApplied);
                         newUnaffected.removeAll(shouldApply);
@@ -163,7 +161,7 @@ public class ServerBoard extends Board {
                             List<Effect> effectsToRemove = newUnaffected.stream()
                                     .map(unaffected -> aura.currentActiveEffects.get(unaffected))
                                     .collect(Collectors.toList());
-                            this.resolve(b, rl, el, new RemoveEffectResolver(effectsToRemove));
+                            this.resolve(b, rq, el, new RemoveEffectResolver(effectsToRemove));
                         }
                     }
                 });
@@ -173,17 +171,17 @@ public class ServerBoard extends Board {
         this.lastCheckedActiveAuras = newAuras;
         if (e.cardsEnteringPlay() != null) {
             for (BoardObject bo : e.cardsEnteringPlay()) {
-                List<Resolver> resolvers = bo.onEnterPlay();
+                ResolverQueue resolvers = bo.onEnterPlay();
                 if (!resolvers.isEmpty()) {
-                    rl.add(new FlagResolver(bo, resolvers));
+                    rq.add(new FlagResolver(bo, resolvers));
                 }
             }
         }
         if (e.cardsLeavingPlay() != null) {
             for (BoardObject bo : e.cardsLeavingPlay()) {
-                List<Resolver> resolvers = bo.onLeavePlay();
+                ResolverQueue resolvers = bo.onLeavePlay();
                 if (!resolvers.isEmpty()) {
-                    rl.add(new FlagResolver(bo, resolvers));
+                    rq.add(new FlagResolver(bo, resolvers));
                 }
             }
         }
@@ -192,7 +190,9 @@ public class ServerBoard extends Board {
             for (Effect listener : c.listeners) {
                 listenEventResolvers.add(listener.onListenEvent(e));
             }
-            rl.add(new FlagResolver(c, listenEventResolvers));
+            if (!listenEventResolvers.isEmpty()) {
+                rq.add(new FlagResolver(c, new ResolverQueue(listenEventResolvers)));
+            }
         });
 
         return e;

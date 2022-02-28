@@ -9,6 +9,7 @@ import server.*;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
+import server.resolver.util.ResolverQueue;
 
 public class BlastResolver extends Resolver {
     final Effect source;
@@ -27,7 +28,7 @@ public class BlastResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         List<Minion> minions = this.b.getMinions(this.enemyTeam, false, true).collect(Collectors.toList());
         Minion target;
         if (minions.isEmpty()) {
@@ -36,7 +37,7 @@ public class BlastResolver extends Resolver {
             target = Game.selectRandom(minions);
         }
         if (target != null) {
-            this.resolve(b, rl, el, new EffectDamageResolver(this.source, List.of(target), List.of(this.damage), true, this.animation));
+            this.resolve(b, rq, el, new EffectDamageResolver(this.source, List.of(target), List.of(this.damage), true, this.animation));
         }
     }
 }

@@ -9,6 +9,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class UnleashImbueMagic extends UnleashPowerText {
     public static final String NAME = "Imbue Magic";
@@ -27,9 +28,9 @@ public class UnleashImbueMagic extends UnleashPowerText {
             public Resolver onUnleashPre(Minion m) {
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         EffectStatChange e = new EffectStatChange("+0/+1/+0 (from <b>Imbue Magic</b>).", 0, 1, 0);
-                        this.resolve(b, rl, el, new AddEffectResolver(m, e));
+                        this.resolve(b, rq, el, new AddEffectResolver(m, e));
                     }
                 };
             }

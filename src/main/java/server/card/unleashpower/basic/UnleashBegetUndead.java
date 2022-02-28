@@ -10,6 +10,7 @@ import server.card.cardpack.basic.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class UnleashBegetUndead extends UnleashPowerText {
     public static final String NAME = "Beget Undead";
@@ -28,10 +29,10 @@ public class UnleashBegetUndead extends UnleashPowerText {
             public Resolver onUnleashPre(Minion m) {
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         EffectLastWordsSummon elws = new EffectLastWordsSummon(
                                 "<b>Last Words</b>: summon a <b>Skeleton</b> (from <b>Beget Undead</b>).", new Skeleton(), 1);
-                        this.resolve(b, rl, el, new AddEffectResolver(m, elws));
+                        this.resolve(b, rq, el, new AddEffectResolver(m, elws));
                     }
                 };
             }
@@ -42,8 +43,8 @@ public class UnleashBegetUndead extends UnleashPowerText {
                 Effect effect = this; // anonymous fuckery
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
-                        this.resolve(b, rl, el, new EffectDamageResolver(effect, m, 1, true, null));
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                        this.resolve(b, rq, el, new EffectDamageResolver(effect, m, 1, true, null));
                     }
                 };
             }

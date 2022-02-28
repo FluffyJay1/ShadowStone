@@ -9,6 +9,7 @@ import server.ai.AI;
 import server.card.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class EffectLastWordsAlliedBlast extends Effect {
     int damage = 0;
@@ -27,11 +28,11 @@ public class EffectLastWordsAlliedBlast extends Effect {
         EffectLastWordsAlliedBlast effect = this; // just being lazy
         return new Resolver(true) {
             @Override
-            public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+            public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                 List<Minion> minions = b.getMinions(effect.owner.team, false, true).collect(Collectors.toList());
                 if (!minions.isEmpty()) {
                     Minion victim = Game.selectRandom(minions);
-                    this.resolve(b, rl, el, new EffectDamageResolver(effect, victim, effect.damage, true, null));
+                    this.resolve(b, rq, el, new EffectDamageResolver(effect, victim, effect.damage, true, null));
                 }
             }
         };

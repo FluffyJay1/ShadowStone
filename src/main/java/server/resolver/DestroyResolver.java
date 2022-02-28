@@ -5,6 +5,7 @@ import java.util.*;
 import server.*;
 import server.card.*;
 import server.event.*;
+import server.resolver.util.ResolverQueue;
 
 public class DestroyResolver extends Resolver {
     final List<Card> cards;
@@ -12,6 +13,7 @@ public class DestroyResolver extends Resolver {
     public DestroyResolver(List<Card> cards) {
         super(false);
         this.cards = cards;
+        this.essential = true;
     }
 
     public DestroyResolver(Card card) {
@@ -19,15 +21,17 @@ public class DestroyResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         if (!this.cards.isEmpty()) {
             EventDestroy destroy = new EventDestroy(this.cards);
-            b.processEvent(rl, el, destroy);
+            b.processEvent(rq, el, destroy);
             for (BoardObject bo : destroy.cardsLeavingPlay()) {
                 if (bo instanceof Leader) {
-                    b.processEvent(rl, el, new EventGameEnd(bo.board, bo.team * -1));
+                    b.processEvent(rq, el, new EventGameEnd(bo.board, bo.team * -1));
                 }
-                rl.add(new LastWordsResolver(bo));
+                if (!bo.lastWords().isEmpty()) {
+                    rq.add(new LastWordsResolver(bo));
+                }
             }
         }
     }

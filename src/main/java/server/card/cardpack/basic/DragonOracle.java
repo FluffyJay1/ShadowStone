@@ -8,6 +8,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class DragonOracle extends SpellText {
     public static final String NAME = "Dragon Oracle";
@@ -25,12 +26,12 @@ public class DragonOracle extends SpellText {
             public Resolver battlecry() {
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         Player player = owner.board.getPlayer(owner.team);
                         if (player.overflow()) {
-                            this.resolve(b, rl, el, new DrawResolver(player, 1));
+                            this.resolve(b, rq, el, new DrawResolver(player, 1));
                         }
-                        b.processEvent(rl, el, new EventManaChange(player, 1, true, false));
+                        b.processEvent(rq, el, new EventManaChange(player, 1, true, false));
 
                     }
                 };

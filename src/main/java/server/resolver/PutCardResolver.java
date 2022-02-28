@@ -5,6 +5,7 @@ import java.util.*;
 import server.*;
 import server.card.*;
 import server.event.*;
+import server.resolver.util.ResolverQueue;
 
 public class PutCardResolver extends Resolver {
 
@@ -28,9 +29,9 @@ public class PutCardResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
-        b.processEvent(rl, el, new EventPutCard(this.c, this.status, this.team, this.pos, this.destroyed));
-        this.resolve(b, rl, el, new DestroyResolver(this.destroyed));
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+        b.processEvent(rq, el, new EventPutCard(this.c, this.status, this.team, this.pos, this.destroyed));
+        this.resolve(b, rq, el, new DestroyResolver(this.destroyed));
     }
 
 }

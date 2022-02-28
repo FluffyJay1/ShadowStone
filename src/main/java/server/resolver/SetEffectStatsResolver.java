@@ -5,6 +5,7 @@ import java.util.*;
 import server.*;
 import server.card.effect.*;
 import server.event.*;
+import server.resolver.util.ResolverQueue;
 
 public class SetEffectStatsResolver extends Resolver {
     final Effect target;
@@ -17,10 +18,10 @@ public class SetEffectStatsResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
-        EventSetEffectStats eses = b.processEvent(rl, el, new EventSetEffectStats(this.target, this.newStats));
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+        EventSetEffectStats eses = b.processEvent(rq, el, new EventSetEffectStats(this.target, this.newStats));
         if (eses.markedForDeath) {
-            this.resolve(b, rl, el, new DestroyResolver(List.of(target.owner)));
+            this.resolve(b, rq, el, new DestroyResolver(List.of(target.owner)));
         }
     }
 }

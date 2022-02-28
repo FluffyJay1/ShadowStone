@@ -13,6 +13,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class WeatheredVanguard extends MinionText {
     public static final String NAME = "Weathered Vanguard";
@@ -31,10 +32,10 @@ public class WeatheredVanguard extends MinionText {
             public Resolver battlecry() {
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> knights = List.of(new Knight(), new Knight());
                         List<Integer> pos = List.of(owner.getIndex() + 1, owner.getIndex());
-                        this.resolve(b, rl, el, new CreateCardResolver(knights, owner.team, CardStatus.BOARD, pos));
+                        this.resolve(b, rq, el, new CreateCardResolver(knights, owner.team, CardStatus.BOARD, pos));
                     }
                 };
             }
@@ -48,11 +49,11 @@ public class WeatheredVanguard extends MinionText {
             public Resolver unleash() {
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> minions = b.getMinions(owner.team, false, true).collect(Collectors.toList());
                         if (!minions.isEmpty()) {
                             Effect stats = new EffectStatChange("+1/+0/+1 (from <b>Weathered Vanguard's Unleash</b>).", 1, 0, 1);
-                            this.resolve(b, rl, el, new AddEffectResolver(minions, stats));
+                            this.resolve(b, rq, el, new AddEffectResolver(minions, stats));
                         }
                     }
                 };

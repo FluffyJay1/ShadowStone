@@ -9,6 +9,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class UnleashFeedFervor extends UnleashPowerText {
     public static final String NAME = "Feed Fervor";
@@ -30,20 +31,20 @@ public class UnleashFeedFervor extends UnleashPowerText {
                 Effect effect = this; // anonymous fuckery
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (e instanceof EventManaChange) {
                             Player p = b.getPlayer(effect.owner.team);
                             if (!overflow && p.overflow()) {
-                                this.resolve(b, rl, el, new UpdateEffectStateResolver(effect, () -> overflow = true));
+                                this.resolve(b, rq, el, new UpdateEffectStateResolver(effect, () -> overflow = true));
                                 EffectStats esc = new EffectStats();
                                 esc.change.setStat(EffectStats.COST, -1);
-                                this.resolve(b, rl, el, new SetEffectStatsResolver(effect, esc));
+                                this.resolve(b, rq, el, new SetEffectStatsResolver(effect, esc));
                             }
                             if (overflow && !p.overflow()) {
-                                this.resolve(b, rl, el, new UpdateEffectStateResolver(effect, () -> overflow = false));
+                                this.resolve(b, rq, el, new UpdateEffectStateResolver(effect, () -> overflow = false));
                                 EffectStats esc = new EffectStats();
                                 esc.change.setStat(EffectStats.COST, 0);
-                                this.resolve(b, rl, el, new SetEffectStatsResolver(effect, esc));
+                                this.resolve(b, rq, el, new SetEffectStatsResolver(effect, esc));
                             }
                         }
                     }

@@ -11,6 +11,7 @@ import server.card.effect.EffectStats;
 import server.event.Event;
 import server.resolver.Resolver;
 import server.resolver.TransformResolver;
+import server.resolver.util.ResolverQueue;
 
 import java.util.List;
 
@@ -32,9 +33,9 @@ public class Batter extends MinionText {
             public Resolver onAttack(Minion target) {
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (target.status.equals(CardStatus.BOARD)) {
-                            this.resolve(b, rl, el, new TransformResolver(target, new Spectre()));
+                            this.resolve(b, rq, el, new TransformResolver(target, new Spectre()));
                         }
                     }
                 };

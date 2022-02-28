@@ -6,6 +6,7 @@ import server.*;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
+import server.resolver.util.ResolverQueue;
 
 public class RemoveEffectResolver extends Resolver {
     final List<Effect> effects;
@@ -15,12 +16,13 @@ public class RemoveEffectResolver extends Resolver {
         super(false);
         this.destroyed = new LinkedList<>();
         this.effects = effects;
+        this.essential = true;
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
-        b.processEvent(rl, el, new EventRemoveEffect(this.effects, this.destroyed));
-        this.resolve(b, rl, el, new DestroyResolver(this.destroyed));
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+        b.processEvent(rq, el, new EventRemoveEffect(this.effects, this.destroyed));
+        this.resolve(b, rq, el, new DestroyResolver(this.destroyed));
     }
 
 }

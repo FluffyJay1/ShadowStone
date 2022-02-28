@@ -9,6 +9,7 @@ import server.card.target.TargetList;
 import server.event.*;
 import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
+import server.resolver.util.ResolverQueue;
 
 public class UnleashResolver extends Resolver {
     final Card source;
@@ -23,24 +24,24 @@ public class UnleashResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         if (this.m.canBeUnleashed()) {
             this.m.setUnleashTargets(this.unleashTargets);
             if (this.source instanceof UnleashPower) {
                 Player p = this.source.board.getPlayer(this.source.team);
                 if (p.canUnleashCard(m)) {
-                    b.processEvent(rl, el, new EventManaChange(p, -this.source.finalStatEffects.getStat(EffectStats.COST), false, true));
-                    b.processEvent(rl, el, new EventUnleash(this.source, this.m));
-                    p.getUnleashPower().ifPresent(up -> this.resolveList(b, rl, el, up.onUnleashPre(this.m)));
+                    b.processEvent(rq, el, new EventManaChange(p, -this.source.finalStatEffects.getStat(EffectStats.COST), false, true));
+                    b.processEvent(rq, el, new EventUnleash(this.source, this.m));
+                    p.getUnleashPower().ifPresent(up -> this.resolveQueue(b, rq, el, up.onUnleashPre(this.m)));
                     b.pushEventGroup(new EventGroup(EventGroupType.UNLEASH, List.of(this.m)));
-                    this.resolveList(b, rl, el, this.m.unleash());
+                    this.resolveQueue(b, rq, el, this.m.unleash());
                     b.popEventGroup();
-                    p.getUnleashPower().ifPresent(up -> this.resolveList(b, rl, el, up.onUnleashPost(this.m)));
+                    p.getUnleashPower().ifPresent(up -> this.resolveQueue(b, rq, el, up.onUnleashPost(this.m)));
                 }
             } else {
-                b.processEvent(rl, el, new EventUnleash(this.source, this.m));
+                b.processEvent(rq, el, new EventUnleash(this.source, this.m));
                 b.pushEventGroup(new EventGroup(EventGroupType.UNLEASH, List.of(this.m)));
-                this.resolveList(b, rl, el, this.m.unleash());
+                this.resolveQueue(b, rq, el, this.m.unleash());
                 b.popEventGroup();
             }
         }

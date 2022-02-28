@@ -7,6 +7,7 @@ import server.*;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
+import server.resolver.util.ResolverQueue;
 
 public class EffectDamageResolver extends Resolver {
     final Effect source;
@@ -36,13 +37,13 @@ public class EffectDamageResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         List<Boolean> poisonous = new ArrayList<>(this.targets.size());
         boolean isPoisonous = this.source.owner.finalStatEffects.getStat(EffectStats.POISONOUS) > 0;
         for (int i = 0; i < this.targets.size(); i++) {
             poisonous.add(isPoisonous);
         }
-        DamageResolver damage = this.resolve(b, rl, el,
+        DamageResolver damage = this.resolve(b, rq, el,
                 new DamageResolver(this.source, this.targets, this.damage, poisonous, this.resolveDestroy, animation));
         this.destroyed = damage.destroyed;
     }

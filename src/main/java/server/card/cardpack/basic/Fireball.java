@@ -12,6 +12,7 @@ import server.card.target.CardTargetingScheme;
 import server.card.target.TargetingScheme;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class Fireball extends SpellText {
     public static final String NAME = "Fireball";
@@ -40,7 +41,7 @@ public class Fireball extends SpellText {
                 Effect effect = this;
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Card> markedForDeath = new LinkedList<>();
                         getStillTargetableBattlecryCardTargets(0).forEach(targeted -> {
                             List<Minion> m = new LinkedList<>();
@@ -56,11 +57,11 @@ public class Fireball extends SpellText {
                                     d.add(1);
                                 }
                             }
-                            EffectDamageResolver dr = this.resolve(b, rl, el,
+                            EffectDamageResolver dr = this.resolve(b, rq, el,
                                     new EffectDamageResolver(effect, m, d, false, EventAnimationDamageFire.class));
                             markedForDeath.addAll(dr.destroyed);
                         });
-                        this.resolve(b, rl, el, new DestroyResolver(markedForDeath));
+                        this.resolve(b, rq, el, new DestroyResolver(markedForDeath));
                     }
                 };
             }

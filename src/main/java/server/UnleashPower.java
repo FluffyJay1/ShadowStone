@@ -8,6 +8,7 @@ import server.*;
 import server.card.*;
 import server.card.effect.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class UnleashPower extends Card {
     public int unleashesThisTurn = 0;
@@ -16,11 +17,11 @@ public class UnleashPower extends Card {
         super(b, unleashPowerText);
     }
 
-    public List<Resolver> onUnleashPre(Minion target) {
+    public ResolverQueue onUnleashPre(Minion target) {
         return this.getResolvers(e -> e.onUnleashPre(target), eff -> !eff.removed && ((UnleashPower) eff.owner).isInPlay() && target.isInPlay());
     }
 
-    public List<Resolver> onUnleashPost(Minion target) {
+    public ResolverQueue onUnleashPost(Minion target) {
         return this.getResolvers(e -> e.onUnleashPost(target), eff -> !eff.removed && ((UnleashPower) eff.owner).isInPlay() && target.isInPlay());
     }
 

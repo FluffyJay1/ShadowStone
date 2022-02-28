@@ -12,6 +12,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class WellOfDestination extends AmuletText {
     public static final String NAME = "Well of Destination";
@@ -30,13 +31,13 @@ public class WellOfDestination extends AmuletText {
             public Resolver onTurnStart() {
                 return new Resolver(true) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> possible = b.getMinions(owner.team, false, true).collect(Collectors.toList());
                         if (!possible.isEmpty()) {
                             Minion targeted = Game.selectRandom(possible);
                             EffectStatChange e = new EffectStatChange("+1/+1/+1 (from <b>Well of Destination</b>).", 1, 1,
                                     1);
-                            this.resolve(b, rl, el, new AddEffectResolver(targeted, e));
+                            this.resolve(b, rq, el, new AddEffectResolver(targeted, e));
                         }
                     }
                 };

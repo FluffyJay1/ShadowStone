@@ -9,6 +9,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class UnleashEchoExistence extends UnleashPowerText {
     public static final String NAME = "Echo Existence";
@@ -28,14 +29,14 @@ public class UnleashEchoExistence extends UnleashPowerText {
                 Effect effect = this; // anonymous fuckery
                 return new Resolver(true) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (m.attacksThisTurn > 0) {
                             CreateCardResolver ccr = new CreateCardResolver(m.cardText, effect.owner.team, CardStatus.DECK,
                                     (int) (effect.owner.board.getPlayer(effect.owner.team).getDeck().size() * Math.random()));
-                            this.resolve(b, rl, el, ccr);
+                            this.resolve(b, rq, el, ccr);
                             Effect esc = new Effect("-2 cost (from <b>Echo Existence</b>).");
                             esc.effectStats.change.setStat(EffectStats.COST, -2);
-                            this.resolve(b, rl, el, new AddEffectResolver(ccr.event.successfullyCreatedCards, esc));
+                            this.resolve(b, rq, el, new AddEffectResolver(ccr.event.successfullyCreatedCards, esc));
                         }
                     }
                 };

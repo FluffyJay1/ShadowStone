@@ -8,6 +8,7 @@ import server.card.effect.*;
 import server.event.*;
 import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
+import server.resolver.util.ResolverQueue;
 
 public class MinionAttackResolver extends Resolver {
     final Minion m1;
@@ -20,32 +21,32 @@ public class MinionAttackResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         EventGroup attackOrdered = new EventGroup(EventGroupType.MINIONATTACKORDER, List.of(this.m1, this.m2));
         b.pushEventGroup(attackOrdered);
-        b.processEvent(rl, el, new EventMinionAttack(this.m1, this.m2));
+        b.processEvent(rq, el, new EventMinionAttack(this.m1, this.m2));
         if (this.m1.alive && this.m1.isInPlay()) {
             b.pushEventGroup(new EventGroup(EventGroupType.ONATTACK, List.of(this.m1)));
-            List<Resolver> list = this.m1.onAttack(this.m2);
-            this.resolveList(b, list, el, list);
+            ResolverQueue queue = this.m1.onAttack(this.m2);
+            this.resolveQueue(b, queue, el, queue);
             b.popEventGroup();
         }
         if (this.m1.alive && this.m1.isInPlay() && !(this.m2 instanceof Leader)) {
             b.pushEventGroup(new EventGroup(EventGroupType.CLASH, List.of(this.m1)));
-            List<Resolver> list = this.m1.clash(this.m2);
-            this.resolveList(b, list, el, list);
+            ResolverQueue queue = this.m1.clash(this.m2);
+            this.resolveQueue(b, queue, el, queue);
             b.popEventGroup();
         }
         if (this.m2.alive && this.m2.isInPlay()) {
             b.pushEventGroup(new EventGroup(EventGroupType.ONATTACKED, List.of(this.m2)));
-            List<Resolver> list = this.m2.onAttacked(this.m1);
-            this.resolveList(b, list, el, list);
+            ResolverQueue queue = this.m2.onAttacked(this.m1);
+            this.resolveQueue(b, queue, el, queue);
             b.popEventGroup();
         }
         if (this.m2.alive && this.m2.isInPlay() && !(this.m1 instanceof Leader)) {
             b.pushEventGroup(new EventGroup(EventGroupType.CLASH, List.of(this.m2)));
-            List<Resolver> list = this.m2.clash(this.m1);
-            this.resolveList(b, list, el, list);
+            ResolverQueue queue = this.m2.clash(this.m1);
+            this.resolveQueue(b, queue, el, queue);
             b.popEventGroup();
         }
         if (this.m1.alive && this.m1.isInPlay() && this.m2.alive && this.m2.isInPlay()) {
@@ -57,8 +58,8 @@ public class MinionAttackResolver extends Resolver {
                     List.of(this.m1.finalStatEffects.getStat(EffectStats.POISONOUS) > 0), false, m1.getTooltip().attackAnimation);
             DamageResolver d2 = new DamageResolver(this.m2, List.of(this.m1), List.of(damage2),
                     List.of(this.m2.finalStatEffects.getStat(EffectStats.POISONOUS) > 0), false, m2.getTooltip().attackAnimation);
-            this.resolve(b, rl, el, d1);
-            this.resolve(b, rl, el, d2);
+            this.resolve(b, rq, el, d1);
+            this.resolve(b, rq, el, d2);
             destroyed.addAll(d1.destroyed);
             destroyed.addAll(d2.destroyed);
             b.popEventGroup(); // minion combat
@@ -71,7 +72,7 @@ public class MinionAttackResolver extends Resolver {
                     && !destroyed.contains(this.m1)) {
                 destroyed.add(this.m1);
             }
-            this.resolve(b, rl, el, new DestroyResolver(destroyed));
+            this.resolve(b, rq, el, new DestroyResolver(destroyed));
         } else {
             b.popEventGroup(); // attack order
         }

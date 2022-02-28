@@ -10,6 +10,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class WoodOfBrambles extends AmuletText {
     public static final String NAME = "Wood of Brambles";
@@ -34,10 +35,10 @@ public class WoodOfBrambles extends AmuletText {
                 Effect effect = this;
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> cards = List.of(new Fairy(), new Fairy());
                         List<Integer> pos = List.of(-1, -1);
-                        this.resolve(b, rl, el, new CreateCardResolver(cards, effect.owner.team, CardStatus.HAND, pos));
+                        this.resolve(b, rq, el, new CreateCardResolver(cards, effect.owner.team, CardStatus.HAND, pos));
                     }
                 };
             }

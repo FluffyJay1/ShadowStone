@@ -2,10 +2,10 @@ package server.resolver;
 
 import server.ServerBoard;
 import server.card.BoardObject;
-import server.card.effect.Effect;
 import server.event.Event;
 import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
+import server.resolver.util.ResolverQueue;
 
 import java.util.List;
 
@@ -22,9 +22,9 @@ public class LastWordsResolver extends Resolver {
     }
 
     @Override
-    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         b.pushEventGroup(new EventGroup(EventGroupType.LASTWORDS, List.of(this.bo)));
-        this.resolveList(b, rl, el, this.bo.lastWords());
+        this.resolveQueue(b, rq, el, this.bo.lastWords());
         b.popEventGroup();
     }
 }

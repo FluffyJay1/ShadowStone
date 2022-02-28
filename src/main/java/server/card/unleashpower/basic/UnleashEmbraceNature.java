@@ -9,6 +9,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.util.ResolverQueue;
 
 public class UnleashEmbraceNature extends UnleashPowerText {
     public static final String NAME = "Embrace Nature";
@@ -28,13 +29,13 @@ public class UnleashEmbraceNature extends UnleashPowerText {
                 Effect effect = this; // anonymous fuckery
                 return new Resolver(false) {
                     @Override
-                    public void onResolve(ServerBoard b, List<Resolver> rl, List<Event> el) {
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (m.attacksThisTurn > 0) {
-                            this.resolve(b, rl, el, new PutCardResolver(m, CardStatus.HAND, effect.owner.team, -1));
+                            this.resolve(b, rq, el, new PutCardResolver(m, CardStatus.HAND, effect.owner.team, -1));
                             if (m.alive) {
                                 Effect esc = new Effect("-1 cost (from <b>Embrace Nature</b>).");
                                 esc.effectStats.change.setStat(EffectStats.COST, -1);
-                                this.resolve(b, rl, el, new AddEffectResolver(m, esc));
+                                this.resolve(b, rq, el, new AddEffectResolver(m, esc));
                             }
                         }
                     }
