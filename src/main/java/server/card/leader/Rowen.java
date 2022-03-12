@@ -12,7 +12,7 @@ public class Rowen extends LeaderText {
     public static final String NAME = "Rowen";
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.BRONZE;
-    TooltipMinion TOOLTIP = new TooltipMinion(NAME, "", "res/leader/smile.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, "", "res/leader/smile.png",
             CRAFT, RARITY, 0, 0, 0, 25, false, Rowen.class,
             new Vector2f(), -1, null,
             List::of);

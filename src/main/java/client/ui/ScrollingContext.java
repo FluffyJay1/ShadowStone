@@ -28,7 +28,7 @@ public class ScrollingContext extends UIBox {
         if (childrenHeight > this.getHeight(false)) {
             g.fillRect((float) this.getRight(true, false) - 5,
                     (float) (this.getTop(true, false)
-                            - (this.getChildLocalTop(0) - this.getLocalTop(false) + this.childoffset.y)
+                            - (this.getChildLocalTop(0) + this.getHeight(false) / 2 + this.childoffset.y)
                                     * this.getHeight(false) / childrenHeight),
                     5, (float) (this.getHeight(false) * this.getHeight(false) / childrenHeight));
 

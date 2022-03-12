@@ -35,22 +35,18 @@ public class StateMenu extends BasicGameState {
                 }
 
                 break;
-            case "deckbuild":
-                arg1.enterState(Game.STATE_DECKBUILD);
-                break;
             default:
                 break;
             }
         });
-        GenericButton deckbuildbutton = new GenericButton(this.ui, new Vector2f(0, 0.25f), new Vector2f(120, 80),
-                "Manage Decks", 0) {
-            @Override
-            public void mouseClicked(int button, int x, int y, int clickCount) {
-                this.alert("deckbuild");
-            }
-        };
+        GenericButton deckbuildbutton = new GenericButton(this.ui, new Vector2f(0, 0.25f), new Vector2f(120, 80), "Manage Decks",
+                () -> arg1.enterState(Game.STATE_DECKBUILD));
         deckbuildbutton.relpos = true;
         this.ui.addUIElementParent(deckbuildbutton);
+        GenericButton dungeonrunbutton = new GenericButton(this.ui, new Vector2f(0, -0.25f), new Vector2f(120, 80), "Dungeon Run",
+                () -> arg1.enterState(Game.STATE_DUNGEONRUN));
+        dungeonrunbutton.relpos = true;
+        this.ui.addUIElementParent(dungeonrunbutton);
         this.playButton = new PlayButton(ui);
         this.ui.addUIElementParent(this.playButton);
     }

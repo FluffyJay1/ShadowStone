@@ -6,22 +6,45 @@ import org.newdawn.slick.geom.*;
 public class GenericButton extends UIBox {
     final Text text;
     final Vector2f originalDim;
-    // in case you want to create a buttload of genericbuttons
-    public final int index;
+    Runnable onClick;
+    private boolean enabled;
 
-    public GenericButton(UI ui, Vector2f pos, Vector2f dim, String message, int index) {
+    public GenericButton(UI ui, Vector2f pos, Vector2f dim, String message, Runnable onClick) {
         super(ui, pos, dim, new Animation("res/ui/button.png", new Vector2f(2, 1), 0, 0));
-        this.index = index;
         this.originalDim = dim.copy();
         this.text = new Text(ui, new Vector2f(0, 0), message, dim.x * 0.8, 20, Game.DEFAULT_FONT, 24, 0, 0);
         this.text.relpos = true;
         this.text.setParent(this);
+        this.onClick = onClick;
+        this.enabled = true;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        if (enabled) {
+            this.setAlpha(1);
+        } else {
+            this.setAlpha(0.3);
+        }
+    }
+
+    public boolean getEnabled() {
+        return this.enabled;
+    }
+
+    @Override
+    public void mouseClicked(int button, int x, int y, int clickCount) {
+        if (this.enabled) {
+            this.onClick.run();
+        }
     }
 
     @Override
     public void mousePressed(int button, int x, int y) {
         // TODO replace this with an actual animation
-        this.getAnimation().setFrame(1);
+        if (this.enabled) {
+            this.getAnimation().setFrame(1);
+        }
     }
 
     @Override

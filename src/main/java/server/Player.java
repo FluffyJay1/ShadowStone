@@ -138,14 +138,6 @@ public class Player implements StringBuildable {
                 && this.board.currentPlayerTurn == this.team;
     }
 
-    public void printHand() {
-        System.out.println("Hand " + this.team + ":");
-        for (Card c : this.hand) {
-            System.out.print(c.getClass().getName() + " ");
-        }
-        System.out.println();
-    }
-
     // TODO magic numbers lmao
     public boolean overflow() {
         return this.maxmana >= 7;

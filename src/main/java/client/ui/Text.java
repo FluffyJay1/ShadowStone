@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import client.Config;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.*;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
@@ -32,6 +29,8 @@ public class Text extends UIElement {
     private UninvertibleImage cachedRender;
     private boolean isDirty;
 
+    private Color color;
+
     public Text(UI ui, Vector2f pos, String text, double linewidth, double lineheight, String font, double fontsize,
             int alignh, int alignv) {
         super(ui, pos);
@@ -45,6 +44,7 @@ public class Text extends UIElement {
         this.setFont(font, fontsize);
         this.setText(text);
         this.isDirty = true;
+        this.color = Color.white;
     }
 
     public void setFont(String font, double fontsize) {
@@ -64,6 +64,11 @@ public class Text extends UIElement {
         }
         this.text = text;
         this.updateText();
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+        this.isDirty = true;
     }
 
     // does preprocessing on the text to make rendering easier + faster
@@ -161,6 +166,7 @@ public class Text extends UIElement {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        tempGraphics.setColor(this.color);
         int flags = 0;
         for (int i = 0; i < this.lines.size(); i++) {
             double currlinewidth = 0;

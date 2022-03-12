@@ -6,12 +6,11 @@ import client.Game;
 import org.newdawn.slick.geom.*;
 
 import client.ui.*;
-import server.card.cardpack.*;
+import server.card.cardset.*;
 
 public class DeckSelectPanel extends UIBox {
     public static final String DECK_CONFIRM = "deckselectpanelconfirm";
     public static final String DECK_CANCEL = "deckselectpanelcancel";
-    public static final String DECK_DELETE = "deckselectpaneldelete";
     final ScrollingContext scroll;
     final GenericButton confirmButton;
     final GenericButton cancelButton;
@@ -28,29 +27,33 @@ public class DeckSelectPanel extends UIBox {
         this.margins.set(10, 10);
         this.deckbuild = deckbuild;
         this.addChild(new Text(ui, new Vector2f(0, -250), "Select a deck", 300, 20, Game.DEFAULT_FONT, 34, 0, 0));
-        this.confirmButton = new GenericButton(ui, new Vector2f(deckbuild ? -175 : -100, 250), new Vector2f(150, 50),
-                "Confirm", 0) {
-            @Override
-            public void mouseClicked(int button, int x, int y, int clickCount) {
-                this.alert(DECK_CONFIRM);
-            }
-        };
+        this.confirmButton = new GenericButton(ui, new Vector2f(deckbuild ? -175 : -100, 250), new Vector2f(150, 50), "Confirm",
+                () -> {
+                    if (this.selectedDeckUnit != null) {
+                        this.setVisible(false);
+                    }
+                    this.alert(DECK_CONFIRM);
+                }
+        );
         this.addChild(this.confirmButton);
-        this.cancelButton = new GenericButton(ui, new Vector2f(deckbuild ? 175 : 100, 250), new Vector2f(150, 50),
-                "Back", 1) {
-            @Override
-            public void mouseClicked(int button, int x, int y, int clickCount) {
-                this.alert(DECK_CANCEL);
-            }
-        };
+        this.cancelButton = new GenericButton(ui, new Vector2f(deckbuild ? 175 : 100, 250), new Vector2f(150, 50), "Back",
+                () -> {
+                    this.setVisible(false);
+                    this.alert(DECK_CANCEL);
+                }
+        );
         this.addChild(this.cancelButton);
         if (deckbuild) {
-            this.deleteButton = new GenericButton(ui, new Vector2f(0, 250), new Vector2f(150, 50), "Delete", 1) {
-                @Override
-                public void mouseClicked(int button, int x, int y, int clickCount) {
-                    this.alert(DECK_DELETE);
-                }
-            };
+            this.deleteButton = new GenericButton(ui, new Vector2f(0, 250), new Vector2f(150, 50), "Delete",
+                    () -> {
+                        if (this.selectedDeckUnit != null) {
+                            ConstructedDeck.decks.remove(this.selectedDeckUnit.deck);
+                            ConstructedDeck.saveToFile();
+                            this.selectedDeckUnit = null;
+                            this.updateDecks();
+                        }
+                    }
+            );
             this.addChild(this.deleteButton);
         }
         this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f((float) this.getWidth(true), 400));
@@ -61,34 +64,6 @@ public class DeckSelectPanel extends UIBox {
         this.highlight.ignorehitbox = true;
         this.scroll.addChild(this.highlight);
         this.updateDecks();
-    }
-
-    @Override
-    public void onAlert(String strarg, int... intarg) {
-        StringTokenizer st = new StringTokenizer(strarg);
-        switch (st.nextToken()) {
-        case DECK_CONFIRM:
-            if (this.selectedDeckUnit != null) {
-                this.setVisible(false);
-            }
-            this.alert(strarg, intarg);
-            break;
-        case DECK_CANCEL:
-            this.setVisible(false);
-            this.alert(strarg, intarg);
-            break;
-        case DECK_DELETE:
-            if (this.selectedDeckUnit != null) {
-                ConstructedDeck.decks.remove(this.selectedDeckUnit.deck);
-                ConstructedDeck.saveToFile();
-                this.selectedDeckUnit = null;
-                this.updateDecks();
-            }
-            break;
-        default:
-            this.alert(strarg, intarg);
-            break;
-        }
     }
 
     @Override

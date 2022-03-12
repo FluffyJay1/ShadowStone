@@ -24,10 +24,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     public boolean draggable = false, ignorehitbox = false, hitcircle = false, clip = false, scrollable = false,
             hasFocus = false, relpos = false;
     // relpos: represent position in terms of proportion of total width/height (considering margin), with (0, 0) being pos
-    public Vector2f childoffset = new Vector2f(), margins = new Vector2f(); // public
-                                                                            // cuz
-                                                                            // fuck
-                                                                            // u
+    public Vector2f childoffset = new Vector2f(), margins = new Vector2f();
     private Vector2f targetpos, pos;
     private double scale = 1, speed = 1, angle = 0, alpha = 1;
     private UIElement followTarget;
@@ -119,9 +116,17 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         return this.pos.copy();
     }
 
+    public Vector2f getCenterPos() {
+        return this.getPos().add(new Vector2f((float) this.getHAlignOffset(), (float) (this.getVAlignOffset())));
+    }
+
     // absolute position on the screen more or less
     public Vector2f getAbsPos() {
         return this.getAbsOfPos(this.getPos());
+    }
+
+    public Vector2f getCenterAbsPos() {
+        return this.getAbsOfPos(this.getCenterPos());
     }
 
     public Vector2f getRelPos() {
@@ -144,10 +149,16 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     }
 
     public double getWidth(boolean margin) {
+        if (this.finalImage == null) {
+            return 0;
+        }
         return this.finalImage.getWidth() - (margin ? this.margins.x * 2 : 0);
     }
 
     public double getHeight(boolean margin) {
+        if (this.finalImage == null) {
+            return 0;
+        }
         return this.finalImage.getHeight() - (margin ? this.margins.y * 2 : 0);
     }
 
@@ -159,6 +170,16 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     // defined as distance from pos to top edge
     public double getVOff() {
         return this.getHeight(false) * (this.alignv + 1) / 2;
+    }
+
+    // defined as offset from the pos to get to the center
+    public double getHAlignOffset() {
+        return this.getWidth(false) * -this.alignh / 2;
+    }
+
+    // defined as offset from the pos to get to the center
+    public double getVAlignOffset() {
+        return this.getHeight(false) * -this.alignv / 2;
     }
 
     public double getLeft(boolean abs, boolean margin) {
@@ -179,43 +200,31 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
                 - (margin ? this.margins.y : 0);
     }
 
-    public double getLocalLeft(boolean margin) {
-        return -this.getHOff() + (margin ? this.margins.x : 0);
-    }
-
-    public double getLocalRight(boolean margin) {
-        return -this.getHOff() + this.getWidth(false) - (margin ? this.margins.x : 0);
-    }
-
-    public double getLocalTop(boolean margin) {
-        return -this.getVOff() + (margin ? this.margins.y : 0);
-    }
-
-    public double getLocalBottom(boolean margin) {
-        return -this.getVOff() + this.getHeight(false) - (margin ? this.margins.y : 0);
-    }
-
     // topmost point relative to parent before childoffset
     public double getChildLocalTop(double offset) {
-        double y = this.getLocalTop(false) + offset;
+        double y = -this.getVOff() + offset;
         for (UIElement u : this.getChildren()) {
-            double childTop = u.getChildLocalTop(offset + u.getPos().y);
-            if (u.clip) {
-                childTop = u.getLocalTop(false) + u.getPos().y + offset;
+            if (u.isVisible()) {
+                double childTop = u.getChildLocalTop(offset + this.getVAlignOffset() + u.getPos().y);
+                if (u.clip) {
+                    childTop = -u.getVOff() + u.getPos().y + offset;
+                }
+                y = Math.min(y, childTop);
             }
-            y = Math.min(y, childTop);
         }
         return y;
     }
 
     public double getChildLocalBottom(double offset) {
-        double y = this.getLocalBottom(false) + offset;
+        double y = this.getHeight(false) - this.getVOff() + offset;
         for (UIElement u : this.getChildren()) {
-            double childBottom = u.getChildLocalBottom(offset + u.getPos().y);
-            if (u.clip) {
-                childBottom = u.getLocalBottom(false) + u.getPos().y + offset;
+            if (u.isVisible()) {
+                double childBottom = u.getChildLocalBottom(offset + this.getVAlignOffset() + u.getPos().y);
+                if (u.clip) {
+                    childBottom = u.getHeight(false) - u.getVOff() + u.getPos().y + offset;
+                }
+                y = Math.max(y, childBottom);
             }
-            y = Math.max(y, childBottom);
         }
         return y;
     }
@@ -231,8 +240,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
 
     public Vector2f getPosOfRel(Vector2f relpos) {
         if (this.parent == null) {
-            return new Vector2f((float) ((relpos.x + 0.5) * Config.WINDOW_WIDTH),
-                    (float) ((relpos.y + 0.5) * Config.WINDOW_HEIGHT));
+            return new Vector2f(relpos.x * Config.WINDOW_WIDTH, relpos.y * Config.WINDOW_HEIGHT);
         } else {
             return this.parent.getLocalPosOfRel(relpos);
         }
@@ -240,17 +248,16 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
 
     public Vector2f getRelOfPos(Vector2f pos) {
         if (this.parent == null) {
-            return new Vector2f((float) ((pos.x / Config.WINDOW_WIDTH) - 0.5),
-                    (float) ((pos.y / Config.WINDOW_HEIGHT) - 0.5));
+            return new Vector2f(pos.x / Config.WINDOW_WIDTH, pos.y / Config.WINDOW_HEIGHT);
         } else {
-            return new Vector2f((float) ((pos.x / this.parent.getWidth(true)) + this.alignh / 2.),
-                    (float) ((pos.y / this.parent.getHeight(true)) + this.alignv / 2.));
+            return new Vector2f((float) (pos.x / this.parent.getWidth(true)),
+                    (float) (pos.y / this.parent.getHeight(true)));
         }
     }
 
     public Vector2f getPosOfAbs(Vector2f abs) {
         if (this.parent == null) {
-            return abs;
+            return new Vector2f(abs.x - Config.WINDOW_WIDTH / 2, abs.y - Config.WINDOW_HEIGHT / 2);
         }
         return this.parent.getLocalPosOfAbs(abs);
     }
@@ -259,7 +266,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         if (this.parent != null) {
             return this.parent.getAbsPosOfLocal(pos);
         }
-        return pos;
+        return new Vector2f(pos.x + Config.WINDOW_WIDTH / 2, pos.y + Config.WINDOW_HEIGHT / 2);
     }
 
     public void setVisible(boolean visible) {
@@ -282,7 +289,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     }
 
     // do not override this shit
-    public void alert(String strarg, int... intarg) {
+    public final void alert(String strarg, int... intarg) {
         if (this.parent != null) {
             this.parent.onAlert(strarg, intarg);
         } else {
@@ -298,21 +305,18 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
 
     // normalize position relative to position and scale of this ui element
     public Vector2f getLocalPosOfAbs(Vector2f absPos) {
-        return new Vector2f(absPos.x - this.getAbsPos().x, absPos.y - this.getAbsPos().y);
-    }
-
-    public Vector2f getLocalRelPosOfAbs(Vector2f absPos) {
-        return new Vector2f((absPos.x - this.getAbsPos().x) / (float) this.getWidth(false),
-                (absPos.y - this.getAbsPos().y) / (float) this.getHeight(false));
+        return new Vector2f((float) (absPos.x - this.getAbsPos().x - this.getHAlignOffset()),
+                (float) (absPos.y - this.getAbsPos().y - this.getVAlignOffset()));
     }
 
     public Vector2f getLocalPosOfRel(Vector2f relPos) {
-        return new Vector2f((float) ((relPos.x - this.alignh / 2.) * this.getWidth(true)),
-                (float) ((relPos.y - this.alignv / 2.) * this.getHeight(true)));
+        return new Vector2f((float) (relPos.x * this.getWidth(true)),
+                (float) (relPos.y * this.getHeight(true)));
     }
 
     public Vector2f getAbsPosOfLocal(Vector2f localPos) {
-        return this.getAbsPos().add(this.childoffset).add(localPos);
+        return this.getAbsPos().add(this.childoffset).add(localPos)
+                .add(new Vector2f((float) (this.getHAlignOffset()), (float) (this.getVAlignOffset())));
     }
 
     public boolean pointIsInHitbox(Vector2f pos) {
@@ -330,15 +334,15 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     public void fitInParent() {
         double x = this.getPos().getX(), y = this.getPos().getY();
         if (this.parent == null) { // is parent
-            x = Math.max(x, this.getHOff());
-            x = Math.min(x, Config.WINDOW_WIDTH - this.getHOff() + this.getWidth(false));
-            y = Math.max(y, this.getVOff());
-            y = Math.min(y, Config.WINDOW_HEIGHT - this.getVOff() + this.getHeight(false));
+            x = Math.max(x, -Config.WINDOW_WIDTH / 2 + this.getHOff());
+            x = Math.min(x, Config.WINDOW_WIDTH / 2 - this.getHOff() + this.getWidth(false));
+            y = Math.max(y, -Config.WINDOW_HEIGHT / 2 + this.getVOff());
+            y = Math.min(y, Config.WINDOW_HEIGHT / 2 - this.getVOff() + this.getHeight(false));
         } else { // has parent
-            x = Math.max(x, -this.parent.getLocalLeft(true) + this.getHOff());
-            x = Math.min(x, this.parent.getLocalRight(true) - this.getHOff() + this.getWidth(false));
-            y = Math.max(y, -this.parent.getLocalTop(true) + this.getVOff());
-            y = Math.min(y, this.parent.getLocalBottom(true) - this.getVOff() + this.getHeight(false));
+            x = Math.max(x, -this.parent.getWidth(true) / 2 + this.getHOff());
+            x = Math.min(x, this.parent.getWidth(true) / 2 - this.getHOff() + this.getWidth(false));
+            y = Math.max(y, -this.parent.getWidth(true) / 2 + this.getVOff());
+            y = Math.min(y, this.parent.getWidth(true) / 2 - this.getVOff() + this.getHeight(false));
         }
         this.setPos(new Vector2f((float) x, (float) y), 1);
     }
@@ -450,13 +454,6 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         return this.z;
     }
 
-    public void bringToFront(boolean recursive) {
-        this.setZ(this.parent.children.get(this.parent.children.size() - 1).z);
-        if (recursive && this.parent != null) {
-            this.parent.bringToFront(true);
-        }
-    }
-
     // returns the uielement that is top (prioritizes children)
     public UIElement topChildAtPos(Vector2f pos, boolean requirehitbox, boolean requirescrollable,
             boolean requiredraggable) {
@@ -555,6 +552,16 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         for (UIElement u : this.getChildren()) {
             u.removeParent();
         }
+    }
+
+    public boolean isChildOf(UIElement other) {
+        if (this.parent == null) {
+            return false;
+        }
+        if (this.parent == other) {
+            return true;
+        }
+        return this.parent.isChildOf(other);
     }
 
     @Override

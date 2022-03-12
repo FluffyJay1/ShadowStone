@@ -313,9 +313,10 @@ public class UICard extends UIBox {
     }
 
     public void drawUnleashPower(Graphics g, Vector2f pos, double scale) {
-        if (this.card.team == this.uib.b.localteam ? // different rules depending on allied team or enemy team
+        if (this.card.realCard != null && this.card.realCard instanceof UnleashPower
+                && (this.card.team == this.uib.b.localteam ? // different rules depending on allied team or enemy team
                 this.uib.b.realBoard.getPlayer(this.card.realCard.team).canUnleash() && !this.uib.b.disableInput : // condition for cards on our team (should update instantly)
-                this.uib.b.getPlayer(this.card.team).canUnleash() // condition for cards on the enemy team (should wait for animations)
+                this.uib.b.getPlayer(this.card.team).canUnleash()) // condition for cards on the enemy team (should wait for animations)
         ) {
             g.setColor(Color.cyan);
             g.setLineWidth(READY_BORDER_WIDTH);

@@ -1,6 +1,7 @@
 package client;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,10 +48,6 @@ public class VisualBoard extends Board implements
 
     final EventAnimationFactory eventAnimationFactory;
     final EventGroupAnimationFactory eventGroupAnimationFactory;
-
-    public VisualBoard(UIBoard uiBoard) {
-        this(uiBoard, 1);
-    }
 
     public VisualBoard(UIBoard uiBoard, int localteam) {
         super(localteam);
@@ -126,6 +123,9 @@ public class VisualBoard extends Board implements
 	public <T extends Event> T processEvent(T e) {
         T ret = super.processEvent(e);
 		this.uiBoard.advantageText.setText(String.format("Adv: %.4f", AI.evaluateAdvantage(this, this.localteam)));
+        if (e instanceof EventGameEnd) {
+            this.uiBoard.onGameEnd(((EventGameEnd) e).victory);
+        }
         return ret;
     }
 

@@ -3,19 +3,21 @@ package client;
 import java.awt.Font;
 import java.util.*;
 
+import gamemode.dungeonrun.controller.DungeonRunController;
 import org.newdawn.slick.*;
 import org.newdawn.slick.font.effects.*;
 import org.newdawn.slick.state.*;
 import org.newdawn.slick.util.Log;
 
 import client.states.*;
-import server.card.cardpack.*;
+import server.card.cardset.*;
 
 public class Game extends StateBasedGame {
     public static final int STATE_MENU = 0;
     public static final int STATE_GAME = 1;
     public static int STATE_HELP = 2;
     public static final int STATE_DECKBUILD = 3;
+    public static final int STATE_DUNGEONRUN = 4;
     public static final int SERVER_PORT = 9091;
     public static final String DEFAULT_FONT = "Verdana";
 
@@ -36,6 +38,7 @@ public class Game extends StateBasedGame {
     public Game(String title) {
         super(title);
         ConstructedDeck.loadFromFile();
+        DungeonRunController.loadFromFile();
     }
 
     @Override
@@ -44,6 +47,7 @@ public class Game extends StateBasedGame {
         addState(new StateMenu());
         addState(new StateGame());
         addState(new StateDeckbuild());
+        addState(new StateDungeonRun());
     }
 
     public static Image getImage(String path) {
@@ -76,7 +80,7 @@ public class Game extends StateBasedGame {
 
             try {
                 f.getEffects().add(new ColorEffect(toAwtColor(fillc)));
-                f.getEffects().add(new OutlineEffect(1, toAwtColor(outc)));
+                f.getEffects().add(new OutlineEffect((int) (size / 24), toAwtColor(outc)));
                 f.addAsciiGlyphs();
                 f.loadGlyphs();
             } catch (SlickException e) {

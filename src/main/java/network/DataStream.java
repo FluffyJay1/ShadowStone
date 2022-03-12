@@ -5,7 +5,7 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 import client.*;
-import server.card.cardpack.*;
+import server.card.cardset.*;
 
 /**
  * interface for sending and receiving things, serializing and deserializing

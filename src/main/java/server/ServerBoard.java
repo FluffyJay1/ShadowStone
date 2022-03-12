@@ -124,7 +124,7 @@ public class ServerBoard extends Board {
             }
         }
         for (EffectAura aura : removedAuras) {
-            if (!aura.findAffectedCards().isEmpty()) {
+            if (!aura.lastCheckedAffectedCards.isEmpty()) {
                 rq.add(new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {

@@ -29,7 +29,6 @@ public class PlayCardAction extends PlayerAction {
     public ResolutionResult perform(ServerBoard b) {
         ResolutionResult result = new ResolutionResult();
         if (!this.p.canPlayCard(this.c) || !this.c.validateTargets(this.c.getBattlecryTargetingSchemes(), this.battlecryTargets)) { // just to be safe
-            System.out.println(this.c.validateTargets(this.c.getBattlecryTargetingSchemes(), this.battlecryTargets));
             return result;
         }
         result.concat(b.resolve(new PlayCardResolver(this.p, this.c, this.pos, this.battlecryTargets)));

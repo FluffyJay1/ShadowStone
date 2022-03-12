@@ -1,3 +1,9 @@
+prerender the name text on the card
+textfield cursor rendring (and blinking maybe)
+enough with this double float casting madness
+Show a little tooltip when a card effect triggers
+mulligan phase
+AI difficulty adjustment
 Figure out why the game is eating cpu and gpu
 relpos lol
 formalize basic effects? createBasicEffect()

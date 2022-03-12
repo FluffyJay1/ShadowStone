@@ -1,6 +1,7 @@
 package client.ui.game;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -78,10 +79,10 @@ public class UIBoard extends UIBox {
     TargetList<?> currentTargets; // REAL CARDS
     double playingX;
     List<UICard> cards;
+    Consumer<Integer> onGameEnd;
 
-    public UIBoard(UI ui, int localteam, DataStream ds) {
-        super(ui, new Vector2f(Config.WINDOW_WIDTH / 2, Config.WINDOW_HEIGHT / 2),
-                new Vector2f(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT), "res/ui/uibox.png");
+    public UIBoard(UI ui, int localteam, DataStream ds, Consumer<Integer> onGameEnd) {
+        super(ui, new Vector2f(), new Vector2f(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT), "res/ui/uibox.png");
         this.cards = new ArrayList<>();
         this.b = new VisualBoard(this, localteam);
         this.ds = ds;
@@ -125,6 +126,7 @@ public class UIBoard extends UIBox {
         });
         this.modalSelectionPanel.setZ(UI_Z_TOP);
         this.addChild(this.modalSelectionPanel);
+        this.onGameEnd = onGameEnd;
     }
 
     @Override
@@ -348,6 +350,12 @@ public class UIBoard extends UIBox {
             for (Card c : eg.cards) {
                 c.uiCard.setCombat(false);
             }
+        }
+    }
+
+    public void onGameEnd(int team) {
+        if (this.onGameEnd != null) {
+            this.onGameEnd.accept(team);
         }
     }
 

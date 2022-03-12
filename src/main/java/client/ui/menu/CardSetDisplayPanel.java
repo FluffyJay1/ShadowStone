@@ -7,7 +7,7 @@ import org.newdawn.slick.geom.*;
 
 import client.ui.*;
 import server.card.*;
-import server.card.cardpack.*;
+import server.card.cardset.*;
 
 public class CardSetDisplayPanel extends UIBox {
     /**
@@ -53,7 +53,7 @@ public class CardSetDisplayPanel extends UIBox {
         this.cards.clear();
         this.set = set;
         if (set != null) {
-            for (CardText cardText : set.cardTexts) {
+            for (CardText cardText : set) {
                 CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f());
                 this.scroll.addChild(cdu);
                 this.cards.add(cdu);

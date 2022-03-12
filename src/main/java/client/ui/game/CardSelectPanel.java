@@ -39,11 +39,11 @@ public class CardSelectPanel extends UIBox {
                 }
             }
         };
-        this.tooltipPanel.setPos(new Vector2f(0, (float) this.getLocalTop(true)), 1);
+        this.tooltipPanel.setPos(new Vector2f(0, (float) -this.getHeight(true) / 2), 1);
         this.scroll.addChild(this.tooltipPanel);
         this.ub = new UnleashButton(ui, uib);
         this.scroll.addChild(this.ub);
-        this.effects = new Text(ui, new Vector2f((float) this.scroll.getLocalLeft(true), 200), "effects", this.getWidth(true), 20,
+        this.effects = new Text(ui, new Vector2f((float) -this.scroll.getWidth(true) / 2, 200), "effects", this.getWidth(true), 20,
                 Game.DEFAULT_FONT, 24, -1, -1);
         this.scroll.addChild(this.effects);
     }
@@ -73,10 +73,10 @@ public class CardSelectPanel extends UIBox {
             if (this.ub.isVisible()) {
                 this.ub.setPos(new Vector2f(0, (float) this.tooltipPanel.getBottom(false, false) + 32), 1);
                 this.effects.setPos(
-                        new Vector2f((float) this.getLocalLeft(true), (float) this.ub.getBottom(false, false) + 10),
+                        new Vector2f((float) -this.getWidth(true) / 2, (float) this.ub.getBottom(false, false) + 10),
                         0.99);
             } else {
-                this.effects.setPos(new Vector2f((float) this.getLocalLeft(true),
+                this.effects.setPos(new Vector2f((float) -this.getWidth(true) / 2,
                         (float) this.tooltipPanel.getBottom(false, false) + 10), 0.99);
             }
         } else {

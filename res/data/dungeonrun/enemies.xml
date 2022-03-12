@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<enemies>
+    <contestant leader="server.card.leader.Rowen" unleash="server.card.unleashpower.basic.UnleashFeedFervor">
+        <cardset>server.card.cardset.basic.ExpansionSetBasic</cardset>
+        <card>server.card.cardset.special.rowen.HearTheDragonsRoar</card>
+    </contestant>
+</enemies>

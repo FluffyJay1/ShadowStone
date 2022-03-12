@@ -7,7 +7,7 @@ import org.newdawn.slick.geom.*;
 
 import client.ui.*;
 import server.card.*;
-import server.card.cardpack.*;
+import server.card.cardset.*;
 
 public class DeckDisplayPanel extends UIBox {
     /**
@@ -39,12 +39,14 @@ public class DeckDisplayPanel extends UIBox {
         this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f((float) this.getWidth(true), 400));
         this.scroll.clip = true;
         this.addChild(this.scroll);
-        this.okbutton = new GenericButton(ui, new Vector2f(0, 150), new Vector2f(100, 50), "Ok", 0) {
-            @Override
-            public void mouseClicked(int button, int x, int y, int clickCount) {
-                this.alert(DECK_CONFIRM);
-            }
-        };
+        this.okbutton = new GenericButton(ui, new Vector2f(0, 150), new Vector2f(100, 50), "Ok",
+                () -> {
+                    if (this.edit) {
+                        this.deck.name = this.textfield.getText();
+                    }
+                    this.alert(DECK_CONFIRM);
+                }
+        );
         this.addChild(this.okbutton);
     }
 
@@ -52,19 +54,9 @@ public class DeckDisplayPanel extends UIBox {
     public void onAlert(String strarg, int... intarg) {
         StringTokenizer st = new StringTokenizer(strarg);
         switch (st.nextToken()) {
-        case CardDisplayUnit.CARD_CLICK:
-            this.alert(CARD_CLICK + " " + st.nextToken(), intarg);
-            break;
-        case DECK_CONFIRM:
-            this.deck.name = this.textfield.getText();
-            this.alert(strarg, intarg);
-            break;
-        case TextField.TEXT_ENTER:
-            this.deck.name = this.textfield.getText();
-            break;
-        default:
-            this.alert(strarg, intarg);
-            break;
+            case CardDisplayUnit.CARD_CLICK -> this.alert(CARD_CLICK + " " + st.nextToken(), intarg);
+            case TextField.TEXT_ENTER -> this.deck.name = this.textfield.getText();
+            default -> this.alert(strarg, intarg);
         }
     }
 
@@ -85,7 +77,7 @@ public class DeckDisplayPanel extends UIBox {
         this.cards.clear();
         this.deck = deck;
         if (deck != null) {
-            for (Map.Entry<CardText, Integer> entry : deck.cardClassCounts.entrySet()) {
+            for (Map.Entry<CardText, Integer> entry : deck.getCounts()) {
                 CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f());
                 this.scroll.addChild(cdu);
                 this.cards.add(cdu);
@@ -97,8 +89,8 @@ public class DeckDisplayPanel extends UIBox {
     }
 
     public void addCard(CardText cardText) {
-        boolean newpanel = !this.deck.cardClassCounts.containsKey(cardText);
-        if (this.deck.addCard(cardText)) {
+        boolean newpanel = this.deck.getCountOf(cardText) == 0;
+        if (this.deck.addCard(cardText, true)) {
             if (newpanel) {
                 CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f());
                 cdu.setCardText(cardText);
@@ -109,7 +101,7 @@ public class DeckDisplayPanel extends UIBox {
 
             CardDisplayUnit cdu = this.getCardDisplayUnit(cardText);
             if (cdu != null) {
-                cdu.setCount(this.deck.cardClassCounts.get(cardText));
+                cdu.setCount(this.deck.getCountOf(cardText));
             }
             this.updateCardPositions();
         }
@@ -117,15 +109,15 @@ public class DeckDisplayPanel extends UIBox {
 
     public void removeCard(CardText cardText) {
         if (this.deck.removeCard(cardText)) {
-
-            if (!this.deck.cardClassCounts.containsKey(cardText)) {
+            int countLeft = this.deck.getCountOf(cardText);
+            if (countLeft == 0) {
                 CardDisplayUnit cdu = this.getCardDisplayUnit(cardText);
                 this.scroll.removeChild(cdu);
                 this.cards.remove(cdu);
             } else {
                 CardDisplayUnit cdu = this.getCardDisplayUnit(cardText);
                 if (cdu != null) {
-                    cdu.setCount(this.deck.cardClassCounts.get(cardText));
+                    cdu.setCount(countLeft);
                 }
             }
             this.updateCardPositions();

@@ -26,7 +26,7 @@ public abstract class Board {
 
     // reset state
     public void init() {
-        this.currentPlayerTurn = 1;
+        this.currentPlayerTurn = 0;
         this.localteam = 1;
         this.winner = 0;
         this.player1 = new Player(this, 1);

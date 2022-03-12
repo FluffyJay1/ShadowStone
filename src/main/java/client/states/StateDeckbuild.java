@@ -1,6 +1,5 @@
 package client.states;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import org.newdawn.slick.*;
@@ -12,7 +11,7 @@ import client.ui.*;
 import client.ui.game.*;
 import client.ui.menu.*;
 import server.card.*;
-import server.card.cardpack.*;
+import server.card.cardset.*;
 
 public class StateDeckbuild extends BasicGameState {
     UI ui;
@@ -61,8 +60,7 @@ public class StateDeckbuild extends BasicGameState {
                 case ClassSelectPanel.SELECT -> {
                     // select class for new deck
                     newDeck = true;
-                    currentDeck = new ConstructedDeck();
-                    currentDeck.craft = ClassCraft.values()[intarg[0]];
+                    currentDeck = new ConstructedDeck(ClassCraft.values()[intarg[0]]);
                     currentDeck.name = currentDeck.craft.toString() + " deck " + ConstructedDeck.decks.size();
                     enterDeckbuilding();
                 }
@@ -89,7 +87,6 @@ public class StateDeckbuild extends BasicGameState {
                 case DeckDisplayPanel.DECK_CONFIRM -> {
                     // confirm and save deck
                     // TODO verify deck is legit
-                    cardTooltip.setTooltip(null);
                     if (newDeck) {
                         ConstructedDeck.decks.add(currentDeck);
                     }
@@ -101,9 +98,6 @@ public class StateDeckbuild extends BasicGameState {
                     deckselectpanel.setVisible(true);
                     deckdisplaypanel.setVisible(false);
                     cardsetpanel.setVisible(false);
-                }
-                case DeckDisplayPanel.BACKGROUND_CLICK, CardSetDisplayPanel.BACKGROUND_CLICK -> {
-                    cardTooltip.setTooltip(null);
                 }
                 case CardSetDisplayPanel.CARDSET_CLICK -> {
                     // select card in cards to choose from
@@ -121,6 +115,15 @@ public class StateDeckbuild extends BasicGameState {
                 }
             }
         });
+        this.ui.setOnPress(element -> {
+            if (element == null || (element != this.cardTooltip && !element.isChildOf(this.cardTooltip) && !(element instanceof CardDisplayUnit))) {
+                this.cardTooltip.setTooltip(null);
+            }
+        });
+        Text titleText = new Text(this.ui, new Vector2f(0, -0.5f), "Deck Management", 300, 20, Game.DEFAULT_FONT, 34, 0, 0);
+        titleText.relpos = true;
+        titleText.alignv = -1;
+        this.ui.addUIElementParent(titleText);
         this.deckdisplaypanel = new DeckDisplayPanel(ui, new Vector2f(0, -0.2f), true);
         this.deckdisplaypanel.setVisible(false);
         this.deckdisplaypanel.relpos = true;
@@ -132,11 +135,14 @@ public class StateDeckbuild extends BasicGameState {
         this.deckselectpanel = new DeckSelectPanel(ui, new Vector2f(0, 0), true);
         this.deckselectpanel.relpos = true;
         this.ui.addUIElementParent(this.deckselectpanel);
-        this.classSelect = new ClassSelectPanel(ui, new Vector2f(0, 0));
+        this.classSelect = new ClassSelectPanel(ui, new Vector2f(0, 0), true);
         this.classSelect.setVisible(false);
         this.classSelect.relpos = true;
         this.ui.addUIElementParent(this.classSelect);
-        this.cardTooltip = new CardSelectTooltipPanel(this.ui, new Vector2f(250, 300), 3);
+        this.cardTooltip = new CardSelectTooltipPanel(this.ui, new Vector2f(-0.45f, -0.45f), 3);
+        this.cardTooltip.relpos = true;
+        this.cardTooltip.alignh = -1;
+        this.cardTooltip.alignv = -1;
         this.cardTooltip.setVisible(false);
         this.ui.addUIElementParent(this.cardTooltip);
 

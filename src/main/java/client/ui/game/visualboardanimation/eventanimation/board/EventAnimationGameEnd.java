@@ -9,7 +9,7 @@ import server.event.*;
 
 public class EventAnimationGameEnd extends EventAnimation<EventGameEnd> {
     public EventAnimationGameEnd() {
-        super(0, 0.3);
+        super(1, 0.3);
     }
 
     @Override

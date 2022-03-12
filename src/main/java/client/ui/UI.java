@@ -1,6 +1,7 @@
 package client.ui;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
@@ -18,6 +19,8 @@ public class UI implements DefaultInputListener { // lets do this right this tim
     private double scale = 1;
     public final boolean[] pressedKeys = new boolean[255];
     public boolean updateZOrder = false;
+
+    Consumer<UIElement> onClick, onPress, onRelease;
 
     public UI() {
 
@@ -136,6 +139,13 @@ public class UI implements DefaultInputListener { // lets do this right this tim
         if (top != null) {
             top.mouseClicked(button, x, y, clickCount);
         }
+        if (this.onClick != null) {
+            this.onClick.accept(top);
+        }
+    }
+
+    public void setOnClick(Consumer<UIElement> onClick) {
+        this.onClick = onClick;
     }
 
     @Override
@@ -146,21 +156,34 @@ public class UI implements DefaultInputListener { // lets do this right this tim
         if (top != null) {
             top.mousePressed(button, x, y);
         }
+        if (this.onPress != null) {
+            this.onPress.accept(top);
+        }
         UIElement dragging = this.getTopUIElement(new Vector2f(x, y), true, false, true);
         if (dragging != null) {
             this.draggingElement = dragging;
         }
     }
 
+    public void setOnPress(Consumer<UIElement> onPress) {
+        this.onPress = onPress;
+    }
+
     @Override
     public void mouseReleased(int button, int x, int y) {
-
+        if (this.onRelease != null) {
+            this.onRelease.accept(this.pressedElement);
+        }
         if (this.pressedElement != null) {
             this.pressedElement.mouseReleased(button, x, y);
             this.pressedElement = null;
         }
         this.draggingElement = null;
 
+    }
+
+    public void setOnRelease(Consumer<UIElement> onRelease) {
+        this.onRelease = onRelease;
     }
 
     @Override

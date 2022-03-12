@@ -27,11 +27,11 @@ public class TooltipDisplayPanel extends UIBox {
         this.cardImageDisplayer.setAlpha(0.12);
         this.cardImageDisplayer.ignorehitbox = true;
         this.addChild(this.cardImageDisplayer);
-        this.name = new Text(ui, new Vector2f((float) this.getLocalLeft(true), (float) this.getLocalTop(true)), "name",
+        this.name = new Text(ui, new Vector2f((float) -this.getWidth(true) / 2, (float) -this.getHeight(true) / 2), "name",
                 this.getWidth(true), 40, Game.DEFAULT_FONT, 46, -1, -1);
         this.addChild(name);
         this.description = new Text(ui,
-                new Vector2f((float) this.getLocalLeft(true), (float) this.name.getBottom(false, false) + 10), "jeff",
+                new Vector2f((float) -this.getWidth(true) / 2, (float) this.name.getBottom(false, false) + 10), "jeff",
                 this.getWidth(true), 32, Game.DEFAULT_FONT, 36, -1, -1);
         this.addChild(description);
         this.clip = true;
@@ -41,9 +41,10 @@ public class TooltipDisplayPanel extends UIBox {
         this.tooltip = tooltip;
         this.name.setText("<b>" + tooltip.name + "</b>");
         this.description.setText(tooltip.description);
-        this.description.setPos(
-                new Vector2f((float) this.getLocalLeft(true), (float) this.name.getBottom(false, false) + 10), 1);
-        this.setDim(new Vector2f((float) this.getWidth(false), (float) this.description.getBottom(false, false)));
+        this.setDim(new Vector2f((float) this.getWidth(false), (float) (this.name.getHeight(false) + this.description.getHeight(false) + 30)));
+        this.name.setPos(new Vector2f((float) - this.getWidth(true) / 2, (float) -this.getHeight(true) / 2), 1);
+        this.description.setPos(new Vector2f((float) -this.getWidth(true) / 2,
+                (float) this.name.getBottom(false, false) + 10), 1);
         if (tooltip instanceof TooltipCard) {
             Image image = Game.getImage(((TooltipCard) this.tooltip).imagepath);
             this.cardImageDisplayer.setImage(image);

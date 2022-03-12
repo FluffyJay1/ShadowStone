@@ -37,7 +37,7 @@ public class CardSelectTooltipPanel extends UIBox {
         } else {
             this.tooltip = tooltip;
             this.reset();
-            double lasty = this.getLocalTop(true);
+            double lasty = -this.getHeight(true) / 2;
             TooltipDisplayPanel tdp = this.createTooltipDisplayPanel(tooltip);
             tdp.setPos(new Vector2f(0, (float) lasty), 1);
             lasty += tdp.getHeight(false);
@@ -54,7 +54,7 @@ public class CardSelectTooltipPanel extends UIBox {
         } else {
             this.tooltip = tooltip;
             this.reset();
-            double lasty = this.getLocalTop(true);
+            double lasty = -this.getHeight(true) / 2;
             for (Tooltip t : tooltip.references.get()) {
                 TooltipDisplayPanel tdp = this.createTooltipDisplayPanel(t);
                 tdp.setPos(new Vector2f(0, (float) lasty), 1);

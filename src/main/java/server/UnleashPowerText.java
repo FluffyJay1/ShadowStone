@@ -5,6 +5,7 @@ import server.card.CardText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,15 @@ public abstract class UnleashPowerText extends CardText {
     @Override
     public final UnleashPower constructInstance(Board b) {
         return new UnleashPower(b, this);
+    }
+
+    public static UnleashPowerText fromString(String s) {
+        try {
+            return Class.forName(s).asSubclass(UnleashPowerText.class).getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | ClassNotFoundException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     protected abstract List<Effect> getSpecialEffects();

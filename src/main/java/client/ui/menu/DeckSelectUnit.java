@@ -6,7 +6,7 @@ import org.newdawn.slick.geom.Vector2f;
 import client.ui.Text;
 import client.ui.UI;
 import client.ui.UIBox;
-import server.card.cardpack.ConstructedDeck;
+import server.card.cardset.ConstructedDeck;
 
 public class DeckSelectUnit extends UIBox {
     final Text text;
