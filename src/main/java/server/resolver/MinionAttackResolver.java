@@ -54,10 +54,8 @@ public class MinionAttackResolver extends Resolver {
             int damage1 = this.m1.finalStatEffects.getStat(EffectStats.ATTACK);
             int damage2 = this.m2.finalStatEffects.getStat(EffectStats.ATTACK);
             b.pushEventGroup(new EventGroup(EventGroupType.MINIONCOMBAT));
-            DamageResolver d1 = new DamageResolver(this.m1, List.of(this.m2), List.of(damage1),
-                    List.of(this.m1.finalStatEffects.getStat(EffectStats.POISONOUS) > 0), false, m1.getTooltip().attackAnimation);
-            DamageResolver d2 = new DamageResolver(this.m2, List.of(this.m1), List.of(damage2),
-                    List.of(this.m2.finalStatEffects.getStat(EffectStats.POISONOUS) > 0), false, m2.getTooltip().attackAnimation);
+            DamageResolver d1 = new DamageResolver(this.m1, List.of(this.m2), List.of(damage1), false, m1.getTooltip().attackAnimation);
+            DamageResolver d2 = new DamageResolver(this.m2, List.of(this.m1), List.of(damage2), false, m2.getTooltip().attackAnimation);
             this.resolve(b, rq, el, d1);
             this.resolve(b, rq, el, d2);
             destroyed.addAll(d1.destroyed);

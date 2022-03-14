@@ -71,7 +71,7 @@ public class WoodOfBrambles extends AmuletText {
 
         @Override
         public Resolver clash(Minion target) {
-            return new EffectDamageResolver(this, target, 1, true, null);
+            return new DamageResolver(this, target, 1, true, null);
         }
 
         @Override

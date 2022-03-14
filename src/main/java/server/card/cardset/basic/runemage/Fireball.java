@@ -57,8 +57,8 @@ public class Fireball extends SpellText {
                                     d.add(1);
                                 }
                             }
-                            EffectDamageResolver dr = this.resolve(b, rq, el,
-                                    new EffectDamageResolver(effect, m, d, false, EventAnimationDamageFire.class));
+                            DamageResolver dr = this.resolve(b, rq, el,
+                                    new DamageResolver(effect, m, d, false, EventAnimationDamageFire.class));
                             markedForDeath.addAll(dr.destroyed);
                         });
                         this.resolve(b, rq, el, new DestroyResolver(markedForDeath));

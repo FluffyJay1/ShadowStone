@@ -2,6 +2,7 @@ package server.card.cardset.basic.shadowshaman;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageOff;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
 import server.card.ClassCraft;
@@ -18,7 +19,7 @@ public class Spectre extends MinionText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/spectre.png",
             CRAFT, RARITY, 2, 2, 1, 2, true, Spectre.class,
-            new Vector2f(150, 180), 1.2, null,
+            new Vector2f(150, 180), 1.2, EventAnimationDamageOff.class,
             () -> List.of(Tooltip.RUSH));
     @Override
     protected List<Effect> getSpecialEffects() {

@@ -4,4 +4,8 @@
         <cardset>server.card.cardset.basic.ExpansionSetBasic</cardset>
         <card>server.card.cardset.special.rowen.HearTheDragonsRoar</card>
     </contestant>
+    <contestant leader="server.card.leader.Batter" unleash="server.card.unleashpower.special.SaveSecretBase">
+        <cardset>server.card.cardset.basic.ExpansionSetBasic</cardset>
+        <card>server.card.cardset.special.batter.IHadThreeFriends</card>
+    </contestant>
 </enemies>

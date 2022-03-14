@@ -16,7 +16,7 @@ public class UnleashEchoExistence extends UnleashPowerText {
     public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. If it has already attacked this turn, add a copy of it to your deck and subtract 2 from its cost.";
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.BRONZE;
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/echoexistence.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/echoexistence.png",
             CRAFT, RARITY, 2, UnleashEchoExistence.class,
             new Vector2f(430, 445), 1.5,
             () -> List.of(Tooltip.UNLEASH));

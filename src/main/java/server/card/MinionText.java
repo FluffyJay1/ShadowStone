@@ -10,7 +10,7 @@ import server.card.effect.EffectStats;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetingScheme;
 import server.event.Event;
-import server.resolver.EffectDamageResolver;
+import server.resolver.DamageResolver;
 import server.resolver.Resolver;
 import server.resolver.util.ResolverQueue;
 
@@ -51,9 +51,9 @@ public abstract class MinionText extends BoardObjectText {
                         public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                             getStillTargetableUnleashCardTargets(0).findFirst().ifPresent(c -> {
                                 Minion target = (Minion) c;
-                                EffectDamageResolver edr = new EffectDamageResolver(effect, List.of(target),
+                                DamageResolver dr = new DamageResolver(effect, List.of(target),
                                         List.of(effect.owner.finalStatEffects.getStat(EffectStats.MAGIC)), true, null);
-                                this.resolve(b, rq, el, edr);
+                                this.resolve(b, rq, el, dr);
                             });
                         }
                     };

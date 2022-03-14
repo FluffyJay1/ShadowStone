@@ -17,7 +17,7 @@ public class UnleashBegetUndead extends UnleashPowerText {
     public static final String DESCRIPTION = "Give an allied minion <b>Last Words</b>: summon a <b>Skeleton</b>. <b>Unleash</b> it. Then deal 1 damage to it.";
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/begetundead.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/begetundead.png",
             CRAFT, RARITY, 2, UnleashBegetUndead.class,
             new Vector2f(410, 460), 4,
             () -> List.of(Tooltip.UNLEASH, Tooltip.LASTWORDS, Skeleton.TOOLTIP));
@@ -44,7 +44,7 @@ public class UnleashBegetUndead extends UnleashPowerText {
                 return new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new EffectDamageResolver(effect, m, 1, true, null));
+                        this.resolve(b, rq, el, new DamageResolver(effect, m, 1, true, null));
                     }
                 };
             }

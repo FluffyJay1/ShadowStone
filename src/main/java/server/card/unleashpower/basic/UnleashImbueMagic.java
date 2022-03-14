@@ -16,7 +16,7 @@ public class UnleashImbueMagic extends UnleashPowerText {
     public static final String DESCRIPTION = "Give an allied minion +0/+1/+0, then <b>Unleash</b> it.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/imbuemagic.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/imbuemagic.png",
             CRAFT, RARITY, 2, UnleashImbueMagic.class,
             new Vector2f(393, 733), 1.5,
             () -> List.of(Tooltip.UNLEASH));

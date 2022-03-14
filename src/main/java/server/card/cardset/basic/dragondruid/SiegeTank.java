@@ -9,7 +9,7 @@ import server.card.effect.Effect;
 import server.card.target.*;
 import server.event.Event;
 import server.resolver.BlastResolver;
-import server.resolver.EffectDamageResolver;
+import server.resolver.DamageResolver;
 import server.resolver.Resolver;
 import server.resolver.util.ResolverQueue;
 
@@ -78,7 +78,7 @@ public class SiegeTank extends MinionText {
                                             d.add(2);
                                         }
                                     }
-                                    this.resolve(b, rq, el, new EffectDamageResolver(effect, m, d, true, null));
+                                    this.resolve(b, rq, el, new DamageResolver(effect, m, d, true, null));
                                 });
                             }
                         }

@@ -34,11 +34,29 @@ public class Animation implements Cloneable {
      *            spacing between the sprites
      * @param margin
      *            padding around the spritesheet
+     * @param filter filter type from Image class
      */
-    public Animation(String path, Vector2f framedim, int spacing, int margin) {
+    public Animation(String path, Vector2f framedim, int spacing, int margin, int filter) {
         Image i = Game.getImage(path);
+        i.setFilter(filter);
         this.sheet = new SpriteSheet(i, (int) ((i.getWidth() - margin * 2) / framedim.x) - spacing,
                 (int) ((i.getHeight() - margin * 2) / framedim.y) - spacing, spacing, margin);
+    }
+
+    /**
+     * Constructor for animation object
+     *
+     * @param path
+     *            the path for the source sprite sheet
+     * @param framedim
+     *            number of frames in each row/column
+     * @param spacing
+     *            spacing between the sprites
+     * @param margin
+     *            padding around the spritesheet
+     */
+    public Animation(String path, Vector2f framedim, int spacing, int margin) {
+        this(path, framedim, spacing, margin, Image.FILTER_LINEAR);
     }
 
     /**

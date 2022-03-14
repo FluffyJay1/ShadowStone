@@ -16,7 +16,7 @@ public class UnleashFeedFervor extends UnleashPowerText {
     public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. If <b>Overflow</b> is active for you, this costs 1 less.";
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.BRONZE;
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/feedfervor.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/feedfervor.png",
             CRAFT, RARITY, 2, UnleashFeedFervor.class,
             new Vector2f(420, 210), 8,
             () -> List.of(Tooltip.UNLEASH, Tooltip.OVERFLOW));

@@ -165,7 +165,8 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
     private void showFailedSummon() {
         if (this.firstFailedOnBoard != null) {
             this.firstFailedOnBoard.setVisible(true);
-            Vector2f destPos = this.visualBoard.uiBoard.getBoardPosFor(this.firstFailedPos, this.event.team, this.visualBoard.getPlayer(this.event.team).getPlayArea().size() + 1);
+            int actualFailedPos = this.firstFailedPos < 0 ? this.visualBoard.getPlayer(this.event.team).getPlayArea().size() : this.firstFailedPos;
+            Vector2f destPos = this.visualBoard.uiBoard.getBoardPosFor(actualFailedPos, this.event.team, this.visualBoard.getPlayer(this.event.team).getPlayArea().size() + 1);
             this.firstFailedOnBoard.setPos(destPos.copy().add(new Vector2f(0, ENTRANCE_OFFSET_Y)), 1);
             this.firstFailedOnBoard.setPos(destPos, 0.99);
             Vector2f localPosOfRel = this.visualBoard.uiBoard.getLocalPosOfRel(destPos);

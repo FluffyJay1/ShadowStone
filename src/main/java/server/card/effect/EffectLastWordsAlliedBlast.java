@@ -32,7 +32,7 @@ public class EffectLastWordsAlliedBlast extends Effect {
                 List<Minion> minions = b.getMinions(effect.owner.team, false, true).collect(Collectors.toList());
                 if (!minions.isEmpty()) {
                     Minion victim = Game.selectRandom(minions);
-                    this.resolve(b, rq, el, new EffectDamageResolver(effect, victim, effect.damage, true, null));
+                    this.resolve(b, rq, el, new DamageResolver(effect, victim, effect.damage, true, null));
                 }
             }
         };

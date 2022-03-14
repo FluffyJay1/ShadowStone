@@ -268,7 +268,7 @@ public class UICard extends UIBox {
         } else {
             Image scaledCopy;
             // if its a thing on board, zoom in
-            if (status.equals(CardStatus.BOARD)) {
+            if (status.equals(CardStatus.BOARD) || status.equals(CardStatus.LEADER)) {
                 scaledCopy = this.subImage.getScaledCopy((float) scale);
             } else {
                 scaledCopy = this.cardImage.getScaledCopy((float) scale);
@@ -281,12 +281,18 @@ public class UICard extends UIBox {
 
     private Image generateZoomedSubImage(Vector2f intendedDimensions) {
         TooltipCard tooltip = this.card.getTooltip();
+        Image originalImage = Game.getImage(tooltip.imagepath);
         if (tooltip.artFocusScale <= 0) {
-            // use original art
-            return this.cardImage.copy();
+            // use original art, scaled to fill intended dimensions
+            float xr = originalImage.getWidth() / intendedDimensions.x;
+            float yr = originalImage.getHeight() / intendedDimensions.y;
+            Image resized = originalImage.getScaledCopy(1 / Math.min(xr, yr));
+            return resized.getSubImage((int) (resized.getWidth() - intendedDimensions.x) / 2,
+                    (int) (resized.getHeight() - intendedDimensions.y) / 2,
+                    (int) intendedDimensions.x,
+                    (int) intendedDimensions.y);
         } else {
             // for maximum resolution
-            Image originalImage = Game.getImage(tooltip.imagepath);
             Image scaledOriginal = originalImage.getScaledCopy(
                     (int) (CARD_DIMENSIONS.x * tooltip.artFocusScale),
                     (int) (CARD_DIMENSIONS.y * tooltip.artFocusScale));

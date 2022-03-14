@@ -16,7 +16,7 @@ public class UnleashSharpenSword extends UnleashPowerText {
     public static final String DESCRIPTION = "Give an allied minion +1/+0/+0, then <b>Unleash</b> it.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/sharpensword.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/sharpensword.png",
             CRAFT, RARITY, 2, UnleashSharpenSword.class,
             new Vector2f(500, 330), 3,
             () -> List.of(Tooltip.UNLEASH));

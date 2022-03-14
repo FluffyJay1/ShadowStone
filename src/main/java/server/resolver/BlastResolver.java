@@ -37,7 +37,7 @@ public class BlastResolver extends Resolver {
             target = Game.selectRandom(minions);
         }
         if (target != null) {
-            this.resolve(b, rq, el, new EffectDamageResolver(this.source, List.of(target), List.of(this.damage), true, this.animation));
+            this.resolve(b, rq, el, new DamageResolver(this.source, List.of(target), List.of(this.damage), true, this.animation));
         }
     }
 }

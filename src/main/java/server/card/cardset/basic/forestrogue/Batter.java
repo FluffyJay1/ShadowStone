@@ -2,7 +2,7 @@ package server.card.cardset.basic.forestrogue;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageSlash;
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageOff;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.card.*;
@@ -23,7 +23,7 @@ public class Batter extends MinionText {
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/batter.png",
             CRAFT, RARITY, 5, 2, 2, 2, true, Batter.class,
-            new Vector2f(112, 120), 2, EventAnimationDamageSlash.class,
+            new Vector2f(112, 120), 2, EventAnimationDamageOff.class,
             () -> List.of(Tooltip.RUSH, Tooltip.TRANSFORM, Spectre.TOOLTIP));
     @Override
     protected List<Effect> getSpecialEffects() {

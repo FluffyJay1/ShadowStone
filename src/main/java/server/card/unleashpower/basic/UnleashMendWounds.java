@@ -16,7 +16,7 @@ public class UnleashMendWounds extends UnleashPowerText {
     public static final String DESCRIPTION = "Give an allied minion +0/+0/+1, <b>Unleash</b> it, then restore 1 health to it.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.BRONZE;
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/mendwounds.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/mendwounds.png",
             CRAFT, RARITY, 2, UnleashMendWounds.class,
             new Vector2f(655, 535), 4.6,
             () -> List.of(Tooltip.UNLEASH));

@@ -2,7 +2,7 @@ package client.ui.game.visualboardanimation.eventanimation.attack;
 
 import client.ui.Animation;
 import client.ui.game.UIBoard;
-import client.ui.interpolation.meta.ComposedInterpolation;
+import client.ui.interpolation.meta.SequentialInterpolation;
 import client.ui.interpolation.realvalue.ConstantInterpolation;
 import client.ui.interpolation.realvalue.QuadraticInterpolationB;
 import client.ui.particle.strategy.EmissionStrategy;
@@ -28,7 +28,7 @@ public class EventAnimationDamageClaw extends EventAnimationDamage {
                     }),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(1)),
                     new ConstantEmissionPropertyStrategy(Graphics.MODE_NORMAL, 0, new Vector2f(0, 0),
-                            new ComposedInterpolation<>(List.of(
+                            new SequentialInterpolation<>(List.of(
                                     new ConstantInterpolation(1),
                                     new QuadraticInterpolationB(1, 0, 0)
                             ), List.of(0.5, 1.)),

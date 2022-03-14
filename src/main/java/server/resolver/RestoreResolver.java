@@ -21,6 +21,10 @@ public class RestoreResolver extends Resolver {
         this.heal = heal;
     }
 
+    public RestoreResolver(Effect source, List<Minion> m, int heal){
+        this(source, m, Collections.nCopies(m.size(), heal));
+    }
+
     public RestoreResolver(Effect source, Minion m, int heal) {
         this(source, List.of(m), List.of(heal));
     }

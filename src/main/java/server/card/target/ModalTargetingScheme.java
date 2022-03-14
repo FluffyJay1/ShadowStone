@@ -41,7 +41,7 @@ public class ModalTargetingScheme implements TargetingScheme<Integer> {
 
     @Override
     public boolean isFullyTargeted(TargetList<Integer> targets) {
-        return targets.targeted.size() == this.numTargets;
+        return targets.targeted.size() == this.numTargets || targets.targeted.size() == this.options.stream().filter(option -> option.conditions(this)).count();
     }
 
     @Override
@@ -71,8 +71,7 @@ public class ModalTargetingScheme implements TargetingScheme<Integer> {
 
     @Override
     public List<Integer> getPossibleChoices() {
-        return IntStream.range(0, this.options.size()).boxed()
-                .map(this.options::get)
+        return this.options.stream()
                 .filter(modalOption -> modalOption.conditions(this))
                 .map(ModalOption::getIndex)
                 .collect(Collectors.toList());
