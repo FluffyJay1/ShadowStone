@@ -11,7 +11,7 @@ import server.card.effect.EffectStats;
 
 public class CardDisplayUnit extends UIBox {
     /**
-     * Alert Syntax: "cardclick (cardClassString)" [clickCount]
+     * Alert Syntax: "cardclick (cardClassString)" [mouseButton] [clickCount]
      */
     public static final String CARD_CLICK = "cardclick";
     public static final double SCALE = 0.75;
@@ -34,8 +34,7 @@ public class CardDisplayUnit extends UIBox {
 
     @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
-        this.alert(CARD_CLICK + " " + cardText.toString(), clickCount);
-
+        this.alert(CARD_CLICK + " " + cardText.toString(), button, clickCount);
     }
 
     public void setCardText(CardText cardText) {

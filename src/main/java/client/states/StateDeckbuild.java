@@ -24,6 +24,7 @@ public class StateDeckbuild extends BasicGameState {
     ClassSelectPanel classSelect;
     CardSelectTooltipPanel cardTooltip;
     GameContainer container;
+    Text addRemoveText;
 
     @Override
     public void init(GameContainer arg0, StateBasedGame arg1) {
@@ -74,14 +75,12 @@ public class StateDeckbuild extends BasicGameState {
                     // select card in deckbuilder
                     CardText cardText = CardText.fromString(st.nextToken());
                     switch (intarg[0]) {
-                        case 1 -> {
+                        case Input.MOUSE_LEFT_BUTTON -> {
                             // display its tooltip
                             assert cardText != null;
                             cardTooltip.setTooltip(cardText.getTooltip());
                         }
-                        case 2 -> deckdisplaypanel.removeCard(cardText);
-                        default -> {
-                        }
+                        case Input.MOUSE_RIGHT_BUTTON -> deckdisplaypanel.removeCard(cardText);
                     }
                 }
                 case DeckDisplayPanel.DECK_CONFIRM -> {
@@ -103,14 +102,12 @@ public class StateDeckbuild extends BasicGameState {
                     // select card in cards to choose from
                     CardText cardText = CardText.fromString(st.nextToken());
                     switch (intarg[0]) {
-                        case 1 -> {
+                        case Input.MOUSE_LEFT_BUTTON -> {
                             // display its tooltip
                             assert cardText != null;
                             cardTooltip.setTooltip(cardText.getTooltip());
                         }
-                        case 2 -> deckdisplaypanel.addCard(cardText);
-                        default -> {
-                        }
+                        case Input.MOUSE_RIGHT_BUTTON -> deckdisplaypanel.addCard(cardText);
                     }
                 }
             }
@@ -132,6 +129,9 @@ public class StateDeckbuild extends BasicGameState {
         this.cardsetpanel.setVisible(false);
         this.cardsetpanel.relpos = true;
         this.ui.addUIElementParent(this.cardsetpanel);
+        this.addRemoveText = new Text(this.ui, new Vector2f(0, 0.55f), "Right click to add/remove cards!", 500, 20, Game.DEFAULT_FONT, 30, 0, 0);
+        this.addRemoveText.relpos = true;
+        this.cardsetpanel.addChild(this.addRemoveText);
         this.deckselectpanel = new DeckSelectPanel(ui, new Vector2f(0, 0), true);
         this.deckselectpanel.relpos = true;
         this.ui.addUIElementParent(this.deckselectpanel);

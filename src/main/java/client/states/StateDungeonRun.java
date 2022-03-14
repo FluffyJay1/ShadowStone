@@ -56,9 +56,11 @@ public class StateDungeonRun extends BasicGameState {
                     }
                 }
                 case DeckDisplayPanel.CARD_CLICK, CardDisplayUnit.CARD_CLICK -> {
-                    CardText cardText = CardText.fromString(st.nextToken());
-                    assert cardText != null;
-                    this.cardTooltip.setTooltip(cardText.getTooltip());
+                    if (intarg[0] == Input.MOUSE_LEFT_BUTTON) {
+                        CardText cardText = CardText.fromString(st.nextToken());
+                        assert cardText != null;
+                        this.cardTooltip.setTooltip(cardText.getTooltip());
+                    }
                 }
                 case DeckDisplayPanel.DECK_CONFIRM -> {
                     this.deckDisplayPanel.setVisible(false);

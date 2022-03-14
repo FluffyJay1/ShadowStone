@@ -1,4 +1,3 @@
-fix deckbuild tooltip blocking
 prerender the name text on the card
 textfield cursor rendring (and blinking maybe)
 enough with this double float casting madness

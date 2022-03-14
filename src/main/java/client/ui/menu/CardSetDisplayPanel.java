@@ -11,7 +11,7 @@ import server.card.cardset.*;
 
 public class CardSetDisplayPanel extends UIBox {
     /**
-     * Alert syntax: "cardsetclick (cardClassString)" [clickCount]
+     * Alert syntax: "cardsetclick (cardClassString)" [mouseButton] [clickCount]
      */
     public static final String CARDSET_CLICK = "cardsetclick";
     public static final String BACKGROUND_CLICK = "cardsetbackgroundclick";
