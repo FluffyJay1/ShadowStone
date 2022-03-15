@@ -13,6 +13,7 @@ import client.Game;
 import utils.UninvertibleImage;
 
 public class Text extends UIElement {
+    public static final String CURSOR_TOKEN = "<c>";
     private static final int CACHED_RENDER_PADDING = 10;
     private static Image tempRender;
     private static Graphics tempGraphics;
@@ -83,14 +84,14 @@ public class Text extends UIElement {
         while (stlines.hasMoreTokens()) {
             // StringTokenizer st = new StringTokenizer(stlines.nextToken(), "
             // ");
-            String[] words = stlines.nextToken().split("(?<= )|(?<=</?[bi]>)|(?=</?[bi]>)");
+            String[] words = stlines.nextToken().split("(?<= )|(?<=</?[bic]>)|(?=</?[bic]>)");
             List<String> line = new ArrayList<>();
             StringBuilder sameFontStreak = new StringBuilder(); // to reduce calls to drawString
             double currlinewidth = 0;
 
             for (String token : words) { // why do i do this
                 // String token = st.nextToken();
-                if (token.matches("</?[bi]>")) {
+                if (token.matches("</?[bic]>")) {
                     if (sameFontStreak.length() > 0) {
                         String sameFontStreakString = sameFontStreak.toString();
                         line.add(sameFontStreakString);
@@ -176,6 +177,11 @@ public class Text extends UIElement {
                     case "</b>" -> flags = flags & ~1;
                     case "<i>" -> flags = flags | 2;
                     case "</i>" -> flags = flags & ~2;
+                    case "<c>" -> {
+                        float drawx = CACHED_RENDER_PADDING + (float) (currlinewidth + (this.maxLineWidth - this.lineWidths.get(i)) * (this.alignh + 1) / 2.);
+                        float drawy = CACHED_RENDER_PADDING + (float) (this.lineHeight * i);
+                        tempGraphics.drawString("|", drawx - tempGraphics.getFont().getWidth("|") * 0.6f, drawy);
+                    }
                     default -> {
                         float drawx = CACHED_RENDER_PADDING + (float) (currlinewidth + (this.maxLineWidth - this.lineWidths.get(i)) * (this.alignh + 1) / 2.);
                         float drawy = CACHED_RENDER_PADDING + (float) (this.lineHeight * i);

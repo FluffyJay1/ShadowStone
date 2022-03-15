@@ -7,6 +7,7 @@ public class TextField extends UIBox {
     public static final String TEXT_ENTER = "textenter";
     public static final double SPAM_DELAY = 0.5;
     public static final double SPAM_INTERVAL = 0.02;
+    public static final double CURSOR_FLASH_INTERVAL = 0.5;
     int cursorPos;
     String text;
     final Text dispText;
@@ -14,6 +15,7 @@ public class TextField extends UIBox {
     int pressedKey;
     char pressedChar;
     double spamTimer = 0;
+    double cursorFlashTimer = 0;
 
     public TextField(UI ui, Vector2f pos, Vector2f dim, String text, Text dispText) {
         super(ui, pos, dim, "res/ui/uiboxborder.png");
@@ -34,7 +36,12 @@ public class TextField extends UIBox {
             }
         }
         if (this.hasFocus) {
-            this.dispText.setText(this.text.substring(0, this.cursorPos) + "|" + this.text.substring(this.cursorPos));
+            this.cursorFlashTimer = (this.cursorFlashTimer + frametime) % (CURSOR_FLASH_INTERVAL * 2);
+            if (this.cursorFlashTimer < CURSOR_FLASH_INTERVAL) {
+                this.dispText.setText(this.text.substring(0, this.cursorPos) + Text.CURSOR_TOKEN + this.text.substring(this.cursorPos));
+            } else {
+                this.dispText.setText(this.text);
+            }
         } else {
             this.dispText.setText(this.text);
         }
@@ -93,6 +100,7 @@ public class TextField extends UIBox {
     }
 
     public void input(int key, char c) {
+        this.cursorFlashTimer = 0;
         switch (key) {
         case Input.KEY_BACK:
             if (this.cursorPos > 0) {
