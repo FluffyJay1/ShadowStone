@@ -78,10 +78,9 @@ public class DeckDisplayPanel extends UIBox {
         this.deck = deck;
         if (deck != null) {
             for (Map.Entry<CardText, Integer> entry : deck.getCounts()) {
-                CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f());
+                CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f(), entry.getKey());
                 this.scroll.addChild(cdu);
                 this.cards.add(cdu);
-                cdu.setCardText(entry.getKey());
                 cdu.setCount(entry.getValue());
             }
         }
@@ -92,8 +91,7 @@ public class DeckDisplayPanel extends UIBox {
         boolean newpanel = this.deck.getCountOf(cardText) == 0;
         if (this.deck.addCard(cardText, true)) {
             if (newpanel) {
-                CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f());
-                cdu.setCardText(cardText);
+                CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f(), cardText);
                 this.scroll.addChild(cdu);
                 this.cards.add(cdu);
 

@@ -52,13 +52,14 @@ public class DungeonRunStatusPanel extends UIBox {
                 Contestant enemy = DungeonRunController.run.enemies.get(i);
                 if (this.items.size() <= i) {
                     DungeonRunStatusPanelItem item = new DungeonRunStatusPanelItem(this.ui,
-                            new Vector2f(0, (float)-this.scroll.getHeight(true) / 2 + i * (ITEM_HEIGHT + ITEM_SPACING)));
+                            new Vector2f(0, (float)-this.scroll.getHeight(true) / 2 + i * (ITEM_HEIGHT + ITEM_SPACING)),
+                            enemy);
                     item.alignv = -1;
                     this.items.add(item);
                     this.scroll.addChild(item);
+                } else {
+                    this.items.get(i).setEnemy(enemy);
                 }
-                DungeonRunStatusPanelItem item = this.items.get(i);
-                item.setEnemy(enemy);
             }
             if (DungeonRunController.run.current < this.items.size()) {
                 this.highlight.setPos(this.items.get(DungeonRunController.run.current).getCenterPos(), 0.999);
@@ -95,14 +96,14 @@ public class DungeonRunStatusPanel extends UIBox {
         List<CardDisplayUnit> signatureCards;
         Text nameText, classText, signatureCardText;
 
-        public DungeonRunStatusPanelItem(UI ui, Vector2f pos) {
+        public DungeonRunStatusPanelItem(UI ui, Vector2f pos, Contestant enemy) {
             super(ui, pos, new Vector2f(Config.WINDOW_WIDTH - 560, ITEM_HEIGHT), "res/ui/uiboxborder.png");
             this.margins.set(30, 10);
-            this.leader = new CardDisplayUnit(ui, new Vector2f(-(float)this.getWidth(true) / 2, 0));
+            this.leader = new CardDisplayUnit(ui, new Vector2f(-(float)this.getWidth(true) / 2, 0), enemy.leaderText);
             this.leader.alignh = -1;
             this.leader.setCardStatus(CardStatus.LEADER);
             this.addChild(this.leader);
-            this.unleashpower = new CardDisplayUnit(ui, new Vector2f((float) this.leader.getRight(false, false) + 10, 0));
+            this.unleashpower = new CardDisplayUnit(ui, new Vector2f((float) this.leader.getRight(false, false) + 10, 0), enemy.unleashPowerText);
             this.unleashpower.alignh = -1;
             this.unleashpower.setCardStatus(CardStatus.UNLEASHPOWER);
             this.addChild(this.unleashpower);
@@ -116,6 +117,7 @@ public class DungeonRunStatusPanel extends UIBox {
                     150, 15, Game.DEFAULT_FONT, 20, -1, 0);
             this.addChild(this.signatureCardText);
             this.signatureCards = new ArrayList<>(MAX_SIGNATURE_CARDS);
+            this.setEnemy(enemy);
         }
 
         public void setEnemy(Contestant enemy) {
@@ -128,9 +130,8 @@ public class DungeonRunStatusPanel extends UIBox {
             this.clearSignatureCards();
             float startX = (float) this.signatureCardText.getRight(false, false) + CARD_SPACING;
             for (int i = 0; i < this.enemy.specialCards.size() && i < MAX_SIGNATURE_CARDS; i++) {
-                CardDisplayUnit cdu = new CardDisplayUnit(this.ui, new Vector2f(startX, 0));
+                CardDisplayUnit cdu = new CardDisplayUnit(this.ui, new Vector2f(startX, 0), this.enemy.specialCards.get(i));
                 cdu.alignh = -1;
-                cdu.setCardText(this.enemy.specialCards.get(i));
                 this.signatureCards.add(cdu);
                 this.addChild(cdu);
                 startX += cdu.getWidth(false) + CARD_SPACING;

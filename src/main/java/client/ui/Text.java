@@ -222,10 +222,10 @@ public class Text extends UIElement {
                 }
             }
             if (this.cachedRender != null) {
-                float drawx = (float) (this.getAbsPos().x - this.maxLineWidth * (this.alignh + 1) / 2.) - CACHED_RENDER_PADDING;
-                float drawy = (float) (this.getAbsPos().y - this.getVOff()) - CACHED_RENDER_PADDING;
+                float drawx = this.getAbsPos().x - ((float) this.maxLineWidth * (this.alignh + 1) / 2f + CACHED_RENDER_PADDING) * (float) this.getScale();
+                float drawy = this.getAbsPos().y - ((float) this.getVOff() + CACHED_RENDER_PADDING) * (float) this.getScale();
                 this.cachedRender.setAlpha((float) this.getAlpha());
-                g.drawImage(this.cachedRender, drawx, drawy);
+                g.drawImage(this.cachedRender.getScaledCopy((float) this.getScale()), drawx, drawy);
             }
             this.drawChildren(g);// why not
         }

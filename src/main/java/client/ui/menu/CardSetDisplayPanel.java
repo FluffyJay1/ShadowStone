@@ -54,10 +54,9 @@ public class CardSetDisplayPanel extends UIBox {
         this.set = set;
         if (set != null) {
             for (CardText cardText : set) {
-                CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f());
+                CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f(), cardText);
                 this.scroll.addChild(cdu);
                 this.cards.add(cdu);
-                cdu.setCardText(cardText);
             }
         }
         this.updateCardPositions();

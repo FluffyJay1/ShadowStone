@@ -106,8 +106,7 @@ public class DungeonRunLootPanel extends UIBox {
             super(ui, pos);
             for (int i = 0; i < cardTexts.size(); i++) {
                 float x = FAN_WIDTH * ((i + 0.5f) / cardTexts.size() - 0.5f);
-                CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f(x, 0));
-                cdu.setCardText(cardTexts.get(i));
+                CardDisplayUnit cdu = new CardDisplayUnit(ui, new Vector2f(x, 0), cardTexts.get(i));
                 this.addChild(cdu);
             }
             this.addChild(new GenericButton(ui, new Vector2f(0, 100), new Vector2f(200, 50), selectText, onSelect));

@@ -21,15 +21,16 @@ public class CardDisplayUnit extends UIBox {
     Card card;
     final UICard uicard;
 
-    public CardDisplayUnit(UI ui, Vector2f pos) {
+    public CardDisplayUnit(UI ui, Vector2f pos, CardText cardText) {
         super(ui, pos, UICard.CARD_DIMENSIONS.copy().scale((float) SCALE), "");
         this.text = new Text(ui, new Vector2f((float) this.getWidth(false) / 2, (float) -this.getHeight(false) / 2), "0",
                 50, 14, Game.DEFAULT_FONT, 20, -1, 1);
         this.addChild(this.text);
-        this.uicard = new UICard(ui, null, null);
-        this.setCardText(null);
-        this.setCount(-1);
         this.status = CardStatus.HAND;
+        this.card = getCardFrom(cardText);
+        this.uicard = new UICard(ui, null, this.card);
+        this.setCardText(cardText);
+        this.setCount(-1);
     }
 
     @Override
@@ -37,15 +38,16 @@ public class CardDisplayUnit extends UIBox {
         this.alert(CARD_CLICK + " " + cardText.toString(), button, clickCount);
     }
 
+    private Card getCardFrom(CardText cardText) {
+        Card card = cardText.constructInstance(null);
+        card.status = this.status;
+        return card;
+    }
+
     public void setCardText(CardText cardText) {
         this.cardText = cardText;
-        if (this.cardText == null) {
-            this.card = null;
-        } else {
-            this.card = cardText.constructInstance(null);
-            this.card.status = this.status;
-            this.uicard.setCard(this.card);
-        }
+        this.card = getCardFrom(cardText);
+        this.uicard.setCard(this.card);
     }
 
     public CardText getCardText() {
