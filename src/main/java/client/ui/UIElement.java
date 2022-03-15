@@ -9,7 +9,7 @@ import client.*;
 import utils.*;
 
 public class UIElement implements DefaultInputListener, UIEventListener, Comparable<UIElement> {
-    public static final double EPSILON = 0.0001;
+    public static final float EPSILON = 0.0001f;
 
     protected final UI ui;
     UIElement parent = null;
@@ -26,7 +26,8 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     // relpos: represent position in terms of proportion of total width/height (considering margin), with (0, 0) being pos
     public Vector2f childoffset = new Vector2f(), margins = new Vector2f();
     private Vector2f targetpos, pos;
-    private double scale = 1, speed = 1, angle = 0, alpha = 1;
+    private float scale = 1, angle = 0, alpha = 1;
+    private double speed = 1;
     private UIElement followTarget;
     Animation animation;
     Image finalImage;
@@ -61,13 +62,13 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
 
     public void setAnimation(Animation animation) {
         this.animation = animation;
-        this.finalImage = animation.getCurrentFrame().getScaledCopy((float) this.scale);
+        this.finalImage = animation.getCurrentFrame().getScaledCopy(this.scale);
     }
 
     public void setAnimation(String imagepath, Vector2f framedim, int spacing, int margin) {
         if (imagepath != null && !imagepath.isEmpty()) {
             this.animation = new Animation(imagepath, framedim, spacing, margin);
-            this.finalImage = this.animation.getCurrentFrame().getScaledCopy((float) this.scale);
+            this.finalImage = this.animation.getCurrentFrame().getScaledCopy(this.scale);
         }
     }
 
@@ -100,8 +101,8 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
             if (this.parent == null) {
                 this.changePos(new Vector2f(pos.x / Config.WINDOW_WIDTH, pos.y / Config.WINDOW_HEIGHT), speed);
             } else {
-                this.changePos(new Vector2f((float) (pos.x / this.parent.getWidth(true)),
-                        (float) (pos.y / this.parent.getHeight(true))), speed);
+                this.changePos(new Vector2f(pos.x / this.parent.getWidth(true),
+                        pos.y / this.parent.getHeight(true)), speed);
             }
         } else {
             this.changePos(pos, speed);
@@ -117,7 +118,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     }
 
     public Vector2f getCenterPos() {
-        return this.getPos().add(new Vector2f((float) this.getHAlignOffset(), (float) (this.getVAlignOffset())));
+        return this.getPos().add(new Vector2f(this.getHAlignOffset(), this.getVAlignOffset()));
     }
 
     // absolute position on the screen more or less
@@ -136,26 +137,26 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         return this.pos.copy();
     }
 
-    public void setScale(double scale) {
+    public void setScale(float scale) {
         this.scale = scale;
     }
 
-    public double getScale() {
+    public float getScale() {
         return this.scale;
     }
 
     public Vector2f getDim(boolean margin) {
-        return new Vector2f((float) this.getWidth(margin), (float) this.getHeight(margin));
+        return new Vector2f(this.getWidth(margin), this.getHeight(margin));
     }
 
-    public double getWidth(boolean margin) {
+    public float getWidth(boolean margin) {
         if (this.finalImage == null) {
             return 0;
         }
         return this.finalImage.getWidth() - (margin ? this.margins.x * 2 : 0);
     }
 
-    public double getHeight(boolean margin) {
+    public float getHeight(boolean margin) {
         if (this.finalImage == null) {
             return 0;
         }
@@ -163,49 +164,49 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     }
 
     // defined as distance from pos to left edge
-    public double getHOff() {
+    public float getHOff() {
         return this.getWidth(false) * (this.alignh + 1) / 2;
     }
 
     // defined as distance from pos to top edge
-    public double getVOff() {
+    public float getVOff() {
         return this.getHeight(false) * (this.alignv + 1) / 2;
     }
 
     // defined as offset from the pos to get to the center
-    public double getHAlignOffset() {
+    public float getHAlignOffset() {
         return this.getWidth(false) * -this.alignh / 2;
     }
 
     // defined as offset from the pos to get to the center
-    public double getVAlignOffset() {
+    public float getVAlignOffset() {
         return this.getHeight(false) * -this.alignv / 2;
     }
 
-    public double getLeft(boolean abs, boolean margin) {
+    public float getLeft(boolean abs, boolean margin) {
         return (abs ? this.getAbsPos().x : this.getPos().x) - this.getHOff() + (margin ? this.margins.x : 0);
     }
 
-    public double getRight(boolean abs, boolean margin) {
+    public float getRight(boolean abs, boolean margin) {
         return (abs ? this.getAbsPos().x : this.getPos().x) - this.getHOff() + this.getWidth(false)
                 - (margin ? this.margins.x : 0);
     }
 
-    public double getTop(boolean abs, boolean margin) {
+    public float getTop(boolean abs, boolean margin) {
         return (abs ? this.getAbsPos().y : this.getPos().y) - this.getVOff() + (margin ? this.margins.y : 0);
     }
 
-    public double getBottom(boolean abs, boolean margin) {
+    public float getBottom(boolean abs, boolean margin) {
         return (abs ? this.getAbsPos().y : this.getPos().y) - this.getVOff() + this.getHeight(false)
                 - (margin ? this.margins.y : 0);
     }
 
     // topmost point relative to parent before childoffset
-    public double getChildLocalTop(double offset) {
-        double y = -this.getVOff() + offset;
+    public float getChildLocalTop(float offset) {
+        float y = -this.getVOff() + offset;
         for (UIElement u : this.getChildren()) {
             if (u.isVisible()) {
-                double childTop = u.getChildLocalTop(offset + this.getVAlignOffset() + u.getPos().y);
+                float childTop = u.getChildLocalTop(offset + this.getVAlignOffset() + u.getPos().y);
                 if (u.clip) {
                     childTop = -u.getVOff() + u.getPos().y + offset;
                 }
@@ -215,11 +216,11 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         return y;
     }
 
-    public double getChildLocalBottom(double offset) {
-        double y = this.getHeight(false) - this.getVOff() + offset;
+    public float getChildLocalBottom(float offset) {
+        float y = this.getHeight(false) - this.getVOff() + offset;
         for (UIElement u : this.getChildren()) {
             if (u.isVisible()) {
-                double childBottom = u.getChildLocalBottom(offset + this.getVAlignOffset() + u.getPos().y);
+                float childBottom = u.getChildLocalBottom(offset + this.getVAlignOffset() + u.getPos().y);
                 if (u.clip) {
                     childBottom = u.getHeight(false) - u.getVOff() + u.getPos().y + offset;
                 }
@@ -230,11 +231,11 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     }
 
     // get a width value in terms of relpos coordinates
-    public double getWidthInRel(double absWidth) {
+    public float getWidthInRel(float absWidth) {
         return absWidth / this.getWidth(true);
     }
 
-    public double getHeightInRel(double absHeight) {
+    public float getHeightInRel(float absHeight) {
         return absHeight / this.getHeight(true);
     }
 
@@ -250,8 +251,8 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         if (this.parent == null) {
             return new Vector2f(pos.x / Config.WINDOW_WIDTH, pos.y / Config.WINDOW_HEIGHT);
         } else {
-            return new Vector2f((float) (pos.x / this.parent.getWidth(true)),
-                    (float) (pos.y / this.parent.getHeight(true)));
+            return new Vector2f(pos.x / this.parent.getWidth(true),
+                    pos.y / this.parent.getHeight(true));
         }
     }
 
@@ -280,11 +281,11 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         return this.visible;
     }
 
-    public void setAlpha(double alpha) {
+    public void setAlpha(float alpha) {
         this.alpha = alpha;
     }
 
-    public double getAlpha() {
+    public float getAlpha() {
         return this.alpha;
     }
 
@@ -305,34 +306,34 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
 
     // normalize position relative to position and scale of this ui element
     public Vector2f getLocalPosOfAbs(Vector2f absPos) {
-        return new Vector2f((float) (absPos.x - this.getAbsPos().x - this.getHAlignOffset()),
-                (float) (absPos.y - this.getAbsPos().y - this.getVAlignOffset()));
+        return new Vector2f(absPos.x - this.getAbsPos().x - this.getHAlignOffset(),
+                absPos.y - this.getAbsPos().y - this.getVAlignOffset());
     }
 
     public Vector2f getLocalPosOfRel(Vector2f relPos) {
-        return new Vector2f((float) (relPos.x * this.getWidth(true)),
-                (float) (relPos.y * this.getHeight(true)));
+        return new Vector2f(relPos.x * this.getWidth(true),
+                relPos.y * this.getHeight(true));
     }
 
     public Vector2f getAbsPosOfLocal(Vector2f localPos) {
         return this.getAbsPos().add(this.childoffset).add(localPos)
-                .add(new Vector2f((float) (this.getHAlignOffset()), (float) (this.getVAlignOffset())));
+                .add(new Vector2f(this.getHAlignOffset(), this.getVAlignOffset()));
     }
 
     public boolean pointIsInHitbox(Vector2f pos) {
         if (this.hitcircle) {
             return (new Vector2f(
-                    (float) ((pos.x - this.getAbsPos().x + this.getWidth(false) / 2 - this.getHOff())
-                            / this.getWidth(false)),
-                    (float) ((pos.y - this.getAbsPos().y + this.getHeight(false) / 2 - this.getVOff())
-                            / this.getHeight(false))).lengthSquared()) < 0.25;
+                    (pos.x - this.getAbsPos().x + this.getWidth(false) / 2 - this.getHOff())
+                            / this.getWidth(false),
+                    (pos.y - this.getAbsPos().y + this.getHeight(false) / 2 - this.getVOff())
+                            / this.getHeight(false)).lengthSquared()) < 0.25;
         }
         return pos.getX() >= this.getLeft(true, false) && pos.getX() <= this.getRight(true, false)
                 && pos.getY() >= this.getTop(true, false) && pos.getY() <= this.getBottom(true, false);
     }
 
     public void fitInParent() {
-        double x = this.getPos().getX(), y = this.getPos().getY();
+        float x = this.getPos().getX(), y = this.getPos().getY();
         if (this.parent == null) { // is parent
             x = Math.max(x, -Config.WINDOW_WIDTH / 2 + this.getHOff());
             x = Math.min(x, Config.WINDOW_WIDTH / 2 - this.getHOff() + this.getWidth(false));
@@ -344,7 +345,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
             y = Math.max(y, -this.parent.getWidth(true) / 2 + this.getVOff());
             y = Math.min(y, this.parent.getWidth(true) / 2 - this.getVOff() + this.getHeight(false));
         }
-        this.setPos(new Vector2f((float) x, (float) y), 1);
+        this.setPos(new Vector2f(x, y), 1);
     }
 
     public void update(double frametime) {
@@ -395,11 +396,11 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
 
     public void draw(Graphics g) {
         if (this.animation != null) {
-            this.finalImage = this.animation.getCurrentFrame().getScaledCopy((float) this.scale);
-            this.finalImage.rotate((float) this.angle);
-            this.finalImage.setAlpha((float) this.alpha);
+            this.finalImage = this.animation.getCurrentFrame().getScaledCopy(this.scale);
+            this.finalImage.rotate(this.angle);
+            this.finalImage.setAlpha(this.alpha);
             if (this.visible) {
-                g.drawImage(this.finalImage, (float) (this.getLeft(true, false)), (float) (this.getTop(true, false)));
+                g.drawImage(this.finalImage, this.getLeft(true, false), this.getTop(true, false));
             }
         }
         if (this.visible) {

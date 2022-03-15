@@ -3,7 +3,6 @@ package server.resolver.util;
 import server.resolver.Resolver;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 

@@ -2,7 +2,6 @@ package server.card;
 
 import client.tooltip.*;
 import server.*;
-import server.card.effect.*;
 
 public class Amulet extends BoardObject {
     public Amulet(Board b, AmuletText amuletText) {

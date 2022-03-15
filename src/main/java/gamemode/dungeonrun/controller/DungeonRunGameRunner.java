@@ -1,6 +1,5 @@
 package gamemode.dungeonrun.controller;
 
-import client.VisualBoard;
 import gamemode.dungeonrun.model.Contestant;
 import network.DataStream;
 import server.GameController;

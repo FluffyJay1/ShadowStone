@@ -8,14 +8,11 @@ import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
-import server.card.effect.EffectStats;
 import server.event.Event;
 import server.resolver.DamageResolver;
 import server.resolver.Resolver;
-import server.resolver.RestoreResolver;
 import server.resolver.util.ResolverQueue;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 

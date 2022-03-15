@@ -2,7 +2,6 @@ package server.card;
 
 import client.tooltip.TooltipMinion;
 import server.Board;
-import server.BoardObjectText;
 import server.card.effect.Effect;
 
 import java.lang.reflect.InvocationTargetException;

@@ -1,6 +1,5 @@
 package server.card;
 
-import java.lang.reflect.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -13,7 +12,6 @@ import server.*;
 import server.card.effect.*;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
-import server.event.Event;
 import server.resolver.*;
 import server.resolver.meta.EffectPredicateResolver;
 import server.resolver.util.ResolverQueue;

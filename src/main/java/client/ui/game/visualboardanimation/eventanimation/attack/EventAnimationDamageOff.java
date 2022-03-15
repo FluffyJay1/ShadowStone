@@ -8,7 +8,6 @@ import client.ui.interpolation.Interpolation;
 import client.ui.interpolation.meta.ComposedInterpolation;
 import client.ui.interpolation.realvalue.*;
 import client.ui.particle.strategy.EmissionStrategy;
-import client.ui.particle.strategy.meta.ScaledEmissionStrategy;
 import client.ui.particle.strategy.property.*;
 import client.ui.particle.strategy.timing.InstantEmissionTimingStrategy;
 import org.newdawn.slick.Graphics;

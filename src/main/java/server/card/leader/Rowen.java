@@ -2,7 +2,6 @@ package server.card.leader;
 
 import client.tooltip.TooltipMinion;
 import org.newdawn.slick.geom.Vector2f;
-import server.*;
 import server.card.*;
 import server.card.effect.Effect;
 

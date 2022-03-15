@@ -32,9 +32,9 @@ public class UICard extends UIBox {
     public static final double NAME_FONT_SIZE = 30;
     public static final double STAT_DEFAULT_SIZE = 30;
     public static final int ICON_SPACING = 32;
-    public static final double SCALE_DEFAULT = 1, SCALE_HAND = 0.75, SCALE_HAND_EXPAND = 1.2,
-            SCALE_BOARD = 1, SCALE_TARGETING = 1.3, SCALE_POTENTIAL_TARGET = 1.15, SCALE_ORDERING_ATTACK = 1.3,
-            SCALE_COMBAT = 1.2, SCALE_PLAY = 2.5, SCALE_MOVE = 2;
+    public static final float SCALE_DEFAULT = 1, SCALE_HAND = 0.75f, SCALE_HAND_EXPAND = 1.2f,
+            SCALE_BOARD = 1f, SCALE_TARGETING = 1.3f, SCALE_POTENTIAL_TARGET = 1.15f, SCALE_ORDERING_ATTACK = 1.3f,
+            SCALE_COMBAT = 1.2f, SCALE_PLAY = 2.5f, SCALE_MOVE = 2;
     public static final int Z_DEFAULT = 0, Z_HAND = 2, Z_BOARD = 0, Z_TARGETING = 4,
             Z_MOVE = 4, Z_DRAGGING = 3;
     private static final double PENDING_PLAY_TIME_PER_CYCLE = 0.4;
@@ -157,7 +157,7 @@ public class UICard extends UIBox {
     }
 
     public void updateCardAnimation() {
-        double scale = switch (this.card.status) {
+        float scale = switch (this.card.status) {
             case BOARD, LEADER -> SCALE_BOARD;
             case HAND -> SCALE_HAND;
             default -> SCALE_DEFAULT;
@@ -206,7 +206,7 @@ public class UICard extends UIBox {
             Vector2f absPos = this.getAbsPos();
             this.drawCard(g, absPos, this.getScale());
             if (this.isPending()) {
-                float size = (float) this.getScale() * PENDING_PLAY_ELLIPSIS_SIZE;
+                float size = this.getScale() * PENDING_PLAY_ELLIPSIS_SIZE;
                 for (int i = -1; i <= 1; i++) {
                     Vector2f pos = this.getAbsPosOfLocal(this.getLocalPosOfRel(new Vector2f(i * PENDING_PLAY_ELLIPSIS_SPACING, 0)));
                     g.setColor(new Color(1f, 1f, 1f, ((1 + (float)Math.sin((-i / 3f + this.pendingTimer / PENDING_PLAY_TIME_PER_CYCLE) * Math.PI * 2)) / 2.f)));

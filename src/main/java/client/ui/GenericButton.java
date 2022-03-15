@@ -12,7 +12,7 @@ public class GenericButton extends UIBox {
     public GenericButton(UI ui, Vector2f pos, Vector2f dim, String message, Runnable onClick) {
         super(ui, pos, dim, new Animation("res/ui/button.png", new Vector2f(2, 1), 0, 0));
         this.originalDim = dim.copy();
-        this.text = new Text(ui, new Vector2f(0, 0), message, dim.x * 0.8, 20, Game.DEFAULT_FONT, 24, 0, 0);
+        this.text = new Text(ui, new Vector2f(0, 0), message, dim.x * 0.8f, 20, Game.DEFAULT_FONT, 24, 0, 0);
         this.text.relpos = true;
         this.text.setParent(this);
         this.onClick = onClick;
@@ -24,7 +24,7 @@ public class GenericButton extends UIBox {
         if (enabled) {
             this.setAlpha(1);
         } else {
-            this.setAlpha(0.3);
+            this.setAlpha(0.3f);
         }
     }
 

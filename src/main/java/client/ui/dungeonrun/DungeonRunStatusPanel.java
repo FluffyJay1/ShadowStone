@@ -8,7 +8,6 @@ import client.ui.UI;
 import client.ui.UIBox;
 import client.ui.menu.CardDisplayUnit;
 import gamemode.dungeonrun.controller.DungeonRunController;
-import gamemode.dungeonrun.controller.DungeonRunGameRunner;
 import gamemode.dungeonrun.model.Contestant;
 import gamemode.dungeonrun.model.RunState;
 import org.newdawn.slick.Color;
@@ -29,7 +28,7 @@ public class DungeonRunStatusPanel extends UIBox {
         super(ui, pos, new Vector2f(Config.WINDOW_WIDTH - 500, Config.WINDOW_HEIGHT), "res/ui/uiboxborder.png");
         this.margins.set(30, 30);
         this.items = new ArrayList<>();
-        this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f((float) this.getWidth(true), (float) this.getHeight(true)));
+        this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f(this.getWidth(true), this.getHeight(true)));
         this.scroll.clip = true;
         this.addChild(scroll);
         this.highlight = new UIBox(ui, new Vector2f(), new Vector2f(Config.WINDOW_WIDTH - 560, ITEM_HEIGHT), "res/ui/highlight.png");
@@ -52,7 +51,7 @@ public class DungeonRunStatusPanel extends UIBox {
                 Contestant enemy = DungeonRunController.run.enemies.get(i);
                 if (this.items.size() <= i) {
                     DungeonRunStatusPanelItem item = new DungeonRunStatusPanelItem(this.ui,
-                            new Vector2f(0, (float)-this.scroll.getHeight(true) / 2 + i * (ITEM_HEIGHT + ITEM_SPACING)),
+                            new Vector2f(0, -this.scroll.getHeight(true) / 2 + i * (ITEM_HEIGHT + ITEM_SPACING)),
                             enemy);
                     item.alignv = -1;
                     this.items.add(item);
@@ -103,17 +102,17 @@ public class DungeonRunStatusPanel extends UIBox {
             this.leader.alignh = -1;
             this.leader.setCardStatus(CardStatus.LEADER);
             this.addChild(this.leader);
-            this.unleashpower = new CardDisplayUnit(ui, new Vector2f((float) this.leader.getRight(false, false) + 10, 0), enemy.unleashPowerText);
+            this.unleashpower = new CardDisplayUnit(ui, new Vector2f(this.leader.getRight(false, false) + 10, 0), enemy.unleashPowerText);
             this.unleashpower.alignh = -1;
             this.unleashpower.setCardStatus(CardStatus.UNLEASHPOWER);
             this.addChild(this.unleashpower);
-            this.nameText = new Text(ui, new Vector2f((float) this.unleashpower.getRight(false, false), 0), "Name",
+            this.nameText = new Text(ui, new Vector2f(this.unleashpower.getRight(false, false), 0), "Name",
                     200, 35, Game.DEFAULT_FONT, 44, -1, 0);
             this.addChild(this.nameText);
-            this.classText = new Text(ui, new Vector2f((float) this.nameText.getRight(false, false), 0), "Class",
+            this.classText = new Text(ui, new Vector2f(this.nameText.getRight(false, false), 0), "Class",
                     200, 22, Game.DEFAULT_FONT, 24, -1, 0);
             this.addChild(this.classText);
-            this.signatureCardText = new Text(ui, new Vector2f((float) this.classText.getRight(false, false), 0), "Signature Cards include:",
+            this.signatureCardText = new Text(ui, new Vector2f(this.classText.getRight(false, false), 0), "Signature Cards include:",
                     150, 15, Game.DEFAULT_FONT, 20, -1, 0);
             this.addChild(this.signatureCardText);
             this.signatureCards = new ArrayList<>(MAX_SIGNATURE_CARDS);
@@ -128,7 +127,7 @@ public class DungeonRunStatusPanel extends UIBox {
             this.nameText.setText(enemy.leaderText.getTooltip().name);
             this.classText.setText(enemy.leaderText.getTooltip().craft.toString());
             this.clearSignatureCards();
-            float startX = (float) this.signatureCardText.getRight(false, false) + CARD_SPACING;
+            float startX = this.signatureCardText.getRight(false, false) + CARD_SPACING;
             for (int i = 0; i < this.enemy.specialCards.size() && i < MAX_SIGNATURE_CARDS; i++) {
                 CardDisplayUnit cdu = new CardDisplayUnit(this.ui, new Vector2f(startX, 0), this.enemy.specialCards.get(i));
                 cdu.alignh = -1;

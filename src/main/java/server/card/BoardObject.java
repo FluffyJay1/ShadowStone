@@ -1,13 +1,9 @@
 package server.card;
 
-import client.tooltip.*;
 import server.*;
 import server.card.effect.*;
-import server.resolver.Resolver;
 import server.resolver.util.ResolverQueue;
 import utils.HistoricalList;
-
-import java.util.List;
 
 public class BoardObject extends Card {
     public int lastBoardPos = 0; // After leaving board (e.g. to graveyard), keep a record of where it was last

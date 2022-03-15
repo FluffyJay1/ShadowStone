@@ -3,7 +3,6 @@ package client.ui.particle;
 import client.ui.Animation;
 import client.ui.interpolation.realvalue.ConstantInterpolation;
 import client.ui.interpolation.realvalue.LinearInterpolation;
-import client.ui.interpolation.realvalue.QuadraticInterpolationA;
 import client.ui.interpolation.realvalue.QuadraticInterpolationB;
 import client.ui.particle.strategy.EmissionStrategy;
 import client.ui.particle.strategy.property.*;

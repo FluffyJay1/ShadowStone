@@ -2,8 +2,6 @@ package client.ui.game;
 
 import client.Game;
 import client.tooltip.TooltipCard;
-import client.ui.Animation;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Vector2f;
 
@@ -24,14 +22,14 @@ public class TooltipDisplayPanel extends UIBox {
         this.alignv = -1;
         this.cardImageDisplayer = new UIBox(ui, new Vector2f(), new Vector2f( 300, 360));
         this.cardImageDisplayer.relpos = true;
-        this.cardImageDisplayer.setAlpha(0.12);
+        this.cardImageDisplayer.setAlpha(0.12f);
         this.cardImageDisplayer.ignorehitbox = true;
         this.addChild(this.cardImageDisplayer);
-        this.name = new Text(ui, new Vector2f((float) -this.getWidth(true) / 2, (float) -this.getHeight(true) / 2), "name",
+        this.name = new Text(ui, new Vector2f(-this.getWidth(true) / 2, -this.getHeight(true) / 2), "name",
                 this.getWidth(true), 40, Game.DEFAULT_FONT, 46, -1, -1);
         this.addChild(name);
         this.description = new Text(ui,
-                new Vector2f((float) -this.getWidth(true) / 2, (float) this.name.getBottom(false, false) + 10), "jeff",
+                new Vector2f(-this.getWidth(true) / 2, this.name.getBottom(false, false) + 10), "jeff",
                 this.getWidth(true), 32, Game.DEFAULT_FONT, 36, -1, -1);
         this.addChild(description);
         this.clip = true;
@@ -41,10 +39,10 @@ public class TooltipDisplayPanel extends UIBox {
         this.tooltip = tooltip;
         this.name.setText("<b>" + tooltip.name + "</b>");
         this.description.setText(tooltip.description);
-        this.setDim(new Vector2f((float) this.getWidth(false), (float) (this.name.getHeight(false) + this.description.getHeight(false) + 30)));
-        this.name.setPos(new Vector2f((float) - this.getWidth(true) / 2, (float) -this.getHeight(true) / 2), 1);
-        this.description.setPos(new Vector2f((float) -this.getWidth(true) / 2,
-                (float) this.name.getBottom(false, false) + 10), 1);
+        this.setDim(new Vector2f(this.getWidth(false), this.name.getHeight(false) + this.description.getHeight(false) + 30));
+        this.name.setPos(new Vector2f(- this.getWidth(true) / 2, -this.getHeight(true) / 2), 1);
+        this.description.setPos(new Vector2f(-this.getWidth(true) / 2,
+                this.name.getBottom(false, false) + 10), 1);
         if (tooltip instanceof TooltipCard) {
             Image image = Game.getImage(((TooltipCard) this.tooltip).imagepath);
             this.cardImageDisplayer.setImage(image);

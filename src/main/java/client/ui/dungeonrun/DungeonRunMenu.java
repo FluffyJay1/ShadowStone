@@ -1,7 +1,6 @@
 package client.ui.dungeonrun;
 
 import client.Config;
-import client.Game;
 import client.ui.GenericButton;
 import client.ui.UI;
 import client.ui.UIBox;
@@ -24,10 +23,10 @@ public class DungeonRunMenu extends UIBox {
         menuButton.relpos = true;
         menuButton.alignv = 1;
         this.addChild(menuButton);
-        this.endRunButton = new GenericButton(ui, new Vector2f(menuButton.getPos().x, (float) (menuButton.getTop(false, false) - BUTTON_DIM.y / 2 - BUTTON_SPACING)),
+        this.endRunButton = new GenericButton(ui, new Vector2f(menuButton.getPos().x, menuButton.getTop(false, false) - BUTTON_DIM.y / 2 - BUTTON_SPACING),
                 BUTTON_DIM, "End Run", onClickEndRun);
         this.addChild(this.endRunButton);
-        this.deckButton = new GenericButton(ui, new Vector2f(menuButton.getPos().x, (float) this.endRunButton.getTop(false, false) - BUTTON_DIM.y / 2 - BUTTON_SPACING),
+        this.deckButton = new GenericButton(ui, new Vector2f(menuButton.getPos().x, this.endRunButton.getTop(false, false) - BUTTON_DIM.y / 2 - BUTTON_SPACING),
                 BUTTON_DIM, "View Deck", onClickDeck);
         this.addChild(this.deckButton);
         this.onUpdateRunStatus();

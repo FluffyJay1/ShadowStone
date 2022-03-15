@@ -8,13 +8,8 @@ import java.util.stream.Collectors;
 import client.*;
 import server.*;
 import server.ai.*;
-import server.card.*;
 import server.card.cardset.*;
 import server.card.leader.*;
-import server.event.*;
-import server.playeraction.*;
-import server.resolver.*;
-import server.resolver.util.ResolverQueue;
 
 /**
  * thread for p2p battles on same network, one computer acts as server, each

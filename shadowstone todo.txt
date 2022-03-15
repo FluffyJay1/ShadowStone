@@ -1,4 +1,3 @@
-enough with this double float casting madness
 Show a little tooltip when a card effect triggers
 mulligan phase
 AI difficulty adjustment

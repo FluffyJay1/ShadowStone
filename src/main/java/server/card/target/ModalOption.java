@@ -3,7 +3,6 @@ package server.card.target;
 import server.card.effect.Effect;
 import utils.Indexable;
 
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class ModalOption implements Indexable {

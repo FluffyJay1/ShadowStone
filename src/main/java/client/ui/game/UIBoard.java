@@ -143,7 +143,7 @@ public class UIBoard extends UIBox {
             this.targetText.setPos(
                     new Vector2f(relevantCard.getPos().x,
                             relevantCard.getPos().y
-                                    + (float) (relevantCard.getHeight(false) / 2)),
+                                    + (relevantCard.getHeight(false) / 2)),
                     1);
         } else {
             this.targetText.setVisible(false);

@@ -26,9 +26,9 @@ public class UIBox extends UIElement {
     }
 
     @Override
-    public void setScale(double scale) {
+    public void setScale(float scale) {
         super.setScale(scale);
-        this.dim.set(this.originalDim.copy().scale((float) scale));
+        this.dim.set(this.originalDim.copy().scale(scale));
     }
 
     @Override
@@ -44,8 +44,8 @@ public class UIBox extends UIElement {
             this.finalImage = this.animation.getCurrentFrame().getScaledCopy((int) this.getWidth(false),
                     (int) this.getHeight(false));
             // this.finalImage.rotate((float) this.angle);
-            this.finalImage.setAlpha((float) this.getAlpha());
-            g.drawImage(this.finalImage, (float) this.getLeft(true, false), (float) this.getTop(true, false));
+            this.finalImage.setAlpha(this.getAlpha());
+            g.drawImage(this.finalImage, this.getLeft(true, false), this.getTop(true, false));
         }
     }
 
@@ -59,12 +59,12 @@ public class UIBox extends UIElement {
     }
 
     @Override
-    public double getWidth(boolean margin) {
+    public float getWidth(boolean margin) {
         return this.dim.x - (margin ? this.margins.x * 2 : 0);
     }
 
     @Override
-    public double getHeight(boolean margin) {
+    public float getHeight(boolean margin) {
         return this.dim.y - (margin ? this.margins.y * 2 : 0);
     }
 }

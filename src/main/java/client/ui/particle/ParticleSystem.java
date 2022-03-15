@@ -32,12 +32,12 @@ public class ParticleSystem extends UIElement {
     }
 
     @Override
-    public double getWidth(boolean margin) {
+    public float getWidth(boolean margin) {
         return 0;
     }
 
     @Override
-    public double getHeight(boolean margin) {
+    public float getHeight(boolean margin) {
         return 0;
     }
 

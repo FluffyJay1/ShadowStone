@@ -5,7 +5,6 @@ import org.newdawn.slick.*;
 import client.Game;
 import client.VisualBoard;
 import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
-import server.card.CardStatus;
 import server.card.effect.*;
 import server.event.*;
 

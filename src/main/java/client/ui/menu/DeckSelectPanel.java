@@ -56,7 +56,7 @@ public class DeckSelectPanel extends UIBox {
             );
             this.addChild(this.deleteButton);
         }
-        this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f((float) this.getWidth(true), 400));
+        this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f(this.getWidth(true), 400));
         this.scroll.clip = true;
         this.addChild(this.scroll);
         this.highlight = new UIBox(ui, new Vector2f(), new Vector2f(190, 110), "res/ui/highlight.png");

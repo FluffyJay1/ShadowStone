@@ -88,7 +88,7 @@ public class StateDungeonRun extends BasicGameState {
         this.dmu.relpos = true;
         this.dmu.alignh = -1;
         this.ui.addUIElementParent(this.dmu);
-        this.drsp = new DungeonRunStatusPanel(this.ui, new Vector2f((float) this.dmu.getRight(false, false), 0));
+        this.drsp = new DungeonRunStatusPanel(this.ui, new Vector2f(this.dmu.getRight(false, false), 0));
         this.drsp.alignh = -1;
         this.ui.addUIElementParent(this.drsp);
         this.drlp = new DungeonRunLootPanel(this.ui, new Vector2f(150, Config.WINDOW_HEIGHT * -0.5f), this::onUpdateRunStatus);

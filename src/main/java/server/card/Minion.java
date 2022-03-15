@@ -9,7 +9,6 @@ import server.*;
 import server.card.effect.*;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
-import server.resolver.Resolver;
 import server.resolver.util.ResolverQueue;
 
 public class Minion extends BoardObject {

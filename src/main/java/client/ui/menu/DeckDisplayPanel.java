@@ -36,7 +36,7 @@ public class DeckDisplayPanel extends UIBox {
             this.text = new Text(ui, new Vector2f(0, -225), "Deck", 300, 20, Game.DEFAULT_FONT, 34, 0, 0);
             this.addChild(this.text);
         }
-        this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f((float) this.getWidth(true), 400));
+        this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f(this.getWidth(true), 400));
         this.scroll.clip = true;
         this.addChild(this.scroll);
         this.okbutton = new GenericButton(ui, new Vector2f(0, 150), new Vector2f(100, 50), "Ok",

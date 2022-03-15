@@ -23,7 +23,7 @@ public class CardSetDisplayPanel extends UIBox {
         super(ui, pos, new Vector2f(1600, 500), "res/ui/uiboxborder.png");
         this.margins.set(10, 10);
         this.addChild(new Text(ui, new Vector2f(0, -225), "Cards", 300, 20, Game.DEFAULT_FONT, 34, 0, 0));
-        this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f((float) this.getWidth(true), 400));
+        this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f(this.getWidth(true), 400));
         this.scroll.clip = true;
         this.addChild(this.scroll);
     }
@@ -68,14 +68,4 @@ public class CardSetDisplayPanel extends UIBox {
             this.cards.get(i).setPos(new Vector2f(i % 8 * 160 - 560, i / 8 * 160 - 70), 0.99);
         }
     }
-
-    private CardDisplayUnit getCardDisplayUnit(Class<? extends Card> cardClass) {
-        for (CardDisplayUnit cdu : this.cards) {
-            if (cdu.getCardText().equals(cardClass)) {
-                return cdu;
-            }
-        }
-        return null;
-    }
-
 }

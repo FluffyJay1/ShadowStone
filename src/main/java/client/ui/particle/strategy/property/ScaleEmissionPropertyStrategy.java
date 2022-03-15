@@ -1,6 +1,5 @@
 package client.ui.particle.strategy.property;
 
-import client.ui.interpolation.Interpolation;
 import client.ui.interpolation.meta.ProductInterpolation;
 import client.ui.interpolation.realvalue.ConstantInterpolation;
 import client.ui.particle.Particle;

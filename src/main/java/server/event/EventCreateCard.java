@@ -1,6 +1,5 @@
 package server.event;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import client.*;

@@ -7,7 +7,6 @@ import server.card.effect.Effect;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Defines a pairing between what is written in a card's text area, and the

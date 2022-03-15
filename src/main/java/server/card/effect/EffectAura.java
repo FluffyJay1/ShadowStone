@@ -4,7 +4,6 @@ import server.Board;
 import server.Player;
 import server.card.BoardObject;
 import server.card.Card;
-import server.card.CardStatus;
 
 import java.util.*;
 import java.util.stream.Collectors;

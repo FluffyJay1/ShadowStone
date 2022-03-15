@@ -45,9 +45,9 @@ public class UI implements DefaultInputListener { // lets do this right this tim
             u.draw(g);
         }
         if (DEBUG && this.focusedElement != null) {
-            g.drawRect((float) this.focusedElement.getLeft(true, false),
-                    (float) this.focusedElement.getTop(true, false), (float) this.focusedElement.getWidth(false),
-                    (float) this.focusedElement.getHeight(false));
+            g.drawRect(this.focusedElement.getLeft(true, false),
+                    this.focusedElement.getTop(true, false), this.focusedElement.getWidth(false),
+                    this.focusedElement.getHeight(false));
         }
     }
 

@@ -26,7 +26,7 @@ public class ScrollingContext extends UIBox {
         super.draw(g);
         double childrenHeight = this.getChildLocalBottom(0) - this.getChildLocalTop(0);
         if (childrenHeight > this.getHeight(false)) {
-            g.fillRect((float) this.getRight(true, false) - 5,
+            g.fillRect(this.getRight(true, false) - 5,
                     (float) (this.getTop(true, false)
                             - (this.getChildLocalTop(0) + this.getHeight(false) / 2 + this.childoffset.y)
                                     * this.getHeight(false) / childrenHeight),
@@ -37,8 +37,8 @@ public class ScrollingContext extends UIBox {
 
     public void constrainScroll() {
         this.childoffset.y = Math.min(this.childoffset.y,
-                (float) (-this.getHeight(false) / 2 - this.getChildLocalTop(0)));
+                -this.getHeight(false) / 2 - this.getChildLocalTop(0));
         this.childoffset.y = Math.max(this.childoffset.y,
-                (float) (this.getHeight(false) / 2 - this.getChildLocalBottom(0)));
+                this.getHeight(false) / 2 - this.getChildLocalBottom(0));
     }
 }

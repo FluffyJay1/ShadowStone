@@ -19,9 +19,9 @@ public class Text extends UIElement {
     private static Graphics tempGraphics;
     private String text = ""; // private cuz fuck you
     private final List<List<String>> lines = new ArrayList<>();
-    private final List<Double> lineWidths = new ArrayList<>();
-    private double maxLineWidth;
-    double lineWidth, lineHeight, fontsize;
+    private final List<Float> lineWidths = new ArrayList<>();
+    private float maxLineWidth;
+    float lineWidth, lineHeight, fontsize;
 
     String font;
     // 0 = normal, 1 = bold, 2 = italics, 3 = both
@@ -32,7 +32,7 @@ public class Text extends UIElement {
 
     private Color color;
 
-    public Text(UI ui, Vector2f pos, String text, double linewidth, double lineheight, String font, double fontsize,
+    public Text(UI ui, Vector2f pos, String text, float linewidth, float lineheight, String font, float fontsize,
             int alignh, int alignv) {
         super(ui, pos);
         this.ignorehitbox = true;
@@ -41,14 +41,13 @@ public class Text extends UIElement {
         this.maxLineWidth = linewidth;
         this.alignh = alignh;
         this.alignv = alignv;
-
         this.setFont(font, fontsize);
         this.setText(text);
         this.isDirty = true;
         this.color = Color.white;
     }
 
-    public void setFont(String font, double fontsize) {
+    public void setFont(String font, float fontsize) {
         this.font = font;
         this.fontsize = fontsize;
         for (int i = 0; i < 4; i++) {
@@ -87,7 +86,7 @@ public class Text extends UIElement {
             String[] words = stlines.nextToken().split("(?<= )|(?<=</?[bic]>)|(?=</?[bic]>)");
             List<String> line = new ArrayList<>();
             StringBuilder sameFontStreak = new StringBuilder(); // to reduce calls to drawString
-            double currlinewidth = 0;
+            float currlinewidth = 0;
 
             for (String token : words) { // why do i do this
                 // String token = st.nextToken();
@@ -179,12 +178,12 @@ public class Text extends UIElement {
                     case "</i>" -> flags = flags & ~2;
                     case "<c>" -> {
                         float drawx = CACHED_RENDER_PADDING + (float) (currlinewidth + (this.maxLineWidth - this.lineWidths.get(i)) * (this.alignh + 1) / 2.);
-                        float drawy = CACHED_RENDER_PADDING + (float) (this.lineHeight * i);
+                        float drawy = CACHED_RENDER_PADDING + (this.lineHeight * i);
                         tempGraphics.drawString("|", drawx - tempGraphics.getFont().getWidth("|") * 0.6f, drawy);
                     }
                     default -> {
                         float drawx = CACHED_RENDER_PADDING + (float) (currlinewidth + (this.maxLineWidth - this.lineWidths.get(i)) * (this.alignh + 1) / 2.);
-                        float drawy = CACHED_RENDER_PADDING + (float) (this.lineHeight * i);
+                        float drawy = CACHED_RENDER_PADDING + (this.lineHeight * i);
                         tempGraphics.setFont(this.uFontFamily[flags]);
                         tempGraphics.drawString(token, drawx, drawy);
                         currlinewidth += this.uFontFamily[flags].getWidth(token);
@@ -202,13 +201,13 @@ public class Text extends UIElement {
     }
 
     @Override
-    public double getWidth(boolean margin) {
+    public float getWidth(boolean margin) {
         return Math.max(this.lineWidth, this.maxLineWidth);
     }
 
     @Override
-    public double getHeight(boolean margin) {
-        return this.lines.size() == 0 ? 0 : this.lineHeight * (this.lines.size() - 1) + this.fontsize * 1.5; // HELP
+    public float getHeight(boolean margin) {
+        return this.lines.size() == 0 ? 0 : this.lineHeight * (this.lines.size() - 1) + this.fontsize * 1.5f; // HELP
     }
 
     @Override
@@ -228,10 +227,10 @@ public class Text extends UIElement {
                 }
             }
             if (this.cachedRender != null) {
-                float drawx = this.getAbsPos().x - ((float) this.maxLineWidth * (this.alignh + 1) / 2f + CACHED_RENDER_PADDING) * (float) this.getScale();
-                float drawy = this.getAbsPos().y - ((float) this.getVOff() + CACHED_RENDER_PADDING) * (float) this.getScale();
-                this.cachedRender.setAlpha((float) this.getAlpha());
-                g.drawImage(this.cachedRender.getScaledCopy((float) this.getScale()), drawx, drawy);
+                float drawx = this.getAbsPos().x - (this.maxLineWidth * (this.alignh + 1) / 2f + CACHED_RENDER_PADDING) * this.getScale();
+                float drawy = this.getAbsPos().y - (this.getVOff() + CACHED_RENDER_PADDING) * this.getScale();
+                this.cachedRender.setAlpha(this.getAlpha());
+                g.drawImage(this.cachedRender.getScaledCopy(this.getScale()), drawx, drawy);
             }
             this.drawChildren(g);// why not
         }

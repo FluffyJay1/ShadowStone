@@ -33,7 +33,7 @@ public class CreateCardResolver extends Resolver {
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         List<Card> cards = this.c.stream()
                 .map(ct -> ct.constructInstance(b))
-                .collect(Collectors.toList());;
+                .collect(Collectors.toList());
         this.event = b.processEvent(rq, el, new EventCreateCard(cards, this.team, this.status, this.cardpos));
     }
 

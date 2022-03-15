@@ -19,7 +19,6 @@ import server.resolver.util.ResolverQueue;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class IHadThreeFriends extends SpellText {
     public static final String NAME = "I Had Three Friends.";

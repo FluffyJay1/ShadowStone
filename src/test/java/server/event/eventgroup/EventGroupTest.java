@@ -2,7 +2,6 @@ package server.event.eventgroup;
 
 import org.junit.jupiter.api.Test;
 
-import server.Board;
 import server.ServerBoard;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

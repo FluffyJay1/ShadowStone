@@ -1,7 +1,5 @@
 package server.ai;
 
-import server.Board;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

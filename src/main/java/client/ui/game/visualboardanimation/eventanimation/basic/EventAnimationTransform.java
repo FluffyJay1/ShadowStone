@@ -5,7 +5,6 @@ import client.ui.Animation;
 import client.ui.game.UIBoard;
 import client.ui.game.UICard;
 import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
-import client.ui.interpolation.realvalue.ConstantInterpolation;
 import client.ui.interpolation.realvalue.LinearInterpolation;
 import client.ui.interpolation.realvalue.QuadraticInterpolationA;
 import client.ui.particle.strategy.EmissionStrategy;

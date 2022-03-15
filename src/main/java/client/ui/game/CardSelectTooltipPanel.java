@@ -1,7 +1,6 @@
 package client.ui.game;
 
 import java.util.ArrayList;
-import java.util.function.Supplier;
 
 import org.newdawn.slick.geom.Vector2f;
 
