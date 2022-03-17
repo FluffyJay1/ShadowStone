@@ -20,7 +20,7 @@ public abstract class EffectAura extends Effect {
     public Set<Card> lastCheckedAffectedCards;
 
     // filter which cards can be affected by the aura
-    boolean affectHand, affectBoard;
+    boolean affectHand, affectBoard, affectLeader, affectUnleashPower;
     int affectTeam; // 0 means affect both teams
     public Effect effectToApply;
 
@@ -42,18 +42,37 @@ public abstract class EffectAura extends Effect {
      * @param effectToApply The effect to apply to affected cards
      */
     public EffectAura(String description, int affectTeam, boolean affectBoard, boolean affectHand, Effect effectToApply) {
+        this(description, affectTeam, affectBoard, affectHand, false, false, effectToApply);
+    }
+
+    /**
+     * Create an aura that applies an effect to selected cards, remember to
+     * override the applyConditions(Card) method to further specify which cards
+     * to apply to
+     *
+     * @param description The description of the effect
+     * @param affectTeam Which team to affect, with 1 being friendly, -1 being enemy, and 0 being both
+     * @param affectBoard Whether to affect cards on the board
+     * @param affectHand Whether to affect cards in hand
+     * @param affectLeader Whether to affect the Leader
+     * @param affectUnleashPower Whether to affect the unleash power
+     * @param effectToApply The effect to apply to affected cards
+     */
+    public EffectAura(String description, int affectTeam, boolean affectBoard, boolean affectHand, boolean affectLeader, boolean affectUnleashPower, Effect effectToApply) {
         this();
         this.description = description;
         this.affectTeam = affectTeam;
         this.affectBoard = affectBoard;
         this.affectHand = affectHand;
+        this.affectLeader = affectLeader;
+        this.affectUnleashPower = affectUnleashPower;
         effectToApply.auraSource = this;
         this.effectToApply = effectToApply;
     }
 
     public final Set<Card> findAffectedCards() {
         Set<Card> filtered = new HashSet<>();
-        if (!(this.owner instanceof BoardObject) || this.removed || this.mute || !((BoardObject) this.owner).isInPlay()) {
+        if (this.removed || this.mute || !this.owner.isInPlay()) {
             return filtered;
         }
         Board b = this.owner.board;
@@ -65,6 +84,16 @@ public abstract class EffectAura extends Effect {
         }
         if (this.affectHand) {
             filtered.addAll(b.getPlayerCards(targetTeam, Player::getHand)
+                    .filter(this::applyConditions)
+                    .collect(Collectors.toSet()));
+        }
+        if (this.affectLeader) {
+            filtered.addAll(b.getPlayerCard(targetTeam, Player::getLeader)
+                    .filter(this::applyConditions)
+                    .collect(Collectors.toSet()));
+        }
+        if (this.affectUnleashPower) {
+            filtered.addAll(b.getPlayerCard(targetTeam, Player::getUnleashPower)
                     .filter(this::applyConditions)
                     .collect(Collectors.toSet()));
         }

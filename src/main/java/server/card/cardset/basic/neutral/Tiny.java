@@ -12,6 +12,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 public class Tiny extends MinionText {
@@ -28,8 +29,8 @@ public class Tiny extends MinionText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public Resolver unleash() {
-                return new Resolver(false) {
+            public ResolverWithDescription unleash() {
+                return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         EffectStatChange ef = new EffectStatChange("+2/+0/+2 and <b>Rush</b> (from <b>Unleash</b>).", 2,
@@ -37,7 +38,7 @@ public class Tiny extends MinionText {
                         ef.effectStats.set.setStat(EffectStats.RUSH, 1);
                         this.resolve(b, rq, el, new AddEffectResolver(owner, ef));
                     }
-                };
+                });
             }
 
             @Override

@@ -1,10 +1,8 @@
-Show a little tooltip when a card effect triggers
+one-time resolver triggers (like at the start of your next turn)
 mulligan phase
 AI difficulty adjustment
 Figure out why the game is eating cpu and gpu
 relpos lol
-formalize basic effects? createBasicEffect()
-priority
 drain/lifesteal
 stealth
 shield

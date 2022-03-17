@@ -9,6 +9,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 public class UnleashSharpenSword extends UnleashPowerText {
@@ -25,14 +26,15 @@ public class UnleashSharpenSword extends UnleashPowerText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public Resolver onUnleashPre(Minion m) {
-                return new Resolver(false) {
+            public ResolverWithDescription onUnleashPre(Minion m) {
+                String resolverDescription = "Give the unleashed minion +1/+0/+0.";
+                return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         EffectStatChange e = new EffectStatChange("+1/+0/+0 (from <b>Sharpen Sword</b>).", 1, 0, 0);
                         this.resolve(b, rq, el, new AddEffectResolver(m, e));
                     }
-                };
+                });
             }
         });
     }

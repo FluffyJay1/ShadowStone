@@ -11,6 +11,7 @@ import server.event.Event;
 import server.resolver.BlastResolver;
 import server.resolver.DamageResolver;
 import server.resolver.Resolver;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.util.LinkedList;
@@ -53,9 +54,9 @@ public class SiegeTank extends MinionText {
             }
 
             @Override
-            public Resolver unleash() {
+            public ResolverWithDescription unleash() {
                 Effect effect = this; // anonymous fuckery
-                return new Resolver(false) {
+                return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         int option = ((ModalTargetList) getUnleashTargets().get(0)).targeted.get(0);
@@ -83,7 +84,7 @@ public class SiegeTank extends MinionText {
                             }
                         }
                     }
-                };
+                });
             }
 
             @Override

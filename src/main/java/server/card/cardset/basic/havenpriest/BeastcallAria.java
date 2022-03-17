@@ -22,7 +22,8 @@ public class BeastcallAria extends AmuletText {
 
     @Override
     protected List<Effect> getSpecialEffects() {
-        Effect e = new EffectLastWordsSummon(DESCRIPTION, List.of(new HolyFalcon(), new HolyflameTiger()), 1);
+        String resolverDescription = "<b>Last Words</b>: Summon a <b>Holy Falcon</b> and a <b>Holyflame Tiger</b>.";
+        Effect e = new EffectLastWordsSummon(resolverDescription, List.of(new HolyFalcon(), new HolyflameTiger()), 1);
         e.effectStats.set.setStat(EffectStats.COUNTDOWN, 3);
         return List.of(e);
     }

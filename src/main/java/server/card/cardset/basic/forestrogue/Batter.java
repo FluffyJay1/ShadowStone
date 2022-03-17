@@ -12,6 +12,7 @@ import server.card.effect.EffectStats;
 import server.event.Event;
 import server.resolver.Resolver;
 import server.resolver.TransformResolver;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.util.List;
@@ -31,15 +32,16 @@ public class Batter extends MinionText {
                 new EffectStats.Setter(EffectStats.RUSH, false, 1))
         ) {
             @Override
-            public Resolver onAttack(Minion target) {
-                return new Resolver(false) {
+            public ResolverWithDescription onAttack(Minion target) {
+                String resolverDescription = "When this attacks a minion, <b>Transform</b> it into a <b>Spectre</b> instead.";
+                return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (target.status.equals(CardStatus.BOARD)) {
                             this.resolve(b, rq, el, new TransformResolver(target, new Spectre()));
                         }
                     }
-                };
+                });
             }
 
             @Override

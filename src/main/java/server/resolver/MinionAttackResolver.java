@@ -26,28 +26,20 @@ public class MinionAttackResolver extends Resolver {
         b.pushEventGroup(attackOrdered);
         b.processEvent(rq, el, new EventMinionAttack(this.m1, this.m2));
         if (this.m1.alive && this.m1.isInPlay()) {
-            b.pushEventGroup(new EventGroup(EventGroupType.ONATTACK, List.of(this.m1)));
             ResolverQueue queue = this.m1.onAttack(this.m2);
             this.resolveQueue(b, queue, el, queue);
-            b.popEventGroup();
         }
         if (this.m1.alive && this.m1.isInPlay() && !(this.m2 instanceof Leader)) {
-            b.pushEventGroup(new EventGroup(EventGroupType.CLASH, List.of(this.m1)));
             ResolverQueue queue = this.m1.clash(this.m2);
             this.resolveQueue(b, queue, el, queue);
-            b.popEventGroup();
         }
         if (this.m2.alive && this.m2.isInPlay()) {
-            b.pushEventGroup(new EventGroup(EventGroupType.ONATTACKED, List.of(this.m2)));
             ResolverQueue queue = this.m2.onAttacked(this.m1);
             this.resolveQueue(b, queue, el, queue);
-            b.popEventGroup();
         }
         if (this.m2.alive && this.m2.isInPlay() && !(this.m1 instanceof Leader)) {
-            b.pushEventGroup(new EventGroup(EventGroupType.CLASH, List.of(this.m2)));
             ResolverQueue queue = this.m2.clash(this.m1);
             this.resolveQueue(b, queue, el, queue);
-            b.popEventGroup();
         }
         if (this.m1.alive && this.m1.isInPlay() && this.m2.alive && this.m2.isInPlay()) {
             List<Card> destroyed = new ArrayList<>(2);

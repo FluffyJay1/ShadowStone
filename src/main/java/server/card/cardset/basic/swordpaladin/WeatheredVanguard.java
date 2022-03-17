@@ -13,6 +13,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 public class WeatheredVanguard extends MinionText {
@@ -29,15 +30,16 @@ public class WeatheredVanguard extends MinionText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public Resolver battlecry() {
-                return new Resolver(false) {
+            public ResolverWithDescription battlecry() {
+                String resolverDescription = "<b>Battlecry</b>: Summon 2 <b>Knights</b>.";
+                return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> knights = List.of(new Knight(), new Knight());
                         List<Integer> pos = List.of(owner.getIndex() + 1, owner.getIndex());
                         this.resolve(b, rq, el, new CreateCardResolver(knights, owner.team, CardStatus.BOARD, pos));
                     }
-                };
+                });
             }
 
             @Override
@@ -46,8 +48,9 @@ public class WeatheredVanguard extends MinionText {
             }
 
             @Override
-            public Resolver unleash() {
-                return new Resolver(false) {
+            public ResolverWithDescription unleash() {
+                String resolverDescription = "<b>Unleash</b>: Give all allied minions +1/+0/+1.";
+                return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> minions = b.getMinions(owner.team, false, true).collect(Collectors.toList());
@@ -56,7 +59,7 @@ public class WeatheredVanguard extends MinionText {
                             this.resolve(b, rq, el, new AddEffectResolver(minions, stats));
                         }
                     }
-                };
+                });
             }
 
             @Override

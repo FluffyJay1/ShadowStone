@@ -12,6 +12,7 @@ import server.card.effect.Effect;
 import server.event.Event;
 import server.resolver.Resolver;
 import server.resolver.RestoreResolver;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.util.List;
@@ -31,9 +32,10 @@ public class SaveSecretBase extends UnleashPowerText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public Resolver onUnleashPost(Minion m) {
+            public ResolverWithDescription onUnleashPost(Minion m) {
                 Effect effect = this; // anonymous fuckery
-                return new Resolver(false) {
+                String resolverDescription = "If the unleashed minion has attacked this turn, restore 3 health to all allies.";
+                return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (m.attacksThisTurn > 0) {
@@ -41,7 +43,7 @@ public class SaveSecretBase extends UnleashPowerText {
                             this.resolve(b, rq, el, new RestoreResolver(effect, relevant, 3));
                         }
                     }
-                };
+                });
             }
         });
     }

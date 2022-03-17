@@ -8,6 +8,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 public class DragonOracle extends SpellText {
@@ -23,8 +24,8 @@ public class DragonOracle extends SpellText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public Resolver battlecry() {
-                return new Resolver(false) {
+            public ResolverWithDescription battlecry() {
+                return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         Player player = owner.board.getPlayer(owner.team);
@@ -34,7 +35,7 @@ public class DragonOracle extends SpellText {
                         b.processEvent(rq, el, new EventManaChange(player, 1, true, false));
 
                     }
-                };
+                });
             }
 
             @Override

@@ -11,6 +11,7 @@ import server.card.effect.Effect;
 import server.event.Event;
 import server.resolver.Resolver;
 import server.resolver.RestoreResolver;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.util.List;
@@ -29,14 +30,15 @@ public class Omega extends MinionText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public Resolver onAttack(Minion target) {
+            public ResolverWithDescription onAttack(Minion target) {
                 Effect effect = this;
-                return new Resolver(false) {
+                String resolverDescription = "When this minion attacks, restore 5 health to your leader.";
+                return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         b.getPlayer(owner.team).getLeader().ifPresent(l -> this.resolve(b, rq, el, new RestoreResolver(effect, l, 5)));
                     }
-                };
+                });
             }
 
             @Override

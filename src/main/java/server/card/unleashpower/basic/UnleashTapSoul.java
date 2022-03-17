@@ -9,6 +9,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 public class UnleashTapSoul extends UnleashPowerText {
@@ -24,38 +25,20 @@ public class UnleashTapSoul extends UnleashPowerText {
 
     @Override
     protected List<Effect> getSpecialEffects() {
-        return List.of(new Effect(DESCRIPTION) {
-            boolean vengeance;
+        Effect discount = new Effect("Costs 2 less because <b>Vengeance</b> is active.", new EffectStats(
+                new EffectStats.Setter(EffectStats.COST, true, -2)
+        ));
+        return List.of(new EffectAura(DESCRIPTION, 1, false, false, false, true, discount) {
 
             @Override
-            public Resolver onListenEvent(Event e) {
-                Effect effect = this; // anonymous fuckery
-                return new Resolver(false) {
-                    @Override
-                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        if (e instanceof EventDamage || e instanceof EventRestore || e instanceof EventAddEffect) {
-                            Player p = b.getPlayer(effect.owner.team);
-                            if (!vengeance && p.vengeance()) {
-                                this.resolve(b, rq, el, new UpdateEffectStateResolver(effect, () -> vengeance = true));
-                                EffectStats esc = new EffectStats();
-                                esc.change.setStat(EffectStats.COST, -2);
-                                this.resolve(b, rq, el, new SetEffectStatsResolver(effect, esc));
-                            }
-                            if (vengeance && !p.vengeance()) {
-                                this.resolve(b, rq, el, new UpdateEffectStateResolver(effect, () -> vengeance = false));
-                                EffectStats esc = new EffectStats();
-                                esc.change.setStat(EffectStats.COST, 0);
-                                this.resolve(b, rq, el, new SetEffectStatsResolver(effect, esc));
-                            }
-                        }
-                    }
-                };
+            public boolean applyConditions(Card cardToApply) {
+                return cardToApply.board.getPlayer(cardToApply.team).vengeance();
             }
 
             @Override
-            public Resolver onUnleashPre(Minion m) {
+            public ResolverWithDescription onUnleashPre(Minion m) {
                 Effect effect = this; // anonymous fuckery
-                return new Resolver(false) {
+                return new ResolverWithDescription("Deal 2 damage to your leader if <b>Vengeance</b> isn't active for you.", new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         Player p = b.getPlayer(effect.owner.team);
@@ -64,18 +47,8 @@ public class UnleashTapSoul extends UnleashPowerText {
                                     effect.owner.board.getPlayer(effect.owner.team).getLeader().orElse(null), 2, true, null));
                         }
                     }
-                };
+                });
 
-            }
-
-            @Override
-            public String extraStateString() {
-                return this.vengeance + " ";
-            }
-
-            @Override
-            public void loadExtraState(Board b, StringTokenizer st) {
-                this.vengeance = Boolean.parseBoolean(st.nextToken());
             }
         });
     }

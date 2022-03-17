@@ -11,6 +11,7 @@ import server.card.effect.Effect;
 import server.event.Event;
 import server.resolver.DamageResolver;
 import server.resolver.Resolver;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.util.List;
@@ -30,15 +31,16 @@ public class Epsilon extends MinionText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public Resolver onAttack(Minion target) {
+            public ResolverWithDescription onAttack(Minion target) {
                 Effect effect = this;
-                return new Resolver(false) {
+                String resolverDescription = "When this minion attacks, deal 2 damage to all enemies.";
+                return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> relevant = b.getMinions(owner.team * -1, true, false).collect(Collectors.toList());
                         this.resolve(b, rq, el, new DamageResolver(effect, relevant, 2, true, EventAnimationDamageOff.class));
                     }
-                };
+                });
             }
 
             @Override

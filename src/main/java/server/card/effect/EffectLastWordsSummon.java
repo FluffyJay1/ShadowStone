@@ -7,6 +7,7 @@ import server.*;
 import server.card.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 public class EffectLastWordsSummon extends Effect {
@@ -28,9 +29,9 @@ public class EffectLastWordsSummon extends Effect {
     }
 
     @Override
-    public Resolver lastWords() {
+    public ResolverWithDescription lastWords() {
         EffectLastWordsSummon effect = this;
-        return new Resolver(false) {
+        return new ResolverWithDescription(this.description, new Resolver(false) {
             @Override
             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                 List<Integer> cardpos = new LinkedList<>();
@@ -41,8 +42,7 @@ public class EffectLastWordsSummon extends Effect {
                 }
                 this.resolve(b, rq, el, new CreateCardResolver(boardObjectTexts, effect.owner.team * effect.teamMultiplier, CardStatus.BOARD, cardpos));
             }
-
-        };
+        });
     }
 
     @Override

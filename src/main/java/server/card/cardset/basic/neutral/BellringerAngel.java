@@ -8,6 +8,7 @@ import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 
 import java.util.List;
 
@@ -27,8 +28,9 @@ public class BellringerAngel extends MinionText {
                 new EffectStats.Setter(EffectStats.WARD, false, 1)
         )) {
             @Override
-            public Resolver lastWords() {
-                return new DrawResolver(owner.board.getPlayer(owner.team), 1);
+            public ResolverWithDescription lastWords() {
+                String resolverDescription = "<b>Last Words</b>: draw a card.";
+                return new ResolverWithDescription(resolverDescription, new DrawResolver(owner.board.getPlayer(owner.team), 1));
             }
 
             @Override

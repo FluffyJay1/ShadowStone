@@ -11,6 +11,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 public class GenesisOfLegend extends AmuletText {
@@ -29,8 +30,9 @@ public class GenesisOfLegend extends AmuletText {
                 new EffectStats.Setter(EffectStats.COUNTDOWN, false, 3)
         )) {
             @Override
-            public Resolver onTurnEnd() {
-                return new Resolver(true) {
+            public ResolverWithDescription onTurnEnd() {
+                String resolverDescription = "At the end of your turn, give a random allied minion +0/+0/+1 and <b>Bane</b>.";
+                return new ResolverWithDescription(resolverDescription, new Resolver(true) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> possible = b.getMinions(owner.team, false, true).collect(Collectors.toList());
@@ -42,7 +44,7 @@ public class GenesisOfLegend extends AmuletText {
                             this.resolve(b, rq, el, new AddEffectResolver(selected, esc));
                         }
                     }
-                };
+                });
             }
 
             @Override

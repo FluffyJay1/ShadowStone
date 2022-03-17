@@ -12,6 +12,7 @@ import server.card.target.CardTargetingScheme;
 import server.card.target.TargetingScheme;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 public class Fireball extends SpellText {
@@ -37,9 +38,9 @@ public class Fireball extends SpellText {
                 });
             }
             @Override
-            public Resolver battlecry() {
+            public ResolverWithDescription battlecry() {
                 Effect effect = this;
-                return new Resolver(false) {
+                return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Card> markedForDeath = new LinkedList<>();
@@ -63,7 +64,7 @@ public class Fireball extends SpellText {
                         });
                         this.resolve(b, rq, el, new DestroyResolver(markedForDeath));
                     }
-                };
+                });
             }
 
             @Override

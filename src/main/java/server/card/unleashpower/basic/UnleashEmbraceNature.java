@@ -9,6 +9,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 public class UnleashEmbraceNature extends UnleashPowerText {
@@ -25,9 +26,10 @@ public class UnleashEmbraceNature extends UnleashPowerText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public Resolver onUnleashPost(Minion m) {
+            public ResolverWithDescription onUnleashPost(Minion m) {
                 Effect effect = this; // anonymous fuckery
-                return new Resolver(false) {
+                String resolverDescription = "If the unleashed minion has attacked this turn, return it to your hand and subtract 1 from its cost.";
+                return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (m.attacksThisTurn > 0) {
@@ -39,7 +41,7 @@ public class UnleashEmbraceNature extends UnleashPowerText {
                             }
                         }
                     }
-                };
+                });
             }
         });
     }

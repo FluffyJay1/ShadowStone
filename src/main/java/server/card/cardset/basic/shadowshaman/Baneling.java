@@ -8,6 +8,7 @@ import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 
 import java.util.List;
 
@@ -25,8 +26,8 @@ public class Baneling extends MinionText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public Resolver lastWords() {
-                return new BlastResolver(this, 5, null);
+            public ResolverWithDescription lastWords() {
+                return new ResolverWithDescription(DESCRIPTION, new BlastResolver(this, 5, null));
             }
 
             @Override

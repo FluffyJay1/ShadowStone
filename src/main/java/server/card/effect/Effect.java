@@ -12,7 +12,7 @@ import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.event.*;
-import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 import utils.Indexable;
 import utils.StringBuildable;
 
@@ -58,7 +58,7 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
         this.effectStats = stats;
     }
 
-    public Resolver battlecry() {
+    public ResolverWithDescription battlecry() {
         return null;
     }
 
@@ -79,7 +79,7 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
         return ((CardTargetList) this.getBattlecryTargets().get(index)).getStillTargetable((CardTargetingScheme) this.getBattlecryTargetingSchemes().get(index));
     }
 
-    public Resolver unleash() {
+    public ResolverWithDescription unleash() {
         return null;
     }
 
@@ -122,75 +122,75 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
 
     // these two are for the unleash power unleashing on a minion
     // can assume that the unleash power and the minion is in play
-    public Resolver onUnleashPre(Minion target) {
+    public ResolverWithDescription onUnleashPre(Minion target) {
         return null;
     }
 
     // can assume that the unleash power and the minion is in play
-    public Resolver onUnleashPost(Minion target) {
+    public ResolverWithDescription onUnleashPost(Minion target) {
         return null;
     }
 
     // can assume that both minions are in play
-    public Resolver onAttack(Minion target) {
+    public ResolverWithDescription onAttack(Minion target) {
         return null;
     }
 
     // can assume that both minions are in play
-    public Resolver onAttacked(Minion target) {
+    public ResolverWithDescription onAttacked(Minion target) {
         return null;
     }
 
     // can assume that both minions are in play
-    public Resolver clash(Minion target) {
+    public ResolverWithDescription clash(Minion target) {
         return null;
     }
 
     // can assume that minion is in play
-    public Resolver onDamaged(int damage) {
+    public ResolverWithDescription onDamaged(int damage) {
         return null;
     }
 
     // can assume that boardobject is in play
-    public Resolver onTurnStart() {
+    public ResolverWithDescription onTurnStart() {
         return null;
     }
 
     // can assume that boardobject is in play
-    public Resolver onTurnEnd() {
+    public ResolverWithDescription onTurnEnd() {
         return null;
     }
 
     // can assume that boardobject is in play
-    public Resolver onTurnStartEnemy() {
+    public ResolverWithDescription onTurnStartEnemy() {
         return null;
     }
 
     // can assume that boardobject is in play
-    public Resolver onTurnEndEnemy() {
+    public ResolverWithDescription onTurnEndEnemy() {
         return null;
     }
 
     // anything goes
-    public Resolver lastWords() {
+    public ResolverWithDescription lastWords() {
         return null;
     }
 
     // can assume that boardobject is in play
-    public Resolver onEnterPlay() {
+    public ResolverWithDescription onEnterPlay() {
         return null;
     }
 
     // can assume that boardobject is not in play
-    public Resolver onLeavePlay() {
+    public ResolverWithDescription onLeavePlay() {
         return null;
     }
 
-    // If this ever returns null, it is assumed to not have any listener at all,
-    // if listening for a specific event, do the check in the resolver
-    // specifically we check if the effect is an event listener if
-    // onListenEvent(null) returns a non-null result (inside the Card class)
-    public Resolver onListenEvent(Event event) {
+    /*
+    For optimization, check the event instance before deciding to return a
+    resolver or null, then check the details of the event inside the resolver
+     */
+    public ResolverWithDescription onListenEvent(Event event) {
         return null;
     }
 

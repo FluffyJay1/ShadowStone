@@ -6,6 +6,7 @@ import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 
 import java.util.List;
 
@@ -25,8 +26,9 @@ public class PuppetRoom extends AmuletText {
                 new EffectStats.Setter(EffectStats.COUNTDOWN, false, 3)
         )) {
             @Override
-            public Resolver battlecry() {
-                return new CreateCardResolver(new Puppet(), this.owner.team, CardStatus.HAND, -1);
+            public ResolverWithDescription battlecry() {
+                String resolverDescription = "<b>Battlecry</b>: put a <b>Puppet</b> in your hand.";
+                return new ResolverWithDescription(resolverDescription, new CreateCardResolver(new Puppet(), this.owner.team, CardStatus.HAND, -1));
             }
 
             @Override
@@ -35,8 +37,9 @@ public class PuppetRoom extends AmuletText {
             }
 
             @Override
-            public Resolver onTurnEnd() {
-                return new CreateCardResolver(new Puppet(), this.owner.team, CardStatus.HAND, -1);
+            public ResolverWithDescription onTurnEnd() {
+                String resolverDescription = "At the end of your turn, put a <b>Puppet</b> in your hand.";
+                return new ResolverWithDescription(resolverDescription, new CreateCardResolver(new Puppet(), this.owner.team, CardStatus.HAND, -1));
             }
 
             @Override

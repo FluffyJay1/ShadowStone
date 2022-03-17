@@ -9,6 +9,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 public class UnleashFeedFervor extends UnleashPowerText {
@@ -23,43 +24,13 @@ public class UnleashFeedFervor extends UnleashPowerText {
 
     @Override
     protected List<Effect> getSpecialEffects() {
-        return List.of(new Effect(DESCRIPTION) {
-            boolean overflow;
-
+        Effect discount = new Effect("Costs 1 less because <b>Overflow</b> is active.", new EffectStats(
+                new EffectStats.Setter(EffectStats.COST, true, -1)
+        ));
+        return List.of(new EffectAura(DESCRIPTION, 1, false, false, false, true, discount) {
             @Override
-            public Resolver onListenEvent(Event e) {
-                Effect effect = this; // anonymous fuckery
-                return new Resolver(false) {
-                    @Override
-                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        if (e instanceof EventManaChange) {
-                            Player p = b.getPlayer(effect.owner.team);
-                            if (!overflow && p.overflow()) {
-                                this.resolve(b, rq, el, new UpdateEffectStateResolver(effect, () -> overflow = true));
-                                EffectStats esc = new EffectStats();
-                                esc.change.setStat(EffectStats.COST, -1);
-                                this.resolve(b, rq, el, new SetEffectStatsResolver(effect, esc));
-                            }
-                            if (overflow && !p.overflow()) {
-                                this.resolve(b, rq, el, new UpdateEffectStateResolver(effect, () -> overflow = false));
-                                EffectStats esc = new EffectStats();
-                                esc.change.setStat(EffectStats.COST, 0);
-                                this.resolve(b, rq, el, new SetEffectStatsResolver(effect, esc));
-                            }
-                        }
-                    }
-                };
-            }
-
-            @Override
-            public String extraStateString() {
-                return this.overflow + " ";
-            }
-
-            @Override
-            public void loadExtraState(Board b, StringTokenizer st) {
-                this.overflow = Boolean.parseBoolean(st.nextToken());
-
+            public boolean applyConditions(Card cardToApply) {
+                return cardToApply.board.getPlayer(cardToApply.team).overflow();
             }
         });
     }

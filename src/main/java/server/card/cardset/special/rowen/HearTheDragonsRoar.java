@@ -10,6 +10,7 @@ import server.card.effect.Effect;
 import server.event.Event;
 import server.resolver.BanishResolver;
 import server.resolver.Resolver;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.util.List;
@@ -27,15 +28,15 @@ public class HearTheDragonsRoar extends SpellText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public Resolver battlecry() {
-                return new Resolver(false) {
+            public ResolverWithDescription battlecry() {
+                return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         this.resolve(b, rq, el,
                                 new BanishResolver(b.getBoardObjects(owner.team * -1, false, true, true, true)
                                         .collect(Collectors.toList())));
                     }
-                };
+                });
             }
 
             @Override

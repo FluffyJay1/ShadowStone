@@ -7,9 +7,11 @@ import server.card.effect.Effect;
 import server.card.effect.EffectAura;
 import server.event.Event;
 import server.event.eventgroup.EventGroup;
+import server.event.eventgroup.EventGroupType;
 import server.playeraction.PlayerAction;
 import server.resolver.*;
-import server.resolver.meta.FlagResolver;
+import server.resolver.meta.HookResolver;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.io.File;
@@ -171,28 +173,16 @@ public class ServerBoard extends Board {
         this.lastCheckedActiveAuras = newAuras;
         if (e.cardsEnteringPlay() != null) {
             for (BoardObject bo : e.cardsEnteringPlay()) {
-                ResolverQueue resolvers = bo.onEnterPlay();
-                if (!resolvers.isEmpty()) {
-                    rq.add(new FlagResolver(bo, resolvers));
-                }
+                rq.addAll(bo.onEnterPlay());
             }
         }
         if (e.cardsLeavingPlay() != null) {
             for (BoardObject bo : e.cardsLeavingPlay()) {
-                ResolverQueue resolvers = bo.onLeavePlay();
-                if (!resolvers.isEmpty()) {
-                    rq.add(new FlagResolver(bo, resolvers));
-                }
+                rq.addAll(bo.onLeavePlay());
             }
         }
         this.getCards().forEachOrdered(c -> {
-            List<Resolver> listenEventResolvers = new LinkedList<>();
-            for (Effect listener : c.listeners) {
-                listenEventResolvers.add(listener.onListenEvent(e));
-            }
-            if (!listenEventResolvers.isEmpty()) {
-                rq.add(new FlagResolver(c, new ResolverQueue(listenEventResolvers)));
-            }
+            rq.addAll(c.onListenEvent(e));
         });
 
         return e;

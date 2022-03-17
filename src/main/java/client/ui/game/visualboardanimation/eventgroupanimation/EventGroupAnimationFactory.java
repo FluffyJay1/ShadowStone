@@ -1,6 +1,7 @@
 package client.ui.game.visualboardanimation.eventgroupanimation;
 
 import client.VisualBoard;
+import server.card.Spell;
 import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
 
@@ -19,6 +20,9 @@ public class EventGroupAnimationFactory {
      * @return An animation for the eventgroup
      */
     public EventGroupAnimation newAnimation(EventGroup eventGroup) {
+        if (eventGroup.type.equals(EventGroupType.BATTLECRY) && eventGroup.cards.get(0) instanceof Spell) {
+            return null;
+        }
         EventGroupAnimation anim = null;
         Class<? extends EventGroupAnimation> animClass = eventGroupToAnimationMap.get(eventGroup.type);
         if (animClass == null) {

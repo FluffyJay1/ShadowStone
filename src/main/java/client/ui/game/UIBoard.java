@@ -62,6 +62,7 @@ public class UIBoard extends UIBox {
     boolean draggingUnleash = false;
     boolean skipNextEventAnimations = false;
     Vector2f mouseDownPos = new Vector2f();
+    final EventGroupDescriptionContainer eventGroupDescriptionContainer;
     final CardSelectPanel cardSelectPanel;
     final EndTurnButton endTurnButton;
     public final Text targetText;
@@ -86,6 +87,10 @@ public class UIBoard extends UIBox {
         this.cards = new ArrayList<>();
         this.b = new VisualBoard(this, localteam);
         this.ds = ds;
+        this.eventGroupDescriptionContainer = new EventGroupDescriptionContainer(ui, new Vector2f(-0.5f, 0));
+        this.eventGroupDescriptionContainer.relpos = true;
+        this.eventGroupDescriptionContainer.alignh = -1;
+        this.addChild(this.eventGroupDescriptionContainer);
         this.cardSelectPanel = new CardSelectPanel(ui, this);
         this.cardSelectPanel.setZ(UI_Z_TOP);
         this.addChild(this.cardSelectPanel);
@@ -94,14 +99,14 @@ public class UIBoard extends UIBox {
         this.addChild(this.endTurnButton);
         this.targetText = new Text(ui, new Vector2f(), "Target", 400, 24, Game.DEFAULT_FONT, 30, 0, -1);
         this.targetText.setZ(999);
-        this.player1ManaText = new Text(ui, new Vector2f(-0.25f, 0.34f), "Player 1 Mana", 400, 24, Game.DEFAULT_FONT, 30, 0, 0);
+        this.player1ManaText = new Text(ui, new Vector2f(-0.20f, 0.34f), "Player 1 Mana", 400, 24, Game.DEFAULT_FONT, 30, 0, 0);
         this.player1ManaText.relpos = true;
         this.player1ManaText.setZ(1);
-        this.player2ManaText = new Text(ui, new Vector2f(-0.25f, -0.44f), "Player 2 Mana", 400, 24, Game.DEFAULT_FONT, 30, 0,
+        this.player2ManaText = new Text(ui, new Vector2f(-0.20f, -0.44f), "Player 2 Mana", 400, 24, Game.DEFAULT_FONT, 30, 0,
                 0);
         this.player2ManaText.relpos = true;
         this.player2ManaText.setZ(1);
-        this.advantageText = new Text(ui, new Vector2f(-0.4f, -0.4f), "Advantage Text", 400, 24, Game.DEFAULT_FONT, 30, -1, -1);
+        this.advantageText = new Text(ui, new Vector2f(-0.25f, -0.4f), "Advantage Text", 400, 24, Game.DEFAULT_FONT, 30, -1, -1);
         this.advantageText.relpos = true;
         this.advantageText.setZ(1);
         this.addChild(this.targetText);
@@ -343,6 +348,9 @@ public class UIBoard extends UIBox {
                 c.uiCard.setCombat(true);
             }
         }
+        if (!eg.description.isEmpty()) {
+            this.eventGroupDescriptionContainer.addPanel(eg);
+        }
     }
 
     public void onEventGroupPopped(EventGroup eg) {
@@ -351,6 +359,7 @@ public class UIBoard extends UIBox {
                 c.uiCard.setCombat(false);
             }
         }
+        this.eventGroupDescriptionContainer.markDone(eg);
     }
 
     public void onGameEnd(int team) {

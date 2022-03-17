@@ -29,9 +29,7 @@ public class DestroyResolver extends Resolver {
                 if (bo instanceof Leader) {
                     b.processEvent(rq, el, new EventGameEnd(bo.board, bo.team * -1));
                 }
-                if (!bo.lastWords().isEmpty()) {
-                    rq.add(new LastWordsResolver(bo));
-                }
+                rq.addAll(bo.lastWords());
             }
         }
     }

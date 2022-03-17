@@ -12,8 +12,11 @@ import server.*;
 import server.card.effect.*;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
+import server.event.Event;
+import server.event.eventgroup.EventGroupType;
 import server.resolver.*;
-import server.resolver.meta.EffectPredicateResolver;
+import server.resolver.meta.HookResolver;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 import utils.Indexable;
 import utils.PositionedList;
@@ -42,8 +45,6 @@ public abstract class Card implements Indexable, StringBuildable {
     private final PositionedList<Effect> effects = new PositionedList<>(new ArrayList<>()),
             basicEffects = new PositionedList<>(new ArrayList<>()),
             removedEffects = new PositionedList<>(new ArrayList<>());
-    // for convenience, a subset of above effects that are listeners
-    public final List<Effect> listeners = new LinkedList<>();
     // same but for auras, however, removing the effect doesn't remove it from this list
     public final List<EffectAura> auras = new LinkedList<>();
 
@@ -63,6 +64,11 @@ public abstract class Card implements Indexable, StringBuildable {
             case HAND, BOARD, LEADER, UNLEASHPOWER -> true;
             default -> false;
         };
+    }
+
+    // overrided
+    public boolean isInPlay() {
+        return false;
     }
 
     /**
@@ -120,9 +126,6 @@ public abstract class Card implements Indexable, StringBuildable {
         e.removed = false;
         this.removedEffects.remove(e);
         this.getEffects(basic).add(pos, e);
-        if (e.onListenEvent(null) != null) {
-            this.listeners.add(e);
-        }
         if (e instanceof EffectAura) {
             this.auras.add((EffectAura) e);
         }
@@ -149,9 +152,6 @@ public abstract class Card implements Indexable, StringBuildable {
                 e.auraSource.currentActiveEffects.remove(this);
             }
             e.removed = true;
-            if (e.onListenEvent(null) != null) {
-                this.listeners.remove(e);
-            }
             this.updateEffectStats(false);
         }
     }
@@ -197,22 +197,15 @@ public abstract class Card implements Indexable, StringBuildable {
         }
     }
 
-    protected ResolverQueue getResolvers(Function<Effect, Resolver> hook) {
-        return new ResolverQueue(this.getFinalEffects(true)
-                .map(hook)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList()));
-    }
-
-    // like above method, but each returned resolver is wrapped to check for the predicate before execution
-    protected ResolverQueue getResolvers(Function<Effect, Resolver> hook, Predicate<Effect> predicate) {
+    // each returned resolver is wrapped to check for the predicate before execution
+    protected ResolverQueue getResolvers(EventGroupType etype, List<Card> cards, Function<Effect, ResolverWithDescription> hook, Predicate<Effect> predicate) {
         return new ResolverQueue(this.getFinalEffects(true)
                 .map(e -> {
-                    Resolver r = hook.apply(e);
+                    ResolverWithDescription r = hook.apply(e);
                     if (r == null) {
                         return null;
                     }
-                    return new EffectPredicateResolver(r, e, predicate);
+                    return new HookResolver(etype, cards, r, e, predicate);
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList()));
@@ -271,7 +264,11 @@ public abstract class Card implements Indexable, StringBuildable {
     }
 
     public ResolverQueue battlecry() {
-        return this.getResolvers(Effect::battlecry, eff -> !eff.removed);
+        return this.getResolvers(EventGroupType.BATTLECRY, List.of(this), Effect::battlecry, eff -> !eff.removed);
+    }
+
+    public ResolverQueue onListenEvent(Event event) {
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), eff -> eff.onListenEvent(event), eff -> true);
     }
 
     public String cardPosToString() {

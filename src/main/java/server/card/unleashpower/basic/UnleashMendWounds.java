@@ -9,6 +9,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 public class UnleashMendWounds extends UnleashPowerText {
@@ -25,19 +26,21 @@ public class UnleashMendWounds extends UnleashPowerText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public Resolver onUnleashPre(Minion m) {
-                return new Resolver(false) {
+            public ResolverWithDescription onUnleashPre(Minion m) {
+                String resolverDescription = "Give the unleashed minion +0/+0/+1.";
+                return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         EffectStatChange e = new EffectStatChange("+0/+0/+1 (from <b>Mend Wounds</b>).", 0, 0, 1);
                         this.resolve(b, rq, el, new AddEffectResolver(m, e));
                     }
-                };
+                });
             }
 
             @Override
-            public Resolver onUnleashPost(Minion m) {
-                return new RestoreResolver(this, m, 1);
+            public ResolverWithDescription onUnleashPost(Minion m) {
+                String resolverDescription = "Restore 1 health to the unleashed minion.";
+                return new ResolverWithDescription(resolverDescription, new RestoreResolver(this, m, 1));
             }
         });
     }

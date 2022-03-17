@@ -12,6 +12,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 public class WellOfDestination extends AmuletText {
@@ -28,8 +29,8 @@ public class WellOfDestination extends AmuletText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public Resolver onTurnStart() {
-                return new Resolver(true) {
+            public ResolverWithDescription onTurnStart() {
+                return new ResolverWithDescription(DESCRIPTION, new Resolver(true) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> possible = b.getMinions(owner.team, false, true).collect(Collectors.toList());
@@ -40,7 +41,7 @@ public class WellOfDestination extends AmuletText {
                             this.resolve(b, rq, el, new AddEffectResolver(targeted, e));
                         }
                     }
-                };
+                });
             }
 
             @Override

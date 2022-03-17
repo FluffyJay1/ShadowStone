@@ -10,6 +10,7 @@ import server.card.target.TargetingScheme;
 import server.event.Event;
 import server.resolver.BanishResolver;
 import server.resolver.Resolver;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.util.List;
@@ -38,15 +39,15 @@ public class BlackenedScripture extends SpellText {
             }
 
             @Override
-            public Resolver battlecry() {
-                return new Resolver(false) {
+            public ResolverWithDescription battlecry() {
+                return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableBattlecryCardTargets(0).findFirst().ifPresent(c -> {
                             this.resolve(b, rq, el, new BanishResolver((c)));
                         });
                     }
-                };
+                });
             }
 
             @Override

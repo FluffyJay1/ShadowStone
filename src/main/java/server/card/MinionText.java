@@ -12,6 +12,7 @@ import server.card.target.TargetingScheme;
 import server.event.Event;
 import server.resolver.DamageResolver;
 import server.resolver.Resolver;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.util.ArrayList;
@@ -44,9 +45,10 @@ public abstract class MinionText extends BoardObjectText {
                 }
 
                 @Override
-                public Resolver unleash() {
+                public ResolverWithDescription unleash() {
                     Effect effect = this; // anonymous fuckery
-                    return new Resolver(false) {
+                    String resolverDescription = "<b>Unleash</b>: Deal X damage to an enemy minion. X equals this minion's magic.";
+                    return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                         @Override
                         public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                             getStillTargetableUnleashCardTargets(0).findFirst().ifPresent(c -> {
@@ -56,7 +58,7 @@ public abstract class MinionText extends BoardObjectText {
                                 this.resolve(b, rq, el, dr);
                             });
                         }
-                    };
+                    });
                 }
 
                 @Override

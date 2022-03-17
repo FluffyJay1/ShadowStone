@@ -15,6 +15,7 @@ import server.event.Event;
 import server.resolver.AddEffectResolver;
 import server.resolver.CreateCardResolver;
 import server.resolver.Resolver;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.util.Collections;
@@ -54,8 +55,8 @@ public class IHadThreeFriends extends SpellText {
             }
 
             @Override
-            public Resolver battlecry() {
-                return new Resolver(false) {
+            public ResolverWithDescription battlecry() {
+                return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> toCreate = List.of(new Alpha(), new Omega(), new Epsilon());
@@ -69,7 +70,7 @@ public class IHadThreeFriends extends SpellText {
                             this.resolve(b, rq, el, new AddEffectResolver(ccr.event.cards.get(option), rush));
                         }
                     }
-                };
+                });
             }
 
             @Override

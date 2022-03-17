@@ -10,6 +10,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.*;
+import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 public class WoodOfBrambles extends AmuletText {
@@ -31,16 +32,17 @@ public class WoodOfBrambles extends AmuletText {
             }
 
             @Override
-            public Resolver battlecry() {
+            public ResolverWithDescription battlecry() {
                 Effect effect = this;
-                return new Resolver(false) {
+                String resolverDescription = "<b>Battlecry</b>: add two <b>Faries</b> to your hand.";
+                return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> cards = List.of(new Fairy(), new Fairy());
                         List<Integer> pos = List.of(-1, -1);
                         this.resolve(b, rq, el, new CreateCardResolver(cards, effect.owner.team, CardStatus.HAND, pos));
                     }
-                };
+                });
             }
 
             @Override
@@ -70,8 +72,9 @@ public class WoodOfBrambles extends AmuletText {
         }
 
         @Override
-        public Resolver clash(Minion target) {
-            return new DamageResolver(this, target, 1, true, null);
+        public ResolverWithDescription clash(Minion target) {
+            String resolverDescription = "<b>Clash</b>: deal 1 damage to the enemy minion (from <b>Wood of Bramble's Aura</b>).";
+            return new ResolverWithDescription(resolverDescription, new DamageResolver(this, target, 1, true, null));
         }
 
         @Override

@@ -33,16 +33,12 @@ public class UnleashResolver extends Resolver {
                     b.processEvent(rq, el, new EventManaChange(p, -this.source.finalStatEffects.getStat(EffectStats.COST), false, true));
                     b.processEvent(rq, el, new EventUnleash(this.source, this.m));
                     p.getUnleashPower().ifPresent(up -> this.resolveQueue(b, rq, el, up.onUnleashPre(this.m)));
-                    b.pushEventGroup(new EventGroup(EventGroupType.UNLEASH, List.of(this.m)));
                     this.resolveQueue(b, rq, el, this.m.unleash());
-                    b.popEventGroup();
                     p.getUnleashPower().ifPresent(up -> this.resolveQueue(b, rq, el, up.onUnleashPost(this.m)));
                 }
             } else {
                 b.processEvent(rq, el, new EventUnleash(this.source, this.m));
-                b.pushEventGroup(new EventGroup(EventGroupType.UNLEASH, List.of(this.m)));
                 this.resolveQueue(b, rq, el, this.m.unleash());
-                b.popEventGroup();
             }
         }
     }

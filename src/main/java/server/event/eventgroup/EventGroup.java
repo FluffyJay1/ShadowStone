@@ -23,6 +23,7 @@ public class EventGroup {
     public static final char POP_TOKEN = 'p';
     public final EventGroupType type;
     public final List<Card> cards; // if there are relevant cards involved
+    public String description; // for the DESCRIPTION eventgroup, which is used for a tooltip popup
 
     // whether we have already determined this group is not empty, and have outputted it
     public boolean committed;
@@ -32,14 +33,21 @@ public class EventGroup {
     }
 
     public EventGroup(EventGroupType type, List<Card> cards) {
+        this(type, cards, "");
+    }
+
+    public EventGroup(EventGroupType type, List<Card> cards, String description) {
         this.type = type;
         this.cards = cards;
+        this.description = description;
         this.committed = false;
     }
 
     public String toString() {
         StringBuilder sb = new StringBuilder(); 
-        sb.append(PUSH_TOKEN).append(" ").append(this.type.toString()).append(" ").append(this.cards.size()).append(" ");
+        sb.append(PUSH_TOKEN).append(" ").append(this.type.toString()).append(" ")
+                .append(this.description).append(Game.STRING_END).append(" ")
+                .append(this.cards.size()).append(" ");
         for (Card c : this.cards) {
             sb.append(c.toReference());
         }
@@ -51,12 +59,14 @@ public class EventGroup {
             throw new RuntimeException("eventgroup parsing error, wrong first token, something may be wrong");
         }
         EventGroupType type = EventGroupType.valueOf(st.nextToken());
+        String description = st.nextToken(Game.STRING_END).trim();
+        st.nextToken(" \n"); // THANKS STRING TOKENIZER
         int ncards = Integer.parseInt(st.nextToken());
         List<Card> cards = new ArrayList<>(ncards);
         for (int i = 0; i < ncards; i++) {
             cards.add(Card.fromReference(b, st));
         }
-        return new EventGroup(type, cards);
+        return new EventGroup(type, cards, description);
     }
 
     // determine whether an eventline is a group

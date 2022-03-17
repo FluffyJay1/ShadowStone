@@ -2,7 +2,10 @@ package server;
 
 import server.*;
 import server.card.*;
+import server.event.eventgroup.EventGroupType;
 import server.resolver.util.ResolverQueue;
+
+import java.util.List;
 
 public class UnleashPower extends Card {
     public int unleashesThisTurn = 0;
@@ -12,11 +15,13 @@ public class UnleashPower extends Card {
     }
 
     public ResolverQueue onUnleashPre(Minion target) {
-        return this.getResolvers(e -> e.onUnleashPre(target), eff -> !eff.removed && ((UnleashPower) eff.owner).isInPlay() && target.isInPlay());
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), eff -> eff.onUnleashPre(target),
+                eff -> !eff.removed && ((UnleashPower) eff.owner).isInPlay() && target.isInPlay());
     }
 
     public ResolverQueue onUnleashPost(Minion target) {
-        return this.getResolvers(e -> e.onUnleashPost(target), eff -> !eff.removed && ((UnleashPower) eff.owner).isInPlay() && target.isInPlay());
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), eff -> eff.onUnleashPost(target),
+                eff -> !eff.removed && ((UnleashPower) eff.owner).isInPlay() && target.isInPlay());
     }
 
     @Override
@@ -30,6 +35,7 @@ public class UnleashPower extends Card {
         builder.append(this.unleashesThisTurn).append(" ");
     }
 
+    @Override
     public boolean isInPlay() {
         return this.status.equals(CardStatus.UNLEASHPOWER);
     }

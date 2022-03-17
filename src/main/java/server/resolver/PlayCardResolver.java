@@ -37,13 +37,7 @@ public class PlayCardResolver extends Resolver {
             } else {
                 b.processEvent(rq, el, new EventDestroy(this.c));
             }
-            if (!(this.c instanceof Spell)) {
-                b.pushEventGroup(new EventGroup(EventGroupType.BATTLECRY, List.of(this.c)));
-            }
             this.resolveQueue(b, rq, el, this.c.battlecry());
-            if (!(this.c instanceof Spell)) {
-                b.popEventGroup();
-            }
         }
     }
 }

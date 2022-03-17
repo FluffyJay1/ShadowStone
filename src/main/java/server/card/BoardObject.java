@@ -2,8 +2,11 @@ package server.card;
 
 import server.*;
 import server.card.effect.*;
+import server.event.eventgroup.EventGroupType;
 import server.resolver.util.ResolverQueue;
 import utils.HistoricalList;
+
+import java.util.List;
 
 public class BoardObject extends Card {
     public int lastBoardPos = 0; // After leaving board (e.g. to graveyard), keep a record of where it was last
@@ -13,6 +16,7 @@ public class BoardObject extends Card {
         super(b, cardText);
     }
 
+    @Override
     public boolean isInPlay() {
         return this.status.equals(CardStatus.BOARD);
     }
@@ -65,35 +69,35 @@ public class BoardObject extends Card {
 
     @Override
     public ResolverQueue battlecry() {
-        return this.getResolvers(Effect::battlecry, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
+        return this.getResolvers(EventGroupType.BATTLECRY, List.of(this), Effect::battlecry, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
     }
 
     public ResolverQueue onTurnStart() {
-        return this.getResolvers(Effect::onTurnStart, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onTurnStart, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
     }
 
     public ResolverQueue onTurnEnd() {
-        return this.getResolvers(Effect::onTurnEnd, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onTurnEnd, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
     }
 
     public ResolverQueue onTurnStartEnemy() {
-        return this.getResolvers(Effect::onTurnStartEnemy, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onTurnStartEnemy, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
     }
 
     public ResolverQueue onTurnEndEnemy() {
-        return this.getResolvers(Effect::onTurnEndEnemy, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onTurnEndEnemy, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
     }
 
     public ResolverQueue lastWords() {
-        return this.getResolvers(Effect::lastWords);
+        return this.getResolvers(EventGroupType.LASTWORDS, List.of(this), Effect::lastWords, eff -> true);
     }
 
     public ResolverQueue onEnterPlay() {
-        return this.getResolvers(Effect::onEnterPlay, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onEnterPlay, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
     }
 
     public ResolverQueue onLeavePlay() {
-        return this.getResolvers(Effect::onLeavePlay, eff -> !eff.removed && !((BoardObject) eff.owner).isInPlay());
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onLeavePlay, eff -> !eff.removed && !((BoardObject) eff.owner).isInPlay());
     }
 
     @Override
