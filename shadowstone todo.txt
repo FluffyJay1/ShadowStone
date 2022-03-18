@@ -1,4 +1,3 @@
-batch draw cards
 one-time resolver triggers (like at the start of your next turn)
 color code the event group tooltips
 mulligan phase

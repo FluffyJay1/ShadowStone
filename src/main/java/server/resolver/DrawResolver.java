@@ -19,19 +19,16 @@ public class DrawResolver extends Resolver {
 
     @Override
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-        for (int i = 0; i < num; i++) {
-            if (p.getDeck().size() == 0) {
-                // lose the game
-                b.processEvent(rq, el, new EventGameEnd(p.board, p.team * -1));
-                break;
-            } else {
-                List<Card> markedForDeath = new LinkedList<>();
-                b.processEvent(rq, el, new EventPutCard(List.of(this.p.getDeck().get(0)), CardStatus.HAND, this.p.team,
-                        List.of(-1), markedForDeath));
-                if (!markedForDeath.isEmpty()) {
-                    b.processEvent(rq, el, new EventDestroy(markedForDeath));
-                }
-            }
+        List<Card> markedForDeath = new LinkedList<>();
+        int numToDraw = Math.min(this.num, this.p.getDeck().size());
+        b.processEvent(rq, el, new EventPutCard(List.copyOf(this.p.getDeck().subList(0, numToDraw)), CardStatus.HAND, this.p.team,
+                Collections.nCopies(numToDraw, -1), markedForDeath));
+        if (!markedForDeath.isEmpty()) {
+            b.processEvent(rq, el, new EventDestroy(markedForDeath));
+        }
+        if (numToDraw < this.num) {
+            // lose the game
+            b.processEvent(rq, el, new EventGameEnd(p.board, p.team * -1));
         }
     }
 }

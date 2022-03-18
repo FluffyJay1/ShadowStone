@@ -40,12 +40,15 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
             ))
     );
     public EventAnimationPutCard() {
-        super(0, 0.5);
+        super(0, 0);
     }
 
     @Override
     public void init(VisualBoard b, EventPutCard event) {
         super.init(b, event);
+        if (event.cards.isEmpty()) {
+            return; //lol dont even bother
+        }
         switch (event.status) {
             case BOARD -> {
                 this.postTime = 0.25;
