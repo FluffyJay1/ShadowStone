@@ -31,11 +31,13 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     private UIElement followTarget;
     Animation animation;
     Image finalImage;
+    private Color color;
 
     public UIElement(UI ui, Vector2f pos) {
         this.ui = ui;
         this.pos = pos.copy();
         this.targetpos = pos.copy();
+        this.color = Color.white;
     }
 
     public UIElement(UI ui, Vector2f pos, String imagepath) {
@@ -400,7 +402,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
             this.finalImage.rotate(this.angle);
             this.finalImage.setAlpha(this.alpha);
             if (this.visible) {
-                g.drawImage(this.finalImage, this.getLeft(true, false), this.getTop(true, false));
+                g.drawImage(this.finalImage, this.getLeft(true, false), this.getTop(true, false), this.getColor());
             }
         }
         if (this.visible) {
@@ -453,6 +455,14 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
 
     public int getZ() {
         return this.z;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public Color getColor() {
+        return this.color;
     }
 
     // returns the uielement that is top (prioritizes children)

@@ -2,11 +2,15 @@ package client.ui.game;
 
 import client.Game;
 import client.ui.*;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Vector2f;
+import server.card.Card;
 import server.event.eventgroup.EventGroup;
 
 public class EventGroupDescriptionPanel extends UIBox {
+    private static final Color LOCAL_COLOR = new Color(0.7f, 0.8f, 1.0f);
+    private static final Color ENEMY_COLOR = new Color(1.0f, 0.6f, 0.6f);
     private static final int ICON_SIZE = 64;
     private static final float TEXT_SPACING = 10;
     public EventGroup eg;
@@ -37,9 +41,21 @@ public class EventGroupDescriptionPanel extends UIBox {
         }
         Text title = null;
         if (eg.cards.size() > 0) {
-            title = new Text(ui, new Vector2f(), "<b>" + eg.cards.get(0).getTooltip().name, this.getWidth(true) - iconWidth,
+            Card c = eg.cards.get(0);
+            title = new Text(ui, new Vector2f(), "<b>" + c.getTooltip().name, this.getWidth(true) - iconWidth,
                     40, Game.DEFAULT_FONT, 48, -1, -1);
+            // if e.g. it has a single big word that causes it to exceed the expected width
+            float excessRatio = title.getWidth(false) / (this.getWidth(true) - iconWidth);
+            if (excessRatio > 1.02) {
+                // adjust the font size so the offending word fits within the width
+                title.setFont(Game.DEFAULT_FONT, 48 / excessRatio);
+            }
             this.addChild(title);
+            if (c.team == c.board.localteam) {
+                this.setColor(LOCAL_COLOR);
+            } else {
+                this.setColor(ENEMY_COLOR);
+            }
         }
         Text text = new Text(ui, new Vector2f(), eg.description, this.getWidth(true),
                 30, Game.DEFAULT_FONT, 32, -1, -1);

@@ -30,8 +30,6 @@ public class Text extends UIElement {
     private UninvertibleImage cachedRender;
     private boolean isDirty;
 
-    private Color color;
-
     public Text(UI ui, Vector2f pos, String text, float linewidth, float lineheight, String font, float fontsize,
             int alignh, int alignv) {
         super(ui, pos);
@@ -44,7 +42,6 @@ public class Text extends UIElement {
         this.setFont(font, fontsize);
         this.setText(text);
         this.isDirty = true;
-        this.color = Color.white;
     }
 
     public void setFont(String font, float fontsize) {
@@ -66,8 +63,9 @@ public class Text extends UIElement {
         this.updateText();
     }
 
+    @Override
     public void setColor(Color color) {
-        this.color = color;
+        super.setColor(color);
         this.isDirty = true;
     }
 
@@ -166,7 +164,7 @@ public class Text extends UIElement {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        tempGraphics.setColor(this.color);
+        tempGraphics.setColor(this.getColor());
         int flags = 0;
         for (int i = 0; i < this.lines.size(); i++) {
             double currlinewidth = 0;

@@ -45,7 +45,7 @@ public class UIBox extends UIElement {
                     (int) this.getHeight(false));
             // this.finalImage.rotate((float) this.angle);
             this.finalImage.setAlpha(this.getAlpha());
-            g.drawImage(this.finalImage, this.getLeft(true, false), this.getTop(true, false));
+            g.drawImage(this.finalImage, this.getLeft(true, false), this.getTop(true, false), this.getColor());
         }
     }
 
