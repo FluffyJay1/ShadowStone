@@ -7,11 +7,8 @@ import server.card.effect.Effect;
 import server.card.effect.EffectAura;
 import server.event.Event;
 import server.event.eventgroup.EventGroup;
-import server.event.eventgroup.EventGroupType;
 import server.playeraction.PlayerAction;
 import server.resolver.*;
-import server.resolver.meta.HookResolver;
-import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.io.File;
@@ -32,6 +29,8 @@ public class ServerBoard extends Board {
 
     Set<EffectAura> lastCheckedActiveAuras;
 
+    boolean enableOutput = true;
+
     public ServerBoard(int localteam) {
         super(localteam);
     }
@@ -42,6 +41,7 @@ public class ServerBoard extends Board {
         this.output = new StringBuilder();
         this.history = new StringBuilder();
         this.lastCheckedActiveAuras = new HashSet<>();
+        this.enableOutput = true;
     }
 
     // quality helper methods
@@ -85,21 +85,13 @@ public class ServerBoard extends Board {
         if (this.winner != 0 || !e.conditions()) {
             return e;
         }
-        for (EventGroup eg : this.eventGroups) {
-            if (!eg.committed) {
-                // commit this event group to output if it isn't empty
-                this.output.append(eg.toString());
-                this.history.append(eg.toString());
-                eg.committed = true;
-            }
-        }
         String eventString = e.toString();
         e.resolve(this);
         if (el != null) {
             el.add(e);
         }
         // TODO make the AI board not do this
-        if (!eventString.isEmpty() && e.send) {
+        if (!eventString.isEmpty() && e.send && this.enableOutput) {
             this.output.append(eventString);
             this.history.append(eventString);
         }
@@ -190,7 +182,9 @@ public class ServerBoard extends Board {
 
     @Override
     public synchronized void parseEventString(String s) {
+        this.enableOutput = false;
         super.parseEventString(s);
+        this.enableOutput = true;
         this.output.append(s);
         this.history.append(s);
         // we must have gotten kira queened, keep auras consistent
@@ -209,9 +203,18 @@ public class ServerBoard extends Board {
     }
 
     @Override
+    public void pushEventGroup(EventGroup group) {
+        super.pushEventGroup(group);
+        if (this.enableOutput) {
+            this.output.append(group.toString());
+            this.history.append(group.toString());
+        }
+    }
+
+    @Override
     public EventGroup popEventGroup() {
         EventGroup eg = super.popEventGroup();
-        if (eg.committed) {
+        if (this.enableOutput) {
             this.output.append(EventGroup.POP_TOKEN + Game.EVENT_END);
             this.history.append(EventGroup.POP_TOKEN + Game.EVENT_END);
         }

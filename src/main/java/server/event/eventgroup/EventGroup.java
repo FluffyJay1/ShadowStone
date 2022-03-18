@@ -25,9 +25,6 @@ public class EventGroup {
     public final List<Card> cards; // if there are relevant cards involved
     public String description; // for the DESCRIPTION eventgroup, which is used for a tooltip popup
 
-    // whether we have already determined this group is not empty, and have outputted it
-    public boolean committed;
-
     public EventGroup(EventGroupType type) {
         this(type, new LinkedList<>());
     }
@@ -40,7 +37,6 @@ public class EventGroup {
         this.type = type;
         this.cards = cards;
         this.description = description;
-        this.committed = false;
     }
 
     public String toString() {

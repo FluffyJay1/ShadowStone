@@ -220,7 +220,6 @@ public abstract class Board {
 
     public void pushEventGroup(EventGroup group) {
         this.eventGroups.add(group);
-        // don't commit to output just yet, we don't know if this group is empty or not
     }
 
     public EventGroup popEventGroup() {

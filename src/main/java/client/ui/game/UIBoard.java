@@ -468,9 +468,7 @@ public class UIBoard extends UIBox {
                 if (bo != null && bo instanceof Minion && bo.realCard.team == this.b.localteam
                         && ((Minion) bo.realCard).canAttack() && !this.b.disableInput) {
                     this.attackingMinion = c;
-                    this.b.getBoardObjects(this.b.localteam * -1, true, true, false, true)
-                            .filter(target -> target instanceof Minion && this.attackingMinion.getMinion().realMinion().canAttack(((Minion) target).realMinion()))
-                            .forEach(target -> target.uiCard.setPotentialTarget(true));
+                    this.refreshAnimatedAttackTargets();
                     c.setOrderingAttack(true);
                 }
                 break;
@@ -493,10 +491,9 @@ public class UIBoard extends UIBox {
                         new OrderAttackAction(this.attackingMinion.getMinion().realMinion(), c.getMinion().realMinion())
                                 .toString());
             }
-            this.b.getBoardObjects(this.b.localteam * -1, true, true, false, true)
-                    .forEach(target -> target.uiCard.setPotentialTarget(false));
             this.attackingMinion.setOrderingAttack(false);
             this.attackingMinion = null;
+            this.refreshAnimatedAttackTargets();
         } else if (this.draggingUnleash) { // in middle of unleashing
             // preselected card is unleashpower
             this.preSelectedCard.setTargeting(false);
@@ -690,8 +687,20 @@ public class UIBoard extends UIBox {
     }
 
     public void refreshAnimatedTargets() {
+        this.refreshAnimatedAttackTargets();
         if (this.currentTargetingScheme instanceof CardTargetingScheme) {
             this.animateTargets((CardTargetingScheme) this.currentTargetingScheme, true);
+        }
+    }
+
+    private void refreshAnimatedAttackTargets() {
+        if (this.attackingMinion == null) {
+            this.b.getBoardObjects(this.b.localteam * -1, true, true, false, true)
+                    .forEach(target -> target.uiCard.setPotentialTarget(false));
+        } else {
+            this.b.getBoardObjects(this.b.localteam * -1, true, true, false, true)
+                    .filter(target -> target instanceof Minion && this.attackingMinion.getMinion().realMinion().canAttack(((Minion) target).realMinion()))
+                    .forEach(target -> target.uiCard.setPotentialTarget(true));
         }
     }
 
