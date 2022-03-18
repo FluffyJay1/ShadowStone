@@ -11,6 +11,7 @@ public class EventTurnStart extends Event {
     public final Player p;
     private int prevCurrentPlayerTurn;
     private int prevUnleashesThisTurn;
+    private int prevCardsPlayedThisTurn;
     private List<Boolean> prevSickness;
     private List<Integer> prevAttacks;
 
@@ -23,10 +24,12 @@ public class EventTurnStart extends Event {
     public void resolve(Board b) {
         this.prevCurrentPlayerTurn = this.p.board.currentPlayerTurn;
         this.prevUnleashesThisTurn = this.p.getUnleashPower().map(up -> up.unleashesThisTurn).orElse(0);
+        this.prevCardsPlayedThisTurn = this.p.cardsPlayedThisTurn;
         this.prevSickness = new ArrayList<>();
         this.prevAttacks = new ArrayList<>();
         this.p.board.currentPlayerTurn = this.p.team;
         this.p.getUnleashPower().ifPresent(up -> up.unleashesThisTurn = 0);
+        this.p.cardsPlayedThisTurn = 0;
         for (BoardObject bo : this.p.getPlayArea()) {
             if (bo instanceof Minion) {
                 this.prevSickness.add(((Minion) bo).summoningSickness);
@@ -44,6 +47,7 @@ public class EventTurnStart extends Event {
     public void undo(Board b) {
         b.currentPlayerTurn = this.prevCurrentPlayerTurn;
         this.p.getUnleashPower().ifPresent(up -> up.unleashesThisTurn = this.prevUnleashesThisTurn);
+        this.p.cardsPlayedThisTurn = this.prevCardsPlayedThisTurn;
         List<BoardObject> boardObjects = this.p.getPlayArea();
         for (int i = 0; i < boardObjects.size(); i++) {
             BoardObject bo = boardObjects.get(i);

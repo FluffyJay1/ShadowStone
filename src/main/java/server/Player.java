@@ -29,6 +29,7 @@ public class Player implements StringBuildable {
     public boolean unleashAllowed = true;
     protected Leader leader;
     protected UnleashPower unleashPower;
+    public int cardsPlayedThisTurn;
 
     public Player(Board board, int team) {
         this.board = board;
@@ -43,6 +44,7 @@ public class Player implements StringBuildable {
         this.maxmaxmana = 10;
         this.maxHandSize = DEFAULT_MAX_HAND_SIZE;
         this.maxPlayAreaSize = DEFAULT_MAX_BOARD_SIZE;
+        this.cardsPlayedThisTurn = 0;
     }
 
     public List<Card> getDeck() {
