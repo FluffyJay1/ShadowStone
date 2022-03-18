@@ -1,5 +1,10 @@
+batch draw cards
 one-time resolver triggers (like at the start of your next turn)
+color code the event group tooltips
 mulligan phase
+necromancy
+spellboost
+enhance
 AI difficulty adjustment
 Figure out why the game is eating cpu and gpu
 relpos lol

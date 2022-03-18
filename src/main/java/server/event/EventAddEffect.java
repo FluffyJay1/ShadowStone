@@ -16,6 +16,7 @@ public class EventAddEffect extends Event {
     public final List<? extends Card> c;
     final Effect e;
     public final List<Effect> effects;
+    public final List<Boolean> successful;
     private List<Integer> oldHealth;
     private List<Boolean> oldAlive;
     public final List<Card> markedForDeath;
@@ -25,7 +26,8 @@ public class EventAddEffect extends Event {
         this.c = c;
         this.e = e;
         this.markedForDeath = Objects.requireNonNullElseGet(markedForDeath, ArrayList::new);
-        this.effects = new ArrayList<>();
+        this.effects = new ArrayList<>(c.size());
+        this.successful = new ArrayList<>(c.size());
     }
 
     @Override
@@ -41,7 +43,7 @@ public class EventAddEffect extends Event {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
-            c.addEffect(false, clonede);
+            this.successful.add(c.addEffect(false, clonede));
             this.effects.add(clonede);
             this.oldHealth.add(0);
             this.oldAlive.add(c.alive);

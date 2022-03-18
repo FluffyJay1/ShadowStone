@@ -113,14 +113,23 @@ public abstract class Card implements Indexable, StringBuildable {
     }
 
     /**
-     * Adds an effect to the card. If the effect is also flagged as an event
-     * listener, it is registered with the board.
+     * Adds an effect to the card. May fail if the effect isn't stackable, and
+     * there is already an instance of the effect.
      * 
      * @param basic Whether the effect is a basic effect of the card
      * @param pos   The position to add the effect to
      * @param e     The effect
+     * @return Whether the effect as added successfully
      */
-    public void addEffect(boolean basic, int pos, Effect e) {
+    public boolean addEffect(boolean basic, int pos, Effect e) {
+        if (!e.stackable) {
+            // check if another instance is already on this card
+            for (Effect presentEffect : this.getEffects(basic)) {
+                if (presentEffect.getClass().equals(e.getClass())) {
+                    return false;
+                }
+            }
+        }
         e.basic = basic;
         e.owner = this;
         e.removed = false;
@@ -133,10 +142,11 @@ public abstract class Card implements Indexable, StringBuildable {
             e.auraSource.currentActiveEffects.put(this, e);
         }
         this.updateEffectStats(basic);
+        return true;
     }
 
-    public void addEffect(boolean basic, Effect e) {
-        this.addEffect(basic, this.getEffects(basic).size(), e);
+    public boolean addEffect(boolean basic, Effect e) {
+        return this.addEffect(basic, this.getEffects(basic).size(), e);
     }
 
     // purge: clean remove, don't even put it in the removedEffects

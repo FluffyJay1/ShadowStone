@@ -69,6 +69,7 @@ public class UIBoard extends UIBox {
     public final Text player1ManaText;
     public final Text player2ManaText;
     public final Text advantageText;
+    private final Text player1DeckSizeText, player2DeckSizeText;
     public UICard preSelectedCard, selectedCard, draggingCard, playingCard, attackingMinion,
             unleashingMinion;
     ModalSelectionPanel modalSelectionPanel;
@@ -109,10 +110,18 @@ public class UIBoard extends UIBox {
         this.advantageText = new Text(ui, new Vector2f(-0.25f, -0.4f), "Advantage Text", 400, 24, Game.DEFAULT_FONT, 30, -1, -1);
         this.advantageText.relpos = true;
         this.advantageText.setZ(1);
+        this.player1DeckSizeText = new Text(ui, new Vector2f(0.37f, (float) DECK_Y_LOCAL), "Player 1 Deck", 400, 24, Game.DEFAULT_FONT, 30, -1, 0);
+        this.player1DeckSizeText.relpos = true;
+        this.player1DeckSizeText.setZ(1);
+        this.player2DeckSizeText = new Text(ui, new Vector2f(0.37f, (float) DECK_Y_ENEMY), "Player 2 Deck", 400, 24, Game.DEFAULT_FONT, 30, -1, 0);
+        this.player2DeckSizeText.relpos = true;
+        this.player2DeckSizeText.setZ(1);
         this.addChild(this.targetText);
         this.addChild(this.player1ManaText);
         this.addChild(this.player2ManaText);
         this.addChild(this.advantageText);
+        this.addChild(this.player1DeckSizeText);
+        this.addChild(this.player2DeckSizeText);
         this.modalSelectionPanel = new ModalSelectionPanel(ui, i -> {
             if (this.currentTargets instanceof ModalTargetList) {
                 ModalTargetList mtl = (ModalTargetList) this.currentTargets;
@@ -161,6 +170,8 @@ public class UIBoard extends UIBox {
         this.player2ManaText.setText(
                 this.b.getPlayer(this.b.localteam * -1).mana + "/" + this.b.getPlayer(this.b.localteam * -1).maxmana);
 
+        this.player1DeckSizeText.setText("x" + this.b.getPlayer(this.b.localteam).getDeck().size());
+        this.player2DeckSizeText.setText("x" + this.b.getPlayer(this.b.localteam * -1).getDeck().size());
         // reset some pending stuff
         // move the cards to their respective positions
         for (int team : List.of(-1, 1)) {

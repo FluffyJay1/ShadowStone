@@ -30,6 +30,7 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     private int pos = 0;
     public Card owner = null;
     public String description;
+    public boolean stackable = true;
     /*
      * Mute means the effect still provides stats, but won't do anything extra, it
      * can't listen for events or battlecry or unleash or anything
@@ -56,6 +57,16 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     public Effect(String description, EffectStats stats) {
         this(description);
         this.effectStats = stats;
+    }
+
+    public Effect(String description, boolean stackable) {
+        this(description);
+        this.stackable = stackable;
+    }
+
+    public Effect(String description, boolean stackable, EffectStats stats) {
+        this(description, stats);
+        this.stackable = stackable;
     }
 
     public ResolverWithDescription battlecry() {
