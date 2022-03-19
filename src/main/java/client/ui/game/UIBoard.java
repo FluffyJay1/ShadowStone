@@ -32,10 +32,10 @@ public class UIBoard extends UIBox {
     public static final double CLICK_DISTANCE_THRESHOLD = 5;
     public static final double BO_SPACING = 0.1, BO_Y_LOCAL = 0.105, BO_Y_ENEMY = -0.115;
     public static final double LEADER_Y_LOCAL = 0.38, LEADER_Y_ENEMY = -0.4;
-    public static final double UNLEASHPOWER_X = 0.07, UNLEASHPOWER_Y_LOCAL = 0.29, UNLEASHPOWER_Y_ENEMY = -0.31;
+    public static final double UNLEASHPOWER_X = 0.07, UNLEASHPOWER_Y_LOCAL = 0.27, UNLEASHPOWER_Y_ENEMY = -0.29;
     public static final double HAND_X_LOCAL = 0.19, HAND_X_ENEMY = 0.28, HAND_X_EXPAND_LOCAL = 0.175;
     public static final double HAND_Y_LOCAL = 0.38, HAND_Y_ENEMY = -0.41, HAND_Y_EXPAND_LOCAL = 0.33;
-    public static final double HAND_X_SCALE_LOCAL = 0.22, HAND_X_SCALE_ENEMY = 0.26, HAND_X_SCALE_EXPAND_LOCAL = 0.36;
+    public static final double HAND_X_SCALE_LOCAL = 0.22, HAND_X_SCALE_ENEMY = 0.26, HAND_X_SCALE_EXPAND_LOCAL = 0.40;
     public static final double CARD_PLAY_Y = 0.2, HAND_EXPAND_Y = 0.30;
     public static final double DECK_X = 0.35, DECK_Y_LOCAL = 0.2, DECK_Y_ENEMY = -0.2;
     public static final int PARTICLE_Z_BOARD = 1, PARTICLE_Z_SPECIAL = 5, UI_Z_TOP = 10;
@@ -66,10 +66,9 @@ public class UIBoard extends UIBox {
     final CardSelectPanel cardSelectPanel;
     final EndTurnButton endTurnButton;
     public final Text targetText;
-    public final Text player1ManaText;
-    public final Text player2ManaText;
+    private final ManaOrbPanel localPlayerMana, enemyPlayerMana;
     public final Text advantageText;
-    private final Text player1DeckSizeText, player2DeckSizeText;
+    private final PlayerStatPanel localPlayerStats, enemyPlayerStats;
     public UICard preSelectedCard, selectedCard, draggingCard, playingCard, attackingMinion,
             unleashingMinion;
     ModalSelectionPanel modalSelectionPanel;
@@ -100,28 +99,34 @@ public class UIBoard extends UIBox {
         this.addChild(this.endTurnButton);
         this.targetText = new Text(ui, new Vector2f(), "Target", 400, 24, Game.DEFAULT_FONT, 30, 0, -1);
         this.targetText.setZ(999);
-        this.player1ManaText = new Text(ui, new Vector2f(-0.20f, 0.34f), "Player 1 Mana", 400, 24, Game.DEFAULT_FONT, 30, 0, 0);
-        this.player1ManaText.relpos = true;
-        this.player1ManaText.setZ(1);
-        this.player2ManaText = new Text(ui, new Vector2f(-0.20f, -0.44f), "Player 2 Mana", 400, 24, Game.DEFAULT_FONT, 30, 0,
-                0);
-        this.player2ManaText.relpos = true;
-        this.player2ManaText.setZ(1);
         this.advantageText = new Text(ui, new Vector2f(-0.25f, -0.4f), "Advantage Text", 400, 24, Game.DEFAULT_FONT, 30, -1, -1);
         this.advantageText.relpos = true;
         this.advantageText.setZ(1);
-        this.player1DeckSizeText = new Text(ui, new Vector2f(0.37f, (float) DECK_Y_LOCAL), "Player 1 Deck", 400, 24, Game.DEFAULT_FONT, 30, -1, 0);
-        this.player1DeckSizeText.relpos = true;
-        this.player1DeckSizeText.setZ(1);
-        this.player2DeckSizeText = new Text(ui, new Vector2f(0.37f, (float) DECK_Y_ENEMY), "Player 2 Deck", 400, 24, Game.DEFAULT_FONT, 30, -1, 0);
-        this.player2DeckSizeText.relpos = true;
-        this.player2DeckSizeText.setZ(1);
         this.addChild(this.targetText);
-        this.addChild(this.player1ManaText);
-        this.addChild(this.player2ManaText);
         this.addChild(this.advantageText);
-        this.addChild(this.player1DeckSizeText);
-        this.addChild(this.player2DeckSizeText);
+
+        this.localPlayerMana = new ManaOrbPanel(ui, new Vector2f(0.2f, 0.5f));
+        this.localPlayerMana.alignv = 1;
+        this.localPlayerMana.relpos = true;
+        this.localPlayerMana.setZ(1);
+        this.enemyPlayerMana = new ManaOrbPanel(ui, new Vector2f(-0.2f, -0.5f));
+        this.enemyPlayerMana.alignv = -1;
+        this.enemyPlayerMana.relpos = true;
+        this.enemyPlayerMana.setZ(1);
+        this.addChild(this.localPlayerMana);
+        this.addChild(this.enemyPlayerMana);
+
+        this.localPlayerStats = new PlayerStatPanel(ui, new Vector2f(0.5f, 0.2f));
+        this.localPlayerStats.alignh = 1;
+        this.localPlayerStats.relpos = true;
+        this.localPlayerStats.setZ(1);
+        this.enemyPlayerStats = new PlayerStatPanel(ui, new Vector2f(0.5f, -0.2f));
+        this.enemyPlayerStats.alignh = 1;
+        this.enemyPlayerStats.relpos = true;
+        this.enemyPlayerStats.setZ(1);
+        this.addChild(this.localPlayerStats);
+        this.addChild(this.enemyPlayerStats);
+
         this.modalSelectionPanel = new ModalSelectionPanel(ui, i -> {
             if (this.currentTargets instanceof ModalTargetList) {
                 ModalTargetList mtl = (ModalTargetList) this.currentTargets;
@@ -164,14 +169,12 @@ public class UIBoard extends UIBox {
         }
         // end handling targeting text
 
-        this.player1ManaText
-                .setText(this.b.getPlayer(this.b.localteam).mana + "/" + this.b.getPlayer(this.b.localteam).maxmana);
+        this.localPlayerMana.updateMana(this.b.getPlayer(this.b.localteam).mana, this.b.getPlayer(this.b.localteam).maxmana);
+        this.enemyPlayerMana.updateMana(this.b.getPlayer(this.b.localteam * -1).mana, this.b.getPlayer(this.b.localteam * -1).maxmana);
 
-        this.player2ManaText.setText(
-                this.b.getPlayer(this.b.localteam * -1).mana + "/" + this.b.getPlayer(this.b.localteam * -1).maxmana);
+        this.localPlayerStats.updateStats(this.b.getPlayer(this.b.localteam));
+        this.enemyPlayerStats.updateStats(this.b.getPlayer(this.b.localteam * -1));
 
-        this.player1DeckSizeText.setText("x" + this.b.getPlayer(this.b.localteam).getDeck().size());
-        this.player2DeckSizeText.setText("x" + this.b.getPlayer(this.b.localteam * -1).getDeck().size());
         // reset some pending stuff
         // move the cards to their respective positions
         for (int team : List.of(-1, 1)) {

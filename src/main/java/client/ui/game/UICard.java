@@ -527,4 +527,15 @@ public class UICard extends UIBox {
         g.setLineWidth(1);
     }
 
+    // modified comparison to make cards in hand appear layered in order
+    @Override
+    public int compareTo(UIElement uie) {
+        if (this.getZ() == uie.getZ() && uie instanceof UICard &&
+                this.card.status.equals(CardStatus.HAND) && ((UICard) uie).card.status.equals(CardStatus.HAND)) {
+            return this.card.getIndex() - ((UICard) uie).card.getIndex();
+        } else {
+            return super.compareTo(uie);
+        }
+    }
+
 }
