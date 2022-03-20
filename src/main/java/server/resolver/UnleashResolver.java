@@ -26,19 +26,19 @@ public class UnleashResolver extends Resolver {
     @Override
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         if (this.m.canBeUnleashed()) {
-            this.m.setUnleashTargets(this.unleashTargets);
+            ResolverQueue unleash = this.m.unleash(this.unleashTargets);
             if (this.source instanceof UnleashPower) {
                 Player p = this.source.board.getPlayer(this.source.team);
                 if (p.canUnleashCard(m)) {
                     b.processEvent(rq, el, new EventManaChange(p, -this.source.finalStatEffects.getStat(EffectStats.COST), false, true));
                     b.processEvent(rq, el, new EventUnleash(this.source, this.m));
                     p.getUnleashPower().ifPresent(up -> this.resolveQueue(b, rq, el, up.onUnleashPre(this.m)));
-                    this.resolveQueue(b, rq, el, this.m.unleash());
+                    this.resolveQueue(b, rq, el, unleash);
                     p.getUnleashPower().ifPresent(up -> this.resolveQueue(b, rq, el, up.onUnleashPost(this.m)));
                 }
             } else {
                 b.processEvent(rq, el, new EventUnleash(this.source, this.m));
-                this.resolveQueue(b, rq, el, this.m.unleash());
+                this.resolveQueue(b, rq, el, unleash);
             }
         }
     }

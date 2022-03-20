@@ -125,37 +125,8 @@ public class Minion extends BoardObject {
         return list;
     }
 
-    public void setUnleashTargets(List<List<TargetList<?>>> targets) {
-        Iterator<Effect> effectIterator = this.getFinalEffects(true).iterator();
-        int i = 0;
-        while (effectIterator.hasNext()) {
-            Effect e = effectIterator.next();
-            e.setUnleashTargets(targets.get(i));
-            i++;
-        }
-    }
-
-    public String unleashTargetsToString(List<List<TargetList<?>>> targets) {
-        StringBuilder builder = new StringBuilder();
-        Iterator<Effect> effectIterator = this.getFinalEffects(true).iterator();
-        int i = 0;
-        while (effectIterator.hasNext()) {
-            Effect e = effectIterator.next();
-            List<TargetingScheme<?>> unleashTargetingSchemes = e.getUnleashTargetingSchemes();
-            builder.append(Effect.targetsToString(unleashTargetingSchemes, targets.get(i)));
-            i++;
-        }
-        return builder.toString();
-    }
-
-    public List<List<TargetList<?>>> parseUnleashTargets(StringTokenizer st) {
-        List<List<TargetList<?>>> ret = new ArrayList<>();
-        this.getFinalEffects(true).forEachOrdered(e -> ret.add(Effect.parseTargets(st, e.getUnleashTargetingSchemes())));
-        return ret;
-    }
-
-    public ResolverQueue unleash() {
-        return this.getResolvers(EventGroupType.UNLEASH, List.of(this), Effect::unleash, eff -> !eff.removed && ((Minion) eff.owner).isInPlay());
+    public ResolverQueue unleash(List<List<TargetList<?>>> targetsList) {
+        return this.getTargetedResolvers(EventGroupType.UNLEASH, List.of(this), targetsList, Effect::unleash, eff -> !eff.removed && ((Minion) eff.owner).isInPlay());
     }
 
     public ResolverQueue onAttack(Minion target) {

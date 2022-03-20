@@ -6,6 +6,7 @@ import server.ServerBoard;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.target.CardTargetingScheme;
+import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.event.Event;
 import server.resolver.BanishResolver;
@@ -39,11 +40,11 @@ public class BlackenedScripture extends SpellText {
             }
 
             @Override
-            public ResolverWithDescription battlecry() {
+            public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        getStillTargetableBattlecryCardTargets(0).findFirst().ifPresent(c -> {
+                        getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             this.resolve(b, rq, el, new BanishResolver((c)));
                         });
                     }

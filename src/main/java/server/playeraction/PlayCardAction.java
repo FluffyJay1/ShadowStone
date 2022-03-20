@@ -37,7 +37,7 @@ public class PlayCardAction extends PlayerAction {
 
     @Override
     public String toString() {
-        return ID + " " + this.p.team + " " + this.c.toReference() + this.pos + " " + this.c.battlecryTargetsToString(this.battlecryTargets) + "\n"; // YEAHH
+        return ID + " " + this.p.team + " " + this.c.toReference() + this.pos + " " + Card.targetsToString(this.battlecryTargets) + "\n"; // YEAHH
     }
 
     public static PlayCardAction fromString(Board b, StringTokenizer st) {
@@ -45,7 +45,7 @@ public class PlayCardAction extends PlayerAction {
         Card c = Card.fromReference(b, st);
         int pos = Integer.parseInt(st.nextToken());
         assert c != null;
-        List<List<TargetList<?>>> battlecryTargets = c.parseBattlecryTargets(st);
+        List<List<TargetList<?>>> battlecryTargets = Card.targetsFromString(b, st);
         return new PlayCardAction(p, c, pos, battlecryTargets);
     }
 

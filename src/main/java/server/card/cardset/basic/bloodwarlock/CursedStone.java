@@ -10,6 +10,7 @@ import server.*;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
+import server.card.target.TargetList;
 import server.event.*;
 import server.resolver.*;
 import server.resolver.meta.ResolverWithDescription;
@@ -29,7 +30,7 @@ public class CursedStone extends MinionText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public ResolverWithDescription unleash() {
+            public ResolverWithDescription unleash(List<TargetList<?>> targetList) {
                 Effect effect = this; // anonymous fuckery
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override

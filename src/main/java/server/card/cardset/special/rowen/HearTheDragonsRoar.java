@@ -7,6 +7,7 @@ import server.card.CardRarity;
 import server.card.ClassCraft;
 import server.card.SpellText;
 import server.card.effect.Effect;
+import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.BanishResolver;
 import server.resolver.Resolver;
@@ -28,7 +29,7 @@ public class HearTheDragonsRoar extends SpellText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public ResolverWithDescription battlecry() {
+            public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {

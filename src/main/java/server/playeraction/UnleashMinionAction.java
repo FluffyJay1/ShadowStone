@@ -37,14 +37,14 @@ public class UnleashMinionAction extends PlayerAction {
 
     @Override
     public String toString() {
-        return ID + " " + p.team + " " + m.toReference() + this.m.unleashTargetsToString(this.unleashTargets) + "\n";
+        return ID + " " + p.team + " " + m.toReference() + Card.targetsToString(this.unleashTargets) + "\n";
     }
 
     public static UnleashMinionAction fromString(Board b, StringTokenizer st) {
         Player p = b.getPlayer(Integer.parseInt(st.nextToken()));
         Minion m = (Minion) Card.fromReference(b, st);
         assert m != null;
-        List<List<TargetList<?>>> unleashTargets = m.parseUnleashTargets(st);
+        List<List<TargetList<?>>> unleashTargets = Card.targetsFromString(b, st);
         return new UnleashMinionAction(p, m, unleashTargets);
     }
 

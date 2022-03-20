@@ -54,18 +54,18 @@ public class SiegeTank extends MinionText {
             }
 
             @Override
-            public ResolverWithDescription unleash() {
+            public ResolverWithDescription unleash(List<TargetList<?>> targetList) {
                 Effect effect = this; // anonymous fuckery
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        int option = ((ModalTargetList) getUnleashTargets().get(0)).targeted.get(0);
+                        int option = ((ModalTargetList) targetList.get(0)).targeted.get(0);
                         switch (option) {
                             case 0 -> {
                                 this.resolve(b, rq, el, new BlastResolver(effect, 5, null));
                             }
                             case 1 -> {
-                                getStillTargetableUnleashCardTargets(1).findFirst().ifPresent(targeted -> {
+                                getStillTargetableCards(Effect::getUnleashTargetingSchemes, targetList, 1).findFirst().ifPresent(targeted -> {
                                     List<Minion> m = new LinkedList<>();
                                     List<Integer> d = new LinkedList<>();
                                     int pos = targeted.getIndex();

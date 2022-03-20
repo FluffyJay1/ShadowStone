@@ -1,9 +1,11 @@
 package server.card;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import client.tooltip.*;
@@ -14,7 +16,6 @@ import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.event.Event;
 import server.event.eventgroup.EventGroupType;
-import server.resolver.*;
 import server.resolver.meta.HookResolver;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
@@ -221,6 +222,28 @@ public abstract class Card implements Indexable, StringBuildable {
                 .collect(Collectors.toList()));
     }
 
+    // like above but for resolvers that require a list of targetlists, and we receive a list of list of targetlists
+    // matches an entry in the input list of list of targetlists for each effect that requires a list of targetlists
+    // kekl this method signature
+    protected ResolverQueue getTargetedResolvers(EventGroupType etype,
+                                                 List<Card> cards,
+                                                 List<List<TargetList<?>>> targetsList,
+                                                 BiFunction<Effect, List<TargetList<?>>, ResolverWithDescription> hook,
+                                                 Predicate<Effect> predicate) {
+        List<Effect> effects = this.getFinalEffects(true).collect(Collectors.toList());
+        return new ResolverQueue(IntStream.range(0, effects.size())
+                .mapToObj(i -> {
+                    Effect e = effects.get(i);
+                    ResolverWithDescription r = hook.apply(e, targetsList.get(i));
+                    if (r == null) {
+                        return null;
+                    }
+                    return new HookResolver(etype, cards, r, e, predicate);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList()));
+    }
+
     public boolean canBePlayed() {
         return this.getBattlecryTargetingSchemes().stream().flatMap(Collection::stream).allMatch(TargetingScheme::conditions);
     }
@@ -244,37 +267,25 @@ public abstract class Card implements Indexable, StringBuildable {
         return true;
     }
 
-    public void setBattlecryTargets(List<List<TargetList<?>>> targets) {
-        Iterator<Effect> effectIterator = this.getFinalEffects(true).iterator();
-        int i = 0;
-        while (effectIterator.hasNext()) {
-            Effect e = effectIterator.next();
-            e.setBattlecryTargets(targets.get(i));
-            i++;
-        }
-    }
-
-    public String battlecryTargetsToString(List<List<TargetList<?>>> targets) {
-        StringBuilder builder = new StringBuilder();
-        Iterator<Effect> effectIterator = this.getFinalEffects(true).iterator();
-        int i = 0;
-        while (effectIterator.hasNext()) {
-            Effect e = effectIterator.next();
-            List<TargetingScheme<?>> battlecryTargetingSchemes = e.getBattlecryTargetingSchemes();
-            builder.append(Effect.targetsToString(battlecryTargetingSchemes, targets.get(i)));
-            i++;
+    public static String targetsToString(List<List<TargetList<?>>> targets) {
+        StringBuilder builder = new StringBuilder(targets.size() + " ");
+        for (List<TargetList<?>> perEffectTargets : targets) {
+            builder.append(Effect.targetsToString(perEffectTargets));
         }
         return builder.toString();
     }
 
-    public List<List<TargetList<?>>> parseBattlecryTargets(StringTokenizer st) {
-        List<List<TargetList<?>>> ret = new ArrayList<>();
-        this.getFinalEffects(true).forEachOrdered(e -> ret.add(Effect.parseTargets(st, e.getBattlecryTargetingSchemes())));
+    public static List<List<TargetList<?>>> targetsFromString(Board b, StringTokenizer st) {
+        int num = Integer.parseInt(st.nextToken());
+        List<List<TargetList<?>>> ret = new ArrayList<>(num);
+        for (int i = 0; i < num; i++) {
+            ret.add(Effect.targetsFromString(b, st));
+        }
         return ret;
     }
 
-    public ResolverQueue battlecry() {
-        return this.getResolvers(EventGroupType.BATTLECRY, List.of(this), Effect::battlecry, eff -> !eff.removed);
+    public ResolverQueue battlecry(List<List<TargetList<?>>> targetsList) {
+        return this.getTargetedResolvers(EventGroupType.BATTLECRY, List.of(this), targetsList, Effect::battlecry, eff -> !eff.removed);
     }
 
     public ResolverQueue onListenEvent(Event event) {

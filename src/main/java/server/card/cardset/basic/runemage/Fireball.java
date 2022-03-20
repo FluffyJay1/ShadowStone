@@ -9,6 +9,7 @@ import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.card.target.CardTargetingScheme;
+import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.event.*;
 import server.resolver.*;
@@ -38,13 +39,13 @@ public class Fireball extends SpellText {
                 });
             }
             @Override
-            public ResolverWithDescription battlecry() {
+            public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 Effect effect = this;
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Card> markedForDeath = new LinkedList<>();
-                        getStillTargetableBattlecryCardTargets(0).forEach(targeted -> {
+                        getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).forEach(targeted -> {
                             List<Minion> m = new LinkedList<>();
                             List<Integer> d = new LinkedList<>();
                             int pos = targeted.getIndex();

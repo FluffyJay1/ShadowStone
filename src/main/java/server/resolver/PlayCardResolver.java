@@ -28,7 +28,7 @@ public class PlayCardResolver extends Resolver {
     @Override
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         if (this.p.canPlayCard(this.c)) {
-            c.setBattlecryTargets(this.battlecryTargets);
+            ResolverQueue battlecry = c.battlecry(this.battlecryTargets); // save the resolvers before doing anything, just in case stuff happens
             b.processEvent(rq, el, new EventPlayCard(this.p, this.c, this.position));
             b.processEvent(rq, el,
                     new EventManaChange(this.p, -this.c.finalStatEffects.getStat(EffectStats.COST), false, true));
@@ -37,7 +37,7 @@ public class PlayCardResolver extends Resolver {
             } else {
                 b.processEvent(rq, el, new EventDestroy(this.c));
             }
-            this.resolveQueue(b, rq, el, this.c.battlecry());
+            this.resolveQueue(b, rq, el, battlecry);
         }
     }
 }

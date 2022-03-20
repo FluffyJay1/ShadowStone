@@ -2,6 +2,8 @@ package server.card.effect;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import client.*;
@@ -38,11 +40,6 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     public boolean basic = false, mute = false, removed = false;
 
     public EffectStats effectStats = new EffectStats();
-    /*
-     * target specifications are set upon construction, player input fulfills the
-     * targets
-     */
-    private List<TargetList<?>> battlecryTargets = new LinkedList<>(), unleashTargets = new LinkedList<>();
 
     public EffectAura auraSource;
 
@@ -69,37 +66,16 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
         this.stackable = stackable;
     }
 
-    public ResolverWithDescription battlecry() {
+    public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
         return null;
-    }
-
-    public void setBattlecryTargets(List<TargetList<?>> targets) {
-        this.battlecryTargets = targets;
-    }
-
-    public List<TargetList<?>> getBattlecryTargets() {
-        return this.battlecryTargets;
     }
 
     public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
         return List.of();
     }
 
-    // shameful glue
-    public Stream<Card> getStillTargetableBattlecryCardTargets(int index) {
-        return ((CardTargetList) this.getBattlecryTargets().get(index)).getStillTargetable((CardTargetingScheme) this.getBattlecryTargetingSchemes().get(index));
-    }
-
-    public ResolverWithDescription unleash() {
+    public ResolverWithDescription unleash(List<TargetList<?>> targetList) {
         return null;
-    }
-
-    public void setUnleashTargets(List<TargetList<?>> targets) {
-        this.unleashTargets = targets;
-    }
-
-    public List<TargetList<?>> getUnleashTargets() {
-        return this.unleashTargets;
     }
 
     public List<TargetingScheme<?>> getUnleashTargetingSchemes() {
@@ -107,26 +83,24 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     }
 
     // shameful glue
-    public Stream<Card> getStillTargetableUnleashCardTargets(int index) {
-        return ((CardTargetList) this.getUnleashTargets().get(index)).getStillTargetable((CardTargetingScheme) this.getUnleashTargetingSchemes().get(index));
+    public Stream<Card> getStillTargetableCards(Function<Effect, List<TargetingScheme<?>>> schemesFrom, List<TargetList<?>> targetList, int index) {
+        return ((CardTargetList) targetList.get(index)).getStillTargetable((CardTargetingScheme) schemesFrom.apply(this).get(index));
     }
 
-    public static List<TargetList<?>> parseTargets(StringTokenizer st, List<TargetingScheme<?>> schemes) {
-        List<TargetList<?>> ret = new ArrayList<>(schemes.size());
-        for (TargetingScheme<?> scheme : schemes) {
-            ret.add(scheme.parseToList(st));
+    public static List<TargetList<?>> targetsFromString(Board b, StringTokenizer st) {
+        int num = Integer.parseInt(st.nextToken());
+        List<TargetList<?>> ret = new ArrayList<>(num);
+        for (int i = 0; i < num; i++) {
+            ret.add(TargetList.createFromString(b, st));
         }
         return ret;
     }
 
     // bruh
-    @SuppressWarnings("unchecked")
-    public static String targetsToString(List<TargetingScheme<?>> schemes, List<TargetList<?>> targetsList) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < schemes.size(); i++) {
-            TargetingScheme<?> scheme = schemes.get(i);
-            TargetList targets = targetsList.get(i);
-            builder.append(scheme.listToString(targets));
+    public static String targetsToString(List<TargetList<?>> targetsList) {
+        StringBuilder builder = new StringBuilder(targetsList.size() + " ");
+        for (TargetList<?> targets : targetsList) {
+            builder.append(targets.toString());
         }
         return builder.toString();
     }
@@ -314,14 +288,6 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     public Effect clone() throws CloneNotSupportedException {
         Effect e = (Effect) super.clone(); // shallow copy
         e.effectStats = this.effectStats.clone();
-        this.battlecryTargets = new LinkedList<>();
-        for (TargetList<?> t : e.battlecryTargets) {
-            this.battlecryTargets.add(t.clone());
-        }
-        this.unleashTargets = new LinkedList<>();
-        for (TargetList<?> t : e.unleashTargets) {
-            this.unleashTargets.add(t.clone());
-        }
         return e;
     }
 

@@ -11,6 +11,7 @@ import server.*;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
+import server.card.target.TargetList;
 import server.event.*;
 import server.resolver.*;
 import server.resolver.meta.ResolverWithDescription;
@@ -30,7 +31,7 @@ public class WeatheredVanguard extends MinionText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public ResolverWithDescription battlecry() {
+            public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 String resolverDescription = "<b>Battlecry</b>: Summon 2 <b>Knights</b>.";
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
@@ -48,7 +49,7 @@ public class WeatheredVanguard extends MinionText {
             }
 
             @Override
-            public ResolverWithDescription unleash() {
+            public ResolverWithDescription unleash(List<TargetList<?>> targetList) {
                 String resolverDescription = "<b>Unleash</b>: Give all allied minions +1/+0/+1.";
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override

@@ -8,6 +8,7 @@ import server.*;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
+import server.card.target.TargetList;
 import server.event.*;
 import server.resolver.*;
 import server.resolver.meta.ResolverWithDescription;
@@ -32,7 +33,7 @@ public class WoodOfBrambles extends AmuletText {
             }
 
             @Override
-            public ResolverWithDescription battlecry() {
+            public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 Effect effect = this;
                 String resolverDescription = "<b>Battlecry</b>: add two <b>Faries</b> to your hand.";
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {

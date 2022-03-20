@@ -9,6 +9,7 @@ import server.card.cardset.basic.neutral.StonetuskBoar;
 import server.card.effect.Effect;
 import server.card.effect.EffectAura;
 import server.card.effect.EffectStats;
+import server.card.target.TargetList;
 import server.resolver.CreateCardResolver;
 import server.resolver.meta.ResolverWithDescription;
 
@@ -35,7 +36,7 @@ public class Beastmaster extends MinionText {
             }
 
             @Override
-            public ResolverWithDescription unleash() {
+            public ResolverWithDescription unleash(List<TargetList<?>> targetList) {
                 String resolverDescription = "<b>Unleash</b>: summon a <b>Stonetusk Boar</b>.";
                 return new ResolverWithDescription(resolverDescription, new CreateCardResolver(new StonetuskBoar(), owner.team, CardStatus.BOARD, owner.getIndex() + 1));
             }

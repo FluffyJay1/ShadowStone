@@ -8,6 +8,7 @@ import server.ai.AI;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.target.CardTargetingScheme;
+import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.event.Event;
 import server.resolver.DamageResolver;
@@ -45,13 +46,13 @@ public abstract class MinionText extends BoardObjectText {
                 }
 
                 @Override
-                public ResolverWithDescription unleash() {
+                public ResolverWithDescription unleash(List<TargetList<?>> targetList) {
                     Effect effect = this; // anonymous fuckery
                     String resolverDescription = "<b>Unleash</b>: Deal X damage to an enemy minion. X equals this minion's magic.";
                     return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                         @Override
                         public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                            getStillTargetableUnleashCardTargets(0).findFirst().ifPresent(c -> {
+                            getStillTargetableCards(Effect::getUnleashTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                                 Minion target = (Minion) c;
                                 DamageResolver dr = new DamageResolver(effect, List.of(target),
                                         List.of(effect.owner.finalStatEffects.getStat(EffectStats.MAGIC)), true, null);

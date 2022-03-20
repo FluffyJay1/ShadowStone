@@ -17,7 +17,7 @@ import server.card.*;
  * @author Michael
  *
  */
-public class Event {
+public abstract class Event {
     // always go full enterprise, if you start going half enterprise you're
     // fucking done for
     final int id;
@@ -47,7 +47,7 @@ public class Event {
     public static Event createFromString(Board b, StringTokenizer st) {
         int id = Integer.parseInt(st.nextToken());
         if (id == 0) {
-            return new Event(0);
+            return null;
         } else {
             Class<? extends Event> c = EventIDLinker.getClass(id);
             Event e = null;

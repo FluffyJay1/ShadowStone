@@ -2,6 +2,7 @@ package server.card;
 
 import server.*;
 import server.card.effect.*;
+import server.card.target.TargetList;
 import server.event.eventgroup.EventGroupType;
 import server.resolver.util.ResolverQueue;
 import utils.HistoricalList;
@@ -68,8 +69,8 @@ public class BoardObject extends Card {
     }
 
     @Override
-    public ResolverQueue battlecry() {
-        return this.getResolvers(EventGroupType.BATTLECRY, List.of(this), Effect::battlecry, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
+    public ResolverQueue battlecry(List<List<TargetList<?>>> targetsList) {
+        return this.getTargetedResolvers(EventGroupType.BATTLECRY, List.of(this), targetsList, Effect::battlecry, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
     }
 
     public ResolverQueue onTurnStart() {

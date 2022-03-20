@@ -1,4 +1,3 @@
-refactor battlecry/unleash target setting to be passed in battlecry()?
 mulligan phase
 necromancy
 spellboost

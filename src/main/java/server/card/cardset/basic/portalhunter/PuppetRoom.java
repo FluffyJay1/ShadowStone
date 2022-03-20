@@ -5,6 +5,7 @@ import org.newdawn.slick.geom.Vector2f;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
+import server.card.target.TargetList;
 import server.resolver.*;
 import server.resolver.meta.ResolverWithDescription;
 
@@ -26,7 +27,7 @@ public class PuppetRoom extends AmuletText {
                 new EffectStats.Setter(EffectStats.COUNTDOWN, false, 3)
         )) {
             @Override
-            public ResolverWithDescription battlecry() {
+            public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 String resolverDescription = "<b>Battlecry</b>: put a <b>Puppet</b> in your hand.";
                 return new ResolverWithDescription(resolverDescription, new CreateCardResolver(new Puppet(), this.owner.team, CardStatus.HAND, -1));
             }

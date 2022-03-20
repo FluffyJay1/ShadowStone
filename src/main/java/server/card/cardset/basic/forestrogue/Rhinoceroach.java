@@ -11,6 +11,7 @@ import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.effect.EffectUntilTurnEnd;
+import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
 import server.resolver.Resolver;
@@ -34,7 +35,7 @@ public class Rhinoceroach extends MinionText {
                 new EffectStats.Setter(EffectStats.STORM, false, 1)
         )) {
             @Override
-            public ResolverWithDescription battlecry() {
+            public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 String resolverDescription = "<b>Battlecry</b>: Gain +X/+0/+0. X equals the number of other cards played this turn.";
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override

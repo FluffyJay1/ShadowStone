@@ -11,6 +11,7 @@ import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.card.target.CardTargetingScheme;
+import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.event.*;
 import server.resolver.*;
@@ -41,12 +42,12 @@ public class Curate extends MinionText {
             }
 
             @Override
-            public ResolverWithDescription battlecry() {
+            public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 Effect effect = this; // anonymous fuckery
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        getStillTargetableBattlecryCardTargets(0).findFirst().ifPresent(c -> {
+                        getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             Minion target = (Minion) c;
                             this.resolve(b, rq, el, new RestoreResolver(effect, target, 5));
                         });

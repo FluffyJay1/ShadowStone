@@ -7,6 +7,7 @@ import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.target.CardTargetingScheme;
+import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
@@ -39,12 +40,12 @@ public class HallowedDogma extends SpellText {
                 });
             }
             @Override
-            public ResolverWithDescription battlecry() {
+            public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         // lmao
-                        getStillTargetableBattlecryCardTargets(0).findFirst().ifPresent(c -> {
+                        getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             if (c.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
                                 Effect countdownAdd = new Effect();
                                 countdownAdd.effectStats.change.setStat(EffectStats.COUNTDOWN, -2);

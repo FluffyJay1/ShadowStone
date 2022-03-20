@@ -7,10 +7,7 @@ import server.ServerBoard;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
-import server.card.target.ModalOption;
-import server.card.target.ModalTargetList;
-import server.card.target.ModalTargetingScheme;
-import server.card.target.TargetingScheme;
+import server.card.target.*;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
 import server.resolver.CreateCardResolver;
@@ -55,7 +52,7 @@ public class IHadThreeFriends extends SpellText {
             }
 
             @Override
-            public ResolverWithDescription battlecry() {
+            public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
@@ -63,7 +60,7 @@ public class IHadThreeFriends extends SpellText {
                         List<Integer> pos = Collections.nCopies(3, -1);
                         CreateCardResolver ccr = new CreateCardResolver(toCreate, owner.team, CardStatus.BOARD, pos);
                         this.resolve(b, rq, el, ccr);
-                        int option = ((ModalTargetList) getBattlecryTargets().get(0)).targeted.get(0);
+                        int option = ((ModalTargetList) targetList.get(0)).targeted.get(0);
                         if (ccr.event.successful.get(option)) {
                             // give it rush
                             Effect rush = new Effect("", new EffectStats(new EffectStats.Setter(EffectStats.RUSH, false, 1)));
