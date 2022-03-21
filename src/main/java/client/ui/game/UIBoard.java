@@ -22,6 +22,7 @@ import org.newdawn.slick.geom.*;
 import client.*;
 import client.ui.*;
 import network.*;
+import server.Player;
 import server.card.*;
 import server.card.target.*;
 import server.event.eventgroup.EventGroup;
@@ -186,10 +187,11 @@ public class UIBoard extends UIBox {
         }
         // end handling targeting text
 
-        this.localPlayerMana.updateMana(this.b.getPlayer(this.b.localteam).mana, this.b.getPlayer(this.b.localteam).maxmana);
+        Player relevantLocalPlayer = this.b.currentPlayerTurn == this.b.localteam ? this.b.realBoard.getPlayer(this.b.localteam) : this.b.getPlayer(this.b.localteam);
+        this.localPlayerMana.updateMana(relevantLocalPlayer.mana, relevantLocalPlayer.maxmana);
         this.enemyPlayerMana.updateMana(this.b.getPlayer(this.b.localteam * -1).mana, this.b.getPlayer(this.b.localteam * -1).maxmana);
 
-        this.localPlayerStats.updateStats(this.b.getPlayer(this.b.localteam));
+        this.localPlayerStats.updateStats(relevantLocalPlayer);
         this.enemyPlayerStats.updateStats(this.b.getPlayer(this.b.localteam * -1));
 
         this.mulliganConfirmation.setVisible(!this.b.getPlayer(this.b.localteam).mulliganed && !this.b.getPlayer(this.b.localteam).getHand().isEmpty());

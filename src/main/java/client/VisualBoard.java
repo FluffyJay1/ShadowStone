@@ -39,11 +39,12 @@ public class VisualBoard extends Board implements
     public PendingManager<PendingMinionAttack> pendingMinionAttacks;
     public PendingManager<PendingUnleash> pendingUnleashes;
     final List<String> inputeventliststrings = new LinkedList<>();
+    final List<String> turnSwitchBlockedEventStrings = new LinkedList<>(); // prevent realboard from advancing into next turn before animations do
     public final List<VisualBoardAnimation> currentAnimations = new LinkedList<>();
 
     // whether this board is not accepting input from the player (i.e., only works when it's the player's turn)
     // Currently this is controlled in EventAnimationTurnStart (enable control) and EndTurnButton (disable control)
-    public boolean disableInput = false;
+    public boolean disableInput = true;
 
     final EventAnimationFactory eventAnimationFactory;
     final EventGroupAnimationFactory eventGroupAnimationFactory;
@@ -125,6 +126,11 @@ public class VisualBoard extends Board implements
         if (e instanceof EventGameEnd) {
             this.uiBoard.onGameEnd(((EventGameEnd) e).victory);
         }
+        // when the visualboard enters the next turn,
+        // catch up the realboard about events we had to delay because we weren't on the right turn
+        while (this.currentPlayerTurn == this.realBoard.currentPlayerTurn && !this.turnSwitchBlockedEventStrings.isEmpty()) {
+            this.realBoard.parseEventString(this.turnSwitchBlockedEventStrings.remove(0));
+        }
         return ret;
     }
 
@@ -132,7 +138,12 @@ public class VisualBoard extends Board implements
     @Override
     public synchronized void parseEventString(String s) {
         if (!s.isEmpty()) {
-            this.realBoard.parseEventString(s);
+            if (this.currentPlayerTurn == this.realBoard.currentPlayerTurn) {
+                this.realBoard.parseEventString(s);
+            } else {
+                // if we receive events about not the current turn, delay updating the realboard
+                this.turnSwitchBlockedEventStrings.add(s);
+            }
             this.inputeventliststrings.addAll(List.of(s.split(Game.EVENT_END)));
             this.updateEventAnimation(0);
         }
