@@ -20,6 +20,8 @@ public abstract class Board {
     // the hierarchy of groups we are under
     public List<EventGroup> eventGroups;
 
+    public boolean mulligan;
+
     public Board() {
         this.init();
     }
@@ -32,6 +34,7 @@ public abstract class Board {
         this.player1 = new Player(this, 1);
         this.player2 = new Player(this, -1);
         this.eventGroups = new LinkedList<>();
+        this.mulligan = true;
     }
 
     public Board(int localteam) {

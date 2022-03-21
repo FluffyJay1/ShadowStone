@@ -154,12 +154,21 @@ public class AI extends Thread {
     public void run() {
         while (this.b.winner == 0 && !this.isInterrupted()) {
             this.readDataStream();
-            if (!this.isInterrupted() && this.b.currentPlayerTurn == this.b.localteam && !this.finishedTurn && !this.waitForEvents) {
-                if (this.actionSendQueue.isEmpty() && this.b.winner == 0) {
-                    this.AIThink();
+            Player localPlayer = this.b.getPlayer(this.b.localteam);
+            if (!this.isInterrupted() && !this.waitForEvents) {
+                if (!localPlayer.mulliganed && !localPlayer.getHand().isEmpty()) {
+                    // do mulligan thing
+                    List<Card> mulliganChoices = this.chooseMulligan();
+                    this.dslocal.sendPlayerAction(new MulliganAction(localPlayer, mulliganChoices).toString());
+                    this.waitForEvents = true;
                 }
-                this.sendNextAction();
-                this.waitForEvents = true;
+                if (this.b.currentPlayerTurn == this.b.localteam && !this.finishedTurn) {
+                    if (this.actionSendQueue.isEmpty() && this.b.winner == 0) {
+                        this.AIThink();
+                    }
+                    this.sendNextAction();
+                    this.waitForEvents = true;
+                }
             }
         }
     }
@@ -186,6 +195,13 @@ public class AI extends Thread {
             default:
                 break;
         }
+    }
+
+    private List<Card> chooseMulligan() {
+        // mulligan away cards that cost more than 3
+        return this.b.getPlayer(this.b.localteam).getHand().stream()
+                .filter(c -> c.finalStatEffects.getStat(EffectStats.COST) > 3)
+                .collect(Collectors.toList());
     }
 
     private void AIThink() {

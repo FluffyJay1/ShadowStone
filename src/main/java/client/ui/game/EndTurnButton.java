@@ -21,7 +21,7 @@ public class EndTurnButton extends UIBox {
     @Override
     public void update(double frametime) {
         super.update(frametime);
-        this.setVisible(!this.b.b.disableInput);
+        this.setVisible(!this.b.b.disableInput && this.b.b.currentPlayerTurn == this.b.b.localteam);
     }
 
     @Override

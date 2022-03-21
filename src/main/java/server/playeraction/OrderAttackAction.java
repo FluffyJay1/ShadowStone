@@ -23,7 +23,7 @@ public class OrderAttackAction extends PlayerAction {
     @Override
     public ResolutionResult perform(ServerBoard b) {
         ResolutionResult result = new ResolutionResult();
-        if (this.attacker.canAttack(this.victim) && this.attacker.canAttack()) {
+        if (this.attacker.canAttack(this.victim)) {
             result.concat(b.resolve(new MinionAttackResolver(this.attacker, this.victim)));
         }
         return result;

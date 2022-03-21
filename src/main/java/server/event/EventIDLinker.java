@@ -18,8 +18,9 @@ public class EventIDLinker {
             case EventLastWords.ID -> EventLastWords.class;
             case EventLeavePlay.ID -> EventLeavePlay.class;
             case EventManaChange.ID -> EventManaChange.class;
-            case EventMill.ID -> EventMill.class;
             case EventMinionAttack.ID -> EventMinionAttack.class;
+            case EventMulligan.ID -> EventMulligan.class;
+            case EventMulliganPhaseEnd.ID -> EventMulliganPhaseEnd.class;
             case EventUpdateEffectState.ID -> EventUpdateEffectState.class;
             case EventMuteEffect.ID -> EventMuteEffect.class;
             case EventOnAttack.ID -> EventOnAttack.class;

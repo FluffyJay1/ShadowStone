@@ -1,4 +1,4 @@
-mulligan phase
+text anti-alias
 necromancy
 spellboost
 enhance

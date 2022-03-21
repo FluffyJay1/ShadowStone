@@ -29,21 +29,23 @@ public class Player implements StringBuildable {
     public boolean unleashAllowed = true;
     protected Leader leader;
     protected UnleashPower unleashPower;
+    public boolean mulliganed;
     public int cardsPlayedThisTurn;
 
     public Player(Board board, int team) {
         this.board = board;
         this.team = team;
-        this.deck = new PositionedList<>(new ArrayList<>());
-        this.hand = new PositionedList<>(new ArrayList<>());
-        this.playArea = new HistoricalList<>(new PositionedList<>(new ArrayList<>()));
-        this.graveyard = new PositionedList<>(new ArrayList<>());
-        this.banished = new PositionedList<>(new ArrayList<>());
+        this.deck = new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.DECK; c.team = this.team;});
+        this.hand = new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.HAND; c.team = this.team;});
+        this.playArea = new HistoricalList<>(new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.BOARD; c.team = this.team;}));
+        this.graveyard = new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.GRAVEYARD; c.team = this.team;});
+        this.banished = new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.BANISHED; c.team = this.team;});
         this.mana = 0;
         this.maxmana = 3;
         this.maxmaxmana = 10;
         this.maxHandSize = DEFAULT_MAX_HAND_SIZE;
         this.maxPlayAreaSize = DEFAULT_MAX_BOARD_SIZE;
+        this.mulliganed = false;
         this.cardsPlayedThisTurn = 0;
     }
 
@@ -75,6 +77,8 @@ public class Player implements StringBuildable {
         this.leader = leader;
         if (leader != null) {
             leader.setIndex(0);
+            leader.status = CardStatus.LEADER;
+            leader.team = this.team;
         }
     }
 
@@ -86,6 +90,8 @@ public class Player implements StringBuildable {
         this.unleashPower = up;
         if (up != null) {
             up.setIndex(0);
+            up.status = CardStatus.UNLEASHPOWER;
+            up.team = this.team;
         }
     }
 

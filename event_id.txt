@@ -5,10 +5,10 @@
  4: Destroy
  5: Transform
  6: ManaChange
- 7: Mill - DEPRECATED
+ 7: Mulligan
  8: MinionAttack
  9: UpdateEffectState
-10: CardDamage - DELETED
+10: MulliganPhaseEnd
 11: PlayCard
 12: PutCard
 13: Restore

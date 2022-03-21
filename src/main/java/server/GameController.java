@@ -21,17 +21,12 @@ import java.util.StringTokenizer;
  * Controller for one round
  * Interfaces with each player thru a datastream
  * Has different phases:
- * Init -> Mulligan -> Game -> End
+ * Init -> Game -> End
  * Init: put all the cards in place (decks, leaders, etc)
- * Mulligan: each player decides which starting cards to keep/toss
  * Game: game loop where each player plays cards, orders minions to attack, etc.
  * End: a player has won, terminate the game
  * So usage of the game controller would look like:
  *  startInit();
- *  startMulligan();
- *  while (isMulliganPhase()) {
- *      updateMulligan();
- *  }
  *  startGame();
  *  while (isGamePhase()) {
  *      updateGame();
@@ -75,30 +70,14 @@ public class GameController {
         this.sendEvents();
     }
 
-    // TODO
-    public void startMulligan() {
-
-    }
-
-    // TODO
-    public boolean isMulliganPhase() {
-        return false;
-    }
-
-    // TODO
-    public void updateMulligan() {
-
-    }
-
     public void startGame() {
         this.b.resolve(new DrawResolver(this.b.player1, 3));
-        this.b.resolve(new DrawResolver(this.b.player2, 3));
-        this.b.resolve(new TurnStartResolver(this.b.player1));
+        this.b.resolve(new DrawResolver(this.b.player2, 4));
         this.sendEvents();
     }
 
     public boolean isGamePhase() {
-        return !isMulliganPhase() && this.b.winner == 0;
+        return this.b.winner == 0;
     }
 
     public void updateGame() {
@@ -126,9 +105,9 @@ public class GameController {
             MessageType mtype = ds.receive();
             switch (mtype) {
                 case PLAYERACTION:
-                    if (this.b.currentPlayerTurn == team) {
+                    if (this.b.currentPlayerTurn != team * -1) {
                         String action = ds.readPlayerAction();
-                        System.out.println("team" + team + " action: " + action);
+                        System.out.println("team " + team + " action: " + action);
                         this.b.executePlayerAction(new StringTokenizer(action));
                         this.sendEvents();
                     } else {
@@ -158,8 +137,10 @@ public class GameController {
 
     private void sendEvents() {
         String eventstring = this.b.retrieveEventString();
-        this.sendEvent(1, eventstring);
-        this.sendEvent(-1, eventstring);
+        if (!eventstring.isEmpty()) {
+            this.sendEvent(1, eventstring);
+            this.sendEvent(-1, eventstring);
+        }
     }
 
     private void sendEvent(int team, String eventstring) {

@@ -131,9 +131,11 @@ public class VisualBoard extends Board implements
     // also updates the underlying real board of the events
     @Override
     public synchronized void parseEventString(String s) {
-        this.realBoard.parseEventString(s);
-        this.inputeventliststrings.addAll(List.of(s.split(Game.EVENT_END)));
-        this.updateEventAnimation(0);
+        if (!s.isEmpty()) {
+            this.realBoard.parseEventString(s);
+            this.inputeventliststrings.addAll(List.of(s.split(Game.EVENT_END)));
+            this.updateEventAnimation(0);
+        }
     }
 
     public void skipCurrentAnimation() {

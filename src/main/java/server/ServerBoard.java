@@ -95,6 +95,7 @@ public class ServerBoard extends Board {
             this.output.append(eventString);
             this.history.append(eventString);
         }
+
         Set<EffectAura> newAuras = this.getActiveAuras().collect(Collectors.toSet());
         Set<EffectAura> removedAuras = new HashSet<>(this.lastCheckedActiveAuras);
         removedAuras.removeAll(newAuras);

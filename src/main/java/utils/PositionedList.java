@@ -1,6 +1,7 @@
 package utils;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 // wrapper class to make sure cards always have the right cardpos/team field (to
 // make the card references always accurate), and that the add() operation
@@ -11,10 +12,19 @@ import java.util.*;
 // composition over inheritance amirite
 public class PositionedList<T extends Indexable> implements List<T> {
     private final List<T> indexables;
+    private final Consumer<T> setter;
+
+    public PositionedList(List<T> listToWrap, Consumer<T> setter) {
+        this.indexables = listToWrap;
+        this.setter = setter;
+        this.updatePositions(0);
+        for (T t : listToWrap) {
+            this.setter.accept(t);
+        }
+    }
 
     public PositionedList(List<T> listToWrap) {
-        this.indexables = listToWrap;
-        this.updatePositions(0);
+        this(listToWrap, t -> {});
     }
 
     @Override
@@ -52,6 +62,7 @@ public class PositionedList<T extends Indexable> implements List<T> {
         boolean success = this.indexables.add(card);
         if (success) {
             this.updatePositions(this.indexables.size() - 1);
+            this.setter.accept(card);
         }
         return success;
     }
@@ -78,6 +89,9 @@ public class PositionedList<T extends Indexable> implements List<T> {
         boolean changed = this.indexables.addAll(c);
         if (changed) {
             this.updatePositions(oldSize - 1);
+            for (T t : c) {
+                this.setter.accept(t);
+            }
         }
         return changed;
     }
@@ -87,6 +101,9 @@ public class PositionedList<T extends Indexable> implements List<T> {
         boolean changed = this.indexables.addAll(index, c);
         if (changed) {
             this.updatePositions(index);
+            for (T t : c) {
+                this.setter.accept(t);
+            }
         }
         return changed;
     }
@@ -126,6 +143,7 @@ public class PositionedList<T extends Indexable> implements List<T> {
     public T set(int index, T element) {
         T ret = this.indexables.set(index, element);
         element.setIndex(index);
+        this.setter.accept(element);
         return ret;
     }
 
@@ -136,6 +154,7 @@ public class PositionedList<T extends Indexable> implements List<T> {
         }
         this.indexables.add(index, element);
         this.updatePositions(index);
+        this.setter.accept(element);
     }
 
     @Override
@@ -229,12 +248,14 @@ public class PositionedList<T extends Indexable> implements List<T> {
         public void set(T t) {
             this.wrappedIterator.set(t);
             t.setIndex(this.current.getIndex());
+            setter.accept(t);
         }
 
         @Override
         public void add(T t) {
             this.wrappedIterator.add(t);
             updatePositions(this.current.getIndex());
+            setter.accept(t);
         }
     }
 }

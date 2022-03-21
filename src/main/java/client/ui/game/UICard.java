@@ -34,9 +34,9 @@ public class UICard extends UIBox {
     public static final int ICON_SPACING = 32;
     public static final float SCALE_DEFAULT = 1, SCALE_HAND = 0.75f, SCALE_HAND_EXPAND = 1.2f,
             SCALE_BOARD = 1f, SCALE_TARGETING = 1.3f, SCALE_POTENTIAL_TARGET = 1.15f, SCALE_ORDERING_ATTACK = 1.3f,
-            SCALE_COMBAT = 1.2f, SCALE_PLAY = 2.5f, SCALE_MOVE = 2;
+            SCALE_COMBAT = 1.2f, SCALE_PLAY = 2.5f, SCALE_MOVE = 2, SCALE_MULLIGAN = 2;
     public static final int Z_DEFAULT = 0, Z_HAND = 2, Z_BOARD = 0, Z_TARGETING = 4,
-            Z_MOVE = 4, Z_DRAGGING = 3;
+            Z_MOVE = 4, Z_DRAGGING = 3, Z_MULLIGAN = 5;
     private static final double PENDING_PLAY_TIME_PER_CYCLE = 0.4;
     private static final float PENDING_PLAY_ELLIPSIS_SPACING = 0.2f;
     private static final float PENDING_PLAY_ELLIPSIS_SIZE = 20f;
@@ -159,12 +159,24 @@ public class UICard extends UIBox {
     public void updateCardAnimation() {
         float scale = switch (this.card.status) {
             case BOARD, LEADER -> SCALE_BOARD;
-            case HAND -> SCALE_HAND;
+            case HAND -> {
+                if (this.card.team == this.uib.b.localteam && this.uib.b.mulligan) {
+                    yield SCALE_MULLIGAN;
+                } else {
+                    yield SCALE_HAND;
+                }
+            }
             default -> SCALE_DEFAULT;
         };
         int z = switch (this.card.status) {
             case BOARD, LEADER -> Z_BOARD;
-            case HAND -> Z_HAND;
+            case HAND -> {
+                if (this.card.team == this.uib.b.localteam && this.uib.b.mulligan) {
+                    yield Z_MULLIGAN;
+                } else {
+                    yield Z_HAND;
+                }
+            }
             default -> Z_DEFAULT;
         };
         if (this.targeting) {

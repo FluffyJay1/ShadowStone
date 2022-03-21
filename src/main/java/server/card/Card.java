@@ -43,9 +43,9 @@ public abstract class Card implements Indexable, StringBuildable {
      * basic effects can't get removed unlike additional effects (e.g. bounce
      * effects), but they can be muted
      */
-    private final PositionedList<Effect> effects = new PositionedList<>(new ArrayList<>()),
-            basicEffects = new PositionedList<>(new ArrayList<>()),
-            removedEffects = new PositionedList<>(new ArrayList<>());
+    private final PositionedList<Effect> effects = new PositionedList<>(new ArrayList<>(), e -> e.basic = false),
+            basicEffects = new PositionedList<>(new ArrayList<>(), e -> e.basic = true),
+            removedEffects = new PositionedList<>(new ArrayList<>(), e -> e.removed = true);
     // same but for auras, however, removing the effect doesn't remove it from this list
     public final List<EffectAura> auras = new LinkedList<>();
 

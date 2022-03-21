@@ -11,6 +11,7 @@ public class ActionIDLinker {
             case OrderAttackAction.ID -> OrderAttackAction.class;
             case PlayCardAction.ID -> PlayCardAction.class;
             case UnleashMinionAction.ID -> UnleashMinionAction.class;
+            case MulliganAction.ID -> MulliganAction.class;
             default -> null;
         };
     }
