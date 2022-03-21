@@ -68,7 +68,11 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
                 UICard uic = c.uiCard;
                 this.useCardInAnimation(uic);
                 uic.setScale(UICard.SCALE_MOVE);
-                uic.setZ(UICard.Z_MOVE);
+                if (this.visualBoard.mulligan && c.team == this.visualBoard.localteam) {
+                    uic.setZ(UICard.Z_MULLIGAN);
+                } else {
+                    uic.setZ(UICard.Z_MOVE);
+                }
                 uic.setFlippedOver(false);
                 // fan the cards between [-0.5, 0.5]
                 float alignWeight = 0.5f;

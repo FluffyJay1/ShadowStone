@@ -6,6 +6,6 @@ import server.event.EventMulliganPhaseEnd;
 // blank animation that just adds some delay before the game starts
 public class EventAnimationMulliganPhaseEnd extends EventAnimation<EventMulliganPhaseEnd> {
     public EventAnimationMulliganPhaseEnd() {
-        super(2, 0.5);
+        super(1, 0.5);
     }
 }

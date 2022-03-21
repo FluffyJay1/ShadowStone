@@ -34,9 +34,9 @@ public class UICard extends UIBox {
     public static final int ICON_SPACING = 32;
     public static final float SCALE_DEFAULT = 1, SCALE_HAND = 0.75f, SCALE_HAND_EXPAND = 1.2f,
             SCALE_BOARD = 1f, SCALE_TARGETING = 1.3f, SCALE_POTENTIAL_TARGET = 1.15f, SCALE_ORDERING_ATTACK = 1.3f,
-            SCALE_COMBAT = 1.2f, SCALE_PLAY = 2.5f, SCALE_MOVE = 2, SCALE_MULLIGAN = 2;
+            SCALE_COMBAT = 1.2f, SCALE_PLAY = 2.5f, SCALE_MOVE = 2, SCALE_MULLIGAN = 1.5f;
     public static final int Z_DEFAULT = 0, Z_HAND = 2, Z_BOARD = 0, Z_TARGETING = 4,
-            Z_MOVE = 4, Z_DRAGGING = 3, Z_MULLIGAN = 5;
+            Z_MOVE = 4, Z_DRAGGING = 3, Z_MULLIGAN = 6;
     private static final double PENDING_PLAY_TIME_PER_CYCLE = 0.4;
     private static final float PENDING_PLAY_ELLIPSIS_SPACING = 0.2f;
     private static final float PENDING_PLAY_ELLIPSIS_SIZE = 20f;

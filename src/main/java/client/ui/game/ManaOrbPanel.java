@@ -11,7 +11,7 @@ public class ManaOrbPanel extends UIBox {
     private static final int MAX_DISPLAYED_ORBS = 10;
     private static final float ORB_SCALE = 0.5f;
     private static final float FAN_WIDTH = 30 * MAX_DISPLAYED_ORBS;
-    private static final float TEXT_WIDTH = 30;
+    private static final float TEXT_WIDTH = 70;
     List<UIElement> orbs;
     Text manaText;
     public ManaOrbPanel(UI ui, Vector2f pos) {
@@ -19,14 +19,14 @@ public class ManaOrbPanel extends UIBox {
         this.margins.set(15, 10);
         this.orbs = new ArrayList<>();
         for (int i = 0; i < MAX_DISPLAYED_ORBS; i++) {
-            float x = TEXT_WIDTH + FAN_WIDTH * ((i + 0.5f) / MAX_DISPLAYED_ORBS - 0.5f);
+            float x = TEXT_WIDTH / 2 + FAN_WIDTH * ((i + 0.5f) / MAX_DISPLAYED_ORBS - 0.5f);
             UIElement orb = new UIElement(ui, new Vector2f(x, 0), new Animation("res/game/manaorb.png", new Vector2f(2, 1), 0, 0));
             orb.setVisible(false);
             orb.setScale(ORB_SCALE);
             this.orbs.add(orb);
             this.addChild(orb);
         }
-        this.manaText = new Text(ui, new Vector2f(-this.getWidth(true)/2, 0), "0/0", TEXT_WIDTH, 30, Game.DEFAULT_FONT, 30, -1, 0);
+        this.manaText = new Text(ui, new Vector2f(-this.getWidth(true) / 2 + TEXT_WIDTH / 2, 0), "0/0", TEXT_WIDTH, 30, Game.DEFAULT_FONT, 30, 0, 0);
         this.addChild(this.manaText);
     }
 
