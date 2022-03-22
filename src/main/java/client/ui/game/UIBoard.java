@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import client.Game;
 import client.ui.Animation;
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
 import client.ui.interpolation.realvalue.ConstantInterpolation;
@@ -194,7 +193,7 @@ public class UIBoard extends UIBox {
         this.localPlayerStats.updateStats(relevantLocalPlayer);
         this.enemyPlayerStats.updateStats(this.b.getPlayer(this.b.localteam * -1));
 
-        this.mulliganConfirmation.setEnableButton(!this.b.getPlayer(this.b.localteam).mulliganed);
+        this.mulliganConfirmation.setEnableInput(!this.b.getPlayer(this.b.localteam).mulliganed);
         this.mulliganConfirmation.setVisible(this.b.mulligan && !this.b.getPlayer(this.b.localteam).getHand().isEmpty());
         // reset some pending stuff
         // move the cards to their respective positions
@@ -254,7 +253,7 @@ public class UIBoard extends UIBox {
                         float y = this.mulliganChoices.contains(uic) ? MULLIGAN_TOSS_Y : MULLIGAN_KEEP_Y;
                         uic.setVisible(true);
                         uic.setFlippedOver(false);
-                        uic.draggable = true;
+                        uic.draggable = !this.b.getPlayer(this.b.localteam).mulliganed;
                         if (uic != this.draggingCard) {
                             uic.setPos(new Vector2f(x, y), 0.999);
                         }

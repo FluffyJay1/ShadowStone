@@ -1,6 +1,5 @@
 package client.ui.game;
 
-import client.Game;
 import client.ui.*;
 import org.newdawn.slick.geom.Vector2f;
 
@@ -10,7 +9,8 @@ public class MulliganConfirmation extends UIElement {
     private static final float MIDDLE_GAP = 80;
     private static final float BOX_ALPHA = 0.9f;
 
-    private GenericButton button;
+    private final GenericButton button;
+    private final Text text;
 
     public MulliganConfirmation(UI ui, Vector2f pos, Runnable onConfirm) {
         super(ui, pos);
@@ -22,8 +22,8 @@ public class MulliganConfirmation extends UIElement {
         botBox.margins.set(20, 20);
         botBox.setAlpha(BOX_ALPHA);
         this.addChild(botBox);
-        Text text = new Text(ui, new Vector2f(0, 0), "Drag cards up to replace", 500, 30, 30, 0, 0);
-        this.addChild(text);
+        this.text = new Text(ui, new Vector2f(0, 0), "Drag cards up to replace", 500, 30, 30, 0, 0);
+        this.addChild(this.text);
         Text replaceText = new Text(ui, new Vector2f(0, -topBox.getHeight(true)/2), "Replace", 500, 30, 30, 0, -1);
         topBox.addChild(replaceText);
         Text keepText = new Text(ui, new Vector2f(0, botBox.getHeight(true)/2), "Keep", 500, 30, 30, 0, 1);
@@ -33,7 +33,8 @@ public class MulliganConfirmation extends UIElement {
         this.addChild(this.button);
     }
 
-    public void setEnableButton(boolean enabled) {
+    public void setEnableInput(boolean enabled) {
         this.button.setVisible(enabled);
+        this.text.setVisible(enabled);
     }
 }
