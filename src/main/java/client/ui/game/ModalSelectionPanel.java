@@ -41,7 +41,7 @@ public class ModalSelectionPanel extends UIBox {
         boolean enabled;
         ModalSelectionButton(UI ui, Vector2f pos, String message, int index, boolean enabled) {
             super(ui, pos, SELECTION_DIM, new Animation("res/ui/button.png", new Vector2f(2, 1), 0, 0));
-            this.addChild(new Text(ui, new Vector2f(0, 0), message, SELECTION_DIM.x * 0.8f, 20, Game.DEFAULT_FONT, 24, 0, 0));
+            this.addChild(new Text(ui, new Vector2f(0, 0), message, SELECTION_DIM.x * 0.8f, 20, 24, 0, 0));
             this.relpos = true;
             this.index = index;
             this.enabled = enabled;

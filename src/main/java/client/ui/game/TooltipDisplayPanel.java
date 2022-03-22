@@ -26,11 +26,10 @@ public class TooltipDisplayPanel extends UIBox {
         this.cardImageDisplayer.ignorehitbox = true;
         this.addChild(this.cardImageDisplayer);
         this.name = new Text(ui, new Vector2f(-this.getWidth(true) / 2, -this.getHeight(true) / 2), "name",
-                this.getWidth(true), 40, Game.DEFAULT_FONT, 46, -1, -1);
+                this.getWidth(true), 40, 46, -1, -1);
         this.addChild(name);
-        this.description = new Text(ui,
-                new Vector2f(-this.getWidth(true) / 2, this.name.getBottom(false, false) + 10), "jeff",
-                this.getWidth(true), 32, Game.DEFAULT_FONT, 36, -1, -1);
+        this.description = new Text(ui, new Vector2f(-this.getWidth(true) / 2, this.name.getBottom(false, false) + 10), "jeff",
+                this.getWidth(true), 32, 36, -1, -1);
         this.addChild(description);
         this.clip = true;
     }

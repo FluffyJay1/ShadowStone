@@ -12,7 +12,7 @@ public class ClassSelectPanel extends UIBox {
 
     public ClassSelectPanel(UI ui, Vector2f pos, boolean cancelable) {
         super(ui, pos, new Vector2f(500, 600), "res/ui/uiboxborder.png");
-        this.addChild(new Text(ui, new Vector2f(0, -250), "Select a class", 300, 20, Game.DEFAULT_FONT, 34, 0, 0));
+        this.addChild(new Text(ui, new Vector2f(0, -250), "Select a class", 300, 20, 34, 0, 0));
         for (int i = 0; i < ClassCraft.values().length - 1; i++) {
             int finalI = i;
             GenericButton gb = new GenericButton(ui, new Vector2f(finalI % 2 * 240 - 120, finalI / 2 * 100 - 150),

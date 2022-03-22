@@ -424,11 +424,10 @@ public class UICard extends UIBox {
     }
 
     public void drawInHand(Graphics g, Vector2f pos, double scale) {
-        UnicodeFont font = Game.getFont(Game.DEFAULT_FONT, (NAME_FONT_SIZE * scale), true, false);
+        UnicodeFont font = Game.getFont((int) (NAME_FONT_SIZE * scale), true, false);
         double targetWidth = CARD_DIMENSIONS.x * scale * (1 - HAND_TITLE_OFFSET);
         if (font.getWidth(this.card.getTooltip().name) > targetWidth) {
-            font = Game.getFont(Game.DEFAULT_FONT,
-                    (NAME_FONT_SIZE * scale * targetWidth / font.getWidth(this.card.getTooltip().name)),
+            font = Game.getFont((int) (NAME_FONT_SIZE * scale * targetWidth / font.getWidth(this.card.getTooltip().name)),
                     true, false);
         }
         font.drawString(pos.x - font.getWidth(this.card.getTooltip().name) / 2f + HAND_TITLE_OFFSET / 2 * CARD_DIMENSIONS.x * (float) scale,
@@ -458,7 +457,7 @@ public class UICard extends UIBox {
 
     public void drawStatNumber(Graphics g, Vector2f pos, double scale, int stat, Vector2f relpos,
             double fontsize, Color c, Image icon, double iconScale) {
-        UnicodeFont font = Game.getFont(Game.DEFAULT_FONT, fontsize * scale, true, false, c, Color.black);
+        UnicodeFont font = Game.getFont((int) (fontsize * scale), true, false, c, Color.black);
         float x = pos.x + CARD_DIMENSIONS.x * relpos.x * (float) scale;
         float y = pos.y + CARD_DIMENSIONS.y * relpos.y * (float) scale;
         Image i = icon.getScaledCopy((float) (scale * iconScale));

@@ -117,7 +117,7 @@ public class StateDeckbuild extends BasicGameState {
                 this.cardTooltip.setTooltip(null);
             }
         });
-        Text titleText = new Text(this.ui, new Vector2f(0, -0.5f), "Deck Management", 300, 20, Game.DEFAULT_FONT, 34, 0, 0);
+        Text titleText = new Text(this.ui, new Vector2f(0, -0.5f), "Deck Management", 300, 20, 34, 0, 0);
         titleText.relpos = true;
         titleText.alignv = -1;
         this.ui.addUIElementParent(titleText);
@@ -129,7 +129,7 @@ public class StateDeckbuild extends BasicGameState {
         this.cardsetpanel.setVisible(false);
         this.cardsetpanel.relpos = true;
         this.ui.addUIElementParent(this.cardsetpanel);
-        this.addRemoveText = new Text(this.ui, new Vector2f(0, 0.55f), "Right click to add/remove cards!", 500, 20, Game.DEFAULT_FONT, 30, 0, 0);
+        this.addRemoveText = new Text(this.ui, new Vector2f(0, 0.55f), "Right click to add/remove cards!", 500, 20, 30, 0, 0);
         this.addRemoveText.relpos = true;
         this.cardsetpanel.addChild(this.addRemoveText);
         this.deckselectpanel = new DeckSelectPanel(ui, new Vector2f(0, 0), true);

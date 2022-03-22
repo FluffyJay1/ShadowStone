@@ -30,10 +30,10 @@ public class DeckDisplayPanel extends UIBox {
         this.edit = edit;
         if (edit) {
             this.textfield = new TextField(ui, new Vector2f(0, -225), new Vector2f(400, 50), "Deck",
-                    new Text(ui, new Vector2f(0, 0), "Deck", 400, 20, Game.DEFAULT_FONT, 28, 0, 0));
+                    new Text(ui, new Vector2f(0, 0), "Deck", 400, 20, 28, 0, 0));
             this.addChild(this.textfield);
         } else {
-            this.text = new Text(ui, new Vector2f(0, -225), "Deck", 300, 20, Game.DEFAULT_FONT, 34, 0, 0);
+            this.text = new Text(ui, new Vector2f(0, -225), "Deck", 300, 20, 34, 0, 0);
             this.addChild(this.text);
         }
         this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f(this.getWidth(true), 400));

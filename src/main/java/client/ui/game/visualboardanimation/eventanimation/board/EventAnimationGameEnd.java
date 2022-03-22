@@ -15,7 +15,7 @@ public class EventAnimationGameEnd extends EventAnimation<EventGameEnd> {
     @Override
     public void draw(Graphics g) {
         EventGameEnd e = this.event;
-        UnicodeFont font = Game.getFont(Game.DEFAULT_FONT, 80, true, false);
+        UnicodeFont font = Game.getFont(80, true, false);
         String dstring = "GAME END";
         switch (e.victory * this.visualBoard.localteam) { // ez hack
         case 1:

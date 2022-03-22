@@ -30,7 +30,7 @@ public class Text extends UIElement {
     private UninvertibleImage cachedRender;
     private boolean isDirty;
 
-    public Text(UI ui, Vector2f pos, String text, float linewidth, float lineheight, String font, float fontsize,
+    public Text(UI ui, Vector2f pos, String text, float linewidth, float lineheight, int fontsize,
             int alignh, int alignv) {
         super(ui, pos);
         this.ignorehitbox = true;
@@ -39,16 +39,15 @@ public class Text extends UIElement {
         this.maxLineWidth = linewidth;
         this.alignh = alignh;
         this.alignv = alignv;
-        this.setFont(font, fontsize);
+        this.setFont(fontsize);
         this.setText(text);
         this.isDirty = true;
     }
 
-    public void setFont(String font, float fontsize) {
-        this.font = font;
+    public void setFont(int fontsize) {
         this.fontsize = fontsize;
         for (int i = 0; i < 4; i++) {
-            this.uFontFamily[i] = Game.getFont(font, fontsize, (i & 1) > 0, (i & 2) > 0);
+            this.uFontFamily[i] = Game.getFont(fontsize, (i & 1) > 0, (i & 2) > 0);
         }
         if (this.text != null) {
             this.updateText();

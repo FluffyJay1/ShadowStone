@@ -26,7 +26,8 @@ public class ManaOrbPanel extends UIBox {
             this.orbs.add(orb);
             this.addChild(orb);
         }
-        this.manaText = new Text(ui, new Vector2f(-this.getWidth(true) / 2 + TEXT_WIDTH / 2, 0), "0/0", TEXT_WIDTH, 30, Game.DEFAULT_FONT, 30, 0, 0);
+        this.manaText = new Text(ui, new Vector2f(-this.getWidth(true) / 2 + TEXT_WIDTH / 2, 0), "0/0", TEXT_WIDTH,
+                30, 30, 0, 0);
         this.addChild(this.manaText);
     }
 

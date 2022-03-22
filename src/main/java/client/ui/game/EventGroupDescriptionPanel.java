@@ -43,12 +43,12 @@ public class EventGroupDescriptionPanel extends UIBox {
         if (eg.cards.size() > 0) {
             Card c = eg.cards.get(0);
             title = new Text(ui, new Vector2f(), "<b>" + c.getTooltip().name, this.getWidth(true) - iconWidth,
-                    40, Game.DEFAULT_FONT, 48, -1, -1);
+                    40, 48, -1, -1);
             // if e.g. it has a single big word that causes it to exceed the expected width
             float excessRatio = title.getWidth(false) / (this.getWidth(true) - iconWidth);
             if (excessRatio > 1.02) {
                 // adjust the font size so the offending word fits within the width
-                title.setFont(Game.DEFAULT_FONT, 48 / excessRatio);
+                title.setFont((int) (48 / excessRatio));
             }
             this.addChild(title);
             if (c.team == c.board.localteam) {
@@ -58,7 +58,7 @@ public class EventGroupDescriptionPanel extends UIBox {
             }
         }
         Text text = new Text(ui, new Vector2f(), eg.description, this.getWidth(true),
-                30, Game.DEFAULT_FONT, 32, -1, -1);
+                30, 32, -1, -1);
         this.addChild(text);
         if (title != null) {
             this.setDim(new Vector2f(this.getWidth(false), title.getHeight(false) + text.getHeight(false) + TEXT_SPACING + this.margins.y * 2));

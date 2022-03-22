@@ -22,11 +22,11 @@ public class MulliganConfirmation extends UIElement {
         botBox.margins.set(20, 20);
         botBox.setAlpha(BOX_ALPHA);
         this.addChild(botBox);
-        Text text = new Text(ui, new Vector2f(0, 0), "Drag cards up to replace", 500, 30, Game.DEFAULT_FONT, 30, 0, 0);
+        Text text = new Text(ui, new Vector2f(0, 0), "Drag cards up to replace", 500, 30, 30, 0, 0);
         this.addChild(text);
-        Text replaceText = new Text(ui, new Vector2f(0, -topBox.getHeight(true)/2), "Replace", 500, 30, Game.DEFAULT_FONT, 30, 0, -1);
+        Text replaceText = new Text(ui, new Vector2f(0, -topBox.getHeight(true)/2), "Replace", 500, 30, 30, 0, -1);
         topBox.addChild(replaceText);
-        Text keepText = new Text(ui, new Vector2f(0, botBox.getHeight(true)/2), "Keep", 500, 30, Game.DEFAULT_FONT, 30, 0, 1);
+        Text keepText = new Text(ui, new Vector2f(0, botBox.getHeight(true)/2), "Keep", 500, 30, 30, 0, 1);
         botBox.addChild(keepText);
         this.button = new GenericButton(ui, new Vector2f(WIDTH/2, 0), new Vector2f(200, 60), "Confirm", onConfirm);
         this.button.alignh = -1;

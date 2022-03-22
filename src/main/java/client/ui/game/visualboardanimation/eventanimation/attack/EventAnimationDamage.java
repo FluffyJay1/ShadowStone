@@ -59,7 +59,7 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
     public void drawDamageNumber(Graphics g) {
         // show the damage number thing
         g.setColor(Color.red);
-        UnicodeFont font = Game.getFont(Game.DEFAULT_FONT, 96, true, false);
+        UnicodeFont font = Game.getFont(96, true, false);
         g.setFont(font);
         float yoff = (float) (Math.min(Math.pow(0.5 - 2 * this.normalizedPost(), 2), 0.25) * 100);
         for (int i = 0; i < this.event.m.size(); i++) {

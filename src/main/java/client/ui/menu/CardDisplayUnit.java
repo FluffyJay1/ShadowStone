@@ -24,7 +24,7 @@ public class CardDisplayUnit extends UIBox {
     public CardDisplayUnit(UI ui, Vector2f pos, CardText cardText) {
         super(ui, pos, UICard.CARD_DIMENSIONS.copy().scale((float) SCALE), "");
         this.text = new Text(ui, new Vector2f(this.getWidth(false) / 2, -this.getHeight(false) / 2), "0",
-                50, 14, Game.DEFAULT_FONT, 20, -1, 1);
+                50, 14, 20, -1, 1);
         this.addChild(this.text);
         this.status = CardStatus.HAND;
         this.card = getCardFrom(cardText);

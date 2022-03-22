@@ -13,9 +13,9 @@ public class PlayerStatPanel extends UIBox {
         super(ui, pos, new Vector2f(200, 100), "res/ui/uiboxborder.png");
         this.margins.set(20, 20);
         this.handSizeText = new Text(ui, new Vector2f(0, -this.getHeight(true) / 2), "Hand:",
-                this.getWidth(true), 20, Game.DEFAULT_FONT, 20, 0, -1);
+                this.getWidth(true), 20, 20, 0, -1);
         this.deckSizeText = new Text(ui, new Vector2f(0, this.handSizeText.getBottom(false, false)), "Deck:",
-                this.getWidth(true), 20, Game.DEFAULT_FONT, 20, 0, -1);
+                this.getWidth(true), 20, 20, 0, -1);
         this.addChild(this.handSizeText);
         this.addChild(this.deckSizeText);
     }

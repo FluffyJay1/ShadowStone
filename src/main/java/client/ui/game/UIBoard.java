@@ -102,9 +102,9 @@ public class UIBoard extends UIBox {
         this.endTurnButton = new EndTurnButton(ui, this);
         this.endTurnButton.setVisible(false);
         this.addChild(this.endTurnButton);
-        this.targetText = new Text(ui, new Vector2f(), "Target", 400, 24, Game.DEFAULT_FONT, 30, 0, -1);
+        this.targetText = new Text(ui, new Vector2f(), "Target", 400, 24, 30, 0, -1);
         this.targetText.setZ(999);
-        this.advantageText = new Text(ui, new Vector2f(-0.25f, -0.4f), "Advantage Text", 400, 24, Game.DEFAULT_FONT, 30, -1, -1);
+        this.advantageText = new Text(ui, new Vector2f(-0.25f, -0.4f), "Advantage Text", 400, 24, 30, -1, -1);
         this.advantageText.relpos = true;
         this.advantageText.setZ(1);
         this.addChild(this.targetText);

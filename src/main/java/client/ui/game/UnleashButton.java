@@ -12,7 +12,7 @@ public class UnleashButton extends UIElement {
 
     public UnleashButton(UI ui, UIBoard b) {
         super(ui, new Vector2f(0, 0), "res/ui/unleashbutton.png");
-        this.text = new Text(ui, new Vector2f(0, 0), "<b>UNLEASH</b>", 128, 24, Game.DEFAULT_FONT, 30, 0, 0);
+        this.text = new Text(ui, new Vector2f(0, 0), "<b>UNLEASH</b>", 128, 24, 30, 0, 0);
         text.setParent(this);
         this.uib = b;
         this.setVisible(false);

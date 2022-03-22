@@ -36,7 +36,7 @@ public class DungeonRunStatusPanel extends UIBox {
         this.highlight.ignorehitbox = true;
         this.highlight.setZ(10);
         this.scroll.addChild(this.highlight);
-        this.gameEndText = new Text(ui, new Vector2f(), "gg", 1000, 100, Game.DEFAULT_FONT, 80, 0, 0);
+        this.gameEndText = new Text(ui, new Vector2f(), "gg", 1000, 100, 80, 0, 0);
         this.gameEndText.setVisible(false);
         this.addChild(gameEndText);
     }
@@ -107,13 +107,13 @@ public class DungeonRunStatusPanel extends UIBox {
             this.unleashpower.setCardStatus(CardStatus.UNLEASHPOWER);
             this.addChild(this.unleashpower);
             this.nameText = new Text(ui, new Vector2f(this.unleashpower.getRight(false, false), 0), "Name",
-                    200, 35, Game.DEFAULT_FONT, 44, -1, 0);
+                    200, 35, 44, -1, 0);
             this.addChild(this.nameText);
             this.classText = new Text(ui, new Vector2f(this.nameText.getRight(false, false), 0), "Class",
-                    200, 22, Game.DEFAULT_FONT, 24, -1, 0);
+                    200, 22, 24, -1, 0);
             this.addChild(this.classText);
             this.signatureCardText = new Text(ui, new Vector2f(this.classText.getRight(false, false), 0), "Signature Cards include:",
-                    150, 15, Game.DEFAULT_FONT, 20, -1, 0);
+                    150, 15, 20, -1, 0);
             this.addChild(this.signatureCardText);
             this.signatureCards = new ArrayList<>(MAX_SIGNATURE_CARDS);
             this.setEnemy(enemy);

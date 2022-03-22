@@ -43,8 +43,8 @@ public class CardSelectPanel extends UIBox {
         this.scroll.addChild(this.tooltipPanel);
         this.ub = new UnleashButton(ui, uib);
         this.scroll.addChild(this.ub);
-        this.effects = new Text(ui, new Vector2f(-this.scroll.getWidth(true) / 2, 200), "effects", this.getWidth(true), 20,
-                Game.DEFAULT_FONT, 24, -1, -1);
+        this.effects = new Text(ui, new Vector2f(-this.scroll.getWidth(true) / 2, 200), "effects", this.getWidth(true),
+                20, 24, -1, -1);
         this.scroll.addChild(this.effects);
     }
 

@@ -26,7 +26,7 @@ public class DeckSelectPanel extends UIBox {
         super(ui, pos, new Vector2f(700, 600), "res/ui/uiboxborder.png");
         this.margins.set(10, 10);
         this.deckbuild = deckbuild;
-        this.addChild(new Text(ui, new Vector2f(0, -250), "Select a deck", 300, 20, Game.DEFAULT_FONT, 34, 0, 0));
+        this.addChild(new Text(ui, new Vector2f(0, -250), "Select a deck", 300, 20, 34, 0, 0));
         this.confirmButton = new GenericButton(ui, new Vector2f(deckbuild ? -175 : -100, 250), new Vector2f(150, 50), "Confirm",
                 () -> {
                     if (this.selectedDeckUnit != null) {

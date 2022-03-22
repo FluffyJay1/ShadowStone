@@ -1,15 +1,22 @@
 package client;
 
+import java.awt.*;
 import java.awt.Font;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 import gamemode.dungeonrun.controller.DungeonRunController;
 import org.newdawn.slick.*;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.font.effects.*;
 import org.newdawn.slick.state.*;
 import org.newdawn.slick.util.Log;
 
 import client.states.*;
+import org.newdawn.slick.util.ResourceLoader;
 import server.card.cardset.*;
 
 public class Game extends StateBasedGame {
@@ -19,7 +26,20 @@ public class Game extends StateBasedGame {
     public static final int STATE_DECKBUILD = 3;
     public static final int STATE_DUNGEONRUN = 4;
     public static final int SERVER_PORT = 9091;
-    public static final String DEFAULT_FONT = "Verdana";
+    public static Font[] DEFAULT_FONT;
+    static {
+        try {
+            DEFAULT_FONT = new Font[]{
+                    Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream("res/font/iunito/Iunito-Regular.ttf")), // regular
+                    Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream("res/font/iunito/Iunito-Black.ttf")), // bold
+                    Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream("res/font/iunito/Iunito-Italic.ttf")), // italic
+                    Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream("res/font/iunito/Iunito-BlackItalic.ttf")), // bold + italic
+            };
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private static final Color FONT_COLOR = new Color(0.98f, 0.96f, 0.96f);
 
     public static final String STRING_START = "\u00bc", STRING_END = "\u00bd", BLOCK_END = "\u00be", EVENT_END = "\u00b6";
     public static final Map<String, Image> images = new HashMap<>();
@@ -69,18 +89,26 @@ public class Game extends StateBasedGame {
     }
 
     @SuppressWarnings("unchecked")
-    public static UnicodeFont getFont(String font, double size, boolean bold, boolean italic, Color fillc, Color outc) {
-        String condensed = font + (int) size + bold + italic + fillc.toString() + outc.toString(); // map
-                                                                                                    // lifehack
+    public static UnicodeFont getFont(int size, boolean bold, boolean italic, Color fillc, Color outc) {
+        String condensed = "" + size + bold + italic + fillc.toString() + outc.toString(); // map lifehack
+        int flags = 0;
+        if (bold) {
+            flags |= 1;
+        }
+        if (italic) {
+            flags |= 2;
+        }
         UnicodeFont f;
         if (fonts.containsKey(condensed)) {
             f = fonts.get(condensed);
         } else {
-            f = new UnicodeFont(new Font(font, Font.BOLD, (int) size), (int) size, bold, italic);
+            f = new UnicodeFont(DEFAULT_FONT[flags], size, bold, italic);
 
             try {
                 f.getEffects().add(new ColorEffect(toAwtColor(fillc)));
-                f.getEffects().add(new OutlineEffect((int) (size / 24), toAwtColor(outc)));
+                if (size * (bold ? 2f : 1.0f) > 40) {
+                    f.getEffects().add(new OutlineEffect(1, toAwtColor(outc)));
+                }
                 f.addAsciiGlyphs();
                 f.loadGlyphs();
             } catch (SlickException e) {
@@ -101,12 +129,12 @@ public class Game extends StateBasedGame {
         return f;
     }
 
-    public static UnicodeFont getFont(String font, double size, boolean bold, boolean italic) {
-        return getFont(font, size, bold, italic, Color.white, Color.black);
+    public static UnicodeFont getFont(int size, boolean bold, boolean italic) {
+        return getFont(size, bold, italic, FONT_COLOR, Color.black);
     }
 
-    public static UnicodeFont getFont(String font, double size) {
-        return getFont(font, size, false, false);
+    public static UnicodeFont getFont(int size) {
+        return getFont(size, false, false);
     }
 
     public static java.awt.Color toAwtColor(Color color) {
