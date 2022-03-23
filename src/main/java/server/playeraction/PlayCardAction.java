@@ -31,7 +31,7 @@ public class PlayCardAction extends PlayerAction {
         if (!this.p.canPlayCard(this.c) || !this.c.validateTargets(this.c.getBattlecryTargetingSchemes(), this.battlecryTargets)) { // just to be safe
             return result;
         }
-        result.concat(b.resolve(new PlayCardResolver(this.p, this.c, this.pos, this.battlecryTargets)));
+        result.concat(b.resolve(new PlayCardResolver(this.p, this.c, this.pos, this.battlecryTargets), this.p.team));
         return result;
     }
 

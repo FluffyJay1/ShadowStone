@@ -6,6 +6,8 @@ import server.card.Card;
 import server.card.effect.Effect;
 import server.card.effect.EffectAura;
 import server.event.Event;
+import server.event.EventMulliganPhaseEnd;
+import server.event.eventburst.EventBurst;
 import server.event.eventgroup.EventGroup;
 import server.playeraction.PlayerAction;
 import server.resolver.*;
@@ -25,11 +27,14 @@ import java.util.stream.Collectors;
  * mirrors are ClientBoards.
  */
 public class ServerBoard extends Board {
-    StringBuilder output, history;
+    List<EventBurst> history;
+    int outputStart;
+    StringBuilder currentBurst;
 
     Set<EffectAura> lastCheckedActiveAuras;
 
     boolean enableOutput = true;
+    public boolean logEvents = true; // used by the ai to prevent history from being appended to
 
     // see EffectUntilTurnEnd, Card, TurnEndResolver
     public List<Effect> effectsToRemoveAtEndOfTurn;
@@ -41,37 +46,38 @@ public class ServerBoard extends Board {
     @Override
     public void init() {
         super.init();
-        this.output = new StringBuilder();
-        this.history = new StringBuilder();
+        this.history = new ArrayList<>();
+        this.outputStart = 0;
+        this.currentBurst = new StringBuilder();
         this.lastCheckedActiveAuras = new HashSet<>();
         this.effectsToRemoveAtEndOfTurn = new ArrayList<>();
         this.enableOutput = true;
     }
 
-    // quality helper methods
-    public ResolutionResult resolve(Resolver r) {
+    /**
+     * Resolve a resolver, wrapping the events into an EventBurst.
+     * @param r The resolver to resolve
+     * @param team the team/player that triggered this resolver
+     * @return Summary of resolving r
+     */
+    public ResolutionResult resolve(Resolver r, int team) {
+        this.currentBurst.delete(0, this.currentBurst.length());
         List<Event> l = new LinkedList<>();
         ResolverQueue rq = new ResolverQueue();
         r.onResolve(this, rq, l);
-        ResolutionResult result = new ResolutionResult(l, r.rng);
-        result.concat(this.resolveAll(rq));
-        return result;
-    }
-
-    public ResolutionResult resolveAll(ResolverQueue resolveQueue) {
-        List<Event> l = new LinkedList<>();
-        ResolutionResult result = new ResolutionResult(l, false);
-        while (!resolveQueue.isEmpty()) {
+        boolean rng = r.rng;
+        while (!rq.isEmpty()) {
             if (this.winner != 0) {
                 break;
             }
-            Resolver r = resolveQueue.remove();
-            r.onResolve(this, resolveQueue, l);
+            r = rq.remove();
+            r.onResolve(this, rq, l);
             if (r.rng) {
-                result.rng = true;
+                rng = true;
             }
         }
-        return result;
+        this.history.add(new EventBurst(team, this.currentBurst.toString()));
+        return new ResolutionResult(l, rng);
     }
 
     /*
@@ -94,10 +100,8 @@ public class ServerBoard extends Board {
         if (el != null) {
             el.add(e);
         }
-        // TODO make the AI board not do this
-        if (!eventString.isEmpty() && e.send && this.enableOutput) {
-            this.output.append(eventString);
-            this.history.append(eventString);
+        if (!eventString.isEmpty() && e.send && this.enableOutput && this.logEvents) {
+            this.currentBurst.append(eventString);
         }
 
         Set<EffectAura> newAuras = this.getActiveAuras().collect(Collectors.toSet());
@@ -185,13 +189,32 @@ public class ServerBoard extends Board {
         return e;
     }
 
+    /**
+     * Parses a set of events/eventgroups and applies their changes to the board
+     * state. Does not update the board history or auras checks.
+     * @param s The string to parse
+     */
     @Override
-    public synchronized void parseEventString(String s) {
+    public void parseEventString(String s) {
         this.enableOutput = false;
         super.parseEventString(s);
         this.enableOutput = true;
-        this.output.append(s);
-        this.history.append(s);
+    }
+
+    /**
+     * Updates the state and the history of the board according to the
+     * eventstrings encapsulated by the event bursts. Suited for restoring the
+     * state of a board after a reset.
+     * @param bursts The list of event bursts to process
+     */
+    @Override
+    public void consumeEventBursts(List<EventBurst> bursts) {
+        for (EventBurst eb : bursts) {
+            this.parseEventString(eb.eventString);
+        }
+        if (this.enableOutput && this.logEvents) {
+            this.history.addAll(bursts);
+        }
         // we must have gotten kira queened, keep auras consistent
         this.updateAuraLastCheck();
     }
@@ -210,29 +233,46 @@ public class ServerBoard extends Board {
     @Override
     public void pushEventGroup(EventGroup group) {
         super.pushEventGroup(group);
-        if (this.enableOutput) {
-            this.output.append(group.toString());
-            this.history.append(group.toString());
+        if (this.enableOutput && this.logEvents) {
+            this.currentBurst.append(group.toString());
         }
     }
 
     @Override
     public EventGroup popEventGroup() {
         EventGroup eg = super.popEventGroup();
-        if (this.enableOutput) {
-            this.output.append(EventGroup.POP_TOKEN + Game.EVENT_END);
-            this.history.append(EventGroup.POP_TOKEN + Game.EVENT_END);
+        if (this.enableOutput && this.logEvents) {
+            this.currentBurst.append(EventGroup.POP_TOKEN + Game.EVENT_END);
         }
         return eg;
     }
-    public String retrieveEventString() {
-        String temp = this.output.toString();
-        this.output.delete(0, this.output.length());
-        return temp;
+
+    public String retrieveEventBurstString() {
+        StringBuilder ret = new StringBuilder();
+        ListIterator<EventBurst> iter = this.history.listIterator(this.outputStart);
+        while (iter.hasNext()) {
+            ret.append(iter.next().toString());
+        }
+        this.outputStart = this.history.size();
+        return ret.toString();
     }
 
     public String getHistory() {
-        return this.history.toString();
+        StringBuilder ret = new StringBuilder();
+        for (EventBurst eventBurst : this.history) {
+            ret.append(eventBurst.toString());
+        }
+        return ret.toString();
+    }
+
+    public String getReadableHistory() {
+        StringBuilder ret = new StringBuilder();
+        for (EventBurst eventBurst : this.history) {
+            ret.append("Burst ").append(eventBurst.team)
+                    .append(":\n").append(eventBurst.eventString.replaceAll(Game.EVENT_END, "\n"))
+                    .append("\n");
+        }
+        return ret.toString();
     }
 
     public void saveBoardState() {
@@ -240,7 +280,7 @@ public class ServerBoard extends Board {
             PrintWriter pw = new PrintWriter("board.dat", StandardCharsets.UTF_16);
             PrintWriter pwreadable = new PrintWriter("board_readable.txt", StandardCharsets.UTF_16);
             pw.print(this.getHistory());
-            pwreadable.print(this.getHistory().replaceAll(Game.EVENT_END, "\n"));
+            pwreadable.print(this.getReadableHistory());
             pw.close();
             pwreadable.close();
         } catch (IOException e) {
@@ -255,7 +295,7 @@ public class ServerBoard extends Board {
             try {
                 this.init();
                 String state = Files.readString(f.toPath(), StandardCharsets.UTF_16);
-                this.parseEventString(state);
+                this.consumeEventBursts(EventBurst.parseEventBursts(state));
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -268,9 +308,22 @@ public class ServerBoard extends Board {
         return pa.perform(this);
     }
 
+    // this is done in its own function and not in the mulligan resolver because
+    // we want to separate the mulligan and the turn start bursts
+    public ResolutionResult endMulliganPhase() {
+        ResolutionResult result = this.resolve(new Resolver(false) {
+            @Override
+            public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                b.processEvent(rq, el, new EventMulliganPhaseEnd());
+            }
+        }, 0);
+        result.concat(this.resolve(new TurnStartResolver(this.getPlayer(1)), 1));
+        return result;
+    }
+
     public ResolutionResult endCurrentPlayerTurn() {
-        ResolutionResult result = this.resolve(new TurnEndResolver(this.getPlayer(this.currentPlayerTurn)));
-        result.concat(this.resolve(new TurnStartResolver(this.getPlayer(this.currentPlayerTurn * -1))));
+        ResolutionResult result = this.resolve(new TurnEndResolver(this.getPlayer(this.currentPlayerTurn)), this.currentPlayerTurn);
+        result.concat(this.resolve(new TurnStartResolver(this.getPlayer(this.currentPlayerTurn * -1)), this.currentPlayerTurn * -1));
         return result;
     }
 

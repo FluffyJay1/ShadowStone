@@ -7,10 +7,10 @@ import server.card.Card;
 import server.card.CardStatus;
 import server.card.LeaderText;
 import server.card.cardset.ConstructedDeck;
+import server.event.Event;
 import server.event.EventCreateCard;
 import server.resolver.DrawResolver;
 import server.resolver.Resolver;
-import server.resolver.TurnStartResolver;
 import server.resolver.util.ResolverQueue;
 
 import java.util.ArrayList;
@@ -49,30 +49,34 @@ public class GameController {
     }
 
     public void startInit() {
-        ResolverQueue rq = new ResolverQueue();
-        for (int i = 0; i <= 1; i++) { // deckbuilding 101
-            int team = indexToTeam(i);
-            List<Card> cards = this.decks.get(i).convertToCards(this.b);
-            List<Card> shuffledCards = Game.selectRandom(cards, cards.size());
-            List<Integer> inds = new ArrayList<>(shuffledCards.size());
-            for (int j = 0; j < shuffledCards.size(); j++) {
-                inds.add(j);
+        Resolver startResolver = new Resolver(false) {
+            @Override
+            public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                for (int i = 0; i <= 1; i++) { // deckbuilding 101
+                    int team = indexToTeam(i);
+                    List<Card> cards = decks.get(i).convertToCards(b);
+                    List<Card> shuffledCards = Game.selectRandom(cards, cards.size());
+                    List<Integer> inds = new ArrayList<>(shuffledCards.size());
+                    for (int j = 0; j < shuffledCards.size(); j++) {
+                        inds.add(j);
+                    }
+                    b.processEvent(rq, null,
+                            new EventCreateCard(shuffledCards, team, CardStatus.DECK, inds));
+                    UnleashPower up = unleashPowers.get(i).constructInstance(b);
+                    b.processEvent(rq, null,
+                            new EventCreateCard(List.of(up), team, CardStatus.UNLEASHPOWER, List.of(0)));
+                    b.processEvent(rq, null,
+                            new EventCreateCard(List.of(leaders.get(i).constructInstance(b)), team, CardStatus.LEADER, List.of(0)));
+                }
             }
-            this.b.processEvent(rq, null,
-                    new EventCreateCard(shuffledCards, team, CardStatus.DECK, inds));
-            UnleashPower up = this.unleashPowers.get(i).constructInstance(this.b);
-            this.b.processEvent(rq, null,
-                    new EventCreateCard(List.of(up), team, CardStatus.UNLEASHPOWER, List.of(0)));
-            this.b.processEvent(rq, null,
-                    new EventCreateCard(List.of(this.leaders.get(i).constructInstance(this.b)), team, CardStatus.LEADER, List.of(0)));
-        }
-        this.b.resolveAll(rq);
+        };
+        this.b.resolve(startResolver, 0);
         this.sendEvents();
     }
 
     public void startGame() {
-        this.b.resolve(new DrawResolver(this.b.player1, 3));
-        this.b.resolve(new DrawResolver(this.b.player2, 4));
+        this.b.resolve(new DrawResolver(this.b.player1, 3), 0);
+        this.b.resolve(new DrawResolver(this.b.player2, 4), 0);
         this.sendEvents();
     }
 
@@ -91,8 +95,8 @@ public class GameController {
 
     }
 
-    public void resolve(Resolver r) {
-        this.b.resolve(r);
+    public void resolve(Resolver r, int team) {
+        this.b.resolve(r, team);
         this.sendEvents();
     }
 
@@ -136,15 +140,15 @@ public class GameController {
     }
 
     private void sendEvents() {
-        String eventstring = this.b.retrieveEventString();
-        if (!eventstring.isEmpty()) {
-            this.sendEvent(1, eventstring);
-            this.sendEvent(-1, eventstring);
+        String eventBurstString = this.b.retrieveEventBurstString();
+        if (!eventBurstString.isEmpty()) {
+            this.sendEventBurst(1, eventBurstString);
+            this.sendEventBurst(-1, eventBurstString);
         }
     }
 
-    private void sendEvent(int team, String eventstring) {
-        this.players.get(teamToIndex(team)).sendEvent(eventstring);
+    private void sendEventBurst(int team, String eventBurstString) {
+        this.players.get(teamToIndex(team)).sendEventBurstString(eventBurstString);
     }
 
     private static int teamToIndex(int team) {

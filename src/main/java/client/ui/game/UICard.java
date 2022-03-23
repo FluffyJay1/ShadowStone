@@ -352,19 +352,19 @@ public class UICard extends UIBox {
         this.drawIcons(g, pos, scale);
         if (this.card instanceof Minion) {
             if (this.card.realCard != null && this.card.realCard instanceof Minion
-                    && (this.card.team == this.uib.b.localteam ? // different rules depending on allied team or enemy team
-                        ((Minion) this.card.realCard).canAttack() && !this.uib.b.disableInput : // condition for cards on our team (should update instantly)
-                        ((Minion) this.card).canAttack()) // condition for cards on the enemy team (should wait for animations)
-            ) {
-                Color borderColor;
-                if (this.getMinion().summoningSickness
-                        && this.card.realCard.finalStatEffects.getStat(EffectStats.RUSH) > 0
-                        && this.card.realCard.finalStatEffects.getStat(EffectStats.STORM) == 0) {
-                    borderColor = Color.yellow;
-                } else {
-                    borderColor = Color.cyan;
+                    && (!this.uib.b.disableInput || this.card.team != this.uib.b.localteam)) {
+                Minion relevantMinion = (Minion) (this.card.team == this.uib.b.localteam ? this.card.realCard : this.card);
+                if (relevantMinion.canAttack()) {
+                    Color borderColor;
+                    if (relevantMinion.summoningSickness
+                            && relevantMinion.finalStatEffects.getStat(EffectStats.RUSH) > 0
+                            && relevantMinion.finalStatEffects.getStat(EffectStats.STORM) == 0) {
+                        borderColor = Color.yellow;
+                    } else {
+                        borderColor = Color.cyan;
+                    }
+                    drawReadyBorder(g, pos, scale, borderColor);
                 }
-                drawReadyBorder(g, pos, scale, borderColor);
             }
             if (this.card.finalStatEffects.getStat(EffectStats.WARD) > 0) {
                 Image i = Game.getImage("res/game/shield.png");

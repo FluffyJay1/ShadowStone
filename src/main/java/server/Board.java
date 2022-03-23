@@ -9,6 +9,7 @@ import server.card.*;
 import server.card.effect.*;
 import server.card.target.CardTargetingScheme;
 import server.event.*;
+import server.event.eventburst.EventBurst;
 import server.event.eventgroup.EventGroup;
 
 // must use either ClientBoard or ServerBoard
@@ -194,10 +195,10 @@ public abstract class Board {
      * Parses a set of events/eventgroups and applies their changes to the board state
      * @param s The string to parse
      */
-    public synchronized void parseEventString(String s) {
-        if (!s.isEmpty()) {
-            String[] lines = s.split(Game.EVENT_END);
-            for (String line : lines) {
+    public void parseEventString(String s) {
+        String[] lines = s.split(Game.EVENT_END);
+        for (String line : lines) {
+            if (!line.isEmpty()) {
                 StringTokenizer st = new StringTokenizer(line);
                 char firstChar = line.charAt(0);
                 if (firstChar == EventGroup.PUSH_TOKEN) {
@@ -209,6 +210,17 @@ public abstract class Board {
                     this.processEvent(e);
                 }
             }
+        }
+    }
+
+    /**
+     * Updates the state of the board according to the eventstrings encapsulated
+     * by the event bursts.
+     * @param bursts The list of event bursts to process
+     */
+    public void consumeEventBursts(List<EventBurst> bursts) {
+        for (EventBurst eb : bursts) {
+            this.parseEventString(eb.eventString);
         }
     }
 

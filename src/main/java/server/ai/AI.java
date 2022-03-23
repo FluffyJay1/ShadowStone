@@ -12,6 +12,7 @@ import server.card.effect.*;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.event.*;
+import server.event.eventburst.EventBurst;
 import server.playeraction.*;
 import server.resolver.*;
 import utils.WeightedOrderedSampler;
@@ -145,6 +146,7 @@ public class AI extends Thread {
         this.difficulty = difficulty;
         this.dslocal = dslocal;
         this.b = new ServerBoard(team);
+        this.b.logEvents = false;
         this.actionSendQueue = new LinkedList<>();
         this.nodeMap = new HashMap<>();
         this.traversedNodes = new HashSet<>();
@@ -181,8 +183,8 @@ public class AI extends Thread {
         }
         switch (mtype) {
             case EVENT:
-                String eventstring = this.dslocal.readEvent();
-                this.b.parseEventString(eventstring);
+                List<EventBurst> eventBursts = this.dslocal.readEventBursts();
+                this.b.consumeEventBursts(eventBursts);
                 this.waitForEvents = false;
                 if (this.b.currentPlayerTurn == this.b.localteam) {
                     this.finishedTurn = false;

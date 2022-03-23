@@ -24,7 +24,7 @@ public class OrderAttackAction extends PlayerAction {
     public ResolutionResult perform(ServerBoard b) {
         ResolutionResult result = new ResolutionResult();
         if (this.attacker.canAttack(this.victim)) {
-            result.concat(b.resolve(new MinionAttackResolver(this.attacker, this.victim)));
+            result.concat(b.resolve(new MinionAttackResolver(this.attacker, this.victim), this.attacker.team));
         }
         return result;
     }

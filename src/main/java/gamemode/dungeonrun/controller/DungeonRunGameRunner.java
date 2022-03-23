@@ -52,7 +52,7 @@ public class DungeonRunGameRunner implements Runnable {
                     ))));
                 });
             }
-        });
+        }, 0);
         gc.startGame();
         while (gc.isGamePhase() && !Thread.currentThread().isInterrupted()) {
             gc.updateGame();

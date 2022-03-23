@@ -41,7 +41,7 @@ public class Game extends StateBasedGame {
     }
     private static final Color FONT_COLOR = new Color(0.98f, 0.96f, 0.96f);
 
-    public static final String STRING_START = "\u00bc", STRING_END = "\u00bd", BLOCK_END = "\u00be", EVENT_END = "\u00b6";
+    public static final String STRING_END = "\u00bd", BLOCK_END = "\u00be", EVENT_END = "\u00b6", EVENT_BURST_END = "\u00bc";
     public static final Map<String, Image> images = new HashMap<>();
 
     public static final Map<String, UnicodeFont> fonts = new HashMap<>();

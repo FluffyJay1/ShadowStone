@@ -3,9 +3,13 @@ package network;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import client.*;
 import server.card.cardset.*;
+import server.event.eventburst.EventBurst;
 
 /**
  * interface for sending and receiving things, serializing and deserializing
@@ -78,9 +82,9 @@ public class DataStream {
         }
     }
 
-    public void sendEvent(String eventstring) {
+    public void sendEventBurstString(String eventBurstString) {
         this.out.println(MessageType.EVENT);
-        this.out.println(eventstring);
+        this.out.println(eventBurstString);
         this.out.println(Game.BLOCK_END);
     }
 
@@ -148,7 +152,7 @@ public class DataStream {
         }
     }
 
-    public String readEvent() {
+    public List<EventBurst> readEventBursts() {
         try {
             StringBuilder events = new StringBuilder();
             String line = in.readLine();
@@ -160,11 +164,7 @@ public class DataStream {
                 line = in.readLine();
             }
             String s = events.toString();
-            int lastEventDelim = s.lastIndexOf(Game.EVENT_END);
-            if (lastEventDelim >= 0) {
-                return s.substring(0, lastEventDelim);
-            }
-            return s;
+            return EventBurst.parseEventBursts(s);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -208,7 +208,7 @@ public class DataStream {
     public void discardMessage() {
         switch (this.lastMessageType) {
         case EVENT:
-            this.readEvent();
+            this.readEventBursts();
             break;
         case PLAYERACTION:
             this.readPlayerAction();

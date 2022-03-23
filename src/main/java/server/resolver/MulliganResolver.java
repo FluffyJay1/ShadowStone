@@ -30,10 +30,5 @@ public class MulliganResolver extends Resolver {
             tempDeckSize++;
         }
         b.processEvent(rq, el, new EventMulligan(this.p, this.choices, shufflePos));
-        // if both players mulliganed, proceed to the game
-        if (b.getPlayer(1).mulliganed && b.getPlayer(-1).mulliganed) {
-            b.processEvent(rq, el, new EventMulliganPhaseEnd());
-            this.resolve(b, rq, el, new TurnStartResolver(b.getPlayer(1)));
-        }
     }
 }

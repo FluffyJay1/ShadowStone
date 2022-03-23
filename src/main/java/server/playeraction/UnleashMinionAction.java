@@ -31,7 +31,7 @@ public class UnleashMinionAction extends PlayerAction {
             return result;
         }
         // get special unleash power thing
-        result.concat(b.resolve(new UnleashResolver(this.p.getUnleashPower().orElse(null), this.m, this.unleashTargets)));
+        result.concat(b.resolve(new UnleashResolver(this.p.getUnleashPower().orElse(null), this.m, this.unleashTargets), this.p.team));
         return result;
     }
 

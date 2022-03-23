@@ -14,6 +14,7 @@ import server.ai.*;
 import server.card.*;
 import server.card.target.CardTargetingScheme;
 import server.event.*;
+import server.event.eventburst.EventBurst;
 import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
 import utils.PendingListManager;
@@ -39,7 +40,8 @@ public class VisualBoard extends Board implements
     public PendingManager<PendingMinionAttack> pendingMinionAttacks;
     public PendingManager<PendingUnleash> pendingUnleashes;
     final List<String> inputeventliststrings = new LinkedList<>();
-    final List<String> turnSwitchBlockedEventStrings = new LinkedList<>(); // prevent realboard from advancing into next turn before animations do
+    // server sends events in bursts, if not our turn, prevent realboard from advancing past the current animated burst
+    final List<EventBurst> bufferedEventBursts = new LinkedList<>();
     public final List<VisualBoardAnimation> currentAnimations = new LinkedList<>();
 
     // whether this board is not accepting input from the player (i.e., only works when it's the player's turn)
@@ -126,26 +128,46 @@ public class VisualBoard extends Board implements
         if (e instanceof EventGameEnd) {
             this.uiBoard.onGameEnd(((EventGameEnd) e).victory);
         }
-        // when the visualboard enters the next turn,
-        // catch up the realboard about events we had to delay because we weren't on the right turn
-        while (this.currentPlayerTurn == this.realBoard.currentPlayerTurn && !this.turnSwitchBlockedEventStrings.isEmpty()) {
-            this.realBoard.parseEventString(this.turnSwitchBlockedEventStrings.remove(0));
-        }
         return ret;
     }
 
-    // also updates the underlying real board of the events
+    /**
+     * Tries to animate the board based on the bursts provided. Immediately
+     * process your bursts, but buffers bursts by the enemy.
+     * @param bursts The list of event bursts to process
+     */
     @Override
-    public synchronized void parseEventString(String s) {
-        if (!s.isEmpty()) {
-            if (this.currentPlayerTurn == this.realBoard.currentPlayerTurn) {
-                this.realBoard.parseEventString(s);
-            } else {
-                // if we receive events about not the current turn, delay updating the realboard
-                this.turnSwitchBlockedEventStrings.add(s);
-            }
-            this.inputeventliststrings.addAll(List.of(s.split(Game.EVENT_END)));
-            this.updateEventAnimation(0);
+    public void consumeEventBursts(List<EventBurst> bursts) {
+        this.bufferedEventBursts.addAll(bursts);
+        this.attemptToDequeueBurstStreak();
+    }
+
+    // consume a burst, updating the real board and buffering the appropriate animations
+    private void consumeBurst(EventBurst eb) {
+        this.realBoard.parseEventString(eb.eventString);
+        this.inputeventliststrings.addAll(List.of(eb.eventString.split(Game.EVENT_END)));
+    }
+
+    // take at least one of the buffered bursts and process it
+    // process as many consecutive bursts on your turn as you can
+    // for the enemy turn, process them one at a time
+    // returns true if there is now something in inputeventliststrings
+    private boolean dequeueBurst() {
+        if (this.bufferedEventBursts.isEmpty()) {
+            return false;
+        }
+        EventBurst eb = this.bufferedEventBursts.remove(0);
+        this.consumeBurst(eb);
+        if (eb.team == this.localteam) {
+            this.attemptToDequeueBurstStreak();
+        }
+        return !this.inputeventliststrings.isEmpty();
+    }
+
+    // attempt to consume burst streak
+    private void attemptToDequeueBurstStreak() {
+        while (!this.bufferedEventBursts.isEmpty() && this.bufferedEventBursts.get(0).team == this.localteam) {
+            this.consumeBurst(this.bufferedEventBursts.remove(0));
         }
     }
 
@@ -159,7 +181,7 @@ public class VisualBoard extends Board implements
 
     public void skipAllAnimations() {
         this.skipCurrentAnimation();
-        while (!this.inputeventliststrings.isEmpty()) {
+        while (!this.inputeventliststrings.isEmpty() || this.dequeueBurst()) {
             String eventOrGroup = this.inputeventliststrings.remove(0);
             if (EventGroup.isPush(eventOrGroup)) {
                 EventGroup group = EventGroup.fromString(this, new StringTokenizer(eventOrGroup));
@@ -192,7 +214,7 @@ public class VisualBoard extends Board implements
 
     public void updateEventAnimation(double frametime) {
         while ((shouldConcurrentlyAnimate() || this.currentAnimations.isEmpty())
-                && !this.inputeventliststrings.isEmpty()) {
+                && (!this.inputeventliststrings.isEmpty() || this.dequeueBurst())) {
             // current set of animations is empty, see what we have to animate
             // next
             VisualBoardAnimation anim = null;

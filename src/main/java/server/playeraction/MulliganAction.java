@@ -29,7 +29,11 @@ public class MulliganAction extends PlayerAction {
         ResolutionResult result = new ResolutionResult();
         // don't care about whose turn it is
         if (!this.p.mulliganed) {
-            result.concat(b.resolve(new MulliganResolver(this.p, this.choices)));
+            result.concat(b.resolve(new MulliganResolver(this.p, this.choices), 0));
+            // if both players mulliganed, proceed to the game
+            if (b.getPlayer(1).mulliganed && b.getPlayer(-1).mulliganed) {
+                result.concat(b.endMulliganPhase());
+            }
         }
         return result;
     }

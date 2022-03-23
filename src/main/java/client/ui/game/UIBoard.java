@@ -24,6 +24,7 @@ import network.*;
 import server.Player;
 import server.card.*;
 import server.card.target.*;
+import server.event.eventburst.EventBurst;
 import server.event.eventgroup.EventGroup;
 import server.event.eventgroup.EventGroupType;
 import server.playeraction.*;
@@ -186,12 +187,13 @@ public class UIBoard extends UIBox {
         }
         // end handling targeting text
 
-        Player relevantLocalPlayer = this.b.currentPlayerTurn == this.b.localteam ? this.b.realBoard.getPlayer(this.b.localteam) : this.b.getPlayer(this.b.localteam);
-        this.localPlayerMana.updateMana(relevantLocalPlayer.mana, relevantLocalPlayer.maxmana);
-        this.enemyPlayerMana.updateMana(this.b.getPlayer(this.b.localteam * -1).mana, this.b.getPlayer(this.b.localteam * -1).maxmana);
+        Player realLocalPlayer = this.b.realBoard.getPlayer(this.b.localteam);
+        Player realEnemyPlayer = this.b.realBoard.getPlayer(this.b.localteam * -1);
+        this.localPlayerMana.updateMana(realLocalPlayer.mana, realLocalPlayer.maxmana);
+        this.enemyPlayerMana.updateMana(realEnemyPlayer.mana, realEnemyPlayer.maxmana);
 
-        this.localPlayerStats.updateStats(relevantLocalPlayer);
-        this.enemyPlayerStats.updateStats(this.b.getPlayer(this.b.localteam * -1));
+        this.localPlayerStats.updateStats(realLocalPlayer);
+        this.enemyPlayerStats.updateStats(realEnemyPlayer);
 
         this.mulliganConfirmation.setEnableInput(!this.b.getPlayer(this.b.localteam).mulliganed);
         this.mulliganConfirmation.setVisible(this.b.mulligan && !this.b.getPlayer(this.b.localteam).getHand().isEmpty());
@@ -380,8 +382,8 @@ public class UIBoard extends UIBox {
             MessageType mtype = this.ds.receive();
             switch (mtype) {
                 case EVENT -> {
-                    String eventstring = this.ds.readEvent();
-                    this.b.parseEventString(eventstring);
+                    List<EventBurst> eventBursts = this.ds.readEventBursts();
+                    this.b.consumeEventBursts(eventBursts);
                     if (this.skipNextEventAnimations) {
                         this.b.skipAllAnimations();
                         this.skipNextEventAnimations = false;
