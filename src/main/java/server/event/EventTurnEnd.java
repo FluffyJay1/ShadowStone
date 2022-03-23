@@ -15,6 +15,16 @@ public class EventTurnEnd extends Event {
     }
 
     @Override
+    public void resolve(Board b) {
+
+    }
+
+    @Override
+    public void undo(Board b) {
+
+    }
+
+    @Override
     public String toString() {
         return this.id + " " + this.p.team + Game.EVENT_END;
     }

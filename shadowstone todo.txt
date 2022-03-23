@@ -1,4 +1,4 @@
-necromancy
+rework how realboard updates, how uicard displays readiness
 spellboost
 enhance
 AI difficulty adjustment

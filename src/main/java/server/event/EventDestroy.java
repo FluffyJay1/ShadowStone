@@ -18,6 +18,7 @@ public class EventDestroy extends Event {
     private List<Integer> prevLastBoardPos;
     private List<Integer> prevLastBoardEpoch;
     private int prevEpoch1, prevEpoch2;
+    private int prevShadows1, prevShadows2;
     public List<Boolean> successful;
     final List<BoardObject> cardsLeavingPlay = new ArrayList<>(); // required for listeners
 
@@ -38,10 +39,10 @@ public class EventDestroy extends Event {
         this.prevLastBoardPos = new ArrayList<>(this.cards.size());
         this.prevLastBoardEpoch = new ArrayList<>(this.cards.size());
         this.successful = new ArrayList<>(this.cards.size());
-        if (this.cards.size() > 0) {
-            this.prevEpoch1 = this.cards.get(0).board.getPlayer(1).getPlayArea().getCurrentEpoch();
-            this.prevEpoch2 = this.cards.get(0).board.getPlayer(-1).getPlayArea().getCurrentEpoch();
-        }
+        this.prevEpoch1 = b.getPlayer(1).getPlayArea().getCurrentEpoch();
+        this.prevEpoch2 = b.getPlayer(-1).getPlayArea().getCurrentEpoch();
+        this.prevShadows1 = b.getPlayer(1).shadows;
+        this.prevShadows2 = b.getPlayer(-1).shadows;
         for (int i = 0; i < this.cards.size(); i++) {
             Card c = this.cards.get(i);
             Player p = b.getPlayer(c.team);
@@ -58,7 +59,7 @@ public class EventDestroy extends Event {
             }
             if (!c.status.equals(CardStatus.GRAVEYARD)) {
                 this.successful.set(i, true);
-                // TODO increase shadows by 1
+                p.shadows++;
                 c.alive = false;
                 switch (c.status) {
                     case HAND -> p.getHand().remove(c);
@@ -117,10 +118,10 @@ public class EventDestroy extends Event {
                 c.status = status;
             }
         }
-        if (this.cards.size() > 0) {
-            this.cards.get(0).board.getPlayer(1).getPlayArea().resetHistoryToEpoch(this.prevEpoch1);
-            this.cards.get(0).board.getPlayer(-1).getPlayArea().resetHistoryToEpoch(this.prevEpoch2);
-        }
+        b.getPlayer(1).getPlayArea().resetHistoryToEpoch(this.prevEpoch1);
+        b.getPlayer(-1).getPlayArea().resetHistoryToEpoch(this.prevEpoch2);
+        b.getPlayer(1).shadows = this.prevShadows1;
+        b.getPlayer(-1).shadows = this.prevShadows2;
     }
 
     @Override

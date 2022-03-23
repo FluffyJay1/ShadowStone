@@ -46,7 +46,8 @@ public abstract class Card implements Indexable, StringBuildable {
     private final PositionedList<Effect> effects = new PositionedList<>(new ArrayList<>(), e -> e.basic = false),
             basicEffects = new PositionedList<>(new ArrayList<>(), e -> e.basic = true),
             removedEffects = new PositionedList<>(new ArrayList<>(), e -> e.removed = true);
-    // same but for auras, however, removing the effect doesn't remove it from this list
+
+    // for convenience, a subset of the effects that are also auras
     public final List<EffectAura> auras = new LinkedList<>();
 
     public Card(Board board, CardText cardText) {
@@ -139,6 +140,9 @@ public abstract class Card implements Indexable, StringBuildable {
         if (e instanceof EffectAura) {
             this.auras.add((EffectAura) e);
         }
+        if (e instanceof EffectUntilTurnEnd && e.owner.board instanceof ServerBoard) {
+            ((ServerBoard) e.owner.board).effectsToRemoveAtEndOfTurn.add(e);
+        }
         if (e.auraSource != null) {
             e.auraSource.currentActiveEffects.put(this, e);
         }
@@ -156,11 +160,16 @@ public abstract class Card implements Indexable, StringBuildable {
             this.effects.remove(e);
             if (!purge) {
                 this.removedEffects.add(e);
-            } else if (e instanceof EffectAura) {
+            }
+            if (e instanceof EffectAura) {
                 this.auras.remove((EffectAura) e);
+            }
+            if (e instanceof EffectUntilTurnEnd && e.owner.board instanceof ServerBoard) {
+                ((ServerBoard) e.owner.board).effectsToRemoveAtEndOfTurn.remove(e);
             }
             if (e.auraSource != null) {
                 e.auraSource.currentActiveEffects.remove(this);
+                e.auraSource.lastCheckedAffectedCards.remove(this);
             }
             e.removed = true;
             this.updateEffectStats(false);

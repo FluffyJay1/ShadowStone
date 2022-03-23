@@ -75,7 +75,7 @@ public class EventAddEffect extends Event {
 
     @Override
     public void undo(Board b) {
-        for (int i = 0; i < this.c.size(); i++) {
+        for (int i = this.c.size() - 1; i >= 0; i--) {
             Card c = this.c.get(i);
             c.removeEffect(this.effects.get(i), true);
             if (c instanceof Minion) {

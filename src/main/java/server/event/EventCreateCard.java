@@ -16,6 +16,7 @@ public class EventCreateCard extends Event {
     private UnleashPower prevUP;
     private Leader prevLeader;
     private int prevEpoch;
+    private int prevShadows;
     public final List<Boolean> successful;
     public final List<Card> successfullyCreatedCards;
     final List<BoardObject> cardsEnteringPlay = new ArrayList<>();
@@ -32,15 +33,16 @@ public class EventCreateCard extends Event {
 
     @Override
     public void resolve(Board b) {
+        Player p = b.getPlayer(this.team);
         if (this.cards.size() > 0 && this.status.equals(CardStatus.BOARD)) {
-            this.prevEpoch = b.getPlayer(this.team).getPlayArea().getCurrentEpoch();
+            this.prevEpoch = p.getPlayArea().getCurrentEpoch();
         }
+        this.prevShadows = p.shadows;
         for (int i = 0; i < this.cards.size(); i++) {
             Card c = this.cards.get(i);
             int cardpos = this.cardpos.get(i);
             c.team = this.team;
             c.status = this.status;
-            Player p = b.getPlayer(this.team);
             switch (this.status) {
                 case HAND -> {
                     if (p.getHand().size() < p.maxHandSize) {
@@ -49,7 +51,7 @@ public class EventCreateCard extends Event {
                         this.successfullyCreatedCards.add(c);
                     } else {
                         c.alive = false;
-                        // TODO: add a shadow
+                        p.shadows++;
                         this.successful.add(false);
                     }
                 }
@@ -101,9 +103,9 @@ public class EventCreateCard extends Event {
 
     @Override
     public void undo(Board b) {
+        Player p = b.getPlayer(this.team);
         for (int i = 0; i < this.cards.size(); i++) {
             Card c = this.cards.get(i);
-            Player p = b.getPlayer(this.team);
             CardStatus status = c.status;
             if (this.successful.get(i)) {
                 switch (status) {
@@ -126,8 +128,9 @@ public class EventCreateCard extends Event {
             }
         }
         if (this.cards.size() > 0 && this.status.equals(CardStatus.BOARD)) {
-            this.cards.get(0).board.getPlayer(this.cards.get(0).team).getPlayArea().resetHistoryToEpoch(this.prevEpoch);
+            p.getPlayArea().resetHistoryToEpoch(this.prevEpoch);
         }
+        p.shadows = this.prevShadows;
     }
 
     @Override

@@ -31,6 +31,7 @@ public class Player implements StringBuildable {
     protected UnleashPower unleashPower;
     public boolean mulliganed;
     public int cardsPlayedThisTurn;
+    public int shadows;
 
     public Player(Board board, int team) {
         this.board = board;
@@ -47,6 +48,7 @@ public class Player implements StringBuildable {
         this.maxPlayAreaSize = DEFAULT_MAX_BOARD_SIZE;
         this.mulliganed = false;
         this.cardsPlayedThisTurn = 0;
+        this.shadows = 0;
     }
 
     public List<Card> getDeck() {

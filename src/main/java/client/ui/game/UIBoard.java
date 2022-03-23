@@ -300,6 +300,7 @@ public class UIBoard extends UIBox {
             for (Card c : deck) {
                 UICard uic = c.uiCard;
                 if (!uic.isBeingAnimated()) {
+                    uic.draggable = false;
                     uic.setFlippedOver(true);
                     uic.setVisible(true);
                     uic.setPos(new Vector2f((float) DECK_X, (float) (team == this.b.localteam ? DECK_Y_LOCAL : DECK_Y_ENEMY)), 0.99);

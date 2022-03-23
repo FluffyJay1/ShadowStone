@@ -22,6 +22,7 @@ public class TurnEndResolver extends Resolver {
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         b.processEvent(rq, el, new EventTurnEnd(p));
         ResolverQueue subList = new ResolverQueue();
+        this.resolve(b, subList, el, new RemoveEffectResolver(List.copyOf(b.effectsToRemoveAtEndOfTurn)));
         // avoid concurrent modification
         List<BoardObject> ours = this.p.board.getBoardObjects(this.p.team, true, true, true, true).collect(Collectors.toList());
         for (BoardObject bo : ours) {

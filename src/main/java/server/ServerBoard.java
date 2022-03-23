@@ -31,6 +31,9 @@ public class ServerBoard extends Board {
 
     boolean enableOutput = true;
 
+    // see EffectUntilTurnEnd, Card, TurnEndResolver
+    public List<Effect> effectsToRemoveAtEndOfTurn;
+
     public ServerBoard(int localteam) {
         super(localteam);
     }
@@ -41,6 +44,7 @@ public class ServerBoard extends Board {
         this.output = new StringBuilder();
         this.history = new StringBuilder();
         this.lastCheckedActiveAuras = new HashSet<>();
+        this.effectsToRemoveAtEndOfTurn = new ArrayList<>();
         this.enableOutput = true;
     }
 

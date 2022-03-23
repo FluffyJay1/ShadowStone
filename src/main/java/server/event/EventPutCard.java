@@ -60,10 +60,8 @@ public class EventPutCard extends Event {
         this.oldAlive = new ArrayList<>(this.cards.size());
         this.attempted = new ArrayList<>(this.cards.size());
         this.successful = new ArrayList<>(this.cards.size());
-        if (this.cards.size() > 0) {
-            this.prevEpoch1 = this.cards.get(0).board.getPlayer(1).getPlayArea().getCurrentEpoch();
-            this.prevEpoch2 = this.cards.get(0).board.getPlayer(-1).getPlayArea().getCurrentEpoch();
-        }
+        this.prevEpoch1 = b.getPlayer(1).getPlayArea().getCurrentEpoch();
+        this.prevEpoch2 = b.getPlayer(-1).getPlayArea().getCurrentEpoch();
         for (int i = 0; i < this.cards.size(); i++) {
             Card card = this.cards.get(i);
             this.prevStatus.add(card.status);
@@ -206,10 +204,8 @@ public class EventPutCard extends Event {
                 }
             }
         }
-        if (this.cards.size() > 0) {
-            this.cards.get(0).board.getPlayer(1).getPlayArea().resetHistoryToEpoch(this.prevEpoch1);
-            this.cards.get(0).board.getPlayer(-1).getPlayArea().resetHistoryToEpoch(this.prevEpoch2);
-        }
+        b.getPlayer(1).getPlayArea().resetHistoryToEpoch(this.prevEpoch1);
+        b.getPlayer(-1).getPlayArea().resetHistoryToEpoch(this.prevEpoch2);
     }
 
     @Override

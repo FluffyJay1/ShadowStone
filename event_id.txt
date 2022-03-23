@@ -15,17 +15,17 @@
 14: TurnEnd
 15: TurnStart
 16: Unleash
-17: EffectDamage - DELETED
+17: Necromancy
 18: Banish
-19: Battlecry - DEPRECATED, see event groups
-20: LastWords - DEPRECATED, see event groups
-21: Flag - DEPRECATED, see event groups
+19: Battlecry - DELETED, see event groups
+20: LastWords - DELETED, see event groups
+21: Flag - DELETED, see event groups
 22: RemoveEffect
-23: EnterPlay - DEPRECATED
-24: LeavePlay - DEPRECATED
-25: OnAttack - DEPRECATED, see event groups
-26: OnAttacked - DEPRECATED, see event groups
-27: Clash - DEPRECATED, see event groups
+23: EnterPlay - DELETED
+24: LeavePlay - DELETED
+25: OnAttack - DELETED, see event groups
+26: OnAttacked - DELETED, see event groups
+27: Clash - DELETED, see event groups
 28: GameEnd
 29: MuteEffect
 30: SetEffectStats

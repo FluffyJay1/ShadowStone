@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * For the common case of effects that last until the end of turn
+ * When the Card adds one of these effects, it keeps track in the
+ * ServerBoard, then the TurnEndResolver checks these and removes them
  */
 public class EffectUntilTurnEnd extends Effect {
     //required for reflection
@@ -20,15 +22,5 @@ public class EffectUntilTurnEnd extends Effect {
 
     public EffectUntilTurnEnd(String description, EffectStats stats) {
         super(description, stats);
-    }
-
-    @Override
-    public ResolverWithDescription onTurnEnd() {
-        return new ResolverWithDescription("", new RemoveEffectResolver(List.of(this)));
-    }
-
-    @Override
-    public ResolverWithDescription onTurnEndEnemy() {
-        return new ResolverWithDescription("", new RemoveEffectResolver(List.of(this)));
     }
 }

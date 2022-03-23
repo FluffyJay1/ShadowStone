@@ -55,6 +55,9 @@ public class Tooltip {
     public static final Tooltip TRANSFORM = new Tooltip("Transform",
             "Replace a card with another card. Any process pertaining to the replaced card is cancelled. Does not count as the card leaving/entering play.",
             List::of);
+    public static final Tooltip NECROMANCY = new Tooltip("Necromancy(X)",
+            "If you have at least X shadows, consume them to activate a bonus effect.",
+            List::of);
 
     public final String name;
     public final String description;

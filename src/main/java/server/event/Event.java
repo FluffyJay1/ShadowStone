@@ -27,17 +27,13 @@ public abstract class Event {
         this.id = id;
     }
 
-    public void resolve(Board b) {
-
-    }
+    public abstract void resolve(Board b);
 
     /*
      * This undo method should only be used for internal purposes like AI and is
      * never a valid action that a server sends to its clients
      */
-    public void undo(Board b) {
-
-    }
+    public abstract void undo(Board b);
 
     @Override
     public String toString() {

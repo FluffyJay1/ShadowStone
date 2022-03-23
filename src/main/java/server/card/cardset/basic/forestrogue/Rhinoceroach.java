@@ -22,7 +22,7 @@ import java.util.List;
 
 public class Rhinoceroach extends MinionText {
     public static final String NAME = "Rhinoceroach";
-    public static final String DESCRIPTION = "<b>Storm</b>.\n<b>Battlecry</b>: Gain +X/+0/+0. X equals the number of other cards played this turn.";
+    public static final String DESCRIPTION = "<b>Storm</b>.\n<b>Battlecry</b>: Gain +X/+0/+0 until the end of the turn. X equals the number of other cards played this turn.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/rhinoceroach.png",
