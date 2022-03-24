@@ -120,7 +120,10 @@ public class Player implements StringBuildable {
     public void appendStringToBuilder(StringBuilder builder) {
         builder.append(this.team).append(" ").append(this.mana).append(" ").append(this.maxmana)
                 .append(" ").append(this.maxmaxmana).append(" ")
-                .append(this.unleashAllowed).append(" ");
+                .append(this.unleashAllowed).append(" ")
+                .append(this.mulliganed).append(" ")
+                .append(this.cardsPlayedThisTurn).append(" ")
+                .append(this.shadows).append(" ");
     }
 
     // uh
