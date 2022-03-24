@@ -144,8 +144,10 @@ public class VisualBoard extends Board implements
 
     // consume a burst, updating the real board and buffering the appropriate animations
     private void consumeBurst(EventBurst eb) {
-        this.realBoard.parseEventString(eb.eventString);
-        this.inputeventliststrings.addAll(List.of(eb.eventString.split(Game.EVENT_END)));
+        if (!eb.eventString.isEmpty()) {
+            this.realBoard.parseEventString(eb.eventString);
+            this.inputeventliststrings.addAll(List.of(eb.eventString.split(Game.EVENT_END)));
+        }
     }
 
     // take at least one of the buffered bursts and process it

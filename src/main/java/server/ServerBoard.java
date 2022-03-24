@@ -5,6 +5,8 @@ import server.card.BoardObject;
 import server.card.Card;
 import server.card.effect.Effect;
 import server.card.effect.EffectAura;
+import server.card.effect.EffectStats;
+import server.card.effect.EffectWithDependentStats;
 import server.event.Event;
 import server.event.EventMulliganPhaseEnd;
 import server.event.eventburst.EventBurst;
@@ -20,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Variant of the Board class that handles proper event/listener/aura resolution
@@ -32,6 +35,7 @@ public class ServerBoard extends Board {
     StringBuilder currentBurst;
 
     Set<EffectAura> lastCheckedActiveAuras;
+    Set<EffectWithDependentStats> lastCheckedActiveDependentStats;
 
     boolean enableOutput = true;
     public boolean logEvents = true; // used by the ai to prevent history from being appended to
@@ -50,8 +54,23 @@ public class ServerBoard extends Board {
         this.outputStart = 0;
         this.currentBurst = new StringBuilder();
         this.lastCheckedActiveAuras = new HashSet<>();
+        this.lastCheckedActiveDependentStats = new HashSet<>();
         this.effectsToRemoveAtEndOfTurn = new ArrayList<>();
         this.enableOutput = true;
+    }
+
+    public Stream<EffectAura> getActiveAuras() {
+        return this.getCards()
+                .filter(Card::isInPlay)
+                .flatMap(bo -> bo.auras.stream())
+                .filter(aura -> !aura.mute);
+    }
+
+    public Stream<EffectWithDependentStats> getActiveDependentStats() {
+        return this.getCards()
+                .flatMap(c -> c.dependentStats.stream())
+                .filter(EffectWithDependentStats::isActive)
+                .filter(e -> !e.mute);
     }
 
     /**
@@ -61,6 +80,9 @@ public class ServerBoard extends Board {
      * @return Summary of resolving r
      */
     public ResolutionResult resolve(Resolver r, int team) {
+        if (this.winner != 0) {
+            return new ResolutionResult();
+        }
         this.currentBurst.delete(0, this.currentBurst.length());
         List<Event> l = new LinkedList<>();
         ResolverQueue rq = new ResolverQueue();
@@ -104,6 +126,27 @@ public class ServerBoard extends Board {
             this.currentBurst.append(eventString);
         }
 
+        this.updateAuras(rq);
+        this.updateDependentStats(rq);
+
+        if (e.cardsEnteringPlay() != null) {
+            for (BoardObject bo : e.cardsEnteringPlay()) {
+                rq.addAll(bo.onEnterPlay());
+            }
+        }
+        if (e.cardsLeavingPlay() != null) {
+            for (BoardObject bo : e.cardsLeavingPlay()) {
+                rq.addAll(bo.onLeavePlay());
+            }
+        }
+        this.getCards().forEachOrdered(c -> {
+            rq.addAll(c.onListenEvent(e));
+        });
+
+        return e;
+    }
+
+    private void updateAuras(ResolverQueue rq) {
         Set<EffectAura> newAuras = this.getActiveAuras().collect(Collectors.toSet());
         Set<EffectAura> removedAuras = new HashSet<>(this.lastCheckedActiveAuras);
         removedAuras.removeAll(newAuras);
@@ -172,21 +215,62 @@ public class ServerBoard extends Board {
             aura.lastCheckedAffectedCards = currentAffected;
         }
         this.lastCheckedActiveAuras = newAuras;
-        if (e.cardsEnteringPlay() != null) {
-            for (BoardObject bo : e.cardsEnteringPlay()) {
-                rq.addAll(bo.onEnterPlay());
-            }
-        }
-        if (e.cardsLeavingPlay() != null) {
-            for (BoardObject bo : e.cardsLeavingPlay()) {
-                rq.addAll(bo.onLeavePlay());
-            }
-        }
-        this.getCards().forEachOrdered(c -> {
-            rq.addAll(c.onListenEvent(e));
-        });
+    }
 
-        return e;
+    private void updateDependentStats(ResolverQueue rq) {
+        Set<EffectWithDependentStats> newDependents = this.getActiveDependentStats().collect(Collectors.toSet());
+        Set<EffectWithDependentStats> removedDependents = new HashSet<>(this.lastCheckedActiveDependentStats);
+        removedDependents.removeAll(newDependents);
+        Set<EffectWithDependentStats> addedDependents = new HashSet<>(newDependents);
+        addedDependents.removeAll(this.lastCheckedActiveDependentStats);
+        Set<EffectWithDependentStats> retainedDependents = new HashSet<>(newDependents);
+        retainedDependents.retainAll(this.lastCheckedActiveDependentStats);
+
+        Set<EffectWithDependentStats> effectsToUpdate = new HashSet<>();
+
+        for (EffectWithDependentStats dependent : addedDependents) {
+            EffectStats calculated = dependent.calculateStats();
+            if (!dependent.awaitingUpdate && !calculated.equals(new EffectStats())) {
+                dependent.awaitingUpdate = true;
+                effectsToUpdate.add(dependent);
+            }
+            dependent.lastCheckedExpectedStats = calculated;
+        }
+        for (EffectWithDependentStats dependent : removedDependents) {
+            if (!dependent.awaitingUpdate && !dependent.lastCheckedExpectedStats.equals(new EffectStats())) {
+                dependent.awaitingUpdate = true;
+                effectsToUpdate.add(dependent);
+            }
+            dependent.lastCheckedExpectedStats = new EffectStats();
+        }
+        for (EffectWithDependentStats dependent : retainedDependents) {
+            EffectStats calculated = dependent.calculateStats();
+            if (!dependent.awaitingUpdate && !dependent.lastCheckedExpectedStats.equals(calculated)) {
+                dependent.awaitingUpdate = true;
+                effectsToUpdate.add(dependent);
+            }
+            dependent.lastCheckedExpectedStats = calculated;
+        }
+
+        if (!effectsToUpdate.isEmpty()) {
+            rq.add(new Resolver(false) {
+                @Override
+                public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                    List<EffectWithDependentStats> eff = new ArrayList<>(effectsToUpdate.size());
+                    List<EffectStats> stats = new ArrayList<>(effectsToUpdate.size());
+                    for (EffectWithDependentStats effToUpdate : effectsToUpdate) {
+                        effToUpdate.awaitingUpdate = false;
+                        EffectStats calculated = effToUpdate.calculateStats();
+                        if (!effToUpdate.effectStats.equals(calculated)) {
+                            eff.add(effToUpdate);
+                            stats.add(calculated);
+                        }
+                    }
+                    this.resolve(b, rq, el, new SetEffectStatsResolver(eff, stats));
+                }
+            });
+        }
+        this.lastCheckedActiveDependentStats = newDependents;
     }
 
     /**
@@ -217,6 +301,7 @@ public class ServerBoard extends Board {
         }
         // we must have gotten kira queened, keep auras consistent
         this.updateAuraLastCheck();
+        this.updateDependentStatsLastCheck();
     }
 
     // changing board state all willy nilly outside of the resolver can mess
@@ -226,6 +311,17 @@ public class ServerBoard extends Board {
         this.getCards().forEach(c -> {
             for (EffectAura aura : c.auras) {
                 aura.lastCheckedAffectedCards = aura.findAffectedCards();
+            }
+        });
+    }
+
+    // same but for effects with dependent stats
+    public void updateDependentStatsLastCheck() {
+        this.lastCheckedActiveDependentStats = this.getActiveDependentStats().collect(Collectors.toSet());
+        this.getCards().forEach(c -> {
+            for (EffectWithDependentStats dependent : c.dependentStats) {
+                dependent.lastCheckedExpectedStats = dependent.calculateStats();
+                dependent.awaitingUpdate = false;
             }
         });
     }

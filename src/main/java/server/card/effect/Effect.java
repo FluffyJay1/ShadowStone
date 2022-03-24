@@ -39,9 +39,15 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
      */
     public boolean basic = false, mute = false, removed = false;
 
+    // if a basic effect, notes if the stats should be considered as additional stats
+    // for e.g. cost reduction by spellboosting
+    public boolean bonusStats = false;
+
     public EffectStats effectStats = new EffectStats();
 
     public EffectAura auraSource;
+
+    // who needs a factory
 
     public Effect() {
         this.description = "";
@@ -62,9 +68,21 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     }
 
     public Effect(String description, boolean stackable, EffectStats stats) {
-        this(description, stats);
-        this.stackable = stackable;
+        this(description, stackable);
+        this.effectStats = stats;
     }
+
+    public Effect(String description, boolean stackable, boolean bonusStats) {
+        this(description, stackable);
+        this.bonusStats = bonusStats;
+    }
+
+    public Effect(String description, boolean stackable, boolean bonusStats, EffectStats stats) {
+        this(description, stackable, bonusStats);
+        this.effectStats = stats;
+    }
+
+    // i may need a factory
 
     public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
         return null;

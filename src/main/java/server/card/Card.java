@@ -49,6 +49,8 @@ public abstract class Card implements Indexable, StringBuildable {
 
     // for convenience, a subset of the effects that are also auras
     public final List<EffectAura> auras = new LinkedList<>();
+    // like above but for effects with dependent stats
+    public final List<EffectWithDependentStats> dependentStats = new LinkedList<>();
 
     public Card(Board board, CardText cardText) {
         this.board = board;
@@ -140,6 +142,9 @@ public abstract class Card implements Indexable, StringBuildable {
         if (e instanceof EffectAura) {
             this.auras.add((EffectAura) e);
         }
+        if (e instanceof EffectWithDependentStats) {
+            this.dependentStats.add((EffectWithDependentStats) e);
+        }
         if (e instanceof EffectUntilTurnEnd && e.owner.board instanceof ServerBoard) {
             ((ServerBoard) e.owner.board).effectsToRemoveAtEndOfTurn.add(e);
         }
@@ -163,6 +168,9 @@ public abstract class Card implements Indexable, StringBuildable {
             }
             if (e instanceof EffectAura) {
                 this.auras.remove((EffectAura) e);
+            }
+            if (e instanceof EffectWithDependentStats) {
+                this.dependentStats.remove((EffectWithDependentStats) e);
             }
             if (e instanceof EffectUntilTurnEnd && e.owner.board instanceof ServerBoard) {
                 ((ServerBoard) e.owner.board).effectsToRemoveAtEndOfTurn.remove(e);
@@ -205,7 +213,16 @@ public abstract class Card implements Indexable, StringBuildable {
             stats = this.finalStatEffects;
         }
         stats.reset();
-        Stream<Effect> relevant = basic ? this.getEffects(true).stream() : this.getFinalEffects(false);
+        Stream<Effect> relevant = this.getEffects(true).stream().filter(e -> !e.bonusStats);
+        if (!basic) {
+            relevant = Stream.concat(
+                    relevant,
+                    Stream.concat(
+                            this.getEffects(true).stream().filter(e -> e.bonusStats),
+                            this.getEffects(false).stream()
+                    )
+            );
+        }
         relevant.forEachOrdered(e -> e.effectStats.applyToStatSet(stats));
         stats.makeNonNegative();
         if (basic) {

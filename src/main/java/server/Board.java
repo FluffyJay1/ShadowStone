@@ -164,13 +164,6 @@ public abstract class Board {
         return stream;
     }
 
-    public Stream<EffectAura> getActiveAuras() {
-        return this.getCards()
-                .filter(Card::isInPlay)
-                .flatMap(bo -> bo.auras.stream())
-                .filter(aura -> !aura.mute);
-    }
-
     public String stateToString() {
         StringBuilder builder = new StringBuilder();
         builder.append("State----------------------------+\n");

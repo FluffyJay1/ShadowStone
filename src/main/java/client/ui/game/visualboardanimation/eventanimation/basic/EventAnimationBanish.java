@@ -26,7 +26,7 @@ public class EventAnimationBanish extends EventAnimation<EventBanish> {
             UICard uic = c.uiCard;
             this.useCardInAnimation(uic);
             int z = c.status.equals(CardStatus.BOARD) ? UIBoard.PARTICLE_Z_BOARD : UIBoard.PARTICLE_Z_SPECIAL;
-            ParticleSystem particles = this.visualBoard.uiBoard.addParticleSystem(uic.getPos(), UIBoard.PARTICLE_Z_BOARD,
+            ParticleSystem particles = this.visualBoard.uiBoard.addParticleSystem(uic.getPos(), z,
                     new ScaledEmissionStrategy(ParticleSystemCommon.BANISH.get(), uic.getScale()));
             particles.followElement(uic, 1);
             this.banishParticles.add(particles);

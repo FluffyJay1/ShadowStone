@@ -7,10 +7,6 @@ import org.newdawn.slick.geom.Vector2f;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
-import server.event.*;
-import server.resolver.*;
-import server.resolver.meta.ResolverWithDescription;
-import server.resolver.util.ResolverQueue;
 
 public class UnleashFeedFervor extends UnleashPowerText {
     public static final String NAME = "Feed Fervor";
@@ -24,13 +20,21 @@ public class UnleashFeedFervor extends UnleashPowerText {
 
     @Override
     protected List<Effect> getSpecialEffects() {
-        Effect discount = new Effect("Costs 1 less because <b>Overflow</b> is active.", new EffectStats(
-                new EffectStats.Setter(EffectStats.COST, true, -1)
-        ));
-        return List.of(new EffectAura(DESCRIPTION, 1, false, false, false, true, discount) {
+        return List.of(new EffectWithDependentStats("If <b>Overflow</b> is active for you, this costs 1 less.", true) {
             @Override
-            public boolean applyConditions(Card cardToApply) {
-                return cardToApply.board.getPlayer(cardToApply.team).overflow();
+            public EffectStats calculateStats() {
+                Player p = this.owner.board.getPlayer(this.owner.team);
+                if (p.overflow()) {
+                    return new EffectStats(
+                            new EffectStats.Setter(EffectStats.COST, true, -1)
+                    );
+                }
+                return new EffectStats();
+            }
+
+            @Override
+            public boolean isActive() {
+                return this.owner.isInPlay();
             }
         });
     }

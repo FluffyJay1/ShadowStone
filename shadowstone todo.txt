@@ -1,4 +1,5 @@
 spellboost
+effectstats factory instead of this setter garbage
 enhance
 AI difficulty adjustment
 Figure out why the game is eating cpu and gpu

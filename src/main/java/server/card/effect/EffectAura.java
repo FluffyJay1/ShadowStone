@@ -110,7 +110,7 @@ public abstract class EffectAura extends Effect {
 
     @Override
     public String extraStateString() {
-        return this.affectTeam + " " + this.affectBoard + " " + this.affectHand + " " + this.effectToApply.toString();
+        return this.affectTeam + " " + this.affectBoard + " " + this.affectHand + " " + this.affectLeader + " " + this.affectUnleashPower + " " + this.effectToApply.toString();
     }
 
     @Override
@@ -118,6 +118,8 @@ public abstract class EffectAura extends Effect {
         this.affectTeam = Integer.parseInt(st.nextToken());
         this.affectBoard = Boolean.parseBoolean(st.nextToken());
         this.affectHand = Boolean.parseBoolean(st.nextToken());
+        this.affectLeader = Boolean.parseBoolean(st.nextToken());
+        this.affectUnleashPower = Boolean.parseBoolean(st.nextToken());
         this.effectToApply = Effect.fromString(b, st);
     }
 }

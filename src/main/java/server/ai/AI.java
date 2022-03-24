@@ -459,6 +459,7 @@ public class AI extends Thread {
         }
         // aura difference checking isn't updated by undoing, we have to update it ourselves
         this.b.updateAuraLastCheck();
+        this.b.updateDependentStatsLastCheck();
         String stateAfterUndo = this.b.stateToString();
         if (!current.state.equals(stateAfterUndo)) {
             System.out.println(

@@ -55,12 +55,21 @@ public class EffectStats implements Cloneable, StringBuildable {
     }
 
     public void resetStats() {
-        for (int i = 0; i < this.set.stats.length; i++) {
-            this.set.resetStat(i);
+        this.set.reset();
+        this.change.reset();
+    }
+
+    public boolean equalExcept(EffectStats other, int stat) {
+        return this.set.equalExcept(other.set, stat) && this.change.equalsChangeExcept(other.change, stat);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof EffectStats) {
+            EffectStats other = (EffectStats) o;
+            return this.set.equals(other.set) && this.change.equalsChange(other.change);
         }
-        for (int i = 0; i < this.change.stats.length; i++) {
-            this.change.resetStat(i);
-        }
+        return false;
     }
 
     public void copy(EffectStats other) {
@@ -154,6 +163,44 @@ public class EffectStats implements Cloneable, StringBuildable {
                     this.setStat(i, 0);
                 }
             }
+        }
+
+        public boolean equalExcept(StatSet other, int stat) {
+            for (int i = 0; i < this.stats.length; i++) {
+                if (i != stat && (this.getUse(i) != other.getUse(i) || this.getStat(i) != other.getStat(i))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // use and 0 is the same thing as unused
+        public boolean equalsChange(StatSet other) {
+            for (int i = 0; i < this.stats.length; i++) {
+                if (this.getStat(i) != other.getStat(i)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // use and 0 is the same thing as unused
+        public boolean equalsChangeExcept(StatSet other, int stat) {
+            for (int i = 0; i < this.stats.length; i++) {
+                if (i != stat && this.getStat(i) != other.getStat(i)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof StatSet) {
+                StatSet other = (StatSet) o;
+                return Arrays.equals(this.stats, other.stats) && Arrays.equals(this.use, other.use);
+            }
+            return false;
         }
 
         // if u don't wanna clone for some reason

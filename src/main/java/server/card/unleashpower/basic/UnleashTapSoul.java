@@ -25,14 +25,21 @@ public class UnleashTapSoul extends UnleashPowerText {
 
     @Override
     protected List<Effect> getSpecialEffects() {
-        Effect discount = new Effect("Costs 2 less because <b>Vengeance</b> is active.", new EffectStats(
-                new EffectStats.Setter(EffectStats.COST, true, -2)
-        ));
-        return List.of(new EffectAura(DESCRIPTION, 1, false, false, false, true, discount) {
+        return List.of(new EffectWithDependentStats("If <b>Vengeance</b> is active for you, this costs 2 less.", true) {
+            @Override
+            public EffectStats calculateStats() {
+                Player p = this.owner.board.getPlayer(this.owner.team);
+                if (p.vengeance()) {
+                    return new EffectStats(
+                            new EffectStats.Setter(EffectStats.COST, true, -2)
+                    );
+                }
+                return new EffectStats();
+            }
 
             @Override
-            public boolean applyConditions(Card cardToApply) {
-                return cardToApply.board.getPlayer(cardToApply.team).vengeance();
+            public boolean isActive() {
+                return this.owner.isInPlay();
             }
 
             @Override
