@@ -28,9 +28,11 @@ public abstract class Card implements Indexable, StringBuildable {
     // other cards it needs to calculate
     private static final int VALUE_MAX_REF_DEPTH = 5;
     public final Board board;
+    public Player player; // functional dependency with team but who cares
     public boolean alive = true; // alive means not marked for death
     public int team;
     private int cardpos;
+    public int spellboosts;
     public final CardText cardText;
     private final TooltipCard tooltip;
     public CardStatus status;
@@ -60,6 +62,7 @@ public abstract class Card implements Indexable, StringBuildable {
             this.addEffect(true, e);
         }
         this.status = CardStatus.DECK;
+        this.spellboosts = 0;
     }
 
     // if card can be seen on the board

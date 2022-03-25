@@ -76,5 +76,6 @@ public class EventAnimationFactory {
         put(EventTransform.class, EventAnimationTransform.class);
         put(EventMulliganPhaseEnd.class, EventAnimationMulliganPhaseEnd.class);
         put(EventNecromancy.class, EventAnimationNecromancy.class);
+        put(EventSpellboost.class, EventAnimationSpellboost.class);
     }};
 }

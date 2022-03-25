@@ -5,7 +5,7 @@ import client.tooltip.TooltipAmulet;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.*;
 import server.card.effect.Effect;
-import server.card.effect.EffectLastWordsSummon;
+import server.card.effect.common.EffectLastWordsSummon;
 import server.card.effect.EffectStats;
 
 import java.util.List;

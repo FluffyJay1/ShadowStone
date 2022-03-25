@@ -17,6 +17,6 @@ public class DirectionalVelocityEmissionPropertyStrategy implements EmissionProp
 
     @Override
     public void applyProperties(Particle p) {
-        p.vel.set(this.direction.copy().scale(speedRange.get(Math.random()).floatValue()));
+        p.vel.add(this.direction.copy().scale(speedRange.get(Math.random()).floatValue()));
     }
 }

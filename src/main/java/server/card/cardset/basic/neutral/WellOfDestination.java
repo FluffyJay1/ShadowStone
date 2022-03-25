@@ -10,6 +10,7 @@ import server.*;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
+import server.card.effect.common.EffectStatChange;
 import server.event.*;
 import server.resolver.*;
 import server.resolver.meta.ResolverWithDescription;

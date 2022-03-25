@@ -58,6 +58,9 @@ public class Tooltip {
     public static final Tooltip NECROMANCY = new Tooltip("Necromancy(X)",
             "If you have at least X shadows, consume them to activate a bonus effect.",
             List::of);
+    public static final Tooltip SPELLBOOST = new Tooltip("Spellboost",
+            "When you play a spell, you <b>Spellboost</b> the cards in your hand. Only certain cards can take advantage of its effects.",
+            List::of);
 
     public final String name;
     public final String description;

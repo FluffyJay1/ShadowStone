@@ -8,7 +8,7 @@ import server.card.CardRarity;
 import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
-import server.card.effect.EffectLastWordsSummon;
+import server.card.effect.common.EffectLastWordsSummon;
 
 import java.util.List;
 

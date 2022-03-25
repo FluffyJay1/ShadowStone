@@ -35,7 +35,9 @@ public class PlayCardResolver extends Resolver {
             if (this.c instanceof BoardObject) {
                 b.processEvent(rq, el, new EventPutCard(List.of(this.c), CardStatus.BOARD, this.p.team, List.of(this.position), null));
             } else {
+                // a spell
                 b.processEvent(rq, el, new EventDestroy(this.c));
+                this.resolve(b, rq, el, new SpellboostResolver(this.p.getHand()));
             }
             this.resolveQueue(b, rq, el, battlecry);
         }

@@ -6,7 +6,6 @@ public class EventIDLinker {
         return switch (id) {
             case EventAddEffect.ID -> EventAddEffect.class;
             case EventBanish.ID -> EventBanish.class;
-            case EventSetEffectStats.ID -> EventSetEffectStats.class;
             case EventCreateCard.ID -> EventCreateCard.class;
             case EventDamage.ID -> EventDamage.class;
             case EventDestroy.ID -> EventDestroy.class;
@@ -22,6 +21,8 @@ public class EventIDLinker {
             case EventPutCard.ID -> EventPutCard.class;
             case EventRemoveEffect.ID -> EventRemoveEffect.class;
             case EventRestore.ID -> EventRestore.class;
+            case EventSetEffectStats.ID -> EventSetEffectStats.class;
+            case EventSpellboost.ID -> EventSpellboost.class;
             case EventTransform.ID -> EventTransform.class;
             case EventTurnEnd.ID -> EventTurnEnd.class;
             case EventTurnStart.ID -> EventTurnStart.class;

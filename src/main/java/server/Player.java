@@ -36,11 +36,11 @@ public class Player implements StringBuildable {
     public Player(Board board, int team) {
         this.board = board;
         this.team = team;
-        this.deck = new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.DECK; c.team = this.team;});
-        this.hand = new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.HAND; c.team = this.team;});
-        this.playArea = new HistoricalList<>(new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.BOARD; c.team = this.team;}));
-        this.graveyard = new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.GRAVEYARD; c.team = this.team;});
-        this.banished = new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.BANISHED; c.team = this.team;});
+        this.deck = new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.DECK; c.team = this.team; c.player = this;});
+        this.hand = new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.HAND; c.team = this.team; c.player = this;});
+        this.playArea = new HistoricalList<>(new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.BOARD; c.team = this.team; c.player = this;}));
+        this.graveyard = new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.GRAVEYARD; c.team = this.team; c.player = this;});
+        this.banished = new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.BANISHED; c.team = this.team; c.player = this;});
         this.mana = 0;
         this.maxmana = 3;
         this.maxmaxmana = 10;
@@ -81,6 +81,7 @@ public class Player implements StringBuildable {
             leader.setIndex(0);
             leader.status = CardStatus.LEADER;
             leader.team = this.team;
+            leader.player = this;
         }
     }
 
@@ -94,6 +95,7 @@ public class Player implements StringBuildable {
             up.setIndex(0);
             up.status = CardStatus.UNLEASHPOWER;
             up.team = this.team;
+            up.player = this;
         }
     }
 

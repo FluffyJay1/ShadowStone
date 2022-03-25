@@ -9,6 +9,7 @@ import org.newdawn.slick.geom.Vector2f;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
+import server.card.effect.common.EffectStatChange;
 import server.event.*;
 import server.resolver.*;
 import server.resolver.meta.ResolverWithDescription;

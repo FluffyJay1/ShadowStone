@@ -14,7 +14,7 @@ public class CardSelectPanel extends UIBox {
     Tooltip currTooltip;
     UICard lastCardSelected;
     final TooltipDisplayPanel tooltipPanel;
-    final Text effects;
+    final Text effects, info;
     final CardSelectTooltipPanel tooltipReferencePanel;
 
     public CardSelectPanel(UI ui, UIBoard b) {
@@ -46,6 +46,9 @@ public class CardSelectPanel extends UIBox {
         this.effects = new Text(ui, new Vector2f(-this.scroll.getWidth(true) / 2, 200), "effects", this.getWidth(true),
                 20, 24, -1, -1);
         this.scroll.addChild(this.effects);
+        this.info = new Text(ui, new Vector2f(-this.scroll.getWidth(true) / 2, 200), "info:", this.getWidth(true),
+                20, 24, -1, -1);
+        this.scroll.addChild(this.info);
     }
 
     @Override
@@ -63,6 +66,23 @@ public class CardSelectPanel extends UIBox {
                 this.tooltipPanel.setTooltip(this.currTooltip);
                 this.scroll.childoffset.y = 0;
             }
+            float lastBottom = this.tooltipPanel.getBottom(false, false);
+            if (this.ub.isVisible()) {
+                this.ub.setPos(new Vector2f(0, lastBottom + 32), 1);
+                lastBottom += this.ub.getHeight(false) + 32;
+            }
+            String infoText = "";
+            if (this.uib.selectedCard.getCard().finalStatEffects.getStat(EffectStats.SPELLBOOSTABLE) > 0) {
+                infoText = "Spellboosts: " + this.uib.selectedCard.getCard().spellboosts;
+            }
+            if (!infoText.isEmpty()) {
+                this.info.setVisible(true);
+                this.info.setText(infoText);
+                this.info.setPos(new Vector2f(-this.getWidth(true) / 2, lastBottom + 10), 1);
+                lastBottom += this.info.getHeight(false) + 10;
+            } else {
+                this.info.setVisible(false);
+            }
             StringBuilder effectstext = new StringBuilder("Effects:\n");
             for (Effect e : this.uib.selectedCard.getCard().getEffects(false)) {
                 if (!e.description.isEmpty()) {
@@ -70,15 +90,8 @@ public class CardSelectPanel extends UIBox {
                 }
             }
             this.effects.setText(effectstext.toString());
-            if (this.ub.isVisible()) {
-                this.ub.setPos(new Vector2f(0, this.tooltipPanel.getBottom(false, false) + 32), 1);
-                this.effects.setPos(
-                        new Vector2f(-this.getWidth(true) / 2, this.ub.getBottom(false, false) + 10),
-                        0.99);
-            } else {
-                this.effects.setPos(new Vector2f(-this.getWidth(true) / 2,
-                        this.tooltipPanel.getBottom(false, false) + 10), 0.99);
-            }
+            this.effects.setPos(new Vector2f(-this.getWidth(true) / 2,
+                    lastBottom + 10), 0.99);
         } else {
             this.setVisible(false);
         }

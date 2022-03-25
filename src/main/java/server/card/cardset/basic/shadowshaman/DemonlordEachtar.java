@@ -70,9 +70,10 @@ public class DemonlordEachtar extends MinionText {
                 if (this.cachedInstances == null) {
                     this.cachedInstances = List.of(new Zombie().constructInstance(this.owner.board));
                 }
+                int numSummoned = this.owner.player.shadows / 3;
                 double sum = 0;
                 double multiplier = 0.9;
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < numSummoned; i++) {
                     sum += this.cachedInstances.get(0).getValue(refs - 1) * multiplier * 0.8;
                     multiplier *= multiplier; // each card has lower and lower chance of being able to fit
                 }

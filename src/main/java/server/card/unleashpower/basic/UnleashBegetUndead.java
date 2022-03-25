@@ -8,6 +8,7 @@ import server.*;
 import server.card.*;
 import server.card.cardset.basic.shadowshaman.Skeleton;
 import server.card.effect.*;
+import server.card.effect.common.EffectLastWordsSummon;
 import server.event.*;
 import server.resolver.*;
 import server.resolver.meta.ResolverWithDescription;

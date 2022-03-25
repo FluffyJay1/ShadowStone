@@ -17,7 +17,7 @@
 16: Unleash
 17: Necromancy
 18: Banish
-19: Battlecry - DELETED, see event groups
+19: Spellboost
 20: LastWords - DELETED, see event groups
 21: Flag - DELETED, see event groups
 22: RemoveEffect

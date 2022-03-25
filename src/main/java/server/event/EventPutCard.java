@@ -27,6 +27,7 @@ public class EventPutCard extends Event {
     private int prevEpoch1, prevEpoch2;
     private List<Boolean> prevSick;
     private List<Boolean> oldAlive;
+    private List<Integer> prevSpellboosts;
     public List<Boolean> attempted; // i.e. removed from original position
     public List<Boolean> successful; // i.e. added to intended position i.e. not killed
     final List<BoardObject> cardsEnteringPlay = new ArrayList<>();
@@ -58,6 +59,7 @@ public class EventPutCard extends Event {
         this.prevAttacks = new ArrayList<>(this.cards.size());
         this.prevSick = new ArrayList<>(this.cards.size());
         this.oldAlive = new ArrayList<>(this.cards.size());
+        this.prevSpellboosts = new ArrayList<>(this.cards.size());
         this.attempted = new ArrayList<>(this.cards.size());
         this.successful = new ArrayList<>(this.cards.size());
         this.prevEpoch1 = b.getPlayer(1).getPlayArea().getCurrentEpoch();
@@ -75,6 +77,7 @@ public class EventPutCard extends Event {
             this.prevAttacks.add(0);
             this.prevSick.add(true);
             this.oldAlive.add(card.alive);
+            this.prevSpellboosts.add(card.spellboosts);
             this.attempted.add(false);
             this.successful.add(false);
             if (card instanceof BoardObject) {
@@ -129,6 +132,7 @@ public class EventPutCard extends Event {
             }
             if (card.status.ordinal() < this.status.ordinal()) {
                 this.prevEffects.set(i, card.removeAdditionalEffects());
+                card.spellboosts = 0;
                 if (card instanceof Minion) {
                     ((Minion) card).health = card.finalStatEffects.getStat(EffectStats.HEALTH);
                     ((Minion) card).attacksThisTurn = 0;
@@ -180,6 +184,7 @@ public class EventPutCard extends Event {
                 for (int j = 0; j < basicEffects.size(); j++) {
                     basicEffects.get(j).mute = this.prevMute.get(i).get(j);
                 }
+                card.spellboosts = prevSpellboosts.get(i);
                 if (card instanceof BoardObject) {
                     BoardObject bo = (BoardObject) card;
                     bo.lastBoardPos = this.prevLastBoardPos.get(i);

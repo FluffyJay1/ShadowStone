@@ -1,10 +1,11 @@
-package server.card.effect;
+package server.card.effect.common;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import server.*;
 import server.card.*;
+import server.card.effect.Effect;
 import server.event.*;
 import server.resolver.*;
 import server.resolver.meta.ResolverWithDescription;

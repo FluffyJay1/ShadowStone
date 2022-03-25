@@ -1,4 +1,7 @@
-package server.card.effect;
+package server.card.effect.common;
+
+import server.card.effect.Effect;
+import server.card.effect.EffectStats;
 
 public class EffectStatChange extends Effect {
 

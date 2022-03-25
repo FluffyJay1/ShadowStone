@@ -10,6 +10,7 @@ import server.*;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
+import server.card.effect.common.EffectLastWordsAlliedBlast;
 import server.card.target.TargetList;
 import server.event.*;
 import server.resolver.*;

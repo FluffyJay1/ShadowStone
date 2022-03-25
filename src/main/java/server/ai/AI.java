@@ -200,9 +200,9 @@ public class AI extends Thread {
     }
 
     private List<Card> chooseMulligan() {
-        // mulligan away cards that cost more than 3
+        // mulligan away cards that cost more than 3, unless they have spellboost
         return this.b.getPlayer(this.b.localteam).getHand().stream()
-                .filter(c -> c.finalStatEffects.getStat(EffectStats.COST) > 3)
+                .filter(c -> c.finalStatEffects.getStat(EffectStats.COST) > 3 && c.finalStatEffects.getStat(EffectStats.SPELLBOOSTABLE) == 0)
                 .collect(Collectors.toList());
     }
 
