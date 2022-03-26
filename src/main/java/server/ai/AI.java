@@ -37,8 +37,6 @@ public class AI extends Thread {
 
     public static final double VALUE_PER_CARD_IN_HAND = 1;
 
-    public static final double VALUE_PER_1_1_STATS = 1;
-
     /*
      * We can't expect the AI to traverse every single possible node in the decision
      * tree before making a move (especially considering rng), so after a certain
@@ -864,6 +862,35 @@ public class AI extends Thread {
             }
         }
         return (localmax - enemymax) * Math.max(localmaxmax - localmax, enemymaxmax - enemymax);
+    }
+
+    /**
+     * Helper func to determine the mana value of an effect that summons stuff
+     * on the board
+     * @param instances Instance of the cards to summon in order (probably cached)
+     * @param refs Max depth of calculations when referencing other cards
+     * @return The approximate mana value
+     */
+    public static double valueForSummoning(List<Card> instances, int refs) {
+        // behold magic numbers
+        double sum = 0;
+        double multiplier = 0.94;
+        for (Card c : instances) {
+            sum += c.getValue(refs - 1) * multiplier;
+            multiplier *= multiplier; // each card has lower and lower chance of being able to fit
+        }
+        return sum;
+    }
+
+    /**
+     * Helper func to determine the mana value of a stat buff
+     * @param attack The attack buff
+     * @param magic The magic buff
+     * @param health The health buff
+     * @return The approximate mana value
+     */
+    public static double valueForBuff(int attack, int magic, int health) {
+        return attack * 0.5 + health * 0.5 + magic * 0.3;
     }
 
     // kekl

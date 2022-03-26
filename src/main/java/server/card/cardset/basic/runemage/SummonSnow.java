@@ -2,7 +2,9 @@ package server.card.cardset.basic.runemage;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import server.Player;
 import server.ServerBoard;
+import server.ai.AI;
 import server.card.*;
 import server.card.cardset.basic.shadowshaman.Zombie;
 import server.card.effect.Effect;
@@ -48,16 +50,10 @@ public class SummonSnow extends SpellText {
             @Override
             public double getBattlecryValue(int refs) {
                 if (this.cachedInstances == null) {
-                    this.cachedInstances = List.of(new Snowman().constructInstance(this.owner.board));
+                    this.cachedInstances = Collections.nCopies(Player.MAX_MAX_BOARD_SIZE, new Snowman().constructInstance(this.owner.board));
                 }
                 int numSummoned = this.owner.spellboosts + 1;
-                double sum = 0;
-                double multiplier = 0.9;
-                for (int i = 0; i < numSummoned; i++) {
-                    sum += this.cachedInstances.get(0).getValue(refs - 1) * multiplier * 0.8;
-                    multiplier *= multiplier; // each card has lower and lower chance of being able to fit
-                }
-                return sum;
+                return AI.valueForSummoning(this.cachedInstances.subList(0, Math.min(numSummoned, this.cachedInstances.size())), refs);
             }
         });
     }

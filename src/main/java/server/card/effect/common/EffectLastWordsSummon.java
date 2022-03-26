@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import server.*;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.event.*;
@@ -53,14 +54,7 @@ public class EffectLastWordsSummon extends Effect {
                     .map(bot -> bot.constructInstance(this.owner.board))
                     .collect(Collectors.toList());
         }
-        // behold magic numbers
-        double sum = 0;
-        double multiplier = 0.9;
-        for (Card c : this.cachedInstances) {
-            sum += c.getValue(refs - 1) * multiplier * 0.8;
-            multiplier *= multiplier; // each card has lower and lower chance of being able to fit
-        }
-        return sum;
+        return AI.valueForSummoning(this.cachedInstances, refs);
     }
 
     @Override

@@ -47,7 +47,7 @@ public class WellOfDestination extends AmuletText {
 
             @Override
             public double getPresenceValue(int refs) {
-                return AI.VALUE_PER_1_1_STATS * 7 / 2.;
+                return AI.valueForBuff(1, 1, 1) * 7 / 2.;
             }
         });
     }

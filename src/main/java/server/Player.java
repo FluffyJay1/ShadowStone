@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class Player implements StringBuildable {
+    // if we allow increasing the board size, we definitely can't go above this number
+    public static final int MAX_MAX_BOARD_SIZE = 10;
     public static final int DEFAULT_MAX_HAND_SIZE = 10;
     public static final int DEFAULT_MAX_BOARD_SIZE = 6;
     public Player realPlayer;

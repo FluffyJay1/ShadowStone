@@ -67,7 +67,7 @@ public class WeatheredVanguard extends MinionText {
             @Override
             public double getPresenceValue(int refs) {
                 // can hit 6 units, avg probably hit half of them, and unleash costs 2
-                return AI.VALUE_PER_1_1_STATS * 6 / 2. / 2.;
+                return AI.valueForBuff(1, 0, 1) * 6 / 2. / 2.;
             }
         });
     }

@@ -6,6 +6,7 @@ import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationD
 import org.newdawn.slick.geom.Vector2f;
 import server.Player;
 import server.ServerBoard;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
@@ -19,6 +20,7 @@ import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,16 +71,11 @@ public class DemonlordEachtar extends MinionText {
             @Override
             public double getBattlecryValue(int refs) {
                 if (this.cachedInstances == null) {
-                    this.cachedInstances = List.of(new Zombie().constructInstance(this.owner.board));
+                    this.cachedInstances = Collections.nCopies(Player.MAX_MAX_BOARD_SIZE, new Zombie().constructInstance(this.owner.board));
                 }
                 int numSummoned = this.owner.player.shadows / 3;
-                double sum = 0;
-                double multiplier = 0.9;
-                for (int i = 0; i < numSummoned; i++) {
-                    sum += this.cachedInstances.get(0).getValue(refs - 1) * multiplier * 0.8;
-                    multiplier *= multiplier; // each card has lower and lower chance of being able to fit
-                }
-                return sum + 10 / 2;
+                return AI.valueForSummoning(this.cachedInstances.subList(0, Math.min(numSummoned, this.cachedInstances.size())), refs)
+                        + AI.valueForBuff(2, 0, 0) / 2;
             }
         });
     }
