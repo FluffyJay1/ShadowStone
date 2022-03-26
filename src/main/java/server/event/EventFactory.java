@@ -27,6 +27,7 @@ public class EventFactory {
             case EventRestore.ID -> EventRestore.fromString(b, st);
             case EventSetEffectStats.ID -> EventSetEffectStats.fromString(b, st);
             case EventSpellboost.ID -> EventSpellboost.fromString(b, st);
+            case EventSpend.ID -> EventSpend.fromString(b, st);
             case EventTransform.ID -> EventTransform.fromString(b, st);
             case EventTurnEnd.ID -> EventTurnEnd.fromString(b, st);
             case EventTurnStart.ID -> EventTurnStart.fromString(b, st);

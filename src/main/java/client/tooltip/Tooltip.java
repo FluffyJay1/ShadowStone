@@ -61,6 +61,9 @@ public class Tooltip {
     public static final Tooltip SPELLBOOST = new Tooltip("Spellboost",
             "When you play a spell, you <b>Spellboost</b> the cards in your hand. Only certain cards can take advantage of its effects.",
             List::of);
+    public static final Tooltip SPEND = new Tooltip("Spend(X)",
+            "If you have at least X mana leftover, consume them to activate bonus effects.",
+            List::of);
 
     public final String name;
     public final String description;

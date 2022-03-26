@@ -18,7 +18,7 @@
 17: Necromancy
 18: Banish
 19: Spellboost
-20: LastWords - DELETED, see event groups
+20: Spend
 21: Flag - DELETED, see event groups
 22: RemoveEffect
 23: EnterPlay - DELETED

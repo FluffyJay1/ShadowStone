@@ -1,4 +1,4 @@
-enhance
+separate minion attack, leader attack, or both
 AI difficulty adjustment
 Figure out why the game is eating cpu and gpu
 relpos lol
