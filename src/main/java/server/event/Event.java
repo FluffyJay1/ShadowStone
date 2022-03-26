@@ -40,24 +40,6 @@ public abstract class Event {
         return this.id + Game.EVENT_END;
     }
 
-    public static Event createFromString(Board b, StringTokenizer st) {
-        int id = Integer.parseInt(st.nextToken());
-        if (id == 0) {
-            return null;
-        } else {
-            Class<? extends Event> c = EventIDLinker.getClass(id);
-            Event e = null;
-            try {
-                e = (Event) c.getMethod("fromString", Board.class, StringTokenizer.class).invoke(null, b, st);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                    | NoSuchMethodException | SecurityException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            } // SEND HELP
-            return e;
-        }
-    }
-
     public boolean conditions() {
         return true;
     }

@@ -199,7 +199,7 @@ public abstract class Board {
                 } else if (firstChar == EventGroup.POP_TOKEN) {
                     this.popEventGroup();
                 } else {
-                    Event e = Event.createFromString(this, st);
+                    Event e = EventFactory.fromString(this, st);
                     this.processEvent(e);
                 }
             }

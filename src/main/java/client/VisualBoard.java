@@ -193,7 +193,7 @@ public class VisualBoard extends Board implements
                 EventGroup group = this.popEventGroup();
                 this.uiBoard.onEventGroupPopped(group);
             } else {
-                Event currentEvent = Event.createFromString(this, new StringTokenizer(eventOrGroup));
+                Event currentEvent = EventFactory.fromString(this, new StringTokenizer(eventOrGroup));
                 if (currentEvent != null && currentEvent.conditions()) {
                     this.processEvent(currentEvent);
                     // EventCreateCard automatically creates some uicards, we need to cleanup
@@ -231,7 +231,7 @@ public class VisualBoard extends Board implements
                 EventGroup group = this.popEventGroup();
                 this.uiBoard.onEventGroupPopped(group);
             } else {
-                Event currentEvent = Event.createFromString(this, st);
+                Event currentEvent = EventFactory.fromString(this, st);
                 if (currentEvent != null && currentEvent.conditions()) {
                     anim = this.eventAnimationFactory.newAnimation(currentEvent);
                     if (anim == null) {
