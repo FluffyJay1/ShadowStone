@@ -64,6 +64,18 @@ public class Tooltip {
     public static final Tooltip SPEND = new Tooltip("Spend(X)",
             "If you have at least X mana leftover, consume them to activate bonus effects.",
             List::of);
+    public static final Tooltip STRIKE = new Tooltip("Strike",
+            "<b>Strike</b> effects on a minion activate whenever they attack.",
+            List::of);
+    public static final Tooltip MINIONSTRIKE = new Tooltip("Minion Strike",
+            "<b>Minion Strike</b> effects on a minion activate whenever they attack another minion.",
+            List::of);
+    public static final Tooltip LEADERSTRIKE = new Tooltip("Leader Strike",
+            "<b>Leader Strike</b> effects on a minion activate whenever they attack a leader.",
+            List::of);
+    public static final Tooltip RETALIATE = new Tooltip("Retaliate",
+            "<b>Retaliate</b> effects on a minion activate whenever they are attacked.",
+            List::of);
 
     public final String name;
     public final String description;

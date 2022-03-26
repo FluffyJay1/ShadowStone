@@ -19,21 +19,21 @@ import java.util.stream.Collectors;
 
 public class Epsilon extends MinionText {
     public static final String NAME = "Add-on: Epsilon";
-    public static final String DESCRIPTION = "When this minion attacks, deal 2 damage to all enemies.";
+    public static final String DESCRIPTION = "<b>Strike</b>: Deal 2 damage to all enemies.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/special/epsilon.png",
             CRAFT, RARITY, 4, 2, 2, 2, true, Epsilon.class,
             new Vector2f(), -1, EventAnimationDamageOff.class,
-            () -> List.of(Tooltip.RUSH));
+            () -> List.of(Tooltip.MINIONSTRIKE));
 
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public ResolverWithDescription onAttack(Minion target) {
+            public ResolverWithDescription strike(Minion target) {
                 Effect effect = this;
-                String resolverDescription = "When this minion attacks, deal 2 damage to all enemies.";
+                String resolverDescription = "<b>Strike</b>: Deal 2 damage to all enemies.";
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
@@ -45,7 +45,7 @@ public class Epsilon extends MinionText {
 
             @Override
             public double getPresenceValue(int refs) {
-                return AI.VALUE_PER_HEAL * 5 / 2;
+                return AI.VALUE_PER_DAMAGE * 14 / 2;
             }
         });
     }

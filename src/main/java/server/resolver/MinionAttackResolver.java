@@ -25,20 +25,21 @@ public class MinionAttackResolver extends Resolver {
         EventGroup attackOrdered = new EventGroup(EventGroupType.MINIONATTACKORDER, List.of(this.m1, this.m2));
         b.pushEventGroup(attackOrdered);
         b.processEvent(rq, el, new EventMinionAttack(this.m1, this.m2));
-        if (this.m1.alive && this.m1.isInPlay()) {
-            ResolverQueue queue = this.m1.onAttack(this.m2);
+        ResolverQueue queue = this.m1.strike(this.m2);
+        this.resolveQueue(b, queue, el, queue);
+        if (this.m2 instanceof Leader) {
+            queue = this.m1.leaderStrike((Leader) this.m2);
+            this.resolveQueue(b, queue, el, queue);
+        } else {
+            queue = this.m1.minionStrike(this.m2);
+            this.resolveQueue(b, queue, el, queue);
+            queue = this.m1.clash(this.m2);
             this.resolveQueue(b, queue, el, queue);
         }
-        if (this.m1.alive && this.m1.isInPlay() && !(this.m2 instanceof Leader)) {
-            ResolverQueue queue = this.m1.clash(this.m2);
-            this.resolveQueue(b, queue, el, queue);
-        }
-        if (this.m2.alive && this.m2.isInPlay()) {
-            ResolverQueue queue = this.m2.onAttacked(this.m1);
-            this.resolveQueue(b, queue, el, queue);
-        }
-        if (this.m2.alive && this.m2.isInPlay() && !(this.m1 instanceof Leader)) {
-            ResolverQueue queue = this.m2.clash(this.m1);
+        queue = this.m2.retaliate(this.m1);
+        this.resolveQueue(b, queue, el, queue);
+        if (!(this.m1 instanceof Leader)) {
+            queue = this.m2.clash(this.m1);
             this.resolveQueue(b, queue, el, queue);
         }
         if (this.m1.alive && this.m1.isInPlay() && this.m2.alive && this.m2.isInPlay()) {

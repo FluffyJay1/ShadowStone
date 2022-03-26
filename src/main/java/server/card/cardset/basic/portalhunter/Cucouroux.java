@@ -21,13 +21,13 @@ import java.util.List;
 public class Cucouroux extends MinionText {
     public static final String NAME = "Cucouroux, Green Gunsmith";
     public static final String DESCRIPTION = "<b>Battlecry</b>: <b>Spend(2)</b> to summon a <b>Camieux, Gunpowder Gal</b>.\n" +
-            "When this attacks a minion, deal 2 damage to it.";
+            "<b>Minion Strike</b>: Deal 2 damage to the attacked minion first.";
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/cucouroux.png",
             CRAFT, RARITY, 3, 3, 1, 2, true, Cucouroux.class,
             new Vector2f(160, 145), 1.4, null,
-            () -> List.of(Tooltip.BATTLECRY, Tooltip.SPEND, Camieux.TOOLTIP));
+            () -> List.of(Tooltip.BATTLECRY, Tooltip.SPEND, Camieux.TOOLTIP, Tooltip.MINIONSTRIKE));
 
     @Override
     protected List<Effect> getSpecialEffects() {
@@ -45,9 +45,9 @@ public class Cucouroux extends MinionText {
             }
 
             @Override
-            public ResolverWithDescription onAttack(Minion target) {
+            public ResolverWithDescription minionStrike(Minion target) {
                 Effect effect = this;
-                String resolverDescription = "When this attacks a minion, deal 2 damage to it.";
+                String resolverDescription = "<b>Minion Strike</b>: Deal 2 damage to the attacked minion first.";
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {

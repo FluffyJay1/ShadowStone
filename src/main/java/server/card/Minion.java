@@ -129,24 +129,34 @@ public class Minion extends BoardObject {
         return this.getTargetedResolvers(EventGroupType.UNLEASH, List.of(this), targetsList, Effect::unleash, eff -> !eff.removed && ((Minion) eff.owner).isInPlay());
     }
 
-    public ResolverQueue onAttack(Minion target) {
-        return this.getResolvers(EventGroupType.ONATTACK, List.of(this, target), e -> e.onAttack(target),
-                eff -> !eff.removed && ((Minion) eff.owner).isInPlay() && target.isInPlay());
+    public ResolverQueue strike(Minion target) {
+        return this.getResolvers(EventGroupType.ONATTACK, List.of(this, target), e -> e.strike(target),
+                eff -> !eff.removed && eff.owner.isInPlay() && target.isInPlay());
     }
 
-    public ResolverQueue onAttacked(Minion target) {
-        return this.getResolvers(EventGroupType.ONATTACKED, List.of(this, target), e -> e.onAttacked(target),
-                eff -> !eff.removed && ((Minion) eff.owner).isInPlay() && target.isInPlay());
+    public ResolverQueue minionStrike(Minion target) {
+        return this.getResolvers(EventGroupType.ONATTACK, List.of(this, target), e -> e.minionStrike(target),
+                eff -> !eff.removed && eff.owner.isInPlay() && target.isInPlay());
+    }
+
+    public ResolverQueue leaderStrike(Leader target) {
+        return this.getResolvers(EventGroupType.ONATTACK, List.of(this, target), e -> e.leaderStrike(target),
+                eff -> !eff.removed && eff.owner.isInPlay() && target.isInPlay());
+    }
+
+    public ResolverQueue retaliate(Minion target) {
+        return this.getResolvers(EventGroupType.ONATTACKED, List.of(this, target), e -> e.retaliate(target),
+                eff -> !eff.removed && eff.owner.isInPlay() && target.isInPlay());
     }
 
     public ResolverQueue clash(Minion target) {
         return this.getResolvers(EventGroupType.CLASH, List.of(this, target), e -> e.clash(target),
-                eff -> !eff.removed && ((Minion) eff.owner).isInPlay() && target.isInPlay());
+                eff -> !eff.removed && eff.owner.isInPlay() && target.isInPlay());
     }
 
     public ResolverQueue onDamaged(int damage) {
         return this.getResolvers(EventGroupType.FLAG, List.of(this), e -> e.onDamaged(damage),
-                eff -> !eff.removed && ((Minion) eff.owner).isInPlay());
+                eff -> !eff.removed && eff.owner.isInPlay());
     }
 
     @Override

@@ -3,7 +3,6 @@ package server.card.effect;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import client.*;
@@ -135,12 +134,22 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     }
 
     // can assume that both minions are in play
-    public ResolverWithDescription onAttack(Minion target) {
+    public ResolverWithDescription strike(Minion target) {
         return null;
     }
 
     // can assume that both minions are in play
-    public ResolverWithDescription onAttacked(Minion target) {
+    public ResolverWithDescription minionStrike(Minion target) {
+        return null;
+    }
+
+    // can assume that both minions are in play
+    public ResolverWithDescription leaderStrike(Leader target) {
+        return null;
+    }
+
+    // can assume that both minions are in play
+    public ResolverWithDescription retaliate(Minion target) {
         return null;
     }
 

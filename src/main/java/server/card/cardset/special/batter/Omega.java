@@ -18,21 +18,21 @@ import java.util.List;
 
 public class Omega extends MinionText {
     public static final String NAME = "Add-on: Omega";
-    public static final String DESCRIPTION = "When this minion attacks, restore 5 health to your leader.";
+    public static final String DESCRIPTION = "<b>Strike</b>: Restore 5 health to your leader.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/special/omega.png",
             CRAFT, RARITY, 4, 2, 2, 2, true, Omega.class,
             new Vector2f(), -1, EventAnimationDamageOff.class,
-            () -> List.of(Tooltip.RUSH));
+            () -> List.of(Tooltip.STRIKE));
 
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public ResolverWithDescription onAttack(Minion target) {
+            public ResolverWithDescription strike(Minion target) {
                 Effect effect = this;
-                String resolverDescription = "When this minion attacks, restore 5 health to your leader.";
+                String resolverDescription = "<b>Strike</b>: Restore 5 health to your leader.";
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {

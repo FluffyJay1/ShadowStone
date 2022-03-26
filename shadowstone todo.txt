@@ -1,7 +1,9 @@
-separate minion attack, leader attack, or both
+uniform particle distribution
 AI difficulty adjustment
 Figure out why the game is eating cpu and gpu
 relpos lol
 drain/lifesteal
 stealth
 shield
+can't attack
+effect ward

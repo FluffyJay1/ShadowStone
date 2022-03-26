@@ -19,13 +19,13 @@ import java.util.List;
 
 public class Batter extends MinionText {
     public static final String NAME = "The Batter";
-    public static final String DESCRIPTION = "<b>Rush</b>.\nWhen this attacks a minion, <b>Transform</b> it into a <b>Spectre</b> instead.";
+    public static final String DESCRIPTION = "<b>Rush</b>.\n<b>Minion Strike</b>: <b>Transform</b> the attacked minion into a <b>Spectre</b> instead.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/batter.png",
             CRAFT, RARITY, 5, 2, 2, 2, true, Batter.class,
             new Vector2f(112, 120), 2, EventAnimationDamageOff.class,
-            () -> List.of(Tooltip.RUSH, Tooltip.TRANSFORM, Spectre.TOOLTIP));
+            () -> List.of(Tooltip.RUSH, Tooltip.MINIONSTRIKE, Tooltip.TRANSFORM, Spectre.TOOLTIP));
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
@@ -33,8 +33,8 @@ public class Batter extends MinionText {
                 .build()
         ) {
             @Override
-            public ResolverWithDescription onAttack(Minion target) {
-                String resolverDescription = "When this attacks a minion, <b>Transform</b> it into a <b>Spectre</b> instead.";
+            public ResolverWithDescription minionStrike(Minion target) {
+                String resolverDescription = "<b>Minion Strike</b>: <b>Transform</b> it into a <b>Spectre</b> instead.";
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
