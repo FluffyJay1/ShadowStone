@@ -32,9 +32,9 @@ public class MoltenGiant extends MinionText {
             public EffectStats calculateStats() {
                 Player player = owner.board.getPlayer(owner.team);
                 int missing = player.getLeader().map(l -> l.finalStatEffects.getStat(EffectStats.HEALTH) - l.health).orElse(0);
-                return new EffectStats(
-                        new EffectStats.Setter(EffectStats.COST, true, -missing)
-                );
+                return EffectStats.builder()
+                        .change(EffectStats.COST, -missing)
+                        .build();
             }
 
             @Override

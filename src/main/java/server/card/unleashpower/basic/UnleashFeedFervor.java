@@ -25,9 +25,9 @@ public class UnleashFeedFervor extends UnleashPowerText {
             public EffectStats calculateStats() {
                 Player p = this.owner.board.getPlayer(this.owner.team);
                 if (p.overflow()) {
-                    return new EffectStats(
-                            new EffectStats.Setter(EffectStats.COST, true, -1)
-                    );
+                    return EffectStats.builder()
+                            .change(EffectStats.COST, -1)
+                            .build();
                 }
                 return new EffectStats();
             }

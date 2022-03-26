@@ -24,9 +24,10 @@ public class Alpha extends MinionText {
 
     @Override
     protected List<Effect> getSpecialEffects() {
-        return List.of(new Effect(DESCRIPTION, new EffectStats(
-                new EffectStats.Setter(EffectStats.BANE, false, 1)
-        )));
+        return List.of(new Effect(DESCRIPTION, EffectStats.builder()
+                .set(EffectStats.BANE, 1)
+                .build()
+        ));
     }
 
     @Override

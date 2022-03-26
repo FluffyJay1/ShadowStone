@@ -27,9 +27,10 @@ public class GenesisOfLegend extends AmuletText {
 
     @Override
     protected List<Effect> getSpecialEffects() {
-        return List.of(new Effect(DESCRIPTION, new EffectStats(
-                new EffectStats.Setter(EffectStats.COUNTDOWN, false, 3)
-        )) {
+        return List.of(new Effect(DESCRIPTION, EffectStats.builder()
+                .set(EffectStats.COUNTDOWN, 3)
+                .build()
+        ) {
             @Override
             public ResolverWithDescription onTurnEnd() {
                 String resolverDescription = "At the end of your turn, give a random allied minion +0/+0/+1 and <b>Bane</b>.";

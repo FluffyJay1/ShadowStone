@@ -55,9 +55,10 @@ public class WoodOfBrambles extends AmuletText {
             public double getPresenceValue(int refs) {
                 return 2;
             }
-        }, new Effect("", new EffectStats(
-                new EffectStats.Setter(EffectStats.COUNTDOWN, false, 2)
-        )));
+        }, new Effect("", EffectStats.builder()
+                .set(EffectStats.COUNTDOWN, 2)
+                .build()
+        ));
     }
 
     @Override

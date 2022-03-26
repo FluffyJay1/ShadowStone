@@ -42,14 +42,16 @@ public class DungeonRunGameRunner implements Runnable {
             @Override
             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                 b.getPlayer(localteam).getLeader().ifPresent(l -> {
-                    this.resolve(b, rq, el, new AddEffectResolver(l, new Effect("", new EffectStats(
-                            new EffectStats.Setter(EffectStats.HEALTH, true, player.getBonusHealth())
-                    ))));
+                    this.resolve(b, rq, el, new AddEffectResolver(l, new Effect("", EffectStats.builder()
+                            .change(EffectStats.HEALTH, player.getBonusHealth())
+                            .build()
+                    )));
                 });
                 b.getPlayer(localteam * -1).getLeader().ifPresent(l -> {
-                    this.resolve(b, rq, el, new AddEffectResolver(l, new Effect("", new EffectStats(
-                            new EffectStats.Setter(EffectStats.HEALTH, true, enemy.getBonusHealth())
-                    ))));
+                    this.resolve(b, rq, el, new AddEffectResolver(l, new Effect("", EffectStats.builder()
+                            .change(EffectStats.HEALTH, enemy.getBonusHealth())
+                            .build()
+                    )));
                 });
             }
         }, 0);

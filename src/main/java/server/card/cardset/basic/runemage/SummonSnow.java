@@ -27,9 +27,10 @@ public class SummonSnow extends SpellText {
             () -> List.of(Snowman.TOOLTIP, Tooltip.SPELLBOOST));
     @Override
     protected List<Effect> getSpecialEffects() {
-        return List.of(new Effect(DESCRIPTION, new EffectStats(
-                new EffectStats.Setter(EffectStats.SPELLBOOSTABLE, false, 1)
-        )) {
+        return List.of(new Effect(DESCRIPTION, EffectStats.builder()
+                .set(EffectStats.SPELLBOOSTABLE, 1)
+                .build()
+        ) {
             private List<Card> cachedInstances; // for getBattlecryValue, preview the value of the created cards
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {

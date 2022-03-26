@@ -23,9 +23,10 @@ public class Spectre extends MinionText {
             () -> List.of(Tooltip.RUSH));
     @Override
     protected List<Effect> getSpecialEffects() {
-        return List.of(new Effect(DESCRIPTION, new EffectStats(
-                new EffectStats.Setter(EffectStats.RUSH, false, 1)
-        )));
+        return List.of(new Effect(DESCRIPTION, EffectStats.builder()
+                .set(EffectStats.RUSH, 1)
+                .build()
+        ));
     }
 
     @Override

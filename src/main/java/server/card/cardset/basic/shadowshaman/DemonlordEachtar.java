@@ -53,10 +53,11 @@ public class DemonlordEachtar extends MinionText {
                             lastPos++;
                         }
                         String buffDescription = "+2/+0/+0 and <b>Rush</b> until the end of the turn (from <b>Demonlord Eachtar's Battlecry</b>).";
-                        Effect buff = new EffectUntilTurnEnd(buffDescription, new EffectStats(
-                                new EffectStats.Setter(EffectStats.ATTACK, true, 2),
-                                new EffectStats.Setter(EffectStats.RUSH, false, 1)
-                        ));
+                        Effect buff = new EffectUntilTurnEnd(buffDescription, EffectStats.builder()
+                                .change(EffectStats.ATTACK, 2)
+                                .set(EffectStats.RUSH, 1)
+                                .build()
+                        );
                         List<Minion> relevant = b.getMinions(owner.team, false, true)
                                 .filter(m -> m != owner)
                                 .collect(Collectors.toList());

@@ -28,8 +28,9 @@ public class Batter extends MinionText {
             () -> List.of(Tooltip.RUSH, Tooltip.TRANSFORM, Spectre.TOOLTIP));
     @Override
     protected List<Effect> getSpecialEffects() {
-        return List.of(new Effect(DESCRIPTION, new EffectStats(
-                new EffectStats.Setter(EffectStats.RUSH, false, 1))
+        return List.of(new Effect(DESCRIPTION, EffectStats.builder()
+                .set(EffectStats.RUSH, 1)
+                .build()
         ) {
             @Override
             public ResolverWithDescription onAttack(Minion target) {

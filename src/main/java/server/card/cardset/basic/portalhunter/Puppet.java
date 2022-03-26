@@ -21,10 +21,11 @@ public class Puppet extends MinionText {
 
     @Override
     protected List<Effect> getSpecialEffects() {
-        return List.of(new Effect(DESCRIPTION, new EffectStats(
-                new EffectStats.Setter(EffectStats.RUSH, false, 1),
-                new EffectStats.Setter(EffectStats.COUNTDOWN, false, 1)
-        )));
+        return List.of(new Effect(DESCRIPTION, EffectStats.builder()
+                .set(EffectStats.RUSH, 1)
+                .set(EffectStats.COUNTDOWN, 1)
+                .build()
+        ));
     }
 
     @Override

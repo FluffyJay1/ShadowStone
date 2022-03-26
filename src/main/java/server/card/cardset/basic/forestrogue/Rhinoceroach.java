@@ -31,9 +31,9 @@ public class Rhinoceroach extends MinionText {
             () -> List.of(Tooltip.STORM, Tooltip.BATTLECRY));
     @Override
     protected List<Effect> getSpecialEffects() {
-        return List.of(new Effect(DESCRIPTION, new EffectStats(
-                new EffectStats.Setter(EffectStats.STORM, false, 1)
-        )) {
+        return List.of(new Effect(DESCRIPTION, EffectStats.builder()
+                .set(EffectStats.STORM, 1)
+                .build()) {
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 String resolverDescription = "<b>Battlecry</b>: Gain +X/+0/+0. X equals the number of other cards played this turn.";
@@ -41,9 +41,9 @@ public class Rhinoceroach extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         int bonus = b.getPlayer(owner.team).cardsPlayedThisTurn - 1;
-                        EffectUntilTurnEnd buff = new EffectUntilTurnEnd("+" + bonus + "/+0/+0 until end of turn (from <b>Battlecry</b>).", new EffectStats(
-                                new EffectStats.Setter(EffectStats.ATTACK, true, bonus)
-                        ));
+                        EffectUntilTurnEnd buff = new EffectUntilTurnEnd("+" + bonus + "/+0/+0 until end of turn (from <b>Battlecry</b>).", EffectStats.builder()
+                                .change(EffectStats.ATTACK, bonus)
+                                .build());
                         this.resolve(b, rq, el, new AddEffectResolver(owner, buff));
                     }
                 });

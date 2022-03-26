@@ -23,9 +23,10 @@ public class PuppetRoom extends AmuletText {
 
     @Override
     protected List<Effect> getSpecialEffects() {
-        Effect e = new Effect(DESCRIPTION, new EffectStats(
-                new EffectStats.Setter(EffectStats.COUNTDOWN, false, 3)
-        )) {
+        Effect e = new Effect(DESCRIPTION, EffectStats.builder()
+                .set(EffectStats.COUNTDOWN, 3)
+                .build()
+        ) {
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 String resolverDescription = "<b>Battlecry</b>: put a <b>Puppet</b> in your hand.";

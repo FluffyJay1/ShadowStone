@@ -23,19 +23,17 @@ public class EffectStats implements Cloneable, StringBuildable {
 
     public StatSet set = new StatSet(), change = new StatSet();
 
-    public EffectStats(Setter... setters) {
-        for (Setter s : setters) {
-            (s.change ? this.change : this.set).setStat(s.statToSet, s.value);
-        }
+    public EffectStats() {
+
     }
 
-    public EffectStats(int cost, Setter... setters) {
-        this(setters);
+    public EffectStats(int cost) {
+        this();
         this.set.setStat(COST, cost);
     }
 
-    public EffectStats(int cost, int attack, int magic, int health, Setter... setters) {
-        this(cost, setters);
+    public EffectStats(int cost, int attack, int magic, int health) {
+        this(cost);
         this.set.setStat(ATTACK, attack);
         this.set.setStat(MAGIC, magic);
         this.set.setStat(HEALTH, health);
@@ -102,6 +100,10 @@ public class EffectStats implements Cloneable, StringBuildable {
         ret.set = StatSet.fromString(st);
         ret.change = StatSet.fromString(st);
         return ret;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**
@@ -257,14 +259,25 @@ public class EffectStats implements Cloneable, StringBuildable {
         }
     }
 
-    // bean
-    public static class Setter {
-        int statToSet, value;
-        boolean change;
-        public Setter(int statToSet, boolean change, int value) {
-            this.statToSet = statToSet;
-            this.change = change;
-            this.value = value;
+    public static class Builder {
+        private EffectStats built;
+
+        Builder() {
+            this.built = new EffectStats();
+        }
+
+        public Builder set(int stat, int value) {
+            this.built.set.setStat(stat, value);
+            return this;
+        }
+
+        public Builder change(int stat, int value) {
+            this.built.change.setStat(stat, value);
+            return this;
+        }
+
+        public EffectStats build() {
+            return this.built;
         }
     }
 }

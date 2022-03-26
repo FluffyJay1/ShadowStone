@@ -24,9 +24,10 @@ public class StonetuskBoar extends MinionText {
 
     @Override
     protected List<Effect> getSpecialEffects() {
-        return List.of(new Effect(DESCRIPTION, new EffectStats(
-                new EffectStats.Setter(EffectStats.STORM, false, 1)
-        )));
+        return List.of(new Effect(DESCRIPTION, EffectStats.builder()
+                .set(EffectStats.STORM, 1)
+                .build()
+        ));
     }
 
     @Override

@@ -63,7 +63,10 @@ public class IHadThreeFriends extends SpellText {
                         int option = ((ModalTargetList) targetList.get(0)).targeted.get(0);
                         if (ccr.event.successful.get(option)) {
                             // give it rush
-                            Effect rush = new Effect("", new EffectStats(new EffectStats.Setter(EffectStats.RUSH, false, 1)));
+                            Effect rush = new Effect("", EffectStats.builder()
+                                    .set(EffectStats.RUSH, 1)
+                                    .build()
+                            );
                             this.resolve(b, rq, el, new AddEffectResolver(ccr.event.cards.get(option), rush));
                         }
                     }

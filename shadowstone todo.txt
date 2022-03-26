@@ -1,4 +1,3 @@
-effectstats factory instead of this setter garbage
 make a method for value checking summons
 enhance
 AI difficulty adjustment
