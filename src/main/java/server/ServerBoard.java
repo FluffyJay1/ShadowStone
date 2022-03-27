@@ -40,6 +40,14 @@ public class ServerBoard extends Board {
     boolean enableOutput = true;
     public boolean logEvents = true; // used by the ai to prevent history from being appended to
 
+    // The following are subsets of all effects, and are updated in Card's addEffect and removeEffect
+    // for convenience, a subset of all effects that are also auras
+    public Set<EffectAura> auras;
+    // like above but for effects with dependent stats
+    public Set<EffectWithDependentStats> dependentStats;
+    // same but for cards that have eventlisteners effects, may be muted tho (also for optimization)
+    public Set<Card> listeners;
+
     // see EffectUntilTurnEnd, Card, TurnEndResolver
     public List<Effect> effectsToRemoveAtEndOfTurn;
 
@@ -55,20 +63,21 @@ public class ServerBoard extends Board {
         this.currentBurst = new StringBuilder();
         this.lastCheckedActiveAuras = new HashSet<>();
         this.lastCheckedActiveDependentStats = new HashSet<>();
+        this.auras = new HashSet<>();
+        this.dependentStats = new HashSet<>();
+        this.listeners = new HashSet<>();
         this.effectsToRemoveAtEndOfTurn = new ArrayList<>();
+
         this.enableOutput = true;
     }
 
     public Stream<EffectAura> getActiveAuras() {
-        return this.getCards()
-                .filter(Card::isInPlay)
-                .flatMap(bo -> bo.auras.stream())
-                .filter(aura -> !aura.mute);
+        return this.auras.stream()
+                .filter(aura -> !aura.mute && aura.owner.isInPlay());
     }
 
     public Stream<EffectWithDependentStats> getActiveDependentStats() {
-        return this.getCards()
-                .flatMap(c -> c.dependentStats.stream())
+        return this.dependentStats.stream()
                 .filter(EffectWithDependentStats::isActive)
                 .filter(e -> !e.mute);
     }
@@ -139,10 +148,9 @@ public class ServerBoard extends Board {
                 rq.addAll(bo.onLeavePlay());
             }
         }
-        this.getCards().forEachOrdered(c -> {
+        for (Card c : this.listeners) {
             rq.addAll(c.onListenEvent(e));
-        });
-
+        }
         return e;
     }
 
@@ -308,22 +316,18 @@ public class ServerBoard extends Board {
     // things up with aura checking optimizations, explicity sync here
     public void updateAuraLastCheck() {
         this.lastCheckedActiveAuras = this.getActiveAuras().collect(Collectors.toSet());
-        this.getCards().forEach(c -> {
-            for (EffectAura aura : c.auras) {
-                aura.lastCheckedAffectedCards = aura.findAffectedCards();
-            }
-        });
+        for (EffectAura aura : this.auras) {
+            aura.lastCheckedAffectedCards = aura.findAffectedCards();
+        }
     }
 
     // same but for effects with dependent stats
     public void updateDependentStatsLastCheck() {
         this.lastCheckedActiveDependentStats = this.getActiveDependentStats().collect(Collectors.toSet());
-        this.getCards().forEach(c -> {
-            for (EffectWithDependentStats dependent : c.dependentStats) {
-                dependent.lastCheckedExpectedStats = dependent.calculateStats();
-                dependent.awaitingUpdate = false;
-            }
-        });
+        for (EffectWithDependentStats dependent : this.dependentStats) {
+            dependent.lastCheckedExpectedStats = dependent.calculateStats();
+            dependent.awaitingUpdate = false;
+        }
     }
 
     @Override

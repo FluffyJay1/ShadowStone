@@ -49,10 +49,7 @@ public abstract class Card implements Indexable, StringBuildable {
             basicEffects = new PositionedList<>(new ArrayList<>(), e -> e.basic = true),
             removedEffects = new PositionedList<>(new ArrayList<>(), e -> e.removed = true);
 
-    // for convenience, a subset of the effects that are also auras
-    public final List<EffectAura> auras = new LinkedList<>();
-    // like above but for effects with dependent stats
-    public final List<EffectWithDependentStats> dependentStats = new LinkedList<>();
+    private final Set<Effect> listeners = new HashSet<>();
 
     public Card(Board board, CardText cardText) {
         this.board = board;
@@ -142,14 +139,27 @@ public abstract class Card implements Indexable, StringBuildable {
         e.removed = false;
         this.removedEffects.remove(e);
         this.getEffects(basic).add(pos, e);
-        if (e instanceof EffectAura) {
-            this.auras.add((EffectAura) e);
-        }
-        if (e instanceof EffectWithDependentStats) {
-            this.dependentStats.add((EffectWithDependentStats) e);
-        }
-        if (e instanceof EffectUntilTurnEnd && e.owner.board instanceof ServerBoard) {
-            ((ServerBoard) e.owner.board).effectsToRemoveAtEndOfTurn.add(e);
+        if (e.owner.board instanceof ServerBoard) {
+            // because these types of effects are rare but need to be checked frequently,
+            // register these to the ServerBoard to optimize lookup
+            ServerBoard sb = (ServerBoard) e.owner.board;
+            if (e instanceof EffectAura) {
+                sb.auras.add((EffectAura) e);
+            }
+            if (e instanceof EffectWithDependentStats) {
+                sb.dependentStats.add((EffectWithDependentStats) e);
+            }
+            if (e instanceof EffectUntilTurnEnd) {
+                sb.effectsToRemoveAtEndOfTurn.add(e);
+            }
+            try {
+                e.onListenEvent(null);
+                // no exception, must have a listener implemented
+                this.listeners.add(e);
+                sb.listeners.add(this);
+            } catch (UnsupportedOperationException ex) {
+                // do nothing lol
+            }
         }
         if (e.auraSource != null) {
             e.auraSource.currentActiveEffects.put(this, e);
@@ -169,14 +179,27 @@ public abstract class Card implements Indexable, StringBuildable {
             if (!purge) {
                 this.removedEffects.add(e);
             }
-            if (e instanceof EffectAura) {
-                this.auras.remove((EffectAura) e);
-            }
-            if (e instanceof EffectWithDependentStats) {
-                this.dependentStats.remove((EffectWithDependentStats) e);
-            }
-            if (e instanceof EffectUntilTurnEnd && e.owner.board instanceof ServerBoard) {
-                ((ServerBoard) e.owner.board).effectsToRemoveAtEndOfTurn.remove(e);
+            if (e.owner.board instanceof ServerBoard) {
+                ServerBoard sb = (ServerBoard) e.owner.board;
+                if (e instanceof EffectAura) {
+                    sb.auras.remove((EffectAura) e);
+                }
+                if (e instanceof EffectWithDependentStats) {
+                    sb.dependentStats.remove((EffectWithDependentStats) e);
+                }
+                if (e instanceof EffectUntilTurnEnd) {
+                    sb.effectsToRemoveAtEndOfTurn.remove(e);
+                }
+                try {
+                    e.onListenEvent(null);
+                    // no exception, must have a listener implemented
+                    this.listeners.remove(e);
+                    if (this.listeners.isEmpty()) {
+                        sb.listeners.remove(this);
+                    }
+                } catch (UnsupportedOperationException ex) {
+                    // do nothing lol
+                }
             }
             if (e.auraSource != null) {
                 e.auraSource.currentActiveEffects.remove(this);

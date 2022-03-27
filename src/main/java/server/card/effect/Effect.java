@@ -201,9 +201,10 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     /*
     For optimization, check the event instance before deciding to return a
     resolver or null, then check the details of the event inside the resolver
+    if this throws the unsupportedoperationexception, then we know it doesn't have a listener
      */
     public ResolverWithDescription onListenEvent(Event event) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     /**
