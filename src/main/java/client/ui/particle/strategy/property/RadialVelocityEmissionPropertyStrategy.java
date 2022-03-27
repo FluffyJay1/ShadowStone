@@ -21,6 +21,6 @@ public class RadialVelocityEmissionPropertyStrategy implements EmissionPropertyS
         } else {
             direction = p.pos.copy().normalise();
         }
-        p.vel.set(direction.scale(speedRange.get(Math.random()).floatValue()));
+        p.vel.add(direction.scale(speedRange.get(Math.random()).floatValue()));
     }
 }

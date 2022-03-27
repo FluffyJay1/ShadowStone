@@ -1,4 +1,3 @@
-uniform particle distribution
 AI difficulty adjustment
 Figure out why the game is eating cpu and gpu
 relpos lol

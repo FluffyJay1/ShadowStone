@@ -18,16 +18,16 @@ import server.card.CardStatus;
 import server.event.EventSpend;
 
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 public class EventAnimationSpend extends EventAnimation<EventSpend> {
-    private static final Supplier<EmissionStrategy> SPEND_EMISSION_STRATEGY = () -> new EmissionStrategy(
-            new InstantEmissionTimingStrategy(1),
+    private static final Function<Integer, EmissionStrategy> SPEND_EMISSION_STRATEGY = num -> new EmissionStrategy(
+            new InstantEmissionTimingStrategy(num),
             new ComposedEmissionPropertyStrategy(List.of(
                     new AnimationEmissionPropertyStrategy(() -> {
                         Animation anim = new Animation("res/game/manaorb.png", new Vector2f(2, 1), 0, 0);
                         anim.play = true;
-                        anim.setFrameInterval(0.1 + Math.random() * 0.2);
+                        anim.setFrameInterval(0.2);
                         return anim;
                     }),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.6)),
@@ -36,8 +36,7 @@ public class EventAnimationSpend extends EventAnimation<EventSpend> {
                             new QuadraticInterpolationB(1, 0, 0),
                             new ConstantInterpolation(1)
                     ),
-                    new RadialVelocityEmissionPropertyStrategy(new LinearInterpolation(200, 600)),
-                    new VelocityAddEmissionPropertyStrategy(new Vector2f(0, -700))
+                    new DirectionalVelocityUniformSpreadEmissionPropertyStrategy(new Vector2f(0, -1), 0.5 + num * 0.1, new ConstantInterpolation(800), num)
             ))
     );
 
@@ -49,8 +48,6 @@ public class EventAnimationSpend extends EventAnimation<EventSpend> {
         Card c = this.event.source.owner;
         UICard uic = c.uiCard;
         int z = c.status.equals(CardStatus.BOARD) ? UIBoard.PARTICLE_Z_BOARD : UIBoard.PARTICLE_Z_SPECIAL;
-        for (int i = 0; i < this.event.amount; i++) {
-            this.visualBoard.uiBoard.addParticleSystem(uic.getPos(), z, new ScaledEmissionStrategy(SPEND_EMISSION_STRATEGY.get(), uic.getScale()));
-        }
+        this.visualBoard.uiBoard.addParticleSystem(uic.getPos(), z, new ScaledEmissionStrategy(SPEND_EMISSION_STRATEGY.apply(this.event.amount), uic.getScale()));
     }
 }
