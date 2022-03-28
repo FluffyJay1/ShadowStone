@@ -713,8 +713,8 @@ public class AI extends Thread {
      */
     public static double evaluateAdvantage(Board b, int team) {
         return evaluateVictory(b, team) + evaluateMana(b, team) + evaluateSurvivability(b, team)
-                + evaluateBoard(b, team) + evaluateHand(b, team) - evaluateSurvivability(b, team * -1)
-                - evaluateBoard(b, team * -1) - evaluateHand(b, team * -1);
+                + evaluateBoard(b, team) + evaluateHand(b, team) + evaluateDeck(b, team) - evaluateSurvivability(b, team * -1)
+                - evaluateBoard(b, team * -1) - evaluateHand(b, team * -1) - evaluateDeck(b, team * -1);
     }
 
     /**
@@ -862,6 +862,21 @@ public class AI extends Thread {
             }
         }
         return (localmax - enemymax) * Math.max(localmaxmax - localmax, enemymaxmax - enemymax);
+    }
+
+    /**
+     * Puts a mana value for being closer to fatigue
+     * With a healthy deck size, drawing cards doesn't matter, but as you get
+     * closer to 0 cards in the deck, we start getting serious issues
+     * TODO: reverse this if spartacus effect
+     *
+     * @param b    The board
+     * @param team The team to evaluate for
+     * @return Mana value of being this close to fatigue (a negative value)
+     */
+    public static double evaluateDeck(Board b, int team) {
+        Player p = b.getPlayer(team);
+        return -150 * Math.pow(p.getDeck().size() + 0.5, -1.5);
     }
 
     /**
