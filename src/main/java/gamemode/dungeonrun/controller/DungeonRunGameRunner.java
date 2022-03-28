@@ -5,6 +5,7 @@ import network.DataStream;
 import server.GameController;
 import server.ServerBoard;
 import server.ai.AI;
+import server.ai.AIConfig;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.event.Event;
@@ -30,7 +31,7 @@ public class DungeonRunGameRunner implements Runnable {
         DataStream dsai = new DataStream();
         DataStream dsexternal = new DataStream();
         DataStream.pair(dsai, dsexternal);
-        AI ai = new AI(dsai, this.localteam * -1, 0);
+        AI ai = new AI(dsai, this.localteam * -1, AIConfig.PRO);
         ai.start();
         GameController gc = new GameController(List.of(this.dslocal, dsexternal),
                 List.of(this.player.leaderText, this.enemy.leaderText),

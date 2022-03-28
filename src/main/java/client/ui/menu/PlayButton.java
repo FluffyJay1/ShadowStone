@@ -8,6 +8,7 @@ import client.ui.UI;
 import client.ui.UIBox;
 
 public class PlayButton extends UIBox {
+    public static final String CLICKED = "playButtonClicked";
     final Text text;
     public final DeckSelectPanel deckspanel;
 
@@ -33,6 +34,7 @@ public class PlayButton extends UIBox {
             this.deckspanel.setVisible(true);
             this.deckspanel.setPos(new Vector2f(0, -1000), 1);
             this.deckspanel.setPos(new Vector2f(0, 0), 0.99);
+            this.alert(CLICKED);
         }
     }
 }

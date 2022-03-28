@@ -8,10 +8,12 @@ import client.Game;
 import client.ui.*;
 import client.ui.game.*;
 import network.*;
+import server.ai.AIConfig;
 import server.card.cardset.*;
 
 public class StateGame extends BasicGameState {
     public static ConstructedDeck tempdeck;
+    public static AIConfig tempConfig;
     UI ui;
     UIBoard uiBoard;
     ServerGameThread game;
@@ -42,6 +44,7 @@ public class StateGame extends BasicGameState {
         this.game = new ServerGameThread(this.dsserver, 1, false);
         this.game.setDecklist(1, tempdeck);
         this.game.setDecklist(-1, Game.selectRandom(ConstructedDeck.decks));
+        this.game.setAIConfig(tempConfig);
         this.game.start();
     }
 

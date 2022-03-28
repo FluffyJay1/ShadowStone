@@ -53,41 +53,6 @@ public class AI extends Thread {
     // The minimum number of branches to sample at each level
     private static final int SAMPLING_MIN_SAMPLES = 1;
 
-    // The maximum number of branches to sample at min depth
-    private static final int SAMPLING_MAX_SAMPLES = 30;
-
-    // When switching over to the enemy turn, reset the max samples
-    private static final int SAMPLING_MAX_SAMPLES_ENEMY = 3;
-
-    // How much the max number of samples gets multiplied by per level
-    private static final double SAMPLING_MAX_SAMPLES_MULTIPLIER = 0.8;
-
-    // Proportion of total possible actions that we sample at the start
-    // This value get split amongst the branches, proportionally to their weight
-    // should be greater than 1 lol
-    private static final double SAMPLING_START_SAMPLE_RATE = 8;
-    private static final double SAMPLING_ENEMY_SAMPLE_RATE = 2;
-
-    // Multiplier of sample rate at each depth, after the above "splitting" thing
-    // Should reflect expected branching factor
-    private static final double SAMPLING_SAMPLE_RATE_MULTIPLIER = 1.5;
-
-    // After an rng event, we shouldn't care too much about evaluating in detail
-    private static final double SAMPLING_SAMPLE_RATE_RNG_PENALTY_MULTIPLIER = 0.85;
-
-    // how much to multiply the penalty multiplier per extra trial
-    private static final double SAMPLING_SAMPLE_RATE_RNG_PENALTY_REDUCTION = 0.8;
-
-    // When revisiting nodes, tolerate lower detail levels up to a certain amount
-    private static final double REEVALUATION_MAX_SAMPLE_RATE_DIFF = 0.20;
-
-    // Same idea as sample rate, but for rng
-    private static final int RNG_MAX_TRIALS = 12;
-    private static final int RNG_MIN_TRIALS = 3;
-
-    // how many less trials each subsequent depth gets
-    private static final int RNG_TRIAL_REDUCTION = 2;
-
     /*
      * Some actions are more important than others
      * when we sample decisions, some should be sampled first more often
@@ -134,14 +99,14 @@ public class AI extends Thread {
     // highly unlikely that we need this but just to be complete
     private final Set<DeterministicBoardStateNode> traversedNodes;
 
-    int difficulty;
+    AIConfig config;
     ServerBoard b;
     final DataStream dslocal;
     List<String> actionSendQueue;
     boolean waitForEvents, finishedTurn;
 
-    public AI(DataStream dslocal, int team, int difficulty) {
-        this.difficulty = difficulty;
+    public AI(DataStream dslocal, int team, AIConfig config) {
+        this.config = config;
         this.dslocal = dslocal;
         this.b = new ServerBoard(team);
         this.b.logEvents = false;
@@ -216,7 +181,7 @@ public class AI extends Thread {
         this.totalReevaluations = 0;
         List<String> actionStack = new LinkedList<>();
         long start = System.nanoTime();
-        DeterministicBoardStateNode dbsn = this.getBestTurn(this.b.localteam, 0, SAMPLING_START_SAMPLE_RATE, Double.POSITIVE_INFINITY, false);
+        DeterministicBoardStateNode dbsn = this.getBestTurn(this.b.localteam, 0, this.config.startSampleRate, Double.POSITIVE_INFINITY, false);
         if (dbsn == null) {
             System.out.println("AIThink returned from a null best turn, sadge");
             return;
@@ -335,7 +300,7 @@ public class AI extends Thread {
         numSamples = Math.max(numSamples, SAMPLING_MIN_SAMPLES);
         numSamples = Math.min(numSamples, dbsn.totalBranches);
         // if we are revisiting this node, but it needs to be re-evaluated at a better detail level
-        if (cacheHit && dbsn.sampleRate < sampleRate - REEVALUATION_MAX_SAMPLE_RATE_DIFF) {
+        if (cacheHit && dbsn.sampleRate < sampleRate - this.config.reevaluationMaxSampleRateDiff) {
             dbsn.resetEvaluationOrder();
             dbsn.sampleRate = sampleRate;
             this.totalReevaluations++;
@@ -355,7 +320,7 @@ public class AI extends Thread {
                     filterLethal, null);
             if (traverse.rng) {
                 // rng, re-evaluate action many times, channel an average score into an RNGBoardStateNode
-                int trials = Math.max(RNG_MAX_TRIALS - depth * RNG_TRIAL_REDUCTION, RNG_MIN_TRIALS);
+                int trials = Math.max(this.config.rngMaxTrials - depth * this.config.rngTrialReduction, this.config.rngMinTrials);
                 RNGBoardStateNode nextBsn = (RNGBoardStateNode) dbsn.branches.get(action); // trust
                 if (nextBsn != null) {
                     // if previously evaluated this rng branch, see if we can add some trials to it
@@ -407,11 +372,11 @@ public class AI extends Thread {
         double nextSampleRate = sampleRate;
         if (depth + 1 >= SAMPLING_MIN_DEPTH) {
             if (depth + 1 == SAMPLING_MIN_DEPTH) {
-                nextMaxSamples = SAMPLING_MAX_SAMPLES;
+                nextMaxSamples = this.config.maxSamples;
             } else {
-                nextMaxSamples = maxSamples * SAMPLING_MAX_SAMPLES_MULTIPLIER;
+                nextMaxSamples = maxSamples * this.config.maxSamplesMultiplier;
             }
-            nextSampleRate = sampleRate * current.getWeightedProportionOfAction(action) * SAMPLING_SAMPLE_RATE_MULTIPLIER;
+            nextSampleRate = sampleRate * current.getWeightedProportionOfAction(action) * this.config.sampleRateMultiplier;
         }
         if (result.rng) {
             // the number of trials we've already done to get to this node
@@ -419,7 +384,7 @@ public class AI extends Thread {
             if (nextRNG != null) {
                 cumTrials += nextRNG.getCount(this.nodeMap.get(this.b.stateToString()));
             }
-            nextSampleRate *= 1 - (SAMPLING_SAMPLE_RATE_RNG_PENALTY_MULTIPLIER * Math.pow(SAMPLING_SAMPLE_RATE_RNG_PENALTY_REDUCTION, cumTrials));
+            nextSampleRate *= 1 - (this.config.rngPenalty * Math.pow(this.config.rngPenaltyReduction, cumTrials));
         }
         if (this.b.winner != 0 || depth == SAMPLING_MAX_DEPTH) {
             // no more actions can be taken
@@ -434,8 +399,8 @@ public class AI extends Thread {
                 node = new TerminalBoardStateNode(current.team * -1, evaluateAdvantage(this.b, current.team * -1));
             } else {
                 node = this.getBestTurn(current.team * -1, depth + 1,
-                        Math.max(nextSampleRate, SAMPLING_ENEMY_SAMPLE_RATE),
-                        Math.max(nextMaxSamples, SAMPLING_MAX_SAMPLES_ENEMY),
+                        Math.max(nextSampleRate, this.config.enemySampleRate),
+                        Math.max(nextMaxSamples, this.config.maxSamplesEnemy),
                         true);
             }
         } else {

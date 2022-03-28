@@ -62,46 +62,6 @@ public class DeterministicBoardStateNode extends BoardStateNode {
     }
 
     /**
-     * Compute alpha factor. When evaluating, the true value of a future state
-     * is unknown, but the value of the current state is known. Some samples may
-     * reveal some actions really hurt us, but we don't know for sure if every
-     * action will hurt us. If we think our best action hurts us, we need to
-     * dampen it a bit, to counteract the fact that we barely tried anything. If
-     * we know we have an action that leads us to a better outcome, we don't
-     * have to dampen at all. The alpha factor gives what proportion of the
-     * node's value is determined by the value of the current state, if the
-     * node's value is less than the current state. Note that when this node is
-     * fully evaluated, we can fully depend on what we know of the immediate
-     * children, i.e. alpha = 0.
-     *
-     * @return The alpha factor
-     */
-    public double getAlphaFactor() {
-        if (this.lethal) {
-            // if ai detects guaranteed lethal, it won't fully evaluate the branch
-            // this may cause erratic alpha factor behavior e.g. killing itself
-            // if it detects guaranteed lethal against it, which is funny but
-            // also not the best
-            return 0;
-        }
-        // behold magics
-        return 0.75 * (1 - ((double) this.branches.size() / this.totalBranches));
-    }
-
-    /**
-     * Use the alpha factor mentioned above to compute the weighted value.
-     * @param other the raw value to compute
-     * @return The weighted value, using the alpha factor
-     */
-    public double alphaBlend(double other) {
-        if (other > this.currScore) {
-            return other;
-        }
-        double alpha = this.getAlphaFactor();
-        return alpha * this.currScore + (1 - alpha) * other;
-    }
-
-    /**
      * Find the maximizing action, and the value from executing it. The value is
      * passed through alpha-factor calculations. Note that old values may change
      * if the node gets revisited and new branches are evaluated, as per the
@@ -115,7 +75,7 @@ public class DeterministicBoardStateNode extends BoardStateNode {
                 this.cachedMax = new Decision(null, this.currScore);
             } else {
                 Optional<Decision> maxDecision = this.branches.entrySet().stream()
-                        .map(e -> new Decision(e.getKey(), this.alphaBlend(e.getValue().team * this.team * e.getValue().getScore())))
+                        .map(e -> new Decision(e.getKey(), e.getValue().team * this.team * e.getValue().getScore()))
                         .max(Comparator.comparingDouble(d -> d.score));
                 this.cachedMax = maxDecision.orElse(new Decision(null, this.currScore));
             }
@@ -192,8 +152,8 @@ public class DeterministicBoardStateNode extends BoardStateNode {
     @Override
     public String debugString() {
         Decision max = this.getMax();
-        return String.format("DBSN: %.2f score, %d team, %.2f currScore, %d branches, %d eval, %d seen, %.2f a",
-                max.score, this.team, this.currScore, this.totalBranches, this.evaluatedBranches, this.branches.size(), this.getAlphaFactor());
+        return String.format("DBSN: %.2f score, %d team, %.2f currScore, %d branches, %d eval, %d seen",
+                max.score, this.team, this.currScore, this.totalBranches, this.evaluatedBranches, this.branches.size());
     }
 
     public static class Decision {

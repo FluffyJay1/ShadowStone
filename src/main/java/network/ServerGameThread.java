@@ -25,6 +25,7 @@ public class ServerGameThread extends Thread {
     AI ai;
     final int localteam;
     final ConstructedDeck[] decks;
+    private AIConfig config;
 
     public ServerGameThread(DataStream dsclient, int localteam, boolean pvp) {
         this.localteam = localteam;
@@ -47,7 +48,7 @@ public class ServerGameThread extends Thread {
             DataStream dsai = new DataStream();
             this.dsexternal = new DataStream();
             DataStream.pair(dsai, this.dsexternal);
-            this.ai = new AI(dsai, this.localteam * -1, 0);
+            this.ai = new AI(dsai, this.localteam * -1, this.config);
             this.ai.start();
         }
         // accept decklists
@@ -75,5 +76,9 @@ public class ServerGameThread extends Thread {
 
     public void setDecklist(int team, ConstructedDeck deck) {
         this.decks[(team - 1) / -2] = deck;
+    }
+
+    public void setAIConfig(AIConfig config) {
+        this.config = config;
     }
 }

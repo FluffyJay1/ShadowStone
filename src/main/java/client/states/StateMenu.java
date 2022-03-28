@@ -2,6 +2,7 @@ package client.states;
 
 import java.util.*;
 
+import client.Config;
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
 import org.newdawn.slick.state.*;
@@ -13,6 +14,7 @@ import client.ui.menu.*;
 public class StateMenu extends BasicGameState {
     UI ui;
     PlayButton playButton;
+    AIDifficultyPanel aiDifficultyPanel;
     GameContainer container;
 
     @Override
@@ -28,15 +30,23 @@ public class StateMenu extends BasicGameState {
         this.ui.addListener((strarg, intarg) -> {
             StringTokenizer st = new StringTokenizer(strarg);
             switch (st.nextToken()) {
-            case DeckSelectPanel.DECK_CONFIRM:
-                if (playButton.deckspanel.selectedDeckUnit != null) {
-                    StateGame.tempdeck = playButton.deckspanel.selectedDeckUnit.deck;
-                    arg1.enterState(Game.STATE_GAME);
-                }
-
-                break;
-            default:
-                break;
+                case DeckSelectPanel.DECK_CONFIRM:
+                    if (playButton.deckspanel.selectedDeckUnit != null) {
+                        StateGame.tempdeck = playButton.deckspanel.selectedDeckUnit.deck;
+                        StateGame.tempConfig = this.aiDifficultyPanel.getSelectedDifficulty();
+                        arg1.enterState(Game.STATE_GAME);
+                    }
+                    break;
+                case DeckSelectPanel.DECK_CANCEL:
+                    this.aiDifficultyPanel.setVisible(false);
+                    break;
+                case PlayButton.CLICKED:
+                    this.aiDifficultyPanel.setPos(new Vector2f(0.5f + this.aiDifficultyPanel.getWidth(false) / Config.WINDOW_WIDTH, 0), 1);
+                    this.aiDifficultyPanel.setPos(new Vector2f(0.5f, 0), 0.99);
+                    this.aiDifficultyPanel.setVisible(true);
+                    break;
+                default:
+                    break;
             }
         });
         GenericButton deckbuildbutton = new GenericButton(this.ui, new Vector2f(0, 0.25f), new Vector2f(120, 80), "Manage Decks",
@@ -49,6 +59,11 @@ public class StateMenu extends BasicGameState {
         this.ui.addUIElementParent(dungeonrunbutton);
         this.playButton = new PlayButton(ui);
         this.ui.addUIElementParent(this.playButton);
+        this.aiDifficultyPanel = new AIDifficultyPanel(this.ui, new Vector2f());
+        this.aiDifficultyPanel.setVisible(false);
+        this.aiDifficultyPanel.relpos = true;
+        this.aiDifficultyPanel.alignh = 1;
+        this.ui.addUIElementParent(this.aiDifficultyPanel);
     }
 
     @Override

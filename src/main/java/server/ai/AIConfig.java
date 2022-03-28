@@ -1,0 +1,190 @@
+package server.ai;
+
+// bean class
+public class AIConfig {
+
+    public static final AIConfig BEGINNER = builder()
+            .name("Beginner")
+            .maxSamples(6)
+            .maxSamplesEnemy(3)
+            .maxSamplesMultiplier(0.75)
+            .startSampleRate(5)
+            .enemySampleRate(2)
+            .sampleRateMultiplier(1.25)
+            .rngPenalty(0.95)
+            .rngPenaltyReduction(0.85)
+            .reevaluationMaxSampleRateDiff(0.25)
+            .rngMaxTrials(7)
+            .rngMinTrials(3)
+            .rngTrialReduction(2)
+            .build();
+
+    public static final AIConfig NOVICE = builder()
+            .name("Novice")
+            .maxSamples(15)
+            .maxSamplesEnemy(3)
+            .maxSamplesMultiplier(0.75)
+            .startSampleRate(8)
+            .enemySampleRate(2)
+            .sampleRateMultiplier(1.3)
+            .rngPenalty(0.9)
+            .rngPenaltyReduction(0.85)
+            .reevaluationMaxSampleRateDiff(0.2)
+            .rngMaxTrials(9)
+            .rngMinTrials(3)
+            .rngTrialReduction(2)
+            .build();
+
+    public static final AIConfig PRO = builder()
+            .name("Pro")
+            .maxSamples(30)
+            .maxSamplesEnemy(4)
+            .maxSamplesMultiplier(0.8)
+            .startSampleRate(10)
+            .enemySampleRate(3)
+            .sampleRateMultiplier(1.4)
+            .rngPenalty(0.85)
+            .rngPenaltyReduction(0.8)
+            .reevaluationMaxSampleRateDiff(0.15)
+            .rngMaxTrials(12)
+            .rngMinTrials(3)
+            .rngTrialReduction(2)
+            .build();
+
+    public static final AIConfig MASTER = builder()
+            .name("Master")
+            .maxSamples(50)
+            .maxSamplesEnemy(10)
+            .maxSamplesMultiplier(0.8)
+            .startSampleRate(20)
+            .enemySampleRate(5)
+            .sampleRateMultiplier(1.5)
+            .rngPenalty(0.8)
+            .rngPenaltyReduction(0.8)
+            .reevaluationMaxSampleRateDiff(0.1)
+            .rngMaxTrials(15)
+            .rngMinTrials(3)
+            .rngTrialReduction(2)
+            .build();
+
+    public String name;
+
+    // The maximum number of branches to sample at min depth
+    int maxSamples;
+
+    // When switching over to the enemy turn, reset the max samples
+    int maxSamplesEnemy;
+
+    // max number of rng trials
+    int rngMaxTrials;
+
+    // min number of rng trials
+    int rngMinTrials;
+
+    // how many less trials each subsequent depth gets
+    int rngTrialReduction;
+
+    // How much the max number of samples gets multiplied by per level
+    double maxSamplesMultiplier;
+
+    // Proportion of total possible actions that we sample at the start
+    // This value get split amongst the branches, proportionally to their weight
+    // should be greater than 1 lol
+    double startSampleRate;
+    double enemySampleRate;
+
+    // Multiplier of sample rate at each depth, after the above "splitting" thing
+    // Should reflect expected branching factor
+    double sampleRateMultiplier;
+
+    // After an rng event, we shouldn't care too much about evaluating in detail
+    // proportion of the sample rate to throw away
+    double rngPenalty;
+
+    // how much to multiply the penalty multiplier per extra trial
+    double rngPenaltyReduction;
+
+    // When revisiting nodes, tolerate lower detail levels up to a certain amount
+    double reevaluationMaxSampleRateDiff;
+
+    // this behemoth should be constructed with a builder
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private final AIConfig built;
+        private Builder() {
+            this.built = new AIConfig();
+        }
+
+        public AIConfig build() {
+            return this.built;
+        }
+
+        public Builder name(String name) {
+            this.built.name = name;
+            return this;
+        }
+
+        public Builder reevaluationMaxSampleRateDiff(double reevaluationMaxSampleRateDiff) {
+            this.built.reevaluationMaxSampleRateDiff = reevaluationMaxSampleRateDiff;
+            return this;
+        }
+
+        public Builder rngPenaltyReduction(double rngPenaltyReduction) {
+            this.built.rngPenaltyReduction = rngPenaltyReduction;
+            return this;
+        }
+
+        public Builder rngPenalty(double rngPenalty) {
+            this.built.rngPenalty = rngPenalty;
+            return this;
+        }
+
+        public Builder sampleRateMultiplier(double sampleRateMultiplier) {
+            this.built.sampleRateMultiplier = sampleRateMultiplier;
+            return this;
+        }
+
+        public Builder enemySampleRate(double enemySampleRate) {
+            this.built.enemySampleRate = enemySampleRate;
+            return this;
+        }
+
+        public Builder startSampleRate(double startSampleRate) {
+            this.built.startSampleRate = startSampleRate;
+            return this;
+        }
+
+        public Builder maxSamplesMultiplier(double maxSamplesMultiplier) {
+            this.built.maxSamplesMultiplier = maxSamplesMultiplier;
+            return this;
+        }
+
+        public Builder maxSamples(int maxSamples) {
+            this.built.maxSamples = maxSamples;
+            return this;
+        }
+
+        public Builder maxSamplesEnemy(int maxSamplesEnemy) {
+            this.built.maxSamplesEnemy = maxSamplesEnemy;
+            return this;
+        }
+
+        public Builder rngMaxTrials(int rngMaxTrials) {
+            this.built.rngMaxTrials = rngMaxTrials;
+            return this;
+        }
+
+        public Builder rngMinTrials(int rngMinTrials) {
+            this.built.rngMinTrials = rngMinTrials;
+            return this;
+        }
+
+        public Builder rngTrialReduction(int rngTrialReduction) {
+            this.built.rngTrialReduction = rngTrialReduction;
+            return this;
+        }
+    }
+}
