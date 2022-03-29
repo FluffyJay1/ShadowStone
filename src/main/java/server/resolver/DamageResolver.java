@@ -65,11 +65,10 @@ public class DamageResolver extends Resolver {
                 processedDamage.add(this.damage.get(i));
             }
         }
-        List<Boolean> processedPoisonous = Collections.nCopies(processedTargets.size(), this.cardSource.finalStatEffects.getStat(EffectStats.POISONOUS) > 0);
         if (this.effectSource != null) {
-            b.processEvent(rq, el, new EventDamage(this.effectSource, processedTargets, processedDamage, processedPoisonous, this.destroyed, this.animation));
+            b.processEvent(rq, el, new EventDamage(this.effectSource, processedTargets, processedDamage, this.destroyed, this.animation));
         } else {
-            b.processEvent(rq, el, new EventDamage(this.cardSource, processedTargets, processedDamage, processedPoisonous, this.destroyed, this.animation));
+            b.processEvent(rq, el, new EventDamage(this.cardSource, processedTargets, processedDamage, this.destroyed, this.animation));
         }
         for (int i = 0; i < processedTargets.size(); i++) {
             Minion m = processedTargets.get(i);

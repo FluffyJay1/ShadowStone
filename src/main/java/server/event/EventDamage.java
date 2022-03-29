@@ -8,6 +8,7 @@ import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationD
 import server.*;
 import server.card.*;
 import server.card.effect.Effect;
+import server.card.effect.EffectStats;
 
 /*
  * Event alone may cause the board to enter an invalid state by killing minions,
@@ -18,7 +19,6 @@ public class EventDamage extends Event {
     public static final int ID = 3;
     public final List<Integer> damage;
     public final List<Minion> m;
-    public final List<Boolean> poisonous;
     private List<Integer> oldHealth;
     private List<Boolean> oldAlive;
     public final List<Card> markedForDeath;
@@ -28,19 +28,18 @@ public class EventDamage extends Event {
     // not proud of incorporating client animation logic into serverside game logic, but it's what we have to do
     public final Class<? extends EventAnimationDamage> animation;
 
-    public EventDamage(Card source, List<Minion> m, List<Integer> damage, List<Boolean> poisonous,
+    public EventDamage(Card source, List<Minion> m, List<Integer> damage,
             List<Card> markedForDeath, Class<? extends EventAnimationDamage> animation) {
         super(ID);
         this.cardSource = source;
         this.m = m;
         this.damage = damage;
-        this.poisonous = poisonous;
         this.markedForDeath = Objects.requireNonNullElseGet(markedForDeath, ArrayList::new);
         this.animation = animation;
     }
 
-    public EventDamage(Effect source, List<Minion> m, List<Integer> damage, List<Boolean> poisonous, List<Card> markedForDeath, Class<? extends EventAnimationDamage> animation) {
-        this(source.owner, m, damage, poisonous, markedForDeath, animation);
+    public EventDamage(Effect source, List<Minion> m, List<Integer> damage, List<Card> markedForDeath, Class<? extends EventAnimationDamage> animation) {
+        this(source.owner, m, damage, markedForDeath, animation);
         this.effectSource = source;
     }
 
@@ -48,11 +47,12 @@ public class EventDamage extends Event {
     public void resolve(Board b) {
         this.oldHealth = new ArrayList<>(this.m.size());
         this.oldAlive = new ArrayList<>(this.m.size());
+        boolean poisonous = this.cardSource.finalStatEffects.getStat(EffectStats.POISONOUS) > 0;
         for (int i = 0; i < this.m.size(); i++) { // sure
             Minion minion = m.get(i);
             this.oldHealth.add(minion.health);
             this.oldAlive.add(minion.alive);
-            if ((this.poisonous.get(i) && this.damage.get(i) > 0 && !(minion instanceof Leader))
+            if ((poisonous && this.damage.get(i) > 0 && !(minion instanceof Leader))
                     || (minion.health > 0 && minion.health <= damage.get(i)) && minion.alive) {
                 // TODO poison immunity
                 minion.alive = false;
@@ -78,7 +78,7 @@ public class EventDamage extends Event {
                 .append(Card.referenceOrNull(this.cardSource)).append(Effect.referenceOrNull(this.effectSource))
                 .append(this.m.size()).append(" ");
         for (int i = 0; i < this.m.size(); i++) {
-            builder.append(this.m.get(i).toReference()).append(this.damage.get(i)).append(" ").append(this.poisonous.get(i)).append(" ");
+            builder.append(this.m.get(i).toReference()).append(this.damage.get(i)).append(" ");
         }
         builder.append(Game.EVENT_END);
         return builder.toString();
@@ -100,16 +100,13 @@ public class EventDamage extends Event {
         int size = Integer.parseInt(st.nextToken());
         ArrayList<Minion> m = new ArrayList<>(size);
         ArrayList<Integer> damage = new ArrayList<>(size);
-        ArrayList<Boolean> poisonous = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             Minion minion = (Minion) Card.fromReference(b, st);
             int d = Integer.parseInt(st.nextToken());
-            boolean po = Boolean.parseBoolean(st.nextToken());
             m.add(minion);
             damage.add(d);
-            poisonous.add(po);
         }
-        EventDamage ret = new EventDamage(cardSource, m, damage, poisonous, null, anim);
+        EventDamage ret = new EventDamage(cardSource, m, damage, null, anim);
         ret.effectSource = effectSource;
         return ret;
     }

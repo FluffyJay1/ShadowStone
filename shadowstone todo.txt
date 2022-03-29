@@ -1,5 +1,4 @@
-Figure out why the game is eating cpu and gpu
-relpos lol
+default unleash animation
 drain/lifesteal
 stealth
 shield
