@@ -2,6 +2,8 @@ package server.card.cardset.basic.dragondruid;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageBigExplosion;
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageShoot;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.card.*;
@@ -24,7 +26,7 @@ public class SiegeTank extends MinionText {
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/siegetank.png",
             CRAFT, RARITY, 5, 2, 2, 5, false, SiegeTank.class,
-            new Vector2f(), -1, null,
+            new Vector2f(), -1, EventAnimationDamageShoot.class,
             () -> List.of(Tooltip.UNLEASH, Tooltip.CHOOSE, Tooltip.BLAST));
 
     @Override
@@ -62,7 +64,7 @@ public class SiegeTank extends MinionText {
                         int option = ((ModalTargetList) targetList.get(0)).targeted.get(0);
                         switch (option) {
                             case 0 -> {
-                                this.resolve(b, rq, el, new BlastResolver(effect, 5, null));
+                                this.resolve(b, rq, el, new BlastResolver(effect, 5, EventAnimationDamageShoot.class));
                             }
                             case 1 -> {
                                 getStillTargetableCards(Effect::getUnleashTargetingSchemes, targetList, 1).findFirst().ifPresent(targeted -> {
@@ -79,7 +81,7 @@ public class SiegeTank extends MinionText {
                                             d.add(2);
                                         }
                                     }
-                                    this.resolve(b, rq, el, new DamageResolver(effect, m, d, true, null));
+                                    this.resolve(b, rq, el, new DamageResolver(effect, m, d, true, EventAnimationDamageBigExplosion.class));
                                 });
                             }
                         }

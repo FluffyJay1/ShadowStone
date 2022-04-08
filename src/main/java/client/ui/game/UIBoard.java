@@ -50,8 +50,8 @@ public class UIBoard extends UIBox {
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.4)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0.1, new Vector2f(0, 700),
-                            new LinearInterpolation(0.4, 0),
-                            new QuadraticInterpolationA(1, 0, -4)
+                            () -> new LinearInterpolation(0.4, 0),
+                            () -> new QuadraticInterpolationA(1, 0, -4)
                     ),
                     new RadialVelocityEmissionPropertyStrategy(new LinearInterpolation(0, 350)),
                     new RandomAngleEmissionPropertyStrategy(new LinearInterpolation(-300, 300))
@@ -426,6 +426,7 @@ public class UIBoard extends UIBox {
     }
 
     private void resetBoard() {
+        this.b.skipAllAnimations();
         this.b.currentAnimations.clear();
         this.preSelectedCard = null;
         this.selectedCard = null;

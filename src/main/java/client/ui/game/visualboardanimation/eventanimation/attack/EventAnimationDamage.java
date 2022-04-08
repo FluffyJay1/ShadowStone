@@ -19,7 +19,7 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
      * is the only class that has to handle both cases.
      */
     public EventAnimationDamage() {
-        this(0, 0.5);
+        this(-1, 0.5);
     }
 
     public EventAnimationDamage(double preTime) {
@@ -34,7 +34,7 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
     public void init(VisualBoard b, EventDamage event) {
         this.visualBoard = b;
         this.event = event;
-        if (event.cardSource != null && this.preTime == 0) {
+        if (event.cardSource != null && this.preTime == -1) {
             this.preTime = 0.25;
         }
     }

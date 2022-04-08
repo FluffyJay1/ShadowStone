@@ -28,8 +28,8 @@ public class EventAnimationNecromancy extends EventAnimation<EventNecromancy> {
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.6)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0, new Vector2f(),
-                            new QuadraticInterpolationB(1, 0, 0),
-                            new LinearInterpolation(1, 4)
+                            () -> new QuadraticInterpolationB(1, 0, 0),
+                            () -> new LinearInterpolation(1, 4)
                     )
             ))
     );

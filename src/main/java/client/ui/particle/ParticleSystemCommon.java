@@ -22,8 +22,8 @@ public class ParticleSystemCommon {
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.5)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0.2, new Vector2f(0, 120),
-                            new QuadraticInterpolationB(1, 0, 0),
-                            new QuadraticInterpolationB(2, 0, 0)
+                            () -> new QuadraticInterpolationB(1, 0, 0),
+                            () -> new QuadraticInterpolationB(2, 0, 0)
                     ),
                     new RandomAngleEmissionPropertyStrategy(new ConstantInterpolation(0))
             ))
@@ -35,8 +35,8 @@ public class ParticleSystemCommon {
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.2, 1)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0.1, new Vector2f(0, 200),
-                            new QuadraticInterpolationB(1, 0, 0),
-                            new ConstantInterpolation(1.5)
+                            () -> new QuadraticInterpolationB(1, 0, 0),
+                            () -> new ConstantInterpolation(1.5)
                     ),
                     new RadialVelocityEmissionPropertyStrategy(new LinearInterpolation(0, 100)),
                     new CirclePositionEmissionPropertyStrategy(90),

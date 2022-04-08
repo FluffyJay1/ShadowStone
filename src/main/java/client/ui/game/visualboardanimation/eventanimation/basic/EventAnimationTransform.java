@@ -28,8 +28,8 @@ public class EventAnimationTransform extends EventAnimation<EventTransform> {
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.5, 1)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0.1, new Vector2f(0, 300),
-                            new QuadraticInterpolationA(0, 0, -8),
-                            new QuadraticInterpolationA(1, 0, -17)
+                            () -> new QuadraticInterpolationA(0, 0, -8),
+                            () -> new QuadraticInterpolationA(1, 0, -17)
                     ),
                     new CirclePositionEmissionPropertyStrategy(110),
                     new RadialVelocityEmissionPropertyStrategy(new LinearInterpolation(0, 50)),

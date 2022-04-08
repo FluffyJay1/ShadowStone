@@ -31,8 +31,8 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.2, 0.4)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0.2, new Vector2f(0, 0),
-                            new QuadraticInterpolationB(0.2, 0, 0),
-                            new LinearInterpolation(8, 1)
+                            () -> new QuadraticInterpolationB(0.2, 0, 0),
+                            () -> new LinearInterpolation(8, 1)
                     ),
                     new CirclePositionEmissionPropertyStrategy(50),
                     new RadialVelocityEmissionPropertyStrategy(new LinearInterpolation(100, 200)),

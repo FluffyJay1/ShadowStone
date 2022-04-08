@@ -26,8 +26,8 @@ public class EventAnimationDamageFire extends EventAnimationDamage {
                     new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/fire.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.2, 0.6)),
                     new ConstantEmissionPropertyStrategy(Graphics.MODE_ADD, 0.6, new Vector2f(0, -300),
-                            new LinearInterpolation(1, 0),
-                            new LinearInterpolation(0.5, 1.5)
+                            () -> new LinearInterpolation(1, 0),
+                            () -> new LinearInterpolation(0.5, 1.5)
                     ),
                     new CirclePositionEmissionPropertyStrategy(75),
                     new DirectionalVelocityEmissionPropertyStrategy(new Vector2f(0, -1), new LinearInterpolation(600, 1000)),
@@ -41,8 +41,8 @@ public class EventAnimationDamageFire extends EventAnimationDamage {
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.5, 0.9)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0.65, new Vector2f(0, 0),
-                            new QuadraticInterpolationB(1, 0, -2),
-                            new QuadraticInterpolationB(1, 3, 4)
+                            () -> new QuadraticInterpolationB(1, 0, -2),
+                            () -> new QuadraticInterpolationB(1, 3, 4)
                     ),
                     new CirclePositionEmissionPropertyStrategy(20),
                     new RadialVelocityEmissionPropertyStrategy(new QuadraticInterpolationB(0, 350, 0)),

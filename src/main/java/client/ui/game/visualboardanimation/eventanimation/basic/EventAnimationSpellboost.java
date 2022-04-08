@@ -31,8 +31,8 @@ public class EventAnimationSpellboost extends EventAnimation<EventSpellboost> {
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.1, 0.2)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0.7, new Vector2f(),
-                            new QuadraticInterpolationB(0.5, 0, 0),
-                            new ConstantInterpolation(1)
+                            () -> new QuadraticInterpolationB(0.5, 0, 0),
+                            () -> new ConstantInterpolation(1)
                     ),
                     new DirectionalVelocityEmissionPropertyStrategy(new Vector2f(0, -1), new QuadraticInterpolationB(400, 2000, 0)),
                     new DirectionalPositionEmissionPropertyStrategy(new Vector2f(0, 1), new LinearInterpolation(0, 50)),

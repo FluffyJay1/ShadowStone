@@ -40,8 +40,8 @@ public class EventAnimationDamageOff extends EventAnimationDamage {
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.15)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 1, new Vector2f(0, 0),
-                            new LinearInterpolation(1, 0),
-                            new ConstantInterpolation(3)
+                            () -> new LinearInterpolation(1, 0),
+                            () -> new ConstantInterpolation(3)
                     )
             ))
     );

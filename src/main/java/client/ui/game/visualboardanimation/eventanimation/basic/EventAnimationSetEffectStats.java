@@ -32,8 +32,8 @@ public class EventAnimationSetEffectStats extends EventAnimation<EventSetEffectS
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.4, 0.6)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0, new Vector2f(),
-                            new QuadraticInterpolationB(1, 0, 0),
-                            new ConstantInterpolation(1)
+                            () -> new QuadraticInterpolationB(1, 0, 0),
+                            () -> new ConstantInterpolation(1)
                     ),
                     new RandomAngleEmissionPropertyStrategy(new LinearInterpolation(-1500, 1500))
             ))

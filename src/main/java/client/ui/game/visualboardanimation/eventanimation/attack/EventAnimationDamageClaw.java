@@ -28,11 +28,11 @@ public class EventAnimationDamageClaw extends EventAnimationDamage {
                     }),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(1)),
                     new ConstantEmissionPropertyStrategy(Graphics.MODE_NORMAL, 0, new Vector2f(0, 0),
-                            new SequentialInterpolation<>(List.of(
+                            () -> new SequentialInterpolation<>(List.of(
                                     new ConstantInterpolation(1),
                                     new QuadraticInterpolationB(1, 0, 0)
                             ), List.of(0.5, 1.)),
-                            new ConstantInterpolation(0.8)
+                            () -> new ConstantInterpolation(0.8)
                     ),
                     new RandomAngleEmissionPropertyStrategy(new ConstantInterpolation(0))
             ))

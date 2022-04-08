@@ -27,8 +27,8 @@ public class EventAnimationDamageSlash extends EventAnimationDamage {
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.6)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0, new Vector2f(0, 0),
-                            new QuadraticInterpolationB(1, 0, 0),
-                            new QuadraticInterpolationB(2, 1, 1)
+                            () -> new QuadraticInterpolationB(1, 0, 0),
+                            () -> new QuadraticInterpolationB(2, 1, 1)
                     )
             ))
     );

@@ -28,8 +28,8 @@ public class EventAnimationDamageRocks extends EventAnimationDamage {
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.5, 0.9)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0.15, new Vector2f(0, 400),
-                            new ConstantInterpolation(1),
-                            new QuadraticInterpolationA(0.25, 0, -4)
+                            () -> new ConstantInterpolation(1),
+                            () -> new QuadraticInterpolationA(0.25, 0, -4)
                     ),
                     new CirclePositionEmissionPropertyStrategy(50),
                     new RadialVelocityEmissionPropertyStrategy(new LinearInterpolation(0, 350)),

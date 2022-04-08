@@ -3,6 +3,7 @@ package server.card.cardset.basic.portalhunter;
 import client.Game;
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageShoot;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
@@ -27,7 +28,7 @@ public class Camieux extends MinionText {
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/camieux.png",
             CRAFT, RARITY, 2, 2, 1, 1, true, Camieux.class,
-            new Vector2f(143, 150), 1.4, null,
+            new Vector2f(143, 150), 1.4, EventAnimationDamageShoot.class,
             () -> List.of(Tooltip.LASTWORDS));
 
     @Override
@@ -41,7 +42,7 @@ public class Camieux extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         for (int i = 0; i < 3; i++) {
                             List<Minion> relevant = b.getMinions(owner.team * -1, true, true).collect(Collectors.toList());
-                            this.resolve(b, rq, el, new DamageResolver(effect, Game.selectRandom(relevant), 1, true, null));
+                            this.resolve(b, rq, el, new DamageResolver(effect, Game.selectRandom(relevant), 1, true, EventAnimationDamageShoot.class));
                         }
                     }
                 });

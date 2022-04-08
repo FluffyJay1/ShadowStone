@@ -2,6 +2,7 @@ package server.card.cardset.basic.portalhunter;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageShoot;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
@@ -26,7 +27,7 @@ public class Cucouroux extends MinionText {
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/cucouroux.png",
             CRAFT, RARITY, 3, 3, 1, 2, true, Cucouroux.class,
-            new Vector2f(160, 145), 1.4, null,
+            new Vector2f(160, 145), 1.4, EventAnimationDamageShoot.class,
             () -> List.of(Tooltip.BATTLECRY, Tooltip.SPEND, Camieux.TOOLTIP, Tooltip.MINIONSTRIKE));
 
     @Override
@@ -52,7 +53,7 @@ public class Cucouroux extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (target.status.equals(CardStatus.BOARD)) {
-                            this.resolve(b, rq, el, new DamageResolver(effect, target, 2, true, null));
+                            this.resolve(b, rq, el, new DamageResolver(effect, target, 2, true, EventAnimationDamageShoot.class));
                         }
                     }
                 });

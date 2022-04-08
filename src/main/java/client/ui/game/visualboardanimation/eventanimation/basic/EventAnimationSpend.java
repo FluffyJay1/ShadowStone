@@ -33,10 +33,14 @@ public class EventAnimationSpend extends EventAnimation<EventSpend> {
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.6)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0.3, new Vector2f(0, 6000),
-                            new QuadraticInterpolationB(1, 0, 0),
-                            new ConstantInterpolation(1)
+                            () -> new QuadraticInterpolationB(1, 0, 0),
+                            () -> new ConstantInterpolation(1)
                     ),
-                    new DirectionalVelocityUniformSpreadEmissionPropertyStrategy(new Vector2f(0, -1), 0.5 + num * 0.1, new ConstantInterpolation(800), num)
+                    new DirectionalVelocityUniformSpreadEmissionPropertyStrategy(new Vector2f(0, -1),
+                            new ConstantInterpolation(0.5 + num * 0.1),
+                            new ConstantInterpolation(800),
+                            num
+                    )
             ))
     );
 

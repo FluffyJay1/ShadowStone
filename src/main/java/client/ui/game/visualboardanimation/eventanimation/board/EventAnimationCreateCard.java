@@ -35,8 +35,8 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.7)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0.2, new Vector2f(0, 700),
-                            new LinearInterpolation(0.9, 0),
-                            new QuadraticInterpolationA(4, 0, -4)
+                            () -> new LinearInterpolation(0.9, 0),
+                            () -> new QuadraticInterpolationA(4, 0, -4)
                     ),
                     new CirclePositionEmissionPropertyStrategy(25),
                     new RadialVelocityEmissionPropertyStrategy(new LinearInterpolation(0, 550)),
@@ -50,8 +50,8 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.3, 0.6)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0.05, new Vector2f(0, 4200),
-                            new LinearInterpolation(0.7, 0),
-                            new QuadraticInterpolationA(6, 1, -4)
+                            () -> new LinearInterpolation(0.7, 0),
+                            () -> new QuadraticInterpolationA(6, 1, -4)
                     ),
                     new CirclePositionEmissionPropertyStrategy(100),
                     new RadialVelocityEmissionPropertyStrategy(new LinearInterpolation(400, 5000)),
