@@ -68,25 +68,8 @@ public class EventAnimationDamageShoot extends EventAnimationDamage {
     );
     private static final Image SHOOT_PROJECTILE = Game.getImage("res/particle/attack/round.png");
 
-    // precompute
-    private List<Vector2f> dirs;
-    private List<Double> angles;
-
     public EventAnimationDamageShoot() {
         super(0.15);
-    }
-
-    @Override
-    public void init(VisualBoard b, EventDamage event) {
-        super.init(b, event);
-        this.dirs = new ArrayList<>(event.m.size());
-        this.angles = new ArrayList<>(event.m.size());
-        for (Minion m : event.m) {
-            Vector2f diff = m.uiCard.getAbsPos().copy().sub(event.cardSource.uiCard.getAbsPos());
-            double rad = Math.atan2(diff.y, diff.x);
-            this.dirs.add(diff);
-            this.angles.add(rad * 180 / Math.PI);
-        }
     }
 
     @Override
@@ -111,16 +94,9 @@ public class EventAnimationDamageShoot extends EventAnimationDamage {
 
     @Override
     public void draw(Graphics g) {
-        float rotvel = 300;
         if (this.isPre()) {
             // do the shooting
-            for (int i = 0; i < this.event.m.size(); i++) {
-                SHOOT_PROJECTILE.setRotation(this.angles.get(i).floatValue());
-                Vector2f pos = this.event.m.get(i).uiCard.getAbsPos()
-                        .sub(this.event.cardSource.uiCard.getAbsPos()).scale((float) (this.normalizedPre()))
-                        .add(this.event.cardSource.uiCard.getAbsPos());
-                g.drawImage(SHOOT_PROJECTILE, pos.x - SHOOT_PROJECTILE.getWidth()/2, pos.y - SHOOT_PROJECTILE.getHeight()/2);
-            }
+            this.drawProjectile(g, SHOOT_PROJECTILE);
         } else {
             this.drawDamageNumber(g);
         }

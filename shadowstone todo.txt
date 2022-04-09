@@ -1,4 +1,3 @@
-default unleash animation
 drain/lifesteal
 stealth
 shield

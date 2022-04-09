@@ -5,7 +5,7 @@ import client.ui.Animation;
 import client.ui.game.UIBoard;
 import client.ui.game.UICard;
 import client.ui.interpolation.Interpolation;
-import client.ui.interpolation.meta.ComposedInterpolation;
+import client.ui.interpolation.meta.ComposedListInterpolation;
 import client.ui.interpolation.realvalue.*;
 import client.ui.particle.strategy.EmissionStrategy;
 import client.ui.particle.strategy.property.*;
@@ -48,7 +48,7 @@ public class EventAnimationDamageOff extends EventAnimationDamage {
     private static final Vector2f BLOOD_OFFSET = new Vector2f(-192, 0);
 
     private static final Interpolation<Double> START_ANIMATION_RANGE_CIRCLE = new ClampedInterpolation(0, 0.55);
-    private static final Interpolation<Double> START_SCALE_CIRCLE = new ComposedInterpolation(
+    private static final Interpolation<Double> START_SCALE_CIRCLE = new ComposedListInterpolation(
             List.of(new LinearInterpolation(0.1, 1),
                     new SpringInterpolation(2.5),
                     new LinearInterpolation(8, 3)));

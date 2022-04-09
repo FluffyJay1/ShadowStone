@@ -1,6 +1,7 @@
 package server.card;
 
 import client.tooltip.TooltipMinion;
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageEnergyBeam;
 import server.Board;
 import server.BoardObjectText;
 import server.ServerBoard;
@@ -55,7 +56,8 @@ public abstract class MinionText extends BoardObjectText {
                             getStillTargetableCards(Effect::getUnleashTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                                 Minion target = (Minion) c;
                                 DamageResolver dr = new DamageResolver(effect, List.of(target),
-                                        List.of(effect.owner.finalStatEffects.getStat(EffectStats.MAGIC)), true, null);
+                                        List.of(effect.owner.finalStatEffects.getStat(EffectStats.MAGIC)), true,
+                                        EventAnimationDamageEnergyBeam.class);
                                 this.resolve(b, rq, el, dr);
                             });
                         }
