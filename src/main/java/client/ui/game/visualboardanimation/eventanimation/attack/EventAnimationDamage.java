@@ -11,6 +11,7 @@ import server.event.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.newdawn.slick.opengl.renderer.SGL.GL_ONE;
@@ -118,5 +119,21 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
             g.fill(r.transform(t));
         }
         g.setDrawMode(Graphics.MODE_NORMAL);
+    }
+
+    public static String nameOrNull(Class<? extends EventAnimationDamage> animation) {
+        return animation == null ? "null " : animation.getName() + " ";
+    }
+
+    public static Class<? extends EventAnimationDamage> fromString(String name) {
+        if (name.equals("null")) {
+            return null;
+        }
+        try {
+            return Class.forName(name).asSubclass(EventAnimationDamage.class);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

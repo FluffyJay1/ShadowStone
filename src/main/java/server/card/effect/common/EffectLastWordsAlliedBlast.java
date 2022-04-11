@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import client.*;
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamage;
 import server.*;
 import server.ai.AI;
 import server.card.*;
@@ -15,14 +16,16 @@ import server.resolver.util.ResolverQueue;
 
 public class EffectLastWordsAlliedBlast extends Effect {
     int damage = 0;
+    Class<? extends EventAnimationDamage> animation;
 
     // required for reflection
     public EffectLastWordsAlliedBlast() { }
 
     // sourceString: what to put in the description as where it came from
-    public EffectLastWordsAlliedBlast(String sourceString, int damage) {
+    public EffectLastWordsAlliedBlast(String sourceString, int damage, Class<? extends EventAnimationDamage> animation) {
         super("<b>Last Words</b>: deal " + damage + " damage to a random allied minion (from " + sourceString + ").");
         this.damage = damage;
+        this.animation = animation;
     }
 
     @Override
@@ -34,7 +37,7 @@ public class EffectLastWordsAlliedBlast extends Effect {
                 List<Minion> minions = b.getMinions(effect.owner.team, false, true).collect(Collectors.toList());
                 if (!minions.isEmpty()) {
                     Minion victim = Game.selectRandom(minions);
-                    this.resolve(b, rq, el, new DamageResolver(effect, victim, effect.damage, true, null));
+                    this.resolve(b, rq, el, new DamageResolver(effect, victim, effect.damage, true, animation));
                 }
             }
         });
@@ -47,11 +50,12 @@ public class EffectLastWordsAlliedBlast extends Effect {
 
     @Override
     public String extraStateString() {
-        return this.damage + " ";
+        return this.damage + " " + EventAnimationDamage.nameOrNull(this.animation);
     }
 
     @Override
     public void loadExtraState(Board b, StringTokenizer st) {
         this.damage = Integer.parseInt(st.nextToken());
+        this.animation = EventAnimationDamage.fromString(st.nextToken());
     }
 }

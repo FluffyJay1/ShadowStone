@@ -2,6 +2,7 @@ package server.card.cardset.basic.bloodwarlock;
 
 import java.util.*;
 
+import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageEnergyBeam;
 import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.*;
 
@@ -38,8 +39,8 @@ public class CursedStone extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         Player player = owner.board.getPlayer(owner.team);
                         int missing = player.getLeader().map(l -> l.finalStatEffects.getStat(EffectStats.HEALTH) - l.health).orElse(0);
-                        this.resolve(b, rq, el, new BlastResolver(effect, missing, null));
-                        Effect lw = new EffectLastWordsAlliedBlast("<b>Unleash</b>", missing);
+                        this.resolve(b, rq, el, new BlastResolver(effect, missing, EventAnimationDamageEnergyBeam.class));
+                        Effect lw = new EffectLastWordsAlliedBlast("<b>Unleash</b>", missing, EventAnimationDamageEnergyBeam.class);
                         this.resolve(b, rq, el, new AddEffectResolver(effect.owner, lw));
                     }
                 });

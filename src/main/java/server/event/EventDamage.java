@@ -74,7 +74,7 @@ public class EventDamage extends Event {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.id).append(" ").append(this.animation == null ? "null" : this.animation.getName()).append(" ")
+        builder.append(this.id).append(" ").append(EventAnimationDamage.nameOrNull(this.animation))
                 .append(Card.referenceOrNull(this.cardSource)).append(Effect.referenceOrNull(this.effectSource))
                 .append(this.m.size()).append(" ");
         for (int i = 0; i < this.m.size(); i++) {
@@ -86,14 +86,10 @@ public class EventDamage extends Event {
 
     public static EventDamage fromString(Board b, StringTokenizer st) {
         Class<? extends EventAnimationDamage> anim = null;
-        String classname = st.nextToken();
         // only do reflection on this if we may need to draw it
-        if (!classname.equals("null") && b instanceof VisualBoard) {
-            try {
-                anim = Class.forName(classname).asSubclass(EventAnimationDamage.class);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+        String className = st.nextToken();
+        if (b instanceof VisualBoard) {
+            anim = EventAnimationDamage.fromString(className);
         }
         Card cardSource = Card.fromReference(b, st);
         Effect effectSource = Effect.fromReference(b, st);
