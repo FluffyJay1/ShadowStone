@@ -76,6 +76,9 @@ public class Tooltip {
     public static final Tooltip RETALIATE = new Tooltip("Retaliate",
             "<b>Retaliate</b> effects on a minion activate whenever they are attacked.",
             List::of);
+    public static final Tooltip LIFESTEAL = new Tooltip("Lifesteal",
+            "After a card with <b>Lifesteal</b> deals damage, it restores health to the owner's leader equal to the damage dealt.",
+            List::of);
 
     public final String name;
     public final String description;

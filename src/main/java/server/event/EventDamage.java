@@ -22,6 +22,7 @@ public class EventDamage extends Event {
     private List<Integer> oldHealth;
     private List<Boolean> oldAlive;
     public final List<Card> markedForDeath;
+    public final List<Integer> actualDamage;
     public final Card cardSource; // used for animation probably (relied on for minion attack)
     public Effect effectSource; // used for animation probably, may be null
 
@@ -36,6 +37,7 @@ public class EventDamage extends Event {
         this.damage = damage;
         this.markedForDeath = Objects.requireNonNullElseGet(markedForDeath, ArrayList::new);
         this.animation = animation;
+        this.actualDamage = new ArrayList<>(this.damage.size());
     }
 
     public EventDamage(Effect source, List<Minion> m, List<Integer> damage, List<Card> markedForDeath, Class<? extends EventAnimationDamage> animation) {
@@ -58,7 +60,8 @@ public class EventDamage extends Event {
                 minion.alive = false;
                 this.markedForDeath.add(minion);
             }
-            minion.health -= damage.get(i);
+            minion.health -= this.damage.get(i);
+            this.actualDamage.add(this.damage.get(i));
         }
     }
 

@@ -30,7 +30,9 @@ public class TooltipMinion extends TooltipCard {
                 List<Tooltip> supplied = references.get();
                 List<Tooltip> ret = new ArrayList<>(supplied.size() + 1);
                 ret.addAll(supplied);
-                ret.add(Tooltip.UNLEASH);
+                if (!ret.contains(Tooltip.UNLEASH)) {
+                    ret.add(Tooltip.UNLEASH);
+                }
                 return ret;
             };
         } else {

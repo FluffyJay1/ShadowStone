@@ -409,6 +409,9 @@ public class UICard extends UIBox {
         if (this.card.finalStatEffects.getStat(EffectStats.POISONOUS) > 0) {
             this.icons.add(Game.getImage("res/game/poisonousicon.png"));
         }
+        if (this.card.finalStatEffects.getStat(EffectStats.LIFESTEAL) > 0) {
+            this.icons.add(Game.getImage("res/game/lifestealicon.png"));
+        }
         if (this.card instanceof BoardObject && !((BoardObject) this.card).lastWords().isEmpty()) {
             this.icons.add(Game.getImage("res/game/lastwordsicon.png"));
         }

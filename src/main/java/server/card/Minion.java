@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 import client.tooltip.*;
 import server.*;
+import server.ai.AI;
 import server.card.effect.*;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
@@ -37,6 +38,9 @@ public class Minion extends BoardObject {
         // 0.9 * sqrt(atk * hp) + 0.1 * sqrt(magic * hp^(0.4)) + 1
         int attack = this.finalStatEffects.getStat(EffectStats.ATTACK);
         int magic = this.finalStatEffects.getStat(EffectStats.MAGIC);
+        if (this.finalStatEffects.getStat(EffectStats.LIFESTEAL) > 0) {
+            sum += attack * AI.VALUE_PER_HEAL;
+        }
         // if bane, add 4 to attack value, if poisonous add 6 if attack > 0, only add the max of these two bonuses
         int bonus = 0;
         if (this.finalStatEffects.getStat(EffectStats.BANE) > 0) {

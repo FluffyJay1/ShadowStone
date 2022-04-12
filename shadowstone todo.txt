@@ -1,5 +1,5 @@
-drain/lifesteal
 stealth
 shield
 can't attack
 effect ward
+hide stuff u aren't supposed to see

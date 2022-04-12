@@ -65,11 +65,21 @@ public class DamageResolver extends Resolver {
                 processedDamage.add(this.damage.get(i));
             }
         }
+        EventDamage event;
         if (this.effectSource != null) {
-            b.processEvent(rq, el, new EventDamage(this.effectSource, processedTargets, processedDamage, this.destroyed, this.animation));
+            event = b.processEvent(rq, el, new EventDamage(this.effectSource, processedTargets, processedDamage, this.destroyed, this.animation));
         } else {
-            b.processEvent(rq, el, new EventDamage(this.cardSource, processedTargets, processedDamage, this.destroyed, this.animation));
+            event = b.processEvent(rq, el, new EventDamage(this.cardSource, processedTargets, processedDamage, this.destroyed, this.animation));
         }
+
+        if (this.cardSource.finalStatEffects.getStat(EffectStats.LIFESTEAL) > 0) {
+            int totalHeal = event.actualDamage.stream()
+                    .reduce(0, Integer::sum, Integer::sum);
+            this.cardSource.player.getLeader().ifPresent(l -> {
+                this.resolve(b, rq, el, new RestoreResolver(this.effectSource, l, totalHeal));
+            });
+        }
+
         for (int i = 0; i < processedTargets.size(); i++) {
             Minion m = processedTargets.get(i);
             int damage = processedDamage.get(i);

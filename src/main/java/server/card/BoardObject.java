@@ -1,6 +1,7 @@
 package server.card;
 
 import server.*;
+import server.ai.AI;
 import server.card.effect.*;
 import server.card.target.TargetList;
 import server.event.eventgroup.EventGroupType;
@@ -41,7 +42,8 @@ public class BoardObject extends Card {
         if (refs < 0) {
             return 0;
         }
-        double sum = this.getTotalEffectValueOf(e -> e.getPresenceValue(refs)) * this.getPresenceValueMultiplier();
+        double sum = super.getValue(refs);
+        sum += this.getTotalEffectValueOf(e -> e.getPresenceValue(refs)) * this.getPresenceValueMultiplier();
         sum += this.getTotalEffectValueOf(e -> e.getLastWordsValue(refs)) * this.getLastWordsValueMultiplier();
         if (this.status.equals(CardStatus.HAND)) {
             sum += this.getTotalEffectValueOf(e -> e.getBattlecryValue(refs));

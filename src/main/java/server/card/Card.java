@@ -85,7 +85,16 @@ public abstract class Card implements Indexable, StringBuildable {
         return this.getValue(VALUE_MAX_REF_DEPTH);
     }
 
-    public abstract double getValue(int refs);
+    public double getValue(int refs) {
+        double sum = 0;
+        if (this.finalStatEffects.getStat(EffectStats.LIFESTEAL) > 0) {
+            sum += 1;
+        }
+        if (this.finalStatEffects.getStat(EffectStats.POISONOUS) > 0) {
+            sum += 1;
+        }
+        return sum;
+    }
 
     public double getTotalEffectValueOf(Function<Effect, Double> property) {
         // functional is cool
@@ -341,7 +350,17 @@ public abstract class Card implements Indexable, StringBuildable {
     }
 
     public ResolverQueue onListenEvent(Event event) {
-        return this.getResolvers(EventGroupType.FLAG, List.of(this), eff -> eff.onListenEvent(event), eff -> true);
+        return new ResolverQueue(this.getFinalEffects(true)
+                .filter(this.listeners::contains)
+                .map(e -> {
+                    ResolverWithDescription r = e.onListenEvent(event);
+                    if (r == null) {
+                        return null;
+                    }
+                    return new HookResolver(EventGroupType.FLAG, List.of(this), r, e, eff -> !eff.removed);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList()));
     }
 
     public String cardPosToString() {

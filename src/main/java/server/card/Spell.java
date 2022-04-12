@@ -14,7 +14,7 @@ public class Spell extends Card { // yea
         if (refs < 0) {
             return 0;
         }
-        return this.getTotalEffectValueOf(e -> e.getBattlecryValue(refs));
+        return super.getValue(refs) + this.getTotalEffectValueOf(e -> e.getBattlecryValue(refs));
     }
 
     @Override
