@@ -6,6 +6,8 @@ import client.Game;
 import client.PendingMinionAttack;
 import server.*;
 import server.card.*;
+import server.card.effect.Effect;
+import server.card.effect.EffectStats;
 
 public class EventMinionAttack extends Event {
     // start attack

@@ -361,6 +361,8 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         if (delta.length() > EPSILON) {
             float ratio = 1 - (float) Math.pow(1 - this.speed, frametime);
             this.pos.add(delta.scale(ratio));
+        } else {
+            this.pos.set(this.targetpos);
         }
 
         this.updateRelationships();

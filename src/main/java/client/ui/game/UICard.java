@@ -1,7 +1,16 @@
 package client.ui.game;
 
 import java.util.*;
+import java.util.function.Supplier;
 
+import client.ui.Animation;
+import client.ui.interpolation.realvalue.ConstantInterpolation;
+import client.ui.interpolation.realvalue.LinearInterpolation;
+import client.ui.interpolation.realvalue.QuadraticInterpolationB;
+import client.ui.particle.ParticleSystem;
+import client.ui.particle.strategy.EmissionStrategy;
+import client.ui.particle.strategy.property.*;
+import client.ui.particle.strategy.timing.IntervalEmissionTimingStrategy;
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
 
@@ -49,6 +58,22 @@ public class UICard extends UIBox {
     private static final int READY_BORDER_WIDTH = 2;
     private static final int READY_BORDER_PADDING = 4;
 
+    private static final Supplier<EmissionStrategy> STEALTH_PARTICLES = () -> new EmissionStrategy(
+            new IntervalEmissionTimingStrategy(3, 0.08),
+            new ComposedEmissionPropertyStrategy(List.of(
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/smoke.png", new Vector2f(1, 1), 0, 0)),
+                    new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(1)),
+                    new ConstantEmissionPropertyStrategy(
+                            Graphics.MODE_NORMAL, 0.15, new Vector2f(0, 10),
+                            () -> new QuadraticInterpolationB(0, 0, 1),
+                            () -> new QuadraticInterpolationB(1.5, 1.7, 0.4)
+                    ),
+                    new CirclePositionEmissionPropertyStrategy(75),
+                    new RadialVelocityEmissionPropertyStrategy(new LinearInterpolation(0, 10)),
+                    new RandomAngleEmissionPropertyStrategy(new LinearInterpolation(-50, 50))
+            ))
+    );
+
     private Card card;
     private Image cardImage, subImage;
     private final UIBoard uib;
@@ -62,6 +87,7 @@ public class UICard extends UIBox {
     private boolean dragging;
     private final Set<PendingManager<?>> pendingSources;
     private double pendingTimer;
+    private final ParticleSystem stealthParticles;
 
     public UICard(UI ui, UIBoard uib, Card c) {
         super(ui, new Vector2f(), CARD_DIMENSIONS, "");
@@ -70,6 +96,8 @@ public class UICard extends UIBox {
         this.icons = new ArrayList<>();
         this.flippedOver = false;
         this.pendingSources = new HashSet<>();
+        this.stealthParticles = new ParticleSystem(ui, new Vector2f(), STEALTH_PARTICLES.get(), true);
+        this.addChild(this.stealthParticles);
     }
 
     @Override
@@ -204,6 +232,8 @@ public class UICard extends UIBox {
     @Override
     public void update(double frametime) {
         super.update(frametime);
+        this.stealthParticles.setScale(this.getScale());
+        this.stealthParticles.setPaused(!this.card.isInPlay() || this.card.finalStatEffects.getStat(EffectStats.STEALTH) == 0);
         if (!this.isBeingAnimated()) {
             this.updateCardAnimation();
         }
@@ -227,7 +257,6 @@ public class UICard extends UIBox {
                 g.setColor(Color.white);
             }
         }
-        this.drawChildren(g);
     }
 
     public void drawCard(Graphics g, Vector2f pos, double scale) {
@@ -239,6 +268,7 @@ public class UICard extends UIBox {
         if (!(this.card instanceof UnleashPower) && !(this.card instanceof Leader)) {
             this.drawCardBorder(g, pos, scale);
         }
+        this.stealthParticles.draw(g);
         if (this.card.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
             this.drawStatNumber(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COUNTDOWN), COUNTDOWN_POS,
                     50, Color.white, Game.getImage("res/game/statcountdown.png"), STAT_ICON_COUNTDOWN_SCALE);

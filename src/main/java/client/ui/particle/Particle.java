@@ -48,15 +48,15 @@ public class Particle {
         return this.time / this.maxTime;
     }
 
-    public void draw(Graphics g, Vector2f parentAbsPos) {
+    public void draw(Graphics g, Vector2f parentAbsPos, float parentScale) {
         Image image = this.animation.getCurrentFrame();
         image.setAlpha(this.opacityInterpolation.get(this.normalizedTime()).floatValue());
-        float scale = this.scaleInterpolation.get(this.normalizedTime()).floatValue();
+        float scale = this.scaleInterpolation.get(this.normalizedTime()).floatValue() * parentScale;
         float scaledWidth = scale * image.getWidth();
         float scaledHeight = scale * image.getHeight();
         image.setCenterOfRotation(scaledWidth/2, scaledHeight/2);
         image.rotate((float) this.angle);
-        Vector2f topleft = new Vector2f(-scaledWidth / 2, -scaledHeight / 2).add(pos).add(parentAbsPos);
+        Vector2f topleft = new Vector2f(-scaledWidth / 2, -scaledHeight / 2).add(this.pos.copy().scale(parentScale)).add(parentAbsPos);
         g.setDrawMode(this.drawMode);
         // the boys over at slick got the blending equations wrong, they don't factor in alpha correctly
         if (this.drawMode == Graphics.MODE_NORMAL) {

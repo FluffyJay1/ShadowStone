@@ -19,13 +19,15 @@ public class ExpansionSetBasic extends ExpansionSet {
             new BlackenedScripture(), new MordecaiTheDuelist(), new HallowedDogma(), new HolyFalcon(), new HolyflameTiger(),
             new BeastcallAria(), new SiegeTank(), new Batter(), new Spectre(), new Chronos(), new Rhinoceroach(),
             new Zombie(), new DemonlordEachtar(), new MoltenGiant(), new FatesHand(), new Snowman(), new SummonSnow(),
-            new BreathOfTheSalamander(), new Cucouroux(), new Camieux(), new TerrorDemon());
+            new BreathOfTheSalamander(), new Cucouroux(), new Camieux(), new TerrorDemon(), new Tanya(),
+            new EphemeraAngelicSlacker());
     public static final CardSet PLAYABLE_SET = new CardSet(new Goblin(), new Fighter(), new Fireball(), new Tiny(),
             new WellOfDestination(), new BellringerAngel(), new GenesisOfLegend(), new WoodOfBrambles(), new Baneling(),
             new CursedStone(), new WeatheredVanguard(), new DragonOracle(), new Curate(), new PuppetRoom(), new Beastmaster(),
             new StonetuskBoar(), new BlackenedScripture(), new MordecaiTheDuelist(), new HallowedDogma(), new BeastcallAria(),
             new SiegeTank(), new Batter(), new Chronos(), new Rhinoceroach(), new DemonlordEachtar(), new MoltenGiant(),
-            new FatesHand(), new SummonSnow(), new BreathOfTheSalamander(), new Cucouroux(), new TerrorDemon());
+            new FatesHand(), new SummonSnow(), new BreathOfTheSalamander(), new Cucouroux(), new TerrorDemon(), new Tanya(),
+            new EphemeraAngelicSlacker());
 
     @Override
     public CardSet getCards() {

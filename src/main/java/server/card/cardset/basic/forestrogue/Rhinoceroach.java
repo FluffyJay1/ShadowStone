@@ -36,7 +36,7 @@ public class Rhinoceroach extends MinionText {
                 .build()) {
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
-                String resolverDescription = "<b>Battlecry</b>: Gain +X/+0/+0. X equals the number of other cards played this turn.";
+                String resolverDescription = "<b>Battlecry</b>: Gain +X/+0/+0 until the end of the turn. X equals the number of other cards played this turn.";
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {

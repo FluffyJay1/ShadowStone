@@ -32,8 +32,8 @@ public class EventAddEffect extends Event {
 
     @Override
     public void resolve(Board b) {
-        this.oldHealth = new ArrayList<>();
-        this.oldAlive = new ArrayList<>();
+        this.oldHealth = new ArrayList<>(this.c.size());
+        this.oldAlive = new ArrayList<>(this.c.size());
         for (int i = 0; i < this.c.size(); i++) {
             Card c = this.c.get(i);
             Effect clonede = null;

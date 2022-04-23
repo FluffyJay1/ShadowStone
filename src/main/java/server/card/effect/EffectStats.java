@@ -14,10 +14,11 @@ import java.util.*;
  * (like an effect that buffs health by 2)
  */
 public class EffectStats implements Cloneable, StringBuildable {
-    public static final int NUM_STATS = 13;
+    public static final int NUM_STATS = 14;
     // what's an enum
     public static final int COST = 0, ATTACK = 1, MAGIC = 2, HEALTH = 3, ATTACKS_PER_TURN = 4, STORM = 5, RUSH = 6,
-            WARD = 7, BANE = 8, POISONOUS = 9, COUNTDOWN = 10, SPELLBOOSTABLE = 11, LIFESTEAL = 12;
+            WARD = 7, BANE = 8, POISONOUS = 9, COUNTDOWN = 10, SPELLBOOSTABLE = 11, LIFESTEAL = 12,
+            STEALTH = 13;
     private static final String USED_INDICATOR = "Y";
     private static final String UNUSED_INDICATOR = "N";
 

@@ -76,8 +76,8 @@ public class Minion extends BoardObject {
         if (!this.canAttack()) {
             return Stream.empty();
         }
-        Supplier<Stream<Minion>> minions = () -> this.board.getMinions(this.team * -1, false, true);
-        // TODO add if can attack this minion eg stealth
+        Supplier<Stream<Minion>> minions = () -> this.board.getMinions(this.team * -1, false, true)
+                .filter(m -> m.finalStatEffects.getStat(EffectStats.STEALTH) == 0);
         Stream<Minion> attackable = minions.get();
 
         // TODO add restrictions on can't attack leader
@@ -104,9 +104,9 @@ public class Minion extends BoardObject {
             return false;
         }
         boolean ward = this.board.getMinions(this.team * -1, true, true)
-                .anyMatch(potentialWard -> potentialWard.finalStatEffects.getStat(EffectStats.WARD) > 0);
-        // TODO add if can attack this minion eg stealth
-        return m.isInPlay() && (!ward || m.finalStatEffects.getStat(EffectStats.WARD) > 0)
+                .anyMatch(potentialWard -> potentialWard.finalStatEffects.getStat(EffectStats.STEALTH) == 0
+                        && potentialWard.finalStatEffects.getStat(EffectStats.WARD) > 0);
+        return m.isInPlay() && (!ward || m.finalStatEffects.getStat(EffectStats.WARD) > 0) && m.finalStatEffects.getStat(EffectStats.STEALTH) == 0
                 && (m.status.equals(CardStatus.BOARD) ? this.attackMinionConditions() : this.attackLeaderConditions());
     }
 

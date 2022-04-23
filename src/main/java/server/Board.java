@@ -87,12 +87,14 @@ public abstract class Board {
         );
     }
 
-    // cards that can be added to a Target object
     public Stream<Card> getTargetableCards(CardTargetingScheme t) {
         if (t == null) {
             return Stream.empty();
         }
-        return this.getTargetableCards().filter(t::canTarget);
+        // TODO handle "can't be targeted" effects
+        return this.getTargetableCards()
+                .filter(c -> !(c.team != t.getCreator().owner.team && c.isInPlay() && c.finalStatEffects.getStat(EffectStats.STEALTH) > 0)) // filter stealth
+                .filter(t::canTarget);
     }
 
     public Stream<Card> getCards() {

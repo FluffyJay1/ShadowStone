@@ -19,16 +19,22 @@ public class ParticleSystem extends UIElement {
     private final EmissionPropertyStrategy propertyStrategy;
     private double nextEmission;
     private boolean killed;
+    private boolean paused;
 
-    public ParticleSystem(UI ui, Vector2f pos, EmissionStrategy strategy) {
+    public ParticleSystem(UI ui, Vector2f pos, EmissionStrategy strategy, boolean paused) {
         super(ui, pos, "");
         this.timingStrategy = strategy.getTimingStrategy();
         this.propertyStrategy = strategy.getPropertyStrategy();
         this.particles = new ArrayList<>();
         this.nextEmission = 0;
         this.ignorehitbox = true;
-        this.updateEmission(0);
         this.killed = false;
+        this.setPaused(paused);
+        this.updateEmission(0);
+    }
+
+    public ParticleSystem(UI ui, Vector2f pos, EmissionStrategy strategy) {
+        this(ui, pos, strategy, false);
     }
 
     @Override
@@ -59,12 +65,14 @@ public class ParticleSystem extends UIElement {
     }
 
     private void updateEmission(double frametime) {
-        this.nextEmission -= frametime;
-        int emittedThisFrame = 0;
-        while (!this.timingStrategy.isFinished() && this.nextEmission <= 0 && emittedThisFrame < MAX_PARTICLES_PER_FRAME && !this.killed) {
-            this.emit(-this.nextEmission);
-            this.nextEmission += this.timingStrategy.getNextEmissionTime();
-            emittedThisFrame++;
+        if (!this.paused) {
+            this.nextEmission -= frametime;
+            int emittedThisFrame = 0;
+            while (!this.timingStrategy.isFinished() && this.nextEmission <= 0 && emittedThisFrame < MAX_PARTICLES_PER_FRAME && !this.killed) {
+                this.emit(-this.nextEmission);
+                this.nextEmission += this.timingStrategy.getNextEmissionTime();
+                emittedThisFrame++;
+            }
         }
     }
 
@@ -79,7 +87,7 @@ public class ParticleSystem extends UIElement {
     public void draw(Graphics g) {
         if (this.isVisible()) {
             for (Particle p : this.particles) {
-                p.draw(g, this.getAbsPos());
+                p.draw(g, this.getAbsPos(), this.getScale());
             }
             this.drawChildren(g); // i guess
         }
@@ -88,5 +96,13 @@ public class ParticleSystem extends UIElement {
     // kill: permanently stop emission, and remove once particles are gone
     public void kill() {
         this.killed = true;
+    }
+
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
+
+    public boolean isPaused() {
+        return this.paused;
     }
 }

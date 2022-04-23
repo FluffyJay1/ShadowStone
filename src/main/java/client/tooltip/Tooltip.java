@@ -79,6 +79,9 @@ public class Tooltip {
     public static final Tooltip LIFESTEAL = new Tooltip("Lifesteal",
             "After a card with <b>Lifesteal</b> deals damage, it restores health to the owner's leader equal to the damage dealt.",
             List::of);
+    public static final Tooltip STEALTH = new Tooltip("Stealth",
+            "Cards with <b>Stealth</b> can't be targeted by the enemy for attacks and effects. They lose <b>Stealth</b> after attacking.",
+            List::of);
 
     public final String name;
     public final String description;

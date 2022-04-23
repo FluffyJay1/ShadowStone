@@ -24,8 +24,10 @@ public class MinionAttackResolver extends Resolver {
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         EventGroup attackOrdered = new EventGroup(EventGroupType.MINIONATTACKORDER, List.of(this.m1, this.m2));
         b.pushEventGroup(attackOrdered);
-        b.processEvent(rq, el, new EventMinionAttack(this.m1, this.m2));
-        ResolverQueue queue = this.m1.strike(this.m2);
+        ResolverQueue queue = new ResolverQueue();
+        b.processEvent(queue, el, new EventMinionAttack(this.m1, this.m2)); // various things are depending on this being first
+        this.resolveQueue(b, queue, el, queue);
+        queue = this.m1.strike(this.m2);
         this.resolveQueue(b, queue, el, queue);
         if (this.m2 instanceof Leader) {
             queue = this.m1.leaderStrike((Leader) this.m2);
@@ -41,6 +43,12 @@ public class MinionAttackResolver extends Resolver {
         if (!(this.m1 instanceof Leader)) {
             queue = this.m2.clash(this.m1);
             this.resolveQueue(b, queue, el, queue);
+        }
+        if (this.m1.finalStatEffects.getStat(EffectStats.STEALTH) > 0) {
+            Effect stealthRemover = new Effect("", EffectStats.builder()
+                    .set(EffectStats.STEALTH, 0)
+                    .build());
+            this.resolve(b, rq, el, new AddEffectResolver(this.m1, stealthRemover));
         }
         if (this.m1.alive && this.m1.isInPlay() && this.m2.alive && this.m2.isInPlay()) {
             List<Card> destroyed = new ArrayList<>(2);
