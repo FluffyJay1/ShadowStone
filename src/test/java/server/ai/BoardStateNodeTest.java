@@ -29,7 +29,7 @@ public class BoardStateNodeTest {
         b2.logEvaluation("a", b3);
         b1.logEvaluation("a", b2);
         // see if b1 is what we expect
-        assertEquals(b1.alphaBlend(b2.alphaBlend(3)), b1.getScore());
+        assertEquals(3, b1.getScore());
         // it should have queried b2 and b3
         Mockito.verify(b2).getMax();
         Mockito.verify(b3).getMax();

@@ -1,4 +1,3 @@
-stealth
 shield
 can't attack
 effect ward
