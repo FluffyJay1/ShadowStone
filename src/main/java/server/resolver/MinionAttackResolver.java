@@ -44,12 +44,6 @@ public class MinionAttackResolver extends Resolver {
             queue = this.m2.clash(this.m1);
             this.resolveQueue(b, queue, el, queue);
         }
-        if (this.m1.finalStatEffects.getStat(EffectStats.STEALTH) > 0) {
-            Effect stealthRemover = new Effect("", EffectStats.builder()
-                    .set(EffectStats.STEALTH, 0)
-                    .build());
-            this.resolve(b, rq, el, new AddEffectResolver(this.m1, stealthRemover));
-        }
         if (this.m1.alive && this.m1.isInPlay() && this.m2.alive && this.m2.isInPlay()) {
             List<Card> destroyed = new ArrayList<>(2);
             int damage1 = this.m1.finalStatEffects.getStat(EffectStats.ATTACK);

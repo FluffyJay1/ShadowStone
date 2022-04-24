@@ -9,10 +9,10 @@ import server.event.*;
 import server.resolver.util.ResolverQueue;
 
 public class RemoveEffectResolver extends Resolver {
-    final List<Effect> effects;
+    final List<? extends Effect> effects;
     public final List<Card> destroyed;
 
-    public RemoveEffectResolver(List<Effect> effects) {
+    public RemoveEffectResolver(List<? extends Effect> effects) {
         super(false);
         this.destroyed = new LinkedList<>();
         this.effects = effects;

@@ -7,8 +7,6 @@ import server.*;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
-import server.event.eventgroup.EventGroup;
-import server.event.eventgroup.EventGroupType;
 import server.resolver.util.ResolverQueue;
 
 public class TurnStartResolver extends Resolver {
@@ -29,7 +27,7 @@ public class TurnStartResolver extends Resolver {
         for (BoardObject bo : ours) {
             // things may happen, this bo might be dead already
             if (bo.isInPlay()) {
-                this.resolveQueue(b, rq, el, bo.onTurnStart());
+                this.resolveQueue(b, rq, el, bo.onTurnStartAllied());
                 if (bo.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
                     Effect e = new Effect();
                     e.effectStats.change.setStat(EffectStats.COUNTDOWN, -1);

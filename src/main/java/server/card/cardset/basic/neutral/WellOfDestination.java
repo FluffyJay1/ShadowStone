@@ -30,7 +30,7 @@ public class WellOfDestination extends AmuletText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public ResolverWithDescription onTurnStart() {
+            public ResolverWithDescription onTurnStartAllied() {
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(true) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {

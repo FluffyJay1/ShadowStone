@@ -9,14 +9,14 @@ import server.card.effect.*;
 
 public class EventRemoveEffect extends Event {
     public static final int ID = 22;
-    public final List<Effect> effects;
+    public final List<? extends Effect> effects;
     private List<Integer> prevPos;
     private List<Integer> oldHealth;
     private List<Boolean> oldRemoved;
     private List<Boolean> oldAlive;
     final List<Card> markedForDeath;
 
-    public EventRemoveEffect(List<Effect> effects, List<Card> markedForDeath) {
+    public EventRemoveEffect(List<? extends Effect> effects, List<Card> markedForDeath) {
         super(ID);
         this.effects = effects;
         this.markedForDeath = Objects.requireNonNullElseGet(markedForDeath, ArrayList::new);

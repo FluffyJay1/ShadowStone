@@ -32,7 +32,7 @@ public class GenesisOfLegend extends AmuletText {
                 .build()
         ) {
             @Override
-            public ResolverWithDescription onTurnEnd() {
+            public ResolverWithDescription onTurnEndAllied() {
                 String resolverDescription = "At the end of your turn, give a random allied minion +0/+0/+1 and <b>Bane</b>.";
                 return new ResolverWithDescription(resolverDescription, new Resolver(true) {
                     @Override

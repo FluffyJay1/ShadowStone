@@ -9,6 +9,7 @@ import server.*;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.resolver.AddEffectResolver;
 
 /*
  * Event alone may cause the board to enter an invalid state by killing minions,
@@ -21,6 +22,7 @@ public class EventDamage extends Event {
     public final List<Minion> m;
     private List<Integer> oldHealth;
     private List<Boolean> oldAlive;
+    private Effect stealthRemover;
     public final List<Card> markedForDeath;
     public final List<Integer> actualDamage;
     public final Card cardSource; // used for animation probably (relied on for minion attack)
@@ -63,10 +65,19 @@ public class EventDamage extends Event {
             minion.health -= this.damage.get(i);
             this.actualDamage.add(this.damage.get(i));
         }
+        if (this.cardSource.finalStatEffects.getStat(EffectStats.STEALTH) > 0) {
+            this.stealthRemover = new Effect("", EffectStats.builder()
+                    .set(EffectStats.STEALTH, 0)
+                    .build());
+            this.cardSource.addEffect(false, this.stealthRemover);
+        }
     }
 
     @Override
     public void undo(Board b) {
+        if (this.stealthRemover != null) {
+            this.cardSource.removeEffect(this.stealthRemover, true);
+        }
         for (int i = 0; i < this.m.size(); i++) { // sure
             Minion minion = m.get(i);
             minion.health = this.oldHealth.get(i);

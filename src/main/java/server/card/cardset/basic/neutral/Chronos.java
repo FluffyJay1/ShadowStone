@@ -68,7 +68,7 @@ public class Chronos extends MinionText {
         }
 
         @Override
-        public ResolverWithDescription onTurnEnd() {
+        public ResolverWithDescription onTurnEndAllied() {
             return new ResolverWithDescription(EFFECT_DESCRIPTION, new Resolver(false) {
                 @Override
                 public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {

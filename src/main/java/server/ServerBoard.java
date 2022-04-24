@@ -3,10 +3,7 @@ package server;
 import client.Game;
 import server.card.BoardObject;
 import server.card.Card;
-import server.card.effect.Effect;
-import server.card.effect.EffectAura;
-import server.card.effect.EffectStats;
-import server.card.effect.EffectWithDependentStats;
+import server.card.effect.*;
 import server.event.Event;
 import server.event.EventMulliganPhaseEnd;
 import server.event.eventburst.EventBurst;
@@ -49,7 +46,7 @@ public class ServerBoard extends Board {
     public Set<Card> listeners;
 
     // see EffectUntilTurnEnd, Card, TurnEndResolver
-    public List<Effect> effectsToRemoveAtEndOfTurn;
+    public List<EffectUntilTurnEnd> effectsToRemoveAtEndOfTurn;
 
     public ServerBoard(int localteam) {
         super(localteam);

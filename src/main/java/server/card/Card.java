@@ -159,7 +159,7 @@ public abstract class Card implements Indexable, StringBuildable {
                 sb.dependentStats.add((EffectWithDependentStats) e);
             }
             if (e instanceof EffectUntilTurnEnd) {
-                sb.effectsToRemoveAtEndOfTurn.add(e);
+                sb.effectsToRemoveAtEndOfTurn.add((EffectUntilTurnEnd) e);
             }
             try {
                 e.onListenEvent(null);

@@ -39,7 +39,7 @@ public class PuppetRoom extends AmuletText {
             }
 
             @Override
-            public ResolverWithDescription onTurnEnd() {
+            public ResolverWithDescription onTurnEndAllied() {
                 String resolverDescription = "At the end of your turn, put a <b>Puppet</b> in your hand.";
                 return new ResolverWithDescription(resolverDescription, new CreateCardResolver(new Puppet(), this.owner.team, CardStatus.HAND, -1));
             }

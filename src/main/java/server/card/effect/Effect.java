@@ -164,12 +164,12 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     }
 
     // can assume that boardobject is in play
-    public ResolverWithDescription onTurnStart() {
+    public ResolverWithDescription onTurnStartAllied() {
         return null;
     }
 
     // can assume that boardobject is in play
-    public ResolverWithDescription onTurnEnd() {
+    public ResolverWithDescription onTurnEndAllied() {
         return null;
     }
 

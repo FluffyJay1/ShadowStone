@@ -48,6 +48,9 @@ public class BoardObject extends Card {
         if (this.status.equals(CardStatus.HAND)) {
             sum += this.getTotalEffectValueOf(e -> e.getBattlecryValue(refs));
         }
+        if (this.finalStatEffects.getStat(EffectStats.STEALTH) > 0) {
+            sum += AI.VALUE_OF_STEALTH;
+        }
         return sum;
     }
 
@@ -75,12 +78,12 @@ public class BoardObject extends Card {
         return this.getTargetedResolvers(EventGroupType.BATTLECRY, List.of(this), targetsList, Effect::battlecry, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
     }
 
-    public ResolverQueue onTurnStart() {
-        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onTurnStart, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
+    public ResolverQueue onTurnStartAllied() {
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onTurnStartAllied, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
     }
 
-    public ResolverQueue onTurnEnd() {
-        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onTurnEnd, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
+    public ResolverQueue onTurnEndAllied() {
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onTurnEndAllied, eff -> !eff.removed && ((BoardObject) eff.owner).isInPlay());
     }
 
     public ResolverQueue onTurnStartEnemy() {
