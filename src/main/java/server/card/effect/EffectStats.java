@@ -14,11 +14,13 @@ import java.util.*;
  * (like an effect that buffs health by 2)
  */
 public class EffectStats implements Cloneable, StringBuildable {
-    public static final int NUM_STATS = 14;
+    public static final int NUM_STATS = 15;
     // what's an enum
     public static final int COST = 0, ATTACK = 1, MAGIC = 2, HEALTH = 3, ATTACKS_PER_TURN = 4, STORM = 5, RUSH = 6,
             WARD = 7, BANE = 8, POISONOUS = 9, COUNTDOWN = 10, SPELLBOOSTABLE = 11, LIFESTEAL = 12,
-            STEALTH = 13;
+            STEALTH = 13, SHIELD = 14;
+    // set of stats that we'll ensure to keep non-negative in between applications
+    private static final Set<Integer> NON_NEGATIVE_PER_STEP = new HashSet<>(List.of(SHIELD));
     private static final String USED_INDICATOR = "Y";
     private static final String UNUSED_INDICATOR = "N";
 
@@ -49,6 +51,11 @@ public class EffectStats implements Cloneable, StringBuildable {
         for (int i = 0; i < this.change.stats.length; i++) {
             if (this.change.use[i]) {
                 ss.changeStat(i, this.change.stats[i]);
+            }
+        }
+        for (int i : NON_NEGATIVE_PER_STEP) {
+            if (ss.getStat(i) < 0) {
+                ss.setStat(i, 0);
             }
         }
     }

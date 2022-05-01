@@ -1,4 +1,4 @@
-shield
 can't attack
-effect ward
 hide stuff u aren't supposed to see
+cards in hand highlight yellow when special conditions active
+effect ward

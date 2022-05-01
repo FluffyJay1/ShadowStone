@@ -26,6 +26,16 @@ public class Minion extends BoardObject {
         return (Minion) this.realCard;
     }
 
+    private double getEffectiveHealth() {
+        double health = this.health;
+        if (this.finalStatEffects.getStat(EffectStats.SHIELD) > 0) {
+            // existence of shield has some value on its own
+            // let's say average 2 dmg overflow
+            health += this.finalStatEffects.getStat(EffectStats.SHIELD) + 2;
+        }
+        return health;
+    }
+
     @Override
     public double getValue(int refs) {
         if (refs < 0) {
@@ -50,23 +60,25 @@ public class Minion extends BoardObject {
             bonus = 6;
         }
         attack += bonus;
-        // TODO make it consider shield, etc.
-        sum += (0.9 * Math.sqrt(attack * this.health) + 0.1 * Math.sqrt(magic * Math.pow(this.health, 0.4)) + 1) * super.getPresenceValueMultiplier();
+        double effectiveHealth = this.getEffectiveHealth();
+        // TODO make it consider other stats
+        sum += (0.9 * Math.sqrt(attack * effectiveHealth) + 0.1 * Math.sqrt(magic * Math.pow(effectiveHealth, 0.4)) + 1) * super.getPresenceValueMultiplier();
         return sum;
     }
 
     @Override
     public double getPresenceValueMultiplier() {
-        return super.getPresenceValueMultiplier() * (1 - Math.pow(0.5, this.health));
+        return super.getPresenceValueMultiplier() * (1 - Math.pow(0.5, this.getEffectiveHealth()));
     }
 
     @Override
     public double getLastWordsValueMultiplier() {
         double a = 0.25, w = 0.75;
+        double effectiveHealth = this.getEffectiveHealth();
         if (this.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
-            return a + (1 - a) * (1 - (1 - Math.pow(w, 2 * this.finalStatEffects.getStat(EffectStats.COUNTDOWN))) * (1 - Math.pow(w, this.health)));
+            return a + (1 - a) * (1 - (1 - Math.pow(w, 2 * this.finalStatEffects.getStat(EffectStats.COUNTDOWN))) * (1 - Math.pow(w, effectiveHealth)));
         } else {
-            return a + (1 - a) * Math.pow(w, this.health);
+            return a + (1 - a) * Math.pow(w, effectiveHealth);
         }
     }
     // remember to change logic in canAttack(Minion)

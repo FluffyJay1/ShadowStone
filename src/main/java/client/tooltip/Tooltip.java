@@ -55,9 +55,12 @@ public class Tooltip {
     public static final Tooltip TRANSFORM = new Tooltip("Transform",
             "Replace a card with another card. Any process pertaining to the replaced card is cancelled. Does not count as the card leaving/entering play.",
             List::of);
-    public static final Tooltip NECROMANCY = new Tooltip("Necromancy(X)",
-            "If you have at least X shadows, consume them to activate a bonus effect.",
+    public static final Tooltip SHADOW = new Tooltip("Shadow",
+            "You gain 1 <b>Shadow</b> whenever one of your cards is destroyed or cast.",
             List::of);
+    public static final Tooltip NECROMANCY = new Tooltip("Necromancy(X)",
+            "If you have at least X <b>Shadows</b>, consume them to activate a bonus effect.",
+            () -> List.of(SHADOW));
     public static final Tooltip SPELLBOOST = new Tooltip("Spellboost",
             "When you play a spell, you <b>Spellboost</b> the cards in your hand. Only certain cards can take advantage of its effects.",
             List::of);
@@ -80,7 +83,11 @@ public class Tooltip {
             "After a card with <b>Lifesteal</b> deals damage, it restores health to the owner's leader equal to the damage dealt.",
             List::of);
     public static final Tooltip STEALTH = new Tooltip("Stealth",
-            "Cards with <b>Stealth</b> can't be targeted by the enemy for attacks and effects. They lose <b>Stealth</b> after dealing damage.",
+            "Cards with <b>Stealth</b> can't be targeted by the enemy for attacks and effects. They lose <b>Stealth</b> after trying to deal damage.",
+            List::of);
+    public static final Tooltip SHIELD = new Tooltip("Shield(X)",
+            "<b>Shield</b> with X health. If the <b>Shield</b> is active, the minion will take no damage, and <b>Shield</b> will absorb the full damage instance. " +
+                    "The <b>Shield</b> is removed when it has 0 health.",
             List::of);
 
     public final String name;

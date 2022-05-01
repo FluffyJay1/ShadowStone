@@ -84,7 +84,7 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
         g.setFont(font);
         float yoff = (float) (Math.min(Math.pow(0.5 - 2 * this.normalizedPost(), 2), 0.25) * 100);
         for (int i = 0; i < this.event.m.size(); i++) {
-            String dstring = this.event.damage.get(i) + "";
+            String dstring = this.event.actualDamage.get(i) + "";
             g.drawString(dstring, this.event.m.get(i).uiCard.getAbsPos().x - font.getWidth(dstring) / 2,
                     this.event.m.get(i).uiCard.getAbsPos().y - font.getHeight(dstring) + yoff);
         }

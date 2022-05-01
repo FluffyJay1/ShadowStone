@@ -31,12 +31,14 @@ public class UICard extends UIBox {
     public static final Vector2f BORDER_DIMENSIONS = new Vector2f(158, 188);
     public static final Vector2f COST_POS = new Vector2f(-0.4f, -0.4f);
     public static final Vector2f COST_POS_UNLEASHPOWER = new Vector2f(0, -0.3f);
-    public static final Vector2f COUNTDOWN_POS = new Vector2f(0.3f, 0.1f);
+    public static final Vector2f COUNTDOWN_POS = new Vector2f(0.15f, 0.15f);
+    public static final Vector2f SHIELD_POS_HAND = new Vector2f(-0.18f, 0.42f);
+    public static final Vector2f SHIELD_POS_BOARD = new Vector2f(0.4f, 0.2f);
     public static final float MINION_STAT_POS_BASE_BOARD = 0.4f;
     public static final float MINION_STAT_POS_OFFSET_BOARD = 0.4f;
     public static final float MINION_STAT_POS_BASE_HAND = -0.4f;
     public static final float MINION_STAT_POS_CENTER_HAND = 0.2f;
-    public static final float MINION_STAT_POS_OFFSET_HAND = 0.25f;
+    public static final float MINION_STAT_POS_OFFSET_HAND = 0.22f;
     public static final float UNLEASH_POWER_RADIUS = 50;
     public static final double NAME_FONT_SIZE = 30;
     public static final double STAT_DEFAULT_SIZE = 30;
@@ -269,10 +271,6 @@ public class UICard extends UIBox {
             this.drawCardBorder(g, pos, scale);
         }
         this.stealthParticles.draw(g);
-        if (this.card.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
-            this.drawStatNumber(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COUNTDOWN), COUNTDOWN_POS,
-                    50, Color.white, Game.getImage("res/game/statcountdown.png"), STAT_ICON_COUNTDOWN_SCALE);
-        }
         switch (this.card.status) {
             case BOARD, LEADER -> this.drawOnBoard(g, pos, scale);
             case UNLEASHPOWER -> this.drawUnleashPower(g, pos, scale);
@@ -397,6 +395,11 @@ public class UICard extends UIBox {
                 }
             }
             if (this.card.finalStatEffects.getStat(EffectStats.WARD) > 0) {
+                Image i = Game.getImage("res/game/ward.png");
+                i = i.getScaledCopy((float) scale);
+                g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
+            }
+            if (this.card.finalStatEffects.getStat(EffectStats.SHIELD) > 0) {
                 Image i = Game.getImage("res/game/shield.png");
                 i = i.getScaledCopy((float) scale);
                 g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
@@ -411,6 +414,14 @@ public class UICard extends UIBox {
                     this.card.finalStatEffects.getStat(EffectStats.HEALTH),
                     this.card.finalBasicStatEffects.getStat(EffectStats.HEALTH),
                     new Vector2f(MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE);
+            if (this.card.finalStatEffects.getStat(EffectStats.SHIELD) > 0) {
+                this.drawStatNumber(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.SHIELD),
+                        SHIELD_POS_BOARD, STAT_DEFAULT_SIZE, Color.white, Game.getImage("res/game/statshield.png"), STAT_ICON_DEFAULT_SCALE);
+            }
+        }
+        if (this.card.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
+            this.drawStatNumber(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COUNTDOWN), COUNTDOWN_POS,
+                    50, Color.white, Game.getImage("res/game/statcountdown.png"), STAT_ICON_COUNTDOWN_SCALE);
         }
         // if marked for death
         if (!this.card.alive) {
@@ -485,6 +496,14 @@ public class UICard extends UIBox {
                     this.card.finalStatEffects.getStat(EffectStats.HEALTH),
                     this.card.finalBasicStatEffects.getStat(EffectStats.HEALTH),
                     new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND + MINION_STAT_POS_OFFSET_HAND), STAT_DEFAULT_SIZE);
+            if (this.card.finalStatEffects.getStat(EffectStats.SHIELD) > 0) {
+                this.drawStatNumber(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.SHIELD),
+                        SHIELD_POS_HAND, STAT_DEFAULT_SIZE, Color.white, Game.getImage("res/game/statshield.png"), STAT_ICON_DEFAULT_SCALE);
+            }
+        }
+        if (this.card.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
+            this.drawStatNumber(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COUNTDOWN), COUNTDOWN_POS,
+                    50, Color.white, Game.getImage("res/game/statcountdown.png"), STAT_ICON_COUNTDOWN_SCALE);
         }
     }
 

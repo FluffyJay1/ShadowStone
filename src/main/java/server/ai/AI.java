@@ -39,6 +39,8 @@ public class AI extends Thread {
 
     public static final double VALUE_OF_STEALTH = 1;
 
+    public static final double VALUE_OF_SHIELD = 1;
+
     /*
      * We can't expect the AI to traverse every single possible node in the decision
      * tree before making a move (especially considering rng), so after a certain
@@ -722,6 +724,7 @@ public class AI extends Thread {
         if (l.health <= 0) { // if dead
             return -99999 + l.health; // u dont want to be dead
         }
+        int shield = l.finalStatEffects.getStat(EffectStats.SHIELD);
         Supplier<Stream<Minion>> attackingMinions = () -> b.getMinions(team * -1,  true, true);
         // TODO add if can attack check
         // TODO factor in damage limiting effects like durandal
@@ -740,8 +743,11 @@ public class AI extends Thread {
                 .collect(Collectors.toList());
         int ehp = defendingMinons.stream()
                 .map(m -> m.health)
-                .reduce(l.health, Integer::sum);
+                .reduce(l.health + shield, Integer::sum);
         long defenders = defendingMinons.size();
+        if (shield > 0) {
+            defenders++;
+        }
         /*
         Turn-dependent evaluation is a bad idea, because of evaluation can get cut off in the middle
         e.g. one branch may look better than another branch, because the first branch didn't evaluate

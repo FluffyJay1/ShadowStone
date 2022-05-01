@@ -62,7 +62,7 @@ public class DamageResolver extends Resolver {
             Minion m = this.targets.get(i);
             if (m.isInPlay()) {
                 processedTargets.add(m);
-                processedDamage.add(this.damage.get(i));
+                processedDamage.add(this.damage.get(i) > 0 ? this.damage.get(i) : 0);
             }
         }
         EventDamage event;

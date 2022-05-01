@@ -23,6 +23,7 @@ public class EventDamage extends Event {
     private List<Integer> oldHealth;
     private List<Boolean> oldAlive;
     private Effect stealthRemover;
+    private List<Effect> shieldRemovers;
     public final List<Card> markedForDeath;
     public final List<Integer> actualDamage;
     public final Card cardSource; // used for animation probably (relied on for minion attack)
@@ -51,19 +52,34 @@ public class EventDamage extends Event {
     public void resolve(Board b) {
         this.oldHealth = new ArrayList<>(this.m.size());
         this.oldAlive = new ArrayList<>(this.m.size());
+        this.shieldRemovers = new ArrayList<>(this.m.size());
         boolean poisonous = this.cardSource.finalStatEffects.getStat(EffectStats.POISONOUS) > 0;
         for (int i = 0; i < this.m.size(); i++) { // sure
-            Minion minion = m.get(i);
+            Minion minion = this.m.get(i);
             this.oldHealth.add(minion.health);
             this.oldAlive.add(minion.alive);
-            if ((poisonous && this.damage.get(i) > 0 && !(minion instanceof Leader))
-                    || (minion.health > 0 && minion.health <= damage.get(i)) && minion.alive) {
-                // TODO poison immunity
-                minion.alive = false;
-                this.markedForDeath.add(minion);
+            this.shieldRemovers.add(null);
+            this.actualDamage.add(0);
+            int shield = minion.finalStatEffects.getStat(EffectStats.SHIELD);
+            if (shield > 0) {
+                // negate damage, reduce shield
+                int reduction = Math.min(this.damage.get(i), shield);
+                Effect shieldRemover = new Effect("", EffectStats.builder()
+                        .change(EffectStats.SHIELD, -reduction)
+                        .build());
+                minion.addEffect(false, shieldRemover);
+                this.shieldRemovers.set(i, shieldRemover);
+            } else {
+                // normal damage processing
+                if ((poisonous && this.damage.get(i) > 0 && !(minion instanceof Leader))
+                        || (minion.health > 0 && minion.health <= this.damage.get(i)) && minion.alive) {
+                    // TODO poison immunity
+                    minion.alive = false;
+                    this.markedForDeath.add(minion);
+                }
+                minion.health -= this.damage.get(i);
+                this.actualDamage.set(i, this.damage.get(i));
             }
-            minion.health -= this.damage.get(i);
-            this.actualDamage.add(this.damage.get(i));
         }
         if (this.cardSource.finalStatEffects.getStat(EffectStats.STEALTH) > 0) {
             this.stealthRemover = new Effect("", EffectStats.builder()
@@ -78,10 +94,14 @@ public class EventDamage extends Event {
         if (this.stealthRemover != null) {
             this.cardSource.removeEffect(this.stealthRemover, true);
         }
-        for (int i = 0; i < this.m.size(); i++) { // sure
-            Minion minion = m.get(i);
+        for (int i = this.m.size() - 1; i >= 0; i--) { // sure
+            Minion minion = this.m.get(i);
             minion.health = this.oldHealth.get(i);
             minion.alive = this.oldAlive.get(i);
+            Effect shieldRemover = this.shieldRemovers.get(i);
+            if (shieldRemover != null) {
+                minion.removeEffect(shieldRemover, true);
+            }
         }
     }
 
