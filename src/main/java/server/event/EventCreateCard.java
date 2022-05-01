@@ -126,6 +126,12 @@ public class EventCreateCard extends Event {
                     case LEADER -> b.getPlayer(this.team).setLeader(this.prevLeader);
                 }
             }
+            if (b instanceof ServerBoard) {
+                ServerBoard sb = (ServerBoard) b;
+                sb.listeners.remove(c);
+                sb.auras.removeIf(e -> e.owner == c);
+                sb.dependentStats.removeIf(e -> e.owner == c);
+            }
         }
         if (this.cards.size() > 0 && this.status.equals(CardStatus.BOARD)) {
             p.getPlayArea().resetHistoryToEpoch(this.prevEpoch);

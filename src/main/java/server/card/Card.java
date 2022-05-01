@@ -49,7 +49,7 @@ public abstract class Card implements Indexable, StringBuildable {
             basicEffects = new PositionedList<>(new ArrayList<>(), e -> e.basic = true),
             removedEffects = new PositionedList<>(new ArrayList<>(), e -> e.removed = true);
 
-    private final Set<Effect> listeners = new HashSet<>();
+    private final Set<Effect> listeners = new TreeSet<>(Comparator.comparing((Effect l) -> l.basic ? 0 : 1).thenComparingInt(Effect::getIndex));
 
     public Card(Board board, CardText cardText) {
         this.board = board;
@@ -350,8 +350,8 @@ public abstract class Card implements Indexable, StringBuildable {
     }
 
     public ResolverQueue onListenEvent(Event event) {
-        return new ResolverQueue(this.getFinalEffects(true)
-                .filter(this.listeners::contains)
+        return new ResolverQueue(this.listeners.stream()
+                .filter(e -> !e.mute)
                 .map(e -> {
                     ResolverWithDescription r = e.onListenEvent(event);
                     if (r == null) {

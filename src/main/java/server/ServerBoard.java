@@ -38,6 +38,7 @@ public class ServerBoard extends Board {
     public boolean logEvents = true; // used by the ai to prevent history from being appended to
 
     // The following are subsets of all effects, and are updated in Card's addEffect and removeEffect
+    // however for basic effects created upon card creation, we must rely on EventCreateCard's undo
     // for convenience, a subset of all effects that are also auras
     public Set<EffectAura> auras;
     // like above but for effects with dependent stats
