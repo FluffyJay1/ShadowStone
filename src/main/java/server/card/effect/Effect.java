@@ -28,6 +28,7 @@ import utils.StringBuildable;
  * - Effects should override getBattlecryValue() and getPresenceValue() for the AI
  */
 public class Effect implements Indexable, StringBuildable, Cloneable {
+    public static final ResolverWithDescription UNIMPLEMENTED_RESOLVER = new ResolverWithDescription("", null);
     private int pos = 0;
     public Card owner = null;
     public String description;
@@ -201,10 +202,10 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     /*
     For optimization, check the event instance before deciding to return a
     resolver or null, then check the details of the event inside the resolver
-    if this throws the unsupportedoperationexception, then we know it doesn't have a listener
+    if this returns UNIMPLEMENTED_RESOLVER, then we know it doesn't have a listener
      */
     public ResolverWithDescription onListenEvent(Event event) {
-        throw new UnsupportedOperationException();
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     /**

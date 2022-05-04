@@ -105,7 +105,9 @@ public class ServerBoard extends Board {
                 rng = true;
             }
         }
-        this.history.add(new EventBurst(team, this.currentBurst.toString()));
+        if (this.logEvents) {
+            this.history.add(new EventBurst(team, this.currentBurst.toString()));
+        }
         return new ResolutionResult(l, rng);
     }
 

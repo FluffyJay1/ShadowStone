@@ -161,13 +161,9 @@ public abstract class Card implements Indexable, StringBuildable {
             if (e instanceof EffectUntilTurnEnd) {
                 sb.effectsToRemoveAtEndOfTurn.add((EffectUntilTurnEnd) e);
             }
-            try {
-                e.onListenEvent(null);
-                // no exception, must have a listener implemented
+            if (e.onListenEvent(null) != Effect.UNIMPLEMENTED_RESOLVER) {
                 this.listeners.add(e);
                 sb.listeners.add(this);
-            } catch (UnsupportedOperationException ex) {
-                // do nothing lol
             }
         }
         if (e.auraSource != null) {
@@ -199,15 +195,11 @@ public abstract class Card implements Indexable, StringBuildable {
                 if (e instanceof EffectUntilTurnEnd) {
                     sb.effectsToRemoveAtEndOfTurn.remove(e);
                 }
-                try {
-                    e.onListenEvent(null);
-                    // no exception, must have a listener implemented
+                if (e.onListenEvent(null) != Effect.UNIMPLEMENTED_RESOLVER) {
                     this.listeners.remove(e);
                     if (this.listeners.isEmpty()) {
                         sb.listeners.remove(this);
                     }
-                } catch (UnsupportedOperationException ex) {
-                    // do nothing lol
                 }
             }
             if (e.auraSource != null) {

@@ -21,8 +21,6 @@ public class EffectStats implements Cloneable, StringBuildable {
             STEALTH = 13, SHIELD = 14;
     // set of stats that we'll ensure to keep non-negative in between applications
     private static final Set<Integer> NON_NEGATIVE_PER_STEP = new HashSet<>(List.of(SHIELD));
-    private static final String USED_INDICATOR = "Y";
-    private static final String UNUSED_INDICATOR = "N";
 
     public StatSet set = new StatSet(), change = new StatSet();
 
@@ -240,28 +238,21 @@ public class EffectStats implements Cloneable, StringBuildable {
 
         @Override
         public void appendStringToBuilder(StringBuilder builder) {
-            if (this.numUsed == 0) {
-                builder.append(UNUSED_INDICATOR).append(" ");
-            } else {
-                builder.append(USED_INDICATOR).append(" ");
-                for (int i = 0; i < NUM_STATS; i++) {
-                    builder.append(use[i] ? "T" : "F").append(" ").append(stats[i]).append(" ");
+            builder.append(this.numUsed).append(" ");
+            for (int i = 0; i < NUM_STATS; i++) {
+                if (this.getUse(i)) {
+                    builder.append(i).append(" ").append(this.getStat(i)).append(" ");
                 }
             }
         }
 
         public static StatSet fromString(StringTokenizer st) {
             StatSet ret = new StatSet();
-            String indicator = st.nextToken();
-            if (indicator.equals(UNUSED_INDICATOR)) {
-                return ret;
-            }
-            for (int i = 0; i < NUM_STATS; i++) {
-                boolean use = st.nextToken().equals("T");
+            int numUsed = Integer.parseInt(st.nextToken());
+            for (int i = 0; i < numUsed; i++) {
                 int stat = Integer.parseInt(st.nextToken());
-                if (use) {
-                    ret.setStat(i, stat);
-                }
+                int value = Integer.parseInt(st.nextToken());
+                ret.setStat(stat, value);
             }
             return ret;
         }

@@ -159,6 +159,7 @@ public class AI extends Thread {
                 break;
             case BOARDRESET:
                 this.b = new ServerBoard(this.b.localteam);
+                this.b.logEvents = false;
                 this.actionSendQueue = new LinkedList<>();
                 this.waitForEvents = true;
             default:
