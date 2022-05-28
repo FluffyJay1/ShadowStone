@@ -43,6 +43,11 @@ public class DragonOracle extends SpellText {
             public double getBattlecryValue(int refs) {
                 return 3;
             }
+
+            @Override
+            public boolean battlecrySpecialConditions() {
+                return this.owner.player.overflow();
+            }
         });
     }
 

@@ -8,6 +8,7 @@ import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
+import server.card.effect.EffectStats;
 import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.CreateCardResolver;
@@ -43,6 +44,11 @@ public class Cucouroux extends MinionText {
                         this.resolve(b, rq, el, new SpendResolver(effect, 2, new CreateCardResolver(new Camieux(), owner.team, CardStatus.BOARD, owner.getIndex() + 1)));
                     }
                 });
+            }
+
+            @Override
+            public boolean battlecrySpecialConditions() {
+                return this.owner.player.mana >= this.owner.finalStatEffects.getStat(EffectStats.COST) + 2;
             }
 
             @Override

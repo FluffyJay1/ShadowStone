@@ -64,6 +64,11 @@ public class Belphegor extends MinionText {
                 // full heal + shield + draw 2
                 return AI.VALUE_PER_HEAL * 25 / 2. + AI.VALUE_OF_SHIELD + AI.VALUE_PER_CARD_IN_HAND * 2;
             }
+
+            @Override
+            public boolean battlecrySpecialConditions() {
+                return !this.owner.player.vengeance();
+            }
         });
     }
 

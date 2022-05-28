@@ -7,6 +7,7 @@ import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
+import server.card.effect.EffectStats;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
@@ -74,6 +75,11 @@ public class BreathOfTheSalamander extends SpellText {
             public double getBattlecryValue(int refs) {
                 // don't factor in the spend effect
                 return AI.VALUE_PER_DAMAGE * 3;
+            }
+
+            @Override
+            public boolean battlecrySpecialConditions() {
+                return this.owner.player.mana >= this.owner.finalStatEffects.getStat(EffectStats.COST) + 4;
             }
         });
     }

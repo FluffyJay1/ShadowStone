@@ -358,6 +358,10 @@ public abstract class Card implements Indexable, StringBuildable {
                 .collect(Collectors.toList()));
     }
 
+    public boolean battlecrySpecialConditions() {
+        return this.getFinalEffects(true).anyMatch(Effect::battlecrySpecialConditions);
+    }
+
     public String cardPosToString() {
         return this.status.toString() + " " + this.getIndex() + " ";
     }

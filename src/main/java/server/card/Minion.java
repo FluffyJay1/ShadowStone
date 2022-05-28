@@ -175,6 +175,10 @@ public class Minion extends BoardObject {
                 eff -> !eff.removed && eff.owner.isInPlay());
     }
 
+    public boolean unleashSpecialConditions() {
+        return this.getFinalEffects(true).anyMatch(Effect::unleashSpecialConditions);
+    }
+
     @Override
     public void appendStringToBuilder(StringBuilder builder) {
         super.appendStringToBuilder(builder);

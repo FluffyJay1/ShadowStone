@@ -76,6 +76,22 @@ public class UICard extends UIBox {
             ))
     );
 
+    private static final Supplier<EmissionStrategy> SPECIAL_CONDITION_PARTICLES = () -> new EmissionStrategy(
+            new IntervalEmissionTimingStrategy(12, 0.08),
+            new ComposedEmissionPropertyStrategy(List.of(
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/sparkle.png", new Vector2f(1, 1), 0, 0)),
+                    new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.5)),
+                    new ConstantEmissionPropertyStrategy(
+                            Graphics.MODE_ADD, 1, new Vector2f(0, 0),
+                            () -> new QuadraticInterpolationB(0, 0, 1),
+                            () -> new QuadraticInterpolationB(0.6, 0.8, 0.4)
+                    ),
+                    new RectanglePositionEmissionPropertyStrategy(CARD_DIMENSIONS),
+                    new RadialVelocityEmissionPropertyStrategy(new LinearInterpolation(0, 10)),
+                    new RandomAngleEmissionPropertyStrategy(new LinearInterpolation(-10, 10))
+            ))
+    );
+
     private Card card;
     private Image cardImage, subImage;
     private final UIBoard uib;
@@ -90,6 +106,7 @@ public class UICard extends UIBox {
     private final Set<PendingManager<?>> pendingSources;
     private double pendingTimer;
     private final ParticleSystem stealthParticles;
+    private final ParticleSystem specialConditionParticles;
 
     public UICard(UI ui, UIBoard uib, Card c) {
         super(ui, new Vector2f(), CARD_DIMENSIONS, "");
@@ -100,6 +117,8 @@ public class UICard extends UIBox {
         this.pendingSources = new HashSet<>();
         this.stealthParticles = new ParticleSystem(ui, new Vector2f(), STEALTH_PARTICLES.get(), true);
         this.addChild(this.stealthParticles);
+        this.specialConditionParticles = new ParticleSystem(ui, new Vector2f(), SPECIAL_CONDITION_PARTICLES.get(), true);
+        this.addChild(this.specialConditionParticles);
     }
 
     @Override
@@ -246,6 +265,13 @@ public class UICard extends UIBox {
         super.update(frametime);
         this.stealthParticles.setScale(this.getScale());
         this.stealthParticles.setPaused(!this.card.isInPlay() || this.card.finalStatEffects.getStat(EffectStats.STEALTH) == 0);
+        this.specialConditionParticles.setScale(this.getScale());
+        this.specialConditionParticles.setPaused(this.card.team != this.uib.b.localteam || switch (this.card.status) {
+            case HAND -> !this.card.realCard.player.canPlayCard(this.card.realCard) || !this.card.realCard.battlecrySpecialConditions();
+            case BOARD -> !this.uib.draggingUnleash || !this.card.realCard.player.canUnleashCard(this.card.realCard)
+                    || !(this.card instanceof Minion) || !((Minion) this.card.realCard).unleashSpecialConditions();
+            default -> true;
+        });
         if (!this.isBeingAnimated()) {
             this.updateCardAnimation();
             this.updateFlippedOver();
@@ -289,6 +315,7 @@ public class UICard extends UIBox {
             default -> {
             }
         }
+        this.specialConditionParticles.draw(g);
     }
 
     public void drawCardBack(Graphics g, Vector2f pos, double scale) {

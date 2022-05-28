@@ -92,12 +92,22 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
         return List.of();
     }
 
+    // to display a yellow highlight around the card in hand if a special effect can be triggered
+    public boolean battlecrySpecialConditions() {
+        return false;
+    }
+
     public ResolverWithDescription unleash(List<TargetList<?>> targetList) {
         return null;
     }
 
     public List<TargetingScheme<?>> getUnleashTargetingSchemes() {
         return List.of();
+    }
+
+    // to display a yellow highlight around the card while drag unleashing if a special effect can be triggered
+    public boolean unleashSpecialConditions() {
+        return false;
     }
 
     // shameful glue

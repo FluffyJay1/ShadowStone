@@ -1,3 +1,2 @@
 can't attack
-cards in hand highlight yellow when special conditions active
 effect ward
