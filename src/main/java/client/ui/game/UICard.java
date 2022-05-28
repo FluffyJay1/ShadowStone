@@ -96,7 +96,7 @@ public class UICard extends UIBox {
         this.uib = uib;
         this.setCard(c);
         this.icons = new ArrayList<>();
-        this.flippedOver = false;
+        this.updateFlippedOver();
         this.pendingSources = new HashSet<>();
         this.stealthParticles = new ParticleSystem(ui, new Vector2f(), STEALTH_PARTICLES.get(), true);
         this.addChild(this.stealthParticles);
@@ -139,6 +139,16 @@ public class UICard extends UIBox {
 
     public void setFlippedOver(boolean flippedOver) {
         this.flippedOver = flippedOver;
+    }
+
+    public boolean isFlippedOver() {
+        return this.flippedOver;
+    }
+
+    public void updateFlippedOver() {
+        if (this.uib != null) {
+            this.setFlippedOver(!this.card.isVisibleTo(uib.b.localteam));
+        }
     }
 
     public boolean isBeingAnimated() {
@@ -238,6 +248,7 @@ public class UICard extends UIBox {
         this.stealthParticles.setPaused(!this.card.isInPlay() || this.card.finalStatEffects.getStat(EffectStats.STEALTH) == 0);
         if (!this.isBeingAnimated()) {
             this.updateCardAnimation();
+            this.updateFlippedOver();
         }
         if (this.isPending()) {
             this.pendingTimer = (this.pendingTimer + frametime) % PENDING_PLAY_TIME_PER_CYCLE;

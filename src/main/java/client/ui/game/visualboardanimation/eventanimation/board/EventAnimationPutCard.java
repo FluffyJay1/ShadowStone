@@ -73,7 +73,9 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
                 } else {
                     uic.setZ(UICard.Z_MOVE);
                 }
-                uic.setFlippedOver(false);
+                if (c.team != this.visualBoard.localteam * -1) {
+                    uic.setFlippedOver(false);
+                }
                 // fan the cards between [-0.5, 0.5]
                 float alignWeight = 0.5f;
                 if (c.status.equals(CardStatus.DECK)) {
@@ -93,7 +95,7 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
             for (int i = 0; i < this.event.cards.size(); i++) {
                 Card c = this.event.cards.get(i);
                 UICard uic = c.uiCard;
-                if (this.event.successful.get(i)) {
+                if (this.event.successful.get(i) && !uic.isFlippedOver()) {
                     EmissionStrategy strategy = new ScaledEmissionStrategy(SPARKLE_EMISSION_STRATEGY.get(), uic.getScale());
                     this.visualBoard.uiBoard.addParticleSystem(uic.getPos(), UIBoard.PARTICLE_Z_SPECIAL, strategy);
                 }

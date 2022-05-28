@@ -8,7 +8,7 @@ public abstract class EventGroupAnimation implements VisualBoardAnimation {
     protected VisualBoard visualBoard;
     public EventGroup eventgroup;
     double time;
-    final double maxTime;
+    double maxTime;
 
     public EventGroupAnimation(double time) {
         this.time = 0;
@@ -18,6 +18,9 @@ public abstract class EventGroupAnimation implements VisualBoardAnimation {
     public void init(VisualBoard b, EventGroup eventgroup) {
         this.visualBoard = b;
         this.eventgroup = eventgroup;
+        if (eventgroup.cards.stream().noneMatch(c -> c.isVisibleTo(b.localteam))) {
+            this.maxTime = 0;
+        }
     }
 
     @Override

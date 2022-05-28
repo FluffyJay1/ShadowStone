@@ -55,7 +55,7 @@ public class EventAnimationSetEffectStats extends EventAnimation<EventSetEffectS
 
     private boolean shouldAnimate(int i) {
         Effect e = this.event.targets.get(i);
-        if (!e.owner.isVisible()) {
+        if (!e.owner.isVisibleTo(this.visualBoard.localteam)) {
             return false;
         }
         // if only cost changed and the guy is on board, we don't care

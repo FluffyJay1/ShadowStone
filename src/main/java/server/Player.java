@@ -38,11 +38,36 @@ public class Player implements StringBuildable {
     public Player(Board board, int team) {
         this.board = board;
         this.team = team;
-        this.deck = new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.DECK; c.team = this.team; c.player = this;});
-        this.hand = new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.HAND; c.team = this.team; c.player = this;});
-        this.playArea = new HistoricalList<>(new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.BOARD; c.team = this.team; c.player = this;}));
-        this.graveyard = new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.GRAVEYARD; c.team = this.team; c.player = this;});
-        this.banished = new PositionedList<>(new ArrayList<>(), c -> {c.status = CardStatus.BANISHED; c.team = this.team; c.player = this;});
+        this.deck = new PositionedList<>(new ArrayList<>(), c -> {
+            c.status = CardStatus.DECK;
+            c.visibility = CardVisibility.NONE;
+            c.team = this.team;
+            c.player = this;
+        });
+        this.hand = new PositionedList<>(new ArrayList<>(), c -> {
+            c.status = CardStatus.HAND;
+            c.visibility = CardVisibility.ALLIES;
+            c.team = this.team;
+            c.player = this;
+        });
+        this.playArea = new HistoricalList<>(new PositionedList<>(new ArrayList<>(), c -> {
+            c.status = CardStatus.BOARD;
+            c.visibility = CardVisibility.ALL;
+            c.team = this.team;
+            c.player = this;
+        }));
+        this.graveyard = new PositionedList<>(new ArrayList<>(), c -> {
+            c.status = CardStatus.GRAVEYARD;
+            c.visibility = CardVisibility.NONE;
+            c.team = this.team;
+            c.player = this;
+        });
+        this.banished = new PositionedList<>(new ArrayList<>(), c -> {
+            c.status = CardStatus.BANISHED;
+            c.visibility = CardVisibility.NONE;
+            c.team = this.team;
+            c.player = this;
+        });
         this.mana = 0;
         this.maxmana = 3;
         this.maxmaxmana = 10;

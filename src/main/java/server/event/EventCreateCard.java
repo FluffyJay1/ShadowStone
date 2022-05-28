@@ -13,6 +13,7 @@ public class EventCreateCard extends Event {
     public final CardStatus status;
     public final int team;
     public final List<Integer> cardpos;
+    public final CardVisibility visibility;
     private UnleashPower prevUP;
     private Leader prevLeader;
     private int prevEpoch;
@@ -21,7 +22,7 @@ public class EventCreateCard extends Event {
     public final List<Card> successfullyCreatedCards;
     final List<BoardObject> cardsEnteringPlay = new ArrayList<>();
 
-    public EventCreateCard(List<Card> cards, int team, CardStatus status, List<Integer> cardpos) {
+    public EventCreateCard(List<Card> cards, List<Integer> cardpos, int team, CardStatus status, CardVisibility visibility) {
         super(ID);
         this.cards = cards;
         this.team = team;
@@ -29,6 +30,14 @@ public class EventCreateCard extends Event {
         this.cardpos = cardpos;
         this.successful = new ArrayList<>(cards.size());
         this.successfullyCreatedCards = new ArrayList<>(cards.size());
+        this.visibility = visibility;
+        for (Card c : this.cards) {
+            c.visibility = visibility;
+        }
+    }
+
+    public EventCreateCard(List<Card> cards, List<Integer> cardpos, int team, CardStatus status) {
+        this(cards, cardpos, team, status, CardVisibility.ALL);
     }
 
     @Override
@@ -147,7 +156,7 @@ public class EventCreateCard extends Event {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.id).append(" ").append(this.cards.size()).append(" ");
+        builder.append(this.id).append(" ").append(this.visibility).append(" ").append(this.cards.size()).append(" ");
         for (Card c : this.cards) {
             builder.append(c.cardText.toString());
         }
@@ -160,15 +169,16 @@ public class EventCreateCard extends Event {
     }
 
     public static EventCreateCard fromString(Board b, StringTokenizer st) {
+        CardVisibility visibility = CardVisibility.valueOf(st.nextToken());
         int numCards = Integer.parseInt(st.nextToken());
         List<Card> cards = new ArrayList<>(numCards);
         for (int i = 0; i < numCards; i++) {
             CardText cardText = CardText.fromString(st.nextToken());
             assert cardText != null;
             Card c = cardText.constructInstance(b);
+            c.visibility = visibility;
             cards.add(c);
             if (b instanceof VisualBoard) {
-                assert c != null;
                 // link the ClientBoard version of the card with the VisualBoard version
                 c.realCard = ((VisualBoard) b).realBoard.cardsCreated.remove(0);
                 c.realCard.visualCard = c;
@@ -185,7 +195,7 @@ public class EventCreateCard extends Event {
         for (int i = 0; i < numCards; i++) {
             cardpos.add(Integer.parseInt(st.nextToken()));
         }
-        return new EventCreateCard(cards, team, csStatus, cardpos);
+        return new EventCreateCard(cards, cardpos, team, csStatus, visibility);
     }
 
     @Override

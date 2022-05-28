@@ -39,6 +39,7 @@ public abstract class Card implements Indexable, StringBuildable {
     public Card realCard; // for visual board
     public Card visualCard; // for client board
     public UICard uiCard;
+    public CardVisibility visibility;
 
     public EffectStats.StatSet finalStatEffects = new EffectStats.StatSet(), finalBasicStatEffects = new EffectStats.StatSet();
     /*
@@ -60,13 +61,15 @@ public abstract class Card implements Indexable, StringBuildable {
         }
         this.status = CardStatus.DECK;
         this.spellboosts = 0;
+        this.visibility = CardVisibility.NONE;
     }
 
-    // if card can be seen on the board
-    public boolean isVisible() {
-        return switch (this.status) {
-            case HAND, BOARD, LEADER, UNLEASHPOWER -> true;
-            default -> false;
+    // if card can be seen
+    public boolean isVisibleTo(int team) {
+        return switch (this.visibility) {
+            case ALL -> true;
+            case ALLIES -> this.team == team;
+            case NONE -> false;
         };
     }
 

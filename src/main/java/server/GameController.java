@@ -5,6 +5,7 @@ import network.DataStream;
 import network.MessageType;
 import server.card.Card;
 import server.card.CardStatus;
+import server.card.CardVisibility;
 import server.card.LeaderText;
 import server.card.cardset.ConstructedDeck;
 import server.event.Event;
@@ -61,12 +62,12 @@ public class GameController {
                         inds.add(j);
                     }
                     b.processEvent(rq, null,
-                            new EventCreateCard(shuffledCards, team, CardStatus.DECK, inds));
+                            new EventCreateCard(shuffledCards, inds, team, CardStatus.DECK, CardVisibility.NONE));
                     UnleashPower up = unleashPowers.get(i).constructInstance(b);
                     b.processEvent(rq, null,
-                            new EventCreateCard(List.of(up), team, CardStatus.UNLEASHPOWER, List.of(0)));
+                            new EventCreateCard(List.of(up), List.of(0), team, CardStatus.UNLEASHPOWER));
                     b.processEvent(rq, null,
-                            new EventCreateCard(List.of(leaders.get(i).constructInstance(b)), team, CardStatus.LEADER, List.of(0)));
+                            new EventCreateCard(List.of(leaders.get(i).constructInstance(b)), List.of(0), team, CardStatus.LEADER));
                 }
             }
         };

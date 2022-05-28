@@ -213,7 +213,6 @@ public class UIBoard extends UIBox {
                     UICard uic = bo.uiCard;
                     if (!uic.isBeingAnimated()) {
                         uic.draggable = false;
-                        uic.setFlippedOver(false);
                         uic.setVisible(true);
                         if (bo.status.equals(CardStatus.BOARD)) {
                             uic.setPos(this.getBoardPosFor(i, team, bos.size()), 0.99);
@@ -225,7 +224,6 @@ public class UIBoard extends UIBox {
                 UICard uic = leader.uiCard;
                 if (!uic.isBeingAnimated()) {
                     uic.draggable = false;
-                    uic.setFlippedOver(false);
                     uic.setVisible(true);
                     uic.setPos(
                             // oh my this formatting
@@ -238,7 +236,6 @@ public class UIBoard extends UIBox {
                 UICard uic = up.uiCard;
                 if (!uic.isBeingAnimated()) {
                     uic.draggable = false;
-                    uic.setFlippedOver(false);
                     uic.setVisible(true);
                     uic.setPos(new Vector2f((float) UNLEASHPOWER_X,
                                     (float) (team == this.b.localteam ? UNLEASHPOWER_Y_LOCAL : UNLEASHPOWER_Y_ENEMY)),
@@ -254,7 +251,6 @@ public class UIBoard extends UIBox {
                         float x = MULLIGAN_FAN_WIDTH * ((i + 0.5f) / hand.size() - 0.5f);
                         float y = this.mulliganChoices.contains(uic) ? MULLIGAN_TOSS_Y : MULLIGAN_KEEP_Y;
                         uic.setVisible(true);
-                        uic.setFlippedOver(false);
                         uic.draggable = !this.b.getPlayer(this.b.localteam).mulliganed;
                         if (uic != this.draggingCard) {
                             uic.setPos(new Vector2f(x, y), 0.999);
@@ -268,7 +264,6 @@ public class UIBoard extends UIBox {
                         if (team == this.b.localteam && !this.b.disableInput) {
                             uic.draggable = true;
                         }
-                        uic.setFlippedOver(false);
                         uic.setVisible(true);
                         // ignore cards that are cards being animated in special ways
                         if (uic != this.playingCard && uic != this.draggingCard) {
@@ -303,7 +298,6 @@ public class UIBoard extends UIBox {
                 UICard uic = c.uiCard;
                 if (!uic.isBeingAnimated()) {
                     uic.draggable = false;
-                    uic.setFlippedOver(true);
                     uic.setVisible(true);
                     uic.setPos(new Vector2f((float) DECK_X, (float) (team == this.b.localteam ? DECK_Y_LOCAL : DECK_Y_ENEMY)), 0.99);
                 }

@@ -1,5 +1,6 @@
 package client.ui.game.visualboardanimation.eventanimation.basic;
 
+import client.VisualBoard;
 import client.ui.Animation;
 import client.ui.game.UIBoard;
 import client.ui.game.UICard;
@@ -18,6 +19,9 @@ import client.ui.particle.strategy.timing.meta.DurationLimitingEmissionTimingStr
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.Card;
+import server.card.CardStatus;
+import server.card.effect.Effect;
+import server.card.effect.EffectStats;
 import server.event.EventSpellboost;
 
 import java.util.List;
@@ -41,16 +45,34 @@ public class EventAnimationSpellboost extends EventAnimation<EventSpellboost> {
     );
 
     public EventAnimationSpellboost() {
-        super(0, 0.2);
+        super(0, 0);
+    }
+
+    @Override
+    public void init(VisualBoard b, EventSpellboost event) {
+        super.init(b, event);
+        for (int i = 0; i < event.cards.size(); i++) {
+            if (this.shouldAnimate(i)) {
+                this.postTime = 0.2; // if we can see, we animate
+                break;
+            }
+        }
+    }
+
+    private boolean shouldAnimate(int i) {
+        Card c = this.event.cards.get(i);
+        return c.isVisibleTo(this.visualBoard.localteam);
     }
 
     public void onProcess() {
         for (int i = 0; i < this.event.cards.size(); i++) {
-            Card c = this.event.cards.get(i);
-            UICard uic = c.uiCard;
-            ParticleSystem p = this.visualBoard.uiBoard.addParticleSystem(uic.getPos(), UIBoard.PARTICLE_Z_SPECIAL,
-                    new ScaledEmissionStrategy(SPELLBOOST_EMISSION_STRATEGY.get(), uic.getScale()));
-            p.followElement(uic, 1);
+            if (this.shouldAnimate(i)) {
+                Card c = this.event.cards.get(i);
+                UICard uic = c.uiCard;
+                ParticleSystem p = this.visualBoard.uiBoard.addParticleSystem(uic.getPos(), UIBoard.PARTICLE_Z_SPECIAL,
+                        new ScaledEmissionStrategy(SPELLBOOST_EMISSION_STRATEGY.get(), uic.getScale()));
+                p.followElement(uic, 1);
+            }
         }
     }
 }

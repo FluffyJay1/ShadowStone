@@ -17,11 +17,8 @@ public class EventAnimationAddEffect extends EventAnimation<EventAddEffect> {
     @Override
     public void init(VisualBoard b, EventAddEffect event) {
         super.init(b, event);
-        for (Card c : event.c) {
-            if (c.isVisible()) {
-                this.postTime = 0.3; // if we can see one of them, we animate
-                break;
-            }
+        if (event.c.stream().anyMatch(c -> c.isVisibleTo(b.localteam))) {
+            this.postTime = 0.3; // if we can see one of them, we animate
         }
     }
 
@@ -30,7 +27,7 @@ public class EventAnimationAddEffect extends EventAnimation<EventAddEffect> {
         for (int ind = 0; ind < this.event.c.size(); ind++) {
             if (this.event.successful.get(ind)) {
                 Card c = this.event.c.get(ind);
-                if (c.isVisible()) {
+                if (c.isVisibleTo(this.visualBoard.localteam)) {
                     return;
                 }
             }
@@ -44,7 +41,7 @@ public class EventAnimationAddEffect extends EventAnimation<EventAddEffect> {
         for (int ind = 0; ind < this.event.c.size(); ind++) {
             if (this.event.successful.get(ind)) {
                 Card c = this.event.c.get(ind);
-                if (c.isVisible()) {
+                if (c.isVisibleTo(this.visualBoard.localteam)) {
                     for (int i = 0; i < 4; i++) {
                         float xoffset = (float) Math.random() * 150 - 75;
                         float yoffset = (float) (-this.normalizedPost() * 160) + 80 + (float) Math.random() * 150 - 75;

@@ -1,4 +1,3 @@
 can't attack
-hide stuff u aren't supposed to see
 cards in hand highlight yellow when special conditions active
 effect ward

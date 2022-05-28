@@ -17,6 +17,7 @@ public class EventAnimationPlayCard extends EventAnimation<EventPlayCard> {
     public void onStart() {
         UICard uic = this.event.c.uiCard;
         this.useCardInAnimation(this.event.c.uiCard);
+        uic.setFlippedOver(false);
         uic.setScale(UICard.SCALE_PLAY);
         uic.setPos(new Vector2f(0, 0), 0.999f);
         uic.setZ(UICard.Z_MOVE);
