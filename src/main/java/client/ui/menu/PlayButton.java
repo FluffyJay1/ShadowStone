@@ -29,7 +29,7 @@ public class PlayButton extends UIBox {
 
     @Override
     public void mouseReleased(int button, int x, int y) {
-        if (this.pointIsInHitbox(new Vector2f(x, y))) {
+        if (this.pointIsInHitbox(x, y)) {
             this.deckspanel.updateDecks();
             this.deckspanel.setVisible(true);
             this.deckspanel.setPos(new Vector2f(0, -1000), 1);

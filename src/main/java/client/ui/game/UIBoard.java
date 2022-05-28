@@ -473,9 +473,9 @@ public class UIBoard extends UIBox {
         this.removeChild(c);
     }
 
-    public UICard cardAtPos(Vector2f pos) {
+    public UICard cardAtPos(float x, float y) {
         for (UICard c : this.cards) {
-            if (c.isVisible() && c.pointIsInHitbox(pos)) {
+            if (c.isVisible() && c.pointIsInHitbox(x, y)) {
                 return c;
             }
         }
@@ -559,7 +559,7 @@ public class UIBoard extends UIBox {
                 this.draggingCard = null;
             }
         } else {
-            UICard c = this.cardAtPos(new Vector2f(x, y));
+            UICard c = this.cardAtPos(x, y);
             if (this.attackingMinion != null) { // in middle of ordering attack
                 if (c != null && (c.getCard() instanceof Minion) && c.getCard().team != this.b.localteam
                         && this.attackingMinion.getMinion().realMinion().canAttack(c.getMinion().realMinion())) {

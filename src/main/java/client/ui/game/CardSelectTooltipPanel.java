@@ -85,7 +85,7 @@ public class CardSelectTooltipPanel extends UIBox {
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
                 if (((CardSelectTooltipPanel) this.getParent().getParent()).child != null) {
-                    if (this.pointIsInHitbox(new Vector2f(x, y))) {
+                    if (this.pointIsInHitbox(x, y)) {
                         ((CardSelectTooltipPanel) this.getParent().getParent()).child.setReferenceTooltip(t);
                     } else {
                         ((CardSelectTooltipPanel) this.getParent().getParent()).child.setReferenceTooltip(null);

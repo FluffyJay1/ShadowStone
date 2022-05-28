@@ -26,7 +26,7 @@ public class EndTurnButton extends UIBox {
 
     @Override
     public void mouseReleased(int button, int x, int y) {
-        if (this.pointIsInHitbox(new Vector2f(x, y))) {
+        if (this.pointIsInHitbox(x, y)) {
             if (!this.b.b.disableInput) {
                 this.b.ds.sendPlayerAction(new EndTurnAction(this.b.b.localteam).toString());
                 this.b.handleTargeting(null);

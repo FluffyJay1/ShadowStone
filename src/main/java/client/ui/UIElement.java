@@ -322,16 +322,16 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
                 .add(new Vector2f(this.getHAlignOffset(), this.getVAlignOffset()));
     }
 
-    public boolean pointIsInHitbox(Vector2f pos) {
+    public boolean pointIsInHitbox(float x, float y) {
         if (this.hitcircle) {
             return (new Vector2f(
-                    (pos.x - this.getAbsPos().x + this.getWidth(false) / 2 - this.getHOff())
+                    (x - this.getAbsPos().x + this.getWidth(false) / 2 - this.getHOff())
                             / this.getWidth(false),
-                    (pos.y - this.getAbsPos().y + this.getHeight(false) / 2 - this.getVOff())
+                    (y - this.getAbsPos().y + this.getHeight(false) / 2 - this.getVOff())
                             / this.getHeight(false)).lengthSquared()) < 0.25;
         }
-        return pos.getX() >= this.getLeft(true, false) && pos.getX() <= this.getRight(true, false)
-                && pos.getY() >= this.getTop(true, false) && pos.getY() <= this.getBottom(true, false);
+        return x >= this.getLeft(true, false) && x <= this.getRight(true, false)
+                && y >= this.getTop(true, false) && y <= this.getBottom(true, false);
     }
 
     public void fitInParent() {
@@ -468,7 +468,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     }
 
     // returns the uielement that is top (prioritizes children)
-    public UIElement topChildAtPos(Vector2f pos, boolean requirehitbox, boolean requirescrollable,
+    public UIElement topChildAtPos(float x, float y, boolean requirehitbox, boolean requirescrollable,
             boolean requiredraggable) {
         if (!this.visible) {
             return null;
@@ -477,16 +477,16 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
 
         if ((!this.ignorehitbox || !requirehitbox) && (this.scrollable || !requirescrollable)
                 && (this.draggable || !requiredraggable)) {
-            if (this.pointIsInHitbox(pos)) {
+            if (this.pointIsInHitbox(x, y)) {
                 u = this;
             }
         }
         // not in hitbox and we are clipping
-        if (!this.pointIsInHitbox(pos) && this.clip) {
+        if (!this.pointIsInHitbox(x, y) && this.clip) {
             return null;
         }
         for (UIElement child : this.children) {
-            UIElement thing = child.topChildAtPos(pos, requirehitbox, requirescrollable, requiredraggable);
+            UIElement thing = child.topChildAtPos(x, y, requirehitbox, requirescrollable, requiredraggable);
             if (thing != null) {
                 u = thing;
             }

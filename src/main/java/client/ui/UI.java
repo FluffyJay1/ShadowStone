@@ -60,11 +60,11 @@ public class UI implements DefaultInputListener { // lets do this right this tim
         this.parentListRemoveBuffer.add(u);
     }
 
-    public UIElement getTopUIElement(Vector2f pos, boolean requirehitbox, boolean requirescrollable,
+    public UIElement getTopUIElement(float x, float y, boolean requirehitbox, boolean requirescrollable,
             boolean requiredraggable) {
         UIElement ret = null;
         for (UIElement u : this.parentList) {
-            UIElement test = u.topChildAtPos(pos, requirehitbox, requirescrollable, requiredraggable);
+            UIElement test = u.topChildAtPos(x, y, requirehitbox, requirescrollable, requiredraggable);
             if (test != null) {
                 ret = test;
             }
@@ -135,7 +135,7 @@ public class UI implements DefaultInputListener { // lets do this right this tim
                 u.debugPrint(0);
             }
         }
-        UIElement top = this.getTopUIElement(new Vector2f(x, y), true, false, false);
+        UIElement top = this.getTopUIElement(x, y, true, false, false);
         if (top != null) {
             top.mouseClicked(button, x, y, clickCount);
         }
@@ -150,7 +150,7 @@ public class UI implements DefaultInputListener { // lets do this right this tim
 
     @Override
     public void mousePressed(int button, int x, int y) {
-        UIElement top = this.getTopUIElement(new Vector2f(x, y), true, false, false);
+        UIElement top = this.getTopUIElement(x, y, true, false, false);
         this.pressedElement = top;
         this.focusElement(top);
         if (top != null) {
@@ -159,7 +159,7 @@ public class UI implements DefaultInputListener { // lets do this right this tim
         if (this.onPress != null) {
             this.onPress.accept(top);
         }
-        UIElement dragging = this.getTopUIElement(new Vector2f(x, y), true, false, true);
+        UIElement dragging = this.getTopUIElement(x, y, true, false, true);
         if (dragging != null) {
             this.draggingElement = dragging;
         }
@@ -214,7 +214,7 @@ public class UI implements DefaultInputListener { // lets do this right this tim
 
     @Override
     public void mouseWheelMoved(int change) {
-        UIElement top = this.getTopUIElement(this.lastmousepos, false, true, false);
+        UIElement top = this.getTopUIElement(this.lastmousepos.getX(), this.lastmousepos.getY(), false, true, false);
         if (top != null) {
             top.mouseWheelMoved(change);
         }

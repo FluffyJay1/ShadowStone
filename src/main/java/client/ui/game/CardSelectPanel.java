@@ -31,7 +31,7 @@ public class CardSelectPanel extends UIBox {
         this.tooltipPanel = new TooltipDisplayPanel(ui) {
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
-                if (this.pointIsInHitbox(new Vector2f(x, y))) {
+                if (this.pointIsInHitbox(x, y)) {
                     ((CardSelectPanel) this.getParent().getParent()).tooltipReferencePanel
                             .setReferenceTooltip(this.tooltip);
                 } else {
@@ -100,7 +100,7 @@ public class CardSelectPanel extends UIBox {
 
     @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
-        if (this.tooltipPanel.pointIsInHitbox(new Vector2f(x, y))) {
+        if (this.tooltipPanel.pointIsInHitbox(x, y)) {
             this.tooltipReferencePanel.setReferenceTooltip(this.uib.selectedCard.getCard().getTooltip());
         } else {
             this.tooltipReferencePanel.setReferenceTooltip(null);
