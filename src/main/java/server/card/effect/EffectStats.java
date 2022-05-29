@@ -1,5 +1,6 @@
 package server.card.effect;
 
+import server.card.CardTrait;
 import utils.StringBuildable;
 
 import java.util.*;
@@ -23,6 +24,10 @@ public class EffectStats implements Cloneable, StringBuildable {
     private static final Set<Integer> NON_NEGATIVE_PER_STEP = new HashSet<>(List.of(SHIELD));
 
     public StatSet set = new StatSet(), change = new StatSet();
+
+    // assume traits are always additive
+    // we use treeset here to preserve ordering, so serialization order remains consistent
+    public Set<CardTrait> traits = new TreeSet<>();
 
     public EffectStats() {
 
@@ -61,17 +66,18 @@ public class EffectStats implements Cloneable, StringBuildable {
     public void resetStats() {
         this.set.reset();
         this.change.reset();
+        this.traits.clear();
     }
 
     public boolean equalExcept(EffectStats other, int stat) {
-        return this.set.equalExcept(other.set, stat) && this.change.equalsChangeExcept(other.change, stat);
+        return this.set.equalExcept(other.set, stat) && this.change.equalsChangeExcept(other.change, stat) && this.traits.equals(other.traits);
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof EffectStats) {
             EffectStats other = (EffectStats) o;
-            return this.set.equals(other.set) && this.change.equalsChange(other.change);
+            return this.set.equals(other.set) && this.change.equalsChange(other.change) && this.traits.equals(other.traits);
         }
         return false;
     }
@@ -79,12 +85,15 @@ public class EffectStats implements Cloneable, StringBuildable {
     public void copy(EffectStats other) {
         this.set.copy(other.set);
         this.change.copy(other.change);
+        this.traits.clear();
+        this.traits.addAll(other.traits);
     }
 
     public EffectStats clone() {
         EffectStats es = new EffectStats();
         es.set = this.set.clone();
         es.change = this.change.clone();
+        es.traits = new HashSet<>(this.traits);
         return es;
     }
 
@@ -99,12 +108,20 @@ public class EffectStats implements Cloneable, StringBuildable {
     public void appendStringToBuilder(StringBuilder builder) {
         this.set.appendStringToBuilder(builder);
         this.change.appendStringToBuilder(builder);
+        builder.append(this.traits.size()).append(" ");
+        for (CardTrait trait : this.traits) {
+            builder.append(trait.name()).append(" ");
+        }
     }
 
     public static EffectStats fromString(StringTokenizer st) {
         EffectStats ret = new EffectStats();
         ret.set = StatSet.fromString(st);
         ret.change = StatSet.fromString(st);
+        int numTraits = Integer.parseInt(st.nextToken());
+        for (int i = 0; i < numTraits; i++) {
+            ret.traits.add(CardTrait.valueOf(st.nextToken()));
+        }
         return ret;
     }
 
@@ -272,6 +289,11 @@ public class EffectStats implements Cloneable, StringBuildable {
 
         public Builder change(int stat, int value) {
             this.built.change.setStat(stat, value);
+            return this;
+        }
+
+        public Builder addTrait(CardTrait trait) {
+            this.built.traits.add(trait);
             return this;
         }
 

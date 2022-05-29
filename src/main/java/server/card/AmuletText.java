@@ -13,7 +13,9 @@ public abstract class AmuletText extends BoardObjectText {
     @Override
     public final List<Effect> getEffects() {
         TooltipAmulet tooltip = this.getTooltip();
-        Effect e = new Effect("", new EffectStats(tooltip.cost));
+        EffectStats stats = new EffectStats(tooltip.cost);
+        stats.traits.addAll(tooltip.traits);
+        Effect e = new Effect("", stats);
         List<Effect> special = this.getSpecialEffects();
         int specialSize = 0;
         if (special != null) {

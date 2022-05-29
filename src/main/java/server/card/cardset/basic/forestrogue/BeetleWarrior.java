@@ -7,6 +7,7 @@ import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.CardRarity;
+import server.card.CardTrait;
 import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
@@ -25,8 +26,9 @@ public class BeetleWarrior extends MinionText {
     public static final String DESCRIPTION = "<b>Battlecry</b>: If at least 2 other cards were played this turn, gain +1/+0/+1 and <b>Storm</b>.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/beetlewarrior.png",
-            CRAFT, RARITY, 3, 2, 1, 4, true, BeetleWarrior.class,
+            CRAFT, TRAITS, RARITY, 3, 2, 1, 4, true, BeetleWarrior.class,
             new Vector2f(150, 145), 1.5, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.BATTLECRY, Tooltip.STORM));
 

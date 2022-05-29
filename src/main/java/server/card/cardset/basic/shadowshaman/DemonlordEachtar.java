@@ -30,8 +30,9 @@ public class DemonlordEachtar extends MinionText {
             "Then give all other allied minions +2/+0/+0 and <b>Rush</b> until the end of the turn.";
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/demonlordeachtar.png",
-            CRAFT, RARITY, 7, 5, 2, 6, true, DemonlordEachtar.class,
+            CRAFT, TRAITS, RARITY, 7, 5, 2, 6, true, DemonlordEachtar.class,
             new Vector2f(120, 120), 1.8, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.BATTLECRY, Tooltip.NECROMANCY, Zombie.TOOLTIP, Tooltip.RUSH));
 

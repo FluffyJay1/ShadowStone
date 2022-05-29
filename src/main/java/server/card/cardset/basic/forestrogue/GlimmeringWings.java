@@ -4,6 +4,7 @@ import client.tooltip.TooltipSpell;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.CardRarity;
+import server.card.CardTrait;
 import server.card.ClassCraft;
 import server.card.SpellText;
 import server.card.effect.Effect;
@@ -21,8 +22,9 @@ public class GlimmeringWings extends SpellText {
     public static final String DESCRIPTION = "Draw a card. If at least 2 other cards were played this turn, draw 2 instead.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/glimmeringwings.png",
-            CRAFT, RARITY, 2, GlimmeringWings.class,
+            CRAFT, TRAITS, RARITY, 2, GlimmeringWings.class,
             List::of);
 
     @Override

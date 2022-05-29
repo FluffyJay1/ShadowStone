@@ -23,8 +23,9 @@ public class WeatheredVanguard extends MinionText {
     public static final String DESCRIPTION = "<b>Battlecry</b>: Summon 2 <b>Knights</b>.\n<b>Unleash</b>: Give all allied minions +1/+0/+1.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.SILVER;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/weatheredvanguard.png",
-            CRAFT, RARITY, 6, 4, 2, 4, false, WeatheredVanguard.class,
+            CRAFT, TRAITS, RARITY, 6, 4, 2, 4, false, WeatheredVanguard.class,
             new Vector2f(155, 120), 1.6, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.BATTLECRY, Knight.TOOLTIP, Tooltip.UNLEASH));
 

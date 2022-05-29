@@ -28,21 +28,22 @@ import static org.newdawn.slick.opengl.renderer.SGL.GL_SRC_ALPHA;
 
 public class UICard extends UIBox {
     public static final Vector2f CARD_DIMENSIONS = new Vector2f(150, 180);
-    public static final Vector2f BORDER_DIMENSIONS = new Vector2f(158, 188);
-    public static final Vector2f COST_POS = new Vector2f(-0.4f, -0.4f);
-    public static final Vector2f COST_POS_UNLEASHPOWER = new Vector2f(0, -0.3f);
-    public static final Vector2f COUNTDOWN_POS = new Vector2f(0.15f, 0.15f);
-    public static final Vector2f SHIELD_POS_HAND = new Vector2f(-0.18f, 0.42f);
-    public static final Vector2f SHIELD_POS_BOARD = new Vector2f(0.4f, 0.2f);
-    public static final float MINION_STAT_POS_BASE_BOARD = 0.4f;
-    public static final float MINION_STAT_POS_OFFSET_BOARD = 0.4f;
-    public static final float MINION_STAT_POS_BASE_HAND = -0.4f;
-    public static final float MINION_STAT_POS_CENTER_HAND = 0.2f;
-    public static final float MINION_STAT_POS_OFFSET_HAND = 0.22f;
-    public static final float UNLEASH_POWER_RADIUS = 50;
-    public static final double NAME_FONT_SIZE = 30;
-    public static final double STAT_DEFAULT_SIZE = 30;
-    public static final int ICON_SPACING = 32;
+    private static final Vector2f BORDER_DIMENSIONS = new Vector2f(158, 188);
+    private static final Vector2f COST_POS = new Vector2f(-0.4f, -0.4f);
+    private static final Vector2f COST_POS_UNLEASHPOWER = new Vector2f(0, -0.3f);
+    private static final Vector2f COUNTDOWN_POS = new Vector2f(0.15f, 0.15f);
+    private static final Vector2f SHIELD_POS_HAND = new Vector2f(-0.18f, 0.42f);
+    private static final Vector2f SHIELD_POS_BOARD = new Vector2f(0.4f, 0.2f);
+    private static final float MINION_STAT_POS_BASE_BOARD = 0.4f;
+    private static final float MINION_STAT_POS_OFFSET_BOARD = 0.4f;
+    private static final float MINION_STAT_POS_BASE_HAND = -0.4f;
+    private static final float MINION_STAT_POS_CENTER_HAND = 0.2f;
+    private static final float MINION_STAT_POS_OFFSET_HAND = 0.22f;
+    private static final float UNLEASH_POWER_RADIUS = 50;
+    private static final double NAME_FONT_SIZE = 30;
+    private static final double TRAITS_FONT_SIZE = 20;
+    private static final double STAT_DEFAULT_SIZE = 30;
+    private static final int ICON_SPACING = 32;
     public static final float SCALE_DEFAULT = 1, SCALE_HAND = 0.75f, SCALE_HAND_EXPAND = 1.2f,
             SCALE_BOARD = 1f, SCALE_TARGETING = 1.3f, SCALE_POTENTIAL_TARGET = 1.15f, SCALE_ORDERING_ATTACK = 1.3f,
             SCALE_COMBAT = 1.2f, SCALE_PLAY = 2.5f, SCALE_MOVE = 2, SCALE_MULLIGAN = 1.5f;
@@ -506,14 +507,22 @@ public class UICard extends UIBox {
     }
 
     public void drawInHand(Graphics g, Vector2f pos, double scale) {
-        UnicodeFont font = Game.getFont((int) (NAME_FONT_SIZE * scale), true, false);
+        UnicodeFont nameFont = Game.getFont((int) (NAME_FONT_SIZE * scale), true, false);
         double targetWidth = CARD_DIMENSIONS.x * scale * (1 - HAND_TITLE_OFFSET);
-        if (font.getWidth(this.card.getTooltip().name) > targetWidth) {
-            font = Game.getFont((int) (NAME_FONT_SIZE * scale * targetWidth / font.getWidth(this.card.getTooltip().name)),
+        if (nameFont.getWidth(this.card.getTooltip().name) > targetWidth) {
+            nameFont = Game.getFont((int) (NAME_FONT_SIZE * scale * targetWidth / nameFont.getWidth(this.card.getTooltip().name)),
                     true, false);
         }
-        font.drawString(pos.x - font.getWidth(this.card.getTooltip().name) / 2f + HAND_TITLE_OFFSET / 2 * CARD_DIMENSIONS.x * (float) scale,
+        nameFont.drawString(pos.x - nameFont.getWidth(this.card.getTooltip().name) / 2f + HAND_TITLE_OFFSET / 2 * CARD_DIMENSIONS.x * (float) scale,
                 pos.y - CARD_DIMENSIONS.y * (float) scale / 2, this.card.getTooltip().name);
+        UnicodeFont traitsFont = Game.getFont((int) (TRAITS_FONT_SIZE * scale), true, false);
+        String traitsString = TooltipCard.listTraits(this.card.getTooltip().traits);
+        if (traitsFont.getWidth(traitsString) > targetWidth) {
+            traitsFont = Game.getFont((int) (TRAITS_FONT_SIZE * scale * targetWidth / traitsFont.getWidth(traitsString)),
+                    true, false);
+        }
+        traitsFont.drawString(pos.x - traitsFont.getWidth(traitsString) / 2f + HAND_TITLE_OFFSET / 2 * CARD_DIMENSIONS.x * (float) scale,
+                pos.y + CARD_DIMENSIONS.y * (float) scale / 2 - traitsFont.getHeight(traitsString), traitsString);
         if (this.card.realCard != null
                 && (this.card.team == this.uib.b.localteam ? // different rules depending on allied team or enemy team
                 this.uib.b.realBoard.getPlayer(this.card.realCard.team).canPlayCard(this.card.realCard) && !this.uib.b.disableInput : // condition for cards on our team (should update instantly)

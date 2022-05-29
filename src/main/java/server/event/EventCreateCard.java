@@ -156,7 +156,7 @@ public class EventCreateCard extends Event {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.id).append(" ").append(this.visibility).append(" ").append(this.cards.size()).append(" ");
+        builder.append(this.id).append(" ").append(this.visibility.name()).append(" ").append(this.cards.size()).append(" ");
         for (Card c : this.cards) {
             builder.append(c.cardText.toString());
         }

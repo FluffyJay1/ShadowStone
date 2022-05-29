@@ -14,8 +14,9 @@ public class Fighter extends MinionText {
     public static final String DESCRIPTION = "";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/fighter.png",
-            CRAFT, RARITY, 2, 2, 1, 2, true, Fighter.class,
+            CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, Fighter.class,
             new Vector2f(), -1, EventAnimationDamageSlash.class,
             List::of);
 

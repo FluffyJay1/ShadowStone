@@ -5,10 +5,7 @@ import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ai.AI;
-import server.card.CardRarity;
-import server.card.ClassCraft;
-import server.card.Minion;
-import server.card.MinionText;
+import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.effect.EffectUntilTurnEndEnemy;
@@ -27,8 +24,9 @@ public class ShadowReaper extends MinionText {
             "Whenever another allied minion is destroyed, gain +1/+0/+1.";
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.GOLD;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/shadowreaper.png",
-            CRAFT, RARITY, 2, 1, 1, 1, true, ShadowReaper.class,
+            CRAFT, TRAITS, RARITY, 2, 1, 1, 1, true, ShadowReaper.class,
             new Vector2f(127, 125), 1.5, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.BATTLECRY, Tooltip.STEALTH));
 

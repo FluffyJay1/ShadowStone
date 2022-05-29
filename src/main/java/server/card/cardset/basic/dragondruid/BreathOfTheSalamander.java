@@ -28,8 +28,9 @@ public class BreathOfTheSalamander extends SpellText {
     public static final String DESCRIPTION = "Deal 3 damage to an enemy minion. Then <b>Spend(4)</b> to deal 2 damage to all enemy minions.";
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.GOLD;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/breathofthesalamander.png",
-            CRAFT, RARITY, 2, BreathOfTheSalamander.class,
+            CRAFT, TRAITS, RARITY, 2, BreathOfTheSalamander.class,
             () -> List.of(Tooltip.SPEND));
 
     @Override

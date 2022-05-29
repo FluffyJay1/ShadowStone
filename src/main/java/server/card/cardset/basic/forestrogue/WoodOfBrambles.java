@@ -19,8 +19,9 @@ public class WoodOfBrambles extends AmuletText {
     public static final String DESCRIPTION = "<b>Countdown(2)</b>.\n<b>Battlecry</b>: add two <b>Faries</b> to your hand.\n<b>Aura</b>: friendly minions have <b>Clash</b>: deal 1 damage to the enemy minion.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.SILVER;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/woodofbrambles.png",
-            CRAFT, RARITY, 2, WoodOfBrambles.class,
+            CRAFT, TRAITS, RARITY, 2, WoodOfBrambles.class,
             new Vector2f(), -1,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Fairy.TOOLTIP, Tooltip.AURA, Tooltip.CLASH));
 

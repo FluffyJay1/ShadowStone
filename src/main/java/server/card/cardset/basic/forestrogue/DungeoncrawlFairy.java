@@ -23,8 +23,9 @@ public class DungeoncrawlFairy extends MinionText {
     public static final String DESCRIPTION = "<b>Battlecry</b>: Return an allied minion or amulet to your hand.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/dungeoncrawlfairy.png",
-            CRAFT, RARITY, 2, 2, 1, 2, true, DungeoncrawlFairy.class,
+            CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, DungeoncrawlFairy.class,
             new Vector2f(120, 121), 1.5, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.BATTLECRY));
 

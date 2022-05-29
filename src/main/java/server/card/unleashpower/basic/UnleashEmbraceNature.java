@@ -17,8 +17,9 @@ public class UnleashEmbraceNature extends UnleashPowerText {
     public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. If it has already attacked this turn, return it to your hand and subtract 1 from its cost.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/embracenature.png",
-            CRAFT, RARITY, 2, UnleashEmbraceNature.class,
+            CRAFT, TRAITS, RARITY, 2, UnleashEmbraceNature.class,
             new Vector2f(653, 565), 3,
             () -> List.of(Tooltip.UNLEASH));
 

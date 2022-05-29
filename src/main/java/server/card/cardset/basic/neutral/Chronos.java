@@ -28,8 +28,9 @@ public class Chronos extends MinionText {
             "(This effect is not stackable and lasts for the rest of the match.)";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/chronos.png",
-            CRAFT, RARITY,8, 4, 3, 3, true, Chronos.class,
+            CRAFT, TRAITS, RARITY,8, 4, 3, 3, true, Chronos.class,
             new Vector2f(143, 135), 1.5, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.BATTLECRY));
     @Override

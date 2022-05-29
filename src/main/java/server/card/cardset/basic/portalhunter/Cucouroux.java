@@ -26,8 +26,9 @@ public class Cucouroux extends MinionText {
             "<b>Minion Strike</b>: Deal 2 damage to the attacked minion first.";
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.GOLD;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/cucouroux.png",
-            CRAFT, RARITY, 3, 3, 1, 2, true, Cucouroux.class,
+            CRAFT, TRAITS, RARITY, 3, 3, 1, 2, true, Cucouroux.class,
             new Vector2f(160, 145), 1.4, EventAnimationDamageShoot.class,
             () -> List.of(Tooltip.BATTLECRY, Tooltip.SPEND, Camieux.TOOLTIP, Tooltip.MINIONSTRIKE));
 

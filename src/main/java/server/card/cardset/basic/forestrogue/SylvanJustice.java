@@ -23,8 +23,9 @@ public class SylvanJustice extends SpellText {
     public static final String DESCRIPTION = "Deal 2 damage to an enemy minion. Add a <b>Fairy</b> to your hand.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/sylvanjustice.png",
-            CRAFT, RARITY, 2, SylvanJustice.class,
+            CRAFT, TRAITS, RARITY, 2, SylvanJustice.class,
             () -> List.of(Fairy.TOOLTIP));
 
     @Override

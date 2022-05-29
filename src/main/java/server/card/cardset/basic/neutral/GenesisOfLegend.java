@@ -20,8 +20,9 @@ public class GenesisOfLegend extends AmuletText {
     public static final String DESCRIPTION = "<b>Countdown(3)</b>. At the end of your turn, give a random allied minion +0/+0/+1 and <b>Bane</b>.";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.SILVER;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/genesisoflegend.png",
-            CRAFT, RARITY, 2, GenesisOfLegend.class,
+            CRAFT, TRAITS, RARITY, 2, GenesisOfLegend.class,
             new Vector2f(), -1,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.BANE));
 

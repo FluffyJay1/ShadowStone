@@ -7,10 +7,7 @@ import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationD
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
-import server.card.CardRarity;
-import server.card.ClassCraft;
-import server.card.Minion;
-import server.card.MinionText;
+import server.card.*;
 import server.card.effect.Effect;
 import server.event.Event;
 import server.resolver.DamageResolver;
@@ -26,8 +23,9 @@ public class Camieux extends MinionText {
     public static final String DESCRIPTION = "<b>Last Words</b>: Deal 1 damage to a random enemy. Do this 3 times.";
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.GOLD;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/camieux.png",
-            CRAFT, RARITY, 2, 2, 1, 1, true, Camieux.class,
+            CRAFT, TRAITS, RARITY, 2, 2, 1, 1, true, Camieux.class,
             new Vector2f(143, 150), 1.4, EventAnimationDamageShoot.class,
             () -> List.of(Tooltip.LASTWORDS));
 

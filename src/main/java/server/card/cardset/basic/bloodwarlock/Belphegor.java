@@ -8,6 +8,7 @@ import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.CardRarity;
+import server.card.CardTrait;
 import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
@@ -29,8 +30,9 @@ public class Belphegor extends MinionText {
             "In either case, give your leader <b>Shield(Y)</b> afterwards. Y equals the amount of health your leader is missing.";
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/belphegor.png",
-            CRAFT, RARITY, 8, 4, 2, 4, true, Belphegor.class,
+            CRAFT, TRAITS, RARITY, 8, 4, 2, 4, true, Belphegor.class,
             new Vector2f(142, 136), 1.7, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.BATTLECRY, Tooltip.VENGEANCE, Tooltip.SHIELD));
 

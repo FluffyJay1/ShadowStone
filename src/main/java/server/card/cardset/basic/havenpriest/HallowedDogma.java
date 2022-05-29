@@ -23,8 +23,9 @@ public class HallowedDogma extends SpellText {
     public static final String DESCRIPTION = "Choose a card. If it has <b>Countdown</b>, subtract 2 from it and draw a card. Otherwise, give it <b>Countdown(2)</b>.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/halloweddogma.png",
-            CRAFT, RARITY, 2, HallowedDogma.class,
+            CRAFT, TRAITS, RARITY, 2, HallowedDogma.class,
             () -> List.of(Tooltip.COUNTDOWN));
 
     @Override

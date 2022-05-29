@@ -21,8 +21,9 @@ public class Omega extends MinionText {
     public static final String DESCRIPTION = "<b>Strike</b>: Restore 5 health to your leader.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/special/omega.png",
-            CRAFT, RARITY, 4, 2, 2, 2, true, Omega.class,
+            CRAFT, TRAITS, RARITY, 4, 2, 2, 2, true, Omega.class,
             new Vector2f(), -1, EventAnimationDamageOff.class,
             () -> List.of(Tooltip.STRIKE));
 

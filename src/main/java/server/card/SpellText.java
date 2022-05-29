@@ -12,7 +12,9 @@ public abstract class SpellText extends CardText {
     @Override
     public final List<Effect> getEffects() {
         TooltipSpell tooltip = this.getTooltip();
-        Effect e = new Effect("", new EffectStats(tooltip.cost));
+        EffectStats stats = new EffectStats(tooltip.cost);
+        stats.traits.addAll(tooltip.traits);
+        Effect e = new Effect("", stats);
         List<Effect> special = this.getSpecialEffects();
         int specialSize = 0;
         if (special != null) {

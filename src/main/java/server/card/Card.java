@@ -42,6 +42,7 @@ public abstract class Card implements Indexable, StringBuildable {
     public CardVisibility visibility;
 
     public EffectStats.StatSet finalStatEffects = new EffectStats.StatSet(), finalBasicStatEffects = new EffectStats.StatSet();
+    public Set<CardTrait> finalTraits = new HashSet<>(), finalBasicTraits = new HashSet<>();
     /*
      * basic effects can't get removed unlike additional effects (e.g. bounce
      * effects), but they can be muted
@@ -237,23 +238,29 @@ public abstract class Card implements Indexable, StringBuildable {
     // base stat numbers for future use
     public void updateEffectStats(boolean basic) {
         EffectStats.StatSet stats;
+        Set<CardTrait> traits;
+        Stream<Effect> relevant;
         if (basic) {
             stats = this.finalBasicStatEffects;
+            stats.reset();
+            traits = this.finalBasicTraits;
+            traits.clear();
+            relevant = this.getEffects(true).stream().filter(e -> !e.bonusStats);
         } else {
             stats = this.finalStatEffects;
-        }
-        stats.reset();
-        Stream<Effect> relevant = this.getEffects(true).stream().filter(e -> !e.bonusStats);
-        if (!basic) {
+            stats.copy(this.finalBasicStatEffects);
+            traits = this.finalTraits;
+            traits.clear();
+            traits.addAll(this.finalBasicTraits);
             relevant = Stream.concat(
-                    relevant,
-                    Stream.concat(
-                            this.getEffects(true).stream().filter(e -> e.bonusStats),
-                            this.getEffects(false).stream()
-                    )
+                    this.getEffects(true).stream().filter(e -> e.bonusStats),
+                    this.getEffects(false).stream()
             );
         }
-        relevant.forEachOrdered(e -> e.effectStats.applyToStatSet(stats));
+        relevant.forEachOrdered(e -> {
+            e.effectStats.applyToStatSet(stats);
+            traits.addAll(e.effectStats.traits);
+        });
         stats.makeNonNegative();
         if (basic) {
             // update the stat numbers for the additional effects too

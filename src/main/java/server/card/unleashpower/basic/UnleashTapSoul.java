@@ -18,8 +18,9 @@ public class UnleashTapSoul extends UnleashPowerText {
             "<b>Unleash</b> an allied minion. If <b>Vengeance</b> is active for you, this costs 2 less.";
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/tapsoul.png",
-            CRAFT, RARITY, 2, UnleashTapSoul.class,
+            CRAFT, TRAITS, RARITY, 2, UnleashTapSoul.class,
             new Vector2f(445, 515), 1,
             () -> List.of(Tooltip.VENGEANCE, Tooltip.UNLEASH));
 

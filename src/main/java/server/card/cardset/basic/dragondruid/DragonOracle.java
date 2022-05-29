@@ -17,8 +17,9 @@ public class DragonOracle extends SpellText {
     public static final String DESCRIPTION = "Gain one empty mana orb. If <b>Overflow</b> is active for you, draw a card.";
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/dragonoracle.png",
-            CRAFT, RARITY, 2, DragonOracle.class,
+            CRAFT, TRAITS, RARITY, 2, DragonOracle.class,
             List::of);
 
     @Override

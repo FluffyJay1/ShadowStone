@@ -7,6 +7,7 @@ import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.CardRarity;
+import server.card.CardTrait;
 import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
@@ -25,8 +26,9 @@ public class SukunaBraveAndSmall extends MinionText {
     public static final String DESCRIPTION = "<b>Unleash</b>: Gain +2/+1/+2. If at least 3 cards were played this turn, gain an additional +2/+1/+2.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.SILVER;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/sukunabraveandsmall.png",
-            CRAFT, RARITY, 2, 2, 1, 2, false, SukunaBraveAndSmall.class,
+            CRAFT, TRAITS, RARITY, 2, 2, 1, 2, false, SukunaBraveAndSmall.class,
             new Vector2f(160, 160), 1.2, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.UNLEASH));
 

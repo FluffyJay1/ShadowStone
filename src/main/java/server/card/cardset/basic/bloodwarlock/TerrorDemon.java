@@ -4,10 +4,7 @@ import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
-import server.card.CardRarity;
-import server.card.CardStatus;
-import server.card.ClassCraft;
-import server.card.MinionText;
+import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.event.Event;
@@ -22,8 +19,9 @@ public class TerrorDemon extends MinionText {
     public static final String DESCRIPTION = "<b>Lifesteal</b>.\nWhenever an allied minion is <b>Unleashed</b> while this is in your hand, gain +1/+1/+0.";
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.GOLD;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/terrordemon.png",
-            CRAFT, RARITY, 4, 2, 1, 4, true, TerrorDemon.class,
+            CRAFT, TRAITS, RARITY, 4, 2, 1, 4, true, TerrorDemon.class,
             new Vector2f(166, 134), 1.4, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.LIFESTEAL, Tooltip.UNLEASH));
 

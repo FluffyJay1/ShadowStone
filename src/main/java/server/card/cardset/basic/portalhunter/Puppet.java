@@ -14,8 +14,9 @@ public class Puppet extends MinionText {
     public static final String DESCRIPTION = "<b>Rush</b>. <b>Countdown(1)</b>.";
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/puppet.png",
-            CRAFT, RARITY, 0, 1, 0, 1, false, Puppet.class,
+            CRAFT, TRAITS, RARITY, 0, 1, 0, 1, false, Puppet.class,
             new Vector2f(161, 143), 1.4, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.RUSH, Tooltip.COUNTDOWN));
 

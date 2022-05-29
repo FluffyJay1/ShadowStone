@@ -19,8 +19,9 @@ public class UnleashBegetUndead extends UnleashPowerText {
     public static final String DESCRIPTION = "Give an allied minion <b>Last Words</b>: summon a <b>Skeleton</b>. <b>Unleash</b> it. Then deal 1 damage to it.";
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/begetundead.png",
-            CRAFT, RARITY, 2, UnleashBegetUndead.class,
+            CRAFT, TRAITS, RARITY, 2, UnleashBegetUndead.class,
             new Vector2f(410, 460), 4,
             () -> List.of(Tooltip.UNLEASH, Tooltip.LASTWORDS, Skeleton.TOOLTIP));
 

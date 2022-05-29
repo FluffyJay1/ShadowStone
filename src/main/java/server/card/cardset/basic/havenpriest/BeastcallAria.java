@@ -15,8 +15,9 @@ public class BeastcallAria extends AmuletText {
     public static final String DESCRIPTION = "<b>Countdown(3)</b>.\n<b>Last Words</b>: Summon a <b>Holy Falcon</b> and a <b>Holyflame Tiger</b>.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.SILVER;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/beastcallaria.png",
-            CRAFT, RARITY, 2, BeastcallAria.class,
+            CRAFT, TRAITS, RARITY, 2, BeastcallAria.class,
             new Vector2f(150, 130), 1.4,
             () -> List.of(Tooltip.COUNTDOWN, HolyFalcon.TOOLTIP, HolyflameTiger.TOOLTIP));
 

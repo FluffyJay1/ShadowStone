@@ -9,10 +9,7 @@ import org.newdawn.slick.geom.Vector2f;
 import server.Player;
 import server.ServerBoard;
 import server.ai.AI;
-import server.card.CardRarity;
-import server.card.ClassCraft;
-import server.card.Minion;
-import server.card.MinionText;
+import server.card.*;
 import server.card.effect.Effect;
 import server.card.target.TargetList;
 import server.event.Event;
@@ -29,8 +26,9 @@ public class Cassiopeia extends MinionText {
     public static final String DESCRIPTION = "<b>Battlecry</b>: Deal 1 damage to a random enemy minion. Do this X times. X equals the number of cards in your hand.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/cassiopeia.png",
-            CRAFT, RARITY, 6, 3, 2, 3, true, Cassiopeia.class,
+            CRAFT, TRAITS, RARITY, 6, 3, 2, 3, true, Cassiopeia.class,
             new Vector2f(150, 145), 1.3, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.BATTLECRY));
 

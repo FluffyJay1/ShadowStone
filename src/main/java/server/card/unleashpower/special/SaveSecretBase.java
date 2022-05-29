@@ -6,6 +6,7 @@ import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.UnleashPowerText;
 import server.card.CardRarity;
+import server.card.CardTrait;
 import server.card.ClassCraft;
 import server.card.Minion;
 import server.card.effect.Effect;
@@ -23,8 +24,9 @@ public class SaveSecretBase extends UnleashPowerText {
     public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. If it has already attacked this turn, restore 3 health to all allies.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/special/savesecretbase.png",
-            CRAFT, RARITY, 2, SaveSecretBase.class,
+            CRAFT, TRAITS, RARITY, 2, SaveSecretBase.class,
             new Vector2f(), -1,
             () -> List.of(Tooltip.UNLEASH));
 

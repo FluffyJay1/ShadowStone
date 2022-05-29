@@ -24,6 +24,9 @@ public abstract class MinionText extends BoardObjectText {
     @Override
     public final List<Effect> getEffects() {
         TooltipMinion tooltip = this.getTooltip();
+        EffectStats stats = new EffectStats(tooltip.cost, tooltip.attack, tooltip.magic, tooltip.health);
+        stats.traits.addAll(tooltip.traits);
+        stats.set.setStat(EffectStats.ATTACKS_PER_TURN, 1);
         Effect e = new Effect("", new EffectStats(tooltip.cost, tooltip.attack, tooltip.magic, tooltip.health));
         e.effectStats.set.setStat(EffectStats.ATTACKS_PER_TURN, 1);
         List<Effect> special = this.getSpecialEffects();

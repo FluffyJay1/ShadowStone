@@ -16,14 +16,14 @@ public class TooltipMinion extends TooltipCard {
     public final boolean basicUnleash;
     public final Class<? extends EventAnimationDamage> attackAnimation;
 
-    public TooltipMinion(String name, String description, String imagepath, ClassCraft craft, CardRarity rarity, int cost, int attack,
+    public TooltipMinion(String name, String description, String imagepath, ClassCraft craft, List<CardTrait> traits, CardRarity rarity, int cost, int attack,
                          int magic, int health, boolean basicUnleash, Class<? extends MinionText> minionTextClass, Vector2f artFocusPos,
                          double artFocusScale, Class<? extends EventAnimationDamage> attackAnimation, Supplier<List<Tooltip>> references) {
         super(name,
                 "minion\nA:" + attack + ", M:" + magic + ", H:" + health + "\n \n" + description + (basicUnleash
                         ? "\n <b>Unleash</b>: Deal X damage to an enemy minion. X equals this minion's magic.\n"
                         : ""),
-                imagepath, craft, rarity, cost, minionTextClass, artFocusPos, artFocusScale, references);
+                imagepath, craft, traits, rarity, cost, minionTextClass, artFocusPos, artFocusScale, references);
         this.basicUnleash = basicUnleash;
         if (basicUnleash) {
             this.references = () -> {

@@ -21,8 +21,9 @@ public class BlackenedScripture extends SpellText {
     public static final String DESCRIPTION = "<b>Banish</b> an enemy minion with 3 health or less.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/blackenedscripture.png",
-            CRAFT, RARITY, 2, BlackenedScripture.class,
+            CRAFT, TRAITS, RARITY, 2, BlackenedScripture.class,
             () -> List.of(Tooltip.BANISH));
 
     @Override

@@ -22,8 +22,9 @@ public class Vanish extends SpellText {
     public static final String DESCRIPTION = "Return all minions to their owner's hands.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.GOLD;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/vanish.png",
-            CRAFT, RARITY, 6, Vanish.class,
+            CRAFT, TRAITS, RARITY, 6, Vanish.class,
             List::of);
 
     @Override

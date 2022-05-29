@@ -24,8 +24,9 @@ public class IHadThreeFriends extends SpellText {
     public static final String DESCRIPTION = "Summon <b>Add-on: Alpha</b>, <b>Add-on: Omega</b>, and <b>Add-on: Epsilon</b>. <b>Choose</b> one to give <b>Rush</b>.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/special/threefriends.png",
-            CRAFT, RARITY, 8, IHadThreeFriends.class,
+            CRAFT, TRAITS, RARITY, 8, IHadThreeFriends.class,
             () -> List.of(Alpha.TOOLTIP, Omega.TOOLTIP, Epsilon.TOOLTIP, Tooltip.RUSH));
 
     @Override

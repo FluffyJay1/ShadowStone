@@ -4,10 +4,7 @@ import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
 import org.newdawn.slick.geom.Vector2f;
 import server.Player;
-import server.card.CardRarity;
-import server.card.CardStatus;
-import server.card.ClassCraft;
-import server.card.MinionText;
+import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.effect.EffectWithDependentStats;
@@ -19,8 +16,9 @@ public class MoltenGiant extends MinionText {
     public static final String DESCRIPTION = "Costs X less. X equals the amount of health your leader is missing.";
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.GOLD;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/moltengiant.png",
-            CRAFT, RARITY, 15, 8, 4, 8, true, MoltenGiant.class,
+            CRAFT, TRAITS, RARITY, 15, 8, 4, 8, true, MoltenGiant.class,
             new Vector2f(150, 145), 1.3, EventAnimationDamageFire.class,
             List::of);
     @Override

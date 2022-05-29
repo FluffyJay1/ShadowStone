@@ -20,8 +20,9 @@ public class Beastmaster extends MinionText {
     public static final String DESCRIPTION = "<b>Aura</b>: adjacent minions have +1 attacks per turn.\n<b>Unleash</b>: summon a <b>Stonetusk Boar</b>.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.SILVER;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/beastmaster.png",
-            CRAFT, RARITY, 4, 2, 0, 4, false, Beastmaster.class,
+            CRAFT, TRAITS, RARITY, 4, 2, 0, 4, false, Beastmaster.class,
             new Vector2f(140, 100), 2, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.AURA, Tooltip.UNLEASH, StonetuskBoar.TOOLTIP));
 

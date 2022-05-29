@@ -23,8 +23,9 @@ public class Curate extends MinionText {
     public static final String DESCRIPTION = "<b>Battlecry</b>: Restore 5 health to an ally.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/curate.png",
-            CRAFT, RARITY, 7, 5, 3, 5, true, Curate.class,
+            CRAFT, TRAITS, RARITY, 7, 5, 3, 5, true, Curate.class,
             new Vector2f(169, 143), 1.4, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.BATTLECRY));
 

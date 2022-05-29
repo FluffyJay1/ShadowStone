@@ -24,8 +24,9 @@ public class SummonSnow extends SpellText {
     public static final String DESCRIPTION = "Summon X + 1 <b>Snowmen</b>. X equals the number of times this card has been <b>Spellboosted</b>.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/summonsnow.png",
-            CRAFT, RARITY, 3, SummonSnow.class,
+            CRAFT, TRAITS, RARITY, 3, SummonSnow.class,
             () -> List.of(Snowman.TOOLTIP, Tooltip.SPELLBOOST));
     @Override
     protected List<Effect> getSpecialEffects() {

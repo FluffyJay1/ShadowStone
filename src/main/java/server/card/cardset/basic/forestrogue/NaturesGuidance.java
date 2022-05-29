@@ -22,8 +22,9 @@ public class NaturesGuidance extends SpellText {
     public static final String DESCRIPTION = "Return an allied minion or amulet to your hand. Draw a card.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/naturesguidance.png",
-            CRAFT, RARITY, 1, NaturesGuidance.class,
+            CRAFT, TRAITS, RARITY, 1, NaturesGuidance.class,
             List::of);
 
     @Override

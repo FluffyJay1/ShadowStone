@@ -14,8 +14,9 @@ public class Fairy extends MinionText {
     public static final String DESCRIPTION = "";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/fairy.png",
-            CRAFT, RARITY, 1, 1, 1, 1, true, Fairy.class,
+            CRAFT, TRAITS, RARITY, 1, 1, 1, 1, true, Fairy.class,
             new Vector2f(), -1, EventAnimationDamageSlash.class,
             List::of);
 

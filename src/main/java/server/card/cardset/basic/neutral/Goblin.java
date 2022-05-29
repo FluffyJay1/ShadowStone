@@ -14,8 +14,9 @@ public class Goblin extends MinionText {
     public static final String DESCRIPTION = "";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/goblin.png",
-            CRAFT, RARITY, 1, 1, 0, 2, true, Goblin.class,
+            CRAFT, TRAITS, RARITY, 1, 1, 0, 2, true, Goblin.class,
             new Vector2f(), -1, EventAnimationDamageSlash.class,
             List::of);
 

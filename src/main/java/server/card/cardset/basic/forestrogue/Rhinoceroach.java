@@ -6,6 +6,7 @@ import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationD
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.card.CardRarity;
+import server.card.CardTrait;
 import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
@@ -25,8 +26,9 @@ public class Rhinoceroach extends MinionText {
     public static final String DESCRIPTION = "<b>Storm</b>.\n<b>Battlecry</b>: Gain +X/+0/+0 until the end of the turn. X equals the number of other cards played this turn.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.GOLD;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/rhinoceroach.png",
-            CRAFT, RARITY,2, 1, 1, 1, true, Rhinoceroach.class,
+            CRAFT, TRAITS, RARITY,2, 1, 1, 1, true, Rhinoceroach.class,
             new Vector2f(182, 183), 1.5, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.STORM, Tooltip.BATTLECRY));
     @Override

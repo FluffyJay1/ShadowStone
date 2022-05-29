@@ -4,6 +4,7 @@ import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
 import server.ai.AI;
 import server.card.CardRarity;
+import server.card.CardTrait;
 import server.card.ClassCraft;
 import server.card.SpellText;
 import server.card.effect.Effect;
@@ -19,8 +20,9 @@ public class FatesHand extends SpellText {
     public static final String DESCRIPTION = "Draw 2 cards. " + EffectSpellboostDiscount.DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/fateshand.png",
-            CRAFT, RARITY, 5, FatesHand.class,
+            CRAFT, TRAITS, RARITY, 5, FatesHand.class,
             () -> List.of(Tooltip.SPELLBOOST));
     @Override
     protected List<Effect> getSpecialEffects() {

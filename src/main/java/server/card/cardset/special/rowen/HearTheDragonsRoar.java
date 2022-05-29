@@ -4,6 +4,7 @@ import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
 import server.ServerBoard;
 import server.card.CardRarity;
+import server.card.CardTrait;
 import server.card.ClassCraft;
 import server.card.SpellText;
 import server.card.effect.Effect;
@@ -22,8 +23,9 @@ public class HearTheDragonsRoar extends SpellText {
     public static final String DESCRIPTION = "<b>Banish</b> all enemy minions and amulets.";
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
+    public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/special/hear.png",
-            CRAFT, RARITY, 10, HearTheDragonsRoar.class,
+            CRAFT, TRAITS, RARITY, 10, HearTheDragonsRoar.class,
             () -> List.of(Tooltip.BANISH));
     @Override
     protected List<Effect> getSpecialEffects() {
