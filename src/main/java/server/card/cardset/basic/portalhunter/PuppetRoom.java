@@ -27,6 +27,7 @@ public class PuppetRoom extends AmuletText {
                 .set(EffectStats.COUNTDOWN, 3)
                 .build()
         ) {
+            private List<Card> cachedInstances; // for getBattlecryValue, preview the value of the created cards
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 String resolverDescription = "<b>Battlecry</b>: put a <b>Puppet</b> in your hand.";
@@ -35,7 +36,10 @@ public class PuppetRoom extends AmuletText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.VALUE_PER_CARD_IN_HAND;
+                if (this.cachedInstances == null) {
+                    this.cachedInstances = List.of(new Puppet().constructInstance(this.owner.board));
+                }
+                return AI.valueForAddingToHand(this.cachedInstances, refs);
             }
 
             @Override
@@ -46,7 +50,7 @@ public class PuppetRoom extends AmuletText {
 
             @Override
             public double getPresenceValue(int refs) {
-                return AI.VALUE_PER_CARD_IN_HAND * 3;
+                return AI.valueForAddingToHand(this.cachedInstances, refs) * 3;
             }
         };
         e.effectStats.set.setStat(EffectStats.COUNTDOWN, 3);

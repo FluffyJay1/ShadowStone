@@ -7,7 +7,7 @@ import java.util.Map;
 import client.ui.game.visualboardanimation.eventanimation.basic.*;
 import client.ui.game.visualboardanimation.eventanimation.board.*;
 import client.VisualBoard;
-import client.ui.game.visualboardanimation.eventanimation.attack.*;
+import client.ui.game.visualboardanimation.eventanimation.damage.*;
 import server.event.*;
 
 /**

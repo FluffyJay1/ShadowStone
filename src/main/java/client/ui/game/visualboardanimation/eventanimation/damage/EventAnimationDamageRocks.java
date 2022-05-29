@@ -1,4 +1,4 @@
-package client.ui.game.visualboardanimation.eventanimation.attack;
+package client.ui.game.visualboardanimation.eventanimation.damage;
 
 import client.Game;
 import client.VisualBoard;

@@ -1,4 +1,4 @@
-package client.ui.game.visualboardanimation.eventanimation.attack;
+package client.ui.game.visualboardanimation.eventanimation.damage;
 
 import client.Game;
 import client.ui.Animation;
@@ -87,12 +87,6 @@ public class EventAnimationDamageOff extends EventAnimationDamage {
         for (Minion m : this.event.m) {
             this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getPos().add(BLOOD_OFFSET), UIBoard.PARTICLE_Z_BOARD, BLOOD_EMISSION_STRATEGY.get());
         }
-    }
-
-    private static void drawCenteredAndScaled(Graphics g, Image image, Vector2f pos, float scale, float alpha) {
-        Image scaledCopy = image.getScaledCopy(scale);
-        scaledCopy.setAlpha(alpha);
-        g.drawImage(scaledCopy, pos.x - scaledCopy.getWidth() / 2, pos.y - scaledCopy.getHeight() / 2);
     }
 
     @Override

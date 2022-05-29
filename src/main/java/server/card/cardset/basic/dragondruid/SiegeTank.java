@@ -2,8 +2,8 @@ package server.card.cardset.basic.dragondruid;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageBigExplosion;
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageShoot;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageBigExplosion;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageShoot;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.card.*;

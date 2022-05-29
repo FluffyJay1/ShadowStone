@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import client.*;
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamage;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
 import server.*;
 import server.card.*;
 import server.card.effect.*;

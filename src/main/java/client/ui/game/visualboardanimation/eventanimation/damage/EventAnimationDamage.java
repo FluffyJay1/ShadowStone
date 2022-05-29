@@ -1,4 +1,4 @@
-package client.ui.game.visualboardanimation.eventanimation.attack;
+package client.ui.game.visualboardanimation.eventanimation.damage;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
@@ -11,7 +11,6 @@ import server.event.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.newdawn.slick.opengl.renderer.SGL.GL_ONE;
@@ -119,6 +118,12 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
             g.fill(r.transform(t));
         }
         g.setDrawMode(Graphics.MODE_NORMAL);
+    }
+
+    static void drawCenteredAndScaled(Graphics g, Image image, Vector2f pos, float scale, float alpha) {
+        Image scaledCopy = image.getScaledCopy(scale);
+        scaledCopy.setAlpha(alpha);
+        g.drawImage(scaledCopy, pos.x - scaledCopy.getWidth() / 2, pos.y - scaledCopy.getHeight() / 2);
     }
 
     public static String nameOrNull(Class<? extends EventAnimationDamage> animation) {

@@ -1,4 +1,4 @@
-package client.ui.game.visualboardanimation.eventanimation.attack;
+package client.ui.game.visualboardanimation.eventanimation.damage;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;

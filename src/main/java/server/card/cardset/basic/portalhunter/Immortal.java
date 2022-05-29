@@ -2,7 +2,7 @@ package server.card.cardset.basic.portalhunter;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageEnergyBeamQuick;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageEnergyBeamQuick;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
 import server.card.ClassCraft;

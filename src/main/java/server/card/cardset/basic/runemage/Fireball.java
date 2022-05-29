@@ -3,7 +3,7 @@ package server.card.cardset.basic.runemage;
 import java.util.*;
 
 import client.tooltip.*;
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageFire;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
 import server.*;
 import server.ai.AI;
 import server.card.*;

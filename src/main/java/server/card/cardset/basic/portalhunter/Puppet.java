@@ -1,6 +1,6 @@
 package server.card.cardset.basic.portalhunter;
 
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageSlash;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;

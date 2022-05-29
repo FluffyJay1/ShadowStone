@@ -1,6 +1,6 @@
 package client.tooltip;
 
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamage;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
 import org.newdawn.slick.geom.*;
 
 import server.card.*;

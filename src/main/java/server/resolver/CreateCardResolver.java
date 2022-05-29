@@ -34,7 +34,7 @@ public class CreateCardResolver extends Resolver {
         List<Card> cards = this.c.stream()
                 .map(ct -> ct.constructInstance(b))
                 .collect(Collectors.toList());
-        this.event = b.processEvent(rq, el, new EventCreateCard(cards, this.cardpos, this.team, this.status));
+        this.event = b.processEvent(rq, el, new EventCreateCard(cards, this.team, this.status, this.cardpos));
     }
 
 }

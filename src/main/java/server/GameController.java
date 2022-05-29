@@ -62,12 +62,12 @@ public class GameController {
                         inds.add(j);
                     }
                     b.processEvent(rq, null,
-                            new EventCreateCard(shuffledCards, inds, team, CardStatus.DECK, CardVisibility.NONE));
+                            new EventCreateCard(shuffledCards, team, CardStatus.DECK, inds, CardVisibility.NONE));
                     UnleashPower up = unleashPowers.get(i).constructInstance(b);
                     b.processEvent(rq, null,
-                            new EventCreateCard(List.of(up), List.of(0), team, CardStatus.UNLEASHPOWER));
+                            new EventCreateCard(List.of(up), team, CardStatus.UNLEASHPOWER, List.of(0)));
                     b.processEvent(rq, null,
-                            new EventCreateCard(List.of(leaders.get(i).constructInstance(b)), List.of(0), team, CardStatus.LEADER));
+                            new EventCreateCard(List.of(leaders.get(i).constructInstance(b)), team, CardStatus.LEADER, List.of(0)));
                 }
             }
         };

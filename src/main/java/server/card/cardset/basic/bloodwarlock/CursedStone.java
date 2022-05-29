@@ -2,8 +2,8 @@ package server.card.cardset.basic.bloodwarlock;
 
 import java.util.*;
 
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageEnergyBeam;
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageSlash;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageEnergyBeam;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;

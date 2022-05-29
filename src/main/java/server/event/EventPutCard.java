@@ -11,7 +11,7 @@ import server.card.effect.*;
 public class EventPutCard extends Event {
     // for effects that put specific cards in hand or just draw cards
     public static final int ID = 12;
-    public final List<Card> cards;
+    public final List<? extends Card> cards;
     public final List<Integer> pos; // pos == -1 means last
     public final CardStatus status;
     final int targetTeam;
@@ -34,7 +34,7 @@ public class EventPutCard extends Event {
     final List<BoardObject> cardsLeavingPlay = new ArrayList<>();
     List<Card> markedForDeath;
 
-    public EventPutCard(List<Card> c, CardStatus status, int team, List<Integer> pos, List<Card> markedForDeath) {
+    public EventPutCard(List<? extends Card> c, CardStatus status, int team, List<Integer> pos, List<Card> markedForDeath) {
         super(ID);
         this.cards = c;
         this.status = status;

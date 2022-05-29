@@ -1,7 +1,6 @@
-package client.ui.game.visualboardanimation.eventanimation.attack;
+package client.ui.game.visualboardanimation.eventanimation.damage;
 
 import client.Game;
-import client.VisualBoard;
 import client.ui.Animation;
 import client.ui.game.UIBoard;
 import client.ui.interpolation.realvalue.ConstantInterpolation;
@@ -13,9 +12,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.Minion;
-import server.event.EventDamage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 

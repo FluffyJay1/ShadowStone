@@ -2,7 +2,7 @@ package server.card.cardset.basic.dragondruid;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageFire;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;

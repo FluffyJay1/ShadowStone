@@ -2,7 +2,7 @@ package server.card.cardset.basic.neutral;
 
 import java.util.*;
 
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageRocks;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageRocks;
 import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;

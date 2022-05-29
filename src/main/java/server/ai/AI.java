@@ -806,7 +806,7 @@ public class AI extends Thread {
     public static double evaluateHand(Board b, int team) {
         double totalPower = 0;
         for (Card c : b.getPlayer(team).getHand()) {
-            totalPower += c.getValue() / (c.finalStatEffects.getStat(EffectStats.COST) + 1.1);
+            totalPower += valueInHand(c);
         }
         return totalPower;
     }
@@ -860,12 +860,23 @@ public class AI extends Thread {
      * @param refs Max depth of calculations when referencing other cards
      * @return The approximate mana value
      */
-    public static double valueForSummoning(List<Card> instances, int refs) {
+    public static double valueForSummoning(List<? extends Card> instances, int refs) {
         // behold magic numbers
         double sum = 0;
         double multiplier = 0.94;
         for (Card c : instances) {
             sum += c.getValue(refs - 1) * multiplier;
+            multiplier *= multiplier; // each card has lower and lower chance of being able to fit
+        }
+        return sum;
+    }
+
+    public static double valueForAddingToHand(List<? extends Card> instances, int refs) {
+        // behold magic numbers
+        double sum = 0;
+        double multiplier = 0.99;
+        for (Card c : instances) {
+            sum += valueInHand(c, refs - 1) * multiplier;
             multiplier *= multiplier; // each card has lower and lower chance of being able to fit
         }
         return sum;
@@ -880,6 +891,25 @@ public class AI extends Thread {
      */
     public static double valueForBuff(int attack, int magic, int health) {
         return attack * 0.5 + health * 0.5 + magic * 0.3;
+    }
+
+    /**
+     * Gets the value of having a card in hand
+     * @param c the card
+     * @param refs the max depth of using other card's values in the value calculation
+     * @return the value
+     */
+    public static double valueInHand(Card c, int refs) {
+        return c.getValue(refs) / (c.finalStatEffects.getStat(EffectStats.COST) + 1.1);
+    }
+
+    /**
+     * Gets the value of having a card in hand
+     * @param c the card
+     * @return the value
+     */
+    public static double valueInHand(Card c) {
+        return c.getValue() / (c.finalStatEffects.getStat(EffectStats.COST) + 1.1);
     }
 
     // kekl

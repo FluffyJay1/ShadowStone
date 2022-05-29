@@ -27,6 +27,7 @@ public class WoodOfBrambles extends AmuletText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new EffectAura(TOOLTIP.description, 1, true, false, new EffectBrambles()) {
+            private List<Card> cachedInstances; // for getBattlecryValue, preview the value of the created cards
             @Override
             public boolean applyConditions(Card cardToApply) {
                 return cardToApply instanceof Minion;
@@ -48,7 +49,10 @@ public class WoodOfBrambles extends AmuletText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.VALUE_PER_CARD_IN_HAND * 2;
+                if (this.cachedInstances == null) {
+                    this.cachedInstances = Collections.nCopies(2, new Fairy().constructInstance(this.owner.board));
+                }
+                return AI.valueForAddingToHand(this.cachedInstances, refs);
             }
 
             @Override

@@ -2,7 +2,7 @@ package server.card.cardset.basic.shadowshaman;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageSlash;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
 import server.card.ClassCraft;

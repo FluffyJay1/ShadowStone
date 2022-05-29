@@ -22,7 +22,7 @@ public class EventCreateCard extends Event {
     public final List<Card> successfullyCreatedCards;
     final List<BoardObject> cardsEnteringPlay = new ArrayList<>();
 
-    public EventCreateCard(List<Card> cards, List<Integer> cardpos, int team, CardStatus status, CardVisibility visibility) {
+    public EventCreateCard(List<Card> cards, int team, CardStatus status, List<Integer> cardpos, CardVisibility visibility) {
         super(ID);
         this.cards = cards;
         this.team = team;
@@ -36,8 +36,8 @@ public class EventCreateCard extends Event {
         }
     }
 
-    public EventCreateCard(List<Card> cards, List<Integer> cardpos, int team, CardStatus status) {
-        this(cards, cardpos, team, status, CardVisibility.ALL);
+    public EventCreateCard(List<Card> cards, int team, CardStatus status, List<Integer> cardpos) {
+        this(cards, team, status, cardpos, CardVisibility.ALL);
     }
 
     @Override
@@ -195,7 +195,7 @@ public class EventCreateCard extends Event {
         for (int i = 0; i < numCards; i++) {
             cardpos.add(Integer.parseInt(st.nextToken()));
         }
-        return new EventCreateCard(cards, cardpos, team, csStatus, visibility);
+        return new EventCreateCard(cards, team, csStatus, cardpos, visibility);
     }
 
     @Override

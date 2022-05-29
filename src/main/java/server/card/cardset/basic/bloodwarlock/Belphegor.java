@@ -2,8 +2,8 @@ package server.card.cardset.basic.bloodwarlock;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageFire;
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageSlash;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;

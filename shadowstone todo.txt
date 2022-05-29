@@ -1,2 +1,3 @@
+allow damage events to play concurrently if no board change happens (speed up)
 can't attack
 effect ward

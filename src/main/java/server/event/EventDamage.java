@@ -4,12 +4,11 @@ import java.util.*;
 
 import client.Game;
 import client.VisualBoard;
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamage;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
 import server.*;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
-import server.resolver.AddEffectResolver;
 
 /*
  * Event alone may cause the board to enter an invalid state by killing minions,

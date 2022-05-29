@@ -1,7 +1,7 @@
 package server.card;
 
 import client.tooltip.TooltipMinion;
-import client.ui.game.visualboardanimation.eventanimation.attack.EventAnimationDamageEnergyBeam;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageEnergyBeam;
 import server.Board;
 import server.BoardObjectText;
 import server.ServerBoard;
