@@ -34,7 +34,7 @@ public class NaturesGuidance extends SpellText {
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
                 return List.of(new CardTargetingScheme(this, 1, 1, "Return an allied minion or amulet to your hand.") {
                     @Override
-                    public boolean canTarget(Card c) {
+                    protected boolean criteria(Card c) {
                         return c.status.equals(CardStatus.BOARD) && c.team == this.getCreator().owner.team;
                     }
                 });

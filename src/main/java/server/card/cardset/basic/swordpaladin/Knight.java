@@ -14,7 +14,7 @@ public class Knight extends MinionText {
     public static final String DESCRIPTION = "";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
-    public static final List<CardTrait> TRAITS = List.of();
+    public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/knight.png",
             CRAFT, TRAITS, RARITY, 1, 1, 1, 1, true, Knight.class,
             new Vector2f(), -1, EventAnimationDamageSlash.class,

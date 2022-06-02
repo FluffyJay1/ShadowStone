@@ -43,7 +43,7 @@ public class SiegeTank extends MinionText {
                         )),
                         new CardTargetingScheme(this, 0, 1, "Deal 3 damage to a minion and 2 to its neighbors") {
                             @Override
-                            public boolean canTarget(Card c) {
+                            protected boolean criteria(Card c) {
                                 return c instanceof Minion && c.team != this.getCreator().owner.team && c.status.equals(CardStatus.BOARD);
                             }
 

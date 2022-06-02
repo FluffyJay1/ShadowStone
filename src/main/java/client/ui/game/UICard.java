@@ -436,6 +436,9 @@ public class UICard extends UIBox {
             if (this.card.finalStatEffects.getStat(EffectStats.WARD) > 0) {
                 Image i = Game.getImage("res/game/ward.png");
                 i = i.getScaledCopy((float) scale);
+                if (this.card.finalStatEffects.getStat(EffectStats.STEALTH) > 0) {
+                    i.setAlpha(0.5f);
+                }
                 g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
             }
             if (this.card.finalStatEffects.getStat(EffectStats.SHIELD) > 0) {

@@ -35,6 +35,7 @@ public class Cucouroux extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
+            private List<Card> cachedInstances;
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 Effect effect = this;
@@ -48,8 +49,16 @@ public class Cucouroux extends MinionText {
             }
 
             @Override
+            public double getBattlecryValue(int refs) {
+                if (this.cachedInstances == null) {
+                    this.cachedInstances = List.of(new Camieux().constructInstance(this.owner.board));
+                }
+                return AI.valueForSummoning(this.cachedInstances, refs) / 2;
+            }
+
+            @Override
             public boolean battlecrySpecialConditions() {
-                return this.owner.player.mana >= this.owner.finalStatEffects.getStat(EffectStats.COST) + 2;
+                return this.owner.canSpendAfterPlayed(2);
             }
 
             @Override

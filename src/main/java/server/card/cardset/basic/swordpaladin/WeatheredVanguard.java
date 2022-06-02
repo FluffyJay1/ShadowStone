@@ -23,7 +23,7 @@ public class WeatheredVanguard extends MinionText {
     public static final String DESCRIPTION = "<b>Battlecry</b>: Summon 2 <b>Knights</b>.\n<b>Unleash</b>: Give all allied minions +1/+0/+1.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.SILVER;
-    public static final List<CardTrait> TRAITS = List.of();
+    public static final List<CardTrait> TRAITS = List.of(CardTrait.COMMANDER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/weatheredvanguard.png",
             CRAFT, TRAITS, RARITY, 6, 4, 2, 4, false, WeatheredVanguard.class,
             new Vector2f(155, 120), 1.6, EventAnimationDamageSlash.class,
@@ -32,6 +32,8 @@ public class WeatheredVanguard extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
+            private List<Card> cachedInstances; // for getBattlecryValue, preview the value of the created cards
+
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 String resolverDescription = "<b>Battlecry</b>: Summon 2 <b>Knights</b>.";
@@ -47,7 +49,10 @@ public class WeatheredVanguard extends MinionText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return 2.;
+                if (this.cachedInstances == null) {
+                    this.cachedInstances = Collections.nCopies(2, new Knight().constructInstance(this.owner.board));
+                }
+                return AI.valueForSummoning(this.cachedInstances, refs);
             }
 
             @Override

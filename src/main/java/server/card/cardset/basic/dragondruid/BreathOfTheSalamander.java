@@ -40,7 +40,7 @@ public class BreathOfTheSalamander extends SpellText {
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
                 return List.of(new CardTargetingScheme(this, 1, 1, DESCRIPTION) {
                     @Override
-                    public boolean canTarget(Card c) {
+                    protected boolean criteria(Card c) {
                         return c.status.equals(CardStatus.BOARD) && c instanceof Minion && c.team != this.getCreator().owner.team;
                     }
                 });
@@ -74,13 +74,12 @@ public class BreathOfTheSalamander extends SpellText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                // don't factor in the spend effect
-                return AI.VALUE_PER_DAMAGE * 3;
+                return AI.VALUE_PER_DAMAGE * 3 + (AI.VALUE_PER_DAMAGE * 6) / 4;
             }
 
             @Override
             public boolean battlecrySpecialConditions() {
-                return this.owner.player.mana >= this.owner.finalStatEffects.getStat(EffectStats.COST) + 4;
+                return this.owner.canSpendAfterPlayed(4);
             }
         });
     }

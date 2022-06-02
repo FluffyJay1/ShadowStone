@@ -46,11 +46,11 @@ public abstract class Event {
 
     // overridden
     public List<BoardObject> cardsEnteringPlay() {
-        return null;
+        return List.of();
     }
 
     // overridden
     public List<BoardObject> cardsLeavingPlay() {
-        return null;
+        return List.of();
     }
 }

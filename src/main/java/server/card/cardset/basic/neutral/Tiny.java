@@ -46,7 +46,7 @@ public class Tiny extends MinionText {
 
             @Override
             public double getPresenceValue(int refs) {
-                return AI.valueForBuff(2, 0, 2) / 2.;
+                return (AI.valueForBuff(2, 0, 2) + AI.VALUE_OF_RUSH) / 2.;
             }
         });
     }

@@ -91,9 +91,7 @@ public abstract class Board {
         if (t == null) {
             return Stream.empty();
         }
-        // TODO handle "can't be targeted" effects
         return this.getTargetableCards()
-                .filter(c -> !(c.team != t.getCreator().owner.team && c.isInPlay() && c.finalStatEffects.getStat(EffectStats.STEALTH) > 0)) // filter stealth
                 .filter(t::canTarget);
     }
 

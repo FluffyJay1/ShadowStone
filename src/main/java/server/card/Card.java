@@ -311,6 +311,10 @@ public abstract class Card implements Indexable, StringBuildable {
         return this.getBattlecryTargetingSchemes().stream().flatMap(Collection::stream).allMatch(TargetingScheme::conditions);
     }
 
+    public boolean canSpendAfterPlayed(int amount) {
+        return this.player.mana >= this.finalStatEffects.getStat(EffectStats.COST) + amount;
+    }
+
     // probably not worth the hassle of making functional
     public List<List<TargetingScheme<?>>> getBattlecryTargetingSchemes() {
         List<List<TargetingScheme<?>>> list = new LinkedList<>();

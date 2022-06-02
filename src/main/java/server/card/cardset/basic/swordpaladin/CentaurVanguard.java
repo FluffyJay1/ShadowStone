@@ -1,4 +1,4 @@
-package server.card.cardset.basic.forestrogue;
+package server.card.cardset.basic.swordpaladin;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
@@ -12,6 +12,7 @@ import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
@@ -21,15 +22,15 @@ import server.resolver.util.ResolverQueue;
 
 import java.util.List;
 
-public class BeetleWarrior extends MinionText {
-    public static final String NAME = "Beetle warrior";
-    public static final String DESCRIPTION = "<b>Battlecry</b>: If at least 2 other cards were played this turn, gain +1/+0/+1 and <b>Storm</b>.";
-    public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
+public class CentaurVanguard extends MinionText {
+    public static final String NAME = "Centaur Vanguard";
+    public static final String DESCRIPTION = "<b>Battlecry</b>: Gain <b>Storm</b> if an allied Commander is in play.";
+    public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
-    public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/beetlewarrior.png",
-            CRAFT, TRAITS, RARITY, 3, 2, 1, 4, true, BeetleWarrior.class,
-            new Vector2f(150, 145), 1.5, EventAnimationDamageSlash.class,
+    public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/centaurvanguard.png",
+            CRAFT, TRAITS, RARITY, 2, 2, 1, 1, true, CentaurVanguard.class,
+            new Vector2f(144, 144), 1.3, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.BATTLECRY, Tooltip.STORM));
 
     @Override
@@ -40,13 +41,12 @@ public class BeetleWarrior extends MinionText {
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        if (owner.player.cardsPlayedThisTurn > 2) {
-                            Effect buff = new Effect("+1/+0/+1 and <b>Storm</b> (from <b>Battlecry</b>).", EffectStats.builder()
-                                    .change(EffectStats.ATTACK, 1)
-                                    .change(EffectStats.HEALTH, 1)
+                        if (owner.player.getPlayArea().stream()
+                                .anyMatch(m -> m.finalTraits.contains(CardTrait.COMMANDER) && m != owner)) {
+                            Effect storm = new Effect("<b>Storm</b> (from <b>Battlecry</b>).", EffectStats.builder()
                                     .set(EffectStats.STORM, 1)
                                     .build());
-                            this.resolve(b, rq, el, new AddEffectResolver(owner, buff));
+                            this.resolve(b, rq, el, new AddEffectResolver(owner, storm));
                         }
                     }
                 });
@@ -54,12 +54,12 @@ public class BeetleWarrior extends MinionText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return ((AI.valueForBuff(1, 0, 1) + 1) + AI.VALUE_OF_STORM) / 2.;
+                return AI.VALUE_OF_STORM / 2;
             }
 
             @Override
             public boolean battlecrySpecialConditions() {
-                return this.owner.player.cardsPlayedThisTurn >= 2;
+                return owner.player.getPlayArea().stream().anyMatch(m -> m.finalTraits.contains(CardTrait.COMMANDER));
             }
         });
     }

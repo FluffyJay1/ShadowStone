@@ -32,7 +32,7 @@ public class PutCardResolver extends Resolver {
 
     @Override
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-        b.processEvent(rq, el, new EventPutCard(this.c, this.status, this.team, this.pos, this.destroyed));
+        b.processEvent(rq, el, new EventPutCard(this.c, this.status, this.team, this.pos, false, this.destroyed));
         if (this.resolveDestroy) {
             this.resolve(b, rq, el, new DestroyResolver(this.destroyed));
         }

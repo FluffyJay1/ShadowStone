@@ -29,7 +29,7 @@ import server.card.unleashpower.basic.*;
  *
  */
 public class CardSet implements Iterable<CardText> {
-    public static final CardSet SET = new CardSet(ExpansionSetBasic.SET);
+    public static final CardSet UNPLAYABLE_SET = new CardSet(ExpansionSetBasic.UNPLAYABLE_SET);
     public static final CardSet PLAYABLE_SET = new CardSet(ExpansionSetBasic.PLAYABLE_SET);
     /**
      * A set of card classes

@@ -14,6 +14,7 @@ public class EventPutCard extends Event {
     public final List<? extends Card> cards;
     public final List<Integer> pos; // pos == -1 means last
     public final CardStatus status;
+    private boolean play;
     final int targetTeam;
     private List<CardStatus> prevStatus;
     private List<List<Effect>> prevEffects;
@@ -34,12 +35,13 @@ public class EventPutCard extends Event {
     final List<BoardObject> cardsLeavingPlay = new ArrayList<>();
     List<Card> markedForDeath;
 
-    public EventPutCard(List<? extends Card> c, CardStatus status, int team, List<Integer> pos, List<Card> markedForDeath) {
+    public EventPutCard(List<? extends Card> c, CardStatus status, int team, List<Integer> pos, boolean play, List<Card> markedForDeath) {
         super(ID);
         this.cards = c;
         this.status = status;
         this.targetTeam = team;
         this.pos = pos;
+        this.play = play;
         this.markedForDeath = markedForDeath;
     }
 
@@ -152,7 +154,8 @@ public class EventPutCard extends Event {
                             ((Minion) card).summoningSickness = true;
                         }
                         if (bo.team == b.localteam && b instanceof PendingPlayPositioner) {
-                            ((PendingPlayPositioner) b).getPendingPlayPositionProcessor().processOp(bo.getIndex(), bo, true);
+                            BoardObject pendingObject = this.play ? bo : null;
+                            ((PendingPlayPositioner) b).getPendingPlayPositionProcessor().processOp(bo.getIndex(), pendingObject, true);
                         }
                     }
                 }
@@ -229,7 +232,8 @@ public class EventPutCard extends Event {
         builder.append(this.id).append(" ")
                 .append(this.cards.size()).append(" ")
                 .append(this.status.toString()).append(" ")
-                .append(this.targetTeam).append(" ");
+                .append(this.targetTeam).append(" ")
+                .append(this.play).append(" ");
         for (int i = 0; i < this.cards.size(); i++) {
             builder.append(this.cards.get(i).toReference()).append(this.pos.get(i)).append(" ");
         }
@@ -241,6 +245,7 @@ public class EventPutCard extends Event {
         String sStatus = st.nextToken();
         CardStatus csStatus = CardStatus.valueOf(sStatus);
         int targetteam = Integer.parseInt(st.nextToken());
+        boolean play = Boolean.parseBoolean(st.nextToken());
         ArrayList<Card> c = new ArrayList<>();
         ArrayList<Integer> pos = new ArrayList<>();
         for (int i = 0; i < size; i++) {
@@ -249,7 +254,7 @@ public class EventPutCard extends Event {
             int poss = Integer.parseInt(st.nextToken());
             pos.add(poss);
         }
-        return new EventPutCard(c, csStatus, targetteam, pos, null);
+        return new EventPutCard(c, csStatus, targetteam, pos, play, null);
     }
 
     // if we are moving to the board, we shouldn't attempt to move cards if they don't fit on the board

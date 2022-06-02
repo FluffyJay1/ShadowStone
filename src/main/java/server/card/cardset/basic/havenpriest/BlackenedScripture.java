@@ -33,7 +33,7 @@ public class BlackenedScripture extends SpellText {
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
                 return List.of(new CardTargetingScheme(this, 1, 1, DESCRIPTION) {
                     @Override
-                    public boolean canTarget(Card c) {
+                    protected boolean criteria(Card c) {
                         return c.status.equals(CardStatus.BOARD) && c instanceof Minion
                                 && c.team != this.getCreator().owner.team && ((Minion) c).health <= 3;
                     }

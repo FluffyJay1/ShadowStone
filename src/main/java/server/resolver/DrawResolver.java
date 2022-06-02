@@ -22,7 +22,7 @@ public class DrawResolver extends Resolver {
         List<Card> markedForDeath = new LinkedList<>();
         int numToDraw = Math.min(this.num, this.p.getDeck().size());
         b.processEvent(rq, el, new EventPutCard(List.copyOf(this.p.getDeck().subList(0, numToDraw)), CardStatus.HAND, this.p.team,
-                Collections.nCopies(numToDraw, -1), markedForDeath));
+                Collections.nCopies(numToDraw, -1), false, markedForDeath));
         if (!markedForDeath.isEmpty()) {
             b.processEvent(rq, el, new EventDestroy(markedForDeath));
         }

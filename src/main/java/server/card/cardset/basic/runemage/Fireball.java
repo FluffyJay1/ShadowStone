@@ -33,7 +33,7 @@ public class Fireball extends SpellText {
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
                 return List.of(new CardTargetingScheme(this, 1, 2, DESCRIPTION) {
                     @Override
-                    public boolean canTarget(Card c) {
+                    protected boolean criteria(Card c) {
                         return c.status == CardStatus.BOARD && c instanceof Minion
                                 && c.team != this.getCreator().owner.team;
                     }

@@ -27,7 +27,7 @@ public abstract class MinionText extends BoardObjectText {
         EffectStats stats = new EffectStats(tooltip.cost, tooltip.attack, tooltip.magic, tooltip.health);
         stats.traits.addAll(tooltip.traits);
         stats.set.setStat(EffectStats.ATTACKS_PER_TURN, 1);
-        Effect e = new Effect("", new EffectStats(tooltip.cost, tooltip.attack, tooltip.magic, tooltip.health));
+        Effect e = new Effect("", stats);
         e.effectStats.set.setStat(EffectStats.ATTACKS_PER_TURN, 1);
         List<Effect> special = this.getSpecialEffects();
         int specialSize = 0;
@@ -42,7 +42,7 @@ public abstract class MinionText extends BoardObjectText {
                 public List<TargetingScheme<?>> getUnleashTargetingSchemes() {
                     return List.of(new CardTargetingScheme(this, 0, 1, "Deal X damage to an enemy minion. X equals this minion's magic.") {
                         @Override
-                        public boolean canTarget(Card c) {
+                        protected boolean criteria(Card c) {
                             return c.status == CardStatus.BOARD && c instanceof Minion
                                     && c.team != this.getCreator().owner.team;
                         }

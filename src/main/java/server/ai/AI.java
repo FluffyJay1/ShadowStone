@@ -41,6 +41,12 @@ public class AI extends Thread {
 
     public static final double VALUE_OF_SHIELD = 1;
 
+    public static final double VALUE_OF_DESTROY = 4;
+
+    public static final double VALUE_OF_RUSH = 0.5;
+    public static final double VALUE_OF_STORM = 1;
+
+    public static final double VALUE_OF_BANE = 1.5;
     /*
      * We can't expect the AI to traverse every single possible node in the decision
      * tree before making a move (especially considering rng), so after a certain
@@ -900,7 +906,16 @@ public class AI extends Thread {
      * @return the value
      */
     public static double valueInHand(Card c, int refs) {
-        return c.getValue(refs) / (c.finalStatEffects.getStat(EffectStats.COST) + 1.1);
+        double rushStormBonus = 0;
+        if (c instanceof Minion) {
+            if (c.finalStatEffects.getStat(EffectStats.RUSH) > 0) {
+                rushStormBonus = VALUE_OF_RUSH;
+            }
+            if (c.finalStatEffects.getStat(EffectStats.STORM) > 0) {
+                rushStormBonus = VALUE_OF_STORM;
+            }
+        }
+        return (c.getValue(refs) + rushStormBonus) / (c.finalStatEffects.getStat(EffectStats.COST) + 1.1);
     }
 
     /**
@@ -909,7 +924,16 @@ public class AI extends Thread {
      * @return the value
      */
     public static double valueInHand(Card c) {
-        return c.getValue() / (c.finalStatEffects.getStat(EffectStats.COST) + 1.1);
+        double rushStormBonus = 0;
+        if (c instanceof Minion) {
+            if (c.finalStatEffects.getStat(EffectStats.RUSH) > 0) {
+                rushStormBonus = VALUE_OF_RUSH;
+            }
+            if (c.finalStatEffects.getStat(EffectStats.STORM) > 0) {
+                rushStormBonus = VALUE_OF_STORM;
+            }
+        }
+        return (c.getValue() + rushStormBonus) / (c.finalStatEffects.getStat(EffectStats.COST) + 1.1);
     }
 
     // kekl

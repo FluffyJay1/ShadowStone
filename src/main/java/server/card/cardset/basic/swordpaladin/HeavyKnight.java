@@ -1,6 +1,5 @@
 package server.card.cardset.basic.swordpaladin;
 
-import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
@@ -9,27 +8,23 @@ import server.card.CardTrait;
 import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
-import server.card.effect.EffectStats;
 
 import java.util.List;
 
-public class Tanya extends MinionText {
-    public static final String NAME = "Tanya, Shadow Enforcer";
-    public static final String DESCRIPTION = "<b>Bane</b>. <b>Stealth</b>.";
+public class HeavyKnight extends MinionText {
+    public static final String NAME = "Heavy Knight";
+    public static final String DESCRIPTION = "";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/tanya.png",
-            CRAFT, TRAITS, RARITY, 3, 3, 0, 1, true, Tanya.class,
-            new Vector2f(128, 149), 1.5, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BANE, Tooltip.STEALTH));
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/heavyknight.png",
+            CRAFT, TRAITS, RARITY, 1, 1, 0, 2, true, HeavyKnight.class,
+            new Vector2f(150, 150), 1.2, EventAnimationDamageSlash.class,
+            List::of);
 
     @Override
     protected List<Effect> getSpecialEffects() {
-        return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(EffectStats.BANE, 1)
-                .set(EffectStats.STEALTH, 1)
-                .build()));
+        return List.of();
     }
 
     @Override

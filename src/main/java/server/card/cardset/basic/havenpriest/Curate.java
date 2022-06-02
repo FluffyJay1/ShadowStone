@@ -36,7 +36,7 @@ public class Curate extends MinionText {
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
                 return List.of(new CardTargetingScheme(this, 0, 1, "Restore 5 health to an ally.") {
                     @Override
-                    public boolean canTarget(Card c) {
+                    protected boolean criteria(Card c) {
                         return c instanceof Minion && ((Minion) c).isInPlay() && c.team == this.getCreator().owner.team;
                     }
                 });

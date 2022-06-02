@@ -7,6 +7,7 @@ import client.*;
 import client.tooltip.*;
 import org.newdawn.slick.geom.Vector2f;
 import server.*;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.card.effect.common.EffectStatChange;
@@ -52,7 +53,7 @@ public class GenesisOfLegend extends AmuletText {
 
             @Override
             public double getPresenceValue(int refs) {
-                return 4;
+                return (AI.VALUE_OF_BANE + AI.valueForBuff(0, 0, 1)) * 2;
             }
         });
     }

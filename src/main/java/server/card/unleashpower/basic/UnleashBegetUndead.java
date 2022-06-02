@@ -35,7 +35,7 @@ public class UnleashBegetUndead extends UnleashPowerText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         EffectLastWordsSummon elws = new EffectLastWordsSummon(
-                                "<b>Last Words</b>: summon a <b>Skeleton</b> (from <b>Beget Undead</b>).", new Skeleton(), 1);
+                                "<b>Last Words</b>: Summon a <b>Skeleton</b> (from <b>Beget Undead</b>).", new Skeleton(), 1);
                         this.resolve(b, rq, el, new AddEffectResolver(m, elws));
                     }
                 });

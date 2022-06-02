@@ -272,7 +272,8 @@ public class VisualBoard extends Board implements
         if (t == null) {
             return Stream.empty();
         }
-        return this.getTargetableCards().filter(c -> t.canTarget(c.realCard));
+        return this.getTargetableCards()
+                .filter(c -> t.canTarget(c.realCard));
     }
 
     @Override

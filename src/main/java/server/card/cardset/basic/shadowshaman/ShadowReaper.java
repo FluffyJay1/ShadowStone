@@ -4,6 +4,7 @@ import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
+import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
@@ -14,7 +15,9 @@ import server.card.target.TargetList;
 import server.event.Event;
 import server.event.EventDestroy;
 import server.resolver.AddEffectResolver;
+import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
+import server.resolver.util.ResolverQueue;
 
 import java.util.List;
 
@@ -57,8 +60,15 @@ public class ShadowReaper extends MinionText {
                             .count();
                     if (destroyed > 0) {
                         String description = "Whenever another allied minion is destroyed, gain +1/+0/+1.";
-                        Effect statGain = new EffectStatChange("+" + destroyed + "/+0/+" + destroyed + " (from allied minions being destroyed).", destroyed, 0, destroyed);
-                        return new ResolverWithDescription(description, new AddEffectResolver(this.owner, statGain));
+                        Effect statGain = new EffectStatChange("+1/+0/+1 (from allied minions being destroyed).", 1, 0, 1);
+                        return new ResolverWithDescription(description, new Resolver(false) {
+                            @Override
+                            public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                                for (int i = 0; i < destroyed; i++) {
+                                    this.resolve(b, rq, el, new AddEffectResolver(owner, statGain));
+                                }
+                            }
+                        });
                     }
                 }
                 return null;

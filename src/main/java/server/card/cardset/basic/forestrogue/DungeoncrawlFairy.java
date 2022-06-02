@@ -36,7 +36,7 @@ public class DungeoncrawlFairy extends MinionText {
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
                 return List.of(new CardTargetingScheme(this, 0, 1, "Return an allied minion or amulet to your hand.") {
                     @Override
-                    public boolean canTarget(Card c) {
+                    protected boolean criteria(Card c) {
                         return c.status.equals(CardStatus.BOARD) && c.team == this.getCreator().owner.team;
                     }
                 });
