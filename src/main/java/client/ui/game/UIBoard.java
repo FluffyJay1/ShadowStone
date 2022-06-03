@@ -175,8 +175,8 @@ public class UIBoard extends UIBox {
         // handle targeting text
         this.targetText.setVisible(true);
         UICard relevantCard = this.getCurrentTargetingCard();
-        if (relevantCard != null && currentTargetingScheme != null) {
-            this.targetText.setText(currentTargetingScheme.getDescription());
+        if (relevantCard != null && this.currentTargetingScheme != null) {
+            this.targetText.setText(this.currentTargetingScheme.getDescription());
             this.targetText.setPos(
                     new Vector2f(relevantCard.getPos().x,
                             relevantCard.getPos().y

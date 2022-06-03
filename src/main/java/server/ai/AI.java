@@ -47,6 +47,8 @@ public class AI extends Thread {
     public static final double VALUE_OF_STORM = 1;
 
     public static final double VALUE_OF_BANE = 1.5;
+
+    public static final double VALUE_OF_SPELLBOOST = 1.5;
     /*
      * We can't expect the AI to traverse every single possible node in the decision
      * tree before making a move (especially considering rng), so after a certain

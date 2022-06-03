@@ -14,9 +14,9 @@ import server.card.cardset.basic.swordpaladin.*;
 public class ExpansionSetBasic extends ExpansionSet {
     public static final CardSet UNPLAYABLE_SET = new CardSet(new Fairy(), new Skeleton(), new Knight(), new Puppet(),
             new HolyFalcon(), new HolyflameTiger(), new Spectre(), new Zombie(), new Snowman(), new HeavyKnight(),
-            new LeonidasResolve());
+            new LeonidasResolve(), new CrimsonSorcery(), new ClayGolem());
 
-    public static final CardSet PLAYABLE_SET = new CardSet(new Goblin(), new Fighter(), new Fireball(), new Tiny(),
+    public static final CardSet PLAYABLE_SET = new CardSet(new Goblin(), new Fighter(), new LochnLoad(), new Tiny(),
             new WellOfDestination(), new BellringerAngel(), new GenesisOfLegend(), new WoodOfBrambles(), new Baneling(),
             new CursedStone(), new WeatheredVanguard(), new DragonOracle(), new Curate(), new PuppetRoom(), new Beastmaster(),
             new StonetuskBoar(), new BlackenedScripture(), new MordecaiTheDuelist(), new HallowedDogma(), new BeastcallAria(),
@@ -26,7 +26,9 @@ public class ExpansionSetBasic extends ExpansionSet {
             new FairyWhisperer(), new DungeoncrawlFairy(), new SukunaBraveAndSmall(), new SylvanJustice(), new BeetleWarrior(),
             new Cassiopeia(), new GlimmeringWings(), new Vanish(), new SellswordLucius(), new Assassin(), new CentaurVanguard(),
             new Cuhullin(), new NavyLieutenant(), new Thief(), new Jeno(), new FrontlineCavalier(), new Magnolia(),
-            new Leonidas(), new WholeSouledSwing());
+            new Leonidas(), new WholeSouledSwing(), new Insight(), new TimewornMageLevi(), new MagicOwl(), new ConjureGolem(),
+            new MagicMissile(), new WindBlast(), new KaleidoscopicGlow(), new RuneBladeSummoner(), new ChaosWielder(),
+            new Rimewind(), new ConjuringForce(), new BladeMage(), new FieryEmbrace(), new FlameDestroyer(), new Chimera());
 
     @Override
     public CardSet getCards() {

@@ -1,6 +1,5 @@
 package client.ui.menu;
 
-import client.Game;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.*;
 
@@ -15,6 +14,7 @@ public class CardDisplayUnit extends UIBox {
      */
     public static final String CARD_CLICK = "cardclick";
     public static final double SCALE = 0.75;
+    public static final Vector2f PADDING = new Vector2f(10, 10);
     private CardText cardText;
     private CardStatus status;
     final Text text;
@@ -22,8 +22,9 @@ public class CardDisplayUnit extends UIBox {
     final UICard uicard;
 
     public CardDisplayUnit(UI ui, Vector2f pos, CardText cardText) {
-        super(ui, pos, UICard.CARD_DIMENSIONS.copy().scale((float) SCALE), "");
-        this.text = new Text(ui, new Vector2f(this.getWidth(false) / 2, -this.getHeight(false) / 2), "0",
+        super(ui, pos, UICard.CARD_DIMENSIONS.copy().scale((float) SCALE).add(PADDING), "");
+        this.margins.set(PADDING); // confusing i kno
+        this.text = new Text(ui, new Vector2f(this.getWidth(true) / 2, -this.getHeight(true) / 2), "0",
                 50, 14, 20, -1, 1);
         this.addChild(this.text);
         this.status = CardStatus.HAND;

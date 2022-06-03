@@ -3,6 +3,7 @@ package server.card.cardset.basic.runemage;
 import java.util.*;
 
 import client.tooltip.*;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageBigExplosion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
 import server.*;
 import server.ai.AI;
@@ -16,14 +17,14 @@ import server.resolver.*;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
-public class Fireball extends SpellText {
-    public static final String NAME = "Fireball";
+public class LochnLoad extends SpellText {
+    public static final String NAME = "Loch-n-Load";
     public static final String DESCRIPTION = "Choose 2 enemy minions. Deal 2 damage to them and 1 damage to their adjacent minions.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/fireball.png",
-            CRAFT, TRAITS, RARITY, 3, Fireball.class,
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/lochnload.png",
+            CRAFT, TRAITS, RARITY, 3, LochnLoad.class,
             List::of);
 
     @Override
@@ -61,7 +62,7 @@ public class Fireball extends SpellText {
                                 }
                             }
                             DamageResolver dr = this.resolve(b, rq, el,
-                                    new DamageResolver(effect, m, d, false, EventAnimationDamageFire.class));
+                                    new DamageResolver(effect, m, d, false, EventAnimationDamageBigExplosion.class));
                             markedForDeath.addAll(dr.destroyed);
                         });
                         this.resolve(b, rq, el, new DestroyResolver(markedForDeath));

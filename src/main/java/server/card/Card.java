@@ -57,10 +57,10 @@ public abstract class Card implements Indexable, StringBuildable {
         this.board = board;
         this.cardText = cardText;
         this.tooltip = cardText.getTooltip();
+        this.status = CardStatus.DECK;
         for (Effect e : cardText.getEffects()) {
             this.addEffect(true, e);
         }
-        this.status = CardStatus.DECK;
         this.spellboosts = 0;
         this.visibility = CardVisibility.NONE;
     }
