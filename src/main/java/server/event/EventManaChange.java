@@ -9,23 +9,23 @@ public class EventManaChange extends Event {
     public static final int ID = 6;
     final Player p;
     final int mana;
-    final boolean empty;
-    final boolean recover;
+    final boolean changeCurrent;
+    final boolean changeMax;
     private int prevMana, prevMaxMana;
 
-    public EventManaChange(Player p, int mana, boolean empty, boolean recover) {
+    public EventManaChange(Player p, int mana, boolean changeCurrent, boolean changeMax) {
         super(ID);
         this.p = p;
         this.mana = mana;
-        this.empty = empty;
-        this.recover = recover;
+        this.changeCurrent = changeCurrent;
+        this.changeMax = changeMax;
     }
 
     @Override
     public void resolve(Board b) {
         this.prevMana = this.p.mana;
         this.prevMaxMana = this.p.maxmana;
-        if (!this.recover) { // change max mana
+        if (this.changeMax) { // change max mana
             if (this.p.maxmana + this.mana > this.p.maxmaxmana) {
                 this.p.maxmana = this.p.maxmaxmana;
             } else if (this.p.maxmana + this.mana < 0) {
@@ -34,7 +34,7 @@ public class EventManaChange extends Event {
                 this.p.maxmana += this.mana;
             }
         }
-        if (!this.empty) { // change regular mana
+        if (this.changeCurrent) { // change regular mana
             if (this.p.mana + this.mana > this.p.maxmana) {
                 this.p.mana = this.p.maxmana;
             } else if (this.p.mana + this.mana < 0) {
@@ -53,20 +53,20 @@ public class EventManaChange extends Event {
 
     @Override
     public String toString() {
-        return this.id + " " + this.p.team + " " + this.mana + " " + this.empty + " " + this.recover + Game.EVENT_END;
+        return this.id + " " + this.p.team + " " + this.mana + " " + this.changeCurrent + " " + this.changeMax + Game.EVENT_END;
     }
 
     public static EventManaChange fromString(Board b, StringTokenizer st) {
         int team = Integer.parseInt(st.nextToken());
         Player p = b.getPlayer(team);
         int mana = Integer.parseInt(st.nextToken());
-        boolean empty = Boolean.parseBoolean(st.nextToken());
-        boolean recover = Boolean.parseBoolean(st.nextToken());
-        return new EventManaChange(p, mana, empty, recover);
+        boolean changeCurrent = Boolean.parseBoolean(st.nextToken());
+        boolean changeMax = Boolean.parseBoolean(st.nextToken());
+        return new EventManaChange(p, mana, changeCurrent, changeMax);
     }
 
     @Override
     public boolean conditions() {
-        return !(this.empty && this.recover);
+        return this.changeCurrent || this.changeMax;
     }
 }

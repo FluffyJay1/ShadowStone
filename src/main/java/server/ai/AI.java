@@ -49,6 +49,10 @@ public class AI extends Thread {
     public static final double VALUE_OF_BANE = 1.5;
 
     public static final double VALUE_OF_SPELLBOOST = 1.5;
+
+    public static final double VALUE_OF_DISCARD = -0.75;
+
+    public static final double VALUE_PER_RAMP = 1.5;
     /*
      * We can't expect the AI to traverse every single possible node in the decision
      * tree before making a move (especially considering rng), so after a certain
@@ -936,6 +940,15 @@ public class AI extends Thread {
             }
         }
         return (c.getValue() + rushStormBonus) / (c.finalStatEffects.getStat(EffectStats.COST) + 1.1);
+    }
+
+    /**
+     * Gets the value of doing damage to a single minion
+     * @param damage the damage dealt to a minion
+     * @return the value
+     */
+    public static double valueOfMinionDamage(int damage) {
+        return Math.min(AI.VALUE_OF_DESTROY, 2.466 * Math.log(damage / 2. + 1));
     }
 
     // kekl

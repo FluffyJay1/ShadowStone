@@ -54,7 +54,7 @@ public class Cassiopeia extends MinionText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.VALUE_PER_DAMAGE * Player.DEFAULT_MAX_HAND_SIZE / 2;
+                return AI.valueOfMinionDamage(1) * this.owner.player.getHand().size() / 2;
             }
         });
     }

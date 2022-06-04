@@ -65,7 +65,7 @@ public class WholeSouledSwing extends SpellText {
                 if (this.cachedInstances == null) {
                     this.cachedInstances = List.of(new Knight().constructInstance(this.owner.board));
                 }
-                return AI.VALUE_PER_DAMAGE * 3 + AI.valueForSummoning(this.cachedInstances, refs) / 2;
+                return AI.valueOfMinionDamage(3) + AI.valueForSummoning(this.cachedInstances, refs) / 2;
             }
 
             @Override

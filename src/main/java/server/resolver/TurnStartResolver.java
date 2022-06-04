@@ -20,8 +20,8 @@ public class TurnStartResolver extends Resolver {
     @Override
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         b.processEvent(rq, el, new EventTurnStart(p));
-        b.processEvent(rq, el, new EventManaChange(this.p, 1, true, false));
-        b.processEvent(rq, el, new EventManaChange(this.p, this.p.maxmana + 1, false, true));
+        b.processEvent(rq, el, new EventManaChange(this.p, 1, false, true));
+        b.processEvent(rq, el, new EventManaChange(this.p, this.p.maxmana + 1, true, false));
         // avoid concurrent modification
         List<BoardObject> ours = this.p.board.getBoardObjects(this.p.team, true, true, true, true).collect(Collectors.toList());
         for (BoardObject bo : ours) {

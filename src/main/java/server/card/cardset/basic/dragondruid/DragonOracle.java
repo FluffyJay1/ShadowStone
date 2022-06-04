@@ -4,6 +4,7 @@ import java.util.*;
 
 import client.tooltip.*;
 import server.*;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.*;
 import server.card.target.TargetList;
@@ -20,7 +21,7 @@ public class DragonOracle extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/dragonoracle.png",
             CRAFT, TRAITS, RARITY, 2, DragonOracle.class,
-            List::of);
+            () -> List.of(Tooltip.OVERFLOW));
 
     @Override
     protected List<Effect> getSpecialEffects() {
@@ -34,15 +35,14 @@ public class DragonOracle extends SpellText {
                         if (player.overflow()) {
                             this.resolve(b, rq, el, new DrawResolver(player, 1));
                         }
-                        b.processEvent(rq, el, new EventManaChange(player, 1, true, false));
-
+                        this.resolve(b, rq, el, new ManaChangeResolver(player, 1, false, true));
                     }
                 });
             }
 
             @Override
             public double getBattlecryValue(int refs) {
-                return 3;
+                return AI.VALUE_PER_RAMP + AI.VALUE_PER_CARD_IN_HAND / 2;
             }
 
             @Override

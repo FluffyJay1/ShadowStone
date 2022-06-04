@@ -86,7 +86,7 @@ public class WoodOfBrambles extends AmuletText {
 
         @Override
         public double getPresenceValue(int refs) {
-            return AI.VALUE_PER_DAMAGE * 2 / 2.;
+            return AI.valueOfMinionDamage(1);
         }
     }
 }

@@ -61,7 +61,7 @@ public class WindBlast extends SpellText {
             @Override
             public double getBattlecryValue(int refs) {
                 int damage = this.owner.spellboosts + 1;
-                return Math.min(AI.VALUE_PER_DAMAGE * damage, AI.VALUE_OF_DESTROY);
+                return AI.valueOfMinionDamage(damage);
             }
         });
     }

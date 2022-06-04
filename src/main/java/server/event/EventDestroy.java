@@ -11,7 +11,7 @@ import server.card.*;
 public class EventDestroy extends Event {
     // Shouldn't process this event outright, as it ignores lastwords triggers
     public static final int ID = 4;
-    public final List<Card> cards;
+    public final List<? extends Card> cards;
     private List<Boolean> alive;
     private List<CardStatus> prevStatus;
     private List<Integer> prevPos;
@@ -22,7 +22,7 @@ public class EventDestroy extends Event {
     public List<Boolean> successful;
     final List<BoardObject> cardsLeavingPlay = new ArrayList<>(); // required for listeners
 
-    public EventDestroy(List<Card> c) {
+    public EventDestroy(List<? extends Card> c) {
         super(ID);
         this.cards = c;
     }

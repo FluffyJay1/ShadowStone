@@ -74,7 +74,7 @@ public class BreathOfTheSalamander extends SpellText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.VALUE_PER_DAMAGE * 3 + (AI.VALUE_PER_DAMAGE * 6) / 4;
+                return AI.valueOfMinionDamage(3) + (AI.valueOfMinionDamage(2) * 3) / 4;
             }
 
             @Override

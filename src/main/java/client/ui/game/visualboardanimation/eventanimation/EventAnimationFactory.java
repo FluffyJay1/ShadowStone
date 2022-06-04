@@ -78,5 +78,6 @@ public class EventAnimationFactory {
         put(EventNecromancy.class, EventAnimationNecromancy.class);
         put(EventSpellboost.class, EventAnimationSpellboost.class);
         put(EventSpend.class, EventAnimationSpend.class);
+        put(EventDiscard.class, EventAnimationDiscard.class);
     }};
 }

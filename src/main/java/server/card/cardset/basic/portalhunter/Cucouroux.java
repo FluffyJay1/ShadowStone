@@ -78,7 +78,7 @@ public class Cucouroux extends MinionText {
             @Override
             public double getPresenceValue(int refs) {
                 // some bullshit
-                return AI.VALUE_PER_DAMAGE * 2;
+                return AI.valueOfMinionDamage(2);
             }
         });
     }

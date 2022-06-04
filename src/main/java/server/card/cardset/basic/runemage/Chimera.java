@@ -60,7 +60,7 @@ public class Chimera extends MinionText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.VALUE_PER_DAMAGE * 2;
+                return AI.valueOfMinionDamage(4);
             }
         }, new EffectSpellboostDiscount());
     }

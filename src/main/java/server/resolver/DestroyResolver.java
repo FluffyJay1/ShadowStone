@@ -8,9 +8,9 @@ import server.event.*;
 import server.resolver.util.ResolverQueue;
 
 public class DestroyResolver extends Resolver {
-    final List<Card> cards;
+    final List<? extends Card> cards;
 
-    public DestroyResolver(List<Card> cards) {
+    public DestroyResolver(List<? extends Card> cards) {
         super(false);
         this.cards = cards;
         this.essential = true;

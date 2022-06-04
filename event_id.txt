@@ -19,7 +19,7 @@
 18: Banish
 19: Spellboost
 20: Spend
-21: Flag - DELETED, see event groups
+21: Discard
 22: RemoveEffect
 23: EnterPlay - DELETED
 24: LeavePlay - DELETED

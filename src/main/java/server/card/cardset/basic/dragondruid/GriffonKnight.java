@@ -1,41 +1,46 @@
-package server.card.cardset.basic.forestrogue;
+package server.card.cardset.basic.dragondruid;
 
-import client.tooltip.TooltipSpell;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageOrbFall;
+import client.Game;
+import client.tooltip.Tooltip;
+import client.tooltip.TooltipMinion;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
+import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
+import server.card.effect.EffectStats;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.event.Event;
-import server.resolver.CreateCardResolver;
 import server.resolver.DamageResolver;
+import server.resolver.DiscardLowestResolver;
+import server.resolver.DiscardResolver;
 import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class SylvanJustice extends SpellText {
-    public static final String NAME = "Sylvan Justice";
-    public static final String DESCRIPTION = "Deal 2 damage to an enemy minion. Add a <b>Fairy</b> to your hand.";
-    public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
+public class GriffonKnight extends MinionText {
+    public static final String NAME = "Griffon Knight";
+    public static final String DESCRIPTION = "<b>Battlecry</b>: Deal 3 damage to an enemy minion. Then randomly discard 1 of the lowest-cost cards in your hand.";
+    public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/sylvanjustice.png",
-            CRAFT, TRAITS, RARITY, 2, SylvanJustice.class,
-            () -> List.of(Fairy.TOOLTIP));
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/griffonknight.png",
+            CRAFT, TRAITS, RARITY, 3, 2, 1, 3, true, GriffonKnight.class,
+            new Vector2f(125, 156), 1.2, EventAnimationDamageSlash.class,
+            () -> List.of(Tooltip.BATTLECRY));
 
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
-            private List<Card> cachedInstances; // for getBattlecryValue, preview the value of the created cards
-
             @Override
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
-                return List.of(new CardTargetingScheme(this, 1, 1, "Deal 2 damage to an enemy minion.") {
+                return List.of(new CardTargetingScheme(this, 0, 1, "Deal 3 damage to an enemy minion.") {
                     @Override
                     protected boolean criteria(Card c) {
                         return c.status.equals(CardStatus.BOARD) && c instanceof Minion && c.team != this.getCreator().owner.team;
@@ -46,29 +51,26 @@ public class SylvanJustice extends SpellText {
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 Effect effect = this;
-                return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
+                return new ResolverWithDescription(DESCRIPTION, new Resolver(true) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 2, true, EventAnimationDamageOrbFall.class));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 3, true, EventAnimationDamageSlash.class));
                         });
-                        this.resolve(b, rq, el, new CreateCardResolver(new Fairy(), owner.team, CardStatus.HAND, -1));
+                        this.resolve(b, rq, el, new DiscardLowestResolver(owner.player, 1));
                     }
                 });
             }
 
             @Override
             public double getBattlecryValue(int refs) {
-                if (this.cachedInstances == null) {
-                    this.cachedInstances = List.of(new Fairy().constructInstance(this.owner.board));
-                }
-                return AI.valueOfMinionDamage(2) + AI.valueForAddingToHand(this.cachedInstances, refs);
+                return AI.VALUE_OF_DISCARD + AI.valueOfMinionDamage(3);
             }
         });
     }
 
     @Override
-    public TooltipSpell getTooltip() {
+    public TooltipMinion getTooltip() {
         return TOOLTIP;
     }
 }

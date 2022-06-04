@@ -69,7 +69,7 @@ public abstract class MinionText extends BoardObjectText {
 
                 @Override
                 public double getPresenceValue(int refs) {
-                    return AI.VALUE_PER_DAMAGE * this.owner.finalStatEffects.getStat(EffectStats.MAGIC) / 2.;
+                    return AI.valueOfMinionDamage(this.owner.finalStatEffects.getStat(EffectStats.MAGIC)) / 2.;
                 }
             };
             ret.add(unl);

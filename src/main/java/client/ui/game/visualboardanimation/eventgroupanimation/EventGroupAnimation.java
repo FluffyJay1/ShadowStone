@@ -2,6 +2,7 @@ package client.ui.game.visualboardanimation.eventgroupanimation;
 
 import client.VisualBoard;
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
+import server.card.CardStatus;
 import server.event.eventgroup.EventGroup;
 
 public abstract class EventGroupAnimation implements VisualBoardAnimation {
@@ -18,7 +19,7 @@ public abstract class EventGroupAnimation implements VisualBoardAnimation {
     public void init(VisualBoard b, EventGroup eventgroup) {
         this.visualBoard = b;
         this.eventgroup = eventgroup;
-        if (eventgroup.cards.stream().noneMatch(c -> c.isVisibleTo(b.localteam))) {
+        if (eventgroup.cards.stream().noneMatch(c -> c.status.equals(CardStatus.GRAVEYARD) || c.isVisibleTo(b.localteam))) {
             this.maxTime = 0;
         }
     }

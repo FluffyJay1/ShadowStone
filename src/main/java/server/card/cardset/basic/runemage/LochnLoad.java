@@ -72,7 +72,7 @@ public class LochnLoad extends SpellText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.VALUE_PER_DAMAGE * 8 / 2.;
+                return (AI.valueOfMinionDamage(2) * 2 + AI.valueOfMinionDamage(1) * 4) / 2.;
             }
         });
     }
