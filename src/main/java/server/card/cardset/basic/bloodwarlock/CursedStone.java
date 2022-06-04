@@ -39,7 +39,7 @@ public class CursedStone extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         Player player = owner.board.getPlayer(owner.team);
-                        int missing = player.getLeader().map(l -> l.finalStatEffects.getStat(EffectStats.HEALTH) - l.health).orElse(0);
+                        int missing = player.getLeader().map(l -> l.finalStats.get(Stat.HEALTH) - l.health).orElse(0);
                         this.resolve(b, rq, el, new BlastResolver(effect, missing, EventAnimationDamageEnergyBeam.class));
                         Effect lw = new EffectLastWordsAlliedBlast("<b>Unleash</b>", missing, EventAnimationDamageEnergyBeam.class);
                         this.resolve(b, rq, el, new AddEffectResolver(effect.owner, lw));
@@ -50,7 +50,7 @@ public class CursedStone extends MinionText {
             @Override
             public double getPresenceValue(int refs) {
                 Player player = owner.board.getPlayer(owner.team);
-                int missing = player.getLeader().map(l ->l.finalStatEffects.getStat(EffectStats.HEALTH) - l.health).orElse(0);
+                int missing = player.getLeader().map(l ->l.finalStats.get(Stat.HEALTH) - l.health).orElse(0);
                 return AI.VALUE_PER_DAMAGE * missing / 2.;
             }
         });

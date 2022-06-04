@@ -11,6 +11,7 @@ import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.effect.EffectUntilTurnEnd;
+import server.card.effect.Stat;
 import server.event.Event;
 import server.event.EventMinionAttack;
 import server.resolver.AddEffectResolver;
@@ -32,7 +33,7 @@ public class EphemeraAngelicSlacker extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(EffectStats.STEALTH, 1)
+                .set(Stat.STEALTH, 1)
                 .build()
         ) {
             @Override
@@ -42,7 +43,7 @@ public class EphemeraAngelicSlacker extends MinionText {
                     String description = "Whenever another allied minion attacks, give that minion +1/+0/+0 until the end of the turn.";
                     Effect effect = new EffectUntilTurnEnd("+1/+0/+0 until the end of the turn (from <b>Ephemera, Angelic Slacker</b>).",
                             EffectStats.builder()
-                                    .change(EffectStats.ATTACK, 1)
+                                    .change(Stat.ATTACK, 1)
                                     .build());
                     return new ResolverWithDescription(description, new AddEffectResolver(((EventMinionAttack) e).m1, effect));
                 }

@@ -12,6 +12,7 @@ import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.event.Event;
@@ -44,7 +45,7 @@ public class CentaurVanguard extends MinionText {
                         if (owner.player.getPlayArea().stream()
                                 .anyMatch(m -> m.finalTraits.contains(CardTrait.COMMANDER) && m != owner)) {
                             Effect storm = new Effect("<b>Storm</b> (from <b>Battlecry</b>).", EffectStats.builder()
-                                    .set(EffectStats.STORM, 1)
+                                    .set(Stat.STORM, 1)
                                     .build());
                             this.resolve(b, rq, el, new AddEffectResolver(owner, storm));
                         }

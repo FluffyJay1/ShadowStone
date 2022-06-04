@@ -14,6 +14,7 @@ public class EventFactory {
             case EventDamage.ID -> EventDamage.fromString(b, st);
             case EventDestroy.ID -> EventDestroy.fromString(b, st);
             case EventDiscard.ID -> EventDiscard.fromString(b, st);
+            case EventGainShadow.ID -> EventGainShadow.fromString(b, st);
             case EventGameEnd.ID -> EventGameEnd.fromString(b, st);
             case EventManaChange.ID -> EventManaChange.fromString(b, st);
             case EventMinionAttack.ID -> EventMinionAttack.fromString(b, st);

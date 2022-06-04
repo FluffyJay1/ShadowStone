@@ -1,6 +1,5 @@
 package client.ui.game;
 
-import client.Game;
 import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
@@ -72,7 +71,7 @@ public class CardSelectPanel extends UIBox {
                 lastBottom += this.ub.getHeight(false) + 32;
             }
             String infoText = "";
-            if (this.uib.selectedCard.getCard().finalStatEffects.getStat(EffectStats.SPELLBOOSTABLE) > 0) {
+            if (this.uib.selectedCard.getCard().finalStats.get(Stat.SPELLBOOSTABLE) > 0) {
                 infoText = "Spellboosts: " + this.uib.selectedCard.getCard().spellboosts;
             }
             if (!infoText.isEmpty()) {

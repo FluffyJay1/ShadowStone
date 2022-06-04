@@ -23,8 +23,8 @@ public class Puppet extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(EffectStats.RUSH, 1)
-                .set(EffectStats.COUNTDOWN, 1)
+                .set(Stat.RUSH, 1)
+                .set(Stat.COUNTDOWN, 1)
                 .build()
         ));
     }

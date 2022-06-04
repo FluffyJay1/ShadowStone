@@ -32,7 +32,7 @@ public class UnleashTapSoul extends UnleashPowerText {
                 Player p = this.owner.board.getPlayer(this.owner.team);
                 if (p.vengeance()) {
                     return EffectStats.builder()
-                            .change(EffectStats.COST, -2)
+                            .change(Stat.COST, -2)
                             .build();
                 }
                 return new EffectStats();

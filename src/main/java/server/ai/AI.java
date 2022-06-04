@@ -53,6 +53,8 @@ public class AI extends Thread {
     public static final double VALUE_OF_DISCARD = -0.75;
 
     public static final double VALUE_PER_RAMP = 1.5;
+
+    public static final double VALUE_PER_SHADOW = 0.5;
     /*
      * We can't expect the AI to traverse every single possible node in the decision
      * tree before making a move (especially considering rng), so after a certain
@@ -182,7 +184,7 @@ public class AI extends Thread {
     private List<Card> chooseMulligan() {
         // mulligan away cards that cost more than 3, unless they have spellboost
         return this.b.getPlayer(this.b.localteam).getHand().stream()
-                .filter(c -> c.finalStatEffects.getStat(EffectStats.COST) > 3 && c.finalStatEffects.getStat(EffectStats.SPELLBOOSTABLE) == 0)
+                .filter(c -> c.finalStats.get(Stat.COST) > 3 && c.finalStats.get(Stat.SPELLBOOSTABLE) == 0)
                 .collect(Collectors.toList());
     }
 
@@ -473,7 +475,7 @@ public class AI extends Thread {
         List<Card> hand = p.getHand();
         for (Card c : hand) {
             if (p.canPlayCard(c)) {
-                double totalWeight = PLAY_CARD_TOTAL_WEIGHT + PLAY_CARD_COST_WEIGHT_MULTIPLIER * c.finalStatEffects.getStat(EffectStats.COST);
+                double totalWeight = PLAY_CARD_TOTAL_WEIGHT + PLAY_CARD_COST_WEIGHT_MULTIPLIER * c.finalStats.get(Stat.COST);
                 List<List<List<TargetList<?>>>> targetSearchSpace = new LinkedList<>();
                 this.getPossibleListTargets(c.getBattlecryTargetingSchemes(), new LinkedList<>(), targetSearchSpace);
                 if (targetSearchSpace.isEmpty()) {
@@ -509,11 +511,11 @@ public class AI extends Thread {
             }
             // minion attack
             if (m.canAttack()) {
-                double totalWeight = ATTACK_TOTAL_WEIGHT + ATTACK_WEIGHT_MULTIPLIER * m.finalStatEffects.getStat(EffectStats.ATTACK);
+                double totalWeight = ATTACK_TOTAL_WEIGHT + ATTACK_WEIGHT_MULTIPLIER * m.finalStats.get(Stat.ATTACK);
                 double weight = totalWeight / m.getAttackableTargets().count();
                 m.getAttackableTargets().forEachOrdered(target -> {
                     double bonus = target instanceof Leader ? ATTACK_TARGET_LEADER_MULTIPLIER : 1;
-                    double overkillMultiplier = Math.pow(ATTACK_WEIGHT_OVERKILL_PENALTY, Math.max(0, m.finalStatEffects.getStat(EffectStats.ATTACK) - target.health));
+                    double overkillMultiplier = Math.pow(ATTACK_WEIGHT_OVERKILL_PENALTY, Math.max(0, m.finalStats.get(Stat.ATTACK) - target.health));
                     poss.add(new OrderAttackAction(m, target).toString(), overkillMultiplier * bonus * weight);
                 });
             }
@@ -554,15 +556,15 @@ public class AI extends Thread {
                 }
             }
         }
-        if (this.b.getMinions(team * -1, false, true).anyMatch(m -> m.finalStatEffects.getStat(EffectStats.WARD) > 0)) {
+        if (this.b.getMinions(team * -1, false, true).anyMatch(m -> m.finalStats.get(Stat.WARD) > 0)) {
             // find ways to break through the wards
             for (Minion m : minions) {
                 if (m.canAttack()) {
-                    double totalWeight = ATTACK_TOTAL_WEIGHT + ATTACK_WEIGHT_MULTIPLIER * m.finalStatEffects.getStat(EffectStats.ATTACK);
+                    double totalWeight = ATTACK_TOTAL_WEIGHT + ATTACK_WEIGHT_MULTIPLIER * m.finalStats.get(Stat.ATTACK);
                     List<Minion> searchSpace = m.getAttackableTargets().collect(Collectors.toList());
                     double weight = totalWeight / searchSpace.size();
                     for (Minion target : searchSpace) {
-                        double overkillMultiplier = Math.pow(ATTACK_WEIGHT_OVERKILL_PENALTY, Math.max(0, m.finalStatEffects.getStat(EffectStats.ATTACK) - target.health));
+                        double overkillMultiplier = Math.pow(ATTACK_WEIGHT_OVERKILL_PENALTY, Math.max(0, m.finalStats.get(Stat.ATTACK) - target.health));
                         poss.add(new OrderAttackAction(m, target).toString(), overkillMultiplier * weight);
                     }
                 }
@@ -572,7 +574,7 @@ public class AI extends Thread {
             this.b.getPlayer(team * -1).getLeader().ifPresent(l -> {
                 for (Minion m : minions) {
                     if (m.canAttack(l)) {
-                        double totalWeight = ATTACK_TOTAL_WEIGHT + ATTACK_WEIGHT_MULTIPLIER * m.finalStatEffects.getStat(EffectStats.ATTACK);
+                        double totalWeight = ATTACK_TOTAL_WEIGHT + ATTACK_WEIGHT_MULTIPLIER * m.finalStats.get(Stat.ATTACK);
                         poss.add(new OrderAttackAction(m, l).toString(), totalWeight);
                     }
                 }
@@ -737,22 +739,22 @@ public class AI extends Thread {
         if (l.health <= 0) { // if dead
             return -99999 + l.health; // u dont want to be dead
         }
-        int shield = l.finalStatEffects.getStat(EffectStats.SHIELD);
+        int shield = l.finalStats.get(Stat.SHIELD);
         Supplier<Stream<Minion>> attackingMinions = () -> b.getMinions(team * -1,  true, true);
         // TODO add if can attack check
         // TODO factor in damage limiting effects like durandal
         int potentialDamage = attackingMinions.get()
                 .filter(Minion::canAttack)
-                .map(m -> m.finalStatEffects.getStat(EffectStats.ATTACK) * (m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN) - m.attacksThisTurn))
+                .map(m -> m.finalStats.get(Stat.ATTACK) * (m.finalStats.get(Stat.ATTACKS_PER_TURN) - m.attacksThisTurn))
                 .reduce(0, Integer::sum);
         int threatenDamage = attackingMinions.get()
-                .map(m -> m.finalStatEffects.getStat(EffectStats.ATTACK) * m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN))
+                .map(m -> m.finalStats.get(Stat.ATTACK) * m.finalStats.get(Stat.ATTACKS_PER_TURN))
                 .reduce(0, Integer::sum);
         int attackers = attackingMinions.get()
-                .map(m -> m.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN))
+                .map(m -> m.finalStats.get(Stat.ATTACKS_PER_TURN))
                 .reduce(0, Integer::sum);
         List<Minion> defendingMinons = b.getMinions(team, false, true)
-                .filter(m -> m.finalStatEffects.getStat(EffectStats.WARD) > 0)
+                .filter(m -> m.finalStats.get(Stat.WARD) > 0)
                 .collect(Collectors.toList());
         int ehp = defendingMinons.stream()
                 .map(m -> m.health)
@@ -914,14 +916,14 @@ public class AI extends Thread {
     public static double valueInHand(Card c, int refs) {
         double rushStormBonus = 0;
         if (c instanceof Minion) {
-            if (c.finalStatEffects.getStat(EffectStats.RUSH) > 0) {
+            if (c.finalStats.get(Stat.RUSH) > 0) {
                 rushStormBonus = VALUE_OF_RUSH;
             }
-            if (c.finalStatEffects.getStat(EffectStats.STORM) > 0) {
+            if (c.finalStats.get(Stat.STORM) > 0) {
                 rushStormBonus = VALUE_OF_STORM;
             }
         }
-        return (c.getValue(refs) + rushStormBonus) / (c.finalStatEffects.getStat(EffectStats.COST) + 1.1);
+        return (c.getValue(refs) + rushStormBonus) / (c.finalStats.get(Stat.COST) + 1.1);
     }
 
     /**
@@ -932,14 +934,14 @@ public class AI extends Thread {
     public static double valueInHand(Card c) {
         double rushStormBonus = 0;
         if (c instanceof Minion) {
-            if (c.finalStatEffects.getStat(EffectStats.RUSH) > 0) {
+            if (c.finalStats.get(Stat.RUSH) > 0) {
                 rushStormBonus = VALUE_OF_RUSH;
             }
-            if (c.finalStatEffects.getStat(EffectStats.STORM) > 0) {
+            if (c.finalStats.get(Stat.STORM) > 0) {
                 rushStormBonus = VALUE_OF_STORM;
             }
         }
-        return (c.getValue() + rushStormBonus) / (c.finalStatEffects.getStat(EffectStats.COST) + 1.1);
+        return (c.getValue() + rushStormBonus) / (c.finalStats.get(Stat.COST) + 1.1);
     }
 
     /**

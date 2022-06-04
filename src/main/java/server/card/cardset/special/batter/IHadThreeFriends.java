@@ -8,6 +8,7 @@ import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.target.*;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
@@ -66,7 +67,7 @@ public class IHadThreeFriends extends SpellText {
                         if (ccr.event.successful.get(option)) {
                             // give it rush
                             Effect rush = new Effect("", EffectStats.builder()
-                                    .set(EffectStats.RUSH, 1)
+                                    .set(Stat.RUSH, 1)
                                     .build()
                             );
                             this.resolve(b, rq, el, new AddEffectResolver(ccr.event.cards.get(option), rush));

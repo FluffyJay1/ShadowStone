@@ -40,16 +40,16 @@ public class EventRemoveEffect extends Event {
                 if (c instanceof Minion) {
                     Minion m = ((Minion) c);
                     this.oldHealth.set(i, m.health);
-                    if (c.finalStatEffects.getStat(EffectStats.HEALTH) < m.health) {
-                        m.health = m.finalStatEffects.getStat(EffectStats.HEALTH);
+                    if (c.finalStats.get(Stat.HEALTH) < m.health) {
+                        m.health = m.finalStats.get(Stat.HEALTH);
                     }
                     if (m.health <= 0 && c.alive) {
                         c.alive = false;
                         this.markedForDeath.add(m);
                     }
                 }
-                if (c.finalStatEffects.getUse(EffectStats.COUNTDOWN)
-                        && c.finalStatEffects.getStat(EffectStats.COUNTDOWN) <= 0 && c.alive) {
+                if (c.finalStats.contains(Stat.COUNTDOWN)
+                        && c.finalStats.get(Stat.COUNTDOWN) <= 0 && c.alive) {
                     c.alive = false;
                     this.markedForDeath.add(c);
                 }

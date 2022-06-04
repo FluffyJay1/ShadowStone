@@ -48,7 +48,7 @@ public class BoardObject extends Card {
         if (this.status.equals(CardStatus.HAND)) {
             sum += this.getTotalEffectValueOf(e -> e.getBattlecryValue(refs));
         }
-        if (this.finalStatEffects.getStat(EffectStats.STEALTH) > 0) {
+        if (this.finalStats.get(Stat.STEALTH) > 0) {
             sum += AI.VALUE_OF_STEALTH;
         }
         return sum;
@@ -56,8 +56,8 @@ public class BoardObject extends Card {
 
     // having the countdown effect means u'll die in a few turns
     public double getPresenceValueMultiplier() {
-        if (this.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
-            return 1 - Math.pow(0.5, this.finalStatEffects.getStat(EffectStats.COUNTDOWN));
+        if (this.finalStats.contains(Stat.COUNTDOWN)) {
+            return 1 - Math.pow(0.5, this.finalStats.get(Stat.COUNTDOWN));
         } else {
             return 1;
         }
@@ -66,8 +66,8 @@ public class BoardObject extends Card {
     // the closer we are to deth, the closer we are to activating last words
     public double getLastWordsValueMultiplier() {
         double a = 0.25, w = 0.75;
-        if (this.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
-            return a + (1 - a) * Math.pow(w, 2 * this.finalStatEffects.getStat(EffectStats.COUNTDOWN));
+        if (this.finalStats.contains(Stat.COUNTDOWN)) {
+            return a + (1 - a) * Math.pow(w, 2 * this.finalStats.get(Stat.COUNTDOWN));
         } else {
             return a;
         }

@@ -17,11 +17,8 @@ import java.util.*;
 public class EffectStats implements Cloneable, StringBuildable {
     public static final int NUM_STATS = 15;
     // what's an enum
-    public static final int COST = 0, ATTACK = 1, MAGIC = 2, HEALTH = 3, ATTACKS_PER_TURN = 4, STORM = 5, RUSH = 6,
-            WARD = 7, BANE = 8, POISONOUS = 9, COUNTDOWN = 10, SPELLBOOSTABLE = 11, LIFESTEAL = 12,
-            STEALTH = 13, SHIELD = 14;
     // set of stats that we'll ensure to keep non-negative in between applications
-    private static final Set<Integer> NON_NEGATIVE_PER_STEP = new HashSet<>(List.of(SHIELD));
+    private static final Set<Stat> NON_NEGATIVE_PER_STEP = new HashSet<>(List.of(Stat.SHIELD));
 
     public StatSet set = new StatSet(), change = new StatSet();
 
@@ -35,30 +32,26 @@ public class EffectStats implements Cloneable, StringBuildable {
 
     public EffectStats(int cost) {
         this();
-        this.set.setStat(COST, cost);
+        this.set.set(Stat.COST, cost);
     }
 
     public EffectStats(int cost, int attack, int magic, int health) {
         this(cost);
-        this.set.setStat(ATTACK, attack);
-        this.set.setStat(MAGIC, magic);
-        this.set.setStat(HEALTH, health);
+        this.set.set(Stat.ATTACK, attack);
+        this.set.set(Stat.MAGIC, magic);
+        this.set.set(Stat.HEALTH, health);
     }
 
     public void applyToStatSet(StatSet ss) {
-        for (int i = 0; i < this.set.stats.length; i++) {
-            if (this.set.use[i]) {
-                ss.setStat(i, this.set.stats[i]);
-            }
+        for (Map.Entry<Stat, Integer> entry : this.set.stats.entrySet()) {
+            ss.set(entry.getKey(), entry.getValue());
         }
-        for (int i = 0; i < this.change.stats.length; i++) {
-            if (this.change.use[i]) {
-                ss.changeStat(i, this.change.stats[i]);
-            }
+        for (Map.Entry<Stat, Integer> entry : this.change.stats.entrySet()) {
+            ss.change(entry.getKey(), entry.getValue());
         }
-        for (int i : NON_NEGATIVE_PER_STEP) {
-            if (ss.getStat(i) < 0) {
-                ss.setStat(i, 0);
+        for (Stat i : NON_NEGATIVE_PER_STEP) {
+            if (ss.get(i) < 0) {
+                ss.set(i, 0);
             }
         }
     }
@@ -69,7 +62,7 @@ public class EffectStats implements Cloneable, StringBuildable {
         this.traits.clear();
     }
 
-    public boolean equalExcept(EffectStats other, int stat) {
+    public boolean equalExcept(EffectStats other, Stat stat) {
         return this.set.equalExcept(other.set, stat) && this.change.equalsChangeExcept(other.change, stat) && this.traits.equals(other.traits);
     }
 
@@ -136,63 +129,49 @@ public class EffectStats implements Cloneable, StringBuildable {
      * Why is this an inner class? Who cares?
      */
     public static class StatSet implements Cloneable, StringBuildable {
-        private int numUsed = 0;
-        private final int[] stats = new int[NUM_STATS];
-        private final boolean[] use = new boolean[NUM_STATS];
+        private final EnumMap<Stat, Integer> stats = new EnumMap<>(Stat.class);
 
-        public int getStat(int index) {
-            if (!this.use[index]) {
+        public int get(Stat index) {
+            Integer result = this.stats.get(index);
+            if (result == null) {
                 return 0;
             }
-            return this.stats[index]; // lol
+            return result;
         }
 
-        public boolean getUse(int index) {
-            return this.use[index];
+        public boolean contains(Stat index) {
+            return this.stats.containsKey(index);
         }
 
-        public void setStat(int index, int stat) {
-            this.stats[index] = stat;
-            if (!this.use[index]) {
-                this.numUsed++;
-            }
-            this.use[index] = true;
+        public void set(Stat index, int stat) {
+            this.stats.put(index, stat);
         }
 
-        public void changeStat(int index, int stat) {
-            this.stats[index] += stat;
-            if (!this.use[index]) {
-                this.numUsed++;
-            }
-            this.use[index] = true;
+        public void change(Stat index, int stat) {
+            int old = this.get(index);
+            this.set(index, old + stat);
         }
 
-        public void resetStat(int index) {
-            this.stats[index] = 0;
-            if (this.use[index]) {
-                this.numUsed--;
-            }
-            this.use[index] = false;
+        public void reset(Stat index) {
+            this.stats.remove(index);
         }
 
         public void reset() {
-            for (int i = 0; i < this.stats.length; i++) {
-                this.resetStat(i);
-            }
+            this.stats.clear();
         }
 
         // lol
         public void makeNonNegative() {
-            for (int i = 0; i < this.stats.length; i++) {
-                if (this.getStat(i) < 0) {
-                    this.setStat(i, 0);
+            for (Stat stat : this.stats.keySet()) {
+                if (this.get(stat) < 0) {
+                    this.set(stat, 0);
                 }
             }
         }
 
-        public boolean equalExcept(StatSet other, int stat) {
-            for (int i = 0; i < this.stats.length; i++) {
-                if (i != stat && (this.getUse(i) != other.getUse(i) || this.getStat(i) != other.getStat(i))) {
+        public boolean equalExcept(StatSet other, Stat stat) {
+            for (Stat i : Stat.values()) {
+                if (!i.equals(stat) && (this.contains(i) != other.contains(i) || this.get(i) != other.get(i))) {
                     return false;
                 }
             }
@@ -201,8 +180,8 @@ public class EffectStats implements Cloneable, StringBuildable {
 
         // use and 0 is the same thing as unused
         public boolean equalsChange(StatSet other) {
-            for (int i = 0; i < this.stats.length; i++) {
-                if (this.getStat(i) != other.getStat(i)) {
+            for (Stat i : Stat.values()) {
+                if (this.get(i) != other.get(i)) {
                     return false;
                 }
             }
@@ -210,9 +189,9 @@ public class EffectStats implements Cloneable, StringBuildable {
         }
 
         // use and 0 is the same thing as unused
-        public boolean equalsChangeExcept(StatSet other, int stat) {
-            for (int i = 0; i < this.stats.length; i++) {
-                if (i != stat && this.getStat(i) != other.getStat(i)) {
+        public boolean equalsChangeExcept(StatSet other, Stat stat) {
+            for (Stat i : Stat.values()) {
+                if (!i.equals(stat) && this.get(i) != other.get(i)) {
                     return false;
                 }
             }
@@ -223,18 +202,18 @@ public class EffectStats implements Cloneable, StringBuildable {
         public boolean equals(Object o) {
             if (o instanceof StatSet) {
                 StatSet other = (StatSet) o;
-                return Arrays.equals(this.stats, other.stats) && Arrays.equals(this.use, other.use);
+                return this.stats.equals(other.stats);
             }
             return false;
         }
 
         // if u don't wanna clone for some reason
         public void copy(StatSet other) {
-            for (int i = 0; i < this.stats.length; i++) {
-                if (other.use[i]) {
-                    this.setStat(i, other.stats[i]);
+            for (Stat i : Stat.values()) {
+                if (other.contains(i)) {
+                    this.set(i, other.get(i));
                 } else {
-                    this.resetStat(i);
+                    this.reset(i);
                 }
             }
         }
@@ -255,11 +234,9 @@ public class EffectStats implements Cloneable, StringBuildable {
 
         @Override
         public void appendStringToBuilder(StringBuilder builder) {
-            builder.append(this.numUsed).append(" ");
-            for (int i = 0; i < NUM_STATS; i++) {
-                if (this.getUse(i)) {
-                    builder.append(i).append(" ").append(this.getStat(i)).append(" ");
-                }
+            builder.append(this.stats.size()).append(" ");
+            for (Map.Entry<Stat, Integer> entry : this.stats.entrySet()) {
+                builder.append(entry.getKey().name()).append(" ").append(entry.getValue()).append(" ");
             }
         }
 
@@ -267,28 +244,28 @@ public class EffectStats implements Cloneable, StringBuildable {
             StatSet ret = new StatSet();
             int numUsed = Integer.parseInt(st.nextToken());
             for (int i = 0; i < numUsed; i++) {
-                int stat = Integer.parseInt(st.nextToken());
+                Stat stat = Stat.valueOf(st.nextToken());
                 int value = Integer.parseInt(st.nextToken());
-                ret.setStat(stat, value);
+                ret.set(stat, value);
             }
             return ret;
         }
     }
 
     public static class Builder {
-        private EffectStats built;
+        private final EffectStats built;
 
         Builder() {
             this.built = new EffectStats();
         }
 
-        public Builder set(int stat, int value) {
-            this.built.set.setStat(stat, value);
+        public Builder set(Stat stat, int value) {
+            this.built.set.set(stat, value);
             return this;
         }
 
-        public Builder change(int stat, int value) {
-            this.built.change.setStat(stat, value);
+        public Builder change(Stat stat, int value) {
+            this.built.change.set(stat, value);
             return this;
         }
 

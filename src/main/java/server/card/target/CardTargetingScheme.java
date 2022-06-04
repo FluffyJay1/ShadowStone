@@ -39,7 +39,7 @@ public abstract class CardTargetingScheme implements TargetingScheme<Card> {
 
     public final boolean canTarget(Card c) {
         // TODO handle "can't be targeted" effects
-        return !(c.team != this.getCreator().owner.team && c.isInPlay() && c.finalStatEffects.getStat(EffectStats.STEALTH) > 0) // stealth
+        return !(c.team != this.getCreator().owner.team && c.isInPlay() && c.finalStats.get(Stat.STEALTH) > 0) // stealth
                 && this.criteria(c);
     }
 

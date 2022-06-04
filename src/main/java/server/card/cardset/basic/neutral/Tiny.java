@@ -38,7 +38,7 @@ public class Tiny extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         EffectStatChange ef = new EffectStatChange("+2/+0/+2 and <b>Rush</b> (from <b>Unleash</b>).", 2,
                                 0, 2);
-                        ef.effectStats.set.setStat(EffectStats.RUSH, 1);
+                        ef.effectStats.set.set(Stat.RUSH, 1);
                         this.resolve(b, rq, el, new AddEffectResolver(owner, ef));
                     }
                 });

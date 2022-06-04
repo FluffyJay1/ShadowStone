@@ -41,7 +41,7 @@ public abstract class Card implements Indexable, StringBuildable {
     public UICard uiCard;
     public CardVisibility visibility;
 
-    public EffectStats.StatSet finalStatEffects = new EffectStats.StatSet(), finalBasicStatEffects = new EffectStats.StatSet();
+    public EffectStats.StatSet finalStats = new EffectStats.StatSet(), finalBasicStats = new EffectStats.StatSet();
     public Set<CardTrait> finalTraits = new HashSet<>(), finalBasicTraits = new HashSet<>();
     /*
      * basic effects can't get removed unlike additional effects (e.g. bounce
@@ -91,10 +91,10 @@ public abstract class Card implements Indexable, StringBuildable {
 
     public double getValue(int refs) {
         double sum = 0;
-        if (this.finalStatEffects.getStat(EffectStats.LIFESTEAL) > 0) {
+        if (this.finalStats.get(Stat.LIFESTEAL) > 0) {
             sum += 1;
         }
-        if (this.finalStatEffects.getStat(EffectStats.POISONOUS) > 0) {
+        if (this.finalStats.get(Stat.POISONOUS) > 0) {
             sum += 1;
         }
         return sum;
@@ -241,14 +241,14 @@ public abstract class Card implements Indexable, StringBuildable {
         Set<CardTrait> traits;
         Stream<Effect> relevant;
         if (basic) {
-            stats = this.finalBasicStatEffects;
+            stats = this.finalBasicStats;
             stats.reset();
             traits = this.finalBasicTraits;
             traits.clear();
             relevant = this.getEffects(true).stream().filter(e -> !e.bonusStats);
         } else {
-            stats = this.finalStatEffects;
-            stats.copy(this.finalBasicStatEffects);
+            stats = this.finalStats;
+            stats.copy(this.finalBasicStats);
             traits = this.finalTraits;
             traits.clear();
             traits.addAll(this.finalBasicTraits);
@@ -312,7 +312,7 @@ public abstract class Card implements Indexable, StringBuildable {
     }
 
     public boolean canSpendAfterPlayed(int amount) {
-        return this.player.mana >= this.finalStatEffects.getStat(EffectStats.COST) + amount;
+        return this.player.mana >= this.finalStats.get(Stat.COST) + amount;
     }
 
     // probably not worth the hassle of making functional

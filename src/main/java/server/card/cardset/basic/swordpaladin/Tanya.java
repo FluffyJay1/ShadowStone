@@ -10,6 +10,7 @@ import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 
 import java.util.List;
 
@@ -27,8 +28,8 @@ public class Tanya extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(EffectStats.BANE, 1)
-                .set(EffectStats.STEALTH, 1)
+                .set(Stat.BANE, 1)
+                .set(Stat.STEALTH, 1)
                 .build()));
     }
 

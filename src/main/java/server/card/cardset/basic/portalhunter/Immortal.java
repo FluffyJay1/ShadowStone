@@ -10,6 +10,7 @@ import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class Immortal extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(EffectStats.SHIELD, 3)
+                .set(Stat.SHIELD, 3)
                 .build()));
     }
 

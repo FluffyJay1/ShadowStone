@@ -61,7 +61,7 @@ public class WoodOfBrambles extends AmuletText {
                 return 2;
             }
         }, new Effect("", EffectStats.builder()
-                .set(EffectStats.COUNTDOWN, 2)
+                .set(Stat.COUNTDOWN, 2)
                 .build()
         ));
     }

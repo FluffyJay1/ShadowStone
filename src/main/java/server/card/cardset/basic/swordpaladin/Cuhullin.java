@@ -13,6 +13,7 @@ import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.effect.EffectUntilTurnEnd;
+import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
@@ -37,7 +38,7 @@ public class Cuhullin extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(EffectStats.RUSH, 1)
+                .set(Stat.RUSH, 1)
                 .build()) {
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
@@ -48,8 +49,8 @@ public class Cuhullin extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         Effect buff = new EffectUntilTurnEnd("<b>Bane</b> and <b>Shield(2)</b> until the end of the turn (from <b>Battlecry</b>).",
                                 EffectStats.builder()
-                                        .set(EffectStats.BANE, 1)
-                                        .change(EffectStats.SHIELD, 4)
+                                        .set(Stat.BANE, 1)
+                                        .change(Stat.SHIELD, 4)
                                         .build());
                         this.resolve(b, rq, el, new SpendResolver(effect, 4, new AddEffectResolver(owner, buff)));
                     }

@@ -2,7 +2,7 @@ package server.resolver;
 
 import server.ServerBoard;
 import server.card.Card;
-import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.event.Event;
 import server.event.EventSpellboost;
 import server.resolver.util.ResolverQueue;
@@ -21,7 +21,7 @@ public class SpellboostResolver extends Resolver {
     @Override
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         List<Card> spellboostable = this.cards.stream()
-                .filter(c -> c.finalStatEffects.getStat(EffectStats.SPELLBOOSTABLE) > 0)
+                .filter(c -> c.finalStats.get(Stat.SPELLBOOSTABLE) > 0)
                 .collect(Collectors.toList());
         if (!spellboostable.isEmpty()) {
             b.processEvent(rq, el, new EventSpellboost(spellboostable));

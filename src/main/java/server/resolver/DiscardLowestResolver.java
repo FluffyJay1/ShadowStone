@@ -4,7 +4,7 @@ import client.Game;
 import server.Player;
 import server.ServerBoard;
 import server.card.Card;
-import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.event.Event;
 import server.resolver.util.ResolverQueue;
 
@@ -25,11 +25,11 @@ public class DiscardLowestResolver extends Resolver {
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         for (int i = 0; i < this.times; i++) {
             this.p.getHand().stream()
-                    .map(c -> c.finalStatEffects.getStat(EffectStats.COST))
+                    .map(c -> c.finalStats.get(Stat.COST))
                     .min(Integer::compareTo)
                     .ifPresent(cost -> {
                         List<Card> lowest = p.getHand().stream()
-                                .filter(c -> c.finalStatEffects.getStat(EffectStats.COST) == cost)
+                                .filter(c -> c.finalStats.get(Stat.COST) == cost)
                                 .collect(Collectors.toList());
                         Card selection = Game.selectRandom(lowest);
                         this.resolve(b, rq, el, new DiscardResolver(selection));

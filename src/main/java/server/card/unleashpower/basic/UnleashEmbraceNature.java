@@ -37,7 +37,7 @@ public class UnleashEmbraceNature extends UnleashPowerText {
                             this.resolve(b, rq, el, new PutCardResolver(m, CardStatus.HAND, effect.owner.team, -1, true));
                             if (m.alive) {
                                 Effect esc = new Effect("-1 cost (from <b>Embrace Nature</b>).");
-                                esc.effectStats.change.setStat(EffectStats.COST, -1);
+                                esc.effectStats.change.set(Stat.COST, -1);
                                 this.resolve(b, rq, el, new AddEffectResolver(m, esc));
                             }
                         }

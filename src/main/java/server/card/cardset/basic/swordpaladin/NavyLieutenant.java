@@ -8,6 +8,7 @@ import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectAura;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class NavyLieutenant extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         Effect ward = new Effect("<b>Ward</b> (from <b>Navy Lieutenant's Aura</b>).", EffectStats.builder()
-                .set(EffectStats.WARD, 1)
+                .set(Stat.WARD, 1)
                 .build());
         return List.of(new EffectAura(DESCRIPTION, 1, true, false, ward) {
             @Override

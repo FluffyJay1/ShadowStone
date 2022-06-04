@@ -10,6 +10,7 @@ import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.effect.EffectUntilTurnEnd;
+import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
@@ -43,10 +44,10 @@ public class TimewornMageLevi extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         this.resolve(b, rq, el, new CreateCardResolver(new CrimsonSorcery(), owner.team, CardStatus.HAND, -1));
-                        int x = owner.finalStatEffects.getStat(EffectStats.MAGIC);
+                        int x = owner.finalStats.get(Stat.MAGIC);
                         Effect buff = new EffectUntilTurnEnd("+" + x + "/+0/+0 and <b>Rush</b> until the end of turn (from <b>Unleash</b>).", EffectStats.builder()
-                                .change(EffectStats.ATTACK, x)
-                                .set(EffectStats.RUSH, 1)
+                                .change(Stat.ATTACK, x)
+                                .set(Stat.RUSH, 1)
                                 .build());
                         this.resolve(b, rq, el, new AddEffectResolver(owner, buff));
                     }
@@ -58,7 +59,7 @@ public class TimewornMageLevi extends MinionText {
                 if (this.cachedInstances == null) {
                     this.cachedInstances = List.of(new CrimsonSorcery().constructInstance(this.owner.board));
                 }
-                return (AI.valueForAddingToHand(this.cachedInstances, refs) + this.owner.finalStatEffects.getStat(EffectStats.MAGIC) + AI.VALUE_OF_RUSH) / 2;
+                return (AI.valueForAddingToHand(this.cachedInstances, refs) + this.owner.finalStats.get(Stat.MAGIC) + AI.VALUE_OF_RUSH) / 2;
             }
         });
     }

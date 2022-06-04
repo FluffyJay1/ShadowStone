@@ -6,7 +6,7 @@ import org.newdawn.slick.geom.*;
 import client.ui.*;
 import client.ui.game.*;
 import server.card.*;
-import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 
 public class CardDisplayUnit extends UIBox {
     /**
@@ -75,7 +75,7 @@ public class CardDisplayUnit extends UIBox {
     public void setBonusHealth(int health) {
         if (this.card instanceof Minion) {
             Minion m = (Minion) this.card;
-            m.health = this.card.finalBasicStatEffects.getStat(EffectStats.HEALTH) + health;
+            m.health = this.card.finalBasicStats.get(Stat.HEALTH) + health;
         }
     }
 

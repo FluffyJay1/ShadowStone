@@ -13,6 +13,7 @@ import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
@@ -53,7 +54,7 @@ public class Belphegor extends MinionText {
                         }
                         owner.player.getLeader().ifPresent(l -> {
                             Effect shield = new Effect("", EffectStats.builder()
-                                    .change(EffectStats.SHIELD, 25 - l.health)
+                                    .change(Stat.SHIELD, 25 - l.health)
                                     .build());
                             this.resolve(b, rq, el, new AddEffectResolver(l, shield));
                         });

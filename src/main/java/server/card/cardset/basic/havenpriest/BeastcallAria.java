@@ -5,8 +5,8 @@ import client.tooltip.TooltipAmulet;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.*;
 import server.card.effect.Effect;
+import server.card.effect.Stat;
 import server.card.effect.common.EffectLastWordsSummon;
-import server.card.effect.EffectStats;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class BeastcallAria extends AmuletText {
     protected List<Effect> getSpecialEffects() {
         String resolverDescription = "<b>Last Words</b>: Summon a <b>Holy Falcon</b> and a <b>Holyflame Tiger</b>.";
         Effect e = new EffectLastWordsSummon(resolverDescription, List.of(new HolyFalcon(), new HolyflameTiger()), 1);
-        e.effectStats.set.setStat(EffectStats.COUNTDOWN, 3);
+        e.effectStats.set.set(Stat.COUNTDOWN, 3);
         return List.of(e);
     }
 

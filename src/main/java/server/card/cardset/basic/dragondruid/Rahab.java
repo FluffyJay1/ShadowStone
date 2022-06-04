@@ -12,6 +12,7 @@ import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.effect.common.EffectStatChange;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
@@ -35,7 +36,7 @@ public class Rahab extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(EffectStats.WARD, 1)
+                .set(Stat.WARD, 1)
                 .build()) {
             @Override
             public ResolverWithDescription onTurnEndAllied() {

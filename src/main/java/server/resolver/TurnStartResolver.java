@@ -28,9 +28,9 @@ public class TurnStartResolver extends Resolver {
             // things may happen, this bo might be dead already
             if (bo.isInPlay()) {
                 this.resolveQueue(b, rq, el, bo.onTurnStartAllied());
-                if (bo.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
+                if (bo.finalStats.contains(Stat.COUNTDOWN)) {
                     Effect e = new Effect();
-                    e.effectStats.change.setStat(EffectStats.COUNTDOWN, -1);
+                    e.effectStats.change.set(Stat.COUNTDOWN, -1);
                     this.resolve(b, rq, el, new AddEffectResolver(bo, e));
                 }
             }

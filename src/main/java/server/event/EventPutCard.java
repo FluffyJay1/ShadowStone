@@ -136,7 +136,7 @@ public class EventPutCard extends Event {
                 this.prevEffects.set(i, card.removeAdditionalEffects());
                 card.spellboosts = 0;
                 if (card instanceof Minion) {
-                    ((Minion) card).health = card.finalStatEffects.getStat(EffectStats.HEALTH);
+                    ((Minion) card).health = card.finalStats.get(Stat.HEALTH);
                     ((Minion) card).attacksThisTurn = 0;
                 }
             }

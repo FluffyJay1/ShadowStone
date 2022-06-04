@@ -8,6 +8,7 @@ import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
@@ -32,7 +33,7 @@ public class WindBlast extends SpellText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(EffectStats.SPELLBOOSTABLE, 1)
+                .set(Stat.SPELLBOOSTABLE, 1)
                 .build()) {
             @Override
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {

@@ -51,22 +51,22 @@ public class EventAddEffect extends Event {
                 Minion m = ((Minion) c);
                 this.oldHealth.set(i, m.health);
                 EffectStats es = e.effectStats;
-                if (es.set.getUse(EffectStats.HEALTH)) {
-                    m.health = es.set.getStat(EffectStats.HEALTH);
+                if (es.set.contains(Stat.HEALTH)) {
+                    m.health = es.set.get(Stat.HEALTH);
                 }
-                if (es.change.getUse(EffectStats.HEALTH) && es.change.getStat(EffectStats.HEALTH) > 0) {
-                    m.health += es.change.getStat(EffectStats.HEALTH);
+                if (es.change.contains(Stat.HEALTH) && es.change.get(Stat.HEALTH) > 0) {
+                    m.health += es.change.get(Stat.HEALTH);
                 }
-                if (c.finalStatEffects.getStat(EffectStats.HEALTH) < m.health) {
-                    m.health = m.finalStatEffects.getStat(EffectStats.HEALTH);
+                if (c.finalStats.get(Stat.HEALTH) < m.health) {
+                    m.health = m.finalStats.get(Stat.HEALTH);
                 }
                 if (m.health <= 0 && m.alive) {
                     m.alive = false;
                     this.markedForDeath.add(m);
                 }
             }
-            if (c.finalStatEffects.getUse(EffectStats.COUNTDOWN)
-                    && c.finalStatEffects.getStat(EffectStats.COUNTDOWN) <= 0 && c.alive) {
+            if (c.finalStats.contains(Stat.COUNTDOWN)
+                    && c.finalStats.get(Stat.COUNTDOWN) <= 0 && c.alive) {
                 c.alive = false;
                 this.markedForDeath.add(c);
             }

@@ -8,6 +8,7 @@ import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
 import server.resolver.Resolver;
@@ -42,9 +43,9 @@ public class LeonidasResolve extends AmuletText {
                             @Override
                             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                                 Effect buff = new Effect("+3/+0/+3 and <b>Rush</b> (from <b>Leonidas' Resolve</b>).", EffectStats.builder()
-                                        .change(EffectStats.ATTACK, 3)
-                                        .change(EffectStats.HEALTH, 3)
-                                        .set(EffectStats.RUSH, 1)
+                                        .change(Stat.ATTACK, 3)
+                                        .change(Stat.HEALTH, 3)
+                                        .set(Stat.RUSH, 1)
                                         .build());
                                 List<BoardObject> stillInPlay = relevant.stream()
                                         .filter(BoardObject::isInPlay)

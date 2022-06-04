@@ -12,6 +12,7 @@ import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
@@ -36,7 +37,7 @@ public class DragoonScyther extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(EffectStats.BANE, 1)
+                .set(Stat.BANE, 1)
                 .build()) {
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
@@ -45,7 +46,7 @@ public class DragoonScyther extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (owner.player.overflow()) {
                             Effect buff = new Effect("<b>Storm</b> (from <b>Battlecry</b>).", EffectStats.builder()
-                                    .set(EffectStats.STORM, 1)
+                                    .set(Stat.STORM, 1)
                                     .build());
                             this.resolve(b, rq, el, new AddEffectResolver(owner, buff));
                         }

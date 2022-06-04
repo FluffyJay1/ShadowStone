@@ -9,7 +9,7 @@ import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
-import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
@@ -74,7 +74,7 @@ public class Chronos extends MinionText {
                 @Override
                 public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                     int highestAttack = b.getMinions(owner.team, false, true)
-                            .map(m -> m.finalStatEffects.getStat(EffectStats.ATTACK))
+                            .map(m -> m.finalStats.get(Stat.ATTACK))
                             .reduce(0, Math::max);
                     this.resolve(b, rq, el, new DrawResolver(b.getPlayer(owner.team), highestAttack));
                 }

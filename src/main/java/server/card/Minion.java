@@ -28,10 +28,10 @@ public class Minion extends BoardObject {
 
     private double getEffectiveHealth() {
         double health = this.health;
-        if (this.finalStatEffects.getStat(EffectStats.SHIELD) > 0) {
+        if (this.finalStats.get(Stat.SHIELD) > 0) {
             // existence of shield has some value on its own
             // let's say average 2 dmg overflow
-            health += this.finalStatEffects.getStat(EffectStats.SHIELD) + 2;
+            health += this.finalStats.get(Stat.SHIELD) + 2;
         }
         return health;
     }
@@ -46,17 +46,17 @@ public class Minion extends BoardObject {
         }
         double sum = super.getValue(refs);
         // 0.9 * sqrt(atk * hp) + 0.1 * sqrt(magic * hp^(0.4)) + 1
-        int attack = this.finalStatEffects.getStat(EffectStats.ATTACK);
-        int magic = this.finalStatEffects.getStat(EffectStats.MAGIC);
-        if (this.finalStatEffects.getStat(EffectStats.LIFESTEAL) > 0) {
+        int attack = this.finalStats.get(Stat.ATTACK);
+        int magic = this.finalStats.get(Stat.MAGIC);
+        if (this.finalStats.get(Stat.LIFESTEAL) > 0) {
             sum += attack * AI.VALUE_PER_HEAL;
         }
         // if bane, add 4 to attack value, if poisonous add 6 if attack > 0, only add the max of these two bonuses
         int bonus = 0;
-        if (this.finalStatEffects.getStat(EffectStats.BANE) > 0) {
+        if (this.finalStats.get(Stat.BANE) > 0) {
             bonus = 4;
         }
-        if (this.finalStatEffects.getStat(EffectStats.POISONOUS) > 0 && attack > 0) {
+        if (this.finalStats.get(Stat.POISONOUS) > 0 && attack > 0) {
             bonus = 6;
         }
         attack += bonus;
@@ -75,8 +75,8 @@ public class Minion extends BoardObject {
     public double getLastWordsValueMultiplier() {
         double a = 0.25, w = 0.75;
         double effectiveHealth = this.getEffectiveHealth();
-        if (this.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
-            return a + (1 - a) * (1 - (1 - Math.pow(w, 2 * this.finalStatEffects.getStat(EffectStats.COUNTDOWN))) * (1 - Math.pow(w, effectiveHealth)));
+        if (this.finalStats.contains(Stat.COUNTDOWN)) {
+            return a + (1 - a) * (1 - (1 - Math.pow(w, 2 * this.finalStats.get(Stat.COUNTDOWN))) * (1 - Math.pow(w, effectiveHealth)));
         } else {
             return a + (1 - a) * Math.pow(w, effectiveHealth);
         }
@@ -89,7 +89,7 @@ public class Minion extends BoardObject {
             return Stream.empty();
         }
         Supplier<Stream<Minion>> minions = () -> this.board.getMinions(this.team * -1, false, true)
-                .filter(m -> m.finalStatEffects.getStat(EffectStats.STEALTH) == 0);
+                .filter(m -> m.finalStats.get(Stat.STEALTH) == 0);
         Stream<Minion> attackable = minions.get();
 
         // TODO add restrictions on can't attack leader
@@ -98,15 +98,15 @@ public class Minion extends BoardObject {
         }
 
         // love how you can't reuse streams
-        if (minions.get().anyMatch(m -> m.finalStatEffects.getStat(EffectStats.WARD) > 0)) {
-            return minions.get().filter(m -> m.finalStatEffects.getStat(EffectStats.WARD) > 0);
+        if (minions.get().anyMatch(m -> m.finalStats.get(Stat.WARD) > 0)) {
+            return minions.get().filter(m -> m.finalStats.get(Stat.WARD) > 0);
         }
         return attackable;
     }
 
     public boolean canAttack() {
         return this.team == this.board.currentPlayerTurn && this.status.equals(CardStatus.BOARD)
-                && this.attacksThisTurn < this.finalStatEffects.getStat(EffectStats.ATTACKS_PER_TURN)
+                && this.attacksThisTurn < this.finalStats.get(Stat.ATTACKS_PER_TURN)
                 && this.attackMinionConditions();
     }
 
@@ -116,19 +116,19 @@ public class Minion extends BoardObject {
             return false;
         }
         boolean ward = this.board.getMinions(this.team * -1, true, true)
-                .anyMatch(potentialWard -> potentialWard.finalStatEffects.getStat(EffectStats.STEALTH) == 0
-                        && potentialWard.finalStatEffects.getStat(EffectStats.WARD) > 0);
-        return m.isInPlay() && (!ward || m.finalStatEffects.getStat(EffectStats.WARD) > 0) && m.finalStatEffects.getStat(EffectStats.STEALTH) == 0
+                .anyMatch(potentialWard -> potentialWard.finalStats.get(Stat.STEALTH) == 0
+                        && potentialWard.finalStats.get(Stat.WARD) > 0);
+        return m.isInPlay() && (!ward || m.finalStats.get(Stat.WARD) > 0) && m.finalStats.get(Stat.STEALTH) == 0
                 && (m.status.equals(CardStatus.BOARD) ? this.attackMinionConditions() : this.attackLeaderConditions());
     }
 
     private boolean attackMinionConditions() {
-        return !this.summoningSickness || this.finalStatEffects.getStat(EffectStats.STORM) > 0
-                || this.finalStatEffects.getStat(EffectStats.RUSH) > 0;
+        return !this.summoningSickness || this.finalStats.get(Stat.STORM) > 0
+                || this.finalStats.get(Stat.RUSH) > 0;
     }
 
     private boolean attackLeaderConditions() {
-        return !this.summoningSickness || this.finalStatEffects.getStat(EffectStats.STORM) > 0;
+        return !this.summoningSickness || this.finalStats.get(Stat.STORM) > 0;
     }
 
     public boolean canBeUnleashed() {

@@ -13,6 +13,7 @@ import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.effect.EffectUntilTurnEnd;
+import server.card.effect.Stat;
 import server.card.effect.common.EffectSpellboostDiscount;
 import server.card.target.TargetList;
 import server.event.Event;
@@ -58,10 +59,10 @@ public class ChaosWielder extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         this.resolve(b, rq, el, new SpellboostResolver(owner.player.getHand()));
-                        int x = owner.finalStatEffects.getStat(EffectStats.MAGIC);
+                        int x = owner.finalStats.get(Stat.MAGIC);
                         Effect buff = new EffectUntilTurnEnd("+" + x + "/+0/+0 and <b>Rush</b> until the end of turn (from <b>Unleash</b>).", EffectStats.builder()
-                                .change(EffectStats.ATTACK, x)
-                                .set(EffectStats.RUSH, 1)
+                                .change(Stat.ATTACK, x)
+                                .set(Stat.RUSH, 1)
                                 .build());
                         this.resolve(b, rq, el, new AddEffectResolver(owner, buff));
                     }
@@ -70,7 +71,7 @@ public class ChaosWielder extends MinionText {
 
             @Override
             public double getPresenceValue(int refs) {
-                return (AI.VALUE_OF_SPELLBOOST + this.owner.finalStatEffects.getStat(EffectStats.MAGIC) + AI.VALUE_OF_RUSH) / 2;
+                return (AI.VALUE_OF_SPELLBOOST + this.owner.finalStats.get(Stat.MAGIC) + AI.VALUE_OF_RUSH) / 2;
             }
         }, new EffectSpellboostDiscount());
     }

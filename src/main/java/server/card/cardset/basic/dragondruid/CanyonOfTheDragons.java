@@ -8,6 +8,7 @@ import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.event.Event;
 import server.resolver.CreateCardResolver;
 import server.resolver.Resolver;
@@ -30,7 +31,7 @@ public class CanyonOfTheDragons extends AmuletText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(EffectStats.COUNTDOWN, 3)
+                .set(Stat.COUNTDOWN, 3)
                 .build()) {
             private List<Card> cachedInstances; // for getPresenceValue, preview the value of the created cards
             @Override

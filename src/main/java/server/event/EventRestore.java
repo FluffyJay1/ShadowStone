@@ -32,9 +32,9 @@ public class EventRestore extends Event {
             this.oldHealth.add(minion.health);
             minion.health += this.heal.get(i);
             int healAmount = this.heal.get(i);
-            if (minion.health > minion.finalStatEffects.getStat(EffectStats.HEALTH)) {
-                healAmount -= minion.health - minion.finalStatEffects.getStat(EffectStats.HEALTH);
-                minion.health = minion.finalStatEffects.getStat(EffectStats.HEALTH);
+            if (minion.health > minion.finalStats.get(Stat.HEALTH)) {
+                healAmount -= minion.health - minion.finalStats.get(Stat.HEALTH);
+                minion.health = minion.finalStats.get(Stat.HEALTH);
             }
             this.actualHeal.add(healAmount);
         }

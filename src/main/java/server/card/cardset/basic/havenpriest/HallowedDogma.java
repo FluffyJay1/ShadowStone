@@ -5,7 +5,7 @@ import client.tooltip.TooltipSpell;
 import server.ServerBoard;
 import server.card.*;
 import server.card.effect.Effect;
-import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
@@ -47,14 +47,14 @@ public class HallowedDogma extends SpellText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         // lmao
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            if (c.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
+                            if (c.finalStats.contains(Stat.COUNTDOWN)) {
                                 Effect countdownAdd = new Effect();
-                                countdownAdd.effectStats.change.setStat(EffectStats.COUNTDOWN, -2);
+                                countdownAdd.effectStats.change.set(Stat.COUNTDOWN, -2);
                                 this.resolve(b, rq, el, new AddEffectResolver(c, countdownAdd));
                                 this.resolve(b, rq, el, new DrawResolver(owner.board.getPlayer(owner.team), 1));
                             } else {
                                 Effect countdownSet = new Effect();
-                                countdownSet.effectStats.set.setStat(EffectStats.COUNTDOWN, 2);
+                                countdownSet.effectStats.set.set(Stat.COUNTDOWN, 2);
                                 this.resolve(b, rq, el, new AddEffectResolver(c, countdownSet));
                             }
                         });

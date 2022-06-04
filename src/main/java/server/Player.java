@@ -161,7 +161,7 @@ public class Player implements StringBuildable {
             return false;
         }
         return c != null && c.canBePlayed() && this.board.currentPlayerTurn == this.team
-                && this.mana >= c.finalStatEffects.getStat(EffectStats.COST) && c.status.equals(CardStatus.HAND);
+                && this.mana >= c.finalStats.get(Stat.COST) && c.status.equals(CardStatus.HAND);
     }
 
     public boolean canUnleashCard(Card c) {
@@ -174,9 +174,9 @@ public class Player implements StringBuildable {
 
     public boolean canUnleash() {
         return this.unleashAllowed && this.unleashPower != null
-                && this.unleashPower.unleashesThisTurn < this.unleashPower.finalStatEffects
-                        .getStat(EffectStats.ATTACKS_PER_TURN)
-                && this.mana >= this.unleashPower.finalStatEffects.getStat(EffectStats.COST)
+                && this.unleashPower.unleashesThisTurn < this.unleashPower.finalStats
+                        .get(Stat.ATTACKS_PER_TURN)
+                && this.mana >= this.unleashPower.finalStats.get(Stat.COST)
                 && this.board.currentPlayerTurn == this.team;
     }
 

@@ -19,6 +19,7 @@ import org.newdawn.slick.geom.Vector2f;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.event.*;
 
 import java.util.List;
@@ -59,7 +60,7 @@ public class EventAnimationSetEffectStats extends EventAnimation<EventSetEffectS
             return false;
         }
         // if only cost changed and the guy is on board, we don't care
-        if (e.owner.status.equals(CardStatus.BOARD) && e.effectStats.equalExcept(this.event.newStats.get(i), EffectStats.COST)) {
+        if (e.owner.status.equals(CardStatus.BOARD) && e.effectStats.equalExcept(this.event.newStats.get(i), Stat.COST)) {
             return false;
         }
         return true;

@@ -7,6 +7,7 @@ import org.newdawn.slick.geom.Vector2f;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.event.Event;
 import server.event.EventUnleash;
 import server.resolver.AddEffectResolver;
@@ -28,7 +29,7 @@ public class TerrorDemon extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(EffectStats.LIFESTEAL, 1)
+                .set(Stat.LIFESTEAL, 1)
                 .build()) {
             @Override
             public ResolverWithDescription onListenEvent(Event event) {
@@ -39,8 +40,8 @@ public class TerrorDemon extends MinionText {
                 // it's an unleash on our team
                 String resolverDescription = "Whenever an allied minion is <b>Unleashed</b> while this is in your hand, gain +1/+1/+0.";
                 Effect e = new Effect("", EffectStats.builder()
-                        .change(EffectStats.ATTACK, 1)
-                        .change(EffectStats.MAGIC, 1)
+                        .change(Stat.ATTACK, 1)
+                        .change(Stat.MAGIC, 1)
                         .build());
                 return new ResolverWithDescription(resolverDescription, new AddEffectResolver(this.owner, e));
             }

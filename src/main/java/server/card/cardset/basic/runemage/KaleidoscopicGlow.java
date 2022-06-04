@@ -1,12 +1,11 @@
 package server.card.cardset.basic.runemage;
 
-import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
-import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
@@ -37,7 +36,7 @@ public class KaleidoscopicGlow extends SpellText {
                 return List.of(new CardTargetingScheme(this, 1, 1, "Return a card that costs 2 or less to the player's hand.") {
                     @Override
                     protected boolean criteria(Card c) {
-                        return c.status.equals(CardStatus.BOARD) && c.finalBasicStatEffects.getStat(EffectStats.COST) <= 2;
+                        return c.status.equals(CardStatus.BOARD) && c.finalBasicStats.get(Stat.COST) <= 2;
                     }
                 });
             }

@@ -4,6 +4,7 @@ import client.tooltip.TooltipUnleashPower;
 import server.card.CardText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public abstract class UnleashPowerText extends CardText {
     public final List<Effect> getEffects() {
         TooltipUnleashPower tooltip = this.getTooltip();
         Effect e = new Effect("", new EffectStats(tooltip.cost));
-        e.effectStats.set.setStat(EffectStats.ATTACKS_PER_TURN, 1);
+        e.effectStats.set.set(Stat.ATTACKS_PER_TURN, 1);
         List<Effect> special = this.getSpecialEffects();
         int specialSize = 0;
         if (special != null) {

@@ -7,8 +7,6 @@ import server.card.*;
 import server.card.effect.*;
 import server.card.target.TargetList;
 import server.event.*;
-import server.event.eventgroup.EventGroup;
-import server.event.eventgroup.EventGroupType;
 import server.resolver.util.ResolverQueue;
 
 public class PlayCardResolver extends Resolver {
@@ -31,7 +29,7 @@ public class PlayCardResolver extends Resolver {
             ResolverQueue battlecry = c.battlecry(this.battlecryTargets); // save the resolvers before doing anything, just in case stuff happens
             b.processEvent(rq, el, new EventPlayCard(this.p, this.c, this.position));
             b.processEvent(rq, el,
-                    new EventManaChange(this.p, -this.c.finalStatEffects.getStat(EffectStats.COST), true, false));
+                    new EventManaChange(this.p, -this.c.finalStats.get(Stat.COST), true, false));
             if (this.c instanceof BoardObject) {
                 b.processEvent(rq, el, new EventPutCard(List.of(this.c), CardStatus.BOARD, this.p.team, List.of(this.position), true, null));
             } else {

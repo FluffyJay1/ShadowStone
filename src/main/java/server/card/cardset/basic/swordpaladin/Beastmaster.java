@@ -8,7 +8,7 @@ import server.card.*;
 import server.card.cardset.basic.neutral.StonetuskBoar;
 import server.card.effect.Effect;
 import server.card.effect.EffectAura;
-import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.resolver.CreateCardResolver;
 import server.resolver.meta.ResolverWithDescription;
@@ -29,7 +29,7 @@ public class Beastmaster extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         Effect auraBuff = new Effect("+1 attacks per turn (from <b>Beastmaster's Aura</b>).");
-        auraBuff.effectStats.change.setStat(EffectStats.ATTACKS_PER_TURN, 1);
+        auraBuff.effectStats.change.set(Stat.ATTACKS_PER_TURN, 1);
         return List.of(new EffectAura(DESCRIPTION, 1, true, false, auraBuff) {
             @Override
             public boolean applyConditions(Card cardToApply) {

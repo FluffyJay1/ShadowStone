@@ -3,7 +3,7 @@ package server.event;
 import client.Game;
 import server.Board;
 import server.card.Card;
-import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class EventSpellboost extends Event {
         for (int i = 0; i < this.cards.size(); i++) {
             Card c = this.cards.get(i);
             this.oldSpellboosts.add(c.spellboosts);
-            if (c.finalStatEffects.getStat(EffectStats.SPELLBOOSTABLE) > 0) {
+            if (c.finalStats.get(Stat.SPELLBOOSTABLE) > 0) {
                 c.spellboosts++;
             }
         }

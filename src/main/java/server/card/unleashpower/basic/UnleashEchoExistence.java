@@ -38,7 +38,7 @@ public class UnleashEchoExistence extends UnleashPowerText {
                                     (int) (effect.owner.board.getPlayer(effect.owner.team).getDeck().size() * Math.random()));
                             this.resolve(b, rq, el, ccr);
                             Effect esc = new Effect("-2 cost (from <b>Echo Existence</b>).");
-                            esc.effectStats.change.setStat(EffectStats.COST, -2);
+                            esc.effectStats.change.set(Stat.COST, -2);
                             this.resolve(b, rq, el, new AddEffectResolver(ccr.event.successfullyCreatedCards, esc));
                         }
                     }

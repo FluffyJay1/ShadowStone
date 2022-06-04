@@ -10,6 +10,7 @@ import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
@@ -48,7 +49,7 @@ public class Magnolia extends MinionText {
                         for (int cost = 1; cost <= 2; cost++) {
                             int finalCost = cost;
                             List<Card> eligible = owner.player.getDeck().stream()
-                                    .filter(c -> c instanceof Minion && c.finalStatEffects.getStat(EffectStats.COST) == finalCost)
+                                    .filter(c -> c instanceof Minion && c.finalStats.get(Stat.COST) == finalCost)
                                     .collect(Collectors.toList());
                             if (!eligible.isEmpty()) {
                                 target.add(Game.selectRandom(eligible));
@@ -72,8 +73,8 @@ public class Magnolia extends MinionText {
                                 .filter(m -> m.finalTraits.contains(CardTrait.OFFICER))
                                 .collect(Collectors.toList());
                         Effect buff = new Effect("+1/+0/+1 (from <b>Magnolia, Battlefield Muse</b>).", EffectStats.builder()
-                                .change(EffectStats.ATTACK, 1)
-                                .change(EffectStats.HEALTH, 1)
+                                .change(Stat.ATTACK, 1)
+                                .change(Stat.HEALTH, 1)
                                 .build());
                         this.resolve(b, rq, el, new AddEffectResolver(targets, buff));
                     }

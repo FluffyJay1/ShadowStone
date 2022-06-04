@@ -26,7 +26,7 @@ public class BellringerAngel extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(EffectStats.WARD, 1)
+                .set(Stat.WARD, 1)
                 .build()
         ) {
             @Override

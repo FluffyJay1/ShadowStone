@@ -8,6 +8,7 @@ import server.ai.AI;
 import server.ai.AIConfig;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
 import server.resolver.Resolver;
@@ -44,13 +45,13 @@ public class DungeonRunGameRunner implements Runnable {
             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                 b.getPlayer(localteam).getLeader().ifPresent(l -> {
                     this.resolve(b, rq, el, new AddEffectResolver(l, new Effect("", EffectStats.builder()
-                            .change(EffectStats.HEALTH, player.getBonusHealth())
+                            .change(Stat.HEALTH, player.getBonusHealth())
                             .build()
                     )));
                 });
                 b.getPlayer(localteam * -1).getLeader().ifPresent(l -> {
                     this.resolve(b, rq, el, new AddEffectResolver(l, new Effect("", EffectStats.builder()
-                            .change(EffectStats.HEALTH, enemy.getBonusHealth())
+                            .change(Stat.HEALTH, enemy.getBonusHealth())
                             .build()
                     )));
                 });

@@ -8,6 +8,7 @@ import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.effect.common.EffectLastWordsSummon;
 import server.card.target.TargetList;
 import server.resolver.AddEffectResolver;
@@ -31,7 +32,7 @@ public class Jeno extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(EffectStats.RUSH, 1)
+                .set(Stat.RUSH, 1)
                 .build()) {
             private List<Card> cachedInstances; // for getBattlecryValue, preview the value of the created cards
 

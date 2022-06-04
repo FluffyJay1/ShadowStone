@@ -8,6 +8,7 @@ import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.effect.EffectWithDependentStats;
+import server.card.effect.Stat;
 
 import java.util.List;
 
@@ -28,9 +29,9 @@ public class MoltenGiant extends MinionText {
             @Override
             public EffectStats calculateStats() {
                 Player player = owner.board.getPlayer(owner.team);
-                int missing = player.getLeader().map(l -> l.finalStatEffects.getStat(EffectStats.HEALTH) - l.health).orElse(0);
+                int missing = player.getLeader().map(l -> l.finalStats.get(Stat.HEALTH) - l.health).orElse(0);
                 return EffectStats.builder()
-                        .change(EffectStats.COST, -missing)
+                        .change(Stat.COST, -missing)
                         .build();
             }
 

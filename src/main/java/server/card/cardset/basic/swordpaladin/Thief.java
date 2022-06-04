@@ -9,6 +9,7 @@ import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
@@ -40,8 +41,8 @@ public class Thief extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         Effect buff = new Effect("+0/+0/+2 and <b>Rush</b> (from <b>Unleash</b>).", EffectStats.builder()
-                                .change(EffectStats.HEALTH, 2)
-                                .set(EffectStats.RUSH, 1)
+                                .change(Stat.HEALTH, 2)
+                                .set(Stat.RUSH, 1)
                                 .build());
                         this.resolve(b, rq, el, new AddEffectResolver(owner, buff));
                     }

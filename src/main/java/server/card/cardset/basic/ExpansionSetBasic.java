@@ -31,7 +31,7 @@ public class ExpansionSetBasic extends ExpansionSet {
             new Rimewind(), new ConjuringForce(), new BladeMage(), new FieryEmbrace(), new FlameDestroyer(), new Chimera(),
             new IvoryDragon(), new ScaleboundPlight(), new AielaDragonKnight(), new DragoonScyther(), new GriffonKnight(),
             new DracomancersRites(), new Rahab(), new PyroxeneDragon(), new BlazingBreath(), new VenomousPucewyrm(),
-            new CanyonOfTheDragons(), new Fafnir());
+            new CanyonOfTheDragons(), new Fafnir(), new SkullBeast());
 
     @Override
     public CardSet getCards() {

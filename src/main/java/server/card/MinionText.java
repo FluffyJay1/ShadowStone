@@ -8,6 +8,7 @@ import server.ServerBoard;
 import server.ai.AI;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
@@ -26,9 +27,9 @@ public abstract class MinionText extends BoardObjectText {
         TooltipMinion tooltip = this.getTooltip();
         EffectStats stats = new EffectStats(tooltip.cost, tooltip.attack, tooltip.magic, tooltip.health);
         stats.traits.addAll(tooltip.traits);
-        stats.set.setStat(EffectStats.ATTACKS_PER_TURN, 1);
+        stats.set.set(Stat.ATTACKS_PER_TURN, 1);
         Effect e = new Effect("", stats);
-        e.effectStats.set.setStat(EffectStats.ATTACKS_PER_TURN, 1);
+        e.effectStats.set.set(Stat.ATTACKS_PER_TURN, 1);
         List<Effect> special = this.getSpecialEffects();
         int specialSize = 0;
         if (special != null) {
@@ -59,7 +60,7 @@ public abstract class MinionText extends BoardObjectText {
                             getStillTargetableCards(Effect::getUnleashTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                                 Minion target = (Minion) c;
                                 DamageResolver dr = new DamageResolver(effect, List.of(target),
-                                        List.of(effect.owner.finalStatEffects.getStat(EffectStats.MAGIC)), true,
+                                        List.of(effect.owner.finalStats.get(Stat.MAGIC)), true,
                                         EventAnimationDamageEnergyBeam.class);
                                 this.resolve(b, rq, el, dr);
                             });
@@ -69,7 +70,7 @@ public abstract class MinionText extends BoardObjectText {
 
                 @Override
                 public double getPresenceValue(int refs) {
-                    return AI.valueOfMinionDamage(this.owner.finalStatEffects.getStat(EffectStats.MAGIC)) / 2.;
+                    return AI.valueOfMinionDamage(this.owner.finalStats.get(Stat.MAGIC)) / 2.;
                 }
             };
             ret.add(unl);

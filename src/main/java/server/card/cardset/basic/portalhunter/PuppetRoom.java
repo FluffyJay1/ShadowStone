@@ -25,7 +25,7 @@ public class PuppetRoom extends AmuletText {
     @Override
     protected List<Effect> getSpecialEffects() {
         Effect e = new Effect(DESCRIPTION, EffectStats.builder()
-                .set(EffectStats.COUNTDOWN, 3)
+                .set(Stat.COUNTDOWN, 3)
                 .build()
         ) {
             private List<Card> cachedInstances; // for getBattlecryValue, preview the value of the created cards
@@ -54,7 +54,7 @@ public class PuppetRoom extends AmuletText {
                 return AI.valueForAddingToHand(this.cachedInstances, refs) * 3;
             }
         };
-        e.effectStats.set.setStat(EffectStats.COUNTDOWN, 3);
+        e.effectStats.set.set(Stat.COUNTDOWN, 3);
         return List.of(e);
     }
 

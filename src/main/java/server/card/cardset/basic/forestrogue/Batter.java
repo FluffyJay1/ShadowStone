@@ -9,6 +9,7 @@ import server.card.*;
 import server.card.cardset.basic.shadowshaman.Spectre;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.event.Event;
 import server.resolver.Resolver;
 import server.resolver.TransformResolver;
@@ -30,7 +31,7 @@ public class Batter extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(EffectStats.RUSH, 1)
+                .set(Stat.RUSH, 1)
                 .build()
         ) {
             @Override

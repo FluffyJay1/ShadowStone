@@ -9,6 +9,7 @@ import server.*;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 
 /*
  * Event alone may cause the board to enter an invalid state by killing minions,
@@ -52,19 +53,19 @@ public class EventDamage extends Event {
         this.oldHealth = new ArrayList<>(this.m.size());
         this.oldAlive = new ArrayList<>(this.m.size());
         this.shieldRemovers = new ArrayList<>(this.m.size());
-        boolean poisonous = this.cardSource.finalStatEffects.getStat(EffectStats.POISONOUS) > 0;
+        boolean poisonous = this.cardSource.finalStats.get(Stat.POISONOUS) > 0;
         for (int i = 0; i < this.m.size(); i++) { // sure
             Minion minion = this.m.get(i);
             this.oldHealth.add(minion.health);
             this.oldAlive.add(minion.alive);
             this.shieldRemovers.add(null);
             this.actualDamage.add(0);
-            int shield = minion.finalStatEffects.getStat(EffectStats.SHIELD);
+            int shield = minion.finalStats.get(Stat.SHIELD);
             if (shield > 0) {
                 // negate damage, reduce shield
                 int reduction = Math.min(this.damage.get(i), shield);
                 Effect shieldRemover = new Effect("", EffectStats.builder()
-                        .change(EffectStats.SHIELD, -reduction)
+                        .change(Stat.SHIELD, -reduction)
                         .build());
                 minion.addEffect(false, shieldRemover);
                 this.shieldRemovers.set(i, shieldRemover);
@@ -80,9 +81,9 @@ public class EventDamage extends Event {
                 this.actualDamage.set(i, this.damage.get(i));
             }
         }
-        if (this.cardSource.finalStatEffects.getStat(EffectStats.STEALTH) > 0) {
+        if (this.cardSource.finalStats.get(Stat.STEALTH) > 0) {
             this.stealthRemover = new Effect("", EffectStats.builder()
-                    .set(EffectStats.STEALTH, 0)
+                    .set(Stat.STEALTH, 0)
                     .build());
             this.cardSource.addEffect(false, this.stealthRemover);
         }

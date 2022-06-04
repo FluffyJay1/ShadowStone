@@ -10,6 +10,7 @@ import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.effect.common.EffectSpellboostDiscount;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class BladeMage extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect("<b>Storm</b>.", EffectStats.builder()
-                .set(EffectStats.STORM, 1)
+                .set(Stat.STORM, 1)
                 .build()),
                 new EffectSpellboostDiscount());
     }

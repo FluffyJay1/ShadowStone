@@ -11,6 +11,7 @@ import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.effect.EffectUntilTurnEnd;
+import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
@@ -57,8 +58,8 @@ public class DemonlordEachtar extends MinionText {
                         }
                         String buffDescription = "+2/+0/+0 and <b>Rush</b> until the end of the turn (from <b>Demonlord Eachtar's Battlecry</b>).";
                         Effect buff = new EffectUntilTurnEnd(buffDescription, EffectStats.builder()
-                                .change(EffectStats.ATTACK, 2)
-                                .set(EffectStats.RUSH, 1)
+                                .change(Stat.ATTACK, 2)
+                                .set(Stat.RUSH, 1)
                                 .build()
                         );
                         List<Minion> relevant = b.getMinions(owner.team, false, true)

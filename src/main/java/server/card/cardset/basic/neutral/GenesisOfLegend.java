@@ -30,7 +30,7 @@ public class GenesisOfLegend extends AmuletText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(EffectStats.COUNTDOWN, 3)
+                .set(Stat.COUNTDOWN, 3)
                 .build()
         ) {
             @Override
@@ -44,7 +44,7 @@ public class GenesisOfLegend extends AmuletText {
                             Minion selected = Game.selectRandom(possible);
                             EffectStatChange esc = new EffectStatChange(
                                     "+0/+0/+1 and <b>Bane</b> (from <b>Genesis of Legend</b>).", 0, 0, 1);
-                            esc.effectStats.set.setStat(EffectStats.BANE, 1);
+                            esc.effectStats.set.set(Stat.BANE, 1);
                             this.resolve(b, rq, el, new AddEffectResolver(selected, esc));
                         }
                     }

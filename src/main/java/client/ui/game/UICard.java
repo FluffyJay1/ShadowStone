@@ -265,7 +265,7 @@ public class UICard extends UIBox {
     public void update(double frametime) {
         super.update(frametime);
         this.stealthParticles.setScale(this.getScale());
-        this.stealthParticles.setPaused(!this.card.isInPlay() || this.card.finalStatEffects.getStat(EffectStats.STEALTH) == 0);
+        this.stealthParticles.setPaused(!this.card.isInPlay() || this.card.finalStats.get(Stat.STEALTH) == 0);
         this.specialConditionParticles.setScale(this.getScale());
         this.specialConditionParticles.setPaused(this.card.team != this.uib.b.localteam || switch (this.card.status) {
             case HAND -> !this.card.realCard.player.canPlayCard(this.card.realCard) || !this.card.realCard.battlecrySpecialConditions();
@@ -411,8 +411,8 @@ public class UICard extends UIBox {
                     (float) (UNLEASH_POWER_RADIUS * 2 * scale + READY_BORDER_PADDING * 2));
             g.setColor(org.newdawn.slick.Color.white);
         }
-        this.drawCostStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COST),
-                this.card.finalBasicStatEffects.getStat(EffectStats.COST), COST_POS_UNLEASHPOWER, STAT_DEFAULT_SIZE);
+        this.drawCostStat(g, pos, scale, this.card.finalStats.get(Stat.COST),
+                this.card.finalBasicStats.get(Stat.COST), COST_POS_UNLEASHPOWER, STAT_DEFAULT_SIZE);
     }
 
     public void drawOnBoard(Graphics g, Vector2f pos, double scale) {
@@ -424,8 +424,8 @@ public class UICard extends UIBox {
                 if (relevantMinion.canAttack()) {
                     Color borderColor;
                     if (relevantMinion.summoningSickness
-                            && relevantMinion.finalStatEffects.getStat(EffectStats.RUSH) > 0
-                            && relevantMinion.finalStatEffects.getStat(EffectStats.STORM) == 0) {
+                            && relevantMinion.finalStats.get(Stat.RUSH) > 0
+                            && relevantMinion.finalStats.get(Stat.STORM) == 0) {
                         borderColor = Color.yellow;
                     } else {
                         borderColor = Color.cyan;
@@ -433,36 +433,36 @@ public class UICard extends UIBox {
                     drawReadyBorder(g, pos, scale, borderColor);
                 }
             }
-            if (this.card.finalStatEffects.getStat(EffectStats.WARD) > 0) {
+            if (this.card.finalStats.get(Stat.WARD) > 0) {
                 Image i = Game.getImage("res/game/ward.png");
                 i = i.getScaledCopy((float) scale);
-                if (this.card.finalStatEffects.getStat(EffectStats.STEALTH) > 0) {
+                if (this.card.finalStats.get(Stat.STEALTH) > 0) {
                     i.setAlpha(0.5f);
                 }
                 g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
             }
-            if (this.card.finalStatEffects.getStat(EffectStats.SHIELD) > 0) {
+            if (this.card.finalStats.get(Stat.SHIELD) > 0) {
                 Image i = Game.getImage("res/game/shield.png");
                 i = i.getScaledCopy((float) scale);
                 g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
             }
-            this.drawOffensiveStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.ATTACK),
-                    this.card.finalBasicStatEffects.getStat(EffectStats.ATTACK),
+            this.drawOffensiveStat(g, pos, scale, this.card.finalStats.get(Stat.ATTACK),
+                    this.card.finalBasicStats.get(Stat.ATTACK),
                     new Vector2f(-MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE, Game.getImage("res/game/statattack.png"));
-            this.drawOffensiveStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.MAGIC),
-                    this.card.finalBasicStatEffects.getStat(EffectStats.MAGIC),
+            this.drawOffensiveStat(g, pos, scale, this.card.finalStats.get(Stat.MAGIC),
+                    this.card.finalBasicStats.get(Stat.MAGIC),
                     new Vector2f(0, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE, Game.getImage("res/game/statmagic.png"));
             this.drawHealthStat(g, pos, scale, this.getMinion().health,
-                    this.card.finalStatEffects.getStat(EffectStats.HEALTH),
-                    this.card.finalBasicStatEffects.getStat(EffectStats.HEALTH),
+                    this.card.finalStats.get(Stat.HEALTH),
+                    this.card.finalBasicStats.get(Stat.HEALTH),
                     new Vector2f(MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE);
-            if (this.card.finalStatEffects.getStat(EffectStats.SHIELD) > 0) {
-                this.drawStatNumber(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.SHIELD),
+            if (this.card.finalStats.get(Stat.SHIELD) > 0) {
+                this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.SHIELD),
                         SHIELD_POS_BOARD, STAT_DEFAULT_SIZE, Color.white, Game.getImage("res/game/statshield.png"), STAT_ICON_DEFAULT_SCALE);
             }
         }
-        if (this.card.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
-            this.drawStatNumber(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COUNTDOWN), COUNTDOWN_POS,
+        if (this.card.finalStats.contains(Stat.COUNTDOWN)) {
+            this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.COUNTDOWN), COUNTDOWN_POS,
                     50, Color.white, Game.getImage("res/game/statcountdown.png"), STAT_ICON_COUNTDOWN_SCALE);
         }
         // if marked for death
@@ -486,13 +486,13 @@ public class UICard extends UIBox {
     // called by updateEffectStats in Card
     public void updateIconList() {
         this.icons.clear();
-        if (this.card.finalStatEffects.getStat(EffectStats.BANE) > 0) {
+        if (this.card.finalStats.get(Stat.BANE) > 0) {
             this.icons.add(Game.getImage("res/game/baneicon.png"));
         }
-        if (this.card.finalStatEffects.getStat(EffectStats.POISONOUS) > 0) {
+        if (this.card.finalStats.get(Stat.POISONOUS) > 0) {
             this.icons.add(Game.getImage("res/game/poisonousicon.png"));
         }
-        if (this.card.finalStatEffects.getStat(EffectStats.LIFESTEAL) > 0) {
+        if (this.card.finalStats.get(Stat.LIFESTEAL) > 0) {
             this.icons.add(Game.getImage("res/game/lifestealicon.png"));
         }
         if (this.card instanceof BoardObject && !((BoardObject) this.card).lastWords().isEmpty()) {
@@ -533,26 +533,26 @@ public class UICard extends UIBox {
         ) {
             drawReadyBorder(g, pos, scale, Color.cyan);
         }
-        this.drawCostStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COST),
-                this.card.finalBasicStatEffects.getStat(EffectStats.COST), COST_POS, STAT_DEFAULT_SIZE);
+        this.drawCostStat(g, pos, scale, this.card.finalStats.get(Stat.COST),
+                this.card.finalBasicStats.get(Stat.COST), COST_POS, STAT_DEFAULT_SIZE);
         if (this.card instanceof Minion) {
-            this.drawOffensiveStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.ATTACK),
-                    this.card.finalBasicStatEffects.getStat(EffectStats.ATTACK),
+            this.drawOffensiveStat(g, pos, scale, this.card.finalStats.get(Stat.ATTACK),
+                    this.card.finalBasicStats.get(Stat.ATTACK),
                     new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND - MINION_STAT_POS_OFFSET_HAND), STAT_DEFAULT_SIZE, Game.getImage("res/game/statattack.png"));
-            this.drawOffensiveStat(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.MAGIC),
-                    this.card.finalBasicStatEffects.getStat(EffectStats.MAGIC),
+            this.drawOffensiveStat(g, pos, scale, this.card.finalStats.get(Stat.MAGIC),
+                    this.card.finalBasicStats.get(Stat.MAGIC),
                     new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND), STAT_DEFAULT_SIZE, Game.getImage("res/game/statmagic.png"));
             this.drawHealthStat(g, pos, scale, this.getMinion().health,
-                    this.card.finalStatEffects.getStat(EffectStats.HEALTH),
-                    this.card.finalBasicStatEffects.getStat(EffectStats.HEALTH),
+                    this.card.finalStats.get(Stat.HEALTH),
+                    this.card.finalBasicStats.get(Stat.HEALTH),
                     new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND + MINION_STAT_POS_OFFSET_HAND), STAT_DEFAULT_SIZE);
-            if (this.card.finalStatEffects.getStat(EffectStats.SHIELD) > 0) {
-                this.drawStatNumber(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.SHIELD),
+            if (this.card.finalStats.get(Stat.SHIELD) > 0) {
+                this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.SHIELD),
                         SHIELD_POS_HAND, STAT_DEFAULT_SIZE, Color.white, Game.getImage("res/game/statshield.png"), STAT_ICON_DEFAULT_SCALE);
             }
         }
-        if (this.card.finalStatEffects.getUse(EffectStats.COUNTDOWN)) {
-            this.drawStatNumber(g, pos, scale, this.card.finalStatEffects.getStat(EffectStats.COUNTDOWN), COUNTDOWN_POS,
+        if (this.card.finalStats.contains(Stat.COUNTDOWN)) {
+            this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.COUNTDOWN), COUNTDOWN_POS,
                     50, Color.white, Game.getImage("res/game/statcountdown.png"), STAT_ICON_COUNTDOWN_SCALE);
         }
     }

@@ -9,6 +9,7 @@ import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
@@ -52,7 +53,7 @@ public class Assassin extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             Effect stealth = new Effect("<b>Stealth</b> (from <b>Assassin</b>).", EffectStats.builder()
-                                    .set(EffectStats.STEALTH, 1)
+                                    .set(Stat.STEALTH, 1)
                                     .build());
                             this.resolve(b, rq, el, new AddEffectResolver(c, stealth));
                         });

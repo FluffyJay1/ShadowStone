@@ -72,7 +72,7 @@ public class DamageResolver extends Resolver {
             event = b.processEvent(rq, el, new EventDamage(this.cardSource, processedTargets, processedDamage, this.destroyed, this.animation));
         }
 
-        if (this.cardSource.finalStatEffects.getStat(EffectStats.LIFESTEAL) > 0) {
+        if (this.cardSource.finalStats.get(Stat.LIFESTEAL) > 0) {
             int totalHeal = event.actualDamage.stream()
                     .reduce(0, Integer::sum, Integer::sum);
             this.cardSource.player.getLeader().ifPresent(l -> {

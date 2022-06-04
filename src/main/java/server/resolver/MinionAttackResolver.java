@@ -46,8 +46,8 @@ public class MinionAttackResolver extends Resolver {
         }
         if (this.m1.alive && this.m1.isInPlay() && this.m2.alive && this.m2.isInPlay()) {
             List<Card> destroyed = new ArrayList<>(2);
-            int damage1 = this.m1.finalStatEffects.getStat(EffectStats.ATTACK);
-            int damage2 = this.m2.finalStatEffects.getStat(EffectStats.ATTACK);
+            int damage1 = this.m1.finalStats.get(Stat.ATTACK);
+            int damage2 = this.m2.finalStats.get(Stat.ATTACK);
             b.pushEventGroup(new EventGroup(EventGroupType.MINIONCOMBAT));
             DamageResolver d1 = new DamageResolver(this.m1, List.of(this.m2), List.of(damage1), false, m1.getTooltip().attackAnimation);
             DamageResolver d2 = new DamageResolver(this.m2, List.of(this.m1), List.of(damage2), false, m2.getTooltip().attackAnimation);
@@ -57,11 +57,11 @@ public class MinionAttackResolver extends Resolver {
             destroyed.addAll(d2.destroyed);
             b.popEventGroup(); // minion combat
             b.popEventGroup(); // attack order
-            if (this.m1.finalStatEffects.getStat(EffectStats.BANE) > 0 && !(this.m2 instanceof Leader)
+            if (this.m1.finalStats.get(Stat.BANE) > 0 && !(this.m2 instanceof Leader)
                     && !destroyed.contains(this.m2)) {
                 destroyed.add(this.m2);
             }
-            if (this.m2.finalStatEffects.getStat(EffectStats.BANE) > 0 && !(this.m1 instanceof Leader)
+            if (this.m2.finalStats.get(Stat.BANE) > 0 && !(this.m1 instanceof Leader)
                     && !destroyed.contains(this.m1)) {
                 destroyed.add(this.m1);
             }
