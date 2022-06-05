@@ -89,6 +89,9 @@ public class Tooltip {
             "<b>Shield</b> with X health. If the <b>Shield</b> is active, the minion will take no damage, and <b>Shield</b> will absorb the full damage instance. " +
                     "The <b>Shield</b> is removed when it has 0 health.",
             List::of);
+    public static final Tooltip REANIMATE = new Tooltip("Reanimate(X)",
+            "Summon the highest minion in your graveyard that costs X or less.",
+            List::of);
 
     public final String name;
     public final String description;

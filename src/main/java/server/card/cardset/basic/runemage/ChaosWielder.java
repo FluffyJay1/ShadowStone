@@ -29,7 +29,7 @@ import java.util.List;
 public class ChaosWielder extends MinionText {
     public static final String NAME = "Chaos Wielder";
     private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Draw 2 cards.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: <b>Spellboost</b> the cards in your hand, and gain +X/+0/+0 and <b>Rush</b> until the end of turn. X equals this minion's magic.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: <b>Spellboost</b> the cards in your hand, and gain +X/+0/+0 and <b>Rush</b> until the end of the turn. X equals this minion's magic.";
     public static final String DESCRIPTION = EffectSpellboostDiscount.DESCRIPTION + "\n" + BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.GOLD;
@@ -60,7 +60,7 @@ public class ChaosWielder extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         this.resolve(b, rq, el, new SpellboostResolver(owner.player.getHand()));
                         int x = owner.finalStats.get(Stat.MAGIC);
-                        Effect buff = new EffectUntilTurnEnd("+" + x + "/+0/+0 and <b>Rush</b> until the end of turn (from <b>Unleash</b>).", EffectStats.builder()
+                        Effect buff = new EffectUntilTurnEnd("+" + x + "/+0/+0 and <b>Rush</b> until the end of the turn (from <b>Unleash</b>).", EffectStats.builder()
                                 .change(Stat.ATTACK, x)
                                 .set(Stat.RUSH, 1)
                                 .build());

@@ -12,4 +12,9 @@ public class Amulet extends BoardObject {
     public TooltipAmulet getTooltip() {
         return (TooltipAmulet) super.getTooltip();
     }
+
+    @Override
+    public AmuletText getCardText() {
+        return (AmuletText) super.getCardText();
+    }
 }

@@ -54,7 +54,7 @@ public class EffectLastWordsSummon extends Effect {
                     .map(bot -> bot.constructInstance(this.owner.board))
                     .collect(Collectors.toList());
         }
-        return AI.valueForSummoning(this.cachedInstances, refs);
+        return this.teamMultiplier * AI.valueForSummoning(this.cachedInstances, refs);
     }
 
     @Override

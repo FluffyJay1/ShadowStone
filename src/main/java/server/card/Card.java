@@ -33,7 +33,7 @@ public abstract class Card implements Indexable, StringBuildable {
     public int team;
     private int cardpos;
     public int spellboosts;
-    public final CardText cardText;
+    private final CardText cardText;
     private final TooltipCard tooltip;
     public CardStatus status;
     public Card realCard; // for visual board
@@ -308,7 +308,8 @@ public abstract class Card implements Indexable, StringBuildable {
     }
 
     public boolean canBePlayed() {
-        return this.getBattlecryTargetingSchemes().stream().flatMap(Collection::stream).allMatch(TargetingScheme::conditions);
+        return this.getBattlecryTargetingSchemes().stream().flatMap(Collection::stream).allMatch(TargetingScheme::conditions)
+                && this.getFinalEffects(true).allMatch(Effect::battlecryPlayConditions);
     }
 
     public boolean canSpendAfterPlayed(int amount) {
@@ -447,5 +448,9 @@ public abstract class Card implements Indexable, StringBuildable {
 
     public TooltipCard getTooltip() {
         return tooltip;
+    }
+
+    public CardText getCardText() {
+        return cardText;
     }
 }

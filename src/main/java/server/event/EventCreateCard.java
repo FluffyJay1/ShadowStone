@@ -158,7 +158,7 @@ public class EventCreateCard extends Event {
         StringBuilder builder = new StringBuilder();
         builder.append(this.id).append(" ").append(this.visibility.name()).append(" ").append(this.cards.size()).append(" ");
         for (Card c : this.cards) {
-            builder.append(c.cardText.toString());
+            builder.append(c.getCardText().toString());
         }
         builder.append(this.team).append(" ").append(this.status.toString());
         for (Integer i : this.cardpos) {

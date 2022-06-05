@@ -16,7 +16,7 @@ import server.resolver.util.ResolverQueue;
 
 public class UnleashBegetUndead extends UnleashPowerText {
     public static final String NAME = "Beget Undead";
-    public static final String DESCRIPTION = "Give an allied minion <b>Last Words</b>: summon a <b>Skeleton</b>. <b>Unleash</b> it. Then deal 1 damage to it.";
+    public static final String DESCRIPTION = "Give an allied minion <b>Last Words</b>: Summon a <b>Skeleton</b>. <b>Unleash</b> it. Then deal 1 damage to it.";
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();

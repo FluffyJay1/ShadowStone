@@ -92,6 +92,11 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
         return List.of();
     }
 
+    // for preventing playing some cards outside of the targeting requirement, e.g. resurrecting a minion when no minions have died
+    public boolean battlecryPlayConditions() {
+        return true;
+    }
+
     // to display a yellow highlight around the card in hand if a special effect can be triggered
     public boolean battlecrySpecialConditions() {
         return false;

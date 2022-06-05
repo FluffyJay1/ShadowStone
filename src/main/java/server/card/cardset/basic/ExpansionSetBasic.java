@@ -14,7 +14,7 @@ import server.card.cardset.basic.swordpaladin.*;
 public class ExpansionSetBasic extends ExpansionSet {
     public static final CardSet UNPLAYABLE_SET = new CardSet(new Fairy(), new Skeleton(), new Knight(), new Puppet(),
             new HolyFalcon(), new HolyflameTiger(), new Spectre(), new Zombie(), new Snowman(), new HeavyKnight(),
-            new LeonidasResolve(), new CrimsonSorcery(), new ClayGolem(), new Dragon());
+            new LeonidasResolve(), new CrimsonSorcery(), new ClayGolem(), new Dragon(), new Ghost());
 
     public static final CardSet PLAYABLE_SET = new CardSet(new Goblin(), new Fighter(), new LochnLoad(), new Tiny(),
             new WellOfDestination(), new BellringerAngel(), new GenesisOfLegend(), new WoodOfBrambles(), new Baneling(),
@@ -31,7 +31,9 @@ public class ExpansionSetBasic extends ExpansionSet {
             new Rimewind(), new ConjuringForce(), new BladeMage(), new FieryEmbrace(), new FlameDestroyer(), new Chimera(),
             new IvoryDragon(), new ScaleboundPlight(), new AielaDragonKnight(), new DragoonScyther(), new GriffonKnight(),
             new DracomancersRites(), new Rahab(), new PyroxeneDragon(), new BlazingBreath(), new VenomousPucewyrm(),
-            new CanyonOfTheDragons(), new Fafnir(), new SkullBeast());
+            new CanyonOfTheDragons(), new Fafnir(), new SkullBeast(), new MischievousSpirit(), new SoulConversion(),
+            new DemonEater(), new LadyGreyDeathweaver(), new UndyingResentment(), new ZombieParty(), new BoneChimera(),
+            new NecroAssassin(), new PrinceCatacomb(), new BanelingBust(), new UnderworldWatchmanKhawy());
 
     @Override
     public CardSet getCards() {

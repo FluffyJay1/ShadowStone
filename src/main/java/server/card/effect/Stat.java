@@ -15,5 +15,6 @@ public enum Stat {
     SPELLBOOSTABLE,
     LIFESTEAL,
     STEALTH,
-    SHIELD;
+    SHIELD,
+    BANISH_ON_DESTROY
 }

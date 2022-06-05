@@ -21,4 +21,9 @@ public class Spell extends Card { // yea
     public TooltipSpell getTooltip() {
         return (TooltipSpell) super.getTooltip();
     }
+
+    @Override
+    public SpellText getCardText() {
+        return (SpellText) super.getCardText();
+    }
 }

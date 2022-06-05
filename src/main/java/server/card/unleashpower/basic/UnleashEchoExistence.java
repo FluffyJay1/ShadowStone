@@ -34,7 +34,7 @@ public class UnleashEchoExistence extends UnleashPowerText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (m.attacksThisTurn > 0) {
-                            CreateCardResolver ccr = new CreateCardResolver(m.cardText, effect.owner.team, CardStatus.DECK,
+                            CreateCardResolver ccr = new CreateCardResolver(m.getCardText(), effect.owner.team, CardStatus.DECK,
                                     (int) (effect.owner.board.getPlayer(effect.owner.team).getDeck().size() * Math.random()));
                             this.resolve(b, rq, el, ccr);
                             Effect esc = new Effect("-2 cost (from <b>Echo Existence</b>).");

@@ -130,7 +130,7 @@ public class EventTransform extends Event {
             builder.append(card.toReference());
         }
         for (Card transformInto : this.into) {
-            builder.append(transformInto.cardText.toString());
+            builder.append(transformInto.getCardText().toString());
         }
         builder.append(Game.EVENT_END);
         return builder.toString();

@@ -189,4 +189,9 @@ public class Minion extends BoardObject {
     public TooltipMinion getTooltip() {
         return (TooltipMinion) super.getTooltip();
     }
+
+    @Override
+    public MinionText getCardText() {
+        return (MinionText) super.getCardText();
+    }
 }

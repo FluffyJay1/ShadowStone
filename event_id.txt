@@ -21,7 +21,7 @@
 20: Spend
 21: Discard
 22: RemoveEffect
-23: EnterPlay - DELETED
+23: GainShadow
 24: LeavePlay - DELETED
 25: OnAttack - DELETED, see event groups
 26: OnAttacked - DELETED, see event groups
