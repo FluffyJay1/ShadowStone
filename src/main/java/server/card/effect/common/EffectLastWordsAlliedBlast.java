@@ -3,7 +3,6 @@ package server.card.effect.common;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import client.*;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
 import server.*;
 import server.ai.AI;
@@ -13,6 +12,7 @@ import server.event.*;
 import server.resolver.*;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
+import utils.SelectRandom;
 
 public class EffectLastWordsAlliedBlast extends Effect {
     int damage = 0;
@@ -36,7 +36,7 @@ public class EffectLastWordsAlliedBlast extends Effect {
             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                 List<Minion> minions = b.getMinions(effect.owner.team, false, true).collect(Collectors.toList());
                 if (!minions.isEmpty()) {
-                    Minion victim = Game.selectRandom(minions);
+                    Minion victim = SelectRandom.from(minions);
                     this.resolve(b, rq, el, new DamageResolver(effect, victim, effect.damage, true, animation));
                 }
             }

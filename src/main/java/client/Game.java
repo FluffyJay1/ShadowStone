@@ -2,10 +2,8 @@ package client;
 
 import java.awt.*;
 import java.awt.Font;
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.List;
 
 import gamemode.dungeonrun.controller.DungeonRunController;
 import org.newdawn.slick.*;
@@ -145,18 +143,4 @@ public class Game extends StateBasedGame {
         return new Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
-    public static <T> T selectRandom(List<T> list) {
-        int randind = (int) (Math.random() * list.size());
-        return list.get(randind);
-    }
-
-    public static <T> List<T> selectRandom(List<T> list, int num) { // helper
-        List<T> copy = new ArrayList<>(list);
-        List<T> ret = new ArrayList<>(num);
-        for (int i = 0; i < num && !copy.isEmpty(); i++) {
-            int randind = (int) (Math.random() * copy.size());
-            ret.add(copy.remove(randind));
-        }
-        return ret;
-    }
 }

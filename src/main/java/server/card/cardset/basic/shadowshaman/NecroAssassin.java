@@ -1,6 +1,5 @@
 package server.card.cardset.basic.shadowshaman;
 
-import client.Game;
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
@@ -14,10 +13,10 @@ import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.event.Event;
 import server.resolver.DestroyResolver;
-import server.resolver.DrawResolver;
 import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
+import utils.SelectRandom;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,7 +54,7 @@ public class NecroAssassin extends MinionText {
                             this.resolve(b, rq, el, new DestroyResolver(c));
                             List<Minion> relevant = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
                             if (!relevant.isEmpty()) {
-                                Minion choice = Game.selectRandom(relevant);
+                                Minion choice = SelectRandom.from(relevant);
                                 this.resolve(b, rq, el, new DestroyResolver(choice));
                             }
                         });

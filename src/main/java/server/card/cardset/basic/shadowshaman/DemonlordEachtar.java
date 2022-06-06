@@ -77,7 +77,7 @@ public class DemonlordEachtar extends MinionText {
                 }
                 int numSummoned = this.owner.player.shadows / 3;
                 return AI.valueForSummoning(this.cachedInstances.subList(0, Math.min(numSummoned, this.cachedInstances.size())), refs)
-                        + (AI.valueForBuff(2, 0, 0) + AI.VALUE_OF_RUSH) * 6 / 4;
+                        + (AI.valueForBuff(2, 0, 0) + AI.valueOfRush(4)) * 6 / 4;
             }
         });
     }

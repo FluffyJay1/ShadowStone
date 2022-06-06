@@ -20,12 +20,12 @@ import server.resolver.util.ResolverQueue;
 
 public class CursedStone extends MinionText {
     public static final String NAME = "Cursed Stone";
-    public static final String DESCRIPTION = "<b>Unleash</b>: <b>Blast(X)</b> and gain <b>Last Words</b>: Deal X damage to a random allied minion. X equals the amount of health your leader is missing.";
+    public static final String DESCRIPTION = "<b>Unleash</b>: <b>Blast(X)</b> and gain <b>Last Words</b>: Deal X damage to a random allied minion. X equals this minion's magic.";
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/cursedstone.png",
-            CRAFT, TRAITS, RARITY, 8, 1, 5, 8, false, CursedStone.class,
+            CRAFT, TRAITS, RARITY, 4, 1, 5, 8, false, CursedStone.class,
             new Vector2f(), -1, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.UNLEASH, Tooltip.BLAST, Tooltip.LASTWORDS));
 
@@ -39,9 +39,9 @@ public class CursedStone extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         Player player = owner.board.getPlayer(owner.team);
-                        int missing = player.getLeader().map(l -> l.finalStats.get(Stat.HEALTH) - l.health).orElse(0);
-                        this.resolve(b, rq, el, new BlastResolver(effect, missing, EventAnimationDamageEnergyBeam.class));
-                        Effect lw = new EffectLastWordsAlliedBlast("<b>Unleash</b>", missing, EventAnimationDamageEnergyBeam.class);
+                        int damage = owner.finalStats.get(Stat.MAGIC);
+                        this.resolve(b, rq, el, new BlastResolver(effect, damage, EventAnimationDamageEnergyBeam.class));
+                        Effect lw = new EffectLastWordsAlliedBlast("<b>Unleash</b>", damage, EventAnimationDamageEnergyBeam.class);
                         this.resolve(b, rq, el, new AddEffectResolver(effect.owner, lw));
                     }
                 });
@@ -49,9 +49,8 @@ public class CursedStone extends MinionText {
 
             @Override
             public double getPresenceValue(int refs) {
-                Player player = owner.board.getPlayer(owner.team);
-                int missing = player.getLeader().map(l ->l.finalStats.get(Stat.HEALTH) - l.health).orElse(0);
-                return AI.VALUE_PER_DAMAGE * missing / 2.;
+                int damage = this.owner.finalStats.get(Stat.MAGIC);
+                return AI.VALUE_PER_DAMAGE * damage / 2.;
             }
         });
     }

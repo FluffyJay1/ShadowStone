@@ -3,7 +3,6 @@ package server.card.cardset.basic.neutral;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import client.*;
 import client.tooltip.*;
 import org.newdawn.slick.geom.Vector2f;
 import server.*;
@@ -15,6 +14,7 @@ import server.event.*;
 import server.resolver.*;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
+import utils.SelectRandom;
 
 public class WellOfDestination extends AmuletText {
     public static final String NAME = "Well of Destination";
@@ -37,7 +37,7 @@ public class WellOfDestination extends AmuletText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> possible = b.getMinions(owner.team, false, true).collect(Collectors.toList());
                         if (!possible.isEmpty()) {
-                            Minion targeted = Game.selectRandom(possible);
+                            Minion targeted = SelectRandom.from(possible);
                             EffectStatChange e = new EffectStatChange("+1/+1/+1 (from <b>Well of Destination</b>).", 1, 1,
                                     1);
                             this.resolve(b, rq, el, new AddEffectResolver(targeted, e));

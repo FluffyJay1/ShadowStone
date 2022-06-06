@@ -59,7 +59,8 @@ public class TimewornMageLevi extends MinionText {
                 if (this.cachedInstances == null) {
                     this.cachedInstances = List.of(new CrimsonSorcery().constructInstance(this.owner.board));
                 }
-                return (AI.valueForAddingToHand(this.cachedInstances, refs) + this.owner.finalStats.get(Stat.MAGIC) + AI.VALUE_OF_RUSH) / 2;
+                return (AI.valueForAddingToHand(this.cachedInstances, refs)
+                        + AI.valueOfRush(this.owner.finalStats.get(Stat.MAGIC) + this.owner.finalStats.get(Stat.ATTACK))) / 2;
             }
         });
     }

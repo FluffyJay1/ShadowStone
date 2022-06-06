@@ -55,12 +55,12 @@ public class CentaurVanguard extends MinionText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.VALUE_OF_STORM / 2;
+                return AI.valueOfStorm(this.owner) / 2;
             }
 
             @Override
             public boolean battlecrySpecialConditions() {
-                return owner.player.getPlayArea().stream().anyMatch(m -> m.finalTraits.contains(CardTrait.COMMANDER));
+                return this.owner.player.getPlayArea().stream().anyMatch(m -> m.finalTraits.contains(CardTrait.COMMANDER));
             }
         });
     }

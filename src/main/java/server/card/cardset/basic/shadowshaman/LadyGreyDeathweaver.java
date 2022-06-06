@@ -60,7 +60,8 @@ public class LadyGreyDeathweaver extends MinionText {
 
             @Override
             public double getPresenceValue(int refs) {
-                return (this.owner.finalStats.get(Stat.MAGIC) * 2 + AI.VALUE_OF_RUSH) / 2;
+                return (this.owner.finalStats.get(Stat.MAGIC)
+                        + AI.valueOfRush(this.owner.finalStats.get(Stat.MAGIC) + this.owner.finalStats.get(Stat.ATTACK))) / 2;
             }
         });
     }

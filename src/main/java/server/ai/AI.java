@@ -43,9 +43,6 @@ public class AI extends Thread {
 
     public static final double VALUE_OF_DESTROY = 4;
 
-    public static final double VALUE_OF_RUSH = 0.5;
-    public static final double VALUE_OF_STORM = 1;
-
     public static final double VALUE_OF_BANE = 1.5;
 
     public static final double VALUE_OF_SPELLBOOST = 1.5;
@@ -917,10 +914,10 @@ public class AI extends Thread {
         double rushStormBonus = 0;
         if (c instanceof Minion) {
             if (c.finalStats.get(Stat.RUSH) > 0) {
-                rushStormBonus = VALUE_OF_RUSH;
+                rushStormBonus = valueOfRush(c.finalStats.get(Stat.ATTACK));
             }
             if (c.finalStats.get(Stat.STORM) > 0) {
-                rushStormBonus = VALUE_OF_STORM;
+                rushStormBonus = valueOfStorm(c.finalStats.get(Stat.ATTACK));
             }
         }
         return (c.getValue(refs) + rushStormBonus) / (c.finalStats.get(Stat.COST) + 1.1);
@@ -935,10 +932,10 @@ public class AI extends Thread {
         double rushStormBonus = 0;
         if (c instanceof Minion) {
             if (c.finalStats.get(Stat.RUSH) > 0) {
-                rushStormBonus = VALUE_OF_RUSH;
+                rushStormBonus = valueOfRush(c);
             }
             if (c.finalStats.get(Stat.STORM) > 0) {
-                rushStormBonus = VALUE_OF_STORM;
+                rushStormBonus = valueOfStorm(c);
             }
         }
         return (c.getValue() + rushStormBonus) / (c.finalStats.get(Stat.COST) + 1.1);
@@ -951,6 +948,34 @@ public class AI extends Thread {
      */
     public static double valueOfMinionDamage(int damage) {
         return Math.min(AI.VALUE_OF_DESTROY, 2.466 * Math.log(damage / 2. + 1));
+    }
+
+    /**
+     * Gets the value of granting rush to a minion
+     * @param attack The attack of the minion
+     * @return the value
+     */
+    public static double valueOfRush(int attack) {
+        return valueOfMinionDamage(attack) * 0.5;
+    }
+
+    // same as above but automatically gets the attack stat
+    public static double valueOfRush(Card c) {
+        return valueOfRush(c.finalStats.get(Stat.ATTACK));
+    }
+
+    /**
+     * Gets the value of granting storm to a minion
+     * @param attack The attack of the minion
+     * @return the value
+     */
+    public static double valueOfStorm(int attack) {
+        return attack * 0.8;
+    }
+
+    // same as above but automatically gets the attack stat
+    public static double valueOfStorm(Card c) {
+        return valueOfStorm(c.finalStats.get(Stat.ATTACK));
     }
 
     // kekl

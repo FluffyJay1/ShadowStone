@@ -3,13 +3,13 @@ package server.resolver;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import client.*;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
 import server.event.*;
 import server.resolver.util.ResolverQueue;
+import utils.SelectRandom;
 
 public class BlastResolver extends Resolver {
     final Effect source;
@@ -34,7 +34,7 @@ public class BlastResolver extends Resolver {
         if (minions.isEmpty()) {
             target = this.b.getPlayer(this.enemyTeam).getLeader().orElse(null);
         } else {
-            target = Game.selectRandom(minions);
+            target = SelectRandom.from(minions);
         }
         if (target != null) {
             this.resolve(b, rq, el, new DamageResolver(this.source, List.of(target), List.of(this.damage), true, this.animation));

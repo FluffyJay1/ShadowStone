@@ -71,7 +71,7 @@ public class ChaosWielder extends MinionText {
 
             @Override
             public double getPresenceValue(int refs) {
-                return (AI.VALUE_OF_SPELLBOOST + this.owner.finalStats.get(Stat.MAGIC) + AI.VALUE_OF_RUSH) / 2;
+                return (AI.VALUE_OF_SPELLBOOST + AI.valueOfRush(this.owner.finalStats.get(Stat.MAGIC) + this.owner.finalStats.get(Stat.ATTACK))) / 2;
             }
         }, new EffectSpellboostDiscount());
     }

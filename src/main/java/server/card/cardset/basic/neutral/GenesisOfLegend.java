@@ -3,7 +3,6 @@ package server.card.cardset.basic.neutral;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import client.*;
 import client.tooltip.*;
 import org.newdawn.slick.geom.Vector2f;
 import server.*;
@@ -15,6 +14,7 @@ import server.event.*;
 import server.resolver.*;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
+import utils.SelectRandom;
 
 public class GenesisOfLegend extends AmuletText {
     public static final String NAME = "Gensis of Legend";
@@ -41,7 +41,7 @@ public class GenesisOfLegend extends AmuletText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> possible = b.getMinions(owner.team, false, true).collect(Collectors.toList());
                         if (!possible.isEmpty()) {
-                            Minion selected = Game.selectRandom(possible);
+                            Minion selected = SelectRandom.from(possible);
                             EffectStatChange esc = new EffectStatChange(
                                     "+0/+0/+1 and <b>Bane</b> (from <b>Genesis of Legend</b>).", 0, 0, 1);
                             esc.effectStats.set.set(Stat.BANE, 1);

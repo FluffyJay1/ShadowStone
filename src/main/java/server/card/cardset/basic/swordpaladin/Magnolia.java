@@ -1,6 +1,5 @@
 package server.card.cardset.basic.swordpaladin;
 
-import client.Game;
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
@@ -18,6 +17,7 @@ import server.resolver.PutCardResolver;
 import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
+import utils.SelectRandom;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class Magnolia extends MinionText {
                                     .filter(c -> c instanceof Minion && c.finalStats.get(Stat.COST) == finalCost)
                                     .collect(Collectors.toList());
                             if (!eligible.isEmpty()) {
-                                target.add(Game.selectRandom(eligible));
+                                target.add(SelectRandom.from(eligible));
                                 pos.add(owner.getIndex() + 2 - cost);
                             }
                         }

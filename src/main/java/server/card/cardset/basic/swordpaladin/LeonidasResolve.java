@@ -61,7 +61,7 @@ public class LeonidasResolve extends AmuletText {
             @Override
             public double getPresenceValue(int refs) {
                 // oh it very valuable
-                return (AI.valueForBuff(3, 0, 3) + AI.VALUE_OF_RUSH) * 5;
+                return (AI.valueForBuff(3, 0, 3) + AI.valueOfRush(5)) * 5;
             }
         });
     }

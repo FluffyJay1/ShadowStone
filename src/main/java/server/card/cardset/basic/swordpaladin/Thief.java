@@ -56,7 +56,7 @@ public class Thief extends MinionText {
 
             @Override
             public double getPresenceValue(int refs) {
-                return (AI.valueForBuff(0, 0, 2) + AI.VALUE_OF_RUSH) / 2 + AI.VALUE_PER_CARD_IN_HAND;
+                return (AI.valueForBuff(0, 0, 2) + AI.valueOfRush(this.owner)) / 2 + AI.VALUE_PER_CARD_IN_HAND;
             }
         });
     }

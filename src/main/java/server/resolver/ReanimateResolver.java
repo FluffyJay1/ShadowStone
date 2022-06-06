@@ -1,6 +1,5 @@
 package server.resolver;
 
-import client.Game;
 import server.Player;
 import server.ServerBoard;
 import server.card.Card;
@@ -10,6 +9,7 @@ import server.card.MinionText;
 import server.card.effect.Stat;
 import server.event.Event;
 import server.resolver.util.ResolverQueue;
+import utils.SelectRandom;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,7 +37,7 @@ public class ReanimateResolver extends Resolver {
                     List<Card> highest = relevant.stream()
                             .filter(c -> c.finalBasicStats.get(Stat.COST) == cost)
                             .collect(Collectors.toList());
-                    MinionText selected = ((Minion) Game.selectRandom(highest)).getCardText();
+                    MinionText selected = ((Minion) SelectRandom.from(highest)).getCardText();
                     this.resolve(b, rq, el, new CreateCardResolver(selected, this.p.team, CardStatus.BOARD, this.pos));
                 });
     }

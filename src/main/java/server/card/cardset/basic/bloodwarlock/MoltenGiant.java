@@ -28,7 +28,7 @@ public class MoltenGiant extends MinionText {
 
             @Override
             public EffectStats calculateStats() {
-                Player player = owner.board.getPlayer(owner.team);
+                Player player = this.owner.board.getPlayer(this.owner.team);
                 int missing = player.getLeader().map(l -> l.finalStats.get(Stat.HEALTH) - l.health).orElse(0);
                 return EffectStats.builder()
                         .change(Stat.COST, -missing)
@@ -37,7 +37,7 @@ public class MoltenGiant extends MinionText {
 
             @Override
             public boolean isActive() {
-                return owner.status.equals(CardStatus.HAND);
+                return this.owner.status.equals(CardStatus.HAND);
             }
         });
     }

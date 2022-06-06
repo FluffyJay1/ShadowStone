@@ -5,35 +5,31 @@ import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
+import server.Player;
 import server.ServerBoard;
 import server.ai.AI;
-import server.card.CardRarity;
-import server.card.CardTrait;
-import server.card.ClassCraft;
-import server.card.MinionText;
+import server.card.*;
 import server.card.effect.Effect;
-import server.card.effect.EffectStats;
-import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
-import server.resolver.AddEffectResolver;
 import server.resolver.DamageResolver;
-import server.resolver.DrawResolver;
 import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class Belphegor extends MinionText {
-    public static final String NAME = "Belphegor";
-    public static final String DESCRIPTION = "<b>Battlecry</b>: Draw 2 cards. If <b>Vengeance</b> isn't active for you, deal X damage to your leader. X equals your leader's health minus 15.";
+public class SwarmingWraith extends MinionText {
+    public static final String NAME = "Swarming Wraith";
+    public static final String DESCRIPTION = "<b>Battlecry</b>: If <b>Vengeance</b> is not active for you, deal 2 damage to your leader. " +
+            "If <b>Vengeance</b> is active for you, deal 2 damage to the enemy leader.";
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
-    public static final CardRarity RARITY = CardRarity.LEGENDARY;
+    public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/belphegor.png",
-            CRAFT, TRAITS, RARITY, 4, 4, 2, 4, true, Belphegor.class,
-            new Vector2f(142, 136), 1.7, EventAnimationDamageSlash.class,
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/swarmingwraith.png",
+            CRAFT, TRAITS, RARITY, 2, 3, 1, 2, true, SwarmingWraith.class,
+            new Vector2f(183, 153), 1.3, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.BATTLECRY, Tooltip.VENGEANCE));
 
     @Override
@@ -45,10 +41,13 @@ public class Belphegor extends MinionText {
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new DrawResolver(owner.player, 2));
-                        if (!owner.player.vengeance()) {
-                            owner.player.getLeader().ifPresent(l -> {
-                                this.resolve(b, rq, el, new DamageResolver(effect, l, l.health - 15, true, EventAnimationDamageFire.class));
+                        if (owner.player.vengeance()) {
+                            b.getPlayer(owner.team * -1).getLeader().ifPresent(l -> {
+                                this.resolve(b, rq, el, new DamageResolver(effect, l, 2, true, EventAnimationDamageFire.class));
+                            });
+                        } else {
+                            b.getPlayer(owner.team).getLeader().ifPresent(l -> {
+                                this.resolve(b, rq, el, new DamageResolver(effect, l, 2, true, EventAnimationDamageFire.class));
                             });
                         }
                     }
@@ -57,13 +56,13 @@ public class Belphegor extends MinionText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                // draw 2, vengeance part is hard to evaluate
-                return AI.VALUE_PER_CARD_IN_HAND * 2;
+                // idk
+                return this.owner.player.vengeance() ? AI.VALUE_PER_DAMAGE * 2 : AI.VALUE_PER_DAMAGE;
             }
 
             @Override
             public boolean battlecrySpecialConditions() {
-                return !this.owner.player.vengeance();
+                return this.owner.player.vengeance();
             }
         });
     }

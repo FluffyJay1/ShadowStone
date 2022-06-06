@@ -268,7 +268,7 @@ public class ServerBoard extends Board {
                     List<EffectStats> stats = new ArrayList<>(effectsToUpdate.size());
                     for (EffectWithDependentStats effToUpdate : effectsToUpdate) {
                         effToUpdate.awaitingUpdate = false;
-                        EffectStats calculated = effToUpdate.calculateStats();
+                        EffectStats calculated = effToUpdate.isActive() ? effToUpdate.calculateStats() : new EffectStats();
                         if (!effToUpdate.effectStats.equals(calculated)) {
                             eff.add(effToUpdate);
                             stats.add(calculated);

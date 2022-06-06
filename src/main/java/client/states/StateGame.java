@@ -10,6 +10,7 @@ import client.ui.game.*;
 import network.*;
 import server.ai.AIConfig;
 import server.card.cardset.*;
+import utils.SelectRandom;
 
 public class StateGame extends BasicGameState {
     public static ConstructedDeck tempdeck;
@@ -43,7 +44,7 @@ public class StateGame extends BasicGameState {
         this.ui.addUIElementParent(quitButton);
         this.game = new ServerGameThread(this.dsserver, 1, false);
         this.game.setDecklist(1, tempdeck);
-        this.game.setDecklist(-1, Game.selectRandom(ConstructedDeck.decks));
+        this.game.setDecklist(-1, SelectRandom.from(ConstructedDeck.decks));
         this.game.setAIConfig(tempConfig);
         this.game.start();
     }

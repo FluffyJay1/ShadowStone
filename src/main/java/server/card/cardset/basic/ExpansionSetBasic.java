@@ -33,7 +33,10 @@ public class ExpansionSetBasic extends ExpansionSet {
             new DracomancersRites(), new Rahab(), new PyroxeneDragon(), new BlazingBreath(), new VenomousPucewyrm(),
             new CanyonOfTheDragons(), new Fafnir(), new SkullBeast(), new MischievousSpirit(), new SoulConversion(),
             new DemonEater(), new LadyGreyDeathweaver(), new UndyingResentment(), new ZombieParty(), new BoneChimera(),
-            new NecroAssassin(), new PrinceCatacomb(), new BanelingBust(), new UnderworldWatchmanKhawy());
+            new NecroAssassin(), new PrinceCatacomb(), new BanelingBust(), new UnderworldWatchmanKhawy(), new Defile(),
+            new AmblingWraith(), new SwarmingWraith(), new BloodPact(), new RazoryClaw(), new EndearingSuccubusLilith(),
+            new DemonKey(), new PrisonOfPain(), new DarkGeneral(), new ScarletSabreur(), new Revelation(), new TemptressVampire(),
+            new DemonicRam());
 
     @Override
     public CardSet getCards() {

@@ -1,6 +1,5 @@
 package server.card.cardset.basic.shadowshaman;
 
-import client.Game;
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
@@ -17,6 +16,7 @@ import server.resolver.Resolver;
 import server.resolver.RestoreResolver;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
+import utils.SelectRandom;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,19 +45,14 @@ public class UnderworldWatchmanKhawy extends MinionText {
                 return new ResolverWithDescription(LASTWORDS_DESCRIPTION, new Resolver(true) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        b.getMinions(owner.team * -1, false, true)
-                                .map(m -> m.finalStats.get(Stat.ATTACK))
-                                .max(Integer::compareTo)
-                                .ifPresent(attack -> {
-                                    List<Minion> relevant = b.getMinions(owner.team * -1, false, true)
-                                            .filter(m -> m.finalStats.get(Stat.ATTACK) == attack)
-                                            .collect(Collectors.toList());
-                                    Minion target = Game.selectRandom(relevant);
-                                    this.resolve(b, rq, el, new DestroyResolver(target));
-                                    owner.player.getLeader().ifPresent(l -> {
-                                        this.resolve(b, rq, el, new RestoreResolver(effect, l, attack));
-                                    });
-                                });
+                        Minion target = SelectRandom.oneOfWith(b.getMinions(owner.team * -1, false, true).collect(Collectors.toList()),
+                                m -> m.finalStats.get(Stat.ATTACK), Integer::max);
+                        if (target != null) {
+                            this.resolve(b, rq, el, new DestroyResolver(target));
+                            owner.player.getLeader().ifPresent(l -> {
+                                this.resolve(b, rq, el, new RestoreResolver(effect, l, target.finalStats.get(Stat.ATTACK)));
+                            });
+                        }
                     }
                 });
             }

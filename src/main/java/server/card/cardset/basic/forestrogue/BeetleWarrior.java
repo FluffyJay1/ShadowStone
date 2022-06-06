@@ -55,7 +55,7 @@ public class BeetleWarrior extends MinionText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return ((AI.valueForBuff(1, 0, 1) + 1) + AI.VALUE_OF_STORM) / 2.;
+                return ((AI.valueForBuff(1, 0, 1) + 1) + AI.valueOfStorm(this.owner.finalStats.get(Stat.ATTACK) + 1)) / 2.;
             }
 
             @Override

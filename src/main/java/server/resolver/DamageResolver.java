@@ -10,7 +10,7 @@ import server.event.*;
 import server.resolver.util.ResolverQueue;
 
 public class DamageResolver extends Resolver {
-    final List<Minion> targets;
+    final List<? extends Minion> targets;
     final List<Integer> damage;
     public final List<Card> destroyed;
     Effect effectSource;
@@ -24,7 +24,7 @@ public class DamageResolver extends Resolver {
      */
     final boolean resolveDestroy;
 
-    public DamageResolver(Card source, List<Minion> targets, List<Integer> damage,
+    public DamageResolver(Card source, List<? extends Minion> targets, List<Integer> damage,
             boolean resolveDestroy, Class<? extends EventAnimationDamage> animation) {
         super(false);
         this.cardSource = source;
@@ -35,13 +35,13 @@ public class DamageResolver extends Resolver {
         this.animation = animation;
     }
 
-    public DamageResolver(Effect source, List<Minion> targets, List<Integer> damage,
+    public DamageResolver(Effect source, List<? extends Minion> targets, List<Integer> damage,
                           boolean resolveDestroy, Class<? extends EventAnimationDamage> animation) {
         this(source.owner, targets, damage, resolveDestroy, animation);
         this.effectSource = source;
     }
 
-    public DamageResolver(Effect source, List<Minion> targets, int damage,
+    public DamageResolver(Effect source, List<? extends Minion> targets, int damage,
                           boolean resolveDestroy, Class<? extends EventAnimationDamage> animation) {
         this(source.owner, targets, Collections.nCopies(targets.size(), damage), resolveDestroy, animation);
         this.effectSource = source;

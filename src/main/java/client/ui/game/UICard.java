@@ -266,13 +266,15 @@ public class UICard extends UIBox {
         super.update(frametime);
         this.stealthParticles.setScale(this.getScale());
         this.stealthParticles.setPaused(!this.card.isInPlay() || this.card.finalStats.get(Stat.STEALTH) == 0);
-        this.specialConditionParticles.setScale(this.getScale());
-        this.specialConditionParticles.setPaused(this.card.team != this.uib.b.localteam || switch (this.card.status) {
-            case HAND -> !this.card.realCard.player.canPlayCard(this.card.realCard) || !this.card.realCard.battlecrySpecialConditions();
-            case BOARD -> !this.uib.draggingUnleash || !this.card.realCard.player.canUnleashCard(this.card.realCard)
-                    || !(this.card instanceof Minion) || !((Minion) this.card.realCard).unleashSpecialConditions();
-            default -> true;
-        });
+        if (this.card.realCard.player != null) {
+            this.specialConditionParticles.setScale(this.getScale());
+            this.specialConditionParticles.setPaused(this.card.team != this.uib.b.localteam || switch (this.card.status) {
+                case HAND -> !this.card.realCard.player.canPlayCard(this.card.realCard) || !this.card.realCard.battlecrySpecialConditions();
+                case BOARD -> !this.uib.draggingUnleash || !this.card.realCard.player.canUnleashCard(this.card.realCard)
+                        || !(this.card instanceof Minion) || !((Minion) this.card.realCard).unleashSpecialConditions();
+                default -> true;
+            });
+        }
         if (!this.isBeingAnimated()) {
             this.updateCardAnimation();
             this.updateFlippedOver();

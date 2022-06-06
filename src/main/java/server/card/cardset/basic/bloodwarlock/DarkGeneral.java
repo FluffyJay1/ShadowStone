@@ -1,4 +1,4 @@
-package server.card.cardset.basic.dragondruid;
+package server.card.cardset.basic.bloodwarlock;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
@@ -22,33 +22,30 @@ import server.resolver.util.ResolverQueue;
 
 import java.util.List;
 
-public class DragoonScyther extends MinionText {
-    public static final String NAME = "Dragoon Scyther";
-    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Gain <b>Storm</b> if <b>Overflow</b> is active for you.";
-    public static final String DESCRIPTION = "<b>Bane</b>.\n" + BATTLECRY_DESCRIPTION;
-    public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
+public class DarkGeneral extends MinionText {
+    public static final String NAME = "Dark General";
+    public static final String DESCRIPTION = "<b>Battlecry</b>: Gain <b>Storm</b> if <b>Vengeance</b> is active for you.";
+    public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/dragoonscyther.png",
-            CRAFT, TRAITS, RARITY, 3, 2, 1, 2, true, DragoonScyther.class,
-            new Vector2f(146, 155), 1.4, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BANE, Tooltip.BATTLECRY, Tooltip.STORM, Tooltip.OVERFLOW));
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/darkgeneral.png",
+            CRAFT, TRAITS, RARITY, 4, 4, 2, 3, true, DarkGeneral.class,
+            new Vector2f(131, 157), 1.3, EventAnimationDamageSlash.class,
+            () -> List.of(Tooltip.BATTLECRY, Tooltip.STORM, Tooltip.VENGEANCE));
 
     @Override
     protected List<Effect> getSpecialEffects() {
-        return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(Stat.BANE, 1)
-                .build()) {
+        return List.of(new Effect(DESCRIPTION) {
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
-                return new ResolverWithDescription(BATTLECRY_DESCRIPTION, new Resolver(false) {
+                return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        if (owner.player.overflow()) {
-                            Effect buff = new Effect("<b>Storm</b> (from <b>Battlecry</b>).", EffectStats.builder()
+                        if (owner.player.vengeance()) {
+                            Effect storm = new Effect("<b>Storm</b> (from <b>Battlecry</b>).", EffectStats.builder()
                                     .set(Stat.STORM, 1)
                                     .build());
-                            this.resolve(b, rq, el, new AddEffectResolver(owner, buff));
+                            this.resolve(b, rq, el, new AddEffectResolver(owner, storm));
                         }
                     }
                 });
@@ -56,12 +53,12 @@ public class DragoonScyther extends MinionText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.valueOfStorm(this.owner);
+                return this.owner.player.vengeance() ? AI.valueOfStorm(this.owner) : 0;
             }
 
             @Override
             public boolean battlecrySpecialConditions() {
-                return this.owner.player.overflow();
+                return this.owner.player.vengeance();
             }
         });
     }

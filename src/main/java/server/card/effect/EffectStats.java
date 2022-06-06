@@ -15,7 +15,6 @@ import java.util.*;
  * (like an effect that buffs health by 2)
  */
 public class EffectStats implements Cloneable, StringBuildable {
-    public static final int NUM_STATS = 15;
     // what's an enum
     // set of stats that we'll ensure to keep non-negative in between applications
     private static final Set<Stat> NON_NEGATIVE_PER_STEP = new HashSet<>(List.of(Stat.SHIELD));

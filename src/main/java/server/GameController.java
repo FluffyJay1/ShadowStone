@@ -1,6 +1,5 @@
 package server;
 
-import client.Game;
 import network.DataStream;
 import network.MessageType;
 import server.card.Card;
@@ -13,6 +12,7 @@ import server.event.EventCreateCard;
 import server.resolver.DrawResolver;
 import server.resolver.Resolver;
 import server.resolver.util.ResolverQueue;
+import utils.SelectRandom;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,7 @@ public class GameController {
                 for (int i = 0; i <= 1; i++) { // deckbuilding 101
                     int team = indexToTeam(i);
                     List<Card> cards = decks.get(i).convertToCards(b);
-                    List<Card> shuffledCards = Game.selectRandom(cards, cards.size());
+                    List<Card> shuffledCards = SelectRandom.from(cards, cards.size());
                     List<Integer> inds = new ArrayList<>(shuffledCards.size());
                     for (int j = 0; j < shuffledCards.size(); j++) {
                         inds.add(j);
