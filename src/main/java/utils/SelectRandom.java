@@ -13,9 +13,12 @@ public class SelectRandom {
      *
      * @param list The list to sample
      * @param <T> Type of the item
-     * @return An item from that list, randomly chosen
+     * @return An item from that list, randomly chosen, or null if list is empty
      */
     public static <T> T from(List<T> list) {
+        if (list.isEmpty()) {
+            return null;
+        }
         int randind = (int) (Math.random() * list.size());
         return list.get(randind);
     }

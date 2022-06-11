@@ -14,7 +14,8 @@ import server.card.cardset.basic.swordpaladin.*;
 public class ExpansionSetBasic extends ExpansionSet {
     public static final CardSet UNPLAYABLE_SET = new CardSet(new Fairy(), new Skeleton(), new Knight(), new Puppet(),
             new HolyFalcon(), new HolyflameTiger(), new Spectre(), new Zombie(), new Snowman(), new HeavyKnight(),
-            new LeonidasResolve(), new CrimsonSorcery(), new ClayGolem(), new Dragon(), new Ghost());
+            new LeonidasResolve(), new CrimsonSorcery(), new ClayGolem(), new Dragon(), new Ghost(), new TimeOwl(),
+            new HolywingDragon());
 
     public static final CardSet PLAYABLE_SET = new CardSet(new Goblin(), new Fighter(), new LochnLoad(), new Tiny(),
             new WellOfDestination(), new BellringerAngel(), new GenesisOfLegend(), new WoodOfBrambles(), new Baneling(),
@@ -36,7 +37,8 @@ public class ExpansionSetBasic extends ExpansionSet {
             new NecroAssassin(), new PrinceCatacomb(), new BanelingBust(), new UnderworldWatchmanKhawy(), new Defile(),
             new AmblingWraith(), new SwarmingWraith(), new BloodPact(), new RazoryClaw(), new EndearingSuccubusLilith(),
             new DemonKey(), new PrisonOfPain(), new DarkGeneral(), new ScarletSabreur(), new Revelation(), new TemptressVampire(),
-            new DemonicRam());
+            new DemonicRam(), new SacredPlea(), new FeatherfallHourglass(), new RabbitHealer(), new MoriaeEncomium(),
+            new PriestOfTheCudgel(), new WhitefangTemple(), new ElanasPrayer(), new KelHolyMarksman(), new TribunalOfGoodAndEvil());
 
     @Override
     public CardSet getCards() {
