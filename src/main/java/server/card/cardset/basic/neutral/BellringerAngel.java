@@ -21,7 +21,8 @@ public class BellringerAngel extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/bellringerangel.png",
             CRAFT, TRAITS, RARITY,2, 0, 0, 2, false, BellringerAngel.class,
             new Vector2f(), -1, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.WARD, Tooltip.LASTWORDS));
+            () -> List.of(Tooltip.WARD, Tooltip.LASTWORDS),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

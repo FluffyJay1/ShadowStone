@@ -23,7 +23,8 @@ public class Immortal extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/immortal.png",
             CRAFT, TRAITS, RARITY, 6, 5, 2, 3, true, Immortal.class,
             new Vector2f(147, 136), 1.4, EventAnimationDamageEnergyBeamQuick.class,
-            () -> List.of(Tooltip.SHIELD));
+            () -> List.of(Tooltip.SHIELD),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

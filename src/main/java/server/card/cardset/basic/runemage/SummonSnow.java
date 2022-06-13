@@ -27,7 +27,8 @@ public class SummonSnow extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/summonsnow.png",
             CRAFT, TRAITS, RARITY, 3, SummonSnow.class,
-            () -> List.of(Snowman.TOOLTIP, Tooltip.SPELLBOOST));
+            () -> List.of(Snowman.TOOLTIP, Tooltip.SPELLBOOST),
+            List.of());
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()

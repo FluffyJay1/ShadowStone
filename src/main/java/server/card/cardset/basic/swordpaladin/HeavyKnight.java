@@ -20,7 +20,8 @@ public class HeavyKnight extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/heavyknight.png",
             CRAFT, TRAITS, RARITY, 1, 1, 0, 2, true, HeavyKnight.class,
             new Vector2f(150, 150), 1.2, EventAnimationDamageSlash.class,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

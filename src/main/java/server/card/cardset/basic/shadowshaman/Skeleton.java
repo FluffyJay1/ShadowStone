@@ -17,7 +17,8 @@ public class Skeleton extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/skeleton.png",
             CRAFT, TRAITS, RARITY, 1, 1, 1, 1, true, Skeleton.class,
             new Vector2f(), -1, null,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

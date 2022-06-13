@@ -1,7 +1,8 @@
 package server.card;
 
 public enum CardTrait {
-    OFFICER("Officer"), COMMANDER("Commander");
+    OFFICER("Officer"), COMMANDER("Commander"),
+    ARTIFACT("Artifact");
 
     private final String descriptiveName;
 

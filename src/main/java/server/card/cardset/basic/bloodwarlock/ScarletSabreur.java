@@ -32,7 +32,8 @@ public class ScarletSabreur extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/scarletsabreur.png",
             CRAFT, TRAITS, RARITY, 5, 2, 2, 4, true, ScarletSabreur.class,
             new Vector2f(169, 130), 1.5, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BANE, Tooltip.BATTLECRY));
+            () -> List.of(Tooltip.BANE, Tooltip.BATTLECRY),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

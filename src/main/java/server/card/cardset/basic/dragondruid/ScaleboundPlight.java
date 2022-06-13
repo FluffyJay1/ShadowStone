@@ -26,7 +26,8 @@ public class ScaleboundPlight extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/scaleboundplight.png",
             CRAFT, TRAITS, RARITY, 1, ScaleboundPlight.class,
-            () -> List.of(Tooltip.OVERFLOW));
+            () -> List.of(Tooltip.OVERFLOW),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

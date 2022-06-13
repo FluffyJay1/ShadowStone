@@ -27,7 +27,8 @@ public class CursedStone extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/cursedstone.png",
             CRAFT, TRAITS, RARITY, 4, 1, 5, 8, false, CursedStone.class,
             new Vector2f(), -1, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.UNLEASH, Tooltip.BLAST, Tooltip.LASTWORDS));
+            () -> List.of(Tooltip.UNLEASH, Tooltip.BLAST, Tooltip.LASTWORDS),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

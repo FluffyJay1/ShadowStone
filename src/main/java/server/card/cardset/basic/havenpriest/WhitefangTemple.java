@@ -35,7 +35,8 @@ public class WhitefangTemple extends AmuletText {
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/whitefangtemple.png",
             CRAFT, TRAITS, RARITY, 3, WhitefangTemple.class,
             new Vector2f(139, 204), 1.4,
-            () -> List.of(Tooltip.COUNTDOWN, HolywingDragon.TOOLTIP));
+            () -> List.of(Tooltip.COUNTDOWN, HolywingDragon.TOOLTIP),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

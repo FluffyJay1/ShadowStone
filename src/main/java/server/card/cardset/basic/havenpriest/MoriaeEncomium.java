@@ -32,7 +32,8 @@ public class MoriaeEncomium extends AmuletText {
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/moriaeencomium.png",
             CRAFT, TRAITS, RARITY, 2, MoriaeEncomium.class,
             new Vector2f(150, 150), 1.2,
-            () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Tooltip.LASTWORDS));
+            () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Tooltip.LASTWORDS),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

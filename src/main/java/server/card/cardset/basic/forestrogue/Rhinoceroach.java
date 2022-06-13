@@ -31,7 +31,8 @@ public class Rhinoceroach extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/rhinoceroach.png",
             CRAFT, TRAITS, RARITY,2, 1, 1, 1, true, Rhinoceroach.class,
             new Vector2f(182, 183), 1.5, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.STORM, Tooltip.BATTLECRY));
+            () -> List.of(Tooltip.STORM, Tooltip.BATTLECRY),
+            List.of());
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()

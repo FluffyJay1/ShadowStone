@@ -24,7 +24,8 @@ public class Beastmaster extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/beastmaster.png",
             CRAFT, TRAITS, RARITY, 4, 2, 0, 4, false, Beastmaster.class,
             new Vector2f(140, 100), 2, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.AURA, Tooltip.UNLEASH, StonetuskBoar.TOOLTIP));
+            () -> List.of(Tooltip.AURA, Tooltip.UNLEASH, StonetuskBoar.TOOLTIP),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

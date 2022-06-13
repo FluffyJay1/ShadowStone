@@ -31,7 +31,8 @@ public class Rimewind extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/rimewind.png",
             CRAFT, TRAITS, RARITY, 5, Rimewind.class,
-            () -> List.of(Snowman.TOOLTIP, Tooltip.SPELLBOOST));
+            () -> List.of(Snowman.TOOLTIP, Tooltip.SPELLBOOST),
+            List.of());
 
 
     @Override

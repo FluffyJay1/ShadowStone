@@ -16,14 +16,15 @@ import java.util.List;
 
 public class Spectre extends MinionText {
     public static final String NAME = "Spectre";
-    public static final String DESCRIPTION = "<b>Rush</b>";
+    public static final String DESCRIPTION = "<b>Rush</b>.";
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/spectre.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, Spectre.class,
             new Vector2f(150, 180), 1.2, EventAnimationDamageOff.class,
-            () -> List.of(Tooltip.RUSH));
+            () -> List.of(Tooltip.RUSH),
+            List.of());
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()

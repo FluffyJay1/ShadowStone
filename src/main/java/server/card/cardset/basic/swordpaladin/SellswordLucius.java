@@ -29,7 +29,8 @@ public class SellswordLucius extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/sellswordlucius.png",
             CRAFT, TRAITS, RARITY, 1, 1, 1, 1, true, SellswordLucius.class,
             new Vector2f(155, 149), 1.22, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY, Tooltip.SPEND));
+            () -> List.of(Tooltip.BATTLECRY, Tooltip.SPEND),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

@@ -25,7 +25,8 @@ public class Ghost extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/ghost.png",
             CRAFT, TRAITS, RARITY, 1, 1, 1, 1, false, Ghost.class,
             new Vector2f(124, 142), 1.3, null,
-            () -> List.of(Tooltip.STORM, Tooltip.BANISH));
+            () -> List.of(Tooltip.STORM, Tooltip.BANISH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

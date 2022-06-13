@@ -26,7 +26,8 @@ public class CanyonOfTheDragons extends AmuletText {
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/canyonofthedragons.png",
             CRAFT, TRAITS, RARITY, 7, CanyonOfTheDragons.class,
             new Vector2f(143, 148), 1.3,
-            () -> List.of(Tooltip.COUNTDOWN, Dragon.TOOLTIP));
+            () -> List.of(Tooltip.COUNTDOWN, Dragon.TOOLTIP),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

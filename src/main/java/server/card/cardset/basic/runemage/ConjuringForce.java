@@ -26,7 +26,8 @@ public class ConjuringForce extends AmuletText {
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/conjuringforce.png",
             CRAFT, TRAITS, RARITY, 5, ConjuringForce.class,
             new Vector2f(), -1,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

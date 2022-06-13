@@ -23,7 +23,8 @@ public class Alpha extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/special/alpha.png",
             CRAFT, TRAITS, RARITY, 4, 2, 2, 2, true, Alpha.class,
             new Vector2f(), -1, EventAnimationDamageOff.class,
-            () -> List.of(Tooltip.BANE));
+            () -> List.of(Tooltip.BANE),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

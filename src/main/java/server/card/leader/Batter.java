@@ -18,7 +18,8 @@ public class Batter extends LeaderText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, "The purifier.", "res/card/basic/batter.png",
             CRAFT, TRAITS, RARITY, 0, 0, 0, 25, false, Batter.class,
             new Vector2f(112, 120), 2, null,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

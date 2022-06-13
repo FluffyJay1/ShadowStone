@@ -25,7 +25,8 @@ public class SoulConversion extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/soulconversion.png",
             CRAFT, TRAITS, RARITY, 1, SoulConversion.class,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

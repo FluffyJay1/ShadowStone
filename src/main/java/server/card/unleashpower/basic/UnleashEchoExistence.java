@@ -21,7 +21,8 @@ public class UnleashEchoExistence extends UnleashPowerText {
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/echoexistence.png",
             CRAFT, TRAITS, RARITY, 2, UnleashEchoExistence.class,
             new Vector2f(430, 445), 1.5,
-            () -> List.of(Tooltip.UNLEASH));
+            () -> List.of(Tooltip.UNLEASH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

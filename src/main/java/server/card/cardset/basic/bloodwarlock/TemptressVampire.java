@@ -29,7 +29,8 @@ public class TemptressVampire extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/temptressvampire.png",
             CRAFT, TRAITS, RARITY, 9, 5, 3, 5, true, TemptressVampire.class,
             new Vector2f(150, 160), 1.3, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY));
+            () -> List.of(Tooltip.BATTLECRY),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

@@ -31,7 +31,8 @@ public class TribunalOfGoodAndEvil extends AmuletText {
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/tribunalofgoodandevil.png",
             CRAFT, TRAITS, RARITY, 4, TribunalOfGoodAndEvil.class,
             new Vector2f(150, 150), 1.2,
-            () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Tooltip.LASTWORDS));
+            () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Tooltip.LASTWORDS),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

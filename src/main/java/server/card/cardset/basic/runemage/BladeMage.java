@@ -24,7 +24,8 @@ public class BladeMage extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/blademage.png",
             CRAFT, TRAITS, RARITY, 6, 2, 2, 2, true, BladeMage.class,
             new Vector2f(182, 145), 1.4, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.STORM, Tooltip.SPELLBOOST));
+            () -> List.of(Tooltip.STORM, Tooltip.SPELLBOOST),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

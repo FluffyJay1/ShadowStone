@@ -24,7 +24,8 @@ public class TerrorDemon extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/terrordemon.png",
             CRAFT, TRAITS, RARITY, 4, 2, 1, 4, true, TerrorDemon.class,
             new Vector2f(166, 134), 1.4, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.LIFESTEAL, Tooltip.UNLEASH));
+            () -> List.of(Tooltip.LIFESTEAL, Tooltip.UNLEASH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

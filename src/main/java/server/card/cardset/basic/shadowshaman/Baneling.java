@@ -21,7 +21,8 @@ public class Baneling extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/baneling.png",
             CRAFT, TRAITS, RARITY, 3, 1, 0, 1, false, Baneling.class,
             new Vector2f(253, 271), 1.5, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.LASTWORDS, Tooltip.BLAST));
+            () -> List.of(Tooltip.LASTWORDS, Tooltip.BLAST),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

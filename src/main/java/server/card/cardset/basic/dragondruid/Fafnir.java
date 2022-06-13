@@ -28,7 +28,8 @@ public class Fafnir extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/fafnir.png",
             CRAFT, TRAITS, RARITY, 9, 8, 4, 10, true, Fafnir.class,
             new Vector2f(136, 203), 1.2, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY));
+            () -> List.of(Tooltip.BATTLECRY),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

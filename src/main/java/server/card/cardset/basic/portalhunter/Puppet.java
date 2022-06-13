@@ -18,7 +18,8 @@ public class Puppet extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/puppet.png",
             CRAFT, TRAITS, RARITY, 0, 1, 0, 1, false, Puppet.class,
             new Vector2f(161, 143), 1.4, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.RUSH, Tooltip.COUNTDOWN));
+            () -> List.of(Tooltip.RUSH, Tooltip.COUNTDOWN),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

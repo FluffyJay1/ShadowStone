@@ -25,7 +25,8 @@ public class BlazingBreath extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/blazingbreath.png",
             CRAFT, TRAITS, RARITY, 1, BlazingBreath.class,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

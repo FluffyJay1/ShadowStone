@@ -30,7 +30,8 @@ public class SwarmingWraith extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/swarmingwraith.png",
             CRAFT, TRAITS, RARITY, 2, 3, 1, 2, true, SwarmingWraith.class,
             new Vector2f(183, 153), 1.3, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY, Tooltip.VENGEANCE));
+            () -> List.of(Tooltip.BATTLECRY, Tooltip.VENGEANCE),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

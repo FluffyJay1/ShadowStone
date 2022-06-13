@@ -34,7 +34,8 @@ public class Belphegor extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/belphegor.png",
             CRAFT, TRAITS, RARITY, 4, 4, 2, 4, true, Belphegor.class,
             new Vector2f(142, 136), 1.7, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY, Tooltip.VENGEANCE));
+            () -> List.of(Tooltip.BATTLECRY, Tooltip.VENGEANCE),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

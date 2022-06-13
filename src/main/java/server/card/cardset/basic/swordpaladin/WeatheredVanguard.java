@@ -27,7 +27,8 @@ public class WeatheredVanguard extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/weatheredvanguard.png",
             CRAFT, TRAITS, RARITY, 6, 4, 2, 4, false, WeatheredVanguard.class,
             new Vector2f(155, 120), 1.6, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY, Knight.TOOLTIP, Tooltip.UNLEASH));
+            () -> List.of(Tooltip.BATTLECRY, Knight.TOOLTIP, Tooltip.UNLEASH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

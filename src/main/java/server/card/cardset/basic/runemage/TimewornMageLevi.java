@@ -31,7 +31,8 @@ public class TimewornMageLevi extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/timewornmagelevi.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, false, TimewornMageLevi.class,
             new Vector2f(160, 141), 1.5, EventAnimationDamageFire.class,
-            () -> List.of(Tooltip.UNLEASH, CrimsonSorcery.TOOLTIP, Tooltip.RUSH));
+            () -> List.of(Tooltip.UNLEASH, CrimsonSorcery.TOOLTIP, Tooltip.RUSH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

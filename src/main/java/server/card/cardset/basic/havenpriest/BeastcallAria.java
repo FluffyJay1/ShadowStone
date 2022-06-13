@@ -19,7 +19,8 @@ public class BeastcallAria extends AmuletText {
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/beastcallaria.png",
             CRAFT, TRAITS, RARITY, 2, BeastcallAria.class,
             new Vector2f(150, 130), 1.4,
-            () -> List.of(Tooltip.COUNTDOWN, HolyFalcon.TOOLTIP, HolyflameTiger.TOOLTIP));
+            () -> List.of(Tooltip.COUNTDOWN, HolyFalcon.TOOLTIP, HolyflameTiger.TOOLTIP),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

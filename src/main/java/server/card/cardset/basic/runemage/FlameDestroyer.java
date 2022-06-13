@@ -22,7 +22,8 @@ public class FlameDestroyer extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/flamedestroyer.png",
             CRAFT, TRAITS, RARITY, 10, 7, 3, 7, true, FlameDestroyer.class,
             new Vector2f(150, 200), 1.2, EventAnimationDamageClaw.class,
-            () -> List.of(Tooltip.SPELLBOOST));
+            () -> List.of(Tooltip.SPELLBOOST),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

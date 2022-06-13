@@ -25,7 +25,8 @@ public class ElanasPrayer extends AmuletText {
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/elanasprayer.png",
             CRAFT, TRAITS, RARITY, 3, ElanasPrayer.class,
             new Vector2f(150, 140), 1.5,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

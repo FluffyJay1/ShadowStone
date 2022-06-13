@@ -27,7 +27,8 @@ public class LeonidasResolve extends AmuletText {
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/leonidasresolve.png",
             CRAFT, TRAITS, RARITY, 9, LeonidasResolve.class,
             new Vector2f(), -1,
-            () -> List.of(Tooltip.RUSH));
+            () -> List.of(Tooltip.RUSH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

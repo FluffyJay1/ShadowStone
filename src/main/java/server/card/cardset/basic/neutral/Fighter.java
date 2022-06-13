@@ -18,7 +18,8 @@ public class Fighter extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/fighter.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, Fighter.class,
             new Vector2f(), -1, EventAnimationDamageSlash.class,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

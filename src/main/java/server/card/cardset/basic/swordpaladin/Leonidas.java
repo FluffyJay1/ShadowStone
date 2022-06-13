@@ -19,7 +19,8 @@ public class Leonidas extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/leonidas.png",
             CRAFT, TRAITS, RARITY, 9, 7, 3, 8, true, Leonidas.class,
             new Vector2f(161, 126), 1.8, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.LASTWORDS, LeonidasResolve.TOOLTIP));
+            () -> List.of(Tooltip.LASTWORDS, LeonidasResolve.TOOLTIP),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

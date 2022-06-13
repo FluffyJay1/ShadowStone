@@ -22,7 +22,8 @@ public class UnleashMendWounds extends UnleashPowerText {
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/mendwounds.png",
             CRAFT, TRAITS, RARITY, 2, UnleashMendWounds.class,
             new Vector2f(655, 535), 4.6,
-            () -> List.of(Tooltip.UNLEASH));
+            () -> List.of(Tooltip.UNLEASH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

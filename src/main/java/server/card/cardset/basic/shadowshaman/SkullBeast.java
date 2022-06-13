@@ -23,7 +23,8 @@ public class SkullBeast extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/skullbeast.png",
             CRAFT, TRAITS, RARITY, 1, 1, 0, 2, true, SkullBeast.class,
             new Vector2f(136, 219), 1.5, EventAnimationDamageSlash.class,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

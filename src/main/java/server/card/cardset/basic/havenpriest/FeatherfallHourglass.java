@@ -30,7 +30,8 @@ public class FeatherfallHourglass extends AmuletText {
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/featherfallhourglass.png",
             CRAFT, TRAITS, RARITY, 1, FeatherfallHourglass.class,
             new Vector2f(145, 143), 1.2,
-            () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Tooltip.SPEND, Tooltip.LASTWORDS, TimeOwl.TOOLTIP));
+            () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Tooltip.SPEND, Tooltip.LASTWORDS, TimeOwl.TOOLTIP),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

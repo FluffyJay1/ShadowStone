@@ -21,7 +21,8 @@ public class NavyLieutenant extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/navylieutenant.png",
             CRAFT, TRAITS, RARITY, 3, 2, 1, 3, true, NavyLieutenant.class,
             new Vector2f(150, 125), 1.5, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.AURA, Tooltip.WARD));
+            () -> List.of(Tooltip.AURA, Tooltip.WARD),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

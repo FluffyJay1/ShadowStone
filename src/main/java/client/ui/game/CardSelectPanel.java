@@ -4,7 +4,10 @@ import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
 import client.ui.*;
+import server.card.Card;
 import server.card.effect.*;
+
+import java.util.function.Function;
 
 public class CardSelectPanel extends UIBox {
     final UIBoard uib;
@@ -15,6 +18,7 @@ public class CardSelectPanel extends UIBox {
     final TooltipDisplayPanel tooltipPanel;
     final Text effects, info;
     final CardSelectTooltipPanel tooltipReferencePanel;
+    private String trackerText;
 
     public CardSelectPanel(UI ui, UIBoard b) {
         super(ui, new Vector2f(-0.35f, -0.14f), new Vector2f(450, 550), "res/ui/uiboxborder.png");
@@ -55,6 +59,7 @@ public class CardSelectPanel extends UIBox {
         super.update(frametime);
         if (this.lastCardSelected != this.uib.selectedCard) {
             this.lastCardSelected = this.uib.selectedCard;
+            this.updateTrackerText();
             this.tooltipReferencePanel.setReferenceTooltip(null);
         }
         if (this.uib.selectedCard != null) {
@@ -70,9 +75,9 @@ public class CardSelectPanel extends UIBox {
                 this.ub.setPos(new Vector2f(0, lastBottom + 32), 1);
                 lastBottom += this.ub.getHeight(false) + 32;
             }
-            String infoText = "";
+            String infoText = this.trackerText;
             if (this.uib.selectedCard.getCard().finalStats.get(Stat.SPELLBOOSTABLE) > 0) {
-                infoText = "Spellboosts: " + this.uib.selectedCard.getCard().spellboosts;
+                infoText += "Spellboosts: " + this.uib.selectedCard.getCard().spellboosts;
             }
             if (!infoText.isEmpty()) {
                 this.info.setVisible(true);
@@ -95,6 +100,20 @@ public class CardSelectPanel extends UIBox {
             this.setVisible(false);
         }
 
+    }
+
+    public void updateTrackerText() {
+        StringBuilder sb = new StringBuilder();
+        if (this.uib.selectedCard != null) {
+            Card card = this.uib.selectedCard.getCard();
+            for (Function<Card, String> trackerfn : card.getTooltip().trackers) {
+                String text = trackerfn.apply(card);
+                if (text != null && !text.isEmpty()) {
+                    sb.append(text).append("\n");
+                }
+            }
+        }
+        this.trackerText = sb.toString();
     }
 
     @Override

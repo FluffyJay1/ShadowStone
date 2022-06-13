@@ -26,7 +26,8 @@ public class KaleidoscopicGlow extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/kaleidoscopicglow.png",
             CRAFT, TRAITS, RARITY, 2, KaleidoscopicGlow.class,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

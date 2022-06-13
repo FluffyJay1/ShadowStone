@@ -20,7 +20,8 @@ public class PuppetRoom extends AmuletText {
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/puppetroom.png",
             CRAFT, TRAITS, RARITY, 3, PuppetRoom.class,
             new Vector2f(), -1,
-            () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Puppet.TOOLTIP));
+            () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Puppet.TOOLTIP),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {
@@ -51,6 +52,9 @@ public class PuppetRoom extends AmuletText {
 
             @Override
             public double getPresenceValue(int refs) {
+                if (this.cachedInstances == null) {
+                    this.cachedInstances = List.of(new Puppet().constructInstance(this.owner.board));
+                }
                 return AI.valueForAddingToHand(this.cachedInstances, refs) * 3;
             }
         };

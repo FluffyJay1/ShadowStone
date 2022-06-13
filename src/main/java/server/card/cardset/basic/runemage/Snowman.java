@@ -19,7 +19,8 @@ public class Snowman extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/snowman.png",
             CRAFT, TRAITS, RARITY, 1, 1, 1, 1, true, Snowman.class,
             new Vector2f(150, 130), 1.5, null,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

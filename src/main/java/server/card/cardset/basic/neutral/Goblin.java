@@ -18,7 +18,8 @@ public class Goblin extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/goblin.png",
             CRAFT, TRAITS, RARITY, 1, 1, 0, 2, true, Goblin.class,
             new Vector2f(), -1, EventAnimationDamageSlash.class,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

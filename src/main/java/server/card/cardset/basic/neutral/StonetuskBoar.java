@@ -23,7 +23,8 @@ public class StonetuskBoar extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/stonetuskboar.png",
             CRAFT, TRAITS, RARITY, 1, 1, 0, 1, false, StonetuskBoar.class,
             new Vector2f(), -1, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.STORM));
+            () -> List.of(Tooltip.STORM),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

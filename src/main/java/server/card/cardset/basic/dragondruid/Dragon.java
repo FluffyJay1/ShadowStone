@@ -21,7 +21,8 @@ public class Dragon extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/dragon.png",
             CRAFT, TRAITS, RARITY, 5, 5, 2, 5, true, Dragon.class,
             new Vector2f(128, 187), 1.2, EventAnimationDamageSlash.class,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

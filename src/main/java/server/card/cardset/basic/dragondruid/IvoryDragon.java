@@ -29,7 +29,8 @@ public class IvoryDragon extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/ivorydragon.png",
             CRAFT, TRAITS, RARITY, 1, 1, 0, 2, true, IvoryDragon.class,
             new Vector2f(154, 168), 1.2, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY, Tooltip.OVERFLOW));
+            () -> List.of(Tooltip.BATTLECRY, Tooltip.OVERFLOW),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

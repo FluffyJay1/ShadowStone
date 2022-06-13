@@ -23,7 +23,8 @@ public class FatesHand extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/fateshand.png",
             CRAFT, TRAITS, RARITY, 5, FatesHand.class,
-            () -> List.of(Tooltip.SPELLBOOST));
+            () -> List.of(Tooltip.SPELLBOOST),
+            List.of());
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect("Draw 2 cards.") {

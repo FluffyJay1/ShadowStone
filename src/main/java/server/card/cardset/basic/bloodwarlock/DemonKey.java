@@ -33,7 +33,8 @@ public class DemonKey extends AmuletText {
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/demonkey.png",
             CRAFT, TRAITS, RARITY, 3, DemonKey.class,
             new Vector2f(), -1,
-            () -> List.of(Tooltip.COUNTDOWN, Tooltip.LASTWORDS));
+            () -> List.of(Tooltip.COUNTDOWN, Tooltip.LASTWORDS),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

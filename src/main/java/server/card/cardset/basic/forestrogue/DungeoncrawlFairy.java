@@ -27,7 +27,8 @@ public class DungeoncrawlFairy extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/dungeoncrawlfairy.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, DungeoncrawlFairy.class,
             new Vector2f(120, 121), 1.5, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY));
+            () -> List.of(Tooltip.BATTLECRY),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

@@ -28,7 +28,8 @@ public class WindBlast extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/windblast.png",
             CRAFT, TRAITS, RARITY, 2, WindBlast.class,
-            () -> List.of(Tooltip.SPELLBOOST));
+            () -> List.of(Tooltip.SPELLBOOST),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

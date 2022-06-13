@@ -65,7 +65,7 @@ public class UIBoard extends UIBox {
     boolean skipNextEventAnimations = false;
     Vector2f mouseDownPos = new Vector2f();
     final EventGroupDescriptionContainer eventGroupDescriptionContainer;
-    final CardSelectPanel cardSelectPanel;
+    public final CardSelectPanel cardSelectPanel;
     final EndTurnButton endTurnButton;
     public final Text targetText;
     private final ManaOrbPanel localPlayerMana, enemyPlayerMana;

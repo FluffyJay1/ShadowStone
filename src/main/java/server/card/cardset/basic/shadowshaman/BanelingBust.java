@@ -19,13 +19,14 @@ import java.util.stream.Collectors;
 
 public class BanelingBust extends SpellText {
     public static final String NAME = "Baneling Bust";
-    public static final String DESCRIPTION = "Destroy all allied minions. <b>Blast(X)</b> X times. X equals the number of minions destroyed";
+    public static final String DESCRIPTION = "Destroy all allied minions. <b>Blast(X)</b> X times. X equals the number of minions destroyed.";
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/banelingbust.png",
             CRAFT, TRAITS, RARITY, 5, BanelingBust.class,
-            () -> List.of(Tooltip.BLAST));
+            () -> List.of(Tooltip.BLAST),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

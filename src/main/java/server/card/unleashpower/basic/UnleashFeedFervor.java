@@ -17,7 +17,8 @@ public class UnleashFeedFervor extends UnleashPowerText {
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/feedfervor.png",
             CRAFT, TRAITS, RARITY, 2, UnleashFeedFervor.class,
             new Vector2f(420, 210), 8,
-            () -> List.of(Tooltip.UNLEASH, Tooltip.OVERFLOW));
+            () -> List.of(Tooltip.UNLEASH, Tooltip.OVERFLOW),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

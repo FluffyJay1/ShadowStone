@@ -33,7 +33,8 @@ public class GriffonKnight extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/griffonknight.png",
             CRAFT, TRAITS, RARITY, 3, 2, 1, 3, true, GriffonKnight.class,
             new Vector2f(125, 156), 1.2, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY));
+            () -> List.of(Tooltip.BATTLECRY),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

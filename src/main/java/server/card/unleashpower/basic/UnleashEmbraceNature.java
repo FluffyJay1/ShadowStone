@@ -21,7 +21,8 @@ public class UnleashEmbraceNature extends UnleashPowerText {
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/embracenature.png",
             CRAFT, TRAITS, RARITY, 2, UnleashEmbraceNature.class,
             new Vector2f(653, 565), 3,
-            () -> List.of(Tooltip.UNLEASH));
+            () -> List.of(Tooltip.UNLEASH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

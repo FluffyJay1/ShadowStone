@@ -22,7 +22,8 @@ public class UnleashImbueMagic extends UnleashPowerText {
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/imbuemagic.png",
             CRAFT, TRAITS, RARITY, 2, UnleashImbueMagic.class,
             new Vector2f(393, 733), 1.5,
-            () -> List.of(Tooltip.UNLEASH));
+            () -> List.of(Tooltip.UNLEASH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

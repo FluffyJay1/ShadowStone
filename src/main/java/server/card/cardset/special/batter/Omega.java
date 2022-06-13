@@ -25,7 +25,8 @@ public class Omega extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/special/omega.png",
             CRAFT, TRAITS, RARITY, 4, 2, 2, 2, true, Omega.class,
             new Vector2f(), -1, EventAnimationDamageOff.class,
-            () -> List.of(Tooltip.STRIKE));
+            () -> List.of(Tooltip.STRIKE),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

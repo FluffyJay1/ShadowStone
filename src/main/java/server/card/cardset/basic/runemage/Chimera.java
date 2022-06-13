@@ -30,7 +30,8 @@ public class Chimera extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/chimera.png",
             CRAFT, TRAITS, RARITY, 9, 4, 2, 4, true, Chimera.class,
             new Vector2f(143, 158), 1.4, EventAnimationDamageClaw.class,
-            () -> List.of(Tooltip.SPELLBOOST, Tooltip.BATTLECRY));
+            () -> List.of(Tooltip.SPELLBOOST, Tooltip.BATTLECRY),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

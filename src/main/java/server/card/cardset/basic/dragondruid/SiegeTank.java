@@ -28,7 +28,8 @@ public class SiegeTank extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/siegetank.png",
             CRAFT, TRAITS, RARITY, 5, 2, 2, 5, false, SiegeTank.class,
             new Vector2f(), -1, EventAnimationDamageShoot.class,
-            () -> List.of(Tooltip.UNLEASH, Tooltip.CHOOSE, Tooltip.BLAST));
+            () -> List.of(Tooltip.UNLEASH, Tooltip.CHOOSE, Tooltip.BLAST),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

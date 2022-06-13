@@ -34,7 +34,8 @@ public class KelHolyMarksman extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/kelholymarksman.png",
             CRAFT, TRAITS, RARITY, 5, 4, 1, 3, false, KelHolyMarksman.class,
             new Vector2f(154, 154), 1.4, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.UNLEASH));
+            () -> List.of(Tooltip.UNLEASH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

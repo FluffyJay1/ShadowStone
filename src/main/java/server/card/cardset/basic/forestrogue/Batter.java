@@ -27,7 +27,8 @@ public class Batter extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/batter.png",
             CRAFT, TRAITS, RARITY, 5, 2, 2, 2, true, Batter.class,
             new Vector2f(112, 120), 2, EventAnimationDamageOff.class,
-            () -> List.of(Tooltip.RUSH, Tooltip.MINIONSTRIKE, Tooltip.TRANSFORM, Spectre.TOOLTIP));
+            () -> List.of(Tooltip.RUSH, Tooltip.MINIONSTRIKE, Tooltip.TRANSFORM, Spectre.TOOLTIP),
+            List.of());
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()

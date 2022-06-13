@@ -28,7 +28,8 @@ public class EphemeraAngelicSlacker extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/ephemeraangelicslacker.png",
             CRAFT, TRAITS, RARITY, 5, 1, 1, 3, true, EphemeraAngelicSlacker.class,
             new Vector2f(103, 133), 1.6, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.STEALTH));
+            () -> List.of(Tooltip.STEALTH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

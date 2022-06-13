@@ -25,7 +25,8 @@ public class GenesisOfLegend extends AmuletText {
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/genesisoflegend.png",
             CRAFT, TRAITS, RARITY, 2, GenesisOfLegend.class,
             new Vector2f(), -1,
-            () -> List.of(Tooltip.COUNTDOWN, Tooltip.BANE));
+            () -> List.of(Tooltip.COUNTDOWN, Tooltip.BANE),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

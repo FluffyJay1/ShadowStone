@@ -26,7 +26,8 @@ public class SylvanJustice extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/sylvanjustice.png",
             CRAFT, TRAITS, RARITY, 2, SylvanJustice.class,
-            () -> List.of(Fairy.TOOLTIP));
+            () -> List.of(Fairy.TOOLTIP),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

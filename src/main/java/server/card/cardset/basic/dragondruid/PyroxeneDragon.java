@@ -28,7 +28,8 @@ public class PyroxeneDragon extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/pyroxenedragon.png",
             CRAFT, TRAITS, RARITY, 4, 3, 2, 4, true, PyroxeneDragon.class,
             new Vector2f(151, 160), 1.2, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY, Tooltip.LASTWORDS));
+            () -> List.of(Tooltip.BATTLECRY, Tooltip.LASTWORDS),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

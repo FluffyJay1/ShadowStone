@@ -33,7 +33,8 @@ public class Cuhullin extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/cuhullin.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 1, true, Cuhullin.class,
             new Vector2f(161, 137), 1.4, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.RUSH, Tooltip.BATTLECRY, Tooltip.SPEND, Tooltip.BANE, Tooltip.SHIELD));
+            () -> List.of(Tooltip.RUSH, Tooltip.BATTLECRY, Tooltip.SPEND, Tooltip.BANE, Tooltip.SHIELD),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

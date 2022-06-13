@@ -29,7 +29,8 @@ public class Cassiopeia extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/cassiopeia.png",
             CRAFT, TRAITS, RARITY, 6, 3, 2, 3, true, Cassiopeia.class,
             new Vector2f(150, 145), 1.3, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY));
+            () -> List.of(Tooltip.BATTLECRY),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

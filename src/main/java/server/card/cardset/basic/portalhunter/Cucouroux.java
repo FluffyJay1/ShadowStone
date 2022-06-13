@@ -30,7 +30,8 @@ public class Cucouroux extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/cucouroux.png",
             CRAFT, TRAITS, RARITY, 3, 3, 1, 2, true, Cucouroux.class,
             new Vector2f(160, 145), 1.4, EventAnimationDamageShoot.class,
-            () -> List.of(Tooltip.BATTLECRY, Tooltip.SPEND, Camieux.TOOLTIP, Tooltip.MINIONSTRIKE));
+            () -> List.of(Tooltip.BATTLECRY, Tooltip.SPEND, Camieux.TOOLTIP, Tooltip.MINIONSTRIKE),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

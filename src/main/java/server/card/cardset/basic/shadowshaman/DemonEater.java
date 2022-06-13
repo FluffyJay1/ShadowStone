@@ -29,7 +29,8 @@ public class DemonEater extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/demoneater.png",
             CRAFT, TRAITS, RARITY, 2, 1, 1, 2, true, DemonEater.class,
             new Vector2f(130, 180), 1.2, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY));
+            () -> List.of(Tooltip.BATTLECRY),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

@@ -32,7 +32,8 @@ public class DragoonScyther extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/dragoonscyther.png",
             CRAFT, TRAITS, RARITY, 3, 2, 1, 2, true, DragoonScyther.class,
             new Vector2f(146, 155), 1.4, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BANE, Tooltip.BATTLECRY, Tooltip.STORM, Tooltip.OVERFLOW));
+            () -> List.of(Tooltip.BANE, Tooltip.BATTLECRY, Tooltip.STORM, Tooltip.OVERFLOW),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

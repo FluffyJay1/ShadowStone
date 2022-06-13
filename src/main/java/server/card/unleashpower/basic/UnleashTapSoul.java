@@ -22,7 +22,8 @@ public class UnleashTapSoul extends UnleashPowerText {
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/tapsoul.png",
             CRAFT, TRAITS, RARITY, 2, UnleashTapSoul.class,
             new Vector2f(445, 515), 1,
-            () -> List.of(Tooltip.VENGEANCE, Tooltip.UNLEASH));
+            () -> List.of(Tooltip.VENGEANCE, Tooltip.UNLEASH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

@@ -31,7 +31,8 @@ public class BeetleWarrior extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/beetlewarrior.png",
             CRAFT, TRAITS, RARITY, 3, 2, 1, 4, true, BeetleWarrior.class,
             new Vector2f(150, 145), 1.5, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY, Tooltip.STORM));
+            () -> List.of(Tooltip.BATTLECRY, Tooltip.STORM),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

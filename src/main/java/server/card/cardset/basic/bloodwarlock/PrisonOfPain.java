@@ -30,7 +30,8 @@ public class PrisonOfPain extends AmuletText {
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/prisonofpain.png",
             CRAFT, TRAITS, RARITY, 3, PrisonOfPain.class,
             new Vector2f(127, 211), 1.3,
-            () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY));
+            () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

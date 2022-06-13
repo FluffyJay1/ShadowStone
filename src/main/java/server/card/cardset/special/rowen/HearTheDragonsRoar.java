@@ -26,7 +26,8 @@ public class HearTheDragonsRoar extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/special/hear.png",
             CRAFT, TRAITS, RARITY, 10, HearTheDragonsRoar.class,
-            () -> List.of(Tooltip.BANISH));
+            () -> List.of(Tooltip.BANISH),
+            List.of());
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {

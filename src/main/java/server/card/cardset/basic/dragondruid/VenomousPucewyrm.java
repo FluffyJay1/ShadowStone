@@ -30,7 +30,8 @@ public class VenomousPucewyrm extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/venomouspucewyrm.png",
             CRAFT, TRAITS, RARITY, 5, 4, 2, 5, true, VenomousPucewyrm.class,
             new Vector2f(143, 151), 1.3, EventAnimationDamageSlash.class,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

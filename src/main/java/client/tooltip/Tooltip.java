@@ -90,7 +90,10 @@ public class Tooltip {
                     "The <b>Shield</b> is removed when it has 0 health.",
             List::of);
     public static final Tooltip REANIMATE = new Tooltip("Reanimate(X)",
-            "Summon the highest minion in your graveyard that costs X or less.",
+            "Randomly summon the highest-cost minion in your graveyard that costs X or less.",
+            List::of);
+    public static final Tooltip RESONANCE = new Tooltip("Resonance",
+            "<b>Resonance</b> is active for a player when they have an even number of cards left in their deck.",
             List::of);
 
     public final String name;

@@ -125,6 +125,7 @@ public class VisualBoard extends Board implements
 	public <T extends Event> T processEvent(T e) {
         T ret = super.processEvent(e);
 		this.uiBoard.advantageText.setText(String.format("Adv: %.4f", AI.evaluateAdvantage(this, this.localteam)));
+        this.uiBoard.cardSelectPanel.updateTrackerText();
         if (e instanceof EventGameEnd) {
             this.uiBoard.onGameEnd(((EventGameEnd) e).victory);
         }

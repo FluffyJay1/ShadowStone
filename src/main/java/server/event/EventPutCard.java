@@ -257,10 +257,10 @@ public class EventPutCard extends Event {
         return new EventPutCard(c, csStatus, targetteam, pos, play, null);
     }
 
-    // if we are moving to the board, we shouldn't attempt to move cards if they don't fit on the board
+    // if we are moving to the board (but not from board), we shouldn't attempt to move cards if they don't fit on the board
     private boolean shouldAttemptMove(Card c, Player sourceP, Player destP) {
         if (this.status.equals(CardStatus.BOARD)) {
-            if (c.status.equals(CardStatus.BOARD) && sourceP.team == destP.team) {
+            if (c.status.equals(CardStatus.BOARD)) {
                 return true;
             }
             return destP.getPlayArea().size() < destP.maxPlayAreaSize;
@@ -268,13 +268,15 @@ public class EventPutCard extends Event {
         return true;
     }
 
-    // if we overfill the hand, destroy it instead
+    // if we overfill the hand or overfill the board and try to mind control, destroy it instead
     private boolean willSucceedMove(Card c, Player sourceP, Player destP) {
         if (this.status.equals(CardStatus.HAND)) {
             if (c.status.equals(CardStatus.HAND) && sourceP.team == destP.team) {
                 return true;
             }
             return destP.getHand().size() < destP.maxHandSize;
+        } else if (this.status.equals(CardStatus.BOARD) && sourceP.team != destP.team) {
+            return destP.getPlayArea().size() < destP.maxPlayAreaSize;
         }
         return true;
     }

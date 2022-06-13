@@ -30,7 +30,8 @@ public class Assassin extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/assassin.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 1, true, Assassin.class,
             new Vector2f(138, 155), 1.3, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY, Tooltip.STEALTH));
+            () -> List.of(Tooltip.BATTLECRY, Tooltip.STEALTH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

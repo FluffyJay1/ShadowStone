@@ -26,7 +26,8 @@ public class SacredPlea extends AmuletText {
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/sacredplea.png",
             CRAFT, TRAITS, RARITY, 1, SacredPlea.class,
             new Vector2f(132, 148), 1.4,
-            () -> List.of(Tooltip.COUNTDOWN));
+            () -> List.of(Tooltip.COUNTDOWN),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

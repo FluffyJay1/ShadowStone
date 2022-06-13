@@ -21,7 +21,8 @@ public class MoltenGiant extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/moltengiant.png",
             CRAFT, TRAITS, RARITY, 15, 8, 4, 8, true, MoltenGiant.class,
             new Vector2f(150, 145), 1.3, EventAnimationDamageFire.class,
-            List::of);
+            List::of,
+            List.of());
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new EffectWithDependentStats(DESCRIPTION, true) {

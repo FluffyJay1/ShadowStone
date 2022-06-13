@@ -26,7 +26,8 @@ public class Epsilon extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/special/epsilon.png",
             CRAFT, TRAITS, RARITY, 4, 2, 2, 2, true, Epsilon.class,
             new Vector2f(), -1, EventAnimationDamageOff.class,
-            () -> List.of(Tooltip.MINIONSTRIKE));
+            () -> List.of(Tooltip.MINIONSTRIKE),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

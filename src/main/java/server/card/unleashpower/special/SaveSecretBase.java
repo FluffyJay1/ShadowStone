@@ -28,7 +28,8 @@ public class SaveSecretBase extends UnleashPowerText {
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/special/savesecretbase.png",
             CRAFT, TRAITS, RARITY, 2, SaveSecretBase.class,
             new Vector2f(), -1,
-            () -> List.of(Tooltip.UNLEASH));
+            () -> List.of(Tooltip.UNLEASH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

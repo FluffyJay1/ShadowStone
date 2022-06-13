@@ -28,7 +28,8 @@ public class DemonicRam extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/demonicram.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 3, true, DemonicRam.class,
             new Vector2f(150, 170), 1.2, EventAnimationDamageSlash.class,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

@@ -861,7 +861,10 @@ public class AI extends Thread {
      */
     public static double evaluateDeck(Board b, int team) {
         Player p = b.getPlayer(team);
-        return -150 * Math.pow(p.getDeck().size() + 0.5, -1.5);
+        double avgValue = p.getDeck().stream()
+                .map(AI::valueInHand)
+                .reduce(0., Double::sum) / p.getDeck().size();
+        return -150 * Math.pow(p.getDeck().size() + 0.5, -1.5) + avgValue;
     }
 
     /**
@@ -882,6 +885,13 @@ public class AI extends Thread {
         return sum;
     }
 
+    /**
+     * Helper func to determine the mana value of an effect that puts stuff in
+     * your hand
+     * @param instances Instance of the cards to add in order (probably cached)
+     * @param refs Max depth of calculations when referencing other cards
+     * @return The approximate mana value
+     */
     public static double valueForAddingToHand(List<? extends Card> instances, int refs) {
         // behold magic numbers
         double sum = 0;
@@ -891,6 +901,20 @@ public class AI extends Thread {
             multiplier *= multiplier; // each card has lower and lower chance of being able to fit
         }
         return sum;
+    }
+
+    /**
+     * Helper func to determine the mana value of an effect that puts stuff in
+     * your deck
+     * @param instances Instances of the cards to add to deck
+     * @param refs Max depth of calculations when referencing other cards
+     * @return The approximate mana value
+     */
+    public static double valueForAddingToDeck(List<? extends Card> instances, int refs) {
+        // some bullshit
+        return instances.stream()
+                .map(c -> valueInHand(c, refs - 1))
+                .reduce(0., Double::sum) / 10;
     }
 
     /**

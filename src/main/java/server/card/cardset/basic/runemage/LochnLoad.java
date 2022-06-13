@@ -25,7 +25,8 @@ public class LochnLoad extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/lochnload.png",
             CRAFT, TRAITS, RARITY, 3, LochnLoad.class,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

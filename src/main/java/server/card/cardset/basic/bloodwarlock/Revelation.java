@@ -30,7 +30,8 @@ public class Revelation extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/revelation.png",
             CRAFT, TRAITS, RARITY, 8, Revelation.class,
-            () -> List.of(Tooltip.VENGEANCE));
+            () -> List.of(Tooltip.VENGEANCE),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

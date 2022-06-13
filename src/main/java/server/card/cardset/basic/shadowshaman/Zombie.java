@@ -20,7 +20,8 @@ public class Zombie extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/zombie.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, Zombie.class,
             new Vector2f(155, 120), 1.5, EventAnimationDamageSlash.class,
-            List::of);
+            List::of,
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

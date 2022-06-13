@@ -28,7 +28,8 @@ public class IHadThreeFriends extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/special/threefriends.png",
             CRAFT, TRAITS, RARITY, 8, IHadThreeFriends.class,
-            () -> List.of(Alpha.TOOLTIP, Omega.TOOLTIP, Epsilon.TOOLTIP, Tooltip.RUSH));
+            () -> List.of(Alpha.TOOLTIP, Omega.TOOLTIP, Epsilon.TOOLTIP, Tooltip.RUSH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

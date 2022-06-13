@@ -32,7 +32,8 @@ public class ShadowReaper extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/shadowreaper.png",
             CRAFT, TRAITS, RARITY, 2, 1, 1, 1, true, ShadowReaper.class,
             new Vector2f(127, 125), 1.5, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY, Tooltip.STEALTH));
+            () -> List.of(Tooltip.BATTLECRY, Tooltip.STEALTH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

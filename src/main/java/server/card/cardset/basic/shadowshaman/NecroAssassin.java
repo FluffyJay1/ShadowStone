@@ -30,7 +30,8 @@ public class NecroAssassin extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/necroassassin.png",
             CRAFT, TRAITS, RARITY, 4, 3, 2, 3, true, NecroAssassin.class,
             new Vector2f(150, 185), 1.5, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY));
+            () -> List.of(Tooltip.BATTLECRY),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

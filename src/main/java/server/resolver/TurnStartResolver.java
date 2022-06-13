@@ -19,19 +19,20 @@ public class TurnStartResolver extends Resolver {
 
     @Override
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-        b.processEvent(rq, el, new EventTurnStart(p));
-        b.processEvent(rq, el, new EventManaChange(this.p, 1, false, true));
-        b.processEvent(rq, el, new EventManaChange(this.p, this.p.maxmana + 1, true, false));
+        ResolverQueue buffer = new ResolverQueue();
+        b.processEvent(buffer, el, new EventTurnStart(p));
+        b.processEvent(buffer, el, new EventManaChange(this.p, 1, false, true));
+        b.processEvent(buffer, el, new EventManaChange(this.p, this.p.maxmana + 1, true, false));
         // avoid concurrent modification
         List<BoardObject> ours = this.p.board.getBoardObjects(this.p.team, true, true, true, true).collect(Collectors.toList());
         for (BoardObject bo : ours) {
             // things may happen, this bo might be dead already
             if (bo.isInPlay()) {
-                this.resolveQueue(b, rq, el, bo.onTurnStartAllied());
+                this.resolveQueue(b, buffer, el, bo.onTurnStartAllied());
                 if (bo.finalStats.contains(Stat.COUNTDOWN)) {
                     Effect e = new Effect();
                     e.effectStats.change.set(Stat.COUNTDOWN, -1);
-                    this.resolve(b, rq, el, new AddEffectResolver(bo, e));
+                    this.resolve(b, buffer, el, new AddEffectResolver(bo, e));
                 }
             }
         }
@@ -39,9 +40,10 @@ public class TurnStartResolver extends Resolver {
         for (BoardObject bo : theirs) {
             // things may happen, this bo might be dead already
             if (bo.isInPlay()) {
-                this.resolveQueue(b, rq, el, bo.onTurnStartEnemy());
+                this.resolveQueue(b, buffer, el, bo.onTurnStartEnemy());
             }
         }
+        this.resolveQueue(b, buffer, el, buffer);
         this.resolve(b, rq, el, new DrawResolver(this.p, 1));
     }
 }

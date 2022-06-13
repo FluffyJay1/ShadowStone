@@ -25,7 +25,8 @@ public class ZombieParty extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/zombieparty.png",
             CRAFT, TRAITS, RARITY, 2, ZombieParty.class,
-            () -> List.of(Tooltip.SPEND, Zombie.TOOLTIP));
+            () -> List.of(Tooltip.SPEND, Zombie.TOOLTIP),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

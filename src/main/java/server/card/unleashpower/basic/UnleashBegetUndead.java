@@ -23,7 +23,8 @@ public class UnleashBegetUndead extends UnleashPowerText {
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/begetundead.png",
             CRAFT, TRAITS, RARITY, 2, UnleashBegetUndead.class,
             new Vector2f(410, 460), 4,
-            () -> List.of(Tooltip.UNLEASH, Tooltip.LASTWORDS, Skeleton.TOOLTIP));
+            () -> List.of(Tooltip.UNLEASH, Tooltip.LASTWORDS, Skeleton.TOOLTIP),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

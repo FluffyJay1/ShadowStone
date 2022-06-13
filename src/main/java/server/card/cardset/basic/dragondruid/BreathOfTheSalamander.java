@@ -31,7 +31,8 @@ public class BreathOfTheSalamander extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/breathofthesalamander.png",
             CRAFT, TRAITS, RARITY, 2, BreathOfTheSalamander.class,
-            () -> List.of(Tooltip.SPEND));
+            () -> List.of(Tooltip.SPEND),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

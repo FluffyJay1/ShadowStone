@@ -26,7 +26,8 @@ public class WholeSouledSwing extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/wholesouledswing.png",
             CRAFT, TRAITS, RARITY, 2, WholeSouledSwing.class,
-            () -> List.of(Knight.TOOLTIP));
+            () -> List.of(Knight.TOOLTIP),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

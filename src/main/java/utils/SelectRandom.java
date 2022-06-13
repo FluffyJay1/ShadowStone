@@ -62,4 +62,19 @@ public class SelectRandom {
         }
         return null;
     }
+
+    /**
+     * Find random positions in a list to insert into
+     * @param sizeOfList The size of the list to insert into
+     * @param num The number of times you want to insert
+     * @return List of size num of randomly chosen indices, in order
+     */
+    public static List<Integer> positionsToAdd(int sizeOfList, int num) {
+        List<Integer> ret = new ArrayList<>(num);
+        for (int i = 0; i < num; i++) {
+            ret.add((int) (Math.random() * (sizeOfList + 1)));
+            sizeOfList++;
+        }
+        return ret;
+    }
 }

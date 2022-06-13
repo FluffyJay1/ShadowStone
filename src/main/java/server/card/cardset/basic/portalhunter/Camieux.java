@@ -27,7 +27,8 @@ public class Camieux extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/camieux.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 1, true, Camieux.class,
             new Vector2f(143, 150), 1.4, EventAnimationDamageShoot.class,
-            () -> List.of(Tooltip.LASTWORDS));
+            () -> List.of(Tooltip.LASTWORDS),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

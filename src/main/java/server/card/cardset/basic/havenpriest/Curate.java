@@ -27,7 +27,8 @@ public class Curate extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/curate.png",
             CRAFT, TRAITS, RARITY, 7, 5, 3, 5, true, Curate.class,
             new Vector2f(169, 143), 1.4, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY));
+            () -> List.of(Tooltip.BATTLECRY),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

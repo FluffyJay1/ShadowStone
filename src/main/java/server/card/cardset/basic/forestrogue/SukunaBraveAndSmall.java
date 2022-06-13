@@ -30,7 +30,8 @@ public class SukunaBraveAndSmall extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/sukunabraveandsmall.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, false, SukunaBraveAndSmall.class,
             new Vector2f(160, 160), 1.2, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.UNLEASH));
+            () -> List.of(Tooltip.UNLEASH),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

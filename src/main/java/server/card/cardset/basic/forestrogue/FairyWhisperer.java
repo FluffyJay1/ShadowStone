@@ -23,7 +23,8 @@ public class FairyWhisperer extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/fairywhisperer.png",
             CRAFT, TRAITS, RARITY, 2, 1, 1, 1, true, FairyWhisperer.class,
             new Vector2f(150, 121), 1.5, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY, Fairy.TOOLTIP));
+            () -> List.of(Tooltip.BATTLECRY, Fairy.TOOLTIP),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {

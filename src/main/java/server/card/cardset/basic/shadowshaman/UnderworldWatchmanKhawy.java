@@ -32,7 +32,8 @@ public class UnderworldWatchmanKhawy extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/underworldwatchmankhawy.png",
             CRAFT, TRAITS, RARITY, 7, 4, 2, 5, true, UnderworldWatchmanKhawy.class,
             new Vector2f(150, 200), 1.3, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.LASTWORDS));
+            () -> List.of(Tooltip.LASTWORDS),
+            List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {
