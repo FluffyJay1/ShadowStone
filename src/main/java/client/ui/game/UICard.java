@@ -28,7 +28,7 @@ import static org.newdawn.slick.opengl.renderer.SGL.GL_SRC_ALPHA;
 
 public class UICard extends UIBox {
     public static final Vector2f CARD_DIMENSIONS = new Vector2f(150, 180);
-    private static final Vector2f BORDER_DIMENSIONS = new Vector2f(158, 188);
+    private static final Vector2f BORDER_DIMENSIONS = new Vector2f(182, 212);
     private static final Vector2f COST_POS = new Vector2f(-0.4f, -0.4f);
     private static final Vector2f COST_POS_UNLEASHPOWER = new Vector2f(0, -0.3f);
     private static final Vector2f COUNTDOWN_POS = new Vector2f(0.15f, 0.15f);
@@ -388,12 +388,22 @@ public class UICard extends UIBox {
 
     public void drawCardBorder(Graphics g, Vector2f pos, double scale) {
         String imagePath = null;
-        switch (this.card.getTooltip().rarity) {
-            case BRONZE -> imagePath = "res/game/borderbronze.png";
-            case SILVER -> imagePath = "res/game/bordersilver.png";
-            case GOLD -> imagePath = "res/game/bordergold.png";
-            case LEGENDARY -> imagePath = "res/game/borderlegendary.png";
+        String type = "";
+        TooltipCard tooltip = this.card.getTooltip();
+        if (tooltip instanceof TooltipSpell) {
+            type = "spell";
+        } else if (tooltip instanceof TooltipAmulet) {
+            type = "amulet";
+        } else if (tooltip instanceof TooltipMinion) {
+            type = "minion";
         }
+        String rarity = switch (tooltip.rarity) {
+            case BRONZE -> "bronze";
+            case SILVER -> "silver";
+            case GOLD -> "gold";
+            case LEGENDARY -> "legendary";
+        };
+        imagePath = "res/game/border" + rarity + type + ".png";
         Image borderImage = Game.getImage(imagePath).getScaledCopy((int) (scale * BORDER_DIMENSIONS.x), (int) (scale * BORDER_DIMENSIONS.y));
         g.drawImage(borderImage, (int) (pos.x - borderImage.getWidth() / 2),
                 (int) (pos.y - borderImage.getHeight() / 2));
@@ -478,10 +488,10 @@ public class UICard extends UIBox {
     private void drawReadyBorder(Graphics g, Vector2f pos, double scale, Color color) {
         g.setLineWidth(READY_BORDER_WIDTH);
         g.setColor(color);
-        g.drawRect((float) (pos.x - BORDER_DIMENSIONS.x * scale / 2 - READY_BORDER_PADDING),
-                (float) (pos.y - BORDER_DIMENSIONS.y * scale / 2 - READY_BORDER_PADDING),
-                (float) (BORDER_DIMENSIONS.x * scale + READY_BORDER_PADDING * 2),
-                (float) (BORDER_DIMENSIONS.y * scale + READY_BORDER_PADDING * 2));
+        g.drawRect((float) (pos.x - CARD_DIMENSIONS.x * scale / 2 - READY_BORDER_PADDING),
+                (float) (pos.y - CARD_DIMENSIONS.y * scale / 2 - READY_BORDER_PADDING),
+                (float) (CARD_DIMENSIONS.x * scale + READY_BORDER_PADDING * 2),
+                (float) (CARD_DIMENSIONS.y * scale + READY_BORDER_PADDING * 2));
         g.setColor(Color.white);
     }
 
