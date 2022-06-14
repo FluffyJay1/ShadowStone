@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
 import client.ui.game.visualboardanimation.eventgroupanimation.EventGroupAnimationFactory;
 
 import client.ui.game.*;
@@ -265,7 +266,15 @@ public class VisualBoard extends Board implements
     }
 
     private boolean shouldConcurrentlyAnimate() {
-        return this.peekEventGroup() != null && this.peekEventGroup().type.equals(EventGroupType.MINIONCOMBAT);
+        if (this.inputeventliststrings.isEmpty()) {
+            return false;
+        }
+        // try to concurrently animate damage events
+        // giga janky but it works, also will not make damage events of different event groups concurrent
+        StringTokenizer st = new StringTokenizer(this.inputeventliststrings.get(0));
+        return st.nextToken().equals(String.valueOf(EventDamage.ID)) && !this.currentAnimations.isEmpty()
+                && this.currentAnimations.get(this.currentAnimations.size() - 1) instanceof EventAnimationDamage;
+//        return this.peekEventGroup() != null && this.peekEventGroup().type.equals(EventGroupType.MINIONCOMBAT);
     }
 
     @Override

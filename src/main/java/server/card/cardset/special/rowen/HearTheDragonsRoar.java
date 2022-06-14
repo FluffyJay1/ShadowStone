@@ -3,6 +3,7 @@ package server.card.cardset.special.rowen;
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
 import server.ServerBoard;
+import server.ai.AI;
 import server.card.CardRarity;
 import server.card.CardTrait;
 import server.card.ClassCraft;
@@ -45,7 +46,7 @@ public class HearTheDragonsRoar extends SpellText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return 30 / 2.;
+                return AI.VALUE_OF_BANISH * 3;
             }
         });
     }

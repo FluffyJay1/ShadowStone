@@ -1,4 +1,3 @@
-allow damage events to play concurrently if no board change happens (speed up)
 make visual distinction between minions, spells, amulets
 place pending play cards on the side
 fix heap memory error by storing hash of board state instead
