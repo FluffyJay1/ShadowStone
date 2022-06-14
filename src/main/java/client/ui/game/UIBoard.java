@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import client.ui.Animation;
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
+import client.ui.game.visualboardanimation.eventanimation.board.EventAnimationPlayCard;
 import client.ui.interpolation.realvalue.ConstantInterpolation;
 import client.ui.interpolation.realvalue.LinearInterpolation;
 import client.ui.interpolation.realvalue.QuadraticInterpolationA;
@@ -40,6 +41,7 @@ public class UIBoard extends UIBox {
     private static final float MULLIGAN_FAN_WIDTH = 0.6f, MULLIGAN_KEEP_Y = 0.2f, MULLIGAN_TOSS_Y = -0.2f;
     public static final double CARD_PLAY_Y = 0.2, HAND_EXPAND_Y = 0.30;
     public static final double DECK_X = 0.35, DECK_Y_LOCAL = 0.2, DECK_Y_ENEMY = -0.2;
+    public static final float PENDING_X = -0.35f, PENDING_Y = -0.25f, PENDING_Y_SPACING = 0.3f;
     public static final int PARTICLE_Z_BOARD = 1, PARTICLE_Z_SPECIAL = 5, UI_Z_TOP = 10;
     public static final Vector2f TARGETING_CARD_POS = new Vector2f(-0.4f, -0.22f);
 
@@ -258,9 +260,25 @@ public class UIBoard extends UIBox {
                     }
                 }
             } else {
+                int idx = 0;
+                int handSize = this.b.getPlayer(team).getHand().size();
+                if (team == this.b.localteam) {
+                    handSize -= this.b.pendingPlayCards.size();
+                    if (this.playingCard != null) {
+                        handSize--;
+                    }
+                    // maximum jank
+                    if (!this.b.currentAnimations.isEmpty()) {
+                        VisualBoardAnimation anim = this.b.currentAnimations.get(0);
+                        if (anim instanceof EventAnimationPlayCard && ((EventAnimationPlayCard) anim).event.c.team == team) {
+                            handSize--;
+                        }
+                    }
+                }
                 for (Card c : hand) {
                     UICard uic = c.uiCard;
-                    if (!uic.isBeingAnimated()) {
+                    // pending cards are positioned separately
+                    if (!uic.isBeingAnimated() && !uic.isPending()) {
                         if (team == this.b.localteam && !this.b.disableInput) {
                             uic.draggable = true;
                         }
@@ -272,25 +290,31 @@ public class UIBoard extends UIBox {
                             // if there's a bug then god have mercy
                             uic.setPos(
                                     new Vector2f(
-                                            (float) (((uic.getCard().getIndex())
-                                                    - (this.b.getPlayer(team).getHand().size()) / 2.)
+                                            (float) ((idx - handSize / 2.)
                                                     * (team == this.b.localteam ? (this.expandHand
-                                                    ? (HAND_X_SCALE_EXPAND_LOCAL
-                                                    + this.b.getPlayer(team).getHand().size()
-                                                    * 0.02)
-                                                    : HAND_X_SCALE_LOCAL) : HAND_X_SCALE_ENEMY)
-                                                    / this.b.getPlayer(team).getHand().size()
+                                                    ? (HAND_X_SCALE_EXPAND_LOCAL + handSize * 0.02)
+                                                    : HAND_X_SCALE_LOCAL) : HAND_X_SCALE_ENEMY) / handSize
                                                     + (team == this.b.localteam ? (this.expandHand
-                                                    ? (HAND_X_EXPAND_LOCAL
-                                                    - this.b.getPlayer(team).getHand().size()
-                                                    * 0.01)
+                                                    ? (HAND_X_EXPAND_LOCAL - handSize * 0.01)
                                                     : HAND_X_LOCAL) : HAND_X_ENEMY)),
                                             (float) (team == this.b.localteam
                                                     ? (this.expandHand ? HAND_Y_EXPAND_LOCAL : HAND_Y_LOCAL)
                                                     : HAND_Y_ENEMY)),
                                     0.99);
                         }
+                        idx++;
                     }
+                }
+            }
+            // position pending cards
+            float pendingY = PENDING_Y;
+            for (Card c : this.b.pendingPlayCards) {
+                if (c.visualCard != null) {
+                    UICard uic = c.visualCard.uiCard;
+                    uic.draggable = false;
+                    uic.setVisible(true);
+                    uic.setPos(new Vector2f(PENDING_X, pendingY), 0.99);
+                    pendingY += PENDING_Y_SPACING;
                 }
             }
             List<Card> deck = this.b.getPlayer(team).getDeck();

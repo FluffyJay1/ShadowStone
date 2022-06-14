@@ -46,14 +46,14 @@ public class UICard extends UIBox {
     private static final int ICON_SPACING = 32;
     public static final float SCALE_DEFAULT = 1, SCALE_HAND = 0.75f, SCALE_HAND_EXPAND = 1.2f,
             SCALE_BOARD = 1f, SCALE_TARGETING = 1.3f, SCALE_POTENTIAL_TARGET = 1.15f, SCALE_ORDERING_ATTACK = 1.3f,
-            SCALE_COMBAT = 1.2f, SCALE_PLAY = 2.5f, SCALE_MOVE = 2, SCALE_MULLIGAN = 1.5f;
+            SCALE_COMBAT = 1.2f, SCALE_PLAY = 2.5f, SCALE_MOVE = 2, SCALE_MULLIGAN = 1.5f, SCALE_PLAY_PENDING = 1.25f;
     public static final int Z_DEFAULT = 0, Z_HAND = 2, Z_BOARD = 0, Z_TARGETING = 4,
             Z_MOVE = 4, Z_DRAGGING = 3, Z_MULLIGAN = 6;
-    private static final double PENDING_PLAY_TIME_PER_CYCLE = 0.4;
-    private static final float PENDING_PLAY_ELLIPSIS_SPACING = 0.2f;
-    private static final float PENDING_PLAY_ELLIPSIS_SIZE = 20f;
-    private static final Color PENDING_PLAY_COLOR = new Color(0.6f, 0.6f, 0.7f, 1);
-    private static final Color PENDING_PLAY_POSITION_COLOR = new Color(0.8f, 0.8f, 1f, 0.4f);
+    private static final double PENDING_TIME_PER_CYCLE = 0.4;
+    private static final float PENDING_ELLIPSIS_SPACING = 0.2f;
+    private static final float PENDING_ELLIPSIS_SIZE = 20f;
+    private static final Color PENDING_COLOR = new Color(0.6f, 0.6f, 0.7f, 1);
+    private static final Color PENDING_POSITION_COLOR = new Color(0.8f, 0.8f, 1f, 0.4f);
     private static final float STAT_ICON_DEFAULT_SCALE = 0.6f;
     private static final float STAT_ICON_COUNTDOWN_SCALE = 1;
     private static final float HAND_TITLE_OFFSET = 0.2f;
@@ -254,6 +254,9 @@ public class UICard extends UIBox {
         if (this.combat) {
             scale *= SCALE_COMBAT;
         }
+        if (this.isPending() && this.card.status.equals(CardStatus.HAND)) {
+            scale *= SCALE_PLAY_PENDING;
+        }
         if (this.dragging) {
             z = Math.max(z, Z_DRAGGING);
         }
@@ -280,7 +283,7 @@ public class UICard extends UIBox {
             this.updateFlippedOver();
         }
         if (this.isPending()) {
-            this.pendingTimer = (this.pendingTimer + frametime) % PENDING_PLAY_TIME_PER_CYCLE;
+            this.pendingTimer = (this.pendingTimer + frametime) % PENDING_TIME_PER_CYCLE;
         }
     }
 
@@ -290,10 +293,10 @@ public class UICard extends UIBox {
             Vector2f absPos = this.getAbsPos();
             this.drawCard(g, absPos, this.getScale());
             if (this.isPending()) {
-                float size = this.getScale() * PENDING_PLAY_ELLIPSIS_SIZE;
+                float size = this.getScale() * PENDING_ELLIPSIS_SIZE;
                 for (int i = -1; i <= 1; i++) {
-                    Vector2f pos = this.getAbsPosOfLocal(this.getLocalPosOfRel(new Vector2f(i * PENDING_PLAY_ELLIPSIS_SPACING, 0)));
-                    g.setColor(new Color(1f, 1f, 1f, ((1 + (float)Math.sin((-i / 3f + this.pendingTimer / PENDING_PLAY_TIME_PER_CYCLE) * Math.PI * 2)) / 2.f)));
+                    Vector2f pos = this.getAbsPosOfLocal(this.getLocalPosOfRel(new Vector2f(i * PENDING_ELLIPSIS_SPACING, 0)));
+                    g.setColor(new Color(1f, 1f, 1f, ((1 + (float)Math.sin((-i / 3f + this.pendingTimer / PENDING_TIME_PER_CYCLE) * Math.PI * 2)) / 2.f)));
                     g.fillOval(pos.x - size/2, pos.y - size/2, size, size);
                 }
                 g.setColor(Color.white);
@@ -306,7 +309,7 @@ public class UICard extends UIBox {
             this.drawCardBack(g, pos, scale);
             return;
         }
-        this.drawCardArt(g, pos, scale, this.card.status, this.isPending() ? PENDING_PLAY_COLOR : Color.white);
+        this.drawCardArt(g, pos, scale, this.card.status, this.isPending() ? PENDING_COLOR : Color.white);
         if (!(this.card instanceof UnleashPower) && !(this.card instanceof Leader)) {
             this.drawCardBorder(g, pos, scale);
         }
@@ -617,7 +620,7 @@ public class UICard extends UIBox {
         Vector2f absPos = this.getAbsPos();
         g.setDrawMode(Graphics.MODE_ADD);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE); // major weirdchamp on you slick
-        this.drawCardArt(g, drawPos, SCALE_BOARD, CardStatus.BOARD, PENDING_PLAY_POSITION_COLOR);
+        this.drawCardArt(g, drawPos, SCALE_BOARD, CardStatus.BOARD, PENDING_POSITION_COLOR);
         g.setColor(new Color(0, 1.0f, 0, 0.3f));
         g.setLineWidth(10);
         g.drawLine(absPos.x, absPos.y, drawPos.x, drawPos.y);

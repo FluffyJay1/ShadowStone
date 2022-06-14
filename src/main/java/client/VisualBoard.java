@@ -44,6 +44,7 @@ public class VisualBoard extends Board implements
     // server sends events in bursts, if not our turn, prevent realboard from advancing past the current animated burst
     final List<EventBurst> bufferedEventBursts = new LinkedList<>();
     public final List<VisualBoardAnimation> currentAnimations = new LinkedList<>();
+    public final List<Card> pendingPlayCards = new LinkedList<>();
 
     // whether this board is not accepting input from the player (i.e., only works when it's the player's turn)
     // Currently this is controlled in EventAnimationTurnStart (enable control) and EndTurnButton (disable control)
@@ -61,6 +62,7 @@ public class VisualBoard extends Board implements
                 if (item.card.visualCard != null) {
                     item.card.visualCard.uiCard.addPendingSource(this);
                 }
+                pendingPlayCards.add(item.card);
             }
 
             @Override
@@ -68,6 +70,7 @@ public class VisualBoard extends Board implements
                 if (item.card.visualCard != null) {
                     item.card.visualCard.uiCard.removePendingSource(this);
                 }
+                pendingPlayCards.remove(item.card);
             }
         };
         this.pendingPlayPositions = new PendingListManager<>();
