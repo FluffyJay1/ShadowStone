@@ -1,4 +1,4 @@
-package server.card.cardset.basic.dragondruid;
+package server.card.cardset.basic.runemage;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
@@ -13,23 +13,23 @@ import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.target.TargetList;
 import server.event.Event;
-import server.resolver.DrawResolver;
 import server.resolver.Resolver;
+import server.resolver.SpellboostResolver;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.util.List;
 
-public class IvoryDragon extends MinionText {
-    public static final String NAME = "Ivory Dragon";
-    public static final String DESCRIPTION = "<b>Battlecry</b>: Draw a card if <b>Overflow</b> is active for you.";
-    public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
-    public static final CardRarity RARITY = CardRarity.BRONZE;
+public class RaioOmenOfTruth extends MinionText {
+    public static final String NAME = "Raio, Omen of Truth";
+    public static final String DESCRIPTION = "<b>Battlecry</b>: <b>Spellboost</b> the cards in your deck 9 times.";
+    public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
+    public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/ivorydragon.png",
-            CRAFT, TRAITS, RARITY, 1, 1, 0, 3, true, IvoryDragon.class,
-            new Vector2f(154, 168), 1.2, EventAnimationDamageSlash.class,
-            () -> List.of(Tooltip.BATTLECRY, Tooltip.OVERFLOW),
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/raioomenoftruth.png",
+            CRAFT, TRAITS, RARITY, 7, 7, 3, 7, true, RaioOmenOfTruth.class,
+            new Vector2f(150, 100), 2, EventAnimationDamageSlash.class,
+            () -> List.of(Tooltip.BATTLECRY, Tooltip.SPELLBOOST),
             List.of());
 
     @Override
@@ -40,8 +40,8 @@ public class IvoryDragon extends MinionText {
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        if (owner.player.overflow()) {
-                            this.resolve(b, rq, el, new DrawResolver(owner.player, 1));
+                        for (int i = 0; i < 9; i++) {
+                            this.resolve(b, rq, el, new SpellboostResolver(owner.player.getDeck()));
                         }
                     }
                 });
@@ -49,12 +49,7 @@ public class IvoryDragon extends MinionText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.VALUE_PER_CARD_IN_HAND / 2;
-            }
-
-            @Override
-            public boolean battlecrySpecialConditions() {
-                return this.owner.player.overflow();
+                return 4; // uhhh
             }
         });
     }

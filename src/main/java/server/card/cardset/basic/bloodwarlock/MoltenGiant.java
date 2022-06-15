@@ -38,7 +38,7 @@ public class MoltenGiant extends MinionText {
 
             @Override
             public boolean isActive() {
-                return this.owner.status.equals(CardStatus.HAND);
+                return this.owner.status.equals(CardStatus.HAND) || this.owner.status.equals(CardStatus.DECK);
             }
         });
     }

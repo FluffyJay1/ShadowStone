@@ -433,6 +433,15 @@ public class UICard extends UIBox {
 
     public void drawOnBoard(Graphics g, Vector2f pos, double scale) {
         this.drawIcons(g, pos, scale);
+        if (this.card.finalStats.get(Stat.ELUSIVE) > 0) {
+            Image i = Game.getImage("res/game/elusive.png");
+            i = i.getScaledCopy((float) scale);
+            i.setAlpha(this.uib.getElusiveAlpha());
+            g.setDrawMode(Graphics.MODE_ADD);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE); // major weirdchamp on you slick
+            g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
+            g.setDrawMode(Graphics.MODE_NORMAL);
+        }
         if (this.card instanceof Minion) {
             if (this.card.realCard != null && this.card.realCard instanceof Minion
                     && (!this.uib.b.disableInput || this.card.team != this.uib.b.localteam)) {
@@ -461,15 +470,6 @@ public class UICard extends UIBox {
                 Image i = Game.getImage("res/game/shield.png");
                 i = i.getScaledCopy((float) scale);
                 g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
-            }
-            if (this.card.finalStats.get(Stat.ELUSIVE) > 0) {
-                Image i = Game.getImage("res/game/elusive.png");
-                i = i.getScaledCopy((float) scale);
-                i.setAlpha(this.uib.getElusiveAlpha());
-                g.setDrawMode(Graphics.MODE_ADD);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE); // major weirdchamp on you slick
-                g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
-                g.setDrawMode(Graphics.MODE_NORMAL);
             }
             this.drawOffensiveStat(g, pos, scale, this.card.finalStats.get(Stat.ATTACK),
                     this.card.finalBasicStats.get(Stat.ATTACK),

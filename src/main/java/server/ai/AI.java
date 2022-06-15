@@ -869,7 +869,7 @@ public class AI extends Thread {
      */
     public static double evaluateDeck(Board b, int team) {
         Player p = b.getPlayer(team);
-        double avgValue = p.getDeck().stream()
+        double avgValue = p.getDeck().isEmpty() ? 0 : p.getDeck().stream()
                 .map(AI::valueInHand)
                 .reduce(0., Double::sum) / p.getDeck().size();
         return -150 * Math.pow(p.getDeck().size() + 0.5, -1.5) + avgValue;
