@@ -15,6 +15,8 @@ public class Player implements StringBuildable {
     public static final int MAX_MAX_BOARD_SIZE = 10;
     public static final int DEFAULT_MAX_HAND_SIZE = 10;
     public static final int DEFAULT_MAX_BOARD_SIZE = 6;
+    public static final int OVERFLOW_THRESHOLD = 7;
+    public static final int VENGEANCE_THRESHOLD = 15;
     public Player realPlayer;
     public final Board board;
     protected final PositionedList<Card> deck;
@@ -182,12 +184,12 @@ public class Player implements StringBuildable {
 
     // TODO magic numbers lmao
     public boolean overflow() {
-        return this.maxmana >= 7;
+        return this.maxmana >= OVERFLOW_THRESHOLD;
     }
 
     public boolean vengeance() {
         if (this.leader != null) {
-            return this.leader.health <= 15;
+            return this.leader.health <= VENGEANCE_THRESHOLD;
         }
         return false;
     }

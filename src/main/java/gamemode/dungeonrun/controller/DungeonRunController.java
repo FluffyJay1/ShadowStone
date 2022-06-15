@@ -46,7 +46,7 @@ public class DungeonRunController {
         run.state = RunState.PENDING;
         // generate player
         // TODO change from Rowen
-        run.player = new Contestant(new Rowen(), CardSet.getDefaultUnleashPower(starterCraft), getDeckForClass(starterCraft), 0, List.of());
+        run.player = new Contestant(CardSet.getDefaultLeader(starterCraft), CardSet.getDefaultUnleashPower(starterCraft), getDeckForClass(starterCraft), 0, List.of());
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {
             dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);

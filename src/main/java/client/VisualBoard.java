@@ -130,6 +130,8 @@ public class VisualBoard extends Board implements
         T ret = super.processEvent(e);
 		this.uiBoard.advantageText.setText(String.format("Adv: %.4f", AI.evaluateAdvantage(this, this.localteam)));
         this.uiBoard.cardSelectPanel.updateTrackerText();
+        this.uiBoard.localPlayerTracker.updateTrackerText();
+        this.uiBoard.enemyPlayerTracker.updateTrackerText();
         if (e instanceof EventGameEnd) {
             this.uiBoard.onGameEnd(((EventGameEnd) e).victory);
         }
@@ -275,9 +277,9 @@ public class VisualBoard extends Board implements
         // try to concurrently animate damage events
         // giga janky but it works, also will not make damage events of different event groups concurrent
         StringTokenizer st = new StringTokenizer(this.inputeventliststrings.get(0));
-        return st.nextToken().equals(String.valueOf(EventDamage.ID)) && !this.currentAnimations.isEmpty()
-                && this.currentAnimations.get(this.currentAnimations.size() - 1) instanceof EventAnimationDamage;
-//        return this.peekEventGroup() != null && this.peekEventGroup().type.equals(EventGroupType.MINIONCOMBAT);
+        return (st.nextToken().equals(String.valueOf(EventDamage.ID)) && !this.currentAnimations.isEmpty()
+                && this.currentAnimations.get(this.currentAnimations.size() - 1) instanceof EventAnimationDamage)
+                || (this.peekEventGroup() != null && this.peekEventGroup().type.equals(EventGroupType.MINIONCOMBAT));
     }
 
     @Override

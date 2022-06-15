@@ -73,6 +73,7 @@ public class UIBoard extends UIBox {
     private final ManaOrbPanel localPlayerMana, enemyPlayerMana;
     public final Text advantageText;
     private final PlayerStatPanel localPlayerStats, enemyPlayerStats;
+    public final ClassCraftTrackerPanel localPlayerTracker, enemyPlayerTracker;
     private final MulliganConfirmation mulliganConfirmation;
     public UICard preSelectedCard, selectedCard, draggingCard, playingCard, attackingMinion,
             unleashingMinion;
@@ -133,6 +134,17 @@ public class UIBoard extends UIBox {
         this.enemyPlayerStats.setZ(1);
         this.addChild(this.localPlayerStats);
         this.addChild(this.enemyPlayerStats);
+
+        this.localPlayerTracker = new ClassCraftTrackerPanel(ui, new Vector2f(0.5f, 0.3f), this.b.realBoard.getPlayer(localteam));
+        this.localPlayerTracker.alignh = 1;
+        this.localPlayerTracker.relpos = true;
+        this.localPlayerTracker.setZ(1);
+        this.enemyPlayerTracker = new ClassCraftTrackerPanel(ui, new Vector2f(0.5f, -0.3f), this.b.realBoard.getPlayer(localteam * -1));
+        this.enemyPlayerTracker.alignh = 1;
+        this.enemyPlayerTracker.relpos = true;
+        this.enemyPlayerTracker.setZ(1);
+        this.addChild(this.localPlayerTracker);
+        this.addChild(this.enemyPlayerTracker);
 
         this.mulliganConfirmation = new MulliganConfirmation(ui, new Vector2f(0, 0), () -> {
             this.ds.sendPlayerAction(new MulliganAction(this.b.getPlayer(this.b.localteam), this.mulliganChoices.stream()

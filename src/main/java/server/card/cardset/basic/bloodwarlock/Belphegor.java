@@ -5,6 +5,7 @@ import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
+import server.Player;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.CardRarity;
@@ -27,7 +28,8 @@ import java.util.List;
 
 public class Belphegor extends MinionText {
     public static final String NAME = "Belphegor";
-    public static final String DESCRIPTION = "<b>Battlecry</b>: Draw 2 cards. If <b>Vengeance</b> isn't active for you, deal X damage to your leader. X equals your leader's health minus 15.";
+    public static final String DESCRIPTION = String.format("<b>Battlecry</b>: Draw 2 cards. If <b>Vengeance</b> isn't active for you, deal X damage to your leader. " +
+            "X equals your leader's health minus %d.", Player.VENGEANCE_THRESHOLD);
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
@@ -49,7 +51,7 @@ public class Belphegor extends MinionText {
                         this.resolve(b, rq, el, new DrawResolver(owner.player, 2));
                         if (!owner.player.vengeance()) {
                             owner.player.getLeader().ifPresent(l -> {
-                                this.resolve(b, rq, el, new DamageResolver(effect, l, l.health - 15, true, EventAnimationDamageFire.class));
+                                this.resolve(b, rq, el, new DamageResolver(effect, l, l.health - Player.VENGEANCE_THRESHOLD, true, EventAnimationDamageFire.class));
                             });
                         }
                     }

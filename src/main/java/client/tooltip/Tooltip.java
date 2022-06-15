@@ -1,14 +1,16 @@
 package client.tooltip;
 
+import server.Player;
+
 import java.util.List;
 import java.util.function.Supplier;
 
 public class Tooltip {
     public static final Tooltip OVERFLOW = new Tooltip("Overflow",
-            "<b>Overflow</b> is active for a player when they have 7 or more maximum mana.",
+            String.format("<b>Overflow</b> is active for a player when they have %d or more maximum mana.", Player.OVERFLOW_THRESHOLD),
             List::of);
     public static final Tooltip VENGEANCE = new Tooltip("Vengeance",
-            "<b>Vengeance</b> is active for a player when they have 15 or less health.",
+            String.format("<b>Vengeance</b> is active for a player when they have %d or less health.", Player.VENGEANCE_THRESHOLD),
             List::of);
     public static final Tooltip BATTLECRY = new Tooltip("Battlecry",
             "<b>Battlecry</b> abilities activate whenever the card is played.",

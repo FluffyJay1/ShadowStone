@@ -59,7 +59,7 @@ public class UICard extends UIBox {
     private static final float HAND_TITLE_OFFSET = 0.2f;
     private static final float ICON_Y = 0.6f;
     private static final int READY_BORDER_WIDTH = 2;
-    private static final int READY_BORDER_PADDING = 4;
+    private static final int READY_BORDER_PADDING = 6;
 
     private static final Supplier<EmissionStrategy> STEALTH_PARTICLES = () -> new EmissionStrategy(
             new IntervalEmissionTimingStrategy(3, 0.08),

@@ -61,7 +61,7 @@ public class ServerGameThread extends Thread {
             }
         }
         GameController gc = new GameController(List.of(this.dslocal, this.dsexternal),
-                List.of(new Rowen(), new Rowen()),
+                Arrays.stream(this.decks).map(d -> CardSet.getDefaultLeader(d.craft)).collect(Collectors.toList()),
                 Arrays.stream(this.decks).map(d -> CardSet.getDefaultUnleashPower(d.craft)).collect(Collectors.toList()),
                 Arrays.stream(this.decks).collect(Collectors.toList()));
         gc.startInit();

@@ -2,9 +2,11 @@ package server.card.cardset;
 
 import java.util.*;
 
+import client.ui.game.ClassCraftTrackerPanel;
 import server.UnleashPowerText;
 import server.card.*;
 import server.card.cardset.basic.*;
+import server.card.leader.*;
 import server.card.unleashpower.basic.*;
 
 /**
@@ -107,6 +109,20 @@ public class CardSet implements Iterable<CardText> {
             case BLOODWARLOCK -> new UnleashTapSoul();
             case HAVENPRIEST -> new UnleashMendWounds();
             case PORTALHUNTER -> new UnleashEchoExistence();
+            default -> null;
+        };
+    }
+
+    public static LeaderText getDefaultLeader(ClassCraft craft) {
+        return switch (craft) {
+            case FORESTROGUE -> new Arisa();
+            case SWORDPALADIN -> new Erika();
+            case RUNEMAGE -> new Isabelle();
+            case DRAGONDRUID -> new Rowen();
+            case SHADOWSHAMAN -> new Luna();
+            case BLOODWARLOCK -> new Urias();
+            case HAVENPRIEST -> new Eris();
+            case PORTALHUNTER -> new Yuwan();
             default -> null;
         };
     }
