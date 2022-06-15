@@ -42,7 +42,8 @@ public class ExpansionSetBasic extends ExpansionSet {
             new PriestOfTheCudgel(), new WhitefangTemple(), new ElanasPrayer(), new KelHolyMarksman(), new TribunalOfGoodAndEvil(),
             new Acceleratium(), new MagisteelLion(), new Icarus(), new AugmentationBestowal(), new AncientAmplifier(),
             new DimensionCut(), new ArtifactCall(), new TranquilCog(), new IronforgedFighter(), new MortonTheManipulator(),
-            new PuppeteersStrings(), new VengefulPuppeteerNoah(), new ElectromagicalRhino());
+            new PuppeteersStrings(), new VengefulPuppeteerNoah(), new ElectromagicalRhino(), new ElvenPrincessMage(),
+            new AncientForestDragon());
 
     @Override
     public CardSet getCards() {

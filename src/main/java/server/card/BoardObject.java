@@ -51,6 +51,9 @@ public class BoardObject extends Card {
         if (this.finalStats.get(Stat.STEALTH) > 0) {
             sum += AI.VALUE_OF_STEALTH;
         }
+        if (this.finalStats.get(Stat.ELUSIVE) > 0) {
+            sum += AI.VALUE_OF_ELUSIVE;
+        }
         return sum;
     }
 

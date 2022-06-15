@@ -24,7 +24,7 @@ public class BanelingBust extends SpellText {
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/banelingbust.png",
-            CRAFT, TRAITS, RARITY, 5, BanelingBust.class,
+            CRAFT, TRAITS, RARITY, 6, BanelingBust.class,
             () -> List.of(Tooltip.BLAST),
             List.of());
 

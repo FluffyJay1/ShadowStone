@@ -25,7 +25,7 @@ public class Jeno extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/jeno.png",
-            CRAFT, TRAITS, RARITY, 4, 4, 1, 3, true, Jeno.class,
+            CRAFT, TRAITS, RARITY, 4, 4, 1, 4, true, Jeno.class,
             new Vector2f(132, 130), 1.4, EventAnimationDamageSlash.class,
             () -> List.of(Tooltip.RUSH, Tooltip.BATTLECRY, Tooltip.SPEND, Tooltip.LASTWORDS, Knight.TOOLTIP),
             List.of());

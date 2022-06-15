@@ -97,6 +97,9 @@ public class Tooltip {
     public static final Tooltip RESONANCE = new Tooltip("Resonance",
             "<b>Resonance</b> is active for a player when they have an even number of cards left in their deck.",
             List::of);
+    public static final Tooltip ELUSIVE = new Tooltip("Elusive",
+            "Cards with <b>Elusive</b> can't be targeted by enemy spells or effects.",
+            List::of);
 
     public final String name;
     public final String description;

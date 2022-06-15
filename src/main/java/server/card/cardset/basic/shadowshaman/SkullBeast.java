@@ -21,7 +21,7 @@ public class SkullBeast extends MinionText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/skullbeast.png",
-            CRAFT, TRAITS, RARITY, 1, 1, 0, 2, true, SkullBeast.class,
+            CRAFT, TRAITS, RARITY, 1, 1, 0, 3, true, SkullBeast.class,
             new Vector2f(136, 219), 1.5, EventAnimationDamageSlash.class,
             List::of,
             List.of());

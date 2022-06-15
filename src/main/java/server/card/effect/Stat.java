@@ -16,5 +16,6 @@ public enum Stat {
     LIFESTEAL,
     STEALTH,
     SHIELD,
-    BANISH_ON_DESTROY
+    BANISH_ON_DESTROY,
+    ELUSIVE
 }

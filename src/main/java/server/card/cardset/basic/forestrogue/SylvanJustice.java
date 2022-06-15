@@ -20,7 +20,7 @@ import java.util.List;
 
 public class SylvanJustice extends SpellText {
     public static final String NAME = "Sylvan Justice";
-    public static final String DESCRIPTION = "Deal 2 damage to an enemy minion. Add a <b>Fairy</b> to your hand.";
+    public static final String DESCRIPTION = "Deal 3 damage to an enemy minion. Add a <b>Fairy</b> to your hand.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
@@ -36,7 +36,7 @@ public class SylvanJustice extends SpellText {
 
             @Override
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
-                return List.of(new CardTargetingScheme(this, 1, 1, "Deal 2 damage to an enemy minion.") {
+                return List.of(new CardTargetingScheme(this, 1, 1, "Deal 3 damage to an enemy minion.") {
                     @Override
                     protected boolean criteria(Card c) {
                         return c.status.equals(CardStatus.BOARD) && c instanceof Minion && c.team != this.getCreator().owner.team;
@@ -51,7 +51,7 @@ public class SylvanJustice extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 2, true, EventAnimationDamageOrbFall.class));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 3, true, EventAnimationDamageOrbFall.class));
                         });
                         this.resolve(b, rq, el, new CreateCardResolver(new Fairy(), owner.team, CardStatus.HAND, -1));
                     }
@@ -63,7 +63,7 @@ public class SylvanJustice extends SpellText {
                 if (this.cachedInstances == null) {
                     this.cachedInstances = List.of(new Fairy().constructInstance(this.owner.board));
                 }
-                return AI.valueOfMinionDamage(2) + AI.valueForAddingToHand(this.cachedInstances, refs);
+                return AI.valueOfMinionDamage(3) + AI.valueForAddingToHand(this.cachedInstances, refs);
             }
         });
     }

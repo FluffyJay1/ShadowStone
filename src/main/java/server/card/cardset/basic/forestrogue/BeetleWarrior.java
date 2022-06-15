@@ -23,7 +23,7 @@ import server.resolver.util.ResolverQueue;
 import java.util.List;
 
 public class BeetleWarrior extends MinionText {
-    public static final String NAME = "Beetle warrior";
+    public static final String NAME = "Beetle Warrior";
     public static final String DESCRIPTION = "<b>Battlecry</b>: If at least 2 other cards were played this turn, gain +1/+0/+1 and <b>Storm</b>.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.BRONZE;

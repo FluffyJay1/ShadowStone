@@ -9,9 +9,10 @@ import java.util.stream.Stream;
 import client.ui.Animation;
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
 import client.ui.game.visualboardanimation.eventanimation.board.EventAnimationPlayCard;
-import client.ui.interpolation.realvalue.ConstantInterpolation;
-import client.ui.interpolation.realvalue.LinearInterpolation;
-import client.ui.interpolation.realvalue.QuadraticInterpolationA;
+import client.ui.interpolation.Interpolation;
+import client.ui.interpolation.meta.ComposedInterpolation;
+import client.ui.interpolation.meta.SequentialInterpolation;
+import client.ui.interpolation.realvalue.*;
 import client.ui.particle.ParticleSystem;
 import client.ui.particle.strategy.EmissionStrategy;
 import client.ui.particle.strategy.property.*;
@@ -44,6 +45,15 @@ public class UIBoard extends UIBox {
     public static final float PENDING_X = -0.35f, PENDING_Y = -0.25f, PENDING_Y_SPACING = 0.3f;
     public static final int PARTICLE_Z_BOARD = 1, PARTICLE_Z_SPECIAL = 5, UI_Z_TOP = 10;
     public static final Vector2f TARGETING_CARD_POS = new Vector2f(-0.4f, -0.22f);
+    private static final double ELUSIVE_TIME_PER_CYCLE = 2.5;
+    private static final Interpolation<Double> ELUSIVE_ALPHA_INTERPOLATION = new ComposedInterpolation<>(new ClampedInterpolation(0, ELUSIVE_TIME_PER_CYCLE),
+            new ComposedInterpolation<>(
+                    new SequentialInterpolation<>(
+                            List.of(new SpringInterpolation(1), new ComposedInterpolation<>(new SpringInterpolation(1), new LinearInterpolation(1, 0))),
+                            List.of(0.5, 0.5)
+                    ),
+                    new LinearInterpolation(0.1, 0.5)
+            ));
 
     private static final Supplier<EmissionStrategy> DUST_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(6),
@@ -65,6 +75,7 @@ public class UIBoard extends UIBox {
     boolean expandHand = false;
     boolean draggingUnleash = false;
     boolean skipNextEventAnimations = false;
+    private double elusiveTimer;
     Vector2f mouseDownPos = new Vector2f();
     final EventGroupDescriptionContainer eventGroupDescriptionContainer;
     public final CardSelectPanel cardSelectPanel;
@@ -186,6 +197,7 @@ public class UIBoard extends UIBox {
         this.b.update(frametime);
         this.readDataStream();
 
+        this.elusiveTimer = (this.elusiveTimer + frametime) % ELUSIVE_TIME_PER_CYCLE;
         // handle targeting text
         this.targetText.setVisible(true);
         UICard relevantCard = this.getCurrentTargetingCard();
@@ -208,6 +220,9 @@ public class UIBoard extends UIBox {
 
         this.localPlayerStats.updateStats(realLocalPlayer);
         this.enemyPlayerStats.updateStats(realEnemyPlayer);
+
+        this.localPlayerTracker.updateTrackerText();
+        this.enemyPlayerTracker.updateTrackerText();
 
         this.mulliganConfirmation.setEnableInput(!this.b.getPlayer(this.b.localteam).mulliganed);
         this.mulliganConfirmation.setVisible(this.b.mulligan && !this.b.getPlayer(this.b.localteam).getHand().isEmpty());
@@ -825,5 +840,9 @@ public class UIBoard extends UIBox {
         ps.setZ(z);
         this.addChild(ps);
         return ps;
+    }
+
+    public float getElusiveAlpha() {
+        return ELUSIVE_ALPHA_INTERPOLATION.get(this.elusiveTimer).floatValue();
     }
 }

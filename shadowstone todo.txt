@@ -1,5 +1,3 @@
-buff forest
-buff health of all shadowverse cards
 start at 1 mana
 show icon for clash, strike, retaliate, onlistenevent? etc. effects
 add more damage animations
