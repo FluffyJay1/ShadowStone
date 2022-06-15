@@ -15,6 +15,7 @@ import server.event.*;
 import server.event.eventburst.EventBurst;
 import server.playeraction.*;
 import server.resolver.*;
+import utils.SelectRandom;
 import utils.WeightedOrderedSampler;
 import utils.WeightedRandomSampler;
 import utils.WeightedSampler;
@@ -109,8 +110,8 @@ public class AI extends Thread {
     private int totalCacheHits;
     private int totalReevaluations;
 
-    // Map board state to cached AI calculations
-    private final Map<String, DeterministicBoardStateNode> nodeMap;
+    // Map board state hash to cached AI calculations
+    private final Map<UUID, DeterministicBoardStateNode> nodeMap;
 
     // When traversing the decision tree, keep track of which nodes we have already traversed, to avoid cycles
     // highly unlikely that we need this but just to be complete
@@ -295,17 +296,17 @@ public class AI extends Thread {
             return null;
         }
         String state = this.b.stateToString();
+        UUID stateHash = UUID.nameUUIDFromBytes(state.getBytes());
         DeterministicBoardStateNode dbsn;
         boolean cacheHit = false;
-        if (!this.nodeMap.containsKey(state)) {
+        if (!this.nodeMap.containsKey(stateHash)) {
             dbsn = new DeterministicBoardStateNode(team,
                     evaluateAdvantage(this.b, team),
-                    state,
                     filterLethal ? this.getPossibleLethalActions(team) : this.getPossibleActions(team));
             dbsn.sampleRate = sampleRate;
-            this.nodeMap.put(state, dbsn);
+            this.nodeMap.put(stateHash, dbsn);
         } else {
-            dbsn = this.nodeMap.get(state);
+            dbsn = this.nodeMap.get(stateHash);
             cacheHit = true;
             if (this.traversedNodes.contains(dbsn)) {
                 System.err.println("AI encountered a cycle somehow");
@@ -334,11 +335,11 @@ public class AI extends Thread {
         }
         while (dbsn.evaluatedBranches < numSamples) {
             String action = dbsn.nextBranchToEvaluate();
-            TraversalResult traverse = this.traverseAction(dbsn, action, depth, sampleRate, maxSamples,
+            TraversalResult traverse = this.traverseAction(dbsn, state, action, depth, sampleRate, maxSamples,
                     filterLethal, null);
             if (traverse.rng) {
                 // rng, re-evaluate action many times, channel an average score into an RNGBoardStateNode
-                int trials = Math.max(this.config.rngMaxTrials - depth * this.config.rngTrialReduction, this.config.rngMinTrials);
+                int trials = Math.max(SelectRandom.ditherRound(Math.pow(this.config.rngDensityMultiplier, dbsn.totalBranches) * (this.config.rngMaxTrials - depth * this.config.rngTrialReduction)), this.config.rngMinTrials);
                 RNGBoardStateNode nextBsn = (RNGBoardStateNode) dbsn.branches.get(action); // trust
                 if (nextBsn != null) {
                     // if previously evaluated this rng branch, see if we can add some trials to it
@@ -348,7 +349,7 @@ public class AI extends Thread {
                     nextBsn.addTrial(traverse.next);
                 }
                 for (int j = 1; j < trials; j++) {
-                    traverse = this.traverseAction(dbsn, action, depth, sampleRate, maxSamples, filterLethal, nextBsn);
+                    traverse = this.traverseAction(dbsn, state, action, depth, sampleRate, maxSamples, filterLethal, nextBsn);
                     nextBsn.addTrial(traverse.next);
                 }
                 dbsn.logEvaluation(action, nextBsn);
@@ -374,6 +375,7 @@ public class AI extends Thread {
      * only if the action doesn't result in rng).
      * 
      * @param current      The node we start from
+     * @param currentState The current board state string (minor optimization for debugging)
      * @param action       The action to perform
      * @param depth        The current traversal depth
      * @param sampleRate   The proportion of total actions we sampled
@@ -382,7 +384,7 @@ public class AI extends Thread {
      * @param nextRNG      If we know the action results in rng, this is the rng node seen by the tree, for reference
      * @return The BoardStateNode at the end of the edge traversed
      */
-    private TraversalResult traverseAction(DeterministicBoardStateNode current, String action, int depth, double sampleRate, double maxSamples,
+    private TraversalResult traverseAction(DeterministicBoardStateNode current, String currentState, String action, int depth, double sampleRate, double maxSamples,
             boolean filterLethal, RNGBoardStateNode nextRNG) {
         ResolutionResult result = this.b.executePlayerAction(new StringTokenizer(action));
         BoardStateNode node;
@@ -400,7 +402,9 @@ public class AI extends Thread {
             // the number of trials we've already done to get to this node
             int cumTrials = 0;
             if (nextRNG != null) {
-                cumTrials += nextRNG.getCount(this.nodeMap.get(this.b.stateToString()));
+                String state = this.b.stateToString();
+                UUID stateHash = UUID.nameUUIDFromBytes(state.getBytes());
+                cumTrials += nextRNG.getCount(this.nodeMap.get(stateHash));
             }
             nextSampleRate *= 1 - (this.config.rngPenalty * Math.pow(this.config.rngPenaltyReduction, cumTrials));
         }
@@ -442,14 +446,14 @@ public class AI extends Thread {
         this.b.updateAuraLastCheck();
         this.b.updateDependentStatsLastCheck();
         String stateAfterUndo = this.b.stateToString();
-        if (!current.state.equals(stateAfterUndo)) {
+        if (!currentState.equals(stateAfterUndo)) {
             System.out.println(
                     "Discrepancy after executing " + action + ", rng = " + result.rng + ", depth = " + depth);
             for (Event e : result.events) {
                 System.out.print(e.toString());
             }
             System.out.println("Before:");
-            System.out.println(current.state);
+            System.out.println(currentState);
             System.out.println("After:");
             System.out.println(stateAfterUndo);
             throw new RuntimeException();
@@ -485,13 +489,13 @@ public class AI extends Thread {
                     // rip my branching factor lol
                     for (int playPos = 0; playPos <= p.getPlayArea().size(); playPos++) {
                         for (List<List<TargetList<?>>> targets : targetSearchSpace) {
-                            poss.add(new PlayCardAction(p, c, playPos, targets).toString(), weightPerPos / targetSearchSpace.size());
+                            poss.add(new PlayCardAction(p, c, playPos, targets).toString().intern(), weightPerPos / targetSearchSpace.size());
                         }
                     }
                 } else {
                     // spells don't require positioning
                     for (List<List<TargetList<?>>> targets : targetSearchSpace) {
-                        poss.add(new PlayCardAction(p, c, 0, targets).toString(), totalWeight / targetSearchSpace.size());
+                        poss.add(new PlayCardAction(p, c, 0, targets).toString().intern(), totalWeight / targetSearchSpace.size());
                     }
                 }
             }
@@ -505,7 +509,7 @@ public class AI extends Thread {
                     targetSearchSpace.add(List.of());
                 }
                 for (List<List<TargetList<?>>> targets : targetSearchSpace) {
-                    poss.add(new UnleashMinionAction(p, m, targets).toString(), UNLEASH_TOTAL_WEIGHT / targetSearchSpace.size());
+                    poss.add(new UnleashMinionAction(p, m, targets).toString().intern(), UNLEASH_TOTAL_WEIGHT / targetSearchSpace.size());
                 }
             }
             // minion attack
@@ -515,12 +519,12 @@ public class AI extends Thread {
                 m.getAttackableTargets().forEachOrdered(target -> {
                     double bonus = target instanceof Leader ? ATTACK_TARGET_LEADER_MULTIPLIER : 1;
                     double overkillMultiplier = Math.pow(ATTACK_WEIGHT_OVERKILL_PENALTY, Math.max(0, m.finalStats.get(Stat.ATTACK) - target.health));
-                    poss.add(new OrderAttackAction(m, target).toString(), overkillMultiplier * bonus * weight);
+                    poss.add(new OrderAttackAction(m, target).toString().intern(), overkillMultiplier * bonus * weight);
                 });
             }
         });
         // ending turn
-        poss.add(new EndTurnAction(team).toString(), END_TURN_WEIGHT);
+        poss.add(new EndTurnAction(team).toString().intern(), END_TURN_WEIGHT);
         return poss;
     }
 
@@ -551,7 +555,7 @@ public class AI extends Thread {
                     targetSearchSpace.add(List.of());
                 }
                 for (List<List<TargetList<?>>> targets : targetSearchSpace) {
-                    poss.add(new UnleashMinionAction(p, m, targets).toString(), totalWeight / targetSearchSpace.size());
+                    poss.add(new UnleashMinionAction(p, m, targets).toString().intern(), totalWeight / targetSearchSpace.size());
                 }
             }
         }
@@ -564,7 +568,7 @@ public class AI extends Thread {
                     double weight = totalWeight / searchSpace.size();
                     for (Minion target : searchSpace) {
                         double overkillMultiplier = Math.pow(ATTACK_WEIGHT_OVERKILL_PENALTY, Math.max(0, m.finalStats.get(Stat.ATTACK) - target.health));
-                        poss.add(new OrderAttackAction(m, target).toString(), overkillMultiplier * weight);
+                        poss.add(new OrderAttackAction(m, target).toString().intern(), overkillMultiplier * weight);
                     }
                 }
             }
@@ -574,12 +578,12 @@ public class AI extends Thread {
                 for (Minion m : minions) {
                     if (m.canAttack(l)) {
                         double totalWeight = ATTACK_TOTAL_WEIGHT + ATTACK_WEIGHT_MULTIPLIER * m.finalStats.get(Stat.ATTACK);
-                        poss.add(new OrderAttackAction(m, l).toString(), totalWeight);
+                        poss.add(new OrderAttackAction(m, l).toString().intern(), totalWeight);
                     }
                 }
             });
         }
-        poss.add(new EndTurnAction(team).toString(), END_TURN_WEIGHT);
+        poss.add(new EndTurnAction(team).toString().intern(), END_TURN_WEIGHT);
         return poss;
     }
 

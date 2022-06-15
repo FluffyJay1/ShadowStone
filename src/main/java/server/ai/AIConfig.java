@@ -14,9 +14,10 @@ public class AIConfig {
             .rngPenalty(0.95)
             .rngPenaltyReduction(0.85)
             .reevaluationMaxSampleRateDiff(0.25)
-            .rngMaxTrials(7)
+            .rngMaxTrials(8)
             .rngMinTrials(2)
             .rngTrialReduction(3)
+            .rngDensityMultiplier(0.93)
             .build();
 
     public static final AIConfig NOVICE = builder()
@@ -30,9 +31,10 @@ public class AIConfig {
             .rngPenalty(0.9)
             .rngPenaltyReduction(0.85)
             .reevaluationMaxSampleRateDiff(0.2)
-            .rngMaxTrials(9)
+            .rngMaxTrials(10)
             .rngMinTrials(2)
-            .rngTrialReduction(3)
+            .rngTrialReduction(4)
+            .rngDensityMultiplier(0.94)
             .build();
 
     public static final AIConfig PRO = builder()
@@ -46,9 +48,10 @@ public class AIConfig {
             .rngPenalty(0.9)
             .rngPenaltyReduction(0.8)
             .reevaluationMaxSampleRateDiff(0.15)
-            .rngMaxTrials(11)
+            .rngMaxTrials(13)
             .rngMinTrials(2)
-            .rngTrialReduction(3)
+            .rngTrialReduction(4)
+            .rngDensityMultiplier(0.96)
             .build();
 
     public static final AIConfig MASTER = builder()
@@ -64,7 +67,8 @@ public class AIConfig {
             .reevaluationMaxSampleRateDiff(0.1)
             .rngMaxTrials(15)
             .rngMinTrials(3)
-            .rngTrialReduction(2)
+            .rngTrialReduction(4)
+            .rngDensityMultiplier(0.97)
             .build();
 
     public String name;
@@ -83,6 +87,9 @@ public class AIConfig {
 
     // how many less trials each subsequent depth gets
     int rngTrialReduction;
+
+    // each additional branch multiplies the trial count by this amount
+    double rngDensityMultiplier;
 
     // How much the max number of samples gets multiplied by per level
     double maxSamplesMultiplier;
@@ -184,6 +191,11 @@ public class AIConfig {
 
         public Builder rngTrialReduction(int rngTrialReduction) {
             this.built.rngTrialReduction = rngTrialReduction;
+            return this;
+        }
+
+        public Builder rngDensityMultiplier(double rngDensityMultiplier) {
+            this.built.rngDensityMultiplier = rngDensityMultiplier;
             return this;
         }
     }

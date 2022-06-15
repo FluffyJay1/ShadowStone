@@ -77,4 +77,19 @@ public class SelectRandom {
         }
         return ret;
     }
+
+    /**
+     * Round a number randomly, such that it is more likely to round towards the
+     * integer it is already close to, and that the average result of the
+     * roundings tends to the original number, e.g. 5.2 has an 80% chance of
+     * rounding to 5, and a 20% chance of rounding to 6
+     * @param x The number to round
+     * @return The number rounded randomly
+     */
+    public static int ditherRound(double x) {
+        if (Math.random() > x % 1) {
+            return (int) x;
+        }
+        return (int) x + 1;
+    }
 }

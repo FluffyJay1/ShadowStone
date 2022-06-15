@@ -1,4 +1,3 @@
-fix heap memory error by storing hash of board state instead
 indicator for # of cards played, resonance, etc.
 buff forest
 buff health of all shadowverse cards

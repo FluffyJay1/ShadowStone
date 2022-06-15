@@ -24,11 +24,9 @@ public class DeterministicBoardStateNode extends BoardStateNode {
     // The quality of evaluation for this node, with 1 being full sample rate
     // usually corresponds to the depth at which this was evaluated
     double sampleRate;
-    String state;
 
-    public DeterministicBoardStateNode(int team, double currScore, String state, WeightedSampler<String> branchSampler) {
+    public DeterministicBoardStateNode(int team, double currScore, WeightedSampler<String> branchSampler) {
         super(team, currScore);
-        this.state = state;
         this.lethal = false;
         this.dirtyMax = true;
         this.branches = new HashMap<>();
