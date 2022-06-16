@@ -32,7 +32,7 @@ public class EventAnimationDamageSlash extends EventAnimationDamage {
     private static final Image SLASH_PROJECTILE = Game.getImage("res/particle/attack/slashprojectile.png").getScaledCopy(1.5f);
 
     public EventAnimationDamageSlash() {
-        super(0.2);
+        super(0.2, true);
     }
 
     @Override

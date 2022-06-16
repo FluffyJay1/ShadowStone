@@ -1,8 +1,7 @@
-animate aoe damage events even if noone got damaged
-some damage events should be concurrent, some shouldn't
 start at 1 mana
 show icon for clash, strike, retaliate, onlistenevent? etc. effects
 add more damage animations
+fix expansion sets, dungeon run default decks
 can't attack
 effect ward
 add music

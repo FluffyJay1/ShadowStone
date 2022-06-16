@@ -79,7 +79,7 @@ public class EventAnimationDamageOff extends EventAnimationDamage {
     private static final Interpolation<Double> END_ALPHA_HORIZONTAL = new LinearInterpolation(1, 0);
 
     public EventAnimationDamageOff() {
-        super(0.3);
+        super(0.3, true);
     }
 
     @Override

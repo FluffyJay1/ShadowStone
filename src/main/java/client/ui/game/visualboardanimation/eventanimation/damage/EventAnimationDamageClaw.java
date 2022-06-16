@@ -40,7 +40,7 @@ public class EventAnimationDamageClaw extends EventAnimationDamage {
     private static final double BIG_CLAW_SCALE = 1.5;
 
     public EventAnimationDamageClaw() {
-        super(0.25);
+        super(0.25, true);
     }
 
     @Override

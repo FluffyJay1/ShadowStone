@@ -55,7 +55,7 @@ public class EventAnimationDamageEnergyBeamQuick extends EventAnimationDamage {
     );
 
     public EventAnimationDamageEnergyBeamQuick() {
-        super(0.05);
+        super(0.05, true);
     }
 
     @Override

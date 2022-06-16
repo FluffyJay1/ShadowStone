@@ -52,7 +52,7 @@ public class EventAnimationDamageFire extends EventAnimationDamage {
     private List<ParticleSystem> chargingParticleSystems;
 
     public EventAnimationDamageFire() {
-        super(0.4);
+        super(0.4, true);
     }
 
     @Override

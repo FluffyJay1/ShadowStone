@@ -34,7 +34,7 @@ public class EventAnimationDamageBigExplosion extends EventAnimationDamage {
     );
 
     public EventAnimationDamageBigExplosion() {
-        super(0);
+        super(0, true);
     }
 
     @Override

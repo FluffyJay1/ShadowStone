@@ -46,7 +46,7 @@ public class EventAnimationDamageOrbFall extends EventAnimationDamage {
     );
 
     public EventAnimationDamageOrbFall() {
-        super(0.2);
+        super(0.2, true);
     }
 
     @Override

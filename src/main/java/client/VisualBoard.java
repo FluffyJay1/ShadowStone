@@ -275,9 +275,10 @@ public class VisualBoard extends Board implements
         // try to concurrently animate damage events
         // giga janky but it works, also will not make damage events of different event groups concurrent
         StringTokenizer st = new StringTokenizer(this.inputeventliststrings.get(0));
-        return (st.nextToken().equals(String.valueOf(EventDamage.ID)) && !this.currentAnimations.isEmpty()
+        return this.peekEventGroup() != null && ((this.peekEventGroup().type.equals(EventGroupType.CONCURRENTDAMAGE)
+                && st.nextToken().equals(String.valueOf(EventDamage.ID)) && !this.currentAnimations.isEmpty()
                 && this.currentAnimations.get(this.currentAnimations.size() - 1) instanceof EventAnimationDamage)
-                || (this.peekEventGroup() != null && this.peekEventGroup().type.equals(EventGroupType.MINIONCOMBAT));
+                || this.peekEventGroup().type.equals(EventGroupType.MINIONCOMBAT));
     }
 
     @Override

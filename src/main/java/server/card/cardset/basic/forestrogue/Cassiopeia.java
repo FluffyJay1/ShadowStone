@@ -11,6 +11,8 @@ import server.card.*;
 import server.card.effect.Effect;
 import server.card.target.TargetList;
 import server.event.Event;
+import server.event.eventgroup.EventGroup;
+import server.event.eventgroup.EventGroupType;
 import server.resolver.DamageResolver;
 import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
@@ -41,6 +43,7 @@ public class Cassiopeia extends MinionText {
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(true) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                        b.pushEventGroup(new EventGroup(EventGroupType.CONCURRENTDAMAGE));
                         for (int i = 0; i < owner.player.getHand().size(); i++) {
                             List<Minion> choices = owner.board.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
                             if (!choices.isEmpty()) {
@@ -48,6 +51,7 @@ public class Cassiopeia extends MinionText {
                                 this.resolve(b, rq, el, new DamageResolver(effect, choice, 1, true, EventAnimationDamageOrbFall.class));
                             }
                         }
+                        b.popEventGroup();
                     }
                 });
             }

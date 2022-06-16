@@ -143,6 +143,6 @@ public class EventDamage extends Event {
 
     @Override
     public boolean conditions() {
-        return !this.m.isEmpty();
+        return true;
     }
 }

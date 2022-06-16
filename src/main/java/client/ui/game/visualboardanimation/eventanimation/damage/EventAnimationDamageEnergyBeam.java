@@ -52,7 +52,7 @@ public class EventAnimationDamageEnergyBeam extends EventAnimationDamage {
     );
 
     public EventAnimationDamageEnergyBeam() {
-        super(0.3);
+        super(0.3, true);
     }
 
     @Override

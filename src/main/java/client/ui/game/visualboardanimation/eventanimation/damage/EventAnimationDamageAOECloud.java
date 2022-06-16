@@ -30,7 +30,7 @@ public class EventAnimationDamageAOECloud extends EventAnimationDamage {
     );
 
     public EventAnimationDamageAOECloud() {
-        super(0.1);
+        super(0.1, false);
     }
 
     @Override

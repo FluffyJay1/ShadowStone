@@ -26,21 +26,23 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
      * consider the null source case. Since this animation serves as a default, it
      * is the only class that has to handle both cases.
      */
-    public EventAnimationDamage() {
-        this(-1, 0.5);
-    }
-
-    public EventAnimationDamage(double preTime) {
-        this(preTime, 0.5);
-    }
-
-    public EventAnimationDamage(double preTime, double postTime) {
-        super(preTime, postTime);
-    }
-
     // precompute
     List<Vector2f> dirs;
     List<Double> anglesRad;
+    private boolean requireNonEmpty;
+
+    public EventAnimationDamage() {
+        this(-1, 0.5, true);
+    }
+
+    public EventAnimationDamage(double preTime, boolean requireNonEmpty) {
+        this(preTime, 0.5, requireNonEmpty);
+    }
+
+    public EventAnimationDamage(double preTime, double postTime, boolean requireNonEmpty) {
+        super(preTime, postTime);
+        this.requireNonEmpty = requireNonEmpty;
+    }
 
     @Override
     public void init(VisualBoard b, EventDamage event) {
@@ -48,6 +50,11 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
         this.event = event;
         if (this.preTime == -1) {
             this.preTime = 0.25;
+        }
+        if (this.requireNonEmpty && event.m.isEmpty()) {
+            this.preTime = 0;
+            this.postTime = 0;
+            return;
         }
         this.dirs = new ArrayList<>(event.m.size());
         this.anglesRad = new ArrayList<>(event.m.size());

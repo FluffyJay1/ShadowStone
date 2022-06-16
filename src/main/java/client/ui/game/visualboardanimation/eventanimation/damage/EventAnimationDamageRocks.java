@@ -41,7 +41,7 @@ public class EventAnimationDamageRocks extends EventAnimationDamage {
     private List<Double> randomAngles;
 
     public EventAnimationDamageRocks() {
-        super(0.5);
+        super(0.5, true);
     }
 
     @Override

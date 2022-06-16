@@ -65,7 +65,7 @@ public class EventAnimationDamageShoot extends EventAnimationDamage {
     private static final Image SHOOT_PROJECTILE = Game.getImage("res/particle/attack/round.png");
 
     public EventAnimationDamageShoot() {
-        super(0.15);
+        super(0.15, true);
     }
 
     @Override
