@@ -146,11 +146,11 @@ public class UIBoard extends UIBox {
         this.addChild(this.localPlayerStats);
         this.addChild(this.enemyPlayerStats);
 
-        this.localPlayerTracker = new ClassCraftTrackerPanel(ui, new Vector2f(0.5f, 0.3f), this.b.realBoard.getPlayer(localteam));
+        this.localPlayerTracker = new ClassCraftTrackerPanel(ui, new Vector2f(0.5f, 0.3f));
         this.localPlayerTracker.alignh = 1;
         this.localPlayerTracker.relpos = true;
         this.localPlayerTracker.setZ(1);
-        this.enemyPlayerTracker = new ClassCraftTrackerPanel(ui, new Vector2f(0.5f, -0.3f), this.b.realBoard.getPlayer(localteam * -1));
+        this.enemyPlayerTracker = new ClassCraftTrackerPanel(ui, new Vector2f(0.5f, -0.3f));
         this.enemyPlayerTracker.alignh = 1;
         this.enemyPlayerTracker.relpos = true;
         this.enemyPlayerTracker.setZ(1);
@@ -221,8 +221,8 @@ public class UIBoard extends UIBox {
         this.localPlayerStats.updateStats(realLocalPlayer);
         this.enemyPlayerStats.updateStats(realEnemyPlayer);
 
-        this.localPlayerTracker.updateTrackerText();
-        this.enemyPlayerTracker.updateTrackerText();
+        this.localPlayerTracker.updateTrackerText(realLocalPlayer);
+        this.enemyPlayerTracker.updateTrackerText(realEnemyPlayer);
 
         this.mulliganConfirmation.setEnableInput(!this.b.getPlayer(this.b.localteam).mulliganed);
         this.mulliganConfirmation.setVisible(this.b.mulligan && !this.b.getPlayer(this.b.localteam).getHand().isEmpty());

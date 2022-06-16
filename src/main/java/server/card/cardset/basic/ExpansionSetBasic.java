@@ -16,7 +16,7 @@ public class ExpansionSetBasic extends ExpansionSet {
             new HolyFalcon(), new HolyflameTiger(), new Spectre(), new Zombie(), new Snowman(), new HeavyKnight(),
             new LeonidasResolve(), new CrimsonSorcery(), new ClayGolem(), new Dragon(), new Ghost(), new TimeOwl(),
             new HolywingDragon(), new AnalyzingArtifact(), new AncientArtifact(), new MysticArtifact(),
-            new RadiantArtifact(), new ArtifactRhino());
+            new RadiantArtifact(), new ArtifactRhino(), new ServantOfDarkness());
 
     public static final CardSet PLAYABLE_SET = new CardSet(new Goblin(), new Fighter(), new LochnLoad(), new Tiny(),
             new WellOfDestination(), new BellringerAngel(), new GenesisOfLegend(), new WoodOfBrambles(), new Baneling(),
@@ -43,7 +43,8 @@ public class ExpansionSetBasic extends ExpansionSet {
             new Acceleratium(), new MagisteelLion(), new Icarus(), new AugmentationBestowal(), new AncientAmplifier(),
             new DimensionCut(), new ArtifactCall(), new TranquilCog(), new IronforgedFighter(), new MortonTheManipulator(),
             new PuppeteersStrings(), new VengefulPuppeteerNoah(), new ElectromagicalRhino(), new ElvenPrincessMage(),
-            new AncientForestDragon(), new RaioOmenOfTruth(), new IncandescentDragon(), new AmethystGiant());
+            new AncientForestDragon(), new RaioOmenOfTruth(), new IncandescentDragon(), new AmethystGiant(), new PureheartedSinger(),
+            new Urd(), new CallOfCocytus(), new GrimnirWarCyclone());
 
     @Override
     public CardSet getCards() {

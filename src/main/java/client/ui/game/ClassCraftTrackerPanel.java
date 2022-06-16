@@ -10,19 +10,16 @@ import server.card.Leader;
 
 
 public class ClassCraftTrackerPanel extends UIBox {
-    Player p;
     Text text;
 
-    public ClassCraftTrackerPanel(UI ui, Vector2f pos, Player p) {
+    public ClassCraftTrackerPanel(UI ui, Vector2f pos) {
         super(ui, pos, new Vector2f(200, 66), "res/ui/uiboxborder.png");
-        this.p = p;
         this.text = new Text(ui, new Vector2f(), "", 180, 20, 20, 0, 0);
         this.addChild(this.text);
-        this.updateTrackerText();
     }
 
-    public void updateTrackerText() {
-        String trackerText = this.calculateTracker();
+    public void updateTrackerText(Player p) {
+        String trackerText = this.calculateTracker(p);
         if (trackerText == null) {
             this.setVisible(false);
         } else {
@@ -31,9 +28,9 @@ public class ClassCraftTrackerPanel extends UIBox {
         }
     }
 
-    private String calculateTracker() {
-        if (this.p.getLeader().isPresent()) {
-            Leader l = this.p.getLeader().get();
+    private String calculateTracker(Player p) {
+        if (p.getLeader().isPresent()) {
+            Leader l = p.getLeader().get();
             ClassCraft craft = l.getTooltip().craft;
             return switch (craft) {
                 case FORESTROGUE -> String.format("Cards played: %d", p.cardsPlayedThisTurn);
