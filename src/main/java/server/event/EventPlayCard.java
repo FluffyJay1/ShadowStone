@@ -24,7 +24,7 @@ public class EventPlayCard extends Event {
     @Override
     public void resolve(Board b) {
         this.prevCardsPlayedThisTurn = this.p.cardsPlayedThisTurn; //paranoia
-        if (this.c.team == b.localteam && b instanceof PendingPlay.PendingPlayer) {
+        if (this.c.team == b.getLocalteam() && b instanceof PendingPlay.PendingPlayer) {
             ((PendingPlay.PendingPlayer) b).getPendingPlayProcessor().process(new PendingPlay(this.c));
         }
         this.p.cardsPlayedThisTurn++;

@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.function.Supplier;
 
 import client.ui.Animation;
-import client.ui.interpolation.Interpolation;
 import client.ui.interpolation.realvalue.ConstantInterpolation;
 import client.ui.interpolation.realvalue.LinearInterpolation;
 import client.ui.interpolation.realvalue.QuadraticInterpolationB;
@@ -61,6 +60,7 @@ public class UICard extends UIBox {
     private static final float ICON_Y = 0.6f;
     private static final int READY_BORDER_WIDTH = 2;
     private static final int READY_BORDER_PADDING = 6;
+    private static final Color LOCKED_COLOR = new Color(0.3f, 0.2f, 0.3f);
 
     private static final Supplier<EmissionStrategy> STEALTH_PARTICLES = () -> new EmissionStrategy(
             new IntervalEmissionTimingStrategy(3, 0.08),
@@ -168,7 +168,7 @@ public class UICard extends UIBox {
 
     public void updateFlippedOver() {
         if (this.uib != null) {
-            this.setFlippedOver(!this.card.isVisibleTo(uib.b.localteam));
+            this.setFlippedOver(!this.card.isVisibleTo(uib.b.getLocalteam()));
         }
     }
 
@@ -221,7 +221,7 @@ public class UICard extends UIBox {
         float scale = switch (this.card.status) {
             case BOARD, LEADER -> SCALE_BOARD;
             case HAND -> {
-                if (this.card.team == this.uib.b.localteam && this.uib.b.mulligan) {
+                if (this.card.team == this.uib.b.getLocalteam() && this.uib.b.mulligan) {
                     yield SCALE_MULLIGAN;
                 } else {
                     yield SCALE_HAND;
@@ -232,7 +232,7 @@ public class UICard extends UIBox {
         int z = switch (this.card.status) {
             case BOARD, LEADER -> Z_BOARD;
             case HAND -> {
-                if (this.card.team == this.uib.b.localteam && this.uib.b.mulligan) {
+                if (this.card.team == this.uib.b.getLocalteam() && this.uib.b.mulligan) {
                     yield Z_MULLIGAN;
                 } else {
                     yield Z_HAND;
@@ -243,7 +243,7 @@ public class UICard extends UIBox {
         if (this.targeting) {
             scale = SCALE_TARGETING;
             z = Z_TARGETING;
-        } else if (this.card.status.equals(CardStatus.HAND) && this.card.team == this.uib.b.localteam && this.uib.expandHand) {
+        } else if (this.card.status.equals(CardStatus.HAND) && this.card.team == this.uib.b.getLocalteam() && this.uib.expandHand) {
             scale = SCALE_HAND_EXPAND;
         }
         if (this.potentialTarget) {
@@ -272,7 +272,7 @@ public class UICard extends UIBox {
         this.stealthParticles.setPaused(!this.card.isInPlay() || this.card.finalStats.get(Stat.STEALTH) == 0);
         if (this.card.realCard.player != null) {
             this.specialConditionParticles.setScale(this.getScale());
-            this.specialConditionParticles.setPaused(this.card.team != this.uib.b.localteam || switch (this.card.status) {
+            this.specialConditionParticles.setPaused(this.card.team != this.uib.b.getLocalteam() || switch (this.card.status) {
                 case HAND -> !this.card.realCard.player.canPlayCard(this.card.realCard) || !this.card.realCard.battlecrySpecialConditions();
                 case BOARD -> !this.uib.draggingUnleash || !this.card.realCard.player.canUnleashCard(this.card.realCard)
                         || !(this.card instanceof Minion) || !((Minion) this.card.realCard).unleashSpecialConditions();
@@ -292,7 +292,13 @@ public class UICard extends UIBox {
     public void draw(Graphics g) {
         if (this.isVisible() && this.card != null) {
             Vector2f absPos = this.getAbsPos();
-            this.drawCard(g, absPos, this.getScale());
+            Color filterColor = Color.white;
+            if (this.card instanceof UnleashPower && !this.card.player.unleashAllowed) {
+                filterColor = LOCKED_COLOR;
+            } else if (this.isPending()) {
+                filterColor = PENDING_COLOR;
+            }
+            this.drawCard(g, absPos, this.getScale(), filterColor);
             if (this.isPending()) {
                 float size = this.getScale() * PENDING_ELLIPSIS_SIZE;
                 for (int i = -1; i <= 1; i++) {
@@ -305,12 +311,12 @@ public class UICard extends UIBox {
         }
     }
 
-    public void drawCard(Graphics g, Vector2f pos, double scale) {
+    public void drawCard(Graphics g, Vector2f pos, double scale, Color filter) {
         if (this.flippedOver) {
             this.drawCardBack(g, pos, scale);
             return;
         }
-        this.drawCardArt(g, pos, scale, this.card.status, this.isPending() ? PENDING_COLOR : Color.white);
+        this.drawCardArt(g, pos, scale, this.card.status, filter);
         if (!(this.card instanceof UnleashPower) && !(this.card instanceof Leader)) {
             this.drawCardBorder(g, pos, scale);
         }
@@ -415,7 +421,7 @@ public class UICard extends UIBox {
 
     public void drawUnleashPower(Graphics g, Vector2f pos, double scale) {
         if (this.card.realCard != null && this.card.realCard instanceof UnleashPower
-                && (this.card.team == this.uib.b.localteam ? // different rules depending on allied team or enemy team
+                && (this.card.team == this.uib.b.getLocalteam() ? // different rules depending on allied team or enemy team
                 this.uib.b.realBoard.getPlayer(this.card.realCard.team).canUnleash() && !this.uib.b.disableInput : // condition for cards on our team (should update instantly)
                 this.uib.b.getPlayer(this.card.team).canUnleash()) // condition for cards on the enemy team (should wait for animations)
         ) {
@@ -444,8 +450,8 @@ public class UICard extends UIBox {
         }
         if (this.card instanceof Minion) {
             if (this.card.realCard != null && this.card.realCard instanceof Minion
-                    && (!this.uib.b.disableInput || this.card.team != this.uib.b.localteam)) {
-                Minion relevantMinion = (Minion) (this.card.team == this.uib.b.localteam ? this.card.realCard : this.card);
+                    && (!this.uib.b.disableInput || this.card.team != this.uib.b.getLocalteam())) {
+                Minion relevantMinion = (Minion) (this.card.team == this.uib.b.getLocalteam() ? this.card.realCard : this.card);
                 if (relevantMinion.canAttack()) {
                     Color borderColor;
                     if (relevantMinion.summoningSickness
@@ -552,7 +558,7 @@ public class UICard extends UIBox {
         traitsFont.drawString(pos.x - traitsFont.getWidth(traitsString) / 2f + HAND_TITLE_OFFSET / 2 * CARD_DIMENSIONS.x * (float) scale,
                 pos.y + CARD_DIMENSIONS.y * (float) scale / 2 - traitsFont.getHeight(traitsString), traitsString);
         if (this.card.realCard != null
-                && (this.card.team == this.uib.b.localteam ? // different rules depending on allied team or enemy team
+                && (this.card.team == this.uib.b.getLocalteam() ? // different rules depending on allied team or enemy team
                 this.uib.b.realBoard.getPlayer(this.card.realCard.team).canPlayCard(this.card.realCard) && !this.uib.b.disableInput : // condition for cards on our team (should update instantly)
                 this.uib.b.getPlayer(this.card.team).canPlayCard(this.card)) // condition for cards on the enemy team (should wait for animations)
         ) {

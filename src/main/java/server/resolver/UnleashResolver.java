@@ -28,7 +28,7 @@ public class UnleashResolver extends Resolver {
             if (this.source instanceof UnleashPower) {
                 Player p = this.source.board.getPlayer(this.source.team);
                 if (p.canUnleashCard(m)) {
-                    b.processEvent(rq, el, new EventManaChange(p, -this.source.finalStats.get(Stat.COST), true, false));
+                    b.processEvent(rq, el, new EventManaChange(p, -this.source.finalStats.get(Stat.COST), true, false, false));
                     b.processEvent(rq, el, new EventUnleash(this.source, this.m));
                     p.getUnleashPower().ifPresent(up -> this.resolveQueue(b, rq, el, up.onUnleashPre(this.m)));
                     this.resolveQueue(b, rq, el, unleash);

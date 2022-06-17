@@ -12,6 +12,8 @@ public class EventTurnStart extends Event {
     private int prevCurrentPlayerTurn;
     private int prevUnleashesThisTurn;
     private int prevCardsPlayedThisTurn;
+    private int prevTurnNum;
+    private boolean prevCanUnleash;
     private List<Boolean> prevSickness;
     private List<Integer> prevAttacks;
 
@@ -22,14 +24,21 @@ public class EventTurnStart extends Event {
 
     @Override
     public void resolve(Board b) {
-        this.prevCurrentPlayerTurn = this.p.board.currentPlayerTurn;
+        this.prevCurrentPlayerTurn = this.p.board.getCurrentPlayerTurn();
         this.prevUnleashesThisTurn = this.p.getUnleashPower().map(up -> up.unleashesThisTurn).orElse(0);
         this.prevCardsPlayedThisTurn = this.p.cardsPlayedThisTurn;
         this.prevSickness = new ArrayList<>();
         this.prevAttacks = new ArrayList<>();
-        this.p.board.currentPlayerTurn = this.p.team;
+        this.prevCanUnleash = this.p.unleashAllowed;
+        this.prevTurnNum = this.p.turn;
+        this.p.board.setCurrentPlayerTurn(this.p.team);
         this.p.getUnleashPower().ifPresent(up -> up.unleashesThisTurn = 0);
         this.p.cardsPlayedThisTurn = 0;
+        this.p.turn++;
+        if ((this.p.team == 1 && this.p.turn >= Player.UNLEASH_FIRST_TURN)
+        || (this.p.team == -1 && this.p.turn >= Player.UNLEASH_SECOND_TURN)) {
+            this.p.unleashAllowed = true;
+        }
         for (BoardObject bo : this.p.getPlayArea()) {
             if (bo instanceof Minion) {
                 this.prevSickness.add(((Minion) bo).summoningSickness);
@@ -45,9 +54,11 @@ public class EventTurnStart extends Event {
 
     @Override
     public void undo(Board b) {
-        b.currentPlayerTurn = this.prevCurrentPlayerTurn;
+        b.setCurrentPlayerTurn(this.prevCurrentPlayerTurn);
         this.p.getUnleashPower().ifPresent(up -> up.unleashesThisTurn = this.prevUnleashesThisTurn);
         this.p.cardsPlayedThisTurn = this.prevCardsPlayedThisTurn;
+        this.p.unleashAllowed = this.prevCanUnleash;
+        this.p.turn = this.prevTurnNum;
         List<BoardObject> boardObjects = this.p.getPlayArea();
         for (int i = 0; i < boardObjects.size(); i++) {
             BoardObject bo = boardObjects.get(i);

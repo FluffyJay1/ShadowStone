@@ -72,7 +72,7 @@ public class EventTransform extends Event {
                             bo.lastBoardPos = bo.getIndex();
                             p.getPlayArea().set(bo.getIndex(), replacementBO);
                             bo.lastBoardEpoch = p.getPlayArea().getCurrentEpoch();
-                            if (bo.team == b.localteam && b instanceof PendingPlayPositioner) {
+                            if (bo.team == b.getLocalteam() && b instanceof PendingPlayPositioner) {
                                 ((PendingPlayPositioner) b).getPendingPlayPositionProcessor().invalidate();
                             }
                         }

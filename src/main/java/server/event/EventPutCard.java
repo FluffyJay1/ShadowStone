@@ -114,7 +114,7 @@ public class EventPutCard extends Event {
                 case BOARD -> {
                     assert card instanceof BoardObject;
                     BoardObject bo = (BoardObject) card;
-                    if (card.team == b.localteam && b instanceof PendingPlayPositioner) {
+                    if (card.team == b.getLocalteam() && b instanceof PendingPlayPositioner) {
                         ((PendingPlayPositioner) b).getPendingPlayPositionProcessor().processOp(card.getIndex(), null, false);
                     }
                     sourceP.getPlayArea().remove(card);
@@ -153,7 +153,7 @@ public class EventPutCard extends Event {
                         if (card instanceof Minion) {
                             ((Minion) card).summoningSickness = true;
                         }
-                        if (bo.team == b.localteam && b instanceof PendingPlayPositioner) {
+                        if (bo.team == b.getLocalteam() && b instanceof PendingPlayPositioner) {
                             BoardObject pendingObject = this.play ? bo : null;
                             ((PendingPlayPositioner) b).getPendingPlayPositionProcessor().processOp(bo.getIndex(), pendingObject, true);
                         }

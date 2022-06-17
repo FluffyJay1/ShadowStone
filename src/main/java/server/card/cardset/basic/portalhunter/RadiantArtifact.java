@@ -48,7 +48,7 @@ public class RadiantArtifact extends MinionText {
                         List<Card> relevant = owner.player.getDeck().stream()
                                 .filter(c -> c.finalTraits.contains(CardTrait.ARTIFACT))
                                 .collect(Collectors.toList());
-                        if (b.currentPlayerTurn == owner.team && !relevant.isEmpty()) {
+                        if (b.getCurrentPlayerTurn() == owner.team && !relevant.isEmpty()) {
                             Card selection = SelectRandom.from(relevant);
                             this.resolve(b, rq, el, new PutCardResolver(selection, CardStatus.HAND, owner.team, -1, true));
                         } else {

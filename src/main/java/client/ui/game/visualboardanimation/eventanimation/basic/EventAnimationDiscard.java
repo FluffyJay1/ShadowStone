@@ -25,7 +25,7 @@ public class EventAnimationDiscard extends EventAnimation<EventDiscard> {
             uic.setScale(UICard.SCALE_MOVE);
             uic.setFlippedOver(false);
             uic.draggable = false;
-            uic.setPos(uic.getRelPos().add(new Vector2f(0, -MOVE_AMOUNT * c.team * this.visualBoard.localteam)), 0.999);
+            uic.setPos(uic.getRelPos().add(new Vector2f(0, -MOVE_AMOUNT * c.team * this.visualBoard.getLocalteam())), 0.999);
         }
     }
 

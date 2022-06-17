@@ -17,6 +17,8 @@ public class Player implements StringBuildable {
     public static final int DEFAULT_MAX_BOARD_SIZE = 6;
     public static final int OVERFLOW_THRESHOLD = 7;
     public static final int VENGEANCE_THRESHOLD = 15;
+    public static final int UNLEASH_FIRST_TURN = 5;
+    public static final int UNLEASH_SECOND_TURN = 4;
     public Player realPlayer;
     public final Board board;
     protected final PositionedList<Card> deck;
@@ -25,12 +27,13 @@ public class Player implements StringBuildable {
     protected final PositionedList<Card> graveyard;
     protected final PositionedList<Card> banished;
     public final int team;
+    public int turn;
     public int mana;
     public int maxmana;
     public int maxmaxmana; // don't ask
     public int maxHandSize;
     public int maxPlayAreaSize;
-    public boolean unleashAllowed = true;
+    public boolean unleashAllowed;
     protected Leader leader;
     protected UnleashPower unleashPower;
     public boolean mulliganed;
@@ -70,8 +73,10 @@ public class Player implements StringBuildable {
             c.team = this.team;
             c.player = this;
         });
+        this.turn = 0;
+        this.unleashAllowed = false;
         this.mana = 0;
-        this.maxmana = 3;
+        this.maxmana = 0;
         this.maxmaxmana = 10;
         this.maxHandSize = DEFAULT_MAX_HAND_SIZE;
         this.maxPlayAreaSize = DEFAULT_MAX_BOARD_SIZE;
@@ -162,7 +167,7 @@ public class Player implements StringBuildable {
         if (c instanceof BoardObject && this.getPlayArea().size() >= this.maxPlayAreaSize) {
             return false;
         }
-        return c != null && c.canBePlayed() && this.board.currentPlayerTurn == this.team
+        return c != null && c.canBePlayed() && this.board.getCurrentPlayerTurn() == this.team
                 && this.mana >= c.finalStats.get(Stat.COST) && c.status.equals(CardStatus.HAND);
     }
 
@@ -179,7 +184,7 @@ public class Player implements StringBuildable {
                 && this.unleashPower.unleashesThisTurn < this.unleashPower.finalStats
                         .get(Stat.ATTACKS_PER_TURN)
                 && this.mana >= this.unleashPower.finalStats.get(Stat.COST)
-                && this.board.currentPlayerTurn == this.team;
+                && this.board.getCurrentPlayerTurn() == this.team;
     }
 
     // TODO magic numbers lmao

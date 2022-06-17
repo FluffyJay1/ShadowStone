@@ -74,7 +74,7 @@ public class EventCreateCard extends Event {
                         }
                         this.successful.add(true);
                         this.successfullyCreatedCards.add(c);
-                        if (bo.team == b.localteam && b instanceof PendingPlayPositioner) {
+                        if (bo.team == b.getLocalteam() && b instanceof PendingPlayPositioner) {
                             ((PendingPlayPositioner) b).getPendingPlayPositionProcessor().processOp(bo.getIndex(), null, true);
                         }
                     } else {

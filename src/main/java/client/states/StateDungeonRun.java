@@ -122,16 +122,16 @@ public class StateDungeonRun extends BasicGameState {
         DataStream dslocal = new DataStream();
         DataStream dsserver = new DataStream();
         DataStream.pair(dslocal, dsserver);
-        this.uib = new UIBoard(this.ui, 1, dslocal, this::endGame);
+        this.uib = new UIBoard(this.ui, dslocal, this::endGame);
         this.ui.addUIElementParent(this.uib);
-        this.gameThread = DungeonRunController.startGame(dsserver, 1);
+        this.gameThread = DungeonRunController.startGame(dsserver);
         this.onUpdateRunStatus();
     }
 
     private void endGame(int team) {
         this.gameThread.interrupt();
         this.ui.removeUIElementParent(this.uib);
-        DungeonRunController.endGame(team == this.uib.b.localteam);
+        DungeonRunController.endGame(team == this.uib.b.getLocalteam());
         this.onUpdateRunStatus();
     }
 

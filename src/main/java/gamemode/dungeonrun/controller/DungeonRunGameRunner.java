@@ -18,11 +18,9 @@ import java.util.List;
 
 public class DungeonRunGameRunner implements Runnable {
     final DataStream dslocal;
-    final int localteam;
     Contestant player, enemy;
-    public DungeonRunGameRunner(DataStream dslocal, int localteam, Contestant player, Contestant enemy) {
+    public DungeonRunGameRunner(DataStream dslocal, Contestant player, Contestant enemy) {
         this.dslocal = dslocal;
-        this.localteam = localteam;
         this.player = player;
         this.enemy = enemy;
     }
@@ -32,7 +30,7 @@ public class DungeonRunGameRunner implements Runnable {
         DataStream dsai = new DataStream();
         DataStream dsexternal = new DataStream();
         DataStream.pair(dsai, dsexternal);
-        AI ai = new AI(dsai, this.localteam * -1, AIConfig.PRO);
+        AI ai = new AI(dsai, AIConfig.PRO);
         ai.start();
         GameController gc = new GameController(List.of(this.dslocal, dsexternal),
                 List.of(this.player.leaderText, this.enemy.leaderText),
@@ -43,13 +41,13 @@ public class DungeonRunGameRunner implements Runnable {
         gc.resolve(new Resolver(false) {
             @Override
             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                b.getPlayer(localteam).getLeader().ifPresent(l -> {
+                b.getPlayer(gc.indexToTeam(0)).getLeader().ifPresent(l -> {
                     this.resolve(b, rq, el, new AddEffectResolver(l, new Effect("", EffectStats.builder()
                             .change(Stat.HEALTH, player.getBonusHealth())
                             .build()
                     )));
                 });
-                b.getPlayer(localteam * -1).getLeader().ifPresent(l -> {
+                b.getPlayer(gc.indexToTeam(1)).getLeader().ifPresent(l -> {
                     this.resolve(b, rq, el, new AddEffectResolver(l, new Effect("", EffectStats.builder()
                             .change(Stat.HEALTH, enemy.getBonusHealth())
                             .build()

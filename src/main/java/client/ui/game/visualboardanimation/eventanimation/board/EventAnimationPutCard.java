@@ -68,12 +68,12 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
                 UICard uic = c.uiCard;
                 this.useCardInAnimation(uic);
                 uic.setScale(UICard.SCALE_MOVE);
-                if (this.visualBoard.mulligan && c.team == this.visualBoard.localteam) {
+                if (this.visualBoard.mulligan && c.team == this.visualBoard.getLocalteam()) {
                     uic.setZ(UICard.Z_MULLIGAN);
                 } else {
                     uic.setZ(UICard.Z_MOVE);
                 }
-                if (c.team != this.visualBoard.localteam * -1) {
+                if (c.team != this.visualBoard.getLocalteam() * -1) {
                     uic.setFlippedOver(false);
                 }
                 // fan the cards between [-0.5, 0.5]
@@ -83,7 +83,7 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
                 }
                 float fanX = (float) ((1 - this.visualBoard.uiBoard.getWidthInRel(uic.getWidth(false)))
                         * (i + alignWeight - this.event.cards.size() / 2.)) / (this.event.cards.size() - 1 + EDGE_PADDING * 2);
-                float fanY = c.team == this.visualBoard.localteam ? TEAM_OFFSET : -TEAM_OFFSET;
+                float fanY = c.team == this.visualBoard.getLocalteam() ? TEAM_OFFSET : -TEAM_OFFSET;
                 uic.setPos(new Vector2f(fanX, fanY), 0.999);
             }
         }

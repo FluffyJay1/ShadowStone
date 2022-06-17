@@ -16,7 +16,7 @@ public class ExpansionSetBasic extends ExpansionSet {
             new HolyFalcon(), new HolyflameTiger(), new Spectre(), new Zombie(), new Snowman(), new HeavyKnight(),
             new LeonidasResolve(), new CrimsonSorcery(), new ClayGolem(), new Dragon(), new Ghost(), new TimeOwl(),
             new HolywingDragon(), new AnalyzingArtifact(), new AncientArtifact(), new MysticArtifact(),
-            new RadiantArtifact(), new ArtifactRhino(), new ServantOfDarkness());
+            new RadiantArtifact(), new ArtifactRhino(), new ServantOfDarkness(), new NotCoin());
 
     public static final CardSet PLAYABLE_SET = new CardSet(new Goblin(), new Fighter(), new LochnLoad(), new Tiny(),
             new WellOfDestination(), new BellringerAngel(), new GenesisOfLegend(), new WoodOfBrambles(), new Baneling(),

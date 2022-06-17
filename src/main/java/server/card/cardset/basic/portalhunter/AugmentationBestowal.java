@@ -74,7 +74,7 @@ public class AugmentationBestowal extends SpellText {
                         @Override
                         public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                             for (int i = 0; i < count; i++) {
-                                this.resolve(b, rq, el, new ManaChangeResolver(owner.player, 1, true, false));
+                                this.resolve(b, rq, el, new ManaChangeResolver(owner.player, 1, true, false, false));
                                 this.resolve(b, rq, el, new DrawResolver(owner.player, 1));
                             }
                         }

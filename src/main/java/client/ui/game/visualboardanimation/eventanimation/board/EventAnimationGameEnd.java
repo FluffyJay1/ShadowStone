@@ -17,7 +17,7 @@ public class EventAnimationGameEnd extends EventAnimation<EventGameEnd> {
         EventGameEnd e = this.event;
         UnicodeFont font = Game.getFont(80, true, false);
         String dstring = "GAME END";
-        switch (e.victory * this.visualBoard.localteam) { // ez hack
+        switch (e.victory * this.visualBoard.getLocalteam()) { // ez hack
         case 1:
             g.setColor(Color.cyan);
             dstring = "YOU WIN";

@@ -9,6 +9,8 @@ import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.event.Event;
+import server.event.eventgroup.EventGroup;
+import server.event.eventgroup.EventGroupType;
 import server.resolver.DamageResolver;
 import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
@@ -39,10 +41,12 @@ public class Camieux extends MinionText {
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(true) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                        b.pushEventGroup(new EventGroup(EventGroupType.CONCURRENTDAMAGE));
                         for (int i = 0; i < 3; i++) {
                             List<Minion> relevant = b.getMinions(owner.team * -1, true, true).collect(Collectors.toList());
                             this.resolve(b, rq, el, new DamageResolver(effect, SelectRandom.from(relevant), 1, true, EventAnimationDamageShoot.class));
                         }
+                        b.popEventGroup();
                     }
                 });
             }

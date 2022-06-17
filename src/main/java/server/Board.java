@@ -6,7 +6,6 @@ import java.util.stream.Stream;
 
 import client.Game;
 import server.card.*;
-import server.card.effect.*;
 import server.card.target.CardTargetingScheme;
 import server.event.*;
 import server.event.eventburst.EventBurst;
@@ -16,7 +15,9 @@ import server.event.eventgroup.EventGroup;
 public abstract class Board {
     public Player player1, player2;
     // localteam is the team of the player, i.e. at the bottom of the screen
-    public int currentPlayerTurn, localteam, winner;
+    private int currentPlayerTurn;
+    private int localteam;
+    private int winner;
 
     // the hierarchy of groups we are under
     public List<EventGroup> eventGroups;
@@ -30,7 +31,7 @@ public abstract class Board {
     // reset state
     public void init() {
         this.currentPlayerTurn = 0;
-        this.localteam = 1;
+        this.localteam = 0;
         this.winner = 0;
         this.player1 = new Player(this, 1);
         this.player2 = new Player(this, -1);
@@ -168,9 +169,9 @@ public abstract class Board {
         StringBuilder builder = new StringBuilder();
         builder.append("State----------------------------+\n");
         builder.append("player turn: ");
-        builder.append(this.currentPlayerTurn);
+        builder.append(this.getCurrentPlayerTurn());
         builder.append(", winner: ");
-        builder.append(this.winner);
+        builder.append(this.getWinner());
         builder.append("\n");
         this.player1.appendStringToBuilder(builder);
         builder.append("\n");
@@ -219,7 +220,7 @@ public abstract class Board {
 
     // kekl
     public <T extends Event> T processEvent(T e) {
-        if (this.winner != 0 || !e.conditions()) {
+        if (this.getWinner() != 0 || !e.conditions()) {
             return e;
         }
         e.resolve(this);
@@ -241,4 +242,27 @@ public abstract class Board {
         return this.eventGroups.get(this.eventGroups.size() - 1);
     }
 
+    public int getCurrentPlayerTurn() {
+        return currentPlayerTurn;
+    }
+
+    public void setCurrentPlayerTurn(int currentPlayerTurn) {
+        this.currentPlayerTurn = currentPlayerTurn;
+    }
+
+    public int getLocalteam() {
+        return localteam;
+    }
+
+    public void setLocalteam(int localteam) {
+        this.localteam = localteam;
+    }
+
+    public int getWinner() {
+        return winner;
+    }
+
+    public void setWinner(int winner) {
+        this.winner = winner;
+    }
 }

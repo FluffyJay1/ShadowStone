@@ -23,12 +23,10 @@ public class ServerGameThread extends Thread {
     final DataStream dslocal;
     final boolean pvp;
     AI ai;
-    final int localteam;
     final ConstructedDeck[] decks;
     private AIConfig config;
 
-    public ServerGameThread(DataStream dsclient, int localteam, boolean pvp) {
-        this.localteam = localteam;
+    public ServerGameThread(DataStream dsclient, boolean pvp) {
         this.dslocal = dsclient;
         this.pvp = pvp;
         this.decks = new ConstructedDeck[2];
@@ -48,14 +46,14 @@ public class ServerGameThread extends Thread {
             DataStream dsai = new DataStream();
             this.dsexternal = new DataStream();
             DataStream.pair(dsai, this.dsexternal);
-            this.ai = new AI(dsai, this.localteam * -1, this.config);
+            this.ai = new AI(dsai, this.config);
             this.ai.start();
         }
         // accept decklists
         while (this.decks[0] == null || this.decks[1] == null) {
             MessageType mtype = this.dsexternal.receive();
             if (mtype == MessageType.DECK) {
-                this.setDecklist(this.localteam * -1, this.dsexternal.readDecklist());
+                this.setDecklist(1, this.dsexternal.readDecklist());
             } else {
                 this.dsexternal.discardMessage();
             }
@@ -74,8 +72,8 @@ public class ServerGameThread extends Thread {
         this.dslocal.close();
     }
 
-    public void setDecklist(int team, ConstructedDeck deck) {
-        this.decks[(team - 1) / -2] = deck;
+    public void setDecklist(int index, ConstructedDeck deck) {
+        this.decks[index] = deck;
     }
 
     public void setAIConfig(AIConfig config) {

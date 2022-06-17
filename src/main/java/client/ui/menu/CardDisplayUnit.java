@@ -1,5 +1,6 @@
 package client.ui.menu;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.*;
 
@@ -7,6 +8,8 @@ import client.ui.*;
 import client.ui.game.*;
 import server.card.*;
 import server.card.effect.Stat;
+
+import java.awt.*;
 
 public class CardDisplayUnit extends UIBox {
     /**
@@ -83,7 +86,7 @@ public class CardDisplayUnit extends UIBox {
     public void drawSelf(Graphics g) {
         super.drawSelf(g);
         if (this.card != null) {
-            this.uicard.drawCard(g, this.getCenterAbsPos(), SCALE);
+            this.uicard.drawCard(g, this.getCenterAbsPos(), SCALE, Color.white);
         }
     }
 

@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import client.Game;
 import client.ui.Animation;
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
 import client.ui.game.visualboardanimation.eventanimation.board.EventAnimationPlayCard;
@@ -46,6 +47,8 @@ public class UIBoard extends UIBox {
     public static final int PARTICLE_Z_BOARD = 1, PARTICLE_Z_SPECIAL = 5, UI_Z_TOP = 10;
     public static final Vector2f TARGETING_CARD_POS = new Vector2f(-0.4f, -0.22f);
     private static final double ELUSIVE_TIME_PER_CYCLE = 2.5;
+    private static final double TEAM_ASSIGN_TIME = 4;
+
     private static final Interpolation<Double> ELUSIVE_ALPHA_INTERPOLATION = new ComposedInterpolation<>(new ClampedInterpolation(0, ELUSIVE_TIME_PER_CYCLE),
             new ComposedInterpolation<>(
                     new SequentialInterpolation<>(
@@ -53,6 +56,12 @@ public class UIBoard extends UIBox {
                             List.of(0.5, 0.5)
                     ),
                     new LinearInterpolation(0.1, 0.5)
+            ));
+
+    private static final Interpolation<Double> TEAM_ASSIGN_ALPHA_INTERPOLATION = new ComposedInterpolation<>(new ClampedInterpolation(0, TEAM_ASSIGN_TIME),
+            new SequentialInterpolation<>(
+                    List.of(new LinearInterpolation(0, 1), new ConstantInterpolation(1), new LinearInterpolation(1, 0)),
+                    List.of(0.1, 0.7, 0.2)
             ));
 
     private static final Supplier<EmissionStrategy> DUST_EMISSION_STRATEGY = () -> new EmissionStrategy(
@@ -75,7 +84,7 @@ public class UIBoard extends UIBox {
     boolean expandHand = false;
     boolean draggingUnleash = false;
     boolean skipNextEventAnimations = false;
-    private double elusiveTimer;
+    private double elusiveTimer, teamAssignTimer;
     Vector2f mouseDownPos = new Vector2f();
     final EventGroupDescriptionContainer eventGroupDescriptionContainer;
     public final CardSelectPanel cardSelectPanel;
@@ -100,10 +109,10 @@ public class UIBoard extends UIBox {
     List<UICard> cards;
     Consumer<Integer> onGameEnd;
 
-    public UIBoard(UI ui, int localteam, DataStream ds, Consumer<Integer> onGameEnd) {
+    public UIBoard(UI ui, DataStream ds, Consumer<Integer> onGameEnd) {
         super(ui, new Vector2f(), new Vector2f(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT), "res/ui/uibox.png");
         this.cards = new ArrayList<>();
-        this.b = new VisualBoard(this, localteam);
+        this.b = new VisualBoard(this, 0);
         this.ds = ds;
         this.eventGroupDescriptionContainer = new EventGroupDescriptionContainer(ui, new Vector2f(-0.5f, 0));
         this.eventGroupDescriptionContainer.relpos = true;
@@ -158,7 +167,7 @@ public class UIBoard extends UIBox {
         this.addChild(this.enemyPlayerTracker);
 
         this.mulliganConfirmation = new MulliganConfirmation(ui, new Vector2f(0, 0), () -> {
-            this.ds.sendPlayerAction(new MulliganAction(this.b.getPlayer(this.b.localteam), this.mulliganChoices.stream()
+            this.ds.sendPlayerAction(new MulliganAction(this.b.getPlayer(this.b.getLocalteam()), this.mulliganChoices.stream()
                     .map(UICard::getCard)
                     .collect(Collectors.toList()))
                     .toString());
@@ -189,6 +198,8 @@ public class UIBoard extends UIBox {
         this.addChild(this.modalSelectionPanel);
         this.mulliganChoices = new HashSet<>();
         this.onGameEnd = onGameEnd;
+
+        this.teamAssignTimer = Double.POSITIVE_INFINITY;
     }
 
     @Override
@@ -198,6 +209,9 @@ public class UIBoard extends UIBox {
         this.readDataStream();
 
         this.elusiveTimer = (this.elusiveTimer + frametime) % ELUSIVE_TIME_PER_CYCLE;
+        if (this.teamAssignTimer < TEAM_ASSIGN_TIME) {
+            this.teamAssignTimer += frametime;
+        }
         // handle targeting text
         this.targetText.setVisible(true);
         UICard relevantCard = this.getCurrentTargetingCard();
@@ -213,8 +227,8 @@ public class UIBoard extends UIBox {
         }
         // end handling targeting text
 
-        Player realLocalPlayer = this.b.realBoard.getPlayer(this.b.localteam);
-        Player realEnemyPlayer = this.b.realBoard.getPlayer(this.b.localteam * -1);
+        Player realLocalPlayer = this.b.realBoard.getPlayer(this.b.getLocalteam());
+        Player realEnemyPlayer = this.b.realBoard.getPlayer(this.b.getLocalteam() * -1);
         this.localPlayerMana.updateMana(realLocalPlayer.mana, realLocalPlayer.maxmana);
         this.enemyPlayerMana.updateMana(realEnemyPlayer.mana, realEnemyPlayer.maxmana);
 
@@ -224,12 +238,12 @@ public class UIBoard extends UIBox {
         this.localPlayerTracker.updateTrackerText(realLocalPlayer);
         this.enemyPlayerTracker.updateTrackerText(realEnemyPlayer);
 
-        this.mulliganConfirmation.setEnableInput(!this.b.getPlayer(this.b.localteam).mulliganed);
-        this.mulliganConfirmation.setVisible(this.b.mulligan && !this.b.getPlayer(this.b.localteam).getHand().isEmpty());
+        this.mulliganConfirmation.setEnableInput(!this.b.getPlayer(this.b.getLocalteam()).mulliganed);
+        this.mulliganConfirmation.setVisible(this.b.mulligan && !this.b.getPlayer(this.b.getLocalteam()).getHand().isEmpty());
         // reset some pending stuff
         // move the cards to their respective positions
         for (int team : List.of(-1, 1)) {
-            List<BoardObject> bos = team == this.b.localteam ?
+            List<BoardObject> bos = team == this.b.getLocalteam() ?
                     this.b.pendingPlayPositions.getConsumerStateWithPending().stream()
                         .map(bo -> (BoardObject) bo.visualCard)
                         .collect(Collectors.toList())
@@ -257,7 +271,7 @@ public class UIBoard extends UIBox {
                     uic.setPos(
                             // oh my this formatting
                             new Vector2f(0,
-                                    (float) (team == this.b.localteam ? LEADER_Y_LOCAL : LEADER_Y_ENEMY)),
+                                    (float) (team == this.b.getLocalteam() ? LEADER_Y_LOCAL : LEADER_Y_ENEMY)),
                             1);
                 }
             });
@@ -267,12 +281,12 @@ public class UIBoard extends UIBox {
                     uic.draggable = false;
                     uic.setVisible(true);
                     uic.setPos(new Vector2f((float) UNLEASHPOWER_X,
-                                    (float) (team == this.b.localteam ? UNLEASHPOWER_Y_LOCAL : UNLEASHPOWER_Y_ENEMY)),
+                                    (float) (team == this.b.getLocalteam() ? UNLEASHPOWER_Y_LOCAL : UNLEASHPOWER_Y_ENEMY)),
                             1);
                 }
             });
             List<Card> hand = this.b.getPlayer(team).getHand();
-            if (team == this.b.localteam && this.b.mulligan) {
+            if (team == this.b.getLocalteam() && this.b.mulligan) {
                 for (int i = 0; i < hand.size(); i++) {
                     Card c = hand.get(i);
                     UICard uic = c.uiCard;
@@ -280,7 +294,7 @@ public class UIBoard extends UIBox {
                         float x = MULLIGAN_FAN_WIDTH * ((i + 0.5f) / hand.size() - 0.5f);
                         float y = this.mulliganChoices.contains(uic) ? MULLIGAN_TOSS_Y : MULLIGAN_KEEP_Y;
                         uic.setVisible(true);
-                        uic.draggable = !this.b.getPlayer(this.b.localteam).mulliganed;
+                        uic.draggable = !this.b.getPlayer(this.b.getLocalteam()).mulliganed;
                         if (uic != this.draggingCard) {
                             uic.setPos(new Vector2f(x, y), 0.999);
                         }
@@ -289,7 +303,7 @@ public class UIBoard extends UIBox {
             } else {
                 int idx = 0;
                 int handSize = this.b.getPlayer(team).getHand().size();
-                if (team == this.b.localteam) {
+                if (team == this.b.getLocalteam()) {
                     handSize -= this.b.pendingPlayCards.size();
                     if (this.playingCard != null) {
                         handSize--;
@@ -306,7 +320,7 @@ public class UIBoard extends UIBox {
                     UICard uic = c.uiCard;
                     // pending cards are positioned separately
                     if (!uic.isBeingAnimated() && !uic.isPending()) {
-                        if (team == this.b.localteam && !this.b.disableInput) {
+                        if (team == this.b.getLocalteam() && !this.b.disableInput) {
                             uic.draggable = true;
                         }
                         uic.setVisible(true);
@@ -318,13 +332,13 @@ public class UIBoard extends UIBox {
                             uic.setPos(
                                     new Vector2f(
                                             (float) ((idx - handSize / 2.)
-                                                    * (team == this.b.localteam ? (this.expandHand
+                                                    * (team == this.b.getLocalteam() ? (this.expandHand
                                                     ? (HAND_X_SCALE_EXPAND_LOCAL + handSize * 0.02)
                                                     : HAND_X_SCALE_LOCAL) : HAND_X_SCALE_ENEMY) / handSize
-                                                    + (team == this.b.localteam ? (this.expandHand
+                                                    + (team == this.b.getLocalteam() ? (this.expandHand
                                                     ? (HAND_X_EXPAND_LOCAL - handSize * 0.01)
                                                     : HAND_X_LOCAL) : HAND_X_ENEMY)),
-                                            (float) (team == this.b.localteam
+                                            (float) (team == this.b.getLocalteam()
                                                     ? (this.expandHand ? HAND_Y_EXPAND_LOCAL : HAND_Y_LOCAL)
                                                     : HAND_Y_ENEMY)),
                                     0.99);
@@ -350,7 +364,7 @@ public class UIBoard extends UIBox {
                 if (!uic.isBeingAnimated()) {
                     uic.draggable = false;
                     uic.setVisible(true);
-                    uic.setPos(new Vector2f((float) DECK_X, (float) (team == this.b.localteam ? DECK_Y_LOCAL : DECK_Y_ENEMY)), 0.99);
+                    uic.setPos(new Vector2f((float) DECK_X, (float) (team == this.b.getLocalteam() ? DECK_Y_LOCAL : DECK_Y_ENEMY)), 0.99);
                 }
             }
             List<Card> graveyard = this.b.getPlayer(team).getGraveyard();
@@ -379,8 +393,8 @@ public class UIBoard extends UIBox {
         if (!this.b.mulligan && this.draggingCard != null && this.draggingCard.getCard() instanceof BoardObject
                 && this.draggingCard.getRelPos().y < CARD_PLAY_Y) {
             int pendingSize = this.b.pendingPlayPositions.getConsumerStateWithPending().size();
-            int wouldBePos = XToBoardPos(this.ui.lastmousepos.x / Config.WINDOW_WIDTH - 0.5, this.b.localteam, pendingSize + 1);
-            float wouldBeX = (boardPosToX(wouldBePos, this.b.localteam, pendingSize + 1) + 0.5f) * Config.WINDOW_WIDTH;
+            int wouldBePos = XToBoardPos(this.ui.lastmousepos.x / Config.WINDOW_WIDTH - 0.5, this.b.getLocalteam(), pendingSize + 1);
+            float wouldBeX = (boardPosToX(wouldBePos, this.b.getLocalteam(), pendingSize + 1) + 0.5f) * Config.WINDOW_WIDTH;
             g.drawLine(wouldBeX, Config.WINDOW_HEIGHT * 0.55f, wouldBeX, Config.WINDOW_HEIGHT * 0.74f);
         }
         // draw pending play
@@ -393,7 +407,7 @@ public class UIBoard extends UIBox {
                 UICard uic = bo.uiCard;
                 if (!bo.status.equals(CardStatus.BOARD)) {
                     // lol
-                    Vector2f pos = this.getAbsOfPos(this.getPosOfRel(this.getBoardPosFor(i, this.b.localteam, bos.size())));
+                    Vector2f pos = this.getAbsOfPos(this.getPosOfRel(this.getBoardPosFor(i, this.b.getLocalteam(), bos.size())));
                     uic.drawPendingPlayPosition(g, pos);
                 }
             }
@@ -410,6 +424,14 @@ public class UIBoard extends UIBox {
             if (ea.isStarted()) {
                 ea.draw(g);
             }
+        }
+
+        if (this.teamAssignTimer < TEAM_ASSIGN_TIME) {
+            UnicodeFont font = Game.getFont(80, true, false);
+            g.setFont(font);
+            g.setColor(new Color(1f, 1f, 1f, TEAM_ASSIGN_ALPHA_INTERPOLATION.get(this.teamAssignTimer).floatValue()));
+            String s = this.b.getLocalteam() == 1 ? "You go first" : "You go second";
+            g.drawString(s, Config.WINDOW_WIDTH / 2 - font.getWidth(s) / 2, Config.WINDOW_HEIGHT / 2 - font.getHeight(s) / 2);
         }
     }
 
@@ -437,6 +459,11 @@ public class UIBoard extends UIBox {
                 case BOARDRESET -> {
                     this.resetBoard();
                     this.skipNextEventAnimations = true;
+                }
+                case TEAMASSIGN -> {
+                    int team = this.ds.readTeamAssign();
+                    this.b.setLocalteam(team);
+                    this.teamAssignTimer = 0;
                 }
                 default -> {
                 }
@@ -482,7 +509,7 @@ public class UIBoard extends UIBox {
         this.removeChildren(this.cards);
         this.cards = new ArrayList<>();
         this.stopTargeting();
-        this.b = new VisualBoard(this, this.b.localteam);
+        this.b = new VisualBoard(this, this.b.getLocalteam());
         this.mulliganChoices.clear();
     }
 
@@ -493,7 +520,7 @@ public class UIBoard extends UIBox {
 
     public Vector2f getBoardPosFor(int cardpos, int team, int numCards) {
         return new Vector2f(boardPosToX(cardpos, team, numCards),
-                (float) (team == this.b.localteam ? BO_Y_LOCAL : BO_Y_ENEMY));
+                (float) (team == this.b.getLocalteam() ? BO_Y_LOCAL : BO_Y_ENEMY));
     }
 
     private static int XToBoardPos(double x, int team, int numCards) {
@@ -545,7 +572,7 @@ public class UIBoard extends UIBox {
         this.preSelectedCard = null;
 //        this.expandHand = y > (HAND_EXPAND_Y + 0.5) * Config.WINDOW_HEIGHT;
         if (this.b.mulligan) {
-            if (c.getCard().status.equals(CardStatus.HAND) && c.getCard().team == this.b.localteam) {
+            if (c.getCard().status.equals(CardStatus.HAND) && c.getCard().team == this.b.getLocalteam()) {
                 this.preSelectedCard = c;
                 this.draggingCard = c;
             }
@@ -553,8 +580,8 @@ public class UIBoard extends UIBox {
             this.preSelectedCard = c;
             switch (c.getCard().status) {
             case HAND:
-                if (c.getCard().team == this.b.localteam) {
-                    if (this.b.realBoard.getPlayer(this.b.localteam).canPlayCard(c.getCard().realCard)
+                if (c.getCard().team == this.b.getLocalteam()) {
+                    if (this.b.realBoard.getPlayer(this.b.getLocalteam()).canPlayCard(c.getCard().realCard)
                             && !this.b.disableInput) {
                         this.draggingCard = c;
                         c.setDragging(true);
@@ -563,8 +590,8 @@ public class UIBoard extends UIBox {
                 }
                 break;
             case UNLEASHPOWER:
-                if (c.getCard().team == this.b.localteam) {
-                    if (this.b.realBoard.getPlayer(this.b.localteam).canUnleash() && !this.b.disableInput) {
+                if (c.getCard().team == this.b.getLocalteam()) {
+                    if (this.b.realBoard.getPlayer(this.b.getLocalteam()).canUnleash() && !this.b.disableInput) {
                         c.setTargeting(true);
                         this.draggingUnleash = true;
                         this.refreshAnimatedUnleashTargets();
@@ -574,7 +601,7 @@ public class UIBoard extends UIBox {
             case LEADER: // TODO allow leader to attac properly
             case BOARD:
                 BoardObject bo = (BoardObject) c.getCard();
-                if (bo != null && bo instanceof Minion && bo.realCard.team == this.b.localteam
+                if (bo != null && bo instanceof Minion && bo.realCard.team == this.b.getLocalteam()
                         && ((Minion) bo.realCard).canAttack() && !this.b.disableInput) {
                     this.attackingMinion = c;
                     this.refreshAnimatedAttackTargets();
@@ -604,7 +631,7 @@ public class UIBoard extends UIBox {
         } else {
             UICard c = this.cardAtPos(x, y);
             if (this.attackingMinion != null) { // in middle of ordering attack
-                if (c != null && (c.getCard() instanceof Minion) && c.getCard().team != this.b.localteam
+                if (c != null && (c.getCard() instanceof Minion) && c.getCard().team != this.b.getLocalteam()
                         && this.attackingMinion.getMinion().realMinion().canAttack(c.getMinion().realMinion())) {
                     this.ds.sendPlayerAction(
                             new OrderAttackAction(this.attackingMinion.getMinion().realMinion(), c.getMinion().realMinion())
@@ -618,13 +645,13 @@ public class UIBoard extends UIBox {
                 this.preSelectedCard.setTargeting(false);
                 this.draggingUnleash = false;
                 this.refreshAnimatedUnleashTargets();
-                if (c != null && c.getCard() instanceof Minion && c.getCard().team == this.b.localteam
-                        && this.b.getPlayer(this.b.localteam).canUnleashCard(c.getCard())) {
+                if (c != null && c.getCard() instanceof Minion && c.getCard().team == this.b.getLocalteam()
+                        && this.b.getPlayer(this.b.getLocalteam()).canUnleashCard(c.getCard())) {
                     this.selectUnleashingMinion(c);
                 }
             } else if (this.draggingCard != null) { // in middle of playing card
                 if (this.draggingCard.getRelPos().y < CARD_PLAY_Y
-                        && this.b.realBoard.getPlayer(this.b.localteam).canPlayCard(this.draggingCard.getCard().realCard)) {
+                        && this.b.realBoard.getPlayer(this.b.getLocalteam()).canPlayCard(this.draggingCard.getCard().realCard)) {
                     this.playingCard = this.draggingCard;
                     this.playingCard.setTargeting(true);
                     this.playingCard.setPos(TARGETING_CARD_POS, 0.999);
@@ -730,16 +757,16 @@ public class UIBoard extends UIBox {
                     int playPos = 0;
                     if (this.playingCard.getCard() instanceof BoardObject) {
                         int pendingSize = this.b.pendingPlayPositions.getConsumerStateWithPending().size();
-                        int pendingPos = XToBoardPos(this.playingX, this.b.localteam, pendingSize + 1);
+                        int pendingPos = XToBoardPos(this.playingX, this.b.getLocalteam(), pendingSize + 1);
                         playPos = this.b.pendingPlayPositions.pendingToReal(pendingPos);
                         this.b.pendingPlayPositions.addPendingPositionPreference(pendingPos, (BoardObject) this.playingCard.getCard().realCard);
                     }
-                    this.ds.sendPlayerAction(new PlayCardAction(this.b.realBoard.getPlayer(this.b.localteam),
+                    this.ds.sendPlayerAction(new PlayCardAction(this.b.realBoard.getPlayer(this.b.getLocalteam()),
                             this.playingCard.getCard().realCard, playPos,
                             this.effectCumulativeTargets).toString());
                 } else if (this.unleashingMinion != null) {
                     // unnecessary check but gets intent across
-                    this.ds.sendPlayerAction(new UnleashMinionAction(this.b.realBoard.getPlayer(this.b.localteam),
+                    this.ds.sendPlayerAction(new UnleashMinionAction(this.b.realBoard.getPlayer(this.b.getLocalteam()),
                             this.unleashingMinion.getMinion().realMinion(), this.effectCumulativeTargets).toString());
                 }
                 this.stopTargeting();
@@ -815,10 +842,10 @@ public class UIBoard extends UIBox {
 
     private void refreshAnimatedAttackTargets() {
         if (this.attackingMinion == null) {
-            this.b.getBoardObjects(this.b.localteam * -1, true, true, false, true)
+            this.b.getBoardObjects(this.b.getLocalteam() * -1, true, true, false, true)
                     .forEach(target -> target.uiCard.setPotentialTarget(false));
         } else {
-            this.b.getBoardObjects(this.b.localteam * -1, true, true, false, true)
+            this.b.getBoardObjects(this.b.getLocalteam() * -1, true, true, false, true)
                     .filter(target -> target instanceof Minion && this.attackingMinion.getMinion().realMinion().canAttack(((Minion) target).realMinion()))
                     .forEach(target -> target.uiCard.setPotentialTarget(true));
         }
@@ -826,11 +853,11 @@ public class UIBoard extends UIBox {
 
     private void refreshAnimatedUnleashTargets() {
         if (this.draggingUnleash) {
-            this.b.getMinions(this.b.localteam, false, true)
-                    .filter(m -> this.b.realBoard.getPlayer(this.b.localteam).canUnleashCard(m.realMinion()))
+            this.b.getMinions(this.b.getLocalteam(), false, true)
+                    .filter(m -> this.b.realBoard.getPlayer(this.b.getLocalteam()).canUnleashCard(m.realMinion()))
                     .forEach(m -> m.uiCard.setPotentialTarget(true));
         } else {
-            this.b.getMinions(this.b.localteam, false, true)
+            this.b.getMinions(this.b.getLocalteam(), false, true)
                     .forEach(m -> m.uiCard.setPotentialTarget(false));
         }
     }

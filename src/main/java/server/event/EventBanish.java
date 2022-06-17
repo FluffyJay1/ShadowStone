@@ -56,7 +56,7 @@ public class EventBanish extends Event {
                         if (c instanceof BoardObject) {
                             BoardObject bo = (BoardObject) c;
                             bo.lastBoardPos = bo.getIndex();
-                            if (bo.team == b.localteam && b instanceof PendingPlayPositioner) {
+                            if (bo.team == b.getLocalteam() && b instanceof PendingPlayPositioner) {
                                 ((PendingPlayPositioner) b).getPendingPlayPositionProcessor().processOp(bo.getIndex(), null, false);
                             }
                             p.getPlayArea().remove(bo);

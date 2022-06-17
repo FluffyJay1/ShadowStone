@@ -51,7 +51,7 @@ public class EventGroupDescriptionPanel extends UIBox {
                 title.setFont((int) (48 / excessRatio));
             }
             this.addChild(title);
-            if (c.team == c.board.localteam) {
+            if (c.team == c.board.getLocalteam()) {
                 this.setColor(LOCAL_COLOR);
             } else {
                 this.setColor(ENEMY_COLOR);

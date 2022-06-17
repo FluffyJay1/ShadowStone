@@ -40,9 +40,10 @@ public class GameController {
     List<LeaderText> leaders;
     List<UnleashPowerText> unleashPowers;
     List<ConstructedDeck> decks;
+    int teamMultiplier; // if 1, then first index is team 1, if -1 then first index is team -1
 
     public GameController(List<DataStream> players, List<LeaderText> leaders, List<UnleashPowerText> unleashPowers, List<ConstructedDeck> decks) {
-        this.b = new ServerBoard(1);
+        this.b = new ServerBoard(0);
         this.players = players;
         this.leaders = leaders;
         this.unleashPowers = unleashPowers;
@@ -50,6 +51,8 @@ public class GameController {
     }
 
     public void startInit() {
+        this.teamMultiplier = Math.random() > 0.5 ? 1 : -1;
+        this.sendTeamAssignments();
         Resolver startResolver = new Resolver(false) {
             @Override
             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
@@ -82,7 +85,7 @@ public class GameController {
     }
 
     public boolean isGamePhase() {
-        return this.b.winner == 0;
+        return this.b.getWinner() == 0;
     }
 
     public void updateGame() {
@@ -102,7 +105,7 @@ public class GameController {
     }
 
     public int getWinner() {
-        return this.b.winner;
+        return this.b.getWinner();
     }
 
     private void handleGameInput(DataStream ds, int team) {
@@ -110,7 +113,7 @@ public class GameController {
             MessageType mtype = ds.receive();
             switch (mtype) {
                 case PLAYERACTION:
-                    if (this.b.currentPlayerTurn != team * -1) {
+                    if (this.b.getCurrentPlayerTurn() != team * -1) {
                         String action = ds.readPlayerAction();
                         System.out.println("team " + team + " action: " + action);
                         this.b.executePlayerAction(new StringTokenizer(action));
@@ -140,6 +143,12 @@ public class GameController {
         }
     }
 
+    private void sendTeamAssignments() {
+        for (int i = 0; i <= 1; i++) {
+            this.players.get(i).sendTeamAssign(this.indexToTeam(i));
+        }
+    }
+
     private void sendEvents() {
         String eventBurstString = this.b.retrieveEventBurstString();
         if (!eventBurstString.isEmpty()) {
@@ -152,11 +161,11 @@ public class GameController {
         this.players.get(teamToIndex(team)).sendEventBurstString(eventBurstString);
     }
 
-    private static int teamToIndex(int team) {
-        return (team - 1) / -2;
+    public int teamToIndex(int team) {
+        return (team * this.teamMultiplier - 1) / -2;
     }
 
-    private static int indexToTeam(int index) {
-        return (index * -2) + 1;
+    public int indexToTeam(int index) {
+        return ((index * -2) + 1) * this.teamMultiplier;
     }
 }

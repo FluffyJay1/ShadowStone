@@ -16,7 +16,7 @@ public class EventAnimationRemoveEffect extends EventAnimation<EventRemoveEffect
     @Override
     public void init(VisualBoard b, EventRemoveEffect event) {
         super.init(b, event);
-        if (event.effects.stream().anyMatch(e -> e.owner.isVisibleTo(b.localteam))) {
+        if (event.effects.stream().anyMatch(e -> e.owner.isVisibleTo(b.getLocalteam()))) {
             this.postTime = 0.3; // if we can see one of them, we animate
         }
     }
@@ -28,7 +28,7 @@ public class EventAnimationRemoveEffect extends EventAnimation<EventRemoveEffect
             float xoffset = (float) Math.random() * 150 - 75;
             float yoffset = (float) (this.normalizedPost() * 160) - 80 + (float) Math.random() * 150 - 75;
             for (Effect e : this.event.effects) {
-                if (e.owner.isVisibleTo(this.visualBoard.localteam)) {
+                if (e.owner.isVisibleTo(this.visualBoard.getLocalteam())) {
                     g.drawImage(img, e.owner.uiCard.getAbsPos().x - img.getWidth() / 2 + xoffset,
                             e.owner.uiCard.getAbsPos().y - img.getHeight() / 2 + yoffset);
                 }

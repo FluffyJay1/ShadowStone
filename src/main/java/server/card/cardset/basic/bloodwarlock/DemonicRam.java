@@ -26,7 +26,7 @@ public class DemonicRam extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/demonicram.png",
-            CRAFT, TRAITS, RARITY, 2, 2, 1, 3, true, DemonicRam.class,
+            CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, DemonicRam.class,
             new Vector2f(150, 170), 1.2, EventAnimationDamageSlash.class,
             List::of,
             List.of());
@@ -37,7 +37,7 @@ public class DemonicRam extends MinionText {
             @Override
             public ResolverWithDescription onListenEvent(Event event) {
                 Effect effect = this;
-                if (event instanceof EventDamage && this.owner.isInPlay() && this.owner.board.currentPlayerTurn == this.owner.team) {
+                if (event instanceof EventDamage && this.owner.isInPlay() && this.owner.board.getCurrentPlayerTurn() == this.owner.team) {
                     EventDamage ed = (EventDamage) event;
                     if(this.owner.player.getLeader().isPresent()) {
                         if (ed.m.contains(this.owner.player.getLeader().get())) {

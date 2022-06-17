@@ -12,13 +12,11 @@ import client.ui.particle.strategy.property.*;
 import client.ui.particle.strategy.timing.InstantEmissionTimingStrategy;
 import org.newdawn.slick.*;
 
-import client.Game;
 import client.VisualBoard;
 import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.*;
 import server.card.effect.Effect;
-import server.card.effect.EffectStats;
 import server.card.effect.Stat;
 import server.event.*;
 
@@ -56,7 +54,7 @@ public class EventAnimationSetEffectStats extends EventAnimation<EventSetEffectS
 
     private boolean shouldAnimate(int i) {
         Effect e = this.event.targets.get(i);
-        if (!e.owner.isVisibleTo(this.visualBoard.localteam)) {
+        if (!e.owner.isVisibleTo(this.visualBoard.getLocalteam())) {
             return false;
         }
         // if only cost changed and the guy is on board, we don't care

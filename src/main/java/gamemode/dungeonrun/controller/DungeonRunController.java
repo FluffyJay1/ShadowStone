@@ -102,8 +102,8 @@ public class DungeonRunController {
         return deck;
     }
 
-    public static Thread startGame(DataStream dsserver, int localteam) {
-        DungeonRunGameRunner runner = new DungeonRunGameRunner(dsserver, localteam, run.player, run.enemies.get(run.current));
+    public static Thread startGame(DataStream dsserver) {
+        DungeonRunGameRunner runner = new DungeonRunGameRunner(dsserver, run.player, run.enemies.get(run.current));
         Thread t = new Thread(runner);
         t.start();
         run.state = RunState.IN_PROGRESS;

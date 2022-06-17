@@ -24,7 +24,7 @@ public class EventUnleash extends Event {
         if (this.source instanceof UnleashPower) { // quality
             this.prevUnleashes = ((UnleashPower) this.source).unleashesThisTurn;
             ((UnleashPower) this.source).unleashesThisTurn++;
-            if (this.source.team == this.source.board.localteam && this.source.board instanceof PendingUnleash.PendingUnleasher) {
+            if (this.source.team == this.source.board.getLocalteam() && this.source.board instanceof PendingUnleash.PendingUnleasher) {
                 ((PendingUnleash.PendingUnleasher) this.source.board).getPendingUnleashProcessor().process(new PendingUnleash(this.source, this.m));
             }
         }

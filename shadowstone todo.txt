@@ -1,7 +1,8 @@
-start at 1 mana
+split datastream into server and client?
 show icon for clash, strike, retaliate, onlistenevent? etc. effects
 add more damage animations
 fix expansion sets, dungeon run default decks
 can't attack
+new unleash powers, proper unleash power value calculation
 effect ward
 add music

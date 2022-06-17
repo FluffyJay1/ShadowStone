@@ -1,5 +1,5 @@
 package network;
 
 public enum MessageType {
-    PLAYERACTION, EVENT, DECK, EMOTE, BOARDRESET
+    PLAYERACTION, EVENT, DECK, EMOTE, BOARDRESET, TEAMASSIGN
 }

@@ -20,13 +20,13 @@ public class EventGameEnd extends Event {
 
     @Override
     public void resolve(Board b) {
-        this.b.winner = victory;
+        this.b.setWinner(victory);
         // System.exit(0); // YES
     }
 
     @Override
     public void undo(Board b) {
-        this.b.winner = 0; // gameend me irl
+        this.b.setWinner(0); // gameend me irl
     }
 
     @Override

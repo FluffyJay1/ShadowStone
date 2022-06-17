@@ -57,6 +57,8 @@ public class AI extends Thread {
     public static final double VALUE_OF_BANISH = 5;
 
     public static final double VALUE_OF_ELUSIVE = 1;
+
+    public static final double VALUE_OF_UNLEASH = 2;
     /*
      * We can't expect the AI to traverse every single possible node in the decision
      * tree before making a move (especially considering rng), so after a certain
@@ -125,10 +127,10 @@ public class AI extends Thread {
     List<String> actionSendQueue;
     boolean waitForEvents, finishedTurn;
 
-    public AI(DataStream dslocal, int team, AIConfig config) {
+    public AI(DataStream dslocal, AIConfig config) {
         this.config = config;
         this.dslocal = dslocal;
-        this.b = new ServerBoard(team);
+        this.b = new ServerBoard(0);
         this.b.logEvents = false;
         this.actionSendQueue = new LinkedList<>();
         this.nodeMap = new HashMap<>();
@@ -137,9 +139,9 @@ public class AI extends Thread {
 
     @Override
     public void run() {
-        while (this.b.winner == 0 && !this.isInterrupted()) {
+        while (this.b.getWinner() == 0 && !this.isInterrupted()) {
             this.readDataStream();
-            Player localPlayer = this.b.getPlayer(this.b.localteam);
+            Player localPlayer = this.b.getPlayer(this.b.getLocalteam());
             if (!this.isInterrupted() && !this.waitForEvents) {
                 if (!localPlayer.mulliganed && !localPlayer.getHand().isEmpty()) {
                     // do mulligan thing
@@ -147,8 +149,8 @@ public class AI extends Thread {
                     this.dslocal.sendPlayerAction(new MulliganAction(localPlayer, mulliganChoices).toString());
                     this.waitForEvents = true;
                 }
-                if (this.b.currentPlayerTurn == this.b.localteam && !this.finishedTurn) {
-                    if (this.actionSendQueue.isEmpty() && this.b.winner == 0) {
+                if (this.b.getCurrentPlayerTurn() == this.b.getLocalteam() && !this.finishedTurn) {
+                    if (this.actionSendQueue.isEmpty() && this.b.getWinner() == 0) {
                         this.AIThink();
                     }
                     this.sendNextAction();
@@ -165,27 +167,29 @@ public class AI extends Thread {
             return;
         }
         switch (mtype) {
-            case EVENT:
+            case EVENT -> {
                 List<EventBurst> eventBursts = this.dslocal.readEventBursts();
                 this.b.consumeEventBursts(eventBursts);
                 this.waitForEvents = false;
-                if (this.b.currentPlayerTurn == this.b.localteam) {
+                if (this.b.getCurrentPlayerTurn() == this.b.getLocalteam()) {
                     this.finishedTurn = false;
                 }
-                break;
-            case BOARDRESET:
-                this.b = new ServerBoard(this.b.localteam);
+            }
+            case BOARDRESET -> {
+                this.b = new ServerBoard(this.b.getLocalteam());
                 this.b.logEvents = false;
                 this.actionSendQueue = new LinkedList<>();
                 this.waitForEvents = true;
-            default:
-                break;
+            }
+            case TEAMASSIGN -> this.b.setLocalteam(this.dslocal.readTeamAssign());
+            default -> {
+            }
         }
     }
 
     private List<Card> chooseMulligan() {
         // mulligan away cards that cost more than 3, unless they have spellboost
-        return this.b.getPlayer(this.b.localteam).getHand().stream()
+        return this.b.getPlayer(this.b.getLocalteam()).getHand().stream()
                 .filter(c -> c.finalStats.get(Stat.COST) > 3 && c.finalStats.get(Stat.SPELLBOOSTABLE) == 0)
                 .collect(Collectors.toList());
     }
@@ -202,14 +206,14 @@ public class AI extends Thread {
         this.totalReevaluations = 0;
         List<String> actionStack = new LinkedList<>();
         long start = System.nanoTime();
-        DeterministicBoardStateNode dbsn = this.getBestTurn(this.b.localteam, 0, this.config.startSampleRate, Double.POSITIVE_INFINITY, false);
+        DeterministicBoardStateNode dbsn = this.getBestTurn(this.b.getLocalteam(), 0, this.config.startSampleRate, Double.POSITIVE_INFINITY, false);
         if (dbsn == null) {
             System.out.println("AIThink returned from a null best turn, sadge");
             return;
         }
         double time = (System.nanoTime() - start) / 1000000000.;
         DeterministicBoardStateNode temp = dbsn;
-        while (temp.team == this.b.localteam && (temp.isFullyEvaluated() || temp.lethal)) {
+        while (temp.team == this.b.getLocalteam() && (temp.isFullyEvaluated() || temp.lethal)) {
             String nextAction = temp.getMax().action;
             actionStack.add(nextAction);
             BoardStateNode next = temp.branches.get(nextAction);
@@ -225,7 +229,7 @@ public class AI extends Thread {
 
         if (DEBUG_PRINT) {
             System.out.println("Time taken: " + time);
-            System.out.println("Start score: " + evaluateAdvantage(this.b, this.b.localteam));
+            System.out.println("Start score: " + evaluateAdvantage(this.b, this.b.getLocalteam()));
             System.out.println("Score achieved: " + dbsn.getMax().score);
             System.out.printf("%-6s %-6s %-6s %-6s\n", "Depth", "Width", "Cache", "Brnchs");
             for (int i = 0; i < this.width.length; i++) {
@@ -294,7 +298,7 @@ public class AI extends Thread {
     private DeterministicBoardStateNode getBestTurn(int team, int depth, double sampleRate, double maxSamples,
             boolean filterLethal) {
         // no turn possible
-        if (this.b.currentPlayerTurn != team || this.b.winner != 0) {
+        if (this.b.getCurrentPlayerTurn() != team || this.b.getWinner() != 0) {
             return null;
         }
         String state = this.b.stateToString();
@@ -410,13 +414,13 @@ public class AI extends Thread {
             }
             nextSampleRate *= 1 - (this.config.rngPenalty * Math.pow(this.config.rngPenaltyReduction, cumTrials));
         }
-        if (this.b.winner != 0 || depth == SAMPLING_MAX_DEPTH) {
+        if (this.b.getWinner() != 0 || depth == SAMPLING_MAX_DEPTH) {
             // no more actions can be taken
             node = new TerminalBoardStateNode(current.team, evaluateAdvantage(this.b, current.team));
-            if (!result.rng && this.b.winner == current.team) {
+            if (!result.rng && this.b.getWinner() == current.team) {
                 current.lethal = true; // the current node has an action that results in a lethal 100% of the time
             }
-        } else if (Integer.parseInt(action.substring(0, 1)) == EndTurnAction.ID || this.b.currentPlayerTurn != current.team) {
+        } else if (Integer.parseInt(action.substring(0, 1)) == EndTurnAction.ID || this.b.getCurrentPlayerTurn() != current.team) {
             // assess what's the worst the opponent can do
             if (filterLethal) {
                 // not part of my pay grade
@@ -471,7 +475,7 @@ public class AI extends Thread {
      * @return a some weighted set of possible actions taken by the AI, to be sampled
      */
     private WeightedSampler<String> getPossibleActions(int team) {
-        if (this.b.currentPlayerTurn != team || this.b.winner != 0) {
+        if (this.b.getCurrentPlayerTurn() != team || this.b.getWinner() != 0) {
             return null;
         }
         Player p = this.b.getPlayer(team);
@@ -542,7 +546,7 @@ public class AI extends Thread {
      * @return Some weighted set of actions that the team could take that could lead to lethal, to be sampled
      */
     private WeightedSampler<String> getPossibleLethalActions(int team) {
-        if (this.b.currentPlayerTurn != team || this.b.winner != 0) {
+        if (this.b.getCurrentPlayerTurn() != team || this.b.getWinner() != 0) {
             return null;
         }
         Player p = this.b.getPlayer(team);
@@ -701,9 +705,11 @@ public class AI extends Thread {
      * @return the advantage quantized as mana
      */
     public static double evaluateAdvantage(Board b, int team) {
-        return evaluateVictory(b, team) + evaluateMana(b, team) + evaluateSurvivability(b, team)
-                + evaluateBoard(b, team) + evaluateHand(b, team) + evaluateDeck(b, team) - evaluateSurvivability(b, team * -1)
-                - evaluateBoard(b, team * -1) - evaluateHand(b, team * -1) - evaluateDeck(b, team * -1);
+        return evaluateVictory(b, team) + evaluateMana(b, team)
+                + evaluateSurvivability(b, team) + evaluateBoard(b, team) + evaluateHand(b, team)
+                + evaluateDeck(b, team) + evaluateUnleashPower(b, team)
+                - evaluateSurvivability(b, team * -1) - evaluateBoard(b, team * -1) - evaluateHand(b, team * -1)
+                - evaluateDeck(b, team * -1) - evaluateUnleashPower(b, team * -1);
     }
 
     /**
@@ -715,9 +721,9 @@ public class AI extends Thread {
      * @return a large number in favor of the winning team
      */
     public static double evaluateVictory(Board b, int team) {
-        if (b.winner == team) {
+        if (b.getWinner() == team) {
             return 999999.;
-        } else if (b.winner == team * -1) {
+        } else if (b.getWinner() == team * -1) {
             return -999999.;
         } else {
             return 0;
@@ -776,7 +782,7 @@ public class AI extends Thread {
         this following branch is experimental, so the AI doesn't think a turn sucks because it 
         reached max depth before being able to attack with its minions
         */
-        if (b.currentPlayerTurn != team) {
+        if (b.getCurrentPlayerTurn() != team) {
             threatenDamage = potentialDamage;
         }
         // if there are more defenders than attacks, then minions shouldn't be
@@ -844,7 +850,7 @@ public class AI extends Thread {
         int enemymax = b.getPlayer(-team).maxmana;
         int enemymaxmax = b.getPlayer(-team).maxmaxmana;
         // assumes that team 1 starts
-        if (b.currentPlayerTurn == 1) {
+        if (b.getCurrentPlayerTurn() == 1) {
             // players went an uneven number of turns, counteract that so the
             // advantage value doesn't change crazily when players end their
             // turns, making the AI more stable
@@ -873,6 +879,25 @@ public class AI extends Thread {
                 .map(AI::valueInHand)
                 .reduce(0., Double::sum) / p.getDeck().size();
         return -150 * Math.pow(p.getDeck().size() + 0.5, -1.5) + avgValue;
+    }
+
+    /**
+     * Ascribe a mana value to having a better/worse unleash power
+     * @param b The board
+     * @param team The team to evaluate for
+     * @return Mana value of having this unleash power
+     */
+    public static double evaluateUnleashPower(Board b, int team) {
+        // primitive unleash power value
+        if (!b.getPlayer(team).unleashAllowed) {
+            return 0;
+        }
+        Optional<UnleashPower> oup = b.getPlayer(team).getUnleashPower();
+        if (oup.isEmpty()) {
+            return 0;
+        }
+        UnleashPower up = oup.get();
+        return up.getValue() / (up.finalStats.get(Stat.COST) + 1);
     }
 
     /**

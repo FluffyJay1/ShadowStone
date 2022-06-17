@@ -34,7 +34,7 @@ public class StateGame extends BasicGameState {
         this.dslocal = new DataStream();
         this.dsserver = new DataStream();
         DataStream.pair(dslocal, dsserver);
-        this.uiBoard = new UIBoard(this.ui, 1, this.dslocal, i -> System.out.println("team " + i + "won"));
+        this.uiBoard = new UIBoard(this.ui, this.dslocal, i -> System.out.println("team " + i + "won"));
         this.ui.addUIElementParent(this.uiBoard);
         GenericButton quitButton = new GenericButton(this.ui, new Vector2f(0.5f, -0.5f), new Vector2f(150, 50), "Quit",
                 () -> arg1.enterState(Game.STATE_MENU));
@@ -42,9 +42,9 @@ public class StateGame extends BasicGameState {
         quitButton.alignv = -1;
         quitButton.relpos = true;
         this.ui.addUIElementParent(quitButton);
-        this.game = new ServerGameThread(this.dsserver, 1, false);
-        this.game.setDecklist(1, tempdeck);
-        this.game.setDecklist(-1, SelectRandom.from(ConstructedDeck.decks));
+        this.game = new ServerGameThread(this.dsserver, false);
+        this.game.setDecklist(0, tempdeck);
+        this.game.setDecklist(1, SelectRandom.from(ConstructedDeck.decks));
         this.game.setAIConfig(tempConfig);
         this.game.start();
     }

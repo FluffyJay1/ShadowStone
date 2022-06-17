@@ -52,7 +52,7 @@ public class Acceleratium extends AmuletText {
                                         .set(Stat.RUSH, 1)
                                         .build());
                                 this.resolve(b, rq, el, new AddEffectResolver(relevant, buff));
-                                this.resolve(b, rq, el, new ManaChangeResolver(owner.player, relevant.size(), true, false));
+                                this.resolve(b, rq, el, new ManaChangeResolver(owner.player, relevant.size(), true, false, false));
                             }
                         });
                     }

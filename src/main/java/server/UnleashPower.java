@@ -1,6 +1,6 @@
 package server;
 
-import server.*;
+import server.ai.AI;
 import server.card.*;
 import server.event.eventgroup.EventGroupType;
 import server.resolver.util.ResolverQueue;
@@ -16,17 +16,17 @@ public class UnleashPower extends Card {
 
     public ResolverQueue onUnleashPre(Minion target) {
         return this.getResolvers(EventGroupType.FLAG, List.of(this), eff -> eff.onUnleashPre(target),
-                eff -> !eff.removed && ((UnleashPower) eff.owner).isInPlay() && target.isInPlay());
+                eff -> !eff.removed && eff.owner.isInPlay() && target.isInPlay());
     }
 
     public ResolverQueue onUnleashPost(Minion target) {
         return this.getResolvers(EventGroupType.FLAG, List.of(this), eff -> eff.onUnleashPost(target),
-                eff -> !eff.removed && ((UnleashPower) eff.owner).isInPlay() && target.isInPlay());
+                eff -> !eff.removed && eff.owner.isInPlay() && target.isInPlay());
     }
 
     @Override
     public double getValue(int refs) {
-        return 0;
+        return AI.VALUE_OF_UNLEASH;
     }
 
     @Override

@@ -42,7 +42,7 @@ public abstract class Resolver {
      * would be a try/catch for when the game ends
      */
     protected final <T extends Resolver> T resolve(ServerBoard b, ResolverQueue rq, List<Event> el, T r) {
-        if (b.winner == 0) {
+        if (b.getWinner() == 0) {
             r.depth = this.depth + 1;
             if (r.depth > MAX_DEPTH) {
                 System.err.println("MAX RESOLVER DEPTH REACHED SOMEHOW");
@@ -67,7 +67,7 @@ public abstract class Resolver {
      */
     protected final <T extends Resolver> void resolveQueue(ServerBoard b, ResolverQueue out, List<Event> el, ResolverQueue in) {
         while (!in.isEmpty()) {
-            if (b.winner != 0) {
+            if (b.getWinner() != 0) {
                 break;
             }
             this.resolve(b, out, el, in.remove());

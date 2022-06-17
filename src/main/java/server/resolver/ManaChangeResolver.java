@@ -12,16 +12,17 @@ import java.util.List;
 public class ManaChangeResolver extends Resolver {
     Player p;
     int amount;
-    boolean changeCurrent, changeMax;
-    public ManaChangeResolver(Player p, int amount, boolean changeCurrent, boolean changeMax) {
+    boolean changeCurrent, changeMax, currentIgnoreMax;
+    public ManaChangeResolver(Player p, int amount, boolean changeCurrent, boolean changeMax, boolean currentIgnoreMax) {
         super(false);
         this.p = p;
         this.amount = amount;
         this.changeCurrent = changeCurrent;
         this.changeMax = changeMax;
+        this.currentIgnoreMax = currentIgnoreMax;
     }
     @Override
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-        b.processEvent(rq, el, new EventManaChange(this.p, this.amount, this.changeCurrent, this.changeMax));
+        b.processEvent(rq, el, new EventManaChange(this.p, this.amount, this.changeCurrent, this.changeMax, this.currentIgnoreMax));
     }
 }

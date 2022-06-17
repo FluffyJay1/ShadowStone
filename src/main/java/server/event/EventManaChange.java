@@ -11,14 +11,16 @@ public class EventManaChange extends Event {
     final int mana;
     final boolean changeCurrent;
     final boolean changeMax;
+    final boolean currentIgnoreMax;
     private int prevMana, prevMaxMana;
 
-    public EventManaChange(Player p, int mana, boolean changeCurrent, boolean changeMax) {
+    public EventManaChange(Player p, int mana, boolean changeCurrent, boolean changeMax, boolean currentIgnoreMax) {
         super(ID);
         this.p = p;
         this.mana = mana;
         this.changeCurrent = changeCurrent;
         this.changeMax = changeMax;
+        this.currentIgnoreMax = currentIgnoreMax;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class EventManaChange extends Event {
             }
         }
         if (this.changeCurrent) { // change regular mana
-            if (this.p.mana + this.mana > this.p.maxmana) {
+            if (this.p.mana + this.mana > this.p.maxmana && !this.currentIgnoreMax) {
                 this.p.mana = this.p.maxmana;
             } else if (this.p.mana + this.mana < 0) {
                 this.p.mana = 0;
@@ -53,7 +55,7 @@ public class EventManaChange extends Event {
 
     @Override
     public String toString() {
-        return this.id + " " + this.p.team + " " + this.mana + " " + this.changeCurrent + " " + this.changeMax + Game.EVENT_END;
+        return this.id + " " + this.p.team + " " + this.mana + " " + this.changeCurrent + " " + this.changeMax + " " + this.currentIgnoreMax + Game.EVENT_END;
     }
 
     public static EventManaChange fromString(Board b, StringTokenizer st) {
@@ -62,7 +64,8 @@ public class EventManaChange extends Event {
         int mana = Integer.parseInt(st.nextToken());
         boolean changeCurrent = Boolean.parseBoolean(st.nextToken());
         boolean changeMax = Boolean.parseBoolean(st.nextToken());
-        return new EventManaChange(p, mana, changeCurrent, changeMax);
+        boolean currentIgnoreMax = Boolean.parseBoolean(st.nextToken());
+        return new EventManaChange(p, mana, changeCurrent, changeMax, currentIgnoreMax);
     }
 
     @Override

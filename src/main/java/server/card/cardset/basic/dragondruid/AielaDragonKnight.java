@@ -32,7 +32,7 @@ public class AielaDragonKnight extends MinionText {
         return List.of(new Effect(DESCRIPTION) {
             @Override
             public ResolverWithDescription lastWords() {
-                return new ResolverWithDescription(DESCRIPTION, new ManaChangeResolver(this.owner.player, 1, false, true));
+                return new ResolverWithDescription(DESCRIPTION, new ManaChangeResolver(this.owner.player, 1, false, true, false));
             }
 
             @Override

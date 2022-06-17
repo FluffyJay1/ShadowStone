@@ -3,6 +3,8 @@ package server;
 import client.Game;
 import server.card.BoardObject;
 import server.card.Card;
+import server.card.CardStatus;
+import server.card.cardset.basic.neutral.NotCoin;
 import server.card.effect.*;
 import server.event.Event;
 import server.event.EventMulliganPhaseEnd;
@@ -87,7 +89,7 @@ public class ServerBoard extends Board {
      * @return Summary of resolving r
      */
     public ResolutionResult resolve(Resolver r, int team) {
-        if (this.winner != 0) {
+        if (this.getWinner() != 0) {
             return new ResolutionResult();
         }
         this.currentBurst.delete(0, this.currentBurst.length());
@@ -96,7 +98,7 @@ public class ServerBoard extends Board {
         r.onResolve(this, rq, l);
         boolean rng = r.rng;
         while (!rq.isEmpty()) {
-            if (this.winner != 0) {
+            if (this.getWinner() != 0) {
                 break;
             }
             r = rq.remove();
@@ -123,7 +125,7 @@ public class ServerBoard extends Board {
      *
      */
     public <T extends Event> T processEvent(ResolverQueue rq, List<Event> el, T e) {
-        if (this.winner != 0 || !e.conditions()) {
+        if (this.getWinner() != 0 || !e.conditions()) {
             return e;
         }
         String eventString = e.toString();
@@ -415,6 +417,7 @@ public class ServerBoard extends Board {
             @Override
             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                 b.processEvent(rq, el, new EventMulliganPhaseEnd());
+                this.resolve(b, rq, el, new CreateCardResolver(new NotCoin(), -1, CardStatus.HAND, -1));
             }
         }, 0);
         result.concat(this.resolve(new TurnStartResolver(this.getPlayer(1)), 1));
@@ -422,8 +425,8 @@ public class ServerBoard extends Board {
     }
 
     public ResolutionResult endCurrentPlayerTurn() {
-        ResolutionResult result = this.resolve(new TurnEndResolver(this.getPlayer(this.currentPlayerTurn)), this.currentPlayerTurn);
-        result.concat(this.resolve(new TurnStartResolver(this.getPlayer(this.currentPlayerTurn * -1)), this.currentPlayerTurn * -1));
+        ResolutionResult result = this.resolve(new TurnEndResolver(this.getPlayer(this.getCurrentPlayerTurn())), this.getCurrentPlayerTurn());
+        result.concat(this.resolve(new TurnStartResolver(this.getPlayer(this.getCurrentPlayerTurn() * -1)), this.getCurrentPlayerTurn() * -1));
         return result;
     }
 

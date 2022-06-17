@@ -7,21 +7,16 @@ import client.ui.game.UICard;
 import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
 import client.ui.interpolation.realvalue.ConstantInterpolation;
 import client.ui.interpolation.realvalue.LinearInterpolation;
-import client.ui.interpolation.realvalue.QuadraticInterpolationA;
 import client.ui.interpolation.realvalue.QuadraticInterpolationB;
 import client.ui.particle.ParticleSystem;
 import client.ui.particle.strategy.EmissionStrategy;
 import client.ui.particle.strategy.meta.ScaledEmissionStrategy;
 import client.ui.particle.strategy.property.*;
-import client.ui.particle.strategy.timing.InstantEmissionTimingStrategy;
 import client.ui.particle.strategy.timing.IntervalEmissionTimingStrategy;
 import client.ui.particle.strategy.timing.meta.DurationLimitingEmissionTimingStrategy;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.Card;
-import server.card.CardStatus;
-import server.card.effect.Effect;
-import server.card.effect.EffectStats;
 import server.event.EventSpellboost;
 
 import java.util.List;
@@ -61,7 +56,7 @@ public class EventAnimationSpellboost extends EventAnimation<EventSpellboost> {
 
     private boolean shouldAnimate(int i) {
         Card c = this.event.cards.get(i);
-        return c.isVisibleTo(this.visualBoard.localteam);
+        return c.isVisibleTo(this.visualBoard.getLocalteam());
     }
 
     public void onProcess() {

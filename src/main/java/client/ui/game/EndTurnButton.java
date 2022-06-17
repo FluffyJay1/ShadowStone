@@ -1,6 +1,5 @@
 package client.ui.game;
 
-import client.Game;
 import org.newdawn.slick.geom.*;
 
 import client.ui.*;
@@ -21,14 +20,14 @@ public class EndTurnButton extends UIBox {
     @Override
     public void update(double frametime) {
         super.update(frametime);
-        this.setVisible(!this.b.b.disableInput && this.b.b.currentPlayerTurn == this.b.b.localteam);
+        this.setVisible(!this.b.b.disableInput && this.b.b.getCurrentPlayerTurn() == this.b.b.getLocalteam());
     }
 
     @Override
     public void mouseReleased(int button, int x, int y) {
         if (this.pointIsInHitbox(x, y)) {
             if (!this.b.b.disableInput) {
-                this.b.ds.sendPlayerAction(new EndTurnAction(this.b.b.localteam).toString());
+                this.b.ds.sendPlayerAction(new EndTurnAction(this.b.b.getLocalteam()).toString());
                 this.b.handleTargeting(null);
                 this.b.b.disableInput = true;
             }

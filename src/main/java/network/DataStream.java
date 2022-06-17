@@ -112,6 +112,11 @@ public class DataStream {
         this.out.println(MessageType.BOARDRESET);
     }
 
+    public void sendTeamAssign(int team) {
+        this.out.println(MessageType.TEAMASSIGN);
+        this.out.println(team);
+    }
+
     /**
      * Return whether the next read won't block
      * @return true if the next read won't block
@@ -201,25 +206,28 @@ public class DataStream {
         return null;
     }
 
+    public int readTeamAssign() {
+        try {
+            return Integer.parseInt(in.readLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     /*
      * If we don't care about the message we just received, we "discard" it, reading
      * the message but not doing anything with it
      */
     public void discardMessage() {
         switch (this.lastMessageType) {
-        case EVENT:
-            this.readEventBursts();
-            break;
-        case PLAYERACTION:
-            this.readPlayerAction();
-            break;
-        case DECK:
-            this.readDecklist();
-            break;
-        case EMOTE:
-            this.readEmote();
-        default:
-            break;
+            case EVENT -> this.readEventBursts();
+            case PLAYERACTION -> this.readPlayerAction();
+            case DECK -> this.readDecklist();
+            case EMOTE -> this.readEmote();
+            case TEAMASSIGN -> this.readTeamAssign();
+            default -> {
+            }
         }
     }
 

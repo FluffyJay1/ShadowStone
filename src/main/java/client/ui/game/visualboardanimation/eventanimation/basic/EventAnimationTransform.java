@@ -44,7 +44,7 @@ public class EventAnimationTransform extends EventAnimation<EventTransform> {
     @Override
     public void init(VisualBoard b, EventTransform event) {
         super.init(b, event);
-        if (event.cards.stream().anyMatch(c -> c.isVisibleTo(b.localteam))) {
+        if (event.cards.stream().anyMatch(c -> c.isVisibleTo(b.getLocalteam()))) {
             this.preTime = 0.2;
             this.postTime = 0.2;
         }
@@ -53,7 +53,7 @@ public class EventAnimationTransform extends EventAnimation<EventTransform> {
     @Override
     public void onStart() {
         for (Card c : this.event.cards) {
-            if (c.isVisibleTo(this.visualBoard.localteam)) {
+            if (c.isVisibleTo(this.visualBoard.getLocalteam())) {
                 UICard uic = c.uiCard;
                 this.visualBoard.uiBoard.addParticleSystem(uic.getPos(),
                         c.status.equals(CardStatus.BOARD) ? UIBoard.PARTICLE_Z_BOARD : UIBoard.PARTICLE_Z_SPECIAL,
@@ -65,7 +65,7 @@ public class EventAnimationTransform extends EventAnimation<EventTransform> {
     @Override
     public void onProcess() {
         for (Card c : this.event.into) {
-            if (c.isVisibleTo(this.visualBoard.localteam)) {
+            if (c.isVisibleTo(this.visualBoard.getLocalteam())) {
                 UICard transformUIC = c.uiCard;
                 transformUIC.setVisible(true);
                 Vector2f destPos = this.visualBoard.uiBoard.getBoardPosFor(c.getIndex(), c.team, this.visualBoard.getPlayer(c.team).getPlayArea().size());

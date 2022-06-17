@@ -74,7 +74,7 @@ public class VisualBoard extends Board implements
             }
         };
         this.pendingPlayPositions = new PendingListManager<>();
-        this.pendingPlayPositions.trackConsumerState(() -> this.getPlayer(this.localteam).getPlayArea().stream()
+        this.pendingPlayPositions.trackConsumerState(() -> this.getPlayer(this.getLocalteam()).getPlayArea().stream()
                 .map(bo -> (BoardObject) bo.realCard)
                 .collect(Collectors.toList()));
         this.pendingMinionAttacks = new PendingManager<>() {
@@ -128,7 +128,7 @@ public class VisualBoard extends Board implements
     @Override
 	public <T extends Event> T processEvent(T e) {
         T ret = super.processEvent(e);
-		this.uiBoard.advantageText.setText(String.format("Adv: %.4f", AI.evaluateAdvantage(this, this.localteam)));
+		this.uiBoard.advantageText.setText(String.format("Adv: %.4f", AI.evaluateAdvantage(this, this.getLocalteam())));
         this.uiBoard.cardSelectPanel.updateTrackerText();
         if (e instanceof EventGameEnd) {
             this.uiBoard.onGameEnd(((EventGameEnd) e).victory);
@@ -165,7 +165,7 @@ public class VisualBoard extends Board implements
         }
         EventBurst eb = this.bufferedEventBursts.remove(0);
         this.consumeBurst(eb);
-        if (eb.team == this.localteam) {
+        if (eb.team == this.getLocalteam()) {
             this.attemptToDequeueBurstStreak();
         }
         return !this.inputeventliststrings.isEmpty();
@@ -173,7 +173,7 @@ public class VisualBoard extends Board implements
 
     // attempt to consume burst streak
     private void attemptToDequeueBurstStreak() {
-        while (!this.bufferedEventBursts.isEmpty() && this.bufferedEventBursts.get(0).team == this.localteam) {
+        while (!this.bufferedEventBursts.isEmpty() && this.bufferedEventBursts.get(0).team == this.getLocalteam()) {
             this.consumeBurst(this.bufferedEventBursts.remove(0));
         }
     }
@@ -214,7 +214,7 @@ public class VisualBoard extends Board implements
             }
         }
         // if we skip the EventAnimationTurnStart, input doesn't get re-enabled
-        if (this.currentPlayerTurn == this.localteam) {
+        if (this.getCurrentPlayerTurn() == this.getLocalteam()) {
             this.disableInput = false;
         }
     }
@@ -288,6 +288,12 @@ public class VisualBoard extends Board implements
         }
         return this.getTargetableCards()
                 .filter(c -> t.canTarget(c.realCard));
+    }
+
+    @Override
+    public void setLocalteam(int localteam) {
+        super.setLocalteam(localteam);
+        this.realBoard.setLocalteam(localteam);
     }
 
     @Override

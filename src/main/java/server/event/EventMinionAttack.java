@@ -6,8 +6,6 @@ import client.Game;
 import client.PendingMinionAttack;
 import server.*;
 import server.card.*;
-import server.card.effect.Effect;
-import server.card.effect.EffectStats;
 
 public class EventMinionAttack extends Event {
     // start attack
@@ -26,7 +24,7 @@ public class EventMinionAttack extends Event {
     public void resolve(Board b) {
         this.prevAttacksThisTurn = this.m1.attacksThisTurn;
         this.m1.attacksThisTurn++;
-        if (this.m1.team == this.m1.board.localteam && this.m1.board instanceof PendingMinionAttack.PendingMinionAttacker) {
+        if (this.m1.team == this.m1.board.getLocalteam() && this.m1.board instanceof PendingMinionAttack.PendingMinionAttacker) {
             ((PendingMinionAttack.PendingMinionAttacker) this.m1.board).getPendingMinionAttackProcessor().process(new PendingMinionAttack(this.m1, this.m2));
         }
     }

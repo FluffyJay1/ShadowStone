@@ -29,7 +29,7 @@ public class PlayCardResolver extends Resolver {
             ResolverQueue battlecry = c.battlecry(this.battlecryTargets); // save the resolvers before doing anything, just in case stuff happens
             b.processEvent(rq, el, new EventPlayCard(this.p, this.c, this.position));
             b.processEvent(rq, el,
-                    new EventManaChange(this.p, -this.c.finalStats.get(Stat.COST), true, false));
+                    new EventManaChange(this.p, -this.c.finalStats.get(Stat.COST), true, false, false));
             if (this.c instanceof BoardObject) {
                 b.processEvent(rq, el, new EventPutCard(List.of(this.c), CardStatus.BOARD, this.p.team, List.of(this.position), true, null));
             } else {

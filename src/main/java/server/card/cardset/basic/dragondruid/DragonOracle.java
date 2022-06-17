@@ -36,7 +36,7 @@ public class DragonOracle extends SpellText {
                         if (player.overflow()) {
                             this.resolve(b, rq, el, new DrawResolver(player, 1));
                         }
-                        this.resolve(b, rq, el, new ManaChangeResolver(player, 1, false, true));
+                        this.resolve(b, rq, el, new ManaChangeResolver(player, 1, false, true, false));
                     }
                 });
             }

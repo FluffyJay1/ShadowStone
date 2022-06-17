@@ -16,7 +16,7 @@ public class Tooltip {
             "<b>Battlecry</b> abilities activate whenever the card is played.",
             List::of);
     public static final Tooltip UNLEASH = new Tooltip("Unleash",
-            "<b>Unleash</b> abilities on a minion activate after a player uses their <b>Unleash Power</b> on a minion, or when another card triggers them.",
+            "<b>Unleash</b> abilities on a minion activate after a player uses their Unleash Power on a minion, or when another card triggers them.",
             List::of);
     public static final Tooltip CLASH = new Tooltip("Clash",
             "<b>Clash</b> abilities activate on a minion whenever it attacks or is attacked by another minion.",

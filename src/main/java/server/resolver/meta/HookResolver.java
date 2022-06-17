@@ -36,9 +36,13 @@ public class HookResolver extends Resolver {
     @Override
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         if (this.predicate.test(this.e)) {
-            b.pushEventGroup(new EventGroup(this.etype, this.c, this.rwd.description));
+            if (this.rwd.description != null) {
+                b.pushEventGroup(new EventGroup(this.etype, this.c, this.rwd.description));
+            }
             this.resolve(b, rq, el, this.rwd.r);
-            b.popEventGroup();
+            if (this.rwd.description != null) {
+                b.popEventGroup();
+            }
         }
     }
 }

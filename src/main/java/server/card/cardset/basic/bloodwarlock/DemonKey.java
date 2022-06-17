@@ -43,7 +43,7 @@ public class DemonKey extends AmuletText {
                 .build()) {
             @Override
             public ResolverWithDescription onListenEvent(Event event) {
-                if (event instanceof EventDamage && this.owner.isInPlay() && this.owner.board.currentPlayerTurn == this.owner.team) {
+                if (event instanceof EventDamage && this.owner.isInPlay() && this.owner.board.getCurrentPlayerTurn() == this.owner.team) {
                     EventDamage ed = (EventDamage) event;
                     if(this.owner.player.getLeader().isPresent()) {
                         if (ed.m.contains(this.owner.player.getLeader().get())) {
