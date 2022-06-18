@@ -33,8 +33,8 @@ public class ConjuringForce extends AmuletText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public ResolverWithDescription onListenEvent(Event e) {
-                if (this.owner.isInPlay() && e instanceof EventPlayCard) {
+            public ResolverWithDescription onListenEventWhileInPlay(Event e) {
+                if (e instanceof EventPlayCard) {
                     EventPlayCard epc = (EventPlayCard) e;
                     if (epc.p.team == this.owner.team && epc.c instanceof Spell) {
                         return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {

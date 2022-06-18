@@ -54,8 +54,8 @@ public class ShadowReaper extends MinionText {
             }
 
             @Override
-            public ResolverWithDescription onListenEvent(Event e) {
-                if (e instanceof EventDestroy && this.owner.isInPlay()) {
+            public ResolverWithDescription onListenEventWhileInPlay(Event e) {
+                if (e instanceof EventDestroy) {
                     EventDestroy ed = (EventDestroy) e;
                     int destroyed = (int) ed.cards.stream()
                             .filter(c -> c.team == this.owner.team && c != this.owner && c instanceof Minion)

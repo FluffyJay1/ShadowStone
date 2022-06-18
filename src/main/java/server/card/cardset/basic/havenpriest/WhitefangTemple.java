@@ -57,8 +57,8 @@ public class WhitefangTemple extends AmuletText {
             }
 
             @Override
-            public ResolverWithDescription onListenEvent(Event event) {
-                if (event instanceof EventRestore && this.owner.isInPlay() && ((EventRestore) event).m.stream().anyMatch(m -> m.team == owner.team)) {
+            public ResolverWithDescription onListenEventWhileInPlay(Event event) {
+                if (event instanceof EventRestore && ((EventRestore) event).m.stream().anyMatch(m -> m.team == owner.team)) {
                     Effect countdownSubtract = new Effect("", EffectStats.builder()
                             .change(Stat.COUNTDOWN, -1)
                             .build());

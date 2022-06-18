@@ -34,8 +34,8 @@ public class IncandescentDragon extends MinionText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public ResolverWithDescription onListenEvent(Event event) {
-                if (event instanceof EventMinionAttack && this.owner.isInPlay()) {
+            public ResolverWithDescription onListenEventWhileInPlay(Event event) {
+                if (event instanceof EventMinionAttack) {
                     EventMinionAttack ema = (EventMinionAttack) event;
                     if (ema.m1.team != this.owner.team) {
                         Effect debuff = new Effect("-2/-0/-0 (from <b>Incandescent Dragon</b>).", EffectStats.builder()

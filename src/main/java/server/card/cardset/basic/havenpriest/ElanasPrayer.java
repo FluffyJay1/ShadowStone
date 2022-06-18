@@ -32,8 +32,8 @@ public class ElanasPrayer extends AmuletText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public ResolverWithDescription onListenEvent(Event event) {
-                if (event instanceof EventRestore && this.owner.isInPlay() && this.owner.player.getLeader().isPresent()
+            public ResolverWithDescription onListenEventWhileInPlay(Event event) {
+                if (event instanceof EventRestore && this.owner.player.getLeader().isPresent()
                         && ((EventRestore) event).m.contains(this.owner.player.getLeader().get())) {
                     return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                         @Override

@@ -52,8 +52,8 @@ public class FrontlineCavalier extends MinionText {
             }
 
             @Override
-            public ResolverWithDescription onListenEvent(Event e) {
-                if (e != null && this.owner.isInPlay()) {
+            public ResolverWithDescription onListenEventWhileInPlay(Event e) {
+                if (e != null) {
                     int num = (int) e.cardsEnteringPlay().stream()
                             .filter(bo -> bo.team == this.owner.team && bo.finalTraits.contains(CardTrait.OFFICER) && bo != this.owner)
                             .count();

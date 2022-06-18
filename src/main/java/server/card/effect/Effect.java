@@ -141,77 +141,77 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     // these two are for the unleash power unleashing on a minion
     // can assume that the unleash power and the minion is in play
     public ResolverWithDescription onUnleashPre(Minion target) {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     // can assume that the unleash power and the minion is in play
     public ResolverWithDescription onUnleashPost(Minion target) {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     // can assume that both minions are in play
     public ResolverWithDescription strike(Minion target) {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     // can assume that both minions are in play
     public ResolverWithDescription minionStrike(Minion target) {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     // can assume that both minions are in play
     public ResolverWithDescription leaderStrike(Leader target) {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     // can assume that both minions are in play
     public ResolverWithDescription retaliate(Minion target) {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     // can assume that both minions are in play
     public ResolverWithDescription clash(Minion target) {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     // can assume that minion is in play
     public ResolverWithDescription onDamaged(int damage) {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     // can assume that boardobject is in play
     public ResolverWithDescription onTurnStartAllied() {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     // can assume that boardobject is in play
     public ResolverWithDescription onTurnEndAllied() {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     // can assume that boardobject is in play
     public ResolverWithDescription onTurnStartEnemy() {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     // can assume that boardobject is in play
     public ResolverWithDescription onTurnEndEnemy() {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     // anything goes
     public ResolverWithDescription lastWords() {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     // can assume that boardobject is in play
     public ResolverWithDescription onEnterPlay() {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     // can assume that boardobject is not in play
     public ResolverWithDescription onLeavePlay() {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     /*
@@ -220,6 +220,11 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     if this returns UNIMPLEMENTED_RESOLVER, then we know it doesn't have a listener
      */
     public ResolverWithDescription onListenEvent(Event event) {
+        return UNIMPLEMENTED_RESOLVER;
+    }
+
+    // for more optimization
+    public ResolverWithDescription onListenEventWhileInPlay(Event event) {
         return UNIMPLEMENTED_RESOLVER;
     }
 

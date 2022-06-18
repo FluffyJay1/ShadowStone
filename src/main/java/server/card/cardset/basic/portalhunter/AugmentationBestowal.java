@@ -63,8 +63,8 @@ public class AugmentationBestowal extends SpellText {
         }
 
         @Override
-        public ResolverWithDescription onListenEvent(Event e) {
-            if (e != null && this.owner.isInPlay()) {
+        public ResolverWithDescription onListenEventWhileInPlay(Event e) {
+            if (e != null) {
                 int count = (int) e.cardsEnteringPlay().stream()
                         .filter(bo -> bo.team == this.owner.team && bo.finalTraits.contains(CardTrait.ARTIFACT) && bo instanceof Minion)
                         .count();

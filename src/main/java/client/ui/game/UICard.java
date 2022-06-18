@@ -17,9 +17,11 @@ import org.newdawn.slick.geom.*;
 import client.Game;
 import client.tooltip.*;
 import client.ui.*;
+import server.Board;
 import server.UnleashPower;
 import server.card.*;
 import server.card.effect.*;
+import server.card.leader.Rowen;
 import utils.PendingManager;
 
 import static org.lwjgl.opengl.GL11.glBlendFunc;
@@ -43,7 +45,6 @@ public class UICard extends UIBox {
     private static final double NAME_FONT_SIZE = 30;
     private static final double TRAITS_FONT_SIZE = 20;
     private static final double STAT_DEFAULT_SIZE = 30;
-    private static final int ICON_SPACING = 32;
     public static final float SCALE_DEFAULT = 1, SCALE_HAND = 0.75f, SCALE_HAND_EXPAND = 1.2f,
             SCALE_BOARD = 1f, SCALE_TARGETING = 1.3f, SCALE_POTENTIAL_TARGET = 1.15f, SCALE_ORDERING_ATTACK = 1.3f,
             SCALE_COMBAT = 1.2f, SCALE_PLAY = 2.5f, SCALE_MOVE = 2, SCALE_MULLIGAN = 1.5f, SCALE_PLAY_PENDING = 1.25f;
@@ -57,7 +58,9 @@ public class UICard extends UIBox {
     private static final float STAT_ICON_DEFAULT_SCALE = 0.6f;
     private static final float STAT_ICON_COUNTDOWN_SCALE = 1;
     private static final float HAND_TITLE_OFFSET = 0.2f;
-    private static final float ICON_Y = 0.6f;
+    private static final int ICON_SPACING = 32;
+    private static final float ICON_SCALE = 0.75f;
+    private static final float ICON_Y = 0.55f;
     private static final int READY_BORDER_WIDTH = 2;
     private static final int READY_BORDER_PADDING = 6;
     private static final Color LOCKED_COLOR = new Color(0.3f, 0.2f, 0.3f);
@@ -272,7 +275,7 @@ public class UICard extends UIBox {
         this.stealthParticles.setPaused(!this.card.isInPlay() || this.card.finalStats.get(Stat.STEALTH) == 0);
         if (this.card.realCard.player != null) {
             this.specialConditionParticles.setScale(this.getScale());
-            this.specialConditionParticles.setPaused(this.card.team != this.uib.b.getLocalteam() || switch (this.card.status) {
+            this.specialConditionParticles.setPaused(this.card.team != this.uib.b.getLocalteam() || this.uib.b.disableInput || switch (this.card.status) {
                 case HAND -> !this.card.realCard.player.canPlayCard(this.card.realCard) || !this.card.realCard.battlecrySpecialConditions();
                 case BOARD -> !this.uib.draggingUnleash || !this.card.realCard.player.canUnleashCard(this.card.realCard)
                         || !(this.card instanceof Minion) || !((Minion) this.card.realCard).unleashSpecialConditions();
@@ -526,16 +529,38 @@ public class UICard extends UIBox {
         if (this.card.finalStats.get(Stat.LIFESTEAL) > 0) {
             this.icons.add(Game.getImage("res/game/lifestealicon.png"));
         }
-        if (this.card instanceof BoardObject && !((BoardObject) this.card).lastWords().isEmpty()) {
-            this.icons.add(Game.getImage("res/game/lastwordsicon.png"));
+        if (this.card instanceof BoardObject) {
+            BoardObject bo = (BoardObject) this.card;
+            if (bo.hasResolvers(Effect::lastWords)) {
+                this.icons.add(Game.getImage("res/game/lastwordsicon.png"));
+            }
+            if (bo.hasResolvers(e -> e.onListenEventWhileInPlay(null)) || bo.hasResolvers(Effect::onTurnStartAllied)
+                    || bo.hasResolvers(Effect::onTurnEndAllied) || bo.hasResolvers(Effect::onTurnStartEnemy)
+                    || bo.hasResolvers(Effect::onTurnEndEnemy) || bo.hasResolvers(Effect::onEnterPlay) || bo.hasResolvers(Effect::onLeavePlay)
+                    || bo.hasResolvers(e -> e.onDamaged(0))) {
+                this.icons.add(Game.getImage("res/game/flagicon.png"));
+            }
+        }
+        if (this.card instanceof Minion) {
+            Minion m = (Minion) this.card;
+            Leader dummy = new Leader(this.uib.b, new Rowen());
+            if (m.hasResolvers(e -> e.strike(dummy)) || m.hasResolvers(e -> e.minionStrike(dummy)) || m.hasResolvers(e -> e.leaderStrike(dummy))) {
+                this.icons.add(Game.getImage("res/game/attackicon.png"));
+            }
+            if (m.hasResolvers(e -> e.retaliate(dummy))) {
+                this.icons.add(Game.getImage("res/game/defendicon.png"));
+            }
+            if (m.hasResolvers(e -> e.clash(dummy))) {
+                this.icons.add(Game.getImage("res/game/clashicon.png"));
+            }
         }
     }
 
     public void drawIcons(Graphics g, Vector2f pos, double scale) {
         int numIcons = this.icons.size();
         for (int i = 0; i < numIcons; i++) {
-            Image scaled = this.icons.get(i).getScaledCopy((float) scale);
-            g.drawImage(scaled, pos.x - scaled.getWidth() / 2 - (i - (numIcons - 1f) / 2) * ICON_SPACING,
+            Image scaled = this.icons.get(i).getScaledCopy((float) scale * ICON_SCALE);
+            g.drawImage(scaled, pos.x - scaled.getWidth() / 2 - (i - (numIcons - 1f) / 2) * ICON_SPACING * (float) scale,
                     pos.y - scaled.getHeight() / 2 + CARD_DIMENSIONS.y * ICON_Y * (float) scale);
         }
     }

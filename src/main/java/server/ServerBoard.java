@@ -150,6 +150,16 @@ public class ServerBoard extends Board {
                 rq.addAll(bo.onLeavePlay());
             }
         }
+        this.getBoardObjects(this.getCurrentPlayerTurn(), true, true, true, false)
+                .forEach(bo -> rq.addAll(bo.onListenEventWhileInPlay(e)));
+        this.getPlayer(this.getCurrentPlayerTurn()).getUnleashPower().ifPresent(up -> {
+            rq.addAll(up.onListenEventWhileInPlay(e));
+        });
+        this.getBoardObjects(this.getCurrentPlayerTurn() * -1, true, true, true, false)
+                .forEach(bo -> rq.addAll(bo.onListenEventWhileInPlay(e)));
+        this.getPlayer(this.getCurrentPlayerTurn() * -1).getUnleashPower().ifPresent(up -> {
+            rq.addAll(up.onListenEventWhileInPlay(e));
+        });
         for (Card c : this.listeners) {
             rq.addAll(c.onListenEvent(e));
         }

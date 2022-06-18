@@ -34,8 +34,8 @@ public class LeonidasResolve extends AmuletText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public ResolverWithDescription onListenEvent(Event e) {
-                if (e != null && this.owner.isInPlay()) {
+            public ResolverWithDescription onListenEventWhileInPlay(Event e) {
+                if (e != null) {
                     List<BoardObject> relevant = e.cardsEnteringPlay().stream()
                             .filter(bo -> bo instanceof Minion && bo.team == this.owner.team)
                             .collect(Collectors.toList());

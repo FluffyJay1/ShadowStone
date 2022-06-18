@@ -52,6 +52,7 @@ public abstract class Card implements Indexable, StringBuildable {
             removedEffects = new PositionedList<>(new ArrayList<>(), e -> e.removed = true);
 
     private final Set<Effect> listeners = new TreeSet<>(Comparator.comparing((Effect l) -> l.basic ? 0 : 1).thenComparingInt(Effect::getIndex));
+    private final Set<Effect> whileInPlayListeners = new TreeSet<>(Comparator.comparing((Effect l) -> l.basic ? 0 : 1).thenComparingInt(Effect::getIndex));
 
     public Card(Board board, CardText cardText) {
         this.board = board;
@@ -169,6 +170,9 @@ public abstract class Card implements Indexable, StringBuildable {
                 this.listeners.add(e);
                 sb.listeners.add(this);
             }
+            if (e.onListenEventWhileInPlay(null) != Effect.UNIMPLEMENTED_RESOLVER) {
+                this.whileInPlayListeners.add(e);
+            }
         }
         if (e.auraSource != null) {
             e.auraSource.currentActiveEffects.put(this, e);
@@ -204,6 +208,9 @@ public abstract class Card implements Indexable, StringBuildable {
                     if (this.listeners.isEmpty()) {
                         sb.listeners.remove(this);
                     }
+                }
+                if (e.onListenEventWhileInPlay(null) != Effect.UNIMPLEMENTED_RESOLVER) {
+                    this.whileInPlayListeners.remove(e);
                 }
             }
             if (e.auraSource != null) {
@@ -276,13 +283,17 @@ public abstract class Card implements Indexable, StringBuildable {
         return new ResolverQueue(this.getFinalEffects(true)
                 .map(e -> {
                     ResolverWithDescription r = hook.apply(e);
-                    if (r == null) {
+                    if (r == Effect.UNIMPLEMENTED_RESOLVER || r == null) {
                         return null;
                     }
                     return new HookResolver(etype, cards, r, e, predicate);
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList()));
+    }
+
+    public boolean hasResolvers(Function<Effect, ResolverWithDescription> hook) {
+        return this.getFinalEffects(true).anyMatch(e -> hook.apply(e) != Effect.UNIMPLEMENTED_RESOLVER);
     }
 
     // like above but for resolvers that require a list of targetlists, and we receive a list of list of targetlists
@@ -298,7 +309,7 @@ public abstract class Card implements Indexable, StringBuildable {
                 .mapToObj(i -> {
                     Effect e = effects.get(i);
                     ResolverWithDescription r = hook.apply(e, targetsList.get(i));
-                    if (r == null) {
+                    if (r == Effect.UNIMPLEMENTED_RESOLVER || r == null) {
                         return null;
                     }
                     return new HookResolver(etype, cards, r, e, predicate);
@@ -365,6 +376,20 @@ public abstract class Card implements Indexable, StringBuildable {
                         return null;
                     }
                     return new HookResolver(EventGroupType.FLAG, List.of(this), r, e, eff -> !eff.removed);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList()));
+    }
+
+    public ResolverQueue onListenEventWhileInPlay(Event event) {
+        return new ResolverQueue(this.whileInPlayListeners.stream()
+                .filter(e -> !e.mute)
+                .map(e -> {
+                    ResolverWithDescription r = e.onListenEventWhileInPlay(event);
+                    if (r == null) {
+                        return null;
+                    }
+                    return new HookResolver(EventGroupType.FLAG, List.of(this), r, e, eff -> !eff.removed && eff.owner.isInPlay());
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList()));

@@ -37,8 +37,8 @@ public class Acceleratium extends AmuletText {
                 .set(Stat.COUNTDOWN, 3)
                 .build()) {
             @Override
-            public ResolverWithDescription onListenEvent(Event e) {
-                if (e != null && this.owner.isInPlay()) {
+            public ResolverWithDescription onListenEventWhileInPlay(Event e) {
+                if (e != null) {
                     List<Minion> relevant = e.cardsEnteringPlay().stream()
                             .filter(bo -> bo.team == this.owner.team && bo.finalTraits.contains(CardTrait.ARTIFACT) && bo instanceof Minion)
                             .map(bo -> (Minion) bo)

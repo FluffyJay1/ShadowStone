@@ -38,8 +38,8 @@ public class EphemeraAngelicSlacker extends MinionText {
                 .build()
         ) {
             @Override
-            public ResolverWithDescription onListenEvent(Event e) {
-                if (e instanceof EventMinionAttack && this.owner.isInPlay() && ((EventMinionAttack) e).m1.team == this.owner.team
+            public ResolverWithDescription onListenEventWhileInPlay(Event e) {
+                if (e instanceof EventMinionAttack && ((EventMinionAttack) e).m1.team == this.owner.team
                         && ((EventMinionAttack) e).m1 != this.owner) {
                     String description = "Whenever another allied minion attacks, give that minion +1/+0/+0 until the end of the turn.";
                     Effect effect = new EffectUntilTurnEnd("+1/+0/+0 until the end of the turn (from <b>Ephemera, Angelic Slacker</b>).",

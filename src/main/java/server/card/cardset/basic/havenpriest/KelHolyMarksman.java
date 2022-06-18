@@ -56,9 +56,9 @@ public class KelHolyMarksman extends MinionText {
             }
 
             @Override
-            public ResolverWithDescription onListenEvent(Event event) {
+            public ResolverWithDescription onListenEventWhileInPlay(Event event) {
                 Effect effect = this;
-                if (event instanceof EventRestore && this.owner.isInPlay() && this.owner.player.getLeader().isPresent()
+                if (event instanceof EventRestore && this.owner.player.getLeader().isPresent()
                         && ((EventRestore) event).m.contains(this.owner.player.getLeader().get())) {
                     return new ResolverWithDescription(ONLISTENEVENT_DESCRIPTION, new Resolver(false) {
                         @Override

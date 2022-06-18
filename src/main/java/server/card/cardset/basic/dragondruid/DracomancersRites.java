@@ -28,9 +28,9 @@ public class DracomancersRites extends AmuletText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public ResolverWithDescription onListenEvent(Event e) {
-                if (e instanceof EventDiscard && this.owner.isInPlay()) {
-                    EventDiscard ed = (EventDiscard) e;
+            public ResolverWithDescription onListenEventWhileInPlay(Event event) {
+                if (event instanceof EventDiscard) {
+                    EventDiscard ed = (EventDiscard) event;
                     int numRelevant = (int) IntStream.range(0, ed.cards.size())
                             .filter(i -> ed.successful.get(i))
                             .mapToObj(ed.cards::get)

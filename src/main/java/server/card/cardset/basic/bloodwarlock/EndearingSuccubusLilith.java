@@ -31,8 +31,8 @@ public class EndearingSuccubusLilith extends MinionText {
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION) {
             @Override
-            public ResolverWithDescription onListenEvent(Event event) {
-                if (event instanceof EventDamage && this.owner.isInPlay() && this.owner.board.getCurrentPlayerTurn() == this.owner.team) {
+            public ResolverWithDescription onListenEventWhileInPlay(Event event) {
+                if (event instanceof EventDamage && this.owner.board.getCurrentPlayerTurn() == this.owner.team) {
                     EventDamage ed = (EventDamage) event;
                     if(this.owner.player.getLeader().isPresent()) {
                         if (ed.m.contains(this.owner.player.getLeader().get())) {
