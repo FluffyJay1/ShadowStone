@@ -30,7 +30,7 @@ public class Rhinoceroach extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/rhinoceroach.png",
             CRAFT, TRAITS, RARITY,2, 1, 1, 1, true, Rhinoceroach.class,
-            new Vector2f(182, 183), 1.5, EventAnimationDamageSlash.class,
+            new Vector2f(182, 183), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.STORM, Tooltip.BATTLECRY),
             List.of());
     @Override

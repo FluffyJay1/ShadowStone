@@ -27,7 +27,7 @@ public class DemonicRam extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/demonicram.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, DemonicRam.class,
-            new Vector2f(150, 170), 1.2, EventAnimationDamageSlash.class,
+            new Vector2f(150, 170), 1.2, new EventAnimationDamageSlash(),
             List::of,
             List.of());
 

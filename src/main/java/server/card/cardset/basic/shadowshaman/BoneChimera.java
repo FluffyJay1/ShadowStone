@@ -22,7 +22,7 @@ public class BoneChimera extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/bonechimera.png",
             CRAFT, TRAITS, RARITY, 3, 1, 1, 1, true, BoneChimera.class,
-            new Vector2f(125, 152), 1.25, EventAnimationDamageSlash.class,
+            new Vector2f(125, 152), 1.25, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.LASTWORDS, Skeleton.TOOLTIP),
             List.of());
 

@@ -1,5 +1,7 @@
 package utils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -53,7 +55,7 @@ public class PositionedList<T extends Indexable> implements List<T> {
     }
 
     @Override
-    public <T1> T1[] toArray(T1[] a) {
+    public <T1> T1[] toArray(T1 @NotNull [] a) {
         return this.indexables.toArray(a);
     }
 
@@ -79,12 +81,12 @@ public class PositionedList<T extends Indexable> implements List<T> {
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(@NotNull Collection<?> c) {
         return this.indexables.containsAll(c);
     }
 
     @Override
-    public boolean addAll(Collection<? extends T> c) {
+    public boolean addAll(@NotNull Collection<? extends T> c) {
         int oldSize = this.indexables.size();
         boolean changed = this.indexables.addAll(c);
         if (changed) {
@@ -97,7 +99,7 @@ public class PositionedList<T extends Indexable> implements List<T> {
     }
 
     @Override
-    public boolean addAll(int index, Collection<? extends T> c) {
+    public boolean addAll(int index, @NotNull Collection<? extends T> c) {
         boolean changed = this.indexables.addAll(index, c);
         if (changed) {
             this.updatePositions(index);
@@ -109,7 +111,7 @@ public class PositionedList<T extends Indexable> implements List<T> {
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(@NotNull Collection<?> c) {
         boolean changed = this.indexables.removeAll(c);
         if (changed) {
             this.updatePositions(0);
@@ -118,7 +120,7 @@ public class PositionedList<T extends Indexable> implements List<T> {
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(@NotNull Collection<?> c) {
         boolean changed = this.indexables.retainAll(c);
         if (changed) {
             this.updatePositions(0);

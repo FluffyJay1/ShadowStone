@@ -27,7 +27,7 @@ public class SiegeTank extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/siegetank.png",
             CRAFT, TRAITS, RARITY, 5, 2, 2, 5, false, SiegeTank.class,
-            new Vector2f(), -1, EventAnimationDamageShoot.class,
+            new Vector2f(), -1, new EventAnimationDamageShoot(),
             () -> List.of(Tooltip.UNLEASH, Tooltip.CHOOSE, Tooltip.BLAST),
             List.of());
 
@@ -66,7 +66,7 @@ public class SiegeTank extends MinionText {
                         int option = ((ModalTargetList) targetList.get(0)).targeted.get(0);
                         switch (option) {
                             case 0 -> {
-                                this.resolve(b, rq, el, new BlastResolver(effect, 5, EventAnimationDamageShoot.class));
+                                this.resolve(b, rq, el, new BlastResolver(effect, 5, new EventAnimationDamageShoot().toString()));
                             }
                             case 1 -> {
                                 getStillTargetableCards(Effect::getUnleashTargetingSchemes, targetList, 1).findFirst().ifPresent(targeted -> {
@@ -83,7 +83,7 @@ public class SiegeTank extends MinionText {
                                             d.add(2);
                                         }
                                     }
-                                    this.resolve(b, rq, el, new DamageResolver(effect, m, d, true, EventAnimationDamageBigExplosion.class));
+                                    this.resolve(b, rq, el, new DamageResolver(effect, m, d, true, new EventAnimationDamageBigExplosion().toString()));
                                 });
                             }
                         }

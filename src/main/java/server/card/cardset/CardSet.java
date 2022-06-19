@@ -2,7 +2,6 @@ package server.card.cardset;
 
 import java.util.*;
 
-import client.ui.game.ClassCraftTrackerPanel;
 import server.UnleashPowerText;
 import server.card.*;
 import server.card.cardset.basic.*;

@@ -14,7 +14,7 @@ public class EventPutCard extends Event {
     public final List<? extends Card> cards;
     public final List<Integer> pos; // pos == -1 means last
     public final CardStatus status;
-    private boolean play;
+    private final boolean play;
     final int targetTeam;
     private List<CardStatus> prevStatus;
     private List<List<Effect>> prevEffects;

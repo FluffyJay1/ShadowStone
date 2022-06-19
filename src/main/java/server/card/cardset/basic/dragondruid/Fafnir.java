@@ -27,7 +27,7 @@ public class Fafnir extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/fafnir.png",
             CRAFT, TRAITS, RARITY, 9, 8, 4, 10, true, Fafnir.class,
-            new Vector2f(136, 203), 1.2, EventAnimationDamageSlash.class,
+            new Vector2f(136, 203), 1.2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());
 
@@ -43,7 +43,7 @@ public class Fafnir extends MinionText {
                         List<Minion> relevant = b.getMinions(0, false, true)
                                 .filter(m -> m != owner)
                                 .collect(Collectors.toList());
-                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, 2, true, EventAnimationDamageFire.class));
+                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, 2, true, new EventAnimationDamageFire().toString()));
                     }
                 });
             }

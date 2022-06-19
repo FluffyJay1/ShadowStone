@@ -24,7 +24,8 @@ import static org.newdawn.slick.opengl.renderer.SGL.GL_ONE;
 import static org.newdawn.slick.opengl.renderer.SGL.GL_SRC_ALPHA;
 
 public class EventAnimationDamageOrbFall extends EventAnimationDamage {
-    private static final Image ORB_IMAGE = Game.getImage("res/particle/attack/orb.png");
+    // these must be suppliers to avoid ExceptionInInitializerError
+    private static final Supplier<Image> ORB_IMAGE = () -> Game.getImage("res/particle/attack/orb.png");
 
     private static final Interpolation<Double> ORB_FALL_OFFSET = new QuadraticInterpolationA(-150, 0, -15);
     private static final Interpolation<Double> ORB_FALL_SCALE = new QuadraticInterpolationA(2.5, 1.2, -0.5);
@@ -65,7 +66,7 @@ public class EventAnimationDamageOrbFall extends EventAnimationDamage {
                 drawPos.y += ORB_FALL_OFFSET.get(this.normalizedPre()).floatValue();
                 g.setDrawMode(Graphics.MODE_ADD);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE); // major weirdchamp on you slick
-                drawCenteredAndScaled(g, ORB_IMAGE, drawPos,
+                drawCenteredAndScaled(g, ORB_IMAGE.get(), drawPos,
                         ORB_FALL_SCALE.get(this.normalizedPre()).floatValue(),
                         ORB_FALL_ALPHA.get(this.normalizedPre()).floatValue());
                 g.setDrawMode(Graphics.MODE_NORMAL);

@@ -1,7 +1,6 @@
 package client.ui.game;
 
 import client.Config;
-import client.Game;
 import client.ui.*;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.target.ModalOption;

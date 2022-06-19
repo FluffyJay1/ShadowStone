@@ -1,6 +1,5 @@
 package server.card.effect.common;
 
-import server.card.Minion;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.effect.Stat;

@@ -38,7 +38,7 @@ public class Defile extends SpellText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         for (int i = 0; i < 14; i++) {
                             List<Minion> relevant = b.getMinions(0, false, true).collect(Collectors.toList());
-                            DamageResolver damageResolver = new DamageResolver(effect, relevant, 1, true, EventAnimationDamageAOECloud.class);
+                            DamageResolver damageResolver = new DamageResolver(effect, relevant, 1, true, new EventAnimationDamageAOECloud().toString());
                             ResolverQueue subQueue = new ResolverQueue();
                             this.resolve(b, subQueue, el, damageResolver);
                             this.resolveQueue(b, subQueue, el, subQueue);

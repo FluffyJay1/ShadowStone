@@ -30,7 +30,7 @@ public class Cassiopeia extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/cassiopeia.png",
             CRAFT, TRAITS, RARITY, 6, 3, 2, 3, true, Cassiopeia.class,
-            new Vector2f(150, 145), 1.3, EventAnimationDamageSlash.class,
+            new Vector2f(150, 145), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());
 
@@ -48,7 +48,7 @@ public class Cassiopeia extends MinionText {
                             List<Minion> choices = owner.board.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
                             if (!choices.isEmpty()) {
                                 Minion choice = SelectRandom.from(choices);
-                                this.resolve(b, rq, el, new DamageResolver(effect, choice, 1, true, EventAnimationDamageOrbFall.class));
+                                this.resolve(b, rq, el, new DamageResolver(effect, choice, 1, true, new EventAnimationDamageOrbFall().toString()));
                             }
                         }
                         b.popEventGroup();

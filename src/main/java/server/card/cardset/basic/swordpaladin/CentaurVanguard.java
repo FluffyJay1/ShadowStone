@@ -13,7 +13,6 @@ import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.effect.Stat;
-import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
@@ -31,7 +30,7 @@ public class CentaurVanguard extends MinionText {
     public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/centaurvanguard.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, CentaurVanguard.class,
-            new Vector2f(144, 144), 1.3, EventAnimationDamageSlash.class,
+            new Vector2f(144, 144), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.STORM),
             List.of());
 

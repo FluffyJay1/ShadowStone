@@ -22,7 +22,7 @@ public class Alpha extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/special/alpha.png",
             CRAFT, TRAITS, RARITY, 4, 2, 2, 2, true, Alpha.class,
-            new Vector2f(), -1, EventAnimationDamageOff.class,
+            new Vector2f(), -1, new EventAnimationDamageOff(),
             () -> List.of(Tooltip.BANE),
             List.of());
 

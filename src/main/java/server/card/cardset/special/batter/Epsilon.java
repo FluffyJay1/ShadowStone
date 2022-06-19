@@ -25,7 +25,7 @@ public class Epsilon extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/special/epsilon.png",
             CRAFT, TRAITS, RARITY, 4, 2, 2, 2, true, Epsilon.class,
-            new Vector2f(), -1, EventAnimationDamageOff.class,
+            new Vector2f(), -1, new EventAnimationDamageOff(),
             () -> List.of(Tooltip.MINIONSTRIKE),
             List.of());
 
@@ -40,7 +40,7 @@ public class Epsilon extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> relevant = b.getMinions(owner.team * -1, true, false).collect(Collectors.toList());
-                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, 2, true, EventAnimationDamageOff.class));
+                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, 2, true, new EventAnimationDamageOff().toString()));
                     }
                 });
             }

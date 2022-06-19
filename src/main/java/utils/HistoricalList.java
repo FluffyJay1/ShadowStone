@@ -1,5 +1,7 @@
 package utils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 
 /**
@@ -11,8 +13,8 @@ import java.util.*;
  */
 public class HistoricalList<T> implements List<T> {
     // it appears i've done it again
-    private List<T> listToWrap;
-    private List<ListOp> opHistory;
+    private final List<T> listToWrap;
+    private final List<ListOp> opHistory;
 
     public HistoricalList(List<T> listToWrap) {
         this.listToWrap = listToWrap;
@@ -94,7 +96,7 @@ public class HistoricalList<T> implements List<T> {
     }
 
     @Override
-    public <T1> T1[] toArray(T1[] a) {
+    public <T1> T1[] toArray(T1 @NotNull [] a) {
         return this.listToWrap.toArray(a);
     }
 
@@ -117,7 +119,7 @@ public class HistoricalList<T> implements List<T> {
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(@NotNull Collection<?> c) {
         return this.listToWrap.containsAll(c);
     }
 
@@ -154,7 +156,7 @@ public class HistoricalList<T> implements List<T> {
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(@NotNull Collection<?> c) {
         // do not call this
         ListIterator<T> iterator = this.listToWrap.listIterator();
         int currInd = 0;

@@ -26,7 +26,7 @@ public class PureheartedSinger extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/pureheartedsinger.png",
             CRAFT, TRAITS, RARITY, 3, 1, 1, 3, true, PureheartedSinger.class,
-            new Vector2f(144, 150), 1.5, EventAnimationDamageSlash.class,
+            new Vector2f(144, 150), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.LASTWORDS),
             List.of());
 

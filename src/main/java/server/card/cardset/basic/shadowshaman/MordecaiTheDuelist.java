@@ -21,7 +21,7 @@ public class MordecaiTheDuelist extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/mordecaitheduelist.png",
             CRAFT, TRAITS, RARITY, 8, 5, 2, 5, true, MordecaiTheDuelist.class,
-            new Vector2f(150, 155), 1.5, EventAnimationDamageSlash.class,
+            new Vector2f(150, 155), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.LASTWORDS),
             List.of());
 

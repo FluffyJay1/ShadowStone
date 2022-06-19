@@ -28,7 +28,7 @@ public class TemptressVampire extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/temptressvampire.png",
             CRAFT, TRAITS, RARITY, 9, 5, 3, 5, true, TemptressVampire.class,
-            new Vector2f(150, 160), 1.3, EventAnimationDamageSlash.class,
+            new Vector2f(150, 160), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());
 
@@ -52,7 +52,7 @@ public class TemptressVampire extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 5, true, EventAnimationDamageSlash.class));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 5, true, new EventAnimationDamageSlash().toString()));
                         });
                         owner.player.getLeader().ifPresent(l -> {
                             this.resolve(b, rq, el, new RestoreResolver(effect, l, 5));

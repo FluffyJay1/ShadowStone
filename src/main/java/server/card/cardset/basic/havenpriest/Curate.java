@@ -26,7 +26,7 @@ public class Curate extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/curate.png",
             CRAFT, TRAITS, RARITY, 7, 5, 3, 5, true, Curate.class,
-            new Vector2f(169, 143), 1.4, EventAnimationDamageSlash.class,
+            new Vector2f(169, 143), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());
 
@@ -38,7 +38,7 @@ public class Curate extends MinionText {
                 return List.of(new CardTargetingScheme(this, 0, 1, "Restore 5 health to an ally.") {
                     @Override
                     protected boolean criteria(Card c) {
-                        return c instanceof Minion && ((Minion) c).isInPlay() && c.team == this.getCreator().owner.team;
+                        return c instanceof Minion && c.isInPlay() && c.team == this.getCreator().owner.team;
                     }
                 });
             }

@@ -31,7 +31,7 @@ public class VengefulPuppeteerNoah extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/vengefulpuppeteernoah.png",
             CRAFT, TRAITS, RARITY, 9, 3, 3, 6, true, VengefulPuppeteerNoah.class,
-            new Vector2f(162, 136), 1.35, EventAnimationDamageSlash.class,
+            new Vector2f(162, 136), 1.35, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.STORM, Tooltip.BATTLECRY, Puppet.TOOLTIP),
             List.of());
 

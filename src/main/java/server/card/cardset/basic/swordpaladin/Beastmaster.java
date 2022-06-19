@@ -23,7 +23,7 @@ public class Beastmaster extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/beastmaster.png",
             CRAFT, TRAITS, RARITY, 4, 2, 0, 4, false, Beastmaster.class,
-            new Vector2f(140, 100), 2, EventAnimationDamageSlash.class,
+            new Vector2f(140, 100), 2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.AURA, Tooltip.UNLEASH, StonetuskBoar.TOOLTIP),
             List.of());
 

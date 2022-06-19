@@ -2,7 +2,7 @@ package server.resolver;
 
 import java.util.*;
 
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
+import org.jetbrains.annotations.NotNull;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -15,7 +15,7 @@ public class DamageResolver extends Resolver {
     public final List<Card> destroyed;
     Effect effectSource;
     final Card cardSource;
-    final Class<? extends EventAnimationDamage> animation;
+    final String animationString;
 
     /**
      * If true, this resolver will handle destruction. If false, hopefully the
@@ -25,31 +25,31 @@ public class DamageResolver extends Resolver {
     final boolean resolveDestroy;
 
     public DamageResolver(Card source, List<? extends Minion> targets, List<Integer> damage,
-            boolean resolveDestroy, Class<? extends EventAnimationDamage> animation) {
+            boolean resolveDestroy, @NotNull String animationString) {
         super(false);
         this.cardSource = source;
         this.targets = targets;
         this.damage = damage;
         this.destroyed = new LinkedList<>();
         this.resolveDestroy = resolveDestroy;
-        this.animation = animation;
+        this.animationString = animationString;
     }
 
     public DamageResolver(Effect source, List<? extends Minion> targets, List<Integer> damage,
-                          boolean resolveDestroy, Class<? extends EventAnimationDamage> animation) {
-        this(source.owner, targets, damage, resolveDestroy, animation);
+                          boolean resolveDestroy, @NotNull String animationString) {
+        this(source.owner, targets, damage, resolveDestroy, animationString);
         this.effectSource = source;
     }
 
     public DamageResolver(Effect source, List<? extends Minion> targets, int damage,
-                          boolean resolveDestroy, Class<? extends EventAnimationDamage> animation) {
-        this(source.owner, targets, Collections.nCopies(targets.size(), damage), resolveDestroy, animation);
+                          boolean resolveDestroy, @NotNull String animationString) {
+        this(source.owner, targets, Collections.nCopies(targets.size(), damage), resolveDestroy, animationString);
         this.effectSource = source;
     }
 
     public DamageResolver(Effect source, Minion target, int damage,
-                          boolean resolveDestroy, Class<? extends EventAnimationDamage> animation) {
-        this(source.owner, List.of(target), List.of(damage), resolveDestroy, animation);
+                          boolean resolveDestroy, @NotNull String animationString) {
+        this(source.owner, List.of(target), List.of(damage), resolveDestroy, animationString);
         this.effectSource = source;
     }
 
@@ -67,9 +67,9 @@ public class DamageResolver extends Resolver {
         }
         EventDamage event;
         if (this.effectSource != null) {
-            event = b.processEvent(rq, el, new EventDamage(this.effectSource, processedTargets, processedDamage, this.destroyed, this.animation));
+            event = b.processEvent(rq, el, new EventDamage(this.effectSource, processedTargets, processedDamage, this.destroyed, this.animationString));
         } else {
-            event = b.processEvent(rq, el, new EventDamage(this.cardSource, processedTargets, processedDamage, this.destroyed, this.animation));
+            event = b.processEvent(rq, el, new EventDamage(this.cardSource, processedTargets, processedDamage, this.destroyed, this.animationString));
         }
 
         if (this.cardSource.finalStats.get(Stat.LIFESTEAL) > 0) {

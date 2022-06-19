@@ -2,7 +2,7 @@ package server.card.cardset.basic.havenpriest;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageArrow;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
@@ -33,7 +33,7 @@ public class KelHolyMarksman extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/kelholymarksman.png",
             CRAFT, TRAITS, RARITY, 5, 4, 1, 3, false, KelHolyMarksman.class,
-            new Vector2f(154, 154), 1.4, EventAnimationDamageSlash.class,
+            new Vector2f(154, 154), 1.4, new EventAnimationDamageArrow(),
             () -> List.of(Tooltip.UNLEASH),
             List.of());
 
@@ -65,7 +65,7 @@ public class KelHolyMarksman extends MinionText {
                         public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                             int damage = owner.finalStats.get(Stat.MAGIC);
                             List<Minion> targets = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
-                            this.resolve(b, rq, el, new DamageResolver(effect, targets, damage, true, EventAnimationDamageSlash.class));
+                            this.resolve(b, rq, el, new DamageResolver(effect, targets, damage, true, new EventAnimationDamageArrow().toString()));
                         }
                     });
                 }

@@ -19,7 +19,7 @@ public class ServantOfDarkness extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/servantofdarkness.png",
             CRAFT, TRAITS, RARITY, 5, 13, 6, 13, true, ServantOfDarkness.class,
-            new Vector2f(150, 167), 1.3, EventAnimationDamageSlash.class,
+            new Vector2f(150, 167), 1.3, new EventAnimationDamageSlash(),
             List::of,
             List.of());
 

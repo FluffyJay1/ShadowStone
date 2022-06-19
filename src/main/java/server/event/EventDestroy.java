@@ -12,6 +12,7 @@ public class EventDestroy extends Event {
     // Shouldn't process this event outright, as it ignores lastwords triggers
     public static final int ID = 4;
     public final List<? extends Card> cards;
+    private final boolean incrementShadows;
     private List<Boolean> alive;
     private List<CardStatus> prevStatus;
     private List<Integer> prevPos;
@@ -22,9 +23,14 @@ public class EventDestroy extends Event {
     public List<Boolean> successful;
     final List<BoardObject> cardsLeavingPlay = new ArrayList<>(); // required for listeners
 
-    public EventDestroy(List<? extends Card> c) {
+    public EventDestroy(List<? extends Card> c, boolean incrementShadows) {
         super(ID);
         this.cards = c;
+        this.incrementShadows = incrementShadows;
+    }
+
+    public EventDestroy(List<? extends Card> c) {
+        this(c, true);
     }
 
     public EventDestroy(Card c) {
@@ -59,7 +65,9 @@ public class EventDestroy extends Event {
             }
             if (!c.status.equals(CardStatus.GRAVEYARD)) {
                 this.successful.set(i, true);
-                p.shadows++;
+                if (this.incrementShadows) {
+                    p.shadows++;
+                }
                 c.alive = false;
                 switch (c.status) {
                     case HAND -> p.getHand().remove(c);
@@ -132,7 +140,7 @@ public class EventDestroy extends Event {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.id).append(" ").append(this.cards.size()).append(" ");
+        builder.append(this.id).append(" ").append(this.incrementShadows).append(" ").append(this.cards.size()).append(" ");
         for (Card card : this.cards) {
             builder.append(card.toReference());
         }
@@ -140,13 +148,14 @@ public class EventDestroy extends Event {
     }
 
     public static EventDestroy fromString(Board b, StringTokenizer st) {
+        boolean incrementShadows = Boolean.parseBoolean(st.nextToken());
         int size = Integer.parseInt(st.nextToken());
         ArrayList<Card> c = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             Card card = Card.fromReference(b, st);
             c.add(card);
         }
-        return new EventDestroy(c);
+        return new EventDestroy(c, incrementShadows);
     }
 
     @Override

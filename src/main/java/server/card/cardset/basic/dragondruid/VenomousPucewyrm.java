@@ -1,6 +1,5 @@
 package server.card.cardset.basic.dragondruid;
 
-import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
@@ -29,7 +28,7 @@ public class VenomousPucewyrm extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/venomouspucewyrm.png",
             CRAFT, TRAITS, RARITY, 5, 4, 2, 5, true, VenomousPucewyrm.class,
-            new Vector2f(143, 151), 1.3, EventAnimationDamageSlash.class,
+            new Vector2f(143, 151), 1.3, new EventAnimationDamageSlash(),
             List::of,
             List.of());
 

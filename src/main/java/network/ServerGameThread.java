@@ -9,7 +9,6 @@ import client.*;
 import server.*;
 import server.ai.*;
 import server.card.cardset.*;
-import server.card.leader.*;
 
 /**
  * thread for p2p battles on same network, one computer acts as server, each

@@ -31,7 +31,7 @@ public class AmethystGiant extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/amethystgiant.png",
             CRAFT, TRAITS, RARITY, 9, 6, 3, 9, true, AmethystGiant.class,
-            new Vector2f(145, 135), 1.4, EventAnimationDamageSlash.class,
+            new Vector2f(145, 135), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.RUSH, Tooltip.ELUSIVE),
             List.of());
 

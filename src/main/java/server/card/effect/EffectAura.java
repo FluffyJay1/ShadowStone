@@ -2,7 +2,6 @@ package server.card.effect;
 
 import server.Board;
 import server.Player;
-import server.card.BoardObject;
 import server.card.Card;
 
 import java.util.*;

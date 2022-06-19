@@ -19,14 +19,22 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class EventAnimationDamageOff extends EventAnimationDamage {
-    private static final Image CIRCLE_IMAGE = Game.getImage("res/animation/circle.png");
-    private static final Image HORIZONTAL_IMAGE = Game.getImage("res/animation/horizontalline.png");
-    private static final Image VERTICAL_IMAGE = Game.getImage("res/animation/verticalline.png");
-    static {
-        CIRCLE_IMAGE.setFilter(Image.FILTER_NEAREST);
-        HORIZONTAL_IMAGE.setFilter(Image.FILTER_NEAREST);
-        VERTICAL_IMAGE.setFilter(Image.FILTER_NEAREST);
-    }
+    // these must be suppliers to avoid ExceptionInInitializerError
+    private static final Supplier<Image> CIRCLE_IMAGE = () -> {
+        Image i = Game.getImage("res/animation/circle.png");
+        i.setFilter(Image.FILTER_NEAREST);
+        return i;
+    };
+    private static final Supplier<Image> HORIZONTAL_IMAGE = () -> {
+        Image i = Game.getImage("res/animation/horizontalline.png");
+        i.setFilter(Image.FILTER_NEAREST);
+        return i;
+    };
+    private static final Supplier<Image> VERTICAL_IMAGE = () -> {
+        Image i = Game.getImage("res/animation/verticalline.png");
+        i.setFilter(Image.FILTER_NEAREST);
+        return i;
+    };
 
     private static final Supplier<EmissionStrategy> BLOOD_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(1),
@@ -97,20 +105,20 @@ public class EventAnimationDamageOff extends EventAnimationDamage {
                 Vector2f drawPos = uic.getAbsPos();
                 // circle
                 double circleTime = START_ANIMATION_RANGE_CIRCLE.get(this.normalizedPre());
-                drawCenteredAndScaled(g, CIRCLE_IMAGE, drawPos,
+                drawCenteredAndScaled(g, CIRCLE_IMAGE.get(), drawPos,
                         START_SCALE_CIRCLE.get(circleTime).floatValue(),
                         START_ALPHA_CIRCLE.get(circleTime).floatValue());
 
                 double vertTime = START_ANIMATION_RANGE_VERTICAL.get(this.normalizedPre());
                 if (vertTime > 0) {
-                    drawCenteredAndScaled(g, VERTICAL_IMAGE, drawPos,
+                    drawCenteredAndScaled(g, VERTICAL_IMAGE.get(), drawPos,
                             START_SCALE_VERTICAL.get(vertTime).floatValue(),
                             START_ALPHA_VERTICAL.get(vertTime).floatValue());
                 }
 
                 double horTime = START_ANIMATION_RANGE_HORIZONTAL.get(this.normalizedPre());
                 if (horTime > 0) {
-                    drawCenteredAndScaled(g, HORIZONTAL_IMAGE, drawPos,
+                    drawCenteredAndScaled(g, HORIZONTAL_IMAGE.get(), drawPos,
                             START_SCALE_HORIZONTAL.get(horTime).floatValue(),
                             START_ALPHA_HORIZONTAL.get(horTime).floatValue());
                 }
@@ -122,22 +130,22 @@ public class EventAnimationDamageOff extends EventAnimationDamage {
                 Vector2f drawPos = uic.getAbsPos();
                 // circle
                 double circleTime = END_ANIMATION_RANGE_CIRCLE.get(this.normalizedPost());
-                drawCenteredAndScaled(g, CIRCLE_IMAGE, drawPos,
+                drawCenteredAndScaled(g, CIRCLE_IMAGE.get(), drawPos,
                         END_SCALE_CIRCLE.get(circleTime).floatValue(),
                         END_ALPHA_CIRCLE.get(circleTime).floatValue());
 
                 double circle2Time = END_ANIMATION_RANGE_CIRCLE2.get(this.normalizedPost());
-                drawCenteredAndScaled(g, CIRCLE_IMAGE, drawPos,
+                drawCenteredAndScaled(g, CIRCLE_IMAGE.get(), drawPos,
                         END_SCALE_CIRCLE2.get(circle2Time).floatValue(),
                         END_ALPHA_CIRCLE2.get(circle2Time).floatValue());
 
                 double vertTime = END_ANIMATION_RANGE_VERTICAL.get(this.normalizedPost());
-                drawCenteredAndScaled(g, VERTICAL_IMAGE, drawPos,
+                drawCenteredAndScaled(g, VERTICAL_IMAGE.get(), drawPos,
                         END_SCALE_VERTICAL.get(vertTime).floatValue(),
                         END_ALPHA_VERTICAL.get(vertTime).floatValue());
 
                 double horTime = END_ANIMATION_RANGE_HORIZONTAL.get(this.normalizedPost());
-                drawCenteredAndScaled(g, HORIZONTAL_IMAGE, drawPos,
+                drawCenteredAndScaled(g, HORIZONTAL_IMAGE.get(), drawPos,
                         END_SCALE_HORIZONTAL.get(horTime).floatValue(),
                         END_ALPHA_HORIZONTAL.get(horTime).floatValue());
             }

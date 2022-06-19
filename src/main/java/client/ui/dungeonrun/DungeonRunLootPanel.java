@@ -1,6 +1,5 @@
 package client.ui.dungeonrun;
 
-import client.Game;
 import client.ui.*;
 import client.ui.menu.CardDisplayUnit;
 import gamemode.dungeonrun.controller.DungeonRunController;

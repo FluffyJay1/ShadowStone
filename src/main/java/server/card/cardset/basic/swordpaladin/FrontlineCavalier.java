@@ -29,7 +29,7 @@ public class FrontlineCavalier extends MinionText {
     public static final List<CardTrait> TRAITS = List.of(CardTrait.COMMANDER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/frontlinecavalier.png",
             CRAFT, TRAITS, RARITY, 4, 3, 2, 4, false, FrontlineCavalier.class,
-            new Vector2f(163, 160), 1.5, EventAnimationDamageSlash.class,
+            new Vector2f(163, 160), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.UNLEASH, HeavyKnight.TOOLTIP),
             List.of());
 

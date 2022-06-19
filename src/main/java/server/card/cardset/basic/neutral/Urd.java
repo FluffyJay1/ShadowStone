@@ -27,7 +27,7 @@ public class Urd extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/urd.png",
             CRAFT, TRAITS, RARITY, 4, 3, 1, 3, true, Urd.class,
-            new Vector2f(188, 130), 1.4, EventAnimationDamageSlash.class,
+            new Vector2f(188, 130), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());
 

@@ -3,8 +3,8 @@ package server.event;
 import java.util.*;
 
 import client.Game;
-import client.VisualBoard;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
+import org.jetbrains.annotations.NotNull;
 import server.*;
 import server.card.*;
 import server.card.effect.Effect;
@@ -30,21 +30,21 @@ public class EventDamage extends Event {
     public Effect effectSource; // used for animation probably, may be null
 
     // not proud of incorporating client animation logic into serverside game logic, but it's what we have to do
-    public final Class<? extends EventAnimationDamage> animation;
+    public final String animationString;
 
     public EventDamage(Card source, List<Minion> m, List<Integer> damage,
-            List<Card> markedForDeath, Class<? extends EventAnimationDamage> animation) {
+            List<Card> markedForDeath, @NotNull String animationString) {
         super(ID);
         this.cardSource = source;
         this.m = m;
         this.damage = damage;
         this.markedForDeath = Objects.requireNonNullElseGet(markedForDeath, ArrayList::new);
-        this.animation = animation;
+        this.animationString = animationString;
         this.actualDamage = new ArrayList<>(this.damage.size());
     }
 
-    public EventDamage(Effect source, List<Minion> m, List<Integer> damage, List<Card> markedForDeath, Class<? extends EventAnimationDamage> animation) {
-        this(source.owner, m, damage, markedForDeath, animation);
+    public EventDamage(Effect source, List<Minion> m, List<Integer> damage, List<Card> markedForDeath, @NotNull String animationString) {
+        this(source.owner, m, damage, markedForDeath, animationString);
         this.effectSource = source;
     }
 
@@ -108,7 +108,7 @@ public class EventDamage extends Event {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.id).append(" ").append(EventAnimationDamage.nameOrNull(this.animation))
+        builder.append(this.id).append(" ").append(this.animationString)
                 .append(Card.referenceOrNull(this.cardSource)).append(Effect.referenceOrNull(this.effectSource))
                 .append(this.m.size()).append(" ");
         for (int i = 0; i < this.m.size(); i++) {
@@ -119,12 +119,8 @@ public class EventDamage extends Event {
     }
 
     public static EventDamage fromString(Board b, StringTokenizer st) {
-        Class<? extends EventAnimationDamage> anim = null;
-        // only do reflection on this if we may need to draw it
-        String className = st.nextToken();
-        if (b instanceof VisualBoard) {
-            anim = EventAnimationDamage.fromString(className);
-        }
+        // no reflection yet
+        String animString = EventAnimationDamage.extractAnimationString(st);
         Card cardSource = Card.fromReference(b, st);
         Effect effectSource = Effect.fromReference(b, st);
         int size = Integer.parseInt(st.nextToken());
@@ -136,7 +132,7 @@ public class EventDamage extends Event {
             m.add(minion);
             damage.add(d);
         }
-        EventDamage ret = new EventDamage(cardSource, m, damage, null, anim);
+        EventDamage ret = new EventDamage(cardSource, m, damage, null, animString);
         ret.effectSource = effectSource;
         return ret;
     }

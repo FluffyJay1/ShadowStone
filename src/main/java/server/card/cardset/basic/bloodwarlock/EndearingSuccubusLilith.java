@@ -23,7 +23,7 @@ public class EndearingSuccubusLilith extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/endearingsuccubuslilith.png",
             CRAFT, TRAITS, RARITY, 3, 1, 2, 5, true, EndearingSuccubusLilith.class,
-            new Vector2f(144, 150), 1.3, EventAnimationDamageSlash.class,
+            new Vector2f(144, 150), 1.3, new EventAnimationDamageSlash(),
             List::of,
             List.of());
 

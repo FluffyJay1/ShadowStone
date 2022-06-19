@@ -31,7 +31,7 @@ public class RadiantArtifact extends MinionText {
     public static final List<CardTrait> TRAITS = List.of(CardTrait.ARTIFACT);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/radiantartifact.png",
             CRAFT, TRAITS, RARITY, 4, 4, 1, 3, true, RadiantArtifact.class,
-            new Vector2f(140, 175), 1.1, EventAnimationDamageSlash.class,
+            new Vector2f(140, 175), 1.1, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.STORM, Tooltip.LASTWORDS),
             List.of());
 

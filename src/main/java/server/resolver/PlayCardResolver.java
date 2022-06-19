@@ -34,10 +34,14 @@ public class PlayCardResolver extends Resolver {
                 b.processEvent(rq, el, new EventPutCard(List.of(this.c), CardStatus.BOARD, this.p.team, List.of(this.position), true, null));
             } else {
                 // a spell
-                b.processEvent(rq, el, new EventDestroy(this.c));
+                b.processEvent(rq, el, new EventDestroy(List.of(this.c), false)); // do not increment shadows yet, will throw off necromancy resolvers
                 this.resolve(b, rq, el, new SpellboostResolver(this.p.getHand()));
             }
             this.resolveQueue(b, rq, el, battlecry);
+            if (this.c instanceof Spell) {
+                // now we can increment shadows
+                b.processEvent(rq, el, new EventGainShadow(this.c.player, 1));
+            }
         }
     }
 }

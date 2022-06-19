@@ -36,7 +36,7 @@ public class Icarus extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/icarus.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, false, Icarus.class,
-            new Vector2f(122, 119), 1.55, EventAnimationDamageSlash.class,
+            new Vector2f(122, 119), 1.55, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, AncientArtifact.TOOLTIP, Tooltip.UNLEASH),
             List.of());
 

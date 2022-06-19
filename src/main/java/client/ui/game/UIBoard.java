@@ -514,8 +514,8 @@ public class UIBoard extends UIBox {
     }
 
     // auxiliary function for position on board
-    private static float boardPosToX(int i, int team, int numCards) {
-            return (float) (team * (i - (numCards - 1) / 2.) * BO_SPACING);
+    private float boardPosToX(int i, int team, int numCards) {
+            return (float) (team * this.b.getLocalteam() * (i - (numCards - 1) / 2.) * BO_SPACING);
     }
 
     public Vector2f getBoardPosFor(int cardpos, int team, int numCards) {
@@ -523,8 +523,8 @@ public class UIBoard extends UIBox {
                 (float) (team == this.b.getLocalteam() ? BO_Y_LOCAL : BO_Y_ENEMY));
     }
 
-    private static int XToBoardPos(double x, int team, int numCards) {
-        int pos = (int) ((team * x / BO_SPACING) + (numCards / 2.));
+    private int XToBoardPos(double x, int team, int numCards) {
+        int pos = (int) ((team * this.b.getLocalteam() * x / BO_SPACING) + (numCards / 2.));
         pos = Math.min(Math.max(pos, 0), numCards - 1);
         return pos;
     }
@@ -601,7 +601,7 @@ public class UIBoard extends UIBox {
             case LEADER: // TODO allow leader to attac properly
             case BOARD:
                 BoardObject bo = (BoardObject) c.getCard();
-                if (bo != null && bo instanceof Minion && bo.realCard.team == this.b.getLocalteam()
+                if (bo instanceof Minion && bo.realCard.team == this.b.getLocalteam()
                         && ((Minion) bo.realCard).canAttack() && !this.b.disableInput) {
                     this.attackingMinion = c;
                     this.refreshAnimatedAttackTargets();

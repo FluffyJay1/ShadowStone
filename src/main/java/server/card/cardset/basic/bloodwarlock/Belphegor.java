@@ -13,11 +13,8 @@ import server.card.CardTrait;
 import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
-import server.card.effect.EffectStats;
-import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
-import server.resolver.AddEffectResolver;
 import server.resolver.DamageResolver;
 import server.resolver.DrawResolver;
 import server.resolver.Resolver;
@@ -35,7 +32,7 @@ public class Belphegor extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/belphegor.png",
             CRAFT, TRAITS, RARITY, 4, 4, 2, 4, true, Belphegor.class,
-            new Vector2f(142, 136), 1.7, EventAnimationDamageSlash.class,
+            new Vector2f(142, 136), 1.7, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.VENGEANCE),
             List.of());
 
@@ -51,7 +48,7 @@ public class Belphegor extends MinionText {
                         this.resolve(b, rq, el, new DrawResolver(owner.player, 2));
                         if (!owner.player.vengeance()) {
                             owner.player.getLeader().ifPresent(l -> {
-                                this.resolve(b, rq, el, new DamageResolver(effect, l, l.health - Player.VENGEANCE_THRESHOLD, true, EventAnimationDamageFire.class));
+                                this.resolve(b, rq, el, new DamageResolver(effect, l, l.health - Player.VENGEANCE_THRESHOLD, true, new EventAnimationDamageFire().toString()));
                             });
                         }
                     }

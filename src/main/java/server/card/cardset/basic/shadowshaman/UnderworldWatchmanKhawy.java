@@ -31,7 +31,7 @@ public class UnderworldWatchmanKhawy extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/underworldwatchmankhawy.png",
             CRAFT, TRAITS, RARITY, 7, 4, 2, 5, true, UnderworldWatchmanKhawy.class,
-            new Vector2f(150, 200), 1.3, EventAnimationDamageSlash.class,
+            new Vector2f(150, 200), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.LASTWORDS),
             List.of());
 

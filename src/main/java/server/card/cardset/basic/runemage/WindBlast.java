@@ -54,7 +54,7 @@ public class WindBlast extends SpellText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             int damage = owner.spellboosts + 1;
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, damage, true, EventAnimationDamageEnergyBeamQuick.class));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, damage, true, new EventAnimationDamageEnergyBeamQuick().toString()));
                         });
                     }
                 });

@@ -20,7 +20,7 @@ public class MoltenGiant extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/moltengiant.png",
             CRAFT, TRAITS, RARITY, 15, 8, 4, 8, true, MoltenGiant.class,
-            new Vector2f(150, 145), 1.3, EventAnimationDamageFire.class,
+            new Vector2f(150, 145), 1.3, new EventAnimationDamageFire(),
             List::of,
             List.of());
     @Override

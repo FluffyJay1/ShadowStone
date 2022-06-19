@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
+import org.jetbrains.annotations.NotNull;
 import server.*;
 import server.ai.AI;
 import server.card.*;
@@ -16,16 +17,16 @@ import utils.SelectRandom;
 
 public class EffectLastWordsAlliedBlast extends Effect {
     int damage = 0;
-    Class<? extends EventAnimationDamage> animation;
+    String animationString;
 
     // required for reflection
     public EffectLastWordsAlliedBlast() { }
 
     // sourceString: what to put in the description as where it came from
-    public EffectLastWordsAlliedBlast(String sourceString, int damage, Class<? extends EventAnimationDamage> animation) {
+    public EffectLastWordsAlliedBlast(String sourceString, int damage, @NotNull String animationString) {
         super("<b>Last Words</b>: deal " + damage + " damage to a random allied minion (from " + sourceString + ").");
         this.damage = damage;
-        this.animation = animation;
+        this.animationString = animationString;
     }
 
     @Override
@@ -37,7 +38,7 @@ public class EffectLastWordsAlliedBlast extends Effect {
                 List<Minion> minions = b.getMinions(effect.owner.team, false, true).collect(Collectors.toList());
                 if (!minions.isEmpty()) {
                     Minion victim = SelectRandom.from(minions);
-                    this.resolve(b, rq, el, new DamageResolver(effect, victim, effect.damage, true, animation));
+                    this.resolve(b, rq, el, new DamageResolver(effect, victim, effect.damage, true, animationString));
                 }
             }
         });
@@ -50,12 +51,12 @@ public class EffectLastWordsAlliedBlast extends Effect {
 
     @Override
     public String extraStateString() {
-        return this.damage + " " + EventAnimationDamage.nameOrNull(this.animation);
+        return this.damage + " " + this.animationString;
     }
 
     @Override
     public void loadExtraState(Board b, StringTokenizer st) {
         this.damage = Integer.parseInt(st.nextToken());
-        this.animation = EventAnimationDamage.fromString(st.nextToken());
+        this.animationString = EventAnimationDamage.extractAnimationString(st);
     }
 }

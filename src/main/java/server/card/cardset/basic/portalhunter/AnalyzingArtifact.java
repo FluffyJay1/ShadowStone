@@ -2,7 +2,6 @@ package server.card.cardset.basic.portalhunter;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageShoot;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ai.AI;
@@ -24,7 +23,7 @@ public class AnalyzingArtifact extends MinionText {
     public static final List<CardTrait> TRAITS = List.of(CardTrait.ARTIFACT);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/analyzingartifact.png",
             CRAFT, TRAITS, RARITY, 1, 2, 1, 1, true, AnalyzingArtifact.class,
-            new Vector2f(158, 188), 1.2, EventAnimationDamageSlash.class,
+            new Vector2f(158, 188), 1.2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.LASTWORDS),
             List.of());
 

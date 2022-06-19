@@ -3,6 +3,7 @@ package server.card.unleashpower.basic;
 import java.util.*;
 
 import client.tooltip.*;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
 import org.newdawn.slick.geom.Vector2f;
 import server.*;
 import server.card.*;
@@ -50,7 +51,7 @@ public class UnleashBegetUndead extends UnleashPowerText {
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new DamageResolver(effect, m, 1, true, null));
+                        this.resolve(b, rq, el, new DamageResolver(effect, m, 1, true, new EventAnimationDamage().toString()));
                     }
                 });
             }

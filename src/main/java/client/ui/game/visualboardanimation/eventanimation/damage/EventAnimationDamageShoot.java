@@ -16,6 +16,7 @@ import server.card.Minion;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class EventAnimationDamageShoot extends EventAnimationDamage {
     private static final Function<Vector2f, EmissionStrategy> SHOOT_DUST_STRATEGY = (dir) -> new EmissionStrategy(
@@ -62,7 +63,8 @@ public class EventAnimationDamageShoot extends EventAnimationDamage {
                     new RandomAngleEmissionPropertyStrategy(new LinearInterpolation(-1000, 1000))
             ))
     );
-    private static final Image SHOOT_PROJECTILE = Game.getImage("res/particle/attack/round.png");
+    // these must be suppliers to avoid ExceptionInInitializerError
+    private static final Supplier<Image> SHOOT_PROJECTILE = () -> Game.getImage("res/particle/attack/round.png");
 
     public EventAnimationDamageShoot() {
         super(0.15, true);
@@ -92,7 +94,7 @@ public class EventAnimationDamageShoot extends EventAnimationDamage {
     public void draw(Graphics g) {
         if (this.isPre()) {
             // do the shooting
-            this.drawProjectile(g, SHOOT_PROJECTILE);
+            this.drawProjectile(g, SHOOT_PROJECTILE.get());
         } else {
             this.drawDamageNumber(g);
         }

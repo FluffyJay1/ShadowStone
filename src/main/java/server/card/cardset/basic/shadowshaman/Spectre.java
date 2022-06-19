@@ -22,7 +22,7 @@ public class Spectre extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/spectre.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, Spectre.class,
-            new Vector2f(150, 180), 1.2, EventAnimationDamageOff.class,
+            new Vector2f(150, 180), 1.2, new EventAnimationDamageOff(),
             () -> List.of(Tooltip.RUSH),
             List.of());
     @Override

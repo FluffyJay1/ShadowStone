@@ -17,7 +17,6 @@ import org.newdawn.slick.geom.*;
 import client.Game;
 import client.tooltip.*;
 import client.ui.*;
-import server.Board;
 import server.UnleashPower;
 import server.card.*;
 import server.card.effect.*;

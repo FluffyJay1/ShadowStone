@@ -36,7 +36,8 @@ public class EventAnimationDamageRocks extends EventAnimationDamage {
                     new RandomAngleEmissionPropertyStrategy(new LinearInterpolation(-500, 500))
             ))
     );
-    private static final Image ROCK = Game.getImage("res/particle/attack/rock.png").getScaledCopy(1);
+    // these must be suppliers to avoid ExceptionInInitializerError
+    private static final Supplier<Image> ROCK = () -> Game.getImage("res/particle/attack/rock.png").getScaledCopy(1);
 
     private List<Double> randomAngles;
 
@@ -66,11 +67,12 @@ public class EventAnimationDamageRocks extends EventAnimationDamage {
         if (this.isPre()) {
             // do the shooting
             for (int i = 0; i < this.event.m.size(); i++) {
-                ROCK.setRotation(randomAngles.get(i).floatValue() + rotvel * (float) this.normalizedPre());
+                Image rock = ROCK.get();
+                rock.setRotation(randomAngles.get(i).floatValue() + rotvel * (float) this.normalizedPre());
                 Vector2f pos = this.event.m.get(i).uiCard.getAbsPos()
                         .sub(this.event.cardSource.uiCard.getAbsPos()).scale((float) (this.normalizedPre()))
                         .add(this.event.cardSource.uiCard.getAbsPos());
-                g.drawImage(ROCK, pos.x - ROCK.getWidth()/2, pos.y - ROCK.getHeight()/2);
+                g.drawImage(rock, pos.x - rock.getWidth()/2, pos.y - rock.getHeight()/2);
             }
         } else {
             this.drawDamageNumber(g);

@@ -5,7 +5,6 @@ import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
-import server.Player;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
@@ -18,7 +17,6 @@ import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SwarmingWraith extends MinionText {
     public static final String NAME = "Swarming Wraith";
@@ -29,7 +27,7 @@ public class SwarmingWraith extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/swarmingwraith.png",
             CRAFT, TRAITS, RARITY, 2, 3, 1, 2, true, SwarmingWraith.class,
-            new Vector2f(183, 153), 1.3, EventAnimationDamageSlash.class,
+            new Vector2f(183, 153), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.VENGEANCE),
             List.of());
 
@@ -44,11 +42,11 @@ public class SwarmingWraith extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (owner.player.vengeance()) {
                             b.getPlayer(owner.team * -1).getLeader().ifPresent(l -> {
-                                this.resolve(b, rq, el, new DamageResolver(effect, l, 2, true, EventAnimationDamageFire.class));
+                                this.resolve(b, rq, el, new DamageResolver(effect, l, 2, true, new EventAnimationDamageFire().toString()));
                             });
                         } else {
                             b.getPlayer(owner.team).getLeader().ifPresent(l -> {
-                                this.resolve(b, rq, el, new DamageResolver(effect, l, 2, true, EventAnimationDamageFire.class));
+                                this.resolve(b, rq, el, new DamageResolver(effect, l, 2, true, new EventAnimationDamageFire().toString()));
                             });
                         }
                     }

@@ -29,9 +29,9 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
     boolean started;
     protected boolean processedEvent;
     boolean finished;
-    private Set<UICard> animatingCards;
-    private PriorityQueue<ScheduledAnimation> scheduledPre;
-    private PriorityQueue<ScheduledAnimation> scheduledPost;
+    private final Set<UICard> animatingCards;
+    private final PriorityQueue<ScheduledAnimation> scheduledPre;
+    private final PriorityQueue<ScheduledAnimation> scheduledPost;
 
     /**
      * Construct an EventAnimation, which when updated, will automatically execute

@@ -9,8 +9,10 @@ import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
 import server.card.Minion;
 import server.event.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.newdawn.slick.opengl.renderer.SGL.GL_ONE;
@@ -25,11 +27,16 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
      * special animation for damage, and that special animation doesn't have to
      * consider the null source case. Since this animation serves as a default, it
      * is the only class that has to handle both cases.
+     *
+     * If subclasses have no additional parameters, all they need to implement
+     * the () constructor, nothing else is needed. If the animation requires
+     * some parameters, they will need to implement a
+     * extraParamString() and fromExtraParams(StringTokenizer) method.
      */
     // precompute
     List<Vector2f> dirs;
     List<Double> anglesRad;
-    private boolean requireNonEmpty;
+    private final boolean requireNonEmpty;
 
     public EventAnimationDamage() {
         this(-1, 0.5, true);
@@ -133,17 +140,61 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
         g.drawImage(scaledCopy, pos.x - scaledCopy.getWidth() / 2, pos.y - scaledCopy.getHeight() / 2);
     }
 
-    public static String nameOrNull(Class<? extends EventAnimationDamage> animation) {
-        return animation == null ? "null " : animation.getName() + " ";
+    // so serverboard have no use for animations, so they should not reflect
+    // so in this string we encode the number of tokens that they should skip
+    public static String stringOrNull(EventAnimationDamage ed) {
+        if (ed == null) {
+            return "null ";
+        }
+        return ed.toString();
     }
 
-    public static Class<? extends EventAnimationDamage> fromString(String name) {
-        if (name.equals("null")) {
-            return null;
+    public String toString() {
+        String s = this.extraParamString();
+        int numTokens = new StringTokenizer(s).countTokens() + 1;
+        return numTokens + " " + this.getClass().getName() + " " + s;
+    }
+
+    // override this
+    public String extraParamString() {
+        return "";
+    }
+
+    // if animation info is stored in a string, and that string gets serialized
+    // as part of a larger object, when deserializing that object this will
+    // retrieve the animation string and not actually do reflection to create
+    // the animation
+    public static String extractAnimationString(StringTokenizer st) {
+        String firstToken = st.nextToken();
+        if (firstToken.equals("null")) {
+            return "null ";
         }
+        int numTokens = Integer.parseInt(firstToken);
+        StringBuilder sb = new StringBuilder(firstToken).append(" ");
+        for (int i = 0; i < numTokens; i++) {
+            sb.append(st.nextToken()).append(" ");
+        }
+        return sb.toString();
+    }
+
+    // so much catch
+    public static EventAnimationDamage fromString(StringTokenizer st) {
+        String firstToken = st.nextToken();
+        if (firstToken.equals("null")) {
+            return new EventAnimationDamage();
+        }
+        String className = st.nextToken();
         try {
-            return Class.forName(name).asSubclass(EventAnimationDamage.class);
-        } catch (ClassNotFoundException e) {
+            Class<? extends EventAnimationDamage> edclass = Class.forName(className).asSubclass(EventAnimationDamage.class);
+            try {
+                return (EventAnimationDamage) edclass.getMethod("fromExtraParams", StringTokenizer.class).invoke(null, st);
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                // assume it has the default constructor then
+                return edclass.getConstructor().newInstance();
+            }
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return null;

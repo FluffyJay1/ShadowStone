@@ -22,7 +22,7 @@ public class AncientArtifact extends MinionText {
     public static final List<CardTrait> TRAITS = List.of(CardTrait.ARTIFACT);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/ancientartifact.png",
             CRAFT, TRAITS, RARITY, 1, 3, 1, 1, true, AncientArtifact.class,
-            new Vector2f(161, 138), 1.35, EventAnimationDamageSlash.class,
+            new Vector2f(161, 138), 1.35, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.RUSH),
             List.of());
 

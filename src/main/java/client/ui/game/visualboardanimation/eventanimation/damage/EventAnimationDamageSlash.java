@@ -29,7 +29,8 @@ public class EventAnimationDamageSlash extends EventAnimationDamage {
                     )
             ))
     );
-    private static final Image SLASH_PROJECTILE = Game.getImage("res/particle/attack/slashprojectile.png").getScaledCopy(1.5f);
+    // these must be suppliers to avoid ExceptionInInitializerError
+    private static final Supplier<Image> SLASH_PROJECTILE = () -> Game.getImage("res/particle/attack/slashprojectile.png").getScaledCopy(1.5f);
 
     public EventAnimationDamageSlash() {
         super(0.2, true);
@@ -46,7 +47,7 @@ public class EventAnimationDamageSlash extends EventAnimationDamage {
     public void draw(Graphics g) {
         if (this.isPre()) {
             // do the shooting
-            this.drawProjectile(g, SLASH_PROJECTILE);
+            this.drawProjectile(g, SLASH_PROJECTILE.get());
         } else {
             this.drawDamageNumber(g);
         }

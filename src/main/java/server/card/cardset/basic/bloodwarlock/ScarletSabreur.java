@@ -31,7 +31,7 @@ public class ScarletSabreur extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/scarletsabreur.png",
             CRAFT, TRAITS, RARITY, 5, 2, 2, 4, true, ScarletSabreur.class,
-            new Vector2f(169, 130), 1.5, EventAnimationDamageSlash.class,
+            new Vector2f(169, 130), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BANE, Tooltip.BATTLECRY),
             List.of());
 
@@ -57,7 +57,7 @@ public class ScarletSabreur extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 2, true, EventAnimationDamageSlash.class));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 2, true, new EventAnimationDamageSlash().toString()));
                         });
                         owner.player.getLeader().ifPresent(l -> {
                             this.resolve(b, rq, el, new RestoreResolver(effect, l, 2));

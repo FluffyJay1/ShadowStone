@@ -28,7 +28,7 @@ public class PrinceCatacomb extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/princecatacomb.png",
             CRAFT, TRAITS, RARITY, 4, 1, 1, 1, true, PrinceCatacomb.class,
-            new Vector2f(150, 160), 1.3, EventAnimationDamageSlash.class,
+            new Vector2f(150, 160), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.LASTWORDS, Skeleton.TOOLTIP),
             List.of());
 

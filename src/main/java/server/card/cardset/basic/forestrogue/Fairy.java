@@ -1,6 +1,6 @@
 package server.card.cardset.basic.forestrogue;
 
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageOrbFall;
 import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
@@ -17,7 +17,7 @@ public class Fairy extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/fairy.png",
             CRAFT, TRAITS, RARITY, 1, 1, 1, 1, true, Fairy.class,
-            new Vector2f(), -1, EventAnimationDamageSlash.class,
+            new Vector2f(), -1, new EventAnimationDamageOrbFall(),
             List::of,
             List.of());
 

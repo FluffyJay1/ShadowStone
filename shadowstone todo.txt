@@ -1,4 +1,3 @@
-add more damage animations
 fix expansion sets, dungeon run default decks
 can't attack
 new unleash powers, proper unleash power value calculation

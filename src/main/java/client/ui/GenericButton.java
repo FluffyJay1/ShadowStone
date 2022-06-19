@@ -1,6 +1,5 @@
 package client.ui;
 
-import client.Game;
 import org.newdawn.slick.geom.*;
 
 public class GenericButton extends UIBox {

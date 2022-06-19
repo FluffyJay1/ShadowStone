@@ -22,7 +22,7 @@ public class HolyFalcon extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/holyfalcon.png",
             CRAFT, TRAITS, RARITY, 3, 2, 0, 1, false, HolyFalcon.class,
-            new Vector2f(150, 150), 1.3, EventAnimationDamageSlash.class,
+            new Vector2f(150, 150), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.STORM),
             List.of());
 

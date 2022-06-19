@@ -26,7 +26,7 @@ public class MischievousSpirit extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/mischievousspirit.png",
             CRAFT, TRAITS, RARITY, 1, 1, 1, 1, true, MischievousSpirit.class,
-            new Vector2f(135, 195), 1.3, EventAnimationDamageSlash.class,
+            new Vector2f(135, 195), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.NECROMANCY, Ghost.TOOLTIP),
             List.of());
 

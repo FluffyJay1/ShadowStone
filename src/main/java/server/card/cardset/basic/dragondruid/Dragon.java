@@ -1,6 +1,5 @@
 package server.card.cardset.basic.dragondruid;
 
-import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
@@ -20,7 +19,7 @@ public class Dragon extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/dragon.png",
             CRAFT, TRAITS, RARITY, 5, 5, 2, 5, true, Dragon.class,
-            new Vector2f(128, 187), 1.2, EventAnimationDamageSlash.class,
+            new Vector2f(128, 187), 1.2, new EventAnimationDamageSlash(),
             List::of,
             List.of());
 

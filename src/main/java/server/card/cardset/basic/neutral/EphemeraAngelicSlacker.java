@@ -2,7 +2,7 @@ package server.card.cardset.basic.neutral;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageArrow;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
 import server.card.CardTrait;
@@ -27,7 +27,7 @@ public class EphemeraAngelicSlacker extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/ephemeraangelicslacker.png",
             CRAFT, TRAITS, RARITY, 5, 1, 1, 3, true, EphemeraAngelicSlacker.class,
-            new Vector2f(103, 133), 1.6, EventAnimationDamageSlash.class,
+            new Vector2f(103, 133), 1.6, new EventAnimationDamageArrow(),
             () -> List.of(Tooltip.STEALTH),
             List.of());
 

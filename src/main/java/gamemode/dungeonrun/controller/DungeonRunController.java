@@ -16,7 +16,6 @@ import server.card.ClassCraft;
 import server.card.cardset.CardSet;
 import server.card.cardset.ConstructedDeck;
 import server.card.cardset.basic.ExpansionSetBasic;
-import server.card.leader.Rowen;
 import utils.WeightedRandomSampler;
 import utils.WeightedSampler;
 

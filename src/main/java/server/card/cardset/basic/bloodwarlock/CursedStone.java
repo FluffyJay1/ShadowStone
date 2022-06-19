@@ -26,7 +26,7 @@ public class CursedStone extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/cursedstone.png",
             CRAFT, TRAITS, RARITY, 4, 1, 5, 8, false, CursedStone.class,
-            new Vector2f(), -1, EventAnimationDamageSlash.class,
+            new Vector2f(), -1, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.UNLEASH, Tooltip.BLAST, Tooltip.LASTWORDS),
             List.of());
 
@@ -41,8 +41,8 @@ public class CursedStone extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         Player player = owner.board.getPlayer(owner.team);
                         int damage = owner.finalStats.get(Stat.MAGIC);
-                        this.resolve(b, rq, el, new BlastResolver(effect, damage, EventAnimationDamageEnergyBeam.class));
-                        Effect lw = new EffectLastWordsAlliedBlast("<b>Unleash</b>", damage, EventAnimationDamageEnergyBeam.class);
+                        this.resolve(b, rq, el, new BlastResolver(effect, damage, new EventAnimationDamageEnergyBeam().toString()));
+                        Effect lw = new EffectLastWordsAlliedBlast("<b>Unleash</b>", damage, new EventAnimationDamageEnergyBeam().toString());
                         this.resolve(b, rq, el, new AddEffectResolver(effect.owner, lw));
                     }
                 });

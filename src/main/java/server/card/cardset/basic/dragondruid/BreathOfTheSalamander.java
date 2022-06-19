@@ -7,7 +7,6 @@ import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
-import server.card.effect.EffectStats;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
@@ -56,7 +55,7 @@ public class BreathOfTheSalamander extends SpellText {
                         List<Card> markedForDeath = new LinkedList<>();
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             DamageResolver r = this.resolve(b, rq, el,
-                                    new DamageResolver(effect, (Minion) c, 3, false, EventAnimationDamageFire.class));
+                                    new DamageResolver(effect, (Minion) c, 3, false, new EventAnimationDamageFire().toString()));
                             markedForDeath.addAll(r.destroyed);
                         });
                         this.resolve(b, rq, el, new SpendResolver(effect, 4, new Resolver(false) {
@@ -64,7 +63,7 @@ public class BreathOfTheSalamander extends SpellText {
                             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                                 List<Minion> relevant = b.getMinions(owner.team * -1, false, false).collect(Collectors.toList());
                                 DamageResolver r = this.resolve(b, rq, el,
-                                        new DamageResolver(effect, relevant, 2, false, EventAnimationDamageFire.class));
+                                        new DamageResolver(effect, relevant, 2, false, new EventAnimationDamageFire().toString()));
                                 markedForDeath.addAll(r.destroyed);
                             }
                         }));

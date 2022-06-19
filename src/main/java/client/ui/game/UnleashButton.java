@@ -1,6 +1,5 @@
 package client.ui.game;
 
-import client.Game;
 import org.newdawn.slick.geom.*;
 
 import client.ui.*;

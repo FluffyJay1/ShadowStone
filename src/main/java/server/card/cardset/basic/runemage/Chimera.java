@@ -29,7 +29,7 @@ public class Chimera extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/chimera.png",
             CRAFT, TRAITS, RARITY, 9, 4, 2, 4, true, Chimera.class,
-            new Vector2f(143, 158), 1.4, EventAnimationDamageClaw.class,
+            new Vector2f(143, 158), 1.4, new EventAnimationDamageClaw(),
             () -> List.of(Tooltip.SPELLBOOST, Tooltip.BATTLECRY),
             List.of());
 
@@ -53,7 +53,7 @@ public class Chimera extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 4, true, EventAnimationDamageClaw.class));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 4, true, new EventAnimationDamageClaw().toString()));
                         });
                     }
                 });

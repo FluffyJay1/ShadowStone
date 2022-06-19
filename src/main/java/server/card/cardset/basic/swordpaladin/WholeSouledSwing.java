@@ -55,7 +55,7 @@ public class WholeSouledSwing extends SpellText {
                             this.resolve(b, rq, el, new CreateCardResolver(new Knight(), owner.team, CardStatus.BOARD, -1));
                         }
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 3, true, EventAnimationDamageSlash.class));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 3, true, new EventAnimationDamageSlash().toString()));
                         });
                     }
                 });

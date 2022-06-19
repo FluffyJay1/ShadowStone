@@ -20,7 +20,7 @@ public class BellringerAngel extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/bellringerangel.png",
             CRAFT, TRAITS, RARITY, 2, 0, 0, 2, true, BellringerAngel.class,
-            new Vector2f(), -1, EventAnimationDamageSlash.class,
+            new Vector2f(), -1, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.WARD, Tooltip.LASTWORDS),
             List.of());
 

@@ -33,7 +33,7 @@ public class ElectromagicalRhino extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/electromagicalrhino.png",
             CRAFT, TRAITS, RARITY, 7, 0, 3, 7, true, Icarus.class,
-            new Vector2f(152, 190), 1.2, EventAnimationDamageSlash.class,
+            new Vector2f(152, 190), 1.2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.RUSH, Tooltip.BATTLECRY, Tooltip.STRIKE, ArtifactRhino.TOOLTIP),
             List.of(card -> String.format("(Artifacts in deck: %d)", card.player.getDeck().stream().filter(c -> c.finalTraits.contains(CardTrait.ARTIFACT)).count())));
 

@@ -19,7 +19,7 @@ public class HolyflameTiger extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/holyflametiger.png",
             CRAFT, TRAITS, RARITY, 4, 4, 1, 4, true, HolyflameTiger.class,
-            new Vector2f(163, 128), 1.5, EventAnimationDamageClaw.class,
+            new Vector2f(163, 128), 1.5, new EventAnimationDamageClaw(),
             List::of,
             List.of());
 

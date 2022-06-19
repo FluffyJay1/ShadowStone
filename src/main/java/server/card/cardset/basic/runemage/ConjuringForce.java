@@ -1,6 +1,5 @@
 package server.card.cardset.basic.runemage;
 
-import client.tooltip.Tooltip;
 import client.tooltip.TooltipAmulet;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;

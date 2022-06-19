@@ -32,7 +32,7 @@ public class Magnolia extends MinionText {
     public static final List<CardTrait> TRAITS = List.of(CardTrait.COMMANDER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/magnolia.png",
             CRAFT, TRAITS, RARITY, 4, 1, 2, 5, false, Magnolia.class,
-            new Vector2f(140, 144), 1.4, EventAnimationDamageSlash.class,
+            new Vector2f(140, 144), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.UNLEASH),
             List.of());
 

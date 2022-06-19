@@ -5,7 +5,6 @@ import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
-import server.ai.AI;
 import server.card.CardRarity;
 import server.card.CardTrait;
 import server.card.ClassCraft;
@@ -28,7 +27,7 @@ public class RaioOmenOfTruth extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/raioomenoftruth.png",
             CRAFT, TRAITS, RARITY, 7, 7, 3, 7, true, RaioOmenOfTruth.class,
-            new Vector2f(150, 100), 2, EventAnimationDamageSlash.class,
+            new Vector2f(150, 100), 2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.SPELLBOOST),
             List.of());
 

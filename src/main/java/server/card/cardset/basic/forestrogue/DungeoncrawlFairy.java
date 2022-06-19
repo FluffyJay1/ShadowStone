@@ -2,7 +2,7 @@ package server.card.cardset.basic.forestrogue;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageOrbFall;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.card.*;
@@ -26,7 +26,7 @@ public class DungeoncrawlFairy extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/dungeoncrawlfairy.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, DungeoncrawlFairy.class,
-            new Vector2f(120, 121), 1.5, EventAnimationDamageSlash.class,
+            new Vector2f(120, 121), 1.5, new EventAnimationDamageOrbFall(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());
 

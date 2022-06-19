@@ -2,7 +2,6 @@ package client.ui.menu;
 
 import java.util.*;
 
-import client.Game;
 import org.newdawn.slick.geom.*;
 
 import client.ui.*;

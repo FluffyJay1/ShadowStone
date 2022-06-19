@@ -31,7 +31,7 @@ public class Chronos extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/chronos.png",
             CRAFT, TRAITS, RARITY,8, 4, 3, 3, true, Chronos.class,
-            new Vector2f(143, 135), 1.5, EventAnimationDamageSlash.class,
+            new Vector2f(143, 135), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());
     @Override

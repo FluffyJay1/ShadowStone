@@ -9,8 +9,6 @@ import client.ui.game.*;
 import server.card.*;
 import server.card.effect.Stat;
 
-import java.awt.*;
-
 public class CardDisplayUnit extends UIBox {
     /**
      * Alert Syntax: "cardclick (cardClassString)" [mouseButton] [clickCount]

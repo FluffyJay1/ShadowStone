@@ -20,7 +20,7 @@ public class NavyLieutenant extends MinionText {
     public static final List<CardTrait> TRAITS = List.of(CardTrait.COMMANDER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/navylieutenant.png",
             CRAFT, TRAITS, RARITY, 3, 2, 1, 3, true, NavyLieutenant.class,
-            new Vector2f(150, 125), 1.5, EventAnimationDamageSlash.class,
+            new Vector2f(150, 125), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.AURA, Tooltip.WARD),
             List.of());
 

@@ -1,7 +1,6 @@
 package client.ui.dungeonrun;
 
 import client.Config;
-import client.Game;
 import client.ui.ScrollingContext;
 import client.ui.Text;
 import client.ui.UI;

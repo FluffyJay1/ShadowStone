@@ -29,7 +29,7 @@ public class ElvenPrincessMage extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/elvenprincessmage.png",
             CRAFT, TRAITS, RARITY, 4, 3, 1, 5, false, ElvenPrincessMage.class,
-            new Vector2f(151, 130), 1.5, EventAnimationDamageSlash.class,
+            new Vector2f(151, 130), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.UNLEASH, Fairy.TOOLTIP),
             List.of());
 

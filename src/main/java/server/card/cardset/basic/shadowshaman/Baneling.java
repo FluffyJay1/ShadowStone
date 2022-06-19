@@ -1,5 +1,6 @@
 package server.card.cardset.basic.shadowshaman;
 
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.*;
 
@@ -20,7 +21,7 @@ public class Baneling extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/baneling.png",
             CRAFT, TRAITS, RARITY, 3, 1, 0, 1, false, Baneling.class,
-            new Vector2f(253, 271), 1.5, EventAnimationDamageSlash.class,
+            new Vector2f(253, 271), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.LASTWORDS, Tooltip.BLAST),
             List.of());
 
@@ -29,7 +30,7 @@ public class Baneling extends MinionText {
         return List.of(new Effect(DESCRIPTION) {
             @Override
             public ResolverWithDescription lastWords() {
-                return new ResolverWithDescription(DESCRIPTION, new BlastResolver(this, 5, null));
+                return new ResolverWithDescription(DESCRIPTION, new BlastResolver(this, 5, new EventAnimationDamage().toString()));
             }
 
             @Override

@@ -8,7 +8,6 @@ import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
-import server.card.effect.EffectStats;
 import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.CreateCardResolver;
@@ -29,7 +28,7 @@ public class Cucouroux extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/cucouroux.png",
             CRAFT, TRAITS, RARITY, 3, 3, 1, 2, true, Cucouroux.class,
-            new Vector2f(160, 145), 1.4, EventAnimationDamageShoot.class,
+            new Vector2f(160, 145), 1.4, new EventAnimationDamageShoot(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.SPEND, Camieux.TOOLTIP, Tooltip.MINIONSTRIKE),
             List.of());
 
@@ -70,7 +69,7 @@ public class Cucouroux extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (target.status.equals(CardStatus.BOARD)) {
-                            this.resolve(b, rq, el, new DamageResolver(effect, target, 2, true, EventAnimationDamageShoot.class));
+                            this.resolve(b, rq, el, new DamageResolver(effect, target, 2, true, new EventAnimationDamageShoot().toString()));
                         }
                     }
                 });

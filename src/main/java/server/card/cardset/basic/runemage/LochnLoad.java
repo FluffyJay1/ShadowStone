@@ -4,7 +4,6 @@ import java.util.*;
 
 import client.tooltip.*;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageBigExplosion;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
 import server.*;
 import server.ai.AI;
 import server.card.*;
@@ -63,7 +62,7 @@ public class LochnLoad extends SpellText {
                                 }
                             }
                             DamageResolver dr = this.resolve(b, rq, el,
-                                    new DamageResolver(effect, m, d, false, EventAnimationDamageBigExplosion.class));
+                                    new DamageResolver(effect, m, d, false, new EventAnimationDamageBigExplosion().toString()));
                             markedForDeath.addAll(dr.destroyed);
                         });
                         this.resolve(b, rq, el, new DestroyResolver(markedForDeath));

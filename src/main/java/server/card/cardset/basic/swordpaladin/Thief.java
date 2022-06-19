@@ -28,7 +28,7 @@ public class Thief extends MinionText {
     public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/thief.png",
             CRAFT, TRAITS, RARITY, 3, 2, 1, 2, false, Thief.class,
-            new Vector2f(162, 151), 1.22, EventAnimationDamageSlash.class,
+            new Vector2f(162, 151), 1.22, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.CLASH),
             List.of());
 

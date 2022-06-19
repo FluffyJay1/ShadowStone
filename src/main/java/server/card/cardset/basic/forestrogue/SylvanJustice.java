@@ -1,7 +1,7 @@
 package server.card.cardset.basic.forestrogue;
 
 import client.tooltip.TooltipSpell;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageOrbFall;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageArrow;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
@@ -51,7 +51,7 @@ public class SylvanJustice extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 3, true, EventAnimationDamageOrbFall.class));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 3, true, new EventAnimationDamageArrow().toString()));
                         });
                         this.resolve(b, rq, el, new CreateCardResolver(new Fairy(), owner.team, CardStatus.HAND, -1));
                     }

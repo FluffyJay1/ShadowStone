@@ -1,28 +1,24 @@
 package server.card.cardset.basic.dragondruid;
 
-import client.Game;
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageArrow;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
-import server.card.effect.EffectStats;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.event.Event;
 import server.resolver.DamageResolver;
 import server.resolver.DiscardLowestResolver;
-import server.resolver.DiscardResolver;
 import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GriffonKnight extends MinionText {
     public static final String NAME = "Griffon Knight";
@@ -32,7 +28,7 @@ public class GriffonKnight extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/griffonknight.png",
             CRAFT, TRAITS, RARITY, 3, 2, 1, 3, true, GriffonKnight.class,
-            new Vector2f(125, 156), 1.2, EventAnimationDamageSlash.class,
+            new Vector2f(125, 156), 1.2, new EventAnimationDamageArrow(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());
 
@@ -56,7 +52,7 @@ public class GriffonKnight extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 3, true, EventAnimationDamageSlash.class));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 3, true, new EventAnimationDamageArrow().toString()));
                         });
                         this.resolve(b, rq, el, new DiscardLowestResolver(owner.player, 1));
                     }

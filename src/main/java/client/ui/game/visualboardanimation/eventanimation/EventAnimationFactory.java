@@ -3,6 +3,7 @@ package client.ui.game.visualboardanimation.eventanimation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import client.ui.game.visualboardanimation.eventanimation.basic.*;
 import client.ui.game.visualboardanimation.eventanimation.board.*;
@@ -26,36 +27,30 @@ public class EventAnimationFactory {
      * @param event The event to animate
      * @return An animation for the event
      */
+    @SuppressWarnings("unchecked")
     public <T extends Event> EventAnimation<T> newAnimation(T event) {
         // TODO: check to see if we want to use a special animation or not
         EventAnimation<T> anim = null;
-        Class<? extends EventAnimation<T>> animClass = getAnimationClass(event);
-        if (animClass == null) {
-            return null;
+        if (event instanceof EventDamage) {
+            // lol
+            anim = (EventAnimation<T>) EventAnimationDamage.fromString(new StringTokenizer(((EventDamage) event).animationString));
         } else {
-            try {
-                anim = animClass.getConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                    | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-                e.printStackTrace();
+            // by the grace of allah this cast is safe
+            Class<? extends EventAnimation<T>> animClass = (Class<? extends EventAnimation<T>>) eventToAnimationMap.get(event.getClass());
+            if (animClass == null) {
+                return null;
+            } else {
+                try {
+                    anim = animClass.getConstructor().newInstance();
+                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                        | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                    e.printStackTrace();
+                }
             }
         }
         assert anim != null;
         anim.init(this.b, event);
         return anim;
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T extends Event> Class<? extends EventAnimation<T>> getAnimationClass(T event) {
-        if (event instanceof EventDamage) {
-            EventDamage ed = (EventDamage) event;
-            Class<? extends EventAnimation<EventDamage>> animClass = ed.animation;
-            if (animClass != null) {
-                return (Class<? extends EventAnimation<T>>) animClass; // by my analysis, this cast is safe
-            }
-        }
-        // by my analysis, this cast is safe
-        return (Class<? extends EventAnimation<T>>) eventToAnimationMap.get(event.getClass());
     }
 
     private static final Map<Class<? extends Event>, Class<? extends EventAnimation<? extends Event>>> eventToAnimationMap = new HashMap<>() {{

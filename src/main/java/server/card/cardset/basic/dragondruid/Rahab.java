@@ -30,7 +30,7 @@ public class Rahab extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/rahab.png",
             CRAFT, TRAITS, RARITY, 4, 2, 2, 5, true, Rahab.class,
-            new Vector2f(151, 160), 1.2, EventAnimationDamageSlash.class,
+            new Vector2f(151, 160), 1.2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.WARD),
             List.of());
 

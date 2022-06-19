@@ -49,7 +49,7 @@ public class MagicMissile extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 1, true, EventAnimationDamageEnergyBeam.class));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 1, true, new EventAnimationDamageEnergyBeam().toString()));
                         });
                         this.resolve(b, rq, el, new DrawResolver(owner.player, 1));
                     }

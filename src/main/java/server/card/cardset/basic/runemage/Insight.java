@@ -1,6 +1,5 @@
 package server.card.cardset.basic.runemage;
 
-import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
 import server.ai.AI;
 import server.card.CardRarity;

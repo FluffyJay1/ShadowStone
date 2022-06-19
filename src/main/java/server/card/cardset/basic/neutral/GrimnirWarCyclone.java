@@ -30,7 +30,7 @@ public class GrimnirWarCyclone extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/grimnirwarcyclone.png",
             CRAFT, TRAITS, RARITY, 3, 2, 1, 3, true, GrimnirWarCyclone.class,
-            new Vector2f(150, 152), 1.3, EventAnimationDamageSlash.class,
+            new Vector2f(150, 152), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.SPEND),
             List.of());
 
@@ -47,7 +47,7 @@ public class GrimnirWarCyclone extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         for (int i = 0; i < 4; i++) {
                             List<Minion> targets = b.getMinions(owner.team * -1, true, true).collect(Collectors.toList());
-                            this.resolve(b, rq, el, new DamageResolver(effect, targets, 1, true, EventAnimationDamageSlash.class));
+                            this.resolve(b, rq, el, new DamageResolver(effect, targets, 1, true, new EventAnimationDamageSlash().toString()));
                         }
                     }
                 }));

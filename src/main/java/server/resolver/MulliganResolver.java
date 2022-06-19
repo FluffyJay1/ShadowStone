@@ -5,7 +5,6 @@ import server.ServerBoard;
 import server.card.Card;
 import server.event.Event;
 import server.event.EventMulligan;
-import server.event.EventMulliganPhaseEnd;
 import server.resolver.util.ResolverQueue;
 
 import java.util.ArrayList;

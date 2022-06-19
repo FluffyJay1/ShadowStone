@@ -1,13 +1,10 @@
 package server.event;
 
 import client.Game;
-import client.PendingPlayPositioner;
 import server.Board;
 import server.Player;
-import server.card.BoardObject;
 import server.card.Card;
 import server.card.CardStatus;
-import server.card.Leader;
 
 import java.util.ArrayList;
 import java.util.List;

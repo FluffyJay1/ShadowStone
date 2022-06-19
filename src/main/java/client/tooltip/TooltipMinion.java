@@ -15,11 +15,11 @@ public class TooltipMinion extends TooltipCard {
     public final int magic;
     public final int health;
     public final boolean basicUnleash;
-    public final Class<? extends EventAnimationDamage> attackAnimation;
+    public final String attackAnimation;
 
     public TooltipMinion(String name, String description, String imagepath, ClassCraft craft, List<CardTrait> traits, CardRarity rarity, int cost, int attack,
                          int magic, int health, boolean basicUnleash, Class<? extends MinionText> minionTextClass, Vector2f artFocusPos,
-                         double artFocusScale, Class<? extends EventAnimationDamage> attackAnimation, Supplier<List<Tooltip>> references,
+                         double artFocusScale, EventAnimationDamage attackAnimation, Supplier<List<Tooltip>> references,
                          List<Function<Card, String>> trackers) {
         super(name,
                 "minion\nA:" + attack + ", M:" + magic + ", H:" + health + "\n \n" + description + (basicUnleash
@@ -43,6 +43,6 @@ public class TooltipMinion extends TooltipCard {
         this.attack = attack;
         this.magic = magic;
         this.health = health;
-        this.attackAnimation = attackAnimation;
+        this.attackAnimation = EventAnimationDamage.stringOrNull(attackAnimation);
     }
 }

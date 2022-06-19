@@ -26,7 +26,7 @@ public class IncandescentDragon extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/incandescentdragon.png",
             CRAFT, TRAITS, RARITY, 8, 8, 2, 6, true, IncandescentDragon.class,
-            new Vector2f(142, 160), 1.3, EventAnimationDamageEnergyBeam.class,
+            new Vector2f(142, 160), 1.3, new EventAnimationDamageEnergyBeam(),
             List::of,
             List.of());
 

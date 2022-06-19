@@ -1,6 +1,5 @@
 package client.ui.menu;
 
-import client.Game;
 import org.newdawn.slick.geom.Vector2f;
 
 import client.ui.Text;
