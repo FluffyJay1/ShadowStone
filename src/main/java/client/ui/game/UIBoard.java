@@ -646,7 +646,7 @@ public class UIBoard extends UIBox {
                 this.draggingUnleash = false;
                 this.refreshAnimatedUnleashTargets();
                 if (c != null && c.getCard() instanceof Minion && c.getCard().team == this.b.getLocalteam()
-                        && this.b.getPlayer(this.b.getLocalteam()).canUnleashCard(c.getCard())) {
+                        && this.b.getPlayer(this.b.getLocalteam()).realPlayer.canUnleashCard(c.getCard().realCard)) {
                     this.selectUnleashingMinion(c);
                 }
             } else if (this.draggingCard != null) { // in middle of playing card
