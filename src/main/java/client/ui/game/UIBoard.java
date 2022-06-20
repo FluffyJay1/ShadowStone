@@ -34,7 +34,7 @@ import server.playeraction.*;
 
 public class UIBoard extends UIBox {
     public static final double CLICK_DISTANCE_THRESHOLD = 5;
-    public static final double BO_SPACING = 0.1, BO_Y_LOCAL = 0.105, BO_Y_ENEMY = -0.115;
+    public static final float BO_SPACING = 0.1f, BO_Y_LOCAL = 0.105f, BO_Y_ENEMY = -0.115f;
     public static final double LEADER_Y_LOCAL = 0.38, LEADER_Y_ENEMY = -0.4;
     public static final double UNLEASHPOWER_X = 0.07, UNLEASHPOWER_Y_LOCAL = 0.27, UNLEASHPOWER_Y_ENEMY = -0.29;
     public static final double HAND_X_LOCAL = 0.19, HAND_X_ENEMY = 0.28, HAND_X_EXPAND_LOCAL = 0.175;
@@ -520,7 +520,11 @@ public class UIBoard extends UIBox {
 
     public Vector2f getBoardPosFor(int cardpos, int team, int numCards) {
         return new Vector2f(boardPosToX(cardpos, team, numCards),
-                (float) (team == this.b.getLocalteam() ? BO_Y_LOCAL : BO_Y_ENEMY));
+                (float) this.getBoardPosY(team));
+    }
+
+    public float getBoardPosY(int team) {
+        return team == this.b.getLocalteam() ? BO_Y_LOCAL : BO_Y_ENEMY;
     }
 
     private int XToBoardPos(double x, int team, int numCards) {

@@ -2,6 +2,7 @@ package server.card.cardset.basic.forestrogue;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageDoubleSlice;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -30,7 +31,7 @@ public class Rhinoceroach extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/rhinoceroach.png",
             CRAFT, TRAITS, RARITY,2, 1, 1, 1, true, Rhinoceroach.class,
-            new Vector2f(182, 183), 1.5, new EventAnimationDamageSlash(),
+            new Vector2f(182, 183), 1.5, new EventAnimationDamageDoubleSlice(),
             () -> List.of(Tooltip.STORM, Tooltip.BATTLECRY),
             List.of());
     @Override

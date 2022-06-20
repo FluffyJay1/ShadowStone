@@ -2,6 +2,7 @@ package server.card.cardset.basic.dragondruid;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageAOEFire;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
 import server.ServerBoard;
 import server.ai.AI;
@@ -63,7 +64,7 @@ public class BreathOfTheSalamander extends SpellText {
                             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                                 List<Minion> relevant = b.getMinions(owner.team * -1, false, false).collect(Collectors.toList());
                                 DamageResolver r = this.resolve(b, rq, el,
-                                        new DamageResolver(effect, relevant, 2, false, new EventAnimationDamageFire().toString()));
+                                        new DamageResolver(effect, relevant, 2, false, new EventAnimationDamageAOEFire(owner.team * -1, false).toString()));
                                 markedForDeath.addAll(r.destroyed);
                             }
                         }));

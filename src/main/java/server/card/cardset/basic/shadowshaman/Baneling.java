@@ -1,6 +1,8 @@
 package server.card.cardset.basic.shadowshaman;
 
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageDefault;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.*;
 
@@ -30,7 +32,7 @@ public class Baneling extends MinionText {
         return List.of(new Effect(DESCRIPTION) {
             @Override
             public ResolverWithDescription lastWords() {
-                return new ResolverWithDescription(DESCRIPTION, new BlastResolver(this, 5, new EventAnimationDamage().toString()));
+                return new ResolverWithDescription(DESCRIPTION, new BlastResolver(this, 5, new EventAnimationDamageMagicHit().toString()));
             }
 
             @Override

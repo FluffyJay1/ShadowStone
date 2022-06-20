@@ -1,5 +1,6 @@
 package client.ui.game.visualboardanimation.eventanimation.damage;
 
+import client.Game;
 import client.ui.Animation;
 import client.ui.game.UIBoard;
 import client.ui.interpolation.meta.SequentialInterpolation;
@@ -7,7 +8,9 @@ import client.ui.interpolation.realvalue.ConstantInterpolation;
 import client.ui.interpolation.realvalue.LinearInterpolation;
 import client.ui.interpolation.realvalue.QuadraticInterpolationA;
 import client.ui.interpolation.realvalue.QuadraticInterpolationB;
+import client.ui.particle.ParticleSystem;
 import client.ui.particle.strategy.EmissionStrategy;
+import client.ui.particle.strategy.meta.ScaledEmissionStrategy;
 import client.ui.particle.strategy.property.*;
 import client.ui.particle.strategy.timing.InstantEmissionTimingStrategy;
 import client.ui.particle.strategy.timing.IntervalEmissionTimingStrategy;
@@ -52,6 +55,18 @@ public class EventAnimationDamageArrow extends EventAnimationDamage {
             ))
     );
 
+    private static final Supplier<EmissionStrategy> GLOW_EMISSION_STRATEGY = () -> new EmissionStrategy(
+            new InstantEmissionTimingStrategy(3),
+            new ComposedEmissionPropertyStrategy(List.of(
+                    new AnimationEmissionPropertyStrategy(() -> new Animation(Game.getImage("res/particle/misc/glow.png"))),
+                    new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.1, 0.4)),
+                    new ConstantEmissionPropertyStrategy(Graphics.MODE_ADD, 0.04, new Vector2f(),
+                            () -> new QuadraticInterpolationA(0.3, 0, -0.3),
+                            () -> new LinearInterpolation(1, 3)
+                    ),
+                    new RadialVelocityEmissionPropertyStrategy(new LinearInterpolation(0, 1500))
+            ))
+    );
     public EventAnimationDamageArrow() {
         super(0.25, true);
     }
@@ -59,14 +74,19 @@ public class EventAnimationDamageArrow extends EventAnimationDamage {
     @Override
     public void onStart() {
         for (Minion m : this.event.m) {
-            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getPos(), UIBoard.PARTICLE_Z_BOARD, BARRAGE_EMISSION_STRATEGY.get());
+            ParticleSystem ps = this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getPos(), UIBoard.PARTICLE_Z_BOARD,
+                    new ScaledEmissionStrategy(BARRAGE_EMISSION_STRATEGY.get(), m.uiCard.getScale()));
+            ps.followElement(m.uiCard, 1);
         }
     }
 
     @Override
     public void onProcess() {
         for (Minion m : this.event.m) {
-            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getPos(), UIBoard.PARTICLE_Z_BOARD, FINAL_STRIKE_EMISSION_STRATEGY.get());
+            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getPos(), UIBoard.PARTICLE_Z_BOARD,
+                    new ScaledEmissionStrategy(GLOW_EMISSION_STRATEGY.get(), m.uiCard.getScale()));
+            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getPos(), UIBoard.PARTICLE_Z_BOARD,
+                    new ScaledEmissionStrategy(FINAL_STRIKE_EMISSION_STRATEGY.get(), m.uiCard.getScale()));
         }
     }
 

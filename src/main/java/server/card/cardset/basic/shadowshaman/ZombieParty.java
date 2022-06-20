@@ -3,6 +3,8 @@ package server.card.cardset.basic.shadowshaman;
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageDefault;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
@@ -50,7 +52,7 @@ public class ZombieParty extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 3, true, new EventAnimationDamage().toString()));
+                        this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 3, true, new EventAnimationDamageMagicHit().toString()));
                         });
                         List<CardText> zombies = Collections.nCopies(3, new Zombie());
                         List<Integer> pos = Collections.nCopies(3, -1);

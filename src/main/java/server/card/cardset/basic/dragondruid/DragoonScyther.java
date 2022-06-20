@@ -2,6 +2,7 @@ package server.card.cardset.basic.dragondruid;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageDoubleSlice;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -31,7 +32,7 @@ public class DragoonScyther extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/dragoonscyther.png",
             CRAFT, TRAITS, RARITY, 3, 2, 1, 2, true, DragoonScyther.class,
-            new Vector2f(146, 155), 1.4, new EventAnimationDamageSlash(),
+            new Vector2f(146, 155), 1.4, new EventAnimationDamageDoubleSlice(),
             () -> List.of(Tooltip.BANE, Tooltip.BATTLECRY, Tooltip.STORM, Tooltip.OVERFLOW),
             List.of());
 

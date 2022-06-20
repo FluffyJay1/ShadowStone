@@ -2,6 +2,7 @@ package server.card.cardset.basic.bloodwarlock;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageAOEFire;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
 import server.ServerBoard;
 import server.ai.AI;
@@ -58,7 +59,7 @@ public class Revelation extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> targets = b.getMinions(0, false, true).collect(Collectors.toList());
-                        this.resolve(b, rq, el, new DamageResolver(effect, targets, 8, true, new EventAnimationDamageFire().toString()));
+                        this.resolve(b, rq, el, new DamageResolver(effect, targets, 8, true, new EventAnimationDamageAOEFire(0, false).toString()));
                     }
                 });
             }

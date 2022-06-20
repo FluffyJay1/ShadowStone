@@ -4,6 +4,7 @@ import java.util.*;
 
 import client.tooltip.*;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageDefault;
 import org.newdawn.slick.geom.Vector2f;
 import server.*;
 import server.ai.AI;
@@ -83,7 +84,7 @@ public class WoodOfBrambles extends AmuletText {
         @Override
         public ResolverWithDescription clash(Minion target) {
             String resolverDescription = "<b>Clash</b>: deal 1 damage to the enemy minion (from <b>Wood of Bramble's Aura</b>).";
-            return new ResolverWithDescription(resolverDescription, new DamageResolver(this, target, 1, true, new EventAnimationDamage().toString()));
+            return new ResolverWithDescription(resolverDescription, new DamageResolver(this, target, 1, true, new EventAnimationDamageDefault().toString()));
         }
 
         @Override

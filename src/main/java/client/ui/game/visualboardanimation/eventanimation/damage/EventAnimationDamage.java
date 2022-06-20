@@ -18,16 +18,8 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.newdawn.slick.opengl.renderer.SGL.GL_ONE;
 import static org.newdawn.slick.opengl.renderer.SGL.GL_SRC_ALPHA;
 
-public class EventAnimationDamage extends EventAnimation<EventDamage> {
+public abstract class EventAnimationDamage extends EventAnimation<EventDamage> {
     /*
-     * So this is weird. If the EventDamage has a source, we want to draw the source
-     * effect shooting something at the victims. However, if the source is null,
-     * there is nothing to do the shooting so we just straight up damage it. If the
-     * EventDamage had a source, then the VisualBoard should've used that effect's
-     * special animation for damage, and that special animation doesn't have to
-     * consider the null source case. Since this animation serves as a default, it
-     * is the only class that has to handle both cases.
-     *
      * If subclasses have no additional parameters, all they need to implement
      * the () constructor, nothing else is needed. If the animation requires
      * some parameters, they will need to implement a
@@ -37,10 +29,6 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
     List<Vector2f> dirs;
     List<Double> anglesRad;
     private final boolean requireNonEmpty;
-
-    public EventAnimationDamage() {
-        this(-1, 0.5, true);
-    }
 
     public EventAnimationDamage(double preTime, boolean requireNonEmpty) {
         this(preTime, 0.5, requireNonEmpty);
@@ -55,9 +43,6 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
     public void init(VisualBoard b, EventDamage event) {
         this.visualBoard = b;
         this.event = event;
-        if (this.preTime == -1) {
-            this.preTime = 0.25;
-        }
         if (this.requireNonEmpty && event.m.isEmpty()) {
             this.preTime = 0;
             this.postTime = 0;
@@ -75,17 +60,7 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
 
     @Override
     public void draw(Graphics g) {
-        if (this.isPre()) {
-            // do the shooting
-            g.setColor(Color.red);
-            for (int i = 0; i < this.event.m.size(); i++) {
-                Vector2f pos = this.event.m.get(i).uiCard.getAbsPos()
-                        .sub(this.event.cardSource.uiCard.getAbsPos()).scale((float) (this.normalizedPre()))
-                        .add(this.event.cardSource.uiCard.getAbsPos());
-                g.fillOval(pos.x - 20, pos.y - 20, 40, 40);
-            }
-            g.setColor(Color.white);
-        } else {
+        if (!this.isPre()) {
             this.drawDamageNumber(g);
         }
     }
@@ -181,7 +156,7 @@ public class EventAnimationDamage extends EventAnimation<EventDamage> {
     public static EventAnimationDamage fromString(StringTokenizer st) {
         String firstToken = st.nextToken();
         if (firstToken.equals("null")) {
-            return new EventAnimationDamage();
+            return new EventAnimationDamageDefault();
         }
         String className = st.nextToken();
         try {

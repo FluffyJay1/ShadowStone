@@ -5,6 +5,7 @@ import client.ui.game.UIBoard;
 import client.ui.interpolation.meta.SequentialInterpolation;
 import client.ui.interpolation.realvalue.ConstantInterpolation;
 import client.ui.interpolation.realvalue.QuadraticInterpolationB;
+import client.ui.particle.ParticleSystem;
 import client.ui.particle.strategy.EmissionStrategy;
 import client.ui.particle.strategy.meta.ScaledEmissionStrategy;
 import client.ui.particle.strategy.property.*;
@@ -46,16 +47,18 @@ public class EventAnimationDamageClaw extends EventAnimationDamage {
     @Override
     public void onStart() {
         for (Minion m : this.event.m) {
-            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getPos(),UIBoard.PARTICLE_Z_BOARD,
+            ParticleSystem ps = this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getPos(),UIBoard.PARTICLE_Z_BOARD,
                     new ScaledEmissionStrategy(CLAW_EMISSION_STRATEGY.get(), m.uiCard.getScale()));
+            ps.followElement(m.uiCard, 1);
         }
     }
 
     @Override
     public void onProcess() {
         for (Minion m : this.event.m) {
-            this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getPos(),UIBoard.PARTICLE_Z_BOARD,
+            ParticleSystem ps = this.visualBoard.uiBoard.addParticleSystem(m.uiCard.getPos(),UIBoard.PARTICLE_Z_BOARD,
                     new ScaledEmissionStrategy(CLAW_EMISSION_STRATEGY.get(), BIG_CLAW_SCALE * m.uiCard.getScale()));
+            ps.followElement(m.uiCard, 1);
         }
     }
 

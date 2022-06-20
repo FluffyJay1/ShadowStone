@@ -4,6 +4,8 @@ import java.util.*;
 
 import client.tooltip.*;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageDefault;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
 import org.newdawn.slick.geom.Vector2f;
 import server.*;
 import server.card.*;
@@ -54,7 +56,7 @@ public class UnleashTapSoul extends UnleashPowerText {
                         Player p = b.getPlayer(effect.owner.team);
                         if (!p.vengeance()) {
                             this.resolve(b, rq, el, new DamageResolver(effect,
-                                    effect.owner.board.getPlayer(effect.owner.team).getLeader().orElse(null), 2, true, new EventAnimationDamage().toString()));
+                                    effect.owner.board.getPlayer(effect.owner.team).getLeader().orElse(null), 2, true, new EventAnimationDamageMagicHit().toString()));
                         }
                     }
                 });

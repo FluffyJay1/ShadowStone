@@ -152,13 +152,10 @@ public class GameController {
     private void sendEvents() {
         String eventBurstString = this.b.retrieveEventBurstString();
         if (!eventBurstString.isEmpty()) {
-            this.sendEventBurst(1, eventBurstString);
-            this.sendEventBurst(-1, eventBurstString);
+            for (DataStream ds : this.players) {
+                ds.sendEventBurstString(eventBurstString);
+            }
         }
-    }
-
-    private void sendEventBurst(int team, String eventBurstString) {
-        this.players.get(teamToIndex(team)).sendEventBurstString(eventBurstString);
     }
 
     public int teamToIndex(int team) {

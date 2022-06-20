@@ -2,6 +2,7 @@ package server.card.cardset.basic.neutral;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageAOESlice;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -47,7 +48,8 @@ public class GrimnirWarCyclone extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         for (int i = 0; i < 4; i++) {
                             List<Minion> targets = b.getMinions(owner.team * -1, true, true).collect(Collectors.toList());
-                            this.resolve(b, rq, el, new DamageResolver(effect, targets, 1, true, new EventAnimationDamageSlash().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, targets, 1, true,
+                                    new EventAnimationDamageAOESlice(owner.team * -1, true).toString()));
                         }
                     }
                 }));

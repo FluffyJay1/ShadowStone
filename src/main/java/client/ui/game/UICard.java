@@ -90,7 +90,7 @@ public class UICard extends UIBox {
                             () -> new QuadraticInterpolationB(0, 0, 1),
                             () -> new QuadraticInterpolationB(0.6, 0.8, 0.4)
                     ),
-                    new RectanglePositionEmissionPropertyStrategy(CARD_DIMENSIONS),
+                    new RectangleEdgePositionEmissionPropertyStrategy(CARD_DIMENSIONS),
                     new RadialVelocityEmissionPropertyStrategy(new LinearInterpolation(0, 10)),
                     new RandomAngleEmissionPropertyStrategy(new LinearInterpolation(-10, 10))
             ))

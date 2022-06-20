@@ -2,6 +2,7 @@ package server.card.cardset.basic.dragondruid;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageAOEFire;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
@@ -43,7 +44,7 @@ public class Fafnir extends MinionText {
                         List<Minion> relevant = b.getMinions(0, false, true)
                                 .filter(m -> m != owner)
                                 .collect(Collectors.toList());
-                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, 2, true, new EventAnimationDamageFire().toString()));
+                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, 2, true, new EventAnimationDamageAOEFire(0, false).toString()));
                     }
                 });
             }

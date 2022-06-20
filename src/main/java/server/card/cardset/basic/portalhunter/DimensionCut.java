@@ -2,6 +2,7 @@ package server.card.cardset.basic.portalhunter;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageDoubleSlice;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import server.ServerBoard;
 import server.ai.AI;
@@ -50,7 +51,7 @@ public class DimensionCut extends SpellText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             int damage = owner.player.resonance() ? 5 : 3;
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, damage, true, new EventAnimationDamageSlash().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, damage, true, new EventAnimationDamageDoubleSlice().toString()));
                         });
                     }
                 });
