@@ -2,6 +2,7 @@ package server.card.cardset.basic.bloodwarlock;
 
 import client.tooltip.TooltipSpell;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
 import server.ServerBoard;
 import server.card.CardRarity;
 import server.card.CardTrait;
@@ -39,7 +40,7 @@ public class BloodPact extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         owner.player.getLeader().ifPresent(l -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, l, 2, true, new EventAnimationDamageFire().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, l, 2, true, new EventAnimationDamageMagicHit().toString()));
                             this.resolve(b, rq, el, new DrawResolver(owner.player, 2));
                         });
                     }

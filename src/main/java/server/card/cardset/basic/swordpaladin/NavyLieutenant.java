@@ -4,6 +4,7 @@ import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectAura;
@@ -33,6 +34,11 @@ public class NavyLieutenant extends MinionText {
             @Override
             public boolean applyConditions(Card cardToApply) {
                 return cardToApply instanceof Minion && cardToApply.finalTraits.contains(CardTrait.OFFICER);
+            }
+
+            @Override
+            public double getPresenceValue(int refs) {
+                return AI.VALUE_OF_WARD;
             }
         });
     }

@@ -9,6 +9,7 @@ import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
+import server.card.effect.EffectUntilTurnEnd;
 import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
@@ -23,7 +24,8 @@ import java.util.List;
 
 public class ElvenPrincessMage extends MinionText {
     public static final String NAME = "Elven Princess Mage";
-    public static final String DESCRIPTION = "<b>Unleash</b>: Add 2 <b>Fairies</b> to your hand and set their cost to 0.";
+    public static final String DESCRIPTION = "<b>Unleash</b>: Add 2 <b>Fairies</b> to your hand and set their cost to 0, " +
+            "and gain +X/+0/+0 and <b>Rush</b> until the end of the turn. X equals this minion's magic.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
@@ -50,6 +52,12 @@ public class ElvenPrincessMage extends MinionText {
                                 .set(Stat.COST, 0)
                                 .build());
                         this.resolve(b, rq, el, new AddEffectResolver(ccr.event.successfullyCreatedCards, costBuff));
+                        int x = owner.finalStats.get(Stat.MAGIC);
+                        Effect buff = new EffectUntilTurnEnd("+" + x + "/+0/+0 and <b>Rush</b> until the end of the turn (from <b>Unleash</b>).", EffectStats.builder()
+                                .change(Stat.ATTACK, x)
+                                .set(Stat.RUSH, 1)
+                                .build());
+                        this.resolve(b, rq, el, new AddEffectResolver(owner, buff));
                     }
                 });
             }

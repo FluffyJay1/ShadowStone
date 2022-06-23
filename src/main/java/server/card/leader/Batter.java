@@ -15,7 +15,7 @@ public class Batter extends LeaderText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, "The purifier.", "res/card/basic/batter.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, "The purifier.", "res/card/indie/batter.png",
             CRAFT, TRAITS, RARITY, 0, 0, 0, 25, false, Batter.class,
             new Vector2f(112, 120), 2, null,
             List::of,

@@ -13,38 +13,26 @@ import server.card.cardset.basic.swordpaladin.*;
 
 public class ExpansionSetBasic extends ExpansionSet {
     public static final CardSet UNPLAYABLE_SET = new CardSet(new Fairy(), new Skeleton(), new Knight(), new Puppet(),
-            new HolyFalcon(), new HolyflameTiger(), new Spectre(), new Zombie(), new Snowman(), new HeavyKnight(),
-            new LeonidasResolve(), new CrimsonSorcery(), new ClayGolem(), new Dragon(), new Ghost(), new TimeOwl(),
-            new HolywingDragon(), new AnalyzingArtifact(), new AncientArtifact(), new MysticArtifact(),
-            new RadiantArtifact(), new ArtifactRhino(), new ServantOfDarkness(), new NotCoin());
+            new HolyFalcon(), new HolyflameTiger(), new Zombie(), new Snowman(), new HeavyKnight(), new CrimsonSorcery(),
+            new ClayGolem(), new Dragon(), new Ghost(), new TimeOwl(), new HolywingDragon(), new AnalyzingArtifact(),
+            new AncientArtifact(), new MysticArtifact(), new RadiantArtifact(), new ServantOfDarkness(), new NotCoin(),
+            new WhiteBreath(), new BlackBreath());
 
-    public static final CardSet PLAYABLE_SET = new CardSet(new Goblin(), new Fighter(), new LochnLoad(), new Tiny(),
-            new WellOfDestination(), new BellringerAngel(), new GenesisOfLegend(), new WoodOfBrambles(), new Baneling(),
-            new CursedStone(), new WeatheredVanguard(), new DragonOracle(), new Curate(), new PuppetRoom(), new Beastmaster(),
-            new StonetuskBoar(), new BlackenedScripture(), new MordecaiTheDuelist(), new HallowedDogma(), new BeastcallAria(),
-            new SiegeTank(), new Batter(), new Chronos(), new Rhinoceroach(), new DemonlordEachtar(), new MoltenGiant(),
-            new FatesHand(), new SummonSnow(), new BreathOfTheSalamander(), new Cucouroux(), new TerrorDemon(), new Tanya(),
-            new EphemeraAngelicSlacker(), new ShadowReaper(), new Immortal(), new Belphegor(), new NaturesGuidance(),
-            new FairyWhisperer(), new DungeoncrawlFairy(), new SukunaBraveAndSmall(), new SylvanJustice(), new BeetleWarrior(),
-            new Cassiopeia(), new GlimmeringWings(), new Vanish(), new SellswordLucius(), new Assassin(), new CentaurVanguard(),
-            new Cuhullin(), new NavyLieutenant(), new Thief(), new Jeno(), new FrontlineCavalier(), new Magnolia(),
-            new Leonidas(), new WholeSouledSwing(), new Insight(), new TimewornMageLevi(), new MagicOwl(), new ConjureGolem(),
-            new MagicMissile(), new WindBlast(), new KaleidoscopicGlow(), new RuneBladeSummoner(), new ChaosWielder(),
-            new Rimewind(), new ConjuringForce(), new BladeMage(), new FieryEmbrace(), new FlameDestroyer(), new Chimera(),
-            new IvoryDragon(), new ScaleboundPlight(), new AielaDragonKnight(), new DragoonScyther(), new GriffonKnight(),
-            new DracomancersRites(), new Rahab(), new PyroxeneDragon(), new BlazingBreath(), new VenomousPucewyrm(),
-            new CanyonOfTheDragons(), new Fafnir(), new SkullBeast(), new MischievousSpirit(), new SoulConversion(),
-            new DemonEater(), new LadyGreyDeathweaver(), new UndyingResentment(), new ZombieParty(), new BoneChimera(),
-            new NecroAssassin(), new PrinceCatacomb(), new BanelingBust(), new UnderworldWatchmanKhawy(), new Defile(),
-            new AmblingWraith(), new SwarmingWraith(), new BloodPact(), new RazoryClaw(), new EndearingSuccubusLilith(),
-            new DemonKey(), new PrisonOfPain(), new DarkGeneral(), new ScarletSabreur(), new Revelation(), new TemptressVampire(),
-            new DemonicRam(), new SacredPlea(), new FeatherfallHourglass(), new RabbitHealer(), new MoriaeEncomium(),
-            new PriestOfTheCudgel(), new WhitefangTemple(), new ElanasPrayer(), new KelHolyMarksman(), new TribunalOfGoodAndEvil(),
-            new Acceleratium(), new MagisteelLion(), new Icarus(), new AugmentationBestowal(), new AncientAmplifier(),
-            new DimensionCut(), new ArtifactCall(), new TranquilCog(), new IronforgedFighter(), new MortonTheManipulator(),
-            new PuppeteersStrings(), new VengefulPuppeteerNoah(), new ElectromagicalRhino(), new ElvenPrincessMage(),
-            new AncientForestDragon(), new RaioOmenOfTruth(), new IncandescentDragon(), new AmethystGiant(), new PureheartedSinger(),
-            new Urd(), new CallOfCocytus(), new GrimnirWarCyclone());
+    public static final CardSet PLAYABLE_SET = new CardSet(new Goblin(), new Fighter(), new WoodOfBrambles(), new CursedStone(),
+            new DragonOracle(), new Curate(), new PuppetRoom(), new BlackenedScripture(), new HallowedDogma(), new BeastcallAria(),
+            new FatesHand(), new SummonSnow(), new BreathOfTheSalamander(), new Tanya(), new NaturesGuidance(), new FairyWhisperer(),
+            new SylvanJustice(), new BeetleWarrior(), new GlimmeringWings(), new SellswordLucius(), new CentaurVanguard(),
+            new NavyLieutenant(), new Thief(), new Jeno(), new FrontlineCavalier(), new WholeSouledSwing(), new Insight(),
+            new ConjureGolem(), new MagicMissile(), new WindBlast(), new FieryEmbrace(), new FlameDestroyer(), new IvoryDragon(),
+            new ScaleboundPlight(), new DragoonScyther(), new BlazingBreath(), new SkullBeast(), new SoulConversion(), new DemonEater(),
+            new LadyGreyDeathweaver(), new UndyingResentment(), new ZombieParty(), new BoneChimera(), new Defile(), new AmblingWraith(),
+            new SwarmingWraith(), new BloodPact(), new RazoryClaw(), new DarkGeneral(), new ScarletSabreur(), new TemptressVampire(),
+            new SacredPlea(), new FeatherfallHourglass(), new RabbitHealer(), new PriestOfTheCudgel(), new TribunalOfGoodAndEvil(),
+            new Acceleratium(), new MagisteelLion(), new Icarus(), new AugmentationBestowal(), new DimensionCut(), new TranquilCog(),
+            new IronforgedFighter(), new PuppeteersStrings(), new PureheartedSinger(), new CallOfCocytus(), new StonetuskBoar(),
+            new DarkBladefiend(), new DeathsBreath(), new GaluaOfTwoBreaths(), new Conflagration(), new Siegfried(), new ForestWhispers(),
+            new IDidThat(), new BoulderfistOgre(), new ItsOkToDie(), new Maahes(), new ElvenPrincessMage(), new LancerOfTheTempest(),
+            new Meteor());
 
     @Override
     public CardSet getCards() {

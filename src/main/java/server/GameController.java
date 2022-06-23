@@ -68,9 +68,9 @@ public class GameController {
                             new EventCreateCard(shuffledCards, team, CardStatus.DECK, inds, CardVisibility.NONE));
                     UnleashPower up = unleashPowers.get(i).constructInstance(b);
                     b.processEvent(rq, null,
-                            new EventCreateCard(List.of(up), team, CardStatus.UNLEASHPOWER, List.of(0)));
+                            new EventCreateCard(List.of(up), team, CardStatus.UNLEASHPOWER, List.of(0), CardVisibility.ALL));
                     b.processEvent(rq, null,
-                            new EventCreateCard(List.of(leaders.get(i).constructInstance(b)), team, CardStatus.LEADER, List.of(0)));
+                            new EventCreateCard(List.of(leaders.get(i).constructInstance(b)), team, CardStatus.LEADER, List.of(0), CardVisibility.ALL));
                 }
             }
         };

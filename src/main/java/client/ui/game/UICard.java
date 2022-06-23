@@ -170,7 +170,7 @@ public class UICard extends UIBox {
 
     public void updateFlippedOver() {
         if (this.uib != null) {
-            this.setFlippedOver(!this.card.isVisibleTo(uib.b.getLocalteam()));
+            this.setFlippedOver(!this.card.isVisibleTo(this.uib.b.getLocalteam()));
         }
     }
 

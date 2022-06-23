@@ -32,7 +32,7 @@ public class EventAnimationDamageAOEFire extends EventAnimationDamage {
                             () -> new QuadraticInterpolationA(0, 0, -1.5),
                             () -> new LinearInterpolation(1 + Math.random() * 3, 3 + Math.random() * 3)
                     ),
-                    new RectanglePositionEmissionPropertyStrategy(new Vector2f(Config.WINDOW_WIDTH * 0.6f, Config.WINDOW_HEIGHT * 0.3f * yscale)),
+                    new RectanglePositionEmissionPropertyStrategy(new Vector2f(Config.WINDOW_WIDTH * 0.6f, Config.WINDOW_HEIGHT * 0.2f * yscale)),
                     new DirectionalVelocityEmissionPropertyStrategy(new Vector2f(0, -1), new LinearInterpolation(100, 200)),
                     new RandomAngleEmissionPropertyStrategy(new LinearInterpolation(-500, 500))
             ))
@@ -54,7 +54,7 @@ public class EventAnimationDamageAOEFire extends EventAnimationDamage {
             ))
     );
 
-    private static final double INCLUDE_LEADER_OFFSET = 0.2;
+    private static final double INCLUDE_LEADER_OFFSET = 0.1;
 
     final int team;
     final boolean includeLeader;
@@ -80,7 +80,7 @@ public class EventAnimationDamageAOEFire extends EventAnimationDamage {
         if (this.includeLeader) {
             yscale *= 1.5;
         }
-        this.visualBoard.uiBoard.addParticleSystem(new Vector2f(0, y * Config.WINDOW_HEIGHT / 2), UIBoard.PARTICLE_Z_BOARD, CHARGING_EMISSION_STRATEGY.apply(yscale));
+        this.visualBoard.uiBoard.addParticleSystem(new Vector2f(0, y * Config.WINDOW_HEIGHT), UIBoard.PARTICLE_Z_BOARD, CHARGING_EMISSION_STRATEGY.apply(yscale));
     }
 
     @Override

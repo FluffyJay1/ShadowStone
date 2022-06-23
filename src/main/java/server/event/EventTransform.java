@@ -15,7 +15,7 @@ import java.util.StringTokenizer;
 // Changes references, should not run concurrent with other events
 public class EventTransform extends Event {
     public static final int ID = 5;
-    public final List<Card> cards;
+    public final List<? extends Card> cards;
     public final List<Card> into;
     private List<Boolean> alive;
     private List<CardStatus> prevStatus;
@@ -24,7 +24,7 @@ public class EventTransform extends Event {
     private List<Integer> prevLastBoardEpoch;
     private int prevEpoch1, prevEpoch2;
 
-    public EventTransform(List<Card> c, List<Card> into) {
+    public EventTransform(List<? extends Card> c, List<Card> into) {
         super(ID);
         assert c.size() == into.size();
         this.cards = c;

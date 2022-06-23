@@ -3,7 +3,6 @@ package server.card.cardset.basic.forestrogue;
 import java.util.*;
 
 import client.tooltip.*;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageDefault;
 import org.newdawn.slick.geom.Vector2f;
 import server.*;

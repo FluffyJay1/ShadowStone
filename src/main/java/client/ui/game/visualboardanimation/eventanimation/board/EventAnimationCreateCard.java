@@ -88,6 +88,7 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
             for (int i = 0; i < this.event.cards.size(); i++) {
                 Card c = this.event.cards.get(i);
                 UICard uic = c.uiCard;
+                uic.updateFlippedOver();
                 this.useCardInAnimation(uic);
                 uic.setVisible(true);
                 uic.setScale(UICard.SCALE_MOVE);

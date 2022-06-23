@@ -13,16 +13,16 @@ import java.util.stream.Collectors;
 
 public class TransformResolver extends Resolver {
     public EventTransform event;
-    List<Card> c;
+    List<? extends Card> c;
     List<CardText> into;
 
-    public TransformResolver(List<Card> c, List<CardText> into) {
+    public TransformResolver(List<? extends Card> c, List<CardText> into) {
         super(false);
         this.c = c;
         this.into = into;
     }
 
-    public TransformResolver(List<Card> c, CardText into) {
+    public TransformResolver(List<? extends Card> c, CardText into) {
         this(c, Collections.nCopies(c.size(), into));
     }
 

@@ -3,6 +3,7 @@ package server.card.cardset.basic.bloodwarlock;
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.Player;
@@ -42,7 +43,7 @@ public class AmblingWraith extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Leader> relevant = b.getPlayerCard(0, Player::getLeader).collect(Collectors.toList());
-                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, 1, true, new EventAnimationDamageFire().toString()));
+                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, 1, true, new EventAnimationDamageMagicHit().toString()));
                     }
                 });
             }

@@ -38,7 +38,7 @@ public class IHadThreeFriends extends SpellText {
             @Override
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
                 return List.of(
-                        new ModalTargetingScheme(this, 1, "<b>Choose 1</b>", List.of(
+                        new ModalTargetingScheme(this, 1, "<b>Choose</b> 1", List.of(
                                 new ModalOption("Give <b>Rush</b> to <b>Add-on: Alpha</b>.", e -> {
                                     Player p = e.owner.board.getPlayer(e.owner.team);
                                     return p.getPlayArea().size() < p.maxPlayAreaSize;

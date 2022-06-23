@@ -5,6 +5,9 @@ import java.util.*;
 import server.UnleashPowerText;
 import server.card.*;
 import server.card.cardset.basic.*;
+import server.card.cardset.indie.ExpansionSetIndie;
+import server.card.cardset.moba.ExpansionSetMoba;
+import server.card.cardset.standard.ExpansionSetStandard;
 import server.card.leader.*;
 import server.card.unleashpower.basic.*;
 
@@ -30,8 +33,10 @@ import server.card.unleashpower.basic.*;
  *
  */
 public class CardSet implements Iterable<CardText> {
-    public static final CardSet UNPLAYABLE_SET = new CardSet(ExpansionSetBasic.UNPLAYABLE_SET);
-    public static final CardSet PLAYABLE_SET = new CardSet(ExpansionSetBasic.PLAYABLE_SET);
+    public static final CardSet UNPLAYABLE_SET = new CardSet(ExpansionSetBasic.UNPLAYABLE_SET, ExpansionSetStandard.UNPLAYABLE_SET,
+            ExpansionSetMoba.UNPLAYABLE_SET, ExpansionSetIndie.UNPLAYABLE_SET);
+    public static final CardSet PLAYABLE_SET = new CardSet(ExpansionSetBasic.PLAYABLE_SET, ExpansionSetStandard.PLAYABLE_SET,
+            ExpansionSetMoba.PLAYABLE_SET, ExpansionSetIndie.PLAYABLE_SET);
     /**
      * A set of card classes
      */

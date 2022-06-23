@@ -32,12 +32,9 @@ public class EventCreateCard extends Event {
         this.successfullyCreatedCards = new ArrayList<>(cards.size());
         this.visibility = visibility;
         for (Card c : this.cards) {
+            c.team = team;
             c.visibility = visibility;
         }
-    }
-
-    public EventCreateCard(List<Card> cards, int team, CardStatus status, List<Integer> cardpos) {
-        this(cards, team, status, cardpos, CardVisibility.ALL);
     }
 
     @Override
