@@ -43,13 +43,13 @@ public class DungeonRunGameRunner implements Runnable {
             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                 b.getPlayer(gc.indexToTeam(0)).getLeader().ifPresent(l -> {
                     this.resolve(b, rq, el, new AddEffectResolver(l, new Effect("", EffectStats.builder()
-                            .change(Stat.HEALTH, player.getBonusHealth())
+                            .set(Stat.HEALTH, player.getHealth())
                             .build()
                     )));
                 });
                 b.getPlayer(gc.indexToTeam(1)).getLeader().ifPresent(l -> {
                     this.resolve(b, rq, el, new AddEffectResolver(l, new Effect("", EffectStats.builder()
-                            .change(Stat.HEALTH, enemy.getBonusHealth())
+                            .set(Stat.HEALTH, enemy.getHealth())
                             .build()
                     )));
                 });

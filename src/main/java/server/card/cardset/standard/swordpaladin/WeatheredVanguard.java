@@ -36,14 +36,14 @@ public class WeatheredVanguard extends MinionText {
 
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
-                return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
+                return new ResolverWithDescription(DESCRIPTION, new SpendResolver(this, 3, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> knights = Collections.nCopies(3, new HeavyKnight());
                         List<Integer> pos = Collections.nCopies(3, owner.getIndex() + 1);
                         this.resolve(b, rq, el, new CreateCardResolver(knights, owner.team, CardStatus.BOARD, pos));
                     }
-                });
+                }));
             }
 
             @Override

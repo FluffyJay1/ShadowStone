@@ -5,7 +5,7 @@ import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.*;
-import server.card.cardset.basic.neutral.StonetuskBoar;
+import server.card.cardset.standard.neutral.StonetuskBoar;
 import server.card.effect.Effect;
 import server.card.effect.EffectAura;
 import server.card.effect.Stat;

@@ -121,7 +121,7 @@ public class DungeonRunStatusPanel extends UIBox {
         public void setEnemy(Contestant enemy) {
             this.enemy = enemy;
             this.leader.setCardText(enemy.leaderText);
-            this.leader.setBonusHealth(enemy.getBonusHealth());
+            this.leader.setHealth(enemy.getHealth());
             this.unleashpower.setCardText(enemy.unleashPowerText);
             this.nameText.setText(enemy.leaderText.getTooltip().name);
             this.classText.setText(enemy.leaderText.getTooltip().craft.toString());

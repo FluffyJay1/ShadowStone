@@ -1,6 +1,8 @@
 package server.card.cardset;
 
 import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import server.UnleashPowerText;
 import server.card.*;
@@ -33,9 +35,9 @@ import server.card.unleashpower.basic.*;
  *
  */
 public class CardSet implements Iterable<CardText> {
-    public static final CardSet UNPLAYABLE_SET = new CardSet(ExpansionSetBasic.UNPLAYABLE_SET, ExpansionSetStandard.UNPLAYABLE_SET,
+    public static final Supplier<CardSet> UNPLAYABLE_SET = () -> new CardSet(ExpansionSetBasic.UNPLAYABLE_SET, ExpansionSetStandard.UNPLAYABLE_SET,
             ExpansionSetMoba.UNPLAYABLE_SET, ExpansionSetIndie.UNPLAYABLE_SET);
-    public static final CardSet PLAYABLE_SET = new CardSet(ExpansionSetBasic.PLAYABLE_SET, ExpansionSetStandard.PLAYABLE_SET,
+    public static final Supplier<CardSet> PLAYABLE_SET = () -> new CardSet(ExpansionSetBasic.PLAYABLE_SET, ExpansionSetStandard.PLAYABLE_SET,
             ExpansionSetMoba.PLAYABLE_SET, ExpansionSetIndie.PLAYABLE_SET);
     /**
      * A set of card classes
@@ -56,6 +58,10 @@ public class CardSet implements Iterable<CardText> {
      */
     public CardSet(CardText... cardTexts) {
         this.cardTexts.addAll(Arrays.asList(cardTexts));
+    }
+
+    public CardSet(Set<CardText> cardTexts) {
+        this.cardTexts.addAll(cardTexts);
     }
 
     /**
@@ -88,13 +94,16 @@ public class CardSet implements Iterable<CardText> {
 
     /**
      * Filters until only cards that match the crafts are left
+     * Does not modify the source cardset
      * 
      * @param crafts the crafts of cards that remain
-     * @return the modified cardset
+     * @return the new cardset
      */
     public CardSet filterCraft(ClassCraft... crafts) {
-        this.cardTexts.removeIf(cardText -> !Arrays.asList(crafts).contains(cardText.getTooltip().craft));
-        return this;
+        List<ClassCraft> craftList = Arrays.asList(crafts);
+        return new CardSet(this.cardTexts.stream()
+                .filter(ct -> craftList.contains(ct.getTooltip().craft))
+                .collect(Collectors.toSet()));
     }
 
     /**

@@ -28,7 +28,7 @@ public class Contestant implements Serializable {
         this.specialCards = specialCards;
     }
 
-    public int getBonusHealth() {
-        return 5 * this.level;
+    public int getHealth() {
+        return 5 * this.level + 10;
     }
 }

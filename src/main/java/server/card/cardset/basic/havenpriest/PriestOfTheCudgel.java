@@ -25,7 +25,7 @@ public class PriestOfTheCudgel extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/priestofthecudgel.png",
-            CRAFT, TRAITS, RARITY, 4, 3, 1, 4, false, PriestOfTheCudgel.class,
+            CRAFT, TRAITS, RARITY, 4, 3, 1, 5, false, PriestOfTheCudgel.class,
             new Vector2f(162, 140), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.UNLEASH, Tooltip.BANISH),
             List.of());

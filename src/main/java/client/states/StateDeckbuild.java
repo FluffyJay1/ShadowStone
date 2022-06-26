@@ -149,7 +149,7 @@ public class StateDeckbuild extends BasicGameState {
     }
 
     private void enterDeckbuilding() {
-        currentCardSet = new CardSet(CardSet.PLAYABLE_SET).filterCraft(ClassCraft.NEUTRAL, currentDeck.craft);
+        currentCardSet = CardSet.PLAYABLE_SET.get().filterCraft(ClassCraft.NEUTRAL, currentDeck.craft);
         cardsetpanel.setVisible(true);
         cardsetpanel.setCardSet(currentCardSet);
         deckdisplaypanel.setVisible(true);

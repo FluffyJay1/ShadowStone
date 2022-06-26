@@ -82,7 +82,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         this.targetpos.set(pos);
         this.speed = speed;
         if (speed == 1) {
-            this.pos.set(pos);
+            this.assignPos(pos);
         }
     }
 
@@ -360,9 +360,9 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         Vector2f delta = this.targetpos.copy().sub(this.pos);
         if (delta.length() > EPSILON) {
             float ratio = 1 - (float) Math.pow(1 - this.speed, frametime);
-            this.pos.add(delta.scale(ratio));
+            this.assignPos(this.pos.copy().add(delta.scale(ratio)));
         } else {
-            this.pos.set(this.targetpos);
+            this.assignPos(this.targetpos);
         }
 
         this.updateRelationships();
@@ -373,6 +373,11 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
             Collections.sort(this.children);
             this.updateZOrder = false;
         }
+    }
+
+    // hook for when the actual pos vector gets updated
+    protected void assignPos(Vector2f newPos) {
+        this.pos.set(newPos);
     }
 
     public void followElement(UIElement target, double speed) {

@@ -13,7 +13,8 @@ import server.card.cardset.standard.shadowshaman.*;
 import server.card.cardset.standard.swordpaladin.*;
 
 public class ExpansionSetStandard extends ExpansionSet {
-    public static final CardSet UNPLAYABLE_SET = new CardSet(new ArtifactRhino(), new Camieux(), new LeonidasResolve());
+    public static final CardSet UNPLAYABLE_SET = new CardSet(new ArtifactRhino(), new Camieux(), new LeonidasResolve(),
+            new ServantOfDarkness());
 
     public static final CardSet PLAYABLE_SET = new CardSet(new Belphegor(), new DemonicRam(), new DemonKey(), new EndearingSuccubusLilith(),
             new MoltenGiant(), new PrisonOfPain(), new Revelation(), new TerrorDemon(), new AielaDragonKnight(), new CanyonOfTheDragons(),
@@ -26,10 +27,10 @@ public class ExpansionSetStandard extends ExpansionSet {
             new KaleidoscopicGlow(), new MagicOwl(), new RaioOmenOfTruth(), new Rimewind(), new RuneBladeSummoner(), new TimewornMageLevi(),
             new DemonlordEachtar(), new MischievousSpirit(), new MordecaiTheDuelist(), new NecroAssassin(), new PrinceCatacomb(),
             new ShadowReaper(), new UnderworldWatchmanKhawy(), new Assassin(), new Cuhullin(), new Leonidas(), new Magnolia(),
-            new WeatheredVanguard());
+            new WeatheredVanguard(), new StonetuskBoar(), new CallOfCocytus());
 
     @Override
     public CardSet getCards() {
-        return PLAYABLE_SET;
+        return new CardSet(PLAYABLE_SET);
     }
 }

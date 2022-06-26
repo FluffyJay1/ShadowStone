@@ -1,11 +1,17 @@
 <?xml version="1.0"?>
 <enemies>
     <contestant leader="server.card.leader.Rowen" unleash="server.card.unleashpower.basic.UnleashFeedFervor">
-        <cardset>server.card.cardset.basic.ExpansionSetBasic</cardset>
+        <cardset>server.card.cardset.standard.ExpansionSetStandard</cardset>
         <card>server.card.cardset.special.rowen.HearTheDragonsRoar</card>
     </contestant>
     <contestant leader="server.card.leader.Batter" unleash="server.card.unleashpower.special.SaveSecretBase">
-        <cardset>server.card.cardset.basic.ExpansionSetBasic</cardset>
+        <cardset>server.card.cardset.standard.ExpansionSetStandard</cardset>
+        <cardset>server.card.cardset.indie.ExpansionSetIndie</cardset>
         <card>server.card.cardset.special.batter.IHadThreeFriends</card>
+    </contestant>
+    <contestant leader="server.card.leader.Lich" unleash="server.card.unleashpower.special.Sacrifice">
+        <cardset>server.card.cardset.standard.ExpansionSetStandard</cardset>
+        <cardset>server.card.cardset.moba.ExpansionSetMoba</cardset>
+        <card>server.card.cardset.special.lich.ChainFrost</card>
     </contestant>
 </enemies>

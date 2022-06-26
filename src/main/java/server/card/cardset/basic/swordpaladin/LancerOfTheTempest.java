@@ -65,6 +65,11 @@ public class LancerOfTheTempest extends MinionText {
 
     public static class EffectLancerStrike extends Effect {
         public static final String DESCRIPTION = "<b>Strike</b>: Deal 2 damage to all enemy minions.";
+
+        public EffectLancerStrike() {
+            super(DESCRIPTION);
+        }
+
         @Override
         public ResolverWithDescription strike(Minion target) {
             Effect effect = this;

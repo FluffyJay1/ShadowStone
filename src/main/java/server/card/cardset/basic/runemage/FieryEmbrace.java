@@ -25,7 +25,7 @@ public class FieryEmbrace extends SpellText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/fieryembrace.png",
-            CRAFT, TRAITS, RARITY, 8, FieryEmbrace.class,
+            CRAFT, TRAITS, RARITY, 7, FieryEmbrace.class,
             () -> List.of(Tooltip.SPELLBOOST),
             List.of());
 

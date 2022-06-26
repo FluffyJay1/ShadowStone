@@ -11,9 +11,11 @@ import server.card.CardTrait;
 import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
+import server.card.effect.EffectStats;
 import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
+import server.resolver.AddEffectResolver;
 import server.resolver.Resolver;
 import server.resolver.SpellboostResolver;
 import server.resolver.meta.ResolverWithDescription;
@@ -23,7 +25,7 @@ import java.util.List;
 
 public class MagicOwl extends MinionText {
     public static final String NAME = "Magic Owl";
-    public static final String DESCRIPTION = "<b>Unleash</b>: <b>Spellboost</b> the cards in your hand X times. X equals this minion's magic.";
+    public static final String DESCRIPTION = "<b>Unleash</b>: <b>Spellboost</b> the cards in your hand X times and gain <b>Rush</b>. X equals this minion's magic.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
@@ -45,6 +47,10 @@ public class MagicOwl extends MinionText {
                         for (int i = 0; i < x; i++) {
                             this.resolve(b, rq, el, new SpellboostResolver(owner.player.getHand()));
                         }
+                        Effect rush = new Effect("<b>Rush</b> (from <b>Unleash</b>).", EffectStats.builder()
+                                .set(Stat.RUSH, 1)
+                                .build());
+                        this.resolve(b, rq, el, new AddEffectResolver(owner, rush));
                     }
                 });
             }

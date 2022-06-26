@@ -1,5 +1,6 @@
 package server.card.cardset.basic.shadowshaman;
 
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
@@ -16,7 +17,7 @@ public class Skeleton extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/skeleton.png",
             CRAFT, TRAITS, RARITY, 1, 1, 1, 1, true, Skeleton.class,
-            new Vector2f(), -1, null,
+            new Vector2f(), -1, new EventAnimationDamageSlash(),
             List::of,
             List.of());
 

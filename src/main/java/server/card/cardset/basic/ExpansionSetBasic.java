@@ -15,8 +15,8 @@ public class ExpansionSetBasic extends ExpansionSet {
     public static final CardSet UNPLAYABLE_SET = new CardSet(new Fairy(), new Skeleton(), new Knight(), new Puppet(),
             new HolyFalcon(), new HolyflameTiger(), new Zombie(), new Snowman(), new HeavyKnight(), new CrimsonSorcery(),
             new ClayGolem(), new Dragon(), new Ghost(), new TimeOwl(), new HolywingDragon(), new AnalyzingArtifact(),
-            new AncientArtifact(), new MysticArtifact(), new RadiantArtifact(), new ServantOfDarkness(), new NotCoin(),
-            new WhiteBreath(), new BlackBreath());
+            new AncientArtifact(), new MysticArtifact(), new RadiantArtifact(), new NotCoin(), new WhiteBreath(),
+            new BlackBreath());
 
     public static final CardSet PLAYABLE_SET = new CardSet(new Goblin(), new Fighter(), new WoodOfBrambles(), new CursedStone(),
             new DragonOracle(), new Curate(), new PuppetRoom(), new BlackenedScripture(), new HallowedDogma(), new BeastcallAria(),
@@ -29,10 +29,9 @@ public class ExpansionSetBasic extends ExpansionSet {
             new SwarmingWraith(), new BloodPact(), new RazoryClaw(), new DarkGeneral(), new ScarletSabreur(), new TemptressVampire(),
             new SacredPlea(), new FeatherfallHourglass(), new RabbitHealer(), new PriestOfTheCudgel(), new TribunalOfGoodAndEvil(),
             new Acceleratium(), new MagisteelLion(), new Icarus(), new AugmentationBestowal(), new DimensionCut(), new TranquilCog(),
-            new IronforgedFighter(), new PuppeteersStrings(), new PureheartedSinger(), new CallOfCocytus(), new StonetuskBoar(),
-            new DarkBladefiend(), new DeathsBreath(), new GaluaOfTwoBreaths(), new Conflagration(), new Siegfried(), new ForestWhispers(),
-            new IDidThat(), new BoulderfistOgre(), new ItsOkToDie(), new Maahes(), new ElvenPrincessMage(), new LancerOfTheTempest(),
-            new Meteor());
+            new IronforgedFighter(), new PuppeteersStrings(), new PureheartedSinger(), new DarkBladefiend(), new DeathsBreath(),
+            new GaluaOfTwoBreaths(), new Conflagration(), new Siegfried(), new ForestWhispers(), new IDidThat(), new BoulderfistOgre(),
+            new ItsOkToDie(), new Maahes(), new ElvenPrincessMage(), new LancerOfTheTempest(), new Meteor());
 
     @Override
     public CardSet getCards() {

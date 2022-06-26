@@ -15,7 +15,11 @@ import server.card.CardText;
 import server.card.ClassCraft;
 import server.card.cardset.CardSet;
 import server.card.cardset.ConstructedDeck;
+import server.card.cardset.ExpansionSet;
 import server.card.cardset.basic.ExpansionSetBasic;
+import server.card.cardset.indie.ExpansionSetIndie;
+import server.card.cardset.moba.ExpansionSetMoba;
+import server.card.cardset.standard.ExpansionSetStandard;
 import utils.WeightedRandomSampler;
 import utils.WeightedSampler;
 
@@ -25,6 +29,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -32,20 +37,29 @@ import java.util.function.Function;
 public class DungeonRunController {
     private static final String SAVE_PATH = "dungeonrun.dat";
     public static Run run;
-    private static final int LOOT_ENEMY_ROUNDS = 1;
+    private static final int LOOT_ENEMY_ROUNDS = 2;
     private static final int LOOT_CLASS_ROUNDS = 2;
     private static final int LOOT_NUM_OPTIONS = 3;
     private static final int LOOT_CARDS_PER_OPTION = 2;
-    private static final int DISCARD_ROUNDS = 2;
+    private static final int DISCARD_ROUNDS = 3;
     private static final int DISCARD_NUM_OPTIONS = 2;
     private static final int DISCARD_CARDS_PER_OPTION = 2;
+    private static final int ENEMY_DECK_SAMPLE_SIZE = 0;
+    private static final int ENEMY_DECK_SAMPLE_SIZE_PER_LEVEL = 4;
+    private static final int ENEMY_DECK_SAMPLE_ROUNDS = 3;
+
+    private static final Map<ExpansionSet, Double> EXPANSION_LOOT_WEIGHTS = new HashMap<>() {{
+        put(new ExpansionSetBasic(), 0.5);
+        put(new ExpansionSetStandard(), 1.5);
+        put(new ExpansionSetIndie(), 1.);
+        put(new ExpansionSetMoba(), 1.);
+    }};
 
     public static void generateRun(ClassCraft starterCraft) {
         run = new Run();
         run.state = RunState.PENDING;
         // generate player
-        // TODO change from Rowen
-        run.player = new Contestant(CardSet.getDefaultLeader(starterCraft), CardSet.getDefaultUnleashPower(starterCraft), getDeckForClass(starterCraft), 0, List.of());
+        run.player = new Contestant(CardSet.getDefaultLeader(starterCraft), CardSet.getDefaultUnleashPower(starterCraft), getDeckForClass(starterCraft), 3, List.of());
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {
             dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
@@ -68,7 +82,7 @@ public class DungeonRunController {
             int level = 0;
             while (!enemySpecs.isEmpty()) {
                 EnemySpec spec = enemySpecs.remove((int) (Math.random() * enemySpecs.size()));
-                ConstructedDeck deck = getDeckForSpec(spec);
+                ConstructedDeck deck = getDeckForSpec(spec, level);
                 run.enemies.add(new Contestant(spec.leaderText, spec.unleashPowerText, deck, level, spec.cards));
                 level++;
             }
@@ -81,22 +95,40 @@ public class DungeonRunController {
     private static ConstructedDeck getDeckForClass(ClassCraft craft) {
         ConstructedDeck deck = new ConstructedDeck(craft);
         deck.name = "Dungeon Run Deck";
-        ExpansionSetBasic basic = new ExpansionSetBasic();
-        for (CardText ct : basic.getCards().filterCraft(ClassCraft.NEUTRAL, craft)) {
-            deck.addCard(ct, ConstructedDeck.MAX_DUPES, false);
+        for (CardText ct : ExpansionSetBasic.PLAYABLE_SET.filterCraft(craft)) {
+            deck.addCard(ct, 2, false);
+        }
+        for (CardText ct : ExpansionSetBasic.PLAYABLE_SET.filterCraft(ClassCraft.NEUTRAL)) {
+            deck.addCard(ct, 1, false);
+        }
+        for (CardText ct : ExpansionSetStandard.PLAYABLE_SET.filterCraft(ClassCraft.NEUTRAL, craft)) {
+            deck.addCard(ct, 1, false);
         }
         return deck;
     }
 
-    private static ConstructedDeck getDeckForSpec(EnemySpec spec) {
+    private static ConstructedDeck getDeckForSpec(EnemySpec spec, int level) {
         // bruh
         ConstructedDeck deck = new ConstructedDeck(spec.leaderText.getTooltip().craft);
         deck.name = "Dungeon Run Deck";
-        for (CardText ct : new CardSet(spec.sets).filterCraft(ClassCraft.NEUTRAL, deck.craft)) {
-            deck.addCard(ct, ConstructedDeck.MAX_DUPES, false);
+        for (CardText ct : new ExpansionSetBasic().getCards().filterCraft(deck.craft)) {
+            deck.addCard(ct, 2, false);
+        }
+        for (CardText ct : new ExpansionSetBasic().getCards().filterCraft(deck.craft)) {
+            deck.addCard(ct, 1, false);
+        }
+        WeightedSampler<CardText> extraCardSampler = new WeightedRandomSampler<>();
+        for (CardText ct : spec.sets.filterCraft(ClassCraft.NEUTRAL, deck.craft)) {
+            extraCardSampler.add(ct, getEnemyDeckRarityWeight(ct.getTooltip().rarity, level));
+        }
+        for (int i = 0; i < ENEMY_DECK_SAMPLE_ROUNDS; i++) {
+            List<CardText> topOptions = extraCardSampler.sample();
+            for (CardText ct : topOptions.subList(0, Math.min(ENEMY_DECK_SAMPLE_SIZE + ENEMY_DECK_SAMPLE_SIZE_PER_LEVEL * level, topOptions.size()))) {
+                deck.addCard(ct, false);
+            }
         }
         for (CardText ct : spec.cards) {
-            deck.addCard(ct, ConstructedDeck.MAX_DUPES, false);
+            deck.addCard(ct, Math.min(ConstructedDeck.MAX_DUPES, level + 1), false);
         }
         return deck;
     }
@@ -166,12 +198,14 @@ public class DungeonRunController {
         run.lootOptions.addAll(sampleOptionsFromDeck(enemyDeck, LOOT_ENEMY_ROUNDS, LOOT_NUM_OPTIONS, LOOT_CARDS_PER_OPTION,
                 DungeonRunController::getEnemyLootRarityWeight));
         // for class-specific loot
-        for (int i = 0; i < LOOT_CLASS_ROUNDS; i++) {
-            WeightedSampler<CardText> classLootSampler = new WeightedRandomSampler<>();
-            CardSet classCards = new CardSet(CardSet.PLAYABLE_SET).filterCraft(ClassCraft.NEUTRAL, run.player.deck.craft);
+        WeightedSampler<CardText> classLootSampler = new WeightedRandomSampler<>();
+        for (Map.Entry<ExpansionSet, Double> expansionWeightEntry : EXPANSION_LOOT_WEIGHTS.entrySet()) {
+            CardSet classCards = expansionWeightEntry.getKey().getCards().filterCraft(ClassCraft.NEUTRAL, run.player.deck.craft);
             for (CardText ct : classCards) {
-                classLootSampler.add(ct, getClassLootRarityWeight(ct.getTooltip().rarity));
+                classLootSampler.add(ct, getClassLootRarityWeight(ct.getTooltip().rarity) * expansionWeightEntry.getValue());
             }
+        }
+        for (int i = 0; i < LOOT_CLASS_ROUNDS; i++) {
             List<CardText> topOptions = classLootSampler.sample();
             run.lootOptions.add(distributeOptions(topOptions, LOOT_NUM_OPTIONS, LOOT_CARDS_PER_OPTION));
         }
@@ -192,13 +226,13 @@ public class DungeonRunController {
         List<List<List<CardText>>> ret = new ArrayList<>(numRounds);
         // deck to keep track of what's remaining in the deck as if the player chose all options
         ConstructedDeck copy = deck.copy();
+        WeightedSampler<CardText> deckSampler = new WeightedRandomSampler<>();
+        for (Map.Entry<CardText, Integer> entry : copy.getCounts()) {
+            CardText cardText = entry.getKey();
+            double weight = weightfn.apply(cardText.getTooltip().rarity) * entry.getValue();
+            deckSampler.add(cardText, weight);
+        }
         for (int i = 0; i < numRounds; i++) {
-            WeightedSampler<CardText> deckSampler = new WeightedRandomSampler<>();
-            for (Map.Entry<CardText, Integer> entry : copy.getCounts()) {
-                CardText cardText = entry.getKey();
-                double weight = weightfn.apply(cardText.getTooltip().rarity) * entry.getValue();
-                deckSampler.add(cardText, weight);
-            }
             List<CardText> topOptions = deckSampler.sample();
             List<List<CardText>> options = distributeOptions(topOptions, numOptions, cardsPerOption);
             ret.add(options);
@@ -232,30 +266,41 @@ public class DungeonRunController {
         return switch (rarity) {
             case BRONZE -> 1;
             case SILVER -> 2;
-            case GOLD -> 4;
-            case LEGENDARY -> 6;
+            case GOLD -> 5;
+            case LEGENDARY -> 10;
         };
     }
 
     // when choosing cards from own class
     private static double getClassLootRarityWeight(CardRarity rarity) {
         return switch (rarity) {
-            case BRONZE -> 4;
-            case SILVER -> 3;
-            case GOLD -> 2;
-            case LEGENDARY -> 1;
+            case BRONZE -> 5;
+            case SILVER -> 4;
+            case GOLD -> 3;
+            case LEGENDARY -> 2;
         };
     }
 
     private static double getDiscardRarityWeight(CardRarity rarity) {
         return switch (rarity) {
-            case BRONZE -> 7;
+            case BRONZE -> 8;
             case SILVER -> 6;
             case GOLD -> 5;
             case LEGENDARY -> 4;
         };
     }
 
+    // when deciding the cards that go into the enemy's deck at the start of the run
+    private static double getEnemyDeckRarityWeight(CardRarity rarity, int level) {
+        return switch (rarity) {
+            case BRONZE -> 5;
+            case SILVER -> 4 + level * 0.25;
+            case GOLD -> 2 + level * 0.75;
+            case LEGENDARY -> 1 + level * 1.25;
+        };
+    }
+
+    // when choosing cards from own class
     /**
      * Serializes and saves the decks to file
      */

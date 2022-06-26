@@ -1,4 +1,4 @@
-package server.card.cardset.basic.neutral;
+package server.card.cardset.standard.neutral;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
@@ -25,7 +25,7 @@ public class CallOfCocytus extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/callofcocytus.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/standard/callofcocytus.png",
             CRAFT, TRAITS, RARITY, 5, CallOfCocytus.class,
             () -> List.of(Tooltip.SPEND, ServantOfDarkness.TOOLTIP),
             List.of());

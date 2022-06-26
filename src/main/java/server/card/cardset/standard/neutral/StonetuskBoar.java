@@ -1,4 +1,4 @@
-package server.card.cardset.basic.neutral;
+package server.card.cardset.standard.neutral;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
@@ -20,7 +20,7 @@ public class StonetuskBoar extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/stonetuskboar.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/stonetuskboar.png",
             CRAFT, TRAITS, RARITY, 1, 1, 1, 1, true, StonetuskBoar.class,
             new Vector2f(), -1, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.STORM),

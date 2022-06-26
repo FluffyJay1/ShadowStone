@@ -20,6 +20,7 @@ public class ParticleSystem extends UIElement {
     private double nextEmission;
     private boolean killed;
     private boolean paused;
+    private boolean moveWithParticles;
 
     public ParticleSystem(UI ui, Vector2f pos, EmissionStrategy strategy, boolean paused) {
         super(ui, pos, "");
@@ -31,6 +32,7 @@ public class ParticleSystem extends UIElement {
         this.killed = false;
         this.setPaused(paused);
         this.updateEmission(0);
+        this.setMoveWithParticles(true);
     }
 
     public ParticleSystem(UI ui, Vector2f pos, EmissionStrategy strategy) {
@@ -104,5 +106,22 @@ public class ParticleSystem extends UIElement {
 
     public boolean isPaused() {
         return this.paused;
+    }
+
+    public void setMoveWithParticles(boolean moveWithParticles) {
+        this.moveWithParticles = moveWithParticles;
+    }
+
+    @Override
+    protected void assignPos(Vector2f newPos) {
+        Vector2f oldAbs = this.getAbsPos();
+        super.assignPos(newPos);
+        Vector2f newAbs = this.getAbsPos();
+        if (!this.moveWithParticles) {
+            Vector2f delta = newAbs.sub(oldAbs);
+            for (Particle p : this.particles) {
+                p.pos.sub(delta);
+            }
+        }
     }
 }

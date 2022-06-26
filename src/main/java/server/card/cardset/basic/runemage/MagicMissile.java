@@ -21,7 +21,7 @@ import java.util.List;
 
 public class MagicMissile extends SpellText {
     public static final String NAME = "Magic Missile";
-    public static final String DESCRIPTION = "Deal 1 damage to an enemy. Draw a card.";
+    public static final String DESCRIPTION = "Deal 2 damage to an enemy. Draw a card.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
@@ -35,7 +35,7 @@ public class MagicMissile extends SpellText {
         return List.of(new Effect(DESCRIPTION) {
             @Override
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
-                return List.of(new CardTargetingScheme(this, 1, 1, "Deal 1 damage to an enemy.") {
+                return List.of(new CardTargetingScheme(this, 1, 1, "Deal 2 damage to an enemy.") {
                     @Override
                     protected boolean criteria(Card c) {
                         return c.isInPlay() && c instanceof Minion && c.team != this.getCreator().owner.team;
@@ -50,7 +50,7 @@ public class MagicMissile extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 1, true, new EventAnimationDamageMagicHit().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 2, true, new EventAnimationDamageMagicHit().toString()));
                         });
                         this.resolve(b, rq, el, new DrawResolver(owner.player, 1));
                     }
@@ -59,7 +59,7 @@ public class MagicMissile extends SpellText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.VALUE_PER_DAMAGE + AI.VALUE_PER_CARD_IN_HAND;
+                return AI.VALUE_PER_DAMAGE * 2 + AI.VALUE_PER_CARD_IN_HAND;
             }
         });
     }
