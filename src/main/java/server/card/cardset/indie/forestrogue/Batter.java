@@ -6,7 +6,7 @@ import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationD
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.card.*;
-import server.card.cardset.indie.shadowshaman.Spectre;
+import server.card.cardset.indie.neutral.Spectre;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.effect.Stat;

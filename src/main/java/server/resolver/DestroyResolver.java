@@ -10,11 +10,17 @@ import server.resolver.util.ResolverQueue;
 
 public class DestroyResolver extends Resolver {
     final List<? extends Card> cards;
+    final EventDestroy.Cause cause;
 
-    public DestroyResolver(List<? extends Card> cards) {
+    public DestroyResolver(List<? extends Card> cards, EventDestroy.Cause cause) {
         super(false);
         this.cards = cards;
+        this.cause = cause;
         this.essential = true;
+    }
+
+    public DestroyResolver(List<? extends Card> cards) {
+        this(cards, EventDestroy.Cause.EFFECT);
     }
 
     public DestroyResolver(Card card) {
@@ -36,7 +42,7 @@ public class DestroyResolver extends Resolver {
             this.resolve(b, rq, el, new BanishResolver(cardsToBanish));
         }
         if (!cardsToDestroy.isEmpty()) {
-            EventDestroy destroy = new EventDestroy(cardsToDestroy);
+            EventDestroy destroy = new EventDestroy(cardsToDestroy, this.cause);
             b.processEvent(rq, el, destroy);
             for (BoardObject bo : destroy.cardsLeavingPlay()) {
                 if (bo instanceof Leader) {

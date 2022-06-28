@@ -22,7 +22,7 @@ public class RemoveEffectResolver extends Resolver {
     @Override
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         b.processEvent(rq, el, new EventRemoveEffect(this.effects, this.destroyed));
-        this.resolve(b, rq, el, new DestroyResolver(this.destroyed));
+        this.resolve(b, rq, el, new DestroyResolver(this.destroyed, EventDestroy.Cause.NATURAL));
     }
 
 }

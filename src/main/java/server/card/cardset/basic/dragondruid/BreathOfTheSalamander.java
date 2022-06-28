@@ -12,6 +12,7 @@ import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.event.Event;
+import server.event.EventDestroy;
 import server.resolver.DamageResolver;
 import server.resolver.DestroyResolver;
 import server.resolver.Resolver;
@@ -68,7 +69,7 @@ public class BreathOfTheSalamander extends SpellText {
                                 markedForDeath.addAll(r.destroyed);
                             }
                         }));
-                        this.resolve(b, rq, el, new DestroyResolver(markedForDeath));
+                        this.resolve(b, rq, el, new DestroyResolver(markedForDeath, EventDestroy.Cause.NATURAL));
                     }
                 });
             }

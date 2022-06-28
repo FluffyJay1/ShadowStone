@@ -29,7 +29,9 @@ public class NecromancyResolver extends Resolver {
         if (p.shadows >= this.shadows) {
             this.wasSuccessful = true;
             b.processEvent(rq, el, new EventNecromancy(this.source, this.shadows));
-            this.resolve(b, rq, el, this.onSuccess);
+            if (this.onSuccess != null) {
+                this.resolve(b, rq, el, this.onSuccess);
+            }
         }
     }
 

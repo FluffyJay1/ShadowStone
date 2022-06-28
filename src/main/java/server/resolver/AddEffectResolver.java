@@ -32,7 +32,7 @@ public class AddEffectResolver extends Resolver {
         EventAddEffect addEffect = new EventAddEffect(this.c, e, this.destroyed);
         b.processEvent(rq, el, addEffect);
         this.effects = addEffect.effects;
-        this.resolve(b, rq, el, new DestroyResolver(this.destroyed));
+        this.resolve(b, rq, el, new DestroyResolver(this.destroyed, EventDestroy.Cause.NATURAL));
     }
 
 }

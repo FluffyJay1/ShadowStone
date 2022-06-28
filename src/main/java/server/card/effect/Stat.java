@@ -17,5 +17,6 @@ public enum Stat {
     STEALTH,
     SHIELD,
     BANISH_ON_DESTROY,
-    ELUSIVE
+    ELUSIVE,
+    STALWART
 }

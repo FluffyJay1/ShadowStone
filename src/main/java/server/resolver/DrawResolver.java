@@ -24,7 +24,7 @@ public class DrawResolver extends Resolver {
         b.processEvent(rq, el, new EventPutCard(List.copyOf(this.p.getDeck().subList(0, numToDraw)), CardStatus.HAND, this.p.team,
                 Collections.nCopies(numToDraw, -1), false, markedForDeath));
         if (!markedForDeath.isEmpty()) {
-            b.processEvent(rq, el, new EventDestroy(markedForDeath));
+            b.processEvent(rq, el, new EventDestroy(markedForDeath, EventDestroy.Cause.NATURAL));
         }
         if (numToDraw < this.num) {
             // lose the game

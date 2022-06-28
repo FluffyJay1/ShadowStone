@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import client.ui.Animation;
 import client.ui.interpolation.realvalue.ConstantInterpolation;
 import client.ui.interpolation.realvalue.LinearInterpolation;
+import client.ui.interpolation.realvalue.QuadraticInterpolationA;
 import client.ui.interpolation.realvalue.QuadraticInterpolationB;
 import client.ui.particle.ParticleSystem;
 import client.ui.particle.strategy.EmissionStrategy;
@@ -96,6 +97,20 @@ public class UICard extends UIBox {
             ))
     );
 
+    private static final Supplier<EmissionStrategy> STALWART_PARTICLES = () -> new EmissionStrategy(
+            new IntervalEmissionTimingStrategy(1, 1.5),
+            new ComposedEmissionPropertyStrategy(List.of(
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/board/stalwart.png", new Vector2f(1, 1), 0, 0)),
+                    new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(1)),
+                    new ConstantEmissionPropertyStrategy(
+                            Graphics.MODE_ADD, 0, new Vector2f(0, 0),
+                            () -> new QuadraticInterpolationA(0, 0, -4),
+                            () -> new LinearInterpolation(0.8, 1.2)
+                    )
+            ))
+    );
+
+
     private Card card;
     private Image cardImage, subImage;
     private final UIBoard uib;
@@ -111,6 +126,7 @@ public class UICard extends UIBox {
     private double pendingTimer;
     private final ParticleSystem stealthParticles;
     private final ParticleSystem specialConditionParticles;
+    private final ParticleSystem stalwartParticles;
 
     public UICard(UI ui, UIBoard uib, Card c) {
         super(ui, new Vector2f(), CARD_DIMENSIONS, "");
@@ -123,6 +139,8 @@ public class UICard extends UIBox {
         this.addChild(this.stealthParticles);
         this.specialConditionParticles = new ParticleSystem(ui, new Vector2f(), SPECIAL_CONDITION_PARTICLES.get(), true);
         this.addChild(this.specialConditionParticles);
+        this.stalwartParticles = new ParticleSystem(ui, new Vector2f(), STALWART_PARTICLES.get(), true);
+        this.addChild(this.stalwartParticles);
     }
 
     @Override
@@ -281,6 +299,8 @@ public class UICard extends UIBox {
                 default -> true;
             });
         }
+        this.stalwartParticles.setScale(this.getScale());
+        this.stalwartParticles.setPaused(!this.card.isInPlay() || this.card.finalStats.get(Stat.STALWART) == 0);
         if (!this.isBeingAnimated()) {
             this.updateCardAnimation();
             this.updateFlippedOver();
@@ -331,6 +351,7 @@ public class UICard extends UIBox {
             }
         }
         this.specialConditionParticles.draw(g);
+        this.stalwartParticles.draw(g);
     }
 
     public void drawCardBack(Graphics g, Vector2f pos, double scale) {

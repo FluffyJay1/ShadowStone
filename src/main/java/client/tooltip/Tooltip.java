@@ -100,6 +100,9 @@ public class Tooltip {
     public static final Tooltip ELUSIVE = new Tooltip("Elusive",
             "Cards with <b>Elusive</b> can't be targeted by enemy spells or effects.",
             List::of);
+    public static final Tooltip STALWART = new Tooltip("Stalwart",
+            "Can't be explicitly destroyed by effects, <b>Bane</b>, or <b>Poisonous</b>. Can still be destroyed by damage and <b>Countdown</b>.",
+            () -> List.of(BANE, POISONOUS, COUNTDOWN));
 
     public final String name;
     public final String description;

@@ -71,9 +71,8 @@ public class EventDamage extends Event {
                 this.shieldRemovers.set(i, shieldRemover);
             } else {
                 // normal damage processing
-                if ((poisonous && this.damage.get(i) > 0 && !(minion instanceof Leader))
+                if ((poisonous && minion.finalStats.get(Stat.STALWART) == 0 && this.damage.get(i) > 0 && !(minion instanceof Leader))
                         || (minion.health > 0 && minion.health <= this.damage.get(i)) && minion.alive) {
-                    // TODO poison immunity
                     minion.alive = false;
                     this.markedForDeath.add(minion);
                 }

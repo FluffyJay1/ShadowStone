@@ -86,7 +86,7 @@ public class DamageResolver extends Resolver {
             rq.addAll(m.onDamaged(damage));
         }
         if (this.resolveDestroy) {
-            this.resolve(b, rq, el, new DestroyResolver(this.destroyed));
+            this.resolve(b, rq, el, new DestroyResolver(this.destroyed, EventDestroy.Cause.NATURAL));
         }
     }
 }

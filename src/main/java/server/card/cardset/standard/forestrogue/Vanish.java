@@ -6,6 +6,7 @@ import server.card.*;
 import server.card.effect.Effect;
 import server.card.target.TargetList;
 import server.event.Event;
+import server.event.EventDestroy;
 import server.resolver.DestroyResolver;
 import server.resolver.PutCardResolver;
 import server.resolver.Resolver;
@@ -45,7 +46,7 @@ public class Vanish extends SpellText {
                                 destroyed.addAll(r.destroyed);
                             }
                         }
-                        this.resolve(b, rq, el, new DestroyResolver(destroyed));
+                        this.resolve(b, rq, el, new DestroyResolver(destroyed, EventDestroy.Cause.NATURAL));
                     }
                 });
             }

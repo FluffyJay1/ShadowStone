@@ -6,13 +6,14 @@ import client.Game;
 import client.PendingPlayPositioner;
 import server.*;
 import server.card.*;
+import server.card.effect.Stat;
 
 // Changes references, should not run concurrent with other events
 public class EventDestroy extends Event {
     // Shouldn't process this event outright, as it ignores lastwords triggers
     public static final int ID = 4;
     public final List<? extends Card> cards;
-    private final boolean incrementShadows;
+    public final Cause cause;
     private List<Boolean> alive;
     private List<CardStatus> prevStatus;
     private List<Integer> prevPos;
@@ -23,18 +24,10 @@ public class EventDestroy extends Event {
     public List<Boolean> successful;
     final List<BoardObject> cardsLeavingPlay = new ArrayList<>(); // required for listeners
 
-    public EventDestroy(List<? extends Card> c, boolean incrementShadows) {
+    public EventDestroy(List<? extends Card> c, Cause cause) {
         super(ID);
         this.cards = c;
-        this.incrementShadows = incrementShadows;
-    }
-
-    public EventDestroy(List<? extends Card> c) {
-        this(c, true);
-    }
-
-    public EventDestroy(Card c) {
-        this(List.of(c));
+        this.cause = cause;
     }
 
     @Override
@@ -63,9 +56,9 @@ public class EventDestroy extends Event {
                 this.prevLastBoardPos.set(i, bo.lastBoardPos);
                 this.prevLastBoardEpoch.set(i, bo.lastBoardEpoch);
             }
-            if (!c.status.equals(CardStatus.GRAVEYARD)) {
+            if (!c.status.equals(CardStatus.GRAVEYARD) && !(this.cause.equals(Cause.EFFECT) && c.finalStats.get(Stat.STALWART) > 0)) {
                 this.successful.set(i, true);
-                if (this.incrementShadows) {
+                if (!this.cause.equals(Cause.CAST)) {
                     p.shadows++;
                 }
                 c.alive = false;
@@ -140,7 +133,7 @@ public class EventDestroy extends Event {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.id).append(" ").append(this.incrementShadows).append(" ").append(this.cards.size()).append(" ");
+        builder.append(this.id).append(" ").append(this.cause.name()).append(" ").append(this.cards.size()).append(" ");
         for (Card card : this.cards) {
             builder.append(card.toReference());
         }
@@ -148,18 +141,23 @@ public class EventDestroy extends Event {
     }
 
     public static EventDestroy fromString(Board b, StringTokenizer st) {
-        boolean incrementShadows = Boolean.parseBoolean(st.nextToken());
+        Cause cause = Cause.valueOf(st.nextToken());
         int size = Integer.parseInt(st.nextToken());
         ArrayList<Card> c = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             Card card = Card.fromReference(b, st);
             c.add(card);
         }
-        return new EventDestroy(c, incrementShadows);
+        return new EventDestroy(c, cause);
     }
 
     @Override
     public boolean conditions() {
         return !this.cards.isEmpty();
+    }
+
+    public enum Cause {
+        EFFECT, // can be blocked
+        CAST, NATURAL // cannot be blocked
     }
 }

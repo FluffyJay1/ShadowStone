@@ -1,4 +1,4 @@
-package server.card.cardset.indie.shadowshaman;
+package server.card.cardset.indie.neutral;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
@@ -17,7 +17,7 @@ import java.util.List;
 public class Spectre extends MinionText {
     public static final String NAME = "Spectre";
     public static final String DESCRIPTION = "<b>Rush</b>.";
-    public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
+    public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/indie/spectre.png",

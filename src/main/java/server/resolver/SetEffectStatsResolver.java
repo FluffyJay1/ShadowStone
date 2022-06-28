@@ -27,7 +27,7 @@ public class SetEffectStatsResolver extends Resolver {
         List<Card> markedForDeath = new ArrayList<>();
         b.processEvent(rq, el, new EventSetEffectStats(this.targets, this.newStats, markedForDeath));
         if (!markedForDeath.isEmpty()) {
-            this.resolve(b, rq, el, new DestroyResolver(markedForDeath));
+            this.resolve(b, rq, el, new DestroyResolver(markedForDeath, EventDestroy.Cause.NATURAL));
         }
     }
 }

@@ -9,6 +9,7 @@ import server.card.*;
 import server.card.effect.Effect;
 import server.card.target.TargetList;
 import server.event.Event;
+import server.event.EventDestroy;
 import server.resolver.BlastResolver;
 import server.resolver.DestroyResolver;
 import server.resolver.Resolver;
@@ -45,7 +46,7 @@ public class BanelingBust extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> relevant = b.getMinions(owner.team, false, true).collect(Collectors.toList());
-                        this.resolve(b, rq, el, new DestroyResolver(relevant));
+                        this.resolve(b, rq, el, new DestroyResolver(relevant, EventDestroy.Cause.EFFECT));
                         for (int i = 0; i < relevant.size(); i++) {
                             this.resolve(b, rq, el, new BlastResolver(effect, relevant.size(), new EventAnimationDamageMagicHit().toString()));
                         }

@@ -37,12 +37,13 @@ public class EventManaChange extends Event {
             }
         }
         if (this.changeCurrent) { // change regular mana
-            if (this.p.mana + this.mana > this.p.maxmana && !this.currentIgnoreMax) {
-                this.p.mana = this.p.maxmana;
-            } else if (this.p.mana + this.mana < 0) {
-                this.p.mana = 0;
-            } else {
-                this.p.mana += this.mana;
+            if (this.mana > 0) {
+                // if not ignore max, do not erase the extra mana from coin-type effects
+                // e.g. if we're above max already, adding more mana would change mana by 0
+                int manaChange = this.currentIgnoreMax ? this.mana : Math.max(0, Math.min(this.p.maxmana - this.p.mana, this.mana));
+                this.p.mana += manaChange;
+            } else if (this.mana < 0) {
+                this.p.mana = Math.max(0, this.p.mana + this.mana);
             }
         }
     }

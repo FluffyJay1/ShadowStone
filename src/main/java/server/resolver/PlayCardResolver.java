@@ -34,7 +34,7 @@ public class PlayCardResolver extends Resolver {
                 b.processEvent(rq, el, new EventPutCard(List.of(this.c), CardStatus.BOARD, this.p.team, List.of(this.position), true, null));
             } else {
                 // a spell
-                b.processEvent(rq, el, new EventDestroy(List.of(this.c), false)); // do not increment shadows yet, will throw off necromancy resolvers
+                b.processEvent(rq, el, new EventDestroy(List.of(this.c), EventDestroy.Cause.CAST)); // do not increment shadows yet, will throw off necromancy resolvers
                 this.resolve(b, rq, el, new SpellboostResolver(this.p.getHand()));
             }
             this.resolveQueue(b, rq, el, battlecry);

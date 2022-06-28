@@ -57,15 +57,15 @@ public class MinionAttackResolver extends Resolver {
             destroyed.addAll(d2.destroyed);
             b.popEventGroup(); // minion combat
             b.popEventGroup(); // attack order
-            if (this.m1.finalStats.get(Stat.BANE) > 0 && !(this.m2 instanceof Leader)
-                    && !destroyed.contains(this.m2)) {
+            if (this.m1.finalStats.get(Stat.BANE) > 0 && this.m2.finalStats.get(Stat.STALWART) == 0
+                    && !(this.m2 instanceof Leader) && !destroyed.contains(this.m2)) {
                 destroyed.add(this.m2);
             }
-            if (this.m2.finalStats.get(Stat.BANE) > 0 && !(this.m1 instanceof Leader)
-                    && !destroyed.contains(this.m1)) {
+            if (this.m2.finalStats.get(Stat.BANE) > 0 && this.m1.finalStats.get(Stat.STALWART) == 0
+                    && !(this.m1 instanceof Leader) && !destroyed.contains(this.m1)) {
                 destroyed.add(this.m1);
             }
-            this.resolve(b, rq, el, new DestroyResolver(destroyed));
+            this.resolve(b, rq, el, new DestroyResolver(destroyed, EventDestroy.Cause.NATURAL));
         } else {
             b.popEventGroup(); // attack order
         }
