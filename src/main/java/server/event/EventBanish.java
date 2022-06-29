@@ -10,7 +10,7 @@ import server.card.*;
 // Changes references, should not run concurrent with other events
 public class EventBanish extends Event {
     public static final int ID = 18;
-    public final List<Card> cards;
+    public final List<? extends Card> cards;
     private List<Boolean> alive;
     private List<CardStatus> prevStatus;
     private List<Integer> prevPos;
@@ -19,7 +19,7 @@ public class EventBanish extends Event {
     private int prevEpoch1, prevEpoch2;
     final List<BoardObject> cardsLeavingPlay = new ArrayList<>(); // required for listeners
 
-    public EventBanish(List<Card> c) {
+    public EventBanish(List<? extends Card> c) {
         super(ID);
         this.cards = c;
     }

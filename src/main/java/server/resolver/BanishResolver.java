@@ -8,9 +8,9 @@ import server.event.*;
 import server.resolver.util.ResolverQueue;
 
 public class BanishResolver extends Resolver {
-    public final List<Card> c;
+    public final List<? extends Card> c;
 
-    public BanishResolver(List<Card> c) {
+    public BanishResolver(List<? extends Card> c) {
         super(false);
         this.c = c;
         this.essential = true;

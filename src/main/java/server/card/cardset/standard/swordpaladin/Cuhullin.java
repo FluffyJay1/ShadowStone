@@ -44,11 +44,11 @@ public class Cuhullin extends MinionText {
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 Effect effect = this;
-                String resolverDescription = "<b>Battlecry</b>: <b>Spend(4)</b> to gain <b>Bane</b> and <b>Shield(2)</b> until the end of the turn.";
+                String resolverDescription = "<b>Battlecry</b>: <b>Spend(4)</b> to gain <b>Bane</b> and <b>Shield(4)</b> until the end of the turn.";
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        Effect buff = new EffectUntilTurnEnd("<b>Bane</b> and <b>Shield(2)</b> until the end of the turn (from <b>Battlecry</b>).",
+                        Effect buff = new EffectUntilTurnEnd("<b>Bane</b> and <b>Shield(4)</b> until the end of the turn (from <b>Battlecry</b>).",
                                 EffectStats.builder()
                                         .set(Stat.BANE, 1)
                                         .change(Stat.SHIELD, 4)
