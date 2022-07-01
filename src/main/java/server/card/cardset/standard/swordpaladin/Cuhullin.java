@@ -12,7 +12,6 @@ import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
-import server.card.effect.EffectUntilTurnEnd;
 import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
@@ -48,11 +47,12 @@ public class Cuhullin extends MinionText {
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        Effect buff = new EffectUntilTurnEnd("<b>Bane</b> and <b>Shield(4)</b> until the end of the turn (from <b>Battlecry</b>).",
+                        Effect buff = new Effect("<b>Bane</b> and <b>Shield(4)</b> until the end of the turn (from <b>Battlecry</b>).",
                                 EffectStats.builder()
                                         .set(Stat.BANE, 1)
                                         .change(Stat.SHIELD, 4)
-                                        .build());
+                                        .build(),
+                                e -> e.untilTurnEndTeam = 0);
                         this.resolve(b, rq, el, new SpendResolver(effect, 4, new AddEffectResolver(owner, buff)));
                     }
                 });

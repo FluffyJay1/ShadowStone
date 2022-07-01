@@ -66,7 +66,8 @@ public class Chronos extends MinionText {
 
         // required for reflection
         public EffectChronos() {
-            super(EFFECT_DESCRIPTION, false);
+            super(EFFECT_DESCRIPTION);
+            this.stackable = false;
         }
 
         @Override

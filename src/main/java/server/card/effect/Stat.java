@@ -18,5 +18,8 @@ public enum Stat {
     SHIELD,
     BANISH_ON_DESTROY,
     ELUSIVE,
-    STALWART
+    STALWART,
+    DISARMED,
+    FROZEN,
+    FREEZING_TOUCH,
 }

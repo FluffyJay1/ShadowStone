@@ -3,7 +3,11 @@ package client;
 import java.awt.*;
 import java.awt.Font;
 import java.io.IOException;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import gamemode.dungeonrun.controller.DungeonRunController;
 import org.newdawn.slick.*;
@@ -50,7 +54,6 @@ public class Game extends StateBasedGame {
         // app.setTargetFrameRate(15);
         Log.setVerbose(false);
         app.start();
-
     }
 
     public Game(String title) {
@@ -66,6 +69,20 @@ public class Game extends StateBasedGame {
         addState(new StateGame());
         addState(new StateDeckbuild());
         addState(new StateDungeonRun());
+    }
+
+    public static void precacheImages() {
+        try {
+            List<Path> pngs = Files.walk(Path.of("res"))
+                    .filter(p -> !Files.isDirectory(p) && p.toString().endsWith("png"))
+                    .collect(Collectors.toList());
+            for (Path p : pngs) {
+                String pathString = p.toString();
+                images.put(pathString, new Image(pathString));
+            }
+        } catch (IOException | SlickException e) {
+            e.printStackTrace();
+        }
     }
 
     public static Image getImage(String path) {
@@ -114,10 +131,10 @@ public class Game extends StateBasedGame {
                 e.printStackTrace();
             }
             fonts.put(condensed, f);
-            /*
-             * System.out.println("loaded new font: " + font + ", size = " + (int) size +
-             * (bold ? " bold" : "") + (italic ? " italic" : ""));
-             */
+
+//            System.out.println("loaded new font: size = " + size +
+//            (bold ? " bold" : "") + (italic ? " italic" : ""));
+
 
         }
 

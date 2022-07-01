@@ -500,6 +500,16 @@ public class UICard extends UIBox {
                 i = i.getScaledCopy((float) scale);
                 g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
             }
+            if (this.card.finalStats.get(Stat.DISARMED) > 0) {
+                Image i = Game.getImage("res/game/disarmed.png");
+                i = i.getScaledCopy((float) scale);
+                g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
+            }
+            if (this.card.finalStats.get(Stat.FROZEN) > 0) {
+                Image i = Game.getImage("res/game/frozen.png");
+                i = i.getScaledCopy((float) scale);
+                g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
+            }
             this.drawOffensiveStat(g, pos, scale, this.card.finalStats.get(Stat.ATTACK),
                     this.card.finalBasicStats.get(Stat.ATTACK),
                     new Vector2f(-MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE, Game.getImage("res/game/statattack.png"));
@@ -548,6 +558,9 @@ public class UICard extends UIBox {
         }
         if (this.card.finalStats.get(Stat.LIFESTEAL) > 0) {
             this.icons.add(Game.getImage("res/game/lifestealicon.png"));
+        }
+        if (this.card.finalStats.get(Stat.FREEZING_TOUCH) > 0) {
+            this.icons.add(Game.getImage("res/game/freezingtouchicon.png"));
         }
         if (this.card instanceof BoardObject) {
             BoardObject bo = (BoardObject) this.card;

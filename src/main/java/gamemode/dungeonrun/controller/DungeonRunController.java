@@ -19,6 +19,7 @@ import server.card.cardset.ExpansionSet;
 import server.card.cardset.basic.ExpansionSetBasic;
 import server.card.cardset.indie.ExpansionSetIndie;
 import server.card.cardset.moba.ExpansionSetMoba;
+import server.card.cardset.special.treasure.Treasures;
 import server.card.cardset.standard.ExpansionSetStandard;
 import utils.WeightedRandomSampler;
 import utils.WeightedSampler;
@@ -37,11 +38,14 @@ import java.util.function.Function;
 public class DungeonRunController {
     private static final String SAVE_PATH = "dungeonrun.dat";
     public static Run run;
-    private static final int LOOT_ENEMY_ROUNDS = 2;
+    private static final int TREASURE_ROUNDS = 1;
+    private static final int TREASURE_NUM_OPTIONS = 3;
+    private static final int TREASURE_CARDS_PER_OPTION = 1;
+    private static final int LOOT_ENEMY_ROUNDS = 1;
     private static final int LOOT_CLASS_ROUNDS = 2;
     private static final int LOOT_NUM_OPTIONS = 3;
     private static final int LOOT_CARDS_PER_OPTION = 2;
-    private static final int DISCARD_ROUNDS = 3;
+    private static final int DISCARD_ROUNDS = 2;
     private static final int DISCARD_NUM_OPTIONS = 2;
     private static final int DISCARD_CARDS_PER_OPTION = 2;
     private static final int ENEMY_DECK_SAMPLE_SIZE = 0;
@@ -149,6 +153,7 @@ public class DungeonRunController {
                 run.state = RunState.WON;
             } else {
                 run.state = RunState.LOOTING;
+                determineTreasureOptions();
                 determineLootOptions();
                 determineDiscardOptions();
             }
@@ -159,8 +164,15 @@ public class DungeonRunController {
     }
 
     // end looting and move on
-    public static void endLooting(List<Integer> lootChoices, List<Integer> discardChoices) {
+    public static void endLooting(List<Integer> treasureChoices, List<Integer> lootChoices, List<Integer> discardChoices) {
         run.current++;
+        for (int round = 0; round < treasureChoices.size(); round++) {
+            int choice = treasureChoices.get(round);
+            List<CardText> option = run.treasureOptions.get(round).get(choice);
+            for (CardText ct : option) {
+                run.player.deck.addCard(ct, false);
+            }
+        }
         for (int round = 0; round < lootChoices.size(); round++) {
             int choice = lootChoices.get(round);
             List<CardText> option = run.lootOptions.get(round).get(choice);
@@ -187,6 +199,18 @@ public class DungeonRunController {
             f.delete();
         }
         run = null;
+    }
+
+    private static void determineTreasureOptions() {
+        run.treasureOptions = new ArrayList<>(TREASURE_ROUNDS);
+        WeightedSampler<CardText> treasureSampler = new WeightedRandomSampler<>();
+        for (CardText ct : Treasures.CARDS) {
+            treasureSampler.add(ct, 1); // todo weight treasures differently?
+        }
+        for (int i = 0; i < TREASURE_ROUNDS; i++) {
+            List<CardText> topOptions = treasureSampler.sample();
+            run.treasureOptions.add(distributeOptions(topOptions, TREASURE_NUM_OPTIONS, TREASURE_CARDS_PER_OPTION));
+        }
     }
 
     private static void determineLootOptions() {
@@ -226,13 +250,13 @@ public class DungeonRunController {
         List<List<List<CardText>>> ret = new ArrayList<>(numRounds);
         // deck to keep track of what's remaining in the deck as if the player chose all options
         ConstructedDeck copy = deck.copy();
-        WeightedSampler<CardText> deckSampler = new WeightedRandomSampler<>();
-        for (Map.Entry<CardText, Integer> entry : copy.getCounts()) {
-            CardText cardText = entry.getKey();
-            double weight = weightfn.apply(cardText.getTooltip().rarity) * entry.getValue();
-            deckSampler.add(cardText, weight);
-        }
         for (int i = 0; i < numRounds; i++) {
+            WeightedSampler<CardText> deckSampler = new WeightedRandomSampler<>();
+            for (Map.Entry<CardText, Integer> entry : copy.getCounts()) {
+                CardText cardText = entry.getKey();
+                double weight = weightfn.apply(cardText.getTooltip().rarity) * entry.getValue();
+                deckSampler.add(cardText, weight);
+            }
             List<CardText> topOptions = deckSampler.sample();
             List<List<CardText>> options = distributeOptions(topOptions, numOptions, cardsPerOption);
             ret.add(options);

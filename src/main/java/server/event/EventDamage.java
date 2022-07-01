@@ -22,8 +22,7 @@ public class EventDamage extends Event {
     public final List<Minion> m;
     private List<Integer> oldHealth;
     private List<Boolean> oldAlive;
-    private Effect stealthRemover;
-    private List<Effect> shieldRemovers;
+    private List<Effect> addedEffects;
     public final List<Card> markedForDeath;
     public final List<Integer> actualDamage;
     public final Card cardSource; // used for animation probably (relied on for minion attack)
@@ -52,13 +51,12 @@ public class EventDamage extends Event {
     public void resolve(Board b) {
         this.oldHealth = new ArrayList<>(this.m.size());
         this.oldAlive = new ArrayList<>(this.m.size());
-        this.shieldRemovers = new ArrayList<>(this.m.size());
+        this.addedEffects = new ArrayList<>(this.m.size() * 3);
         boolean poisonous = this.cardSource.finalStats.get(Stat.POISONOUS) > 0;
         for (int i = 0; i < this.m.size(); i++) { // sure
             Minion minion = this.m.get(i);
             this.oldHealth.add(minion.health);
             this.oldAlive.add(minion.alive);
-            this.shieldRemovers.add(null);
             this.actualDamage.add(0);
             int shield = minion.finalStats.get(Stat.SHIELD);
             if (shield > 0) {
@@ -68,7 +66,7 @@ public class EventDamage extends Event {
                         .change(Stat.SHIELD, -reduction)
                         .build());
                 minion.addEffect(false, shieldRemover);
-                this.shieldRemovers.set(i, shieldRemover);
+                this.addedEffects.add(shieldRemover);
             } else {
                 // normal damage processing
                 if ((poisonous && minion.finalStats.get(Stat.STALWART) == 0 && this.damage.get(i) > 0 && !(minion instanceof Leader))
@@ -78,29 +76,33 @@ public class EventDamage extends Event {
                 }
                 minion.health -= this.damage.get(i);
                 this.actualDamage.set(i, this.damage.get(i));
+                if (this.damage.get(i) > 0 && this.cardSource.finalStats.get(Stat.FREEZING_TOUCH) > 0) {
+                    Effect frozen = new Effect("", EffectStats.builder()
+                            .set(Stat.FROZEN, 1)
+                            .build());
+                    minion.addEffect(false, frozen);
+                    this.addedEffects.add(frozen);
+                }
             }
         }
         if (this.cardSource.finalStats.get(Stat.STEALTH) > 0) {
-            this.stealthRemover = new Effect("", EffectStats.builder()
+            Effect stealthRemover = new Effect("", EffectStats.builder()
                     .set(Stat.STEALTH, 0)
                     .build());
-            this.cardSource.addEffect(false, this.stealthRemover);
+            this.cardSource.addEffect(false, stealthRemover);
+            this.addedEffects.add(stealthRemover);
         }
     }
 
     @Override
     public void undo(Board b) {
-        if (this.stealthRemover != null) {
-            this.cardSource.removeEffect(this.stealthRemover, true);
-        }
         for (int i = this.m.size() - 1; i >= 0; i--) { // sure
             Minion minion = this.m.get(i);
             minion.health = this.oldHealth.get(i);
             minion.alive = this.oldAlive.get(i);
-            Effect shieldRemover = this.shieldRemovers.get(i);
-            if (shieldRemover != null) {
-                minion.removeEffect(shieldRemover, true);
-            }
+        }
+        for (Effect e : this.addedEffects) {
+            e.owner.removeEffect(e, true);
         }
     }
 

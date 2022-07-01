@@ -73,7 +73,8 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
                 } else {
                     uic.setZ(UICard.Z_MOVE);
                 }
-                if (c.team != this.visualBoard.getLocalteam() * -1) {
+                if (c.team != this.visualBoard.getLocalteam() * -1
+                        || (this.event.status.equals(CardStatus.HAND) && this.event.targetTeam == this.visualBoard.getLocalteam())) {
                     uic.setFlippedOver(false);
                 }
                 // fan the cards between [-0.5, 0.5]

@@ -10,7 +10,6 @@ import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
-import server.card.effect.EffectUntilTurnEnd;
 import server.card.effect.Stat;
 import server.event.Event;
 import server.event.EventMinionAttack;
@@ -38,15 +37,16 @@ public class EphemeraAngelicSlacker extends MinionText {
                 .build()
         ) {
             @Override
-            public ResolverWithDescription onListenEventWhileInPlay(Event e) {
-                if (e instanceof EventMinionAttack && ((EventMinionAttack) e).m1.team == this.owner.team
-                        && ((EventMinionAttack) e).m1 != this.owner) {
+            public ResolverWithDescription onListenEventWhileInPlay(Event event) {
+                if (event instanceof EventMinionAttack && ((EventMinionAttack) event).m1.team == this.owner.team
+                        && ((EventMinionAttack) event).m1 != this.owner) {
                     String description = "Whenever another allied minion attacks, give that minion +1/+0/+0 until the end of the turn.";
-                    Effect effect = new EffectUntilTurnEnd("+1/+0/+0 until the end of the turn (from <b>Ephemera, Angelic Slacker</b>).",
+                    Effect effect = new Effect("+1/+0/+0 until the end of the turn (from <b>Ephemera, Angelic Slacker</b>).",
                             EffectStats.builder()
                                     .change(Stat.ATTACK, 1)
-                                    .build());
-                    return new ResolverWithDescription(description, new AddEffectResolver(((EventMinionAttack) e).m1, effect));
+                                    .build(),
+                            e -> e.untilTurnEndTeam = 0);
+                    return new ResolverWithDescription(description, new AddEffectResolver(((EventMinionAttack) event).m1, effect));
                 }
                 return null;
             }

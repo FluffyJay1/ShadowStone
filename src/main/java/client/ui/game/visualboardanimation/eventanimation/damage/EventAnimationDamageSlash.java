@@ -47,7 +47,7 @@ public class EventAnimationDamageSlash extends EventAnimationDamage {
     public void draw(Graphics g) {
         if (this.isPre()) {
             // do the shooting
-            this.drawProjectile(g, SLASH_PROJECTILE.get());
+            this.drawProjectile(g, SLASH_PROJECTILE.get(), (float) this.normalizedPre());
         } else {
             this.drawDamageNumber(g);
         }

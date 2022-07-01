@@ -103,6 +103,16 @@ public class Tooltip {
     public static final Tooltip STALWART = new Tooltip("Stalwart",
             "Can't be explicitly destroyed by effects, <b>Bane</b>, or <b>Poisonous</b>. Can still be destroyed by damage and <b>Countdown</b>.",
             () -> List.of(BANE, POISONOUS, COUNTDOWN));
+    public static final Tooltip DISARMED = new Tooltip("Disarmed",
+            "Players cannot order <b>Disarmed</b> minions to attack.",
+            List::of);
+    public static final Tooltip FROZEN = new Tooltip("Frozen",
+            "Players cannot order <b>Frozen</b> minions to attack. <b>Frozen</b> minions become <b>Unfrozen</b> at the end of turns where " +
+                    "they could have attacked otherwise.",
+            List::of);
+    public static final Tooltip FREEZING_TOUCH = new Tooltip("Freezing Touch",
+            "Cards with <b>Freezing Touch</b> automatically <b>Freeze</b> any minions they damage.",
+            () -> List.of(FROZEN));
 
     public final String name;
     public final String description;

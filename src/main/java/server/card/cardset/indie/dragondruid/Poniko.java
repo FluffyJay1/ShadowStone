@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class Poniko extends MinionText {
     public static final String NAME = "Poniko";
     private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: <b>Transform</b> into an <b>Uboa</b> and <b>Banish</b> all other cards in play.";
-    public static final String DESCRIPTION = "<b>Ward</b>.\n" + UNLEASH_DESCRIPTION;
+    public static final String DESCRIPTION = "<b>Disarmed</b>. <b>Ward</b>.\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
@@ -37,6 +37,7 @@ public class Poniko extends MinionText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
+                .set(Stat.DISARMED, 1)
                 .set(Stat.WARD, 1)
                 .build()) {
             @Override

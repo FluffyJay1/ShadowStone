@@ -13,6 +13,7 @@ public class Run implements Serializable {
     // outer list: list of selection rounds
     // middle list: list of options for a given round
     // inner list: list of cards contained in an options
+    public List<List<List<CardText>>> treasureOptions;
     public List<List<List<CardText>>> lootOptions;
     public List<List<List<CardText>>> discardOptions;
 }

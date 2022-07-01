@@ -79,11 +79,16 @@ public abstract class EventAnimationDamage extends EventAnimation<EventDamage> {
         g.setColor(Color.white);
     }
 
-    public void drawProjectile(Graphics g, Image projectile) {
+    public Vector2f interpProjectile(Vector2f targetPos, float time) {
+        return targetPos.sub(this.event.cardSource.uiCard.getPos()).scale(time)
+                .add(this.event.cardSource.uiCard.getPos());
+    }
+
+    public void drawProjectile(Graphics g, Image projectile, float time) {
         for (int i = 0; i < this.event.m.size(); i++) {
             projectile.setRotation((float) (this.anglesRad.get(i) * 180 / Math.PI));
             Vector2f pos = this.event.m.get(i).uiCard.getAbsPos()
-                    .sub(this.event.cardSource.uiCard.getAbsPos()).scale((float) (this.normalizedPre()))
+                    .sub(this.event.cardSource.uiCard.getAbsPos()).scale(time)
                     .add(this.event.cardSource.uiCard.getAbsPos());
             g.drawImage(projectile, pos.x - projectile.getWidth()/2, pos.y - projectile.getHeight()/2);
         }

@@ -48,8 +48,8 @@ public class ServerBoard extends Board {
     // same but for cards that have eventlisteners effects, may be muted tho (also for optimization)
     public Set<Card> listeners;
 
-    // see EffectUntilTurnEnd, Card, TurnEndResolver
-    public List<EffectUntilTurnEnd> effectsToRemoveAtEndOfTurn;
+    // see Card, TurnEndResolver
+    public List<Effect> effectsToRemoveAtEndOfTurn;
 
     public ServerBoard(int localteam) {
         super(localteam);

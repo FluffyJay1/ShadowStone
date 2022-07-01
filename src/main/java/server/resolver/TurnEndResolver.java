@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 import server.*;
 import server.card.*;
-import server.card.effect.EffectUntilTurnEnd;
-import server.card.effect.EffectUntilTurnEndAllied;
-import server.card.effect.EffectUntilTurnEndEnemy;
+import server.card.effect.Effect;
+import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.event.*;
 import server.resolver.util.ResolverQueue;
 
@@ -23,8 +23,8 @@ public class TurnEndResolver extends Resolver {
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         b.processEvent(rq, el, new EventTurnEnd(p));
         ResolverQueue subList = new ResolverQueue();
-        List<EffectUntilTurnEnd> relevantEffectsToRemove = b.effectsToRemoveAtEndOfTurn.stream()
-                .filter(eff -> eff.owner.team == this.p.team ? !(eff instanceof EffectUntilTurnEndEnemy) : !(eff instanceof EffectUntilTurnEndAllied))
+        List<Effect> relevantEffectsToRemove = b.effectsToRemoveAtEndOfTurn.stream()
+                .filter(eff -> eff.owner.team * eff.untilTurnEndTeam * -1 != this.p.team)
                 .collect(Collectors.toList());
         this.resolve(b, subList, el, new RemoveEffectResolver(relevantEffectsToRemove));
         // avoid concurrent modification

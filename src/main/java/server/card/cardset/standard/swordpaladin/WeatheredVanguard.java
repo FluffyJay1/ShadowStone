@@ -51,12 +51,12 @@ public class WeatheredVanguard extends MinionText {
                 if (this.cachedInstances == null) {
                     this.cachedInstances = Collections.nCopies(3, new HeavyKnight().constructInstance(this.owner.board));
                 }
-                return AI.valueForSummoning(this.cachedInstances, refs) / 4;
+                return AI.valueForSummoning(this.cachedInstances, refs) / 3;
             }
 
             @Override
             public boolean battlecrySpecialConditions() {
-                return this.owner.canSpendAfterPlayed(4);
+                return this.owner.canSpendAfterPlayed(3);
             }
         });
     }

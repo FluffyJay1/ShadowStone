@@ -9,7 +9,6 @@ import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
-import server.card.effect.EffectUntilTurnEndEnemy;
 import server.card.effect.Stat;
 import server.card.effect.common.EffectStatChange;
 import server.card.target.TargetList;
@@ -41,10 +40,11 @@ public class ShadowReaper extends MinionText {
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 String resolverDescription = "<b>Battlecry</b>: Gain <b>Stealth</b> until the end of your opponent's turn.";
-                Effect stealth = new EffectUntilTurnEndEnemy("<b>Stealth</b> until the end of opponent's turn (from <b>Battlecry</b>).",
+                Effect stealth = new Effect("<b>Stealth</b> until the end of opponent's turn (from <b>Battlecry</b>).",
                         EffectStats.builder()
                                 .set(Stat.STEALTH, 1)
-                                .build());
+                                .build(),
+                        e -> e.untilTurnEndTeam = -1);
                 return new ResolverWithDescription(resolverDescription, new AddEffectResolver(this.owner, stealth));
             }
 

@@ -4,7 +4,6 @@ import client.tooltip.TooltipSpell;
 import server.ServerBoard;
 import server.card.*;
 import server.card.effect.Effect;
-import server.card.effect.EffectUntilTurnEnd;
 import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
@@ -55,7 +54,7 @@ public class AugmentationBestowal extends SpellText {
         return TOOLTIP;
     }
 
-    public static class AugmentationBestowalEffect extends EffectUntilTurnEnd {
+    public static class AugmentationBestowalEffect extends Effect {
         public static final String EFFECT_DESCRIPTION = "Whenever an Artifact comes into play, recover 1 mana orb and draw a card (from <b>Augmentation Bestowal</b>).";
 
         public AugmentationBestowalEffect() {

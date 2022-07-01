@@ -24,6 +24,7 @@ public class StateGame extends BasicGameState {
     @Override
     public void init(GameContainer arg0, StateBasedGame arg1) {
         this.container = arg0;
+        Game.precacheImages();
     }
 
     @Override

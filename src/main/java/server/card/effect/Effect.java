@@ -2,6 +2,7 @@ package server.card.effect;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -47,6 +48,12 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
 
     public EffectAura auraSource;
 
+    // for effects that last until the end of turn
+    // When the Card adds one of these effects, it keeps track in the
+    // ServerBoard, then the TurnEndResolver checks these and removes them
+    // 1 is on friendly team end, 0 for either team, -1 for enemy team end, null for nothing at all
+    public Integer untilTurnEndTeam = null;
+
     // who needs a factory
 
     public Effect() {
@@ -62,27 +69,10 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
         this.effectStats = stats;
     }
 
-    public Effect(String description, boolean stackable) {
-        this(description);
-        this.stackable = stackable;
+    public Effect(String description, EffectStats stats, Consumer<Effect> setters) {
+        this(description, stats);
+        setters.accept(this);
     }
-
-    public Effect(String description, boolean stackable, EffectStats stats) {
-        this(description, stackable);
-        this.effectStats = stats;
-    }
-
-    public Effect(String description, boolean stackable, boolean bonusStats) {
-        this(description, stackable);
-        this.bonusStats = bonusStats;
-    }
-
-    public Effect(String description, boolean stackable, boolean bonusStats, EffectStats stats) {
-        this(description, stackable, bonusStats);
-        this.effectStats = stats;
-    }
-
-    // i may need a factory
 
     public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
         return null;
@@ -290,6 +280,7 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
         builder.append(this.getClass().getName()).append(" ").append(Card.referenceOrNull(this.owner))
                 .append(Effect.referenceOrNull(this.auraSource)).append(this.description)
                 .append(Game.STRING_END).append(" ").append(this.mute).append(" ")
+                .append(this.untilTurnEndTeam == null ? "null" : this.untilTurnEndTeam).append(" ")
                 .append(this.extraStateString());
         this.effectStats.appendStringToBuilder(builder);
     }
@@ -303,12 +294,15 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
             String description = st.nextToken(Game.STRING_END).trim();
             st.nextToken(" \n"); // THANKS STRING TOKENIZER
             boolean mute = Boolean.parseBoolean(st.nextToken());
+            String untilTurnEndTeamString = st.nextToken();
+            Integer untilTurnEndTeam = untilTurnEndTeamString.equals("null") ? null : Integer.valueOf(untilTurnEndTeamString);
             Effect ef;
             ef = c.getDeclaredConstructor().newInstance();
             ef.description = description;
             ef.owner = owner;
             ef.auraSource = aura;
             ef.mute = mute;
+            ef.untilTurnEndTeam = untilTurnEndTeam;
             ef.loadExtraState(b, st);
             ef.effectStats = EffectStats.fromString(st);
             return ef;
@@ -341,6 +335,9 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     }
 
     public String toReference() {
+        if (this.owner == null) {
+            return "null ";
+        }
         return this.owner.toReference() + this.basic + " " + this.removed + " " + this.getIndex() + " ";
     }
 

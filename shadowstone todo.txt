@@ -1,5 +1,3 @@
-can't attack
-fix that horrid stuttering at the start
 new unleash powers, proper unleash power value calculation
 effect ward
 add music

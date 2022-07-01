@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 public class DungeonRunLootPanel extends UIBox {
     private static final float FAN_WIDTH = 1400;
     Text text;
+    List<Integer> treasureChoices;
     List<Integer> lootChoices;
     List<Integer> discardChoices;
     List<OptionPanel> options;
@@ -24,6 +25,7 @@ public class DungeonRunLootPanel extends UIBox {
         super(ui, pos, new Vector2f(1600, 500), "res/ui/uiboxborder.png");
         this.text = new Text(ui, new Vector2f(0, -225), "bruh", 1000, 20, 34, 0, 0);
         this.addChild(text);
+        this.treasureChoices = new ArrayList<>();
         this.lootChoices = new ArrayList<>();
         this.discardChoices = new ArrayList<>();
         this.options = new ArrayList<>();
@@ -38,9 +40,10 @@ public class DungeonRunLootPanel extends UIBox {
         } else if (DungeonRunController.run.state.equals(RunState.LOOTING)) {
             this.setVisible(true);
             if (!this.inited) {
+                this.treasureChoices.clear();
                 this.lootChoices.clear();
                 this.discardChoices.clear();
-                this.updateLoot();
+                this.updateTreasures();
                 this.inited = true;
             }
         } else {
@@ -68,6 +71,20 @@ public class DungeonRunLootPanel extends UIBox {
         }
     }
 
+    private void updateTreasures() {
+        if (this.treasureChoices.size() == DungeonRunController.run.treasureOptions.size()) {
+            this.updateLoot();
+            return;
+        }
+        this.text.setText("Pick your treasures!");
+        this.clearOptions();
+        List<List<CardText>> currentRound = DungeonRunController.run.treasureOptions.get(this.treasureChoices.size());
+        this.showOptions(currentRound, "Select", i -> {
+            this.treasureChoices.add(i);
+            this.updateTreasures();
+        });
+    }
+
     private void updateLoot() {
         if (this.lootChoices.size() == DungeonRunController.run.lootOptions.size()) {
             this.updateDiscard();
@@ -84,7 +101,7 @@ public class DungeonRunLootPanel extends UIBox {
 
     private void updateDiscard() {
         if (this.discardChoices.size() == DungeonRunController.run.discardOptions.size()) {
-            DungeonRunController.endLooting(this.lootChoices, this.discardChoices);
+            DungeonRunController.endLooting(this.treasureChoices, this.lootChoices, this.discardChoices);
             this.onFinish.run();
             return;
         }

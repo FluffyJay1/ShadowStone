@@ -11,7 +11,6 @@ import server.card.*;
 import server.card.cardset.basic.shadowshaman.Zombie;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
-import server.card.effect.EffectUntilTurnEnd;
 import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
@@ -59,11 +58,11 @@ public class DemonlordEachtar extends MinionText {
                             lastPos++;
                         }
                         String buffDescription = "+2/+0/+0 and <b>Rush</b> until the end of the turn (from <b>Demonlord Eachtar's Battlecry</b>).";
-                        Effect buff = new EffectUntilTurnEnd(buffDescription, EffectStats.builder()
+                        Effect buff = new Effect(buffDescription, EffectStats.builder()
                                 .change(Stat.ATTACK, 2)
                                 .set(Stat.RUSH, 1)
-                                .build()
-                        );
+                                .build(),
+                                e -> e.untilTurnEndTeam = 0);
                         List<Minion> relevant = b.getMinions(owner.team, false, true)
                                 .filter(m -> m != owner)
                                 .collect(Collectors.toList());

@@ -12,7 +12,6 @@ import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
-import server.card.effect.EffectUntilTurnEnd;
 import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
@@ -50,10 +49,11 @@ public class LadyGreyDeathweaver extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         int x = owner.finalStats.get(Stat.MAGIC);
                         this.resolve(b, rq, el, new ReanimateResolver(owner.player, x, owner.getIndex() + 1));
-                        Effect buff = new EffectUntilTurnEnd("+" + x + "/+0/+0 and <b>Rush</b> until the end of the turn (from <b>Unleash</b>).", EffectStats.builder()
+                        Effect buff = new Effect("+" + x + "/+0/+0 and <b>Rush</b> until the end of the turn (from <b>Unleash</b>).", EffectStats.builder()
                                 .change(Stat.ATTACK, x)
                                 .set(Stat.RUSH, 1)
-                                .build());
+                                .build(),
+                                e -> e.untilTurnEndTeam = 0);
                         this.resolve(b, rq, el, new AddEffectResolver(owner, buff));
                     }
                 });

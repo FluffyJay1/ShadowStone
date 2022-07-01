@@ -60,6 +60,10 @@ public class Minion extends BoardObject {
             bonus = 6;
         }
         attack += bonus;
+        // if disarmed, then attack isn't quite as useful
+        if (this.finalStats.get(Stat.DISARMED) > 0 || this.finalStats.get(Stat.FROZEN) > 0) {
+            attack /= 2;
+        }
         double effectiveHealth = this.getEffectiveHealth();
         // TODO make it consider other stats
         sum += (0.9 * Math.sqrt(attack * effectiveHealth) + 0.1 * Math.sqrt(magic * Math.pow(effectiveHealth, 0.4)) + 1) * super.getPresenceValueMultiplier();
@@ -81,7 +85,11 @@ public class Minion extends BoardObject {
             return a + (1 - a) * Math.pow(w, effectiveHealth);
         }
     }
-    // remember to change logic in canAttack(Minion)
+
+    public boolean canBeAttacked() {
+        return this.finalStats.get(Stat.STEALTH) == 0;
+    }
+    // remember to change logic in canAttack(Minion) and shouldBeUnfrozen()
     // ideally this is functionally equivalent to minions.filter(this::canAttack)
     // but we do things a bit differently for performance reasons
     public Stream<Minion> getAttackableTargets() {
@@ -89,12 +97,12 @@ public class Minion extends BoardObject {
             return Stream.empty();
         }
         Supplier<Stream<Minion>> minions = () -> this.board.getMinions(this.team * -1, false, true)
-                .filter(m -> m.finalStats.get(Stat.STEALTH) == 0);
+                .filter(Minion::canBeAttacked);
         Stream<Minion> attackable = minions.get();
 
         // TODO add restrictions on can't attack leader
         if (this.attackLeaderConditions()) {
-            attackable = Stream.concat(attackable, this.board.getPlayer(this.team * -1).getLeader().stream());
+            attackable = Stream.concat(attackable, this.board.getPlayer(this.team * -1).getLeader().stream().filter(Minion::canBeAttacked));
         }
 
         // love how you can't reuse streams
@@ -104,9 +112,24 @@ public class Minion extends BoardObject {
         return attackable;
     }
 
+    public boolean shouldBeUnfrozen() {
+        if (this.finalStats.get(Stat.FROZEN) == 0 || this.attacksThisTurn == this.finalStats.get(Stat.ATTACKS_PER_TURN)
+                || this.finalStats.get(Stat.DISARMED) > 0
+                || (this.summoningSickness && this.finalStats.get(Stat.STORM) == 0 && this.finalStats.get(Stat.RUSH) == 0)) {
+            return false;
+        }
+        if (this.board.getMinions(this.team * -1, false, true)
+                .anyMatch(Minion::canBeAttacked)) {
+            return true;
+        }
+        Optional<Leader> ol = this.board.getPlayer(this.team * -1).getLeader();
+        return this.finalStats.get(Stat.STORM) > 0 && ol.isPresent() && ol.get().canBeAttacked();
+    }
+
     public boolean canAttack() {
         return this.team == this.board.getCurrentPlayerTurn() && this.status.equals(CardStatus.BOARD)
                 && this.attacksThisTurn < this.finalStats.get(Stat.ATTACKS_PER_TURN)
+                && this.finalStats.get(Stat.DISARMED) == 0 && this.finalStats.get(Stat.FROZEN) == 0
                 && this.attackMinionConditions();
     }
 
@@ -118,7 +141,7 @@ public class Minion extends BoardObject {
         boolean ward = this.board.getMinions(this.team * -1, true, true)
                 .anyMatch(potentialWard -> potentialWard.finalStats.get(Stat.STEALTH) == 0
                         && potentialWard.finalStats.get(Stat.WARD) > 0);
-        return m.isInPlay() && (!ward || m.finalStats.get(Stat.WARD) > 0) && m.finalStats.get(Stat.STEALTH) == 0
+        return m.isInPlay() && (!ward || m.finalStats.get(Stat.WARD) > 0) && m.canBeAttacked()
                 && (m.status.equals(CardStatus.BOARD) ? this.attackMinionConditions() : this.attackLeaderConditions());
     }
 

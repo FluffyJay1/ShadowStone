@@ -11,7 +11,6 @@ import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
-import server.card.effect.EffectUntilTurnEnd;
 import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
@@ -45,9 +44,10 @@ public class Rhinoceroach extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         int bonus = b.getPlayer(owner.team).cardsPlayedThisTurn - 1;
-                        EffectUntilTurnEnd buff = new EffectUntilTurnEnd("+" + bonus + "/+0/+0 until end of turn (from <b>Battlecry</b>).", EffectStats.builder()
+                        Effect buff = new Effect("+" + bonus + "/+0/+0 until end of turn (from <b>Battlecry</b>).", EffectStats.builder()
                                 .change(Stat.ATTACK, bonus)
-                                .build());
+                                .build(),
+                                e -> e.untilTurnEndTeam = 0);
                         this.resolve(b, rq, el, new AddEffectResolver(owner, buff));
                     }
                 });

@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import client.tooltip.*;
 import client.ui.game.*;
 import server.*;
+import server.ai.AI;
 import server.card.effect.*;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
@@ -93,10 +94,13 @@ public abstract class Card implements Indexable, StringBuildable {
     public double getValue(int refs) {
         double sum = 0;
         if (this.finalStats.get(Stat.LIFESTEAL) > 0) {
-            sum += 1;
+            sum += AI.VALUE_OF_LIFESTEAL;
         }
         if (this.finalStats.get(Stat.POISONOUS) > 0) {
-            sum += 1;
+            sum += AI.VALUE_OF_POISONOUS;
+        }
+        if (this.finalStats.get(Stat.FREEZING_TOUCH) > 0) {
+            sum += AI.VALUE_OF_FREEZING_TOUCH;
         }
         return sum;
     }
@@ -163,8 +167,8 @@ public abstract class Card implements Indexable, StringBuildable {
             if (e instanceof EffectWithDependentStats) {
                 sb.dependentStats.add((EffectWithDependentStats) e);
             }
-            if (e instanceof EffectUntilTurnEnd) {
-                sb.effectsToRemoveAtEndOfTurn.add((EffectUntilTurnEnd) e);
+            if (e.untilTurnEndTeam != null) {
+                sb.effectsToRemoveAtEndOfTurn.add(e);
             }
             if (e.onListenEvent(null) != Effect.UNIMPLEMENTED_RESOLVER) {
                 this.listeners.add(e);
@@ -200,7 +204,7 @@ public abstract class Card implements Indexable, StringBuildable {
                 if (e instanceof EffectWithDependentStats) {
                     sb.dependentStats.remove((EffectWithDependentStats) e);
                 }
-                if (e instanceof EffectUntilTurnEnd) {
+                if (e.untilTurnEndTeam != null) {
                     sb.effectsToRemoveAtEndOfTurn.remove(e);
                 }
                 if (e.onListenEvent(null) != Effect.UNIMPLEMENTED_RESOLVER) {
