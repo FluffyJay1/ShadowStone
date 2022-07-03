@@ -68,6 +68,11 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
     }
 
     @Override
+    public boolean shouldAnimate() {
+        return true;
+    }
+
+    @Override
     public void init(VisualBoard b, EventCreateCard event) {
         super.init(b, event);
         switch (event.status) {

@@ -10,15 +10,12 @@ import server.event.*;
 
 public class EventAnimationRemoveEffect extends EventAnimation<EventRemoveEffect> {
     public EventAnimationRemoveEffect() {
-        super(0, 0); // default no animation if we're removing effects from invisible things
+        super(0, 0.3);
     }
 
     @Override
-    public void init(VisualBoard b, EventRemoveEffect event) {
-        super.init(b, event);
-        if (event.effects.stream().anyMatch(e -> e.owner.isVisibleTo(b.getLocalteam()))) {
-            this.postTime = 0.3; // if we can see one of them, we animate
-        }
+    public boolean shouldAnimate() {
+        return this.event.effects.stream().anyMatch(e -> e.owner.isVisibleTo(this.visualBoard.getLocalteam()));
     }
 
     @Override

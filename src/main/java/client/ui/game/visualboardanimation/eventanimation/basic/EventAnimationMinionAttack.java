@@ -9,7 +9,11 @@ import server.event.*;
 public class EventAnimationMinionAttack extends EventAnimation<EventMinionAttack> {
     public EventAnimationMinionAttack() {
         super(0, 0.2);
+    }
 
+    @Override
+    public boolean shouldAnimate() {
+        return true;
     }
 
     @Override

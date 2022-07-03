@@ -13,6 +13,11 @@ public class EventAnimationGameEnd extends EventAnimation<EventGameEnd> {
     }
 
     @Override
+    public boolean shouldAnimate() {
+        return true;
+    }
+
+    @Override
     public void draw(Graphics g) {
         EventGameEnd e = this.event;
         UnicodeFont font = Game.getFont(80, true, false);

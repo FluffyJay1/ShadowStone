@@ -16,12 +16,12 @@ public class UnleashPower extends Card {
 
     public ResolverQueue onUnleashPre(Minion target) {
         return this.getResolvers(EventGroupType.FLAG, List.of(this), eff -> eff.onUnleashPre(target),
-                eff -> !eff.removed && eff.owner.isInPlay() && target.isInPlay());
+                eff -> !eff.removed && !eff.mute && eff.owner.isInPlay() && target.isInPlay());
     }
 
     public ResolverQueue onUnleashPost(Minion target) {
         return this.getResolvers(EventGroupType.FLAG, List.of(this), eff -> eff.onUnleashPost(target),
-                eff -> !eff.removed && eff.owner.isInPlay() && target.isInPlay());
+                eff -> !eff.removed && !eff.mute && eff.owner.isInPlay() && target.isInPlay());
     }
 
     @Override

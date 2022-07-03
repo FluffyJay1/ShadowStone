@@ -477,9 +477,9 @@ public class UICard extends UIBox {
                 Minion relevantMinion = (Minion) (this.card.team == this.uib.b.getLocalteam() ? this.card.realCard : this.card);
                 if (relevantMinion.canAttack()) {
                     Color borderColor;
-                    if (relevantMinion.summoningSickness
+                    if (relevantMinion.finalStats.get(Stat.CANT_ATTACK_LEADER) > 0 || (relevantMinion.summoningSickness
                             && relevantMinion.finalStats.get(Stat.RUSH) > 0
-                            && relevantMinion.finalStats.get(Stat.STORM) == 0) {
+                            && relevantMinion.finalStats.get(Stat.STORM) == 0)) {
                         borderColor = Color.yellow;
                     } else {
                         borderColor = Color.cyan;

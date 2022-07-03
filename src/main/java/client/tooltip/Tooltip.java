@@ -113,6 +113,10 @@ public class Tooltip {
     public static final Tooltip FREEZING_TOUCH = new Tooltip("Freezing Touch",
             "Cards with <b>Freezing Touch</b> automatically <b>Freeze</b> any minions they damage.",
             () -> List.of(FROZEN));
+    public static final Tooltip MUTE = new Tooltip("Mute",
+            "Causes effects on a card to not respond, like <b>Unleash</b> and <b>Last Words</b> abilities. " +
+                    "Does not remove static traits like stats or <b>Ward</b>.",
+            () -> List.of(UNLEASH, LASTWORDS, WARD));
 
     public final String name;
     public final String description;

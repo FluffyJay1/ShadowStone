@@ -22,6 +22,7 @@ import server.event.*;
 
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 public class EventAnimationSetEffectStats extends EventAnimation<EventSetEffectStats> {
     private static final Supplier<EmissionStrategy> SET_EMISSION_STRATEGY = () -> new EmissionStrategy(
@@ -37,19 +38,14 @@ public class EventAnimationSetEffectStats extends EventAnimation<EventSetEffectS
                     new RandomAngleEmissionPropertyStrategy(new LinearInterpolation(-1500, 1500))
             ))
     );
+
     public EventAnimationSetEffectStats() {
-        super(0, 0); // default no animation if we're setting stats to invisible things
+        super(0, 0.2);
     }
 
     @Override
-    public void init(VisualBoard b, EventSetEffectStats event) {
-        super.init(b, event);
-        for (int i = 0; i < this.event.targets.size(); i++) {
-            if (this.shouldAnimate(i)) {
-                this.postTime = 0.2; // if we can see, we animate
-                break;
-            }
-        }
+    public boolean shouldAnimate() {
+        return IntStream.range(0, this.event.targets.size()).anyMatch(this::shouldAnimate);
     }
 
     private boolean shouldAnimate(int i) {

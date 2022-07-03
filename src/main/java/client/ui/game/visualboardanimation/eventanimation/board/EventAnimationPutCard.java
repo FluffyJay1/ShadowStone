@@ -44,6 +44,11 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
     }
 
     @Override
+    public boolean shouldAnimate() {
+        return true;
+    }
+
+    @Override
     public void init(VisualBoard b, EventPutCard event) {
         super.init(b, event);
         if (event.cards.isEmpty()) {

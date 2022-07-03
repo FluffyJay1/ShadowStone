@@ -38,6 +38,11 @@ public class EventAnimationNecromancy extends EventAnimation<EventNecromancy> {
         super(0, 0.4);
     }
 
+    @Override
+    public boolean shouldAnimate() {
+        return true;
+    }
+
     public void onProcess() {
         UICard uic = this.event.source.owner.uiCard;
         this.visualBoard.uiBoard.addParticleSystem(uic.getPos(), UIBoard.PARTICLE_Z_BOARD, NECROMANCY_EMISSION_STRATEGY.get());

@@ -1,6 +1,7 @@
 package server.event;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import client.Game;
 import server.*;
@@ -9,69 +10,96 @@ import server.card.effect.*;
 
 public class EventMuteEffect extends Event {
     public static final int ID = 29;
-    public final Card c;
-    final Effect e;
+    public final List<? extends Card> cards;
     final boolean mute;
-    private boolean prevMute;
-    private int prevHealth;
-    private boolean oldAlive;
+    private List<List<Boolean>> prevMute;
+    private List<Integer> prevHealth;
+    private List<Boolean> prevAlive;
     final List<Card> markedForDeath;
 
-    public EventMuteEffect(Card c, Effect e, boolean mute, List<Card> markedForDeath) {
+    public EventMuteEffect(List<? extends Card> cards, boolean mute, List<Card> markedForDeath) {
         super(ID);
-        this.c = c;
-        this.e = e;
+        this.cards = cards;
         this.mute = mute;
         this.markedForDeath = Objects.requireNonNullElseGet(markedForDeath, ArrayList::new);
     }
 
     @Override
     public void resolve(Board b) {
-        this.prevMute = this.e.mute;
-        this.oldAlive = this.c.alive;
-        this.c.muteEffect(this.e, this.mute);
-        if (this.c instanceof Minion) {
-            Minion m = ((Minion) this.c);
-            this.prevHealth = m.health;
-            if (this.c.finalStats.get(Stat.HEALTH) < m.health) {
-                m.health = m.finalStats.get(Stat.HEALTH);
+        this.prevMute = new ArrayList<>(this.cards.size());
+        this.prevHealth = new ArrayList<>(this.cards.size());
+        this.prevAlive = new ArrayList<>(this.cards.size());
+        for (int i = 0; i < this.cards.size(); i++) {
+            Card c = this.cards.get(i);
+            List<Boolean> cardPrevMute = new ArrayList<>((int) c.getFinalEffects(false).count());
+            this.prevMute.add(cardPrevMute);
+            this.prevHealth.add(0);
+            this.prevAlive.add(c.alive);
+            List<Effect> allEffects = c.getFinalEffects(false).collect(Collectors.toList());
+            for (Effect e : allEffects) {
+                cardPrevMute.add(e.mute);
+                c.muteEffect(e, this.mute);
             }
-            if (m.health <= 0 && m.alive) {
-                m.alive = false;
-                this.markedForDeath.add(m);
+            if (c instanceof Minion) {
+                Minion m = ((Minion) c);
+                this.prevHealth.set(i, m.health);
+                if (m.finalStats.get(Stat.HEALTH) < m.health) {
+                    m.health = m.finalStats.get(Stat.HEALTH);
+                }
+                if (m.health <= 0 && m.alive) {
+                    m.alive = false;
+                    this.markedForDeath.add(m);
+                }
             }
-        }
-        if (this.c.finalStats.contains(Stat.COUNTDOWN)
-                && this.c.finalStats.get(Stat.COUNTDOWN) <= 0 && this.c.alive) {
-            this.c.alive = false;
-            this.markedForDeath.add(this.c);
+            if (c.finalStats.contains(Stat.COUNTDOWN)
+                    && c.finalStats.get(Stat.COUNTDOWN) <= 0 && c.alive) {
+                c.alive = false;
+                this.markedForDeath.add(c);
+            }
         }
     }
 
     @Override
     public void undo(Board b) {
-        this.c.muteEffect(this.e, this.prevMute);
-        this.c.alive = this.oldAlive;
-        if (c instanceof Minion) {
-            Minion m = ((Minion) c);
-            m.health = this.prevHealth;
+        for (int i = this.cards.size() - 1; i >= 0; i--) {
+            Card c = this.cards.get(i);
+            List<Effect> allEffects = c.getFinalEffects(false).collect(Collectors.toList());
+            List<Boolean> cardPrevMute = this.prevMute.get(i);
+            for (int j = 0; j < allEffects.size(); j++) {
+                Effect e = allEffects.get(j);
+                c.muteEffect(e, cardPrevMute.get(j));
+            }
+            c.alive = this.prevAlive.get(i);
+            if (c instanceof Minion) {
+                Minion m = ((Minion) c);
+                m.health = this.prevHealth.get(i);
+            }
         }
     }
 
     @Override
     public String toString() {
-        return this.id + " " + this.c.toReference() + this.e.toReference() + this.mute + Game.EVENT_END;
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.id).append(" ").append(this.mute).append(" ").append(this.cards.size()).append(" ");
+        for (Card c : this.cards) {
+            sb.append(c.toReference());
+        }
+        sb.append(Game.EVENT_END);
+        return sb.toString();
     }
 
     public static EventMuteEffect fromString(Board b, StringTokenizer st) {
-        Card c = Card.fromReference(b, st);
-        Effect e = Effect.fromReference(b, st);
         boolean mute = Boolean.parseBoolean(st.nextToken());
-        return new EventMuteEffect(c, e, mute, null);
+        int size = Integer.parseInt(st.nextToken());
+        List<Card> cards = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            cards.add(Card.fromReference(b, st));
+        }
+        return new EventMuteEffect(cards, mute, null);
     }
 
     @Override
     public boolean conditions() {
-        return this.c.getEffects(false).contains(this.e);
+        return !this.cards.isEmpty();
     }
 }

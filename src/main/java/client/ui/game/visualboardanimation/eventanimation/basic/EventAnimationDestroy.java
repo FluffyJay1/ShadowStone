@@ -14,6 +14,11 @@ public class EventAnimationDestroy extends EventAnimation<EventDestroy> {
     }
 
     @Override
+    public boolean shouldAnimate() {
+        return true;
+    }
+
+    @Override
     public void onProcess() {
         for (int i = 0; i < this.event.cards.size(); i++) {
             Card c = this.event.cards.get(i);

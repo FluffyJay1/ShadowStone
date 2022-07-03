@@ -67,6 +67,8 @@ public class AI extends Thread {
     public static final double VALUE_OF_POISONOUS = 1;
 
     public static final double VALUE_OF_LIFESTEAL = 1;
+
+    public static final double VALUE_OF_MUTE = 1;
     /*
      * We can't expect the AI to traverse every single possible node in the decision
      * tree before making a move (especially considering rng), so after a certain

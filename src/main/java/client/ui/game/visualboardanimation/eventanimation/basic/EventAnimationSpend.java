@@ -47,6 +47,11 @@ public class EventAnimationSpend extends EventAnimation<EventSpend> {
         super(0, 0.2);
     }
 
+    @Override
+    public boolean shouldAnimate() {
+        return true;
+    }
+
     public void onProcess() {
         Card c = this.event.source.owner;
         UICard uic = c.uiCard;

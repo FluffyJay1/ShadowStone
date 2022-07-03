@@ -38,16 +38,12 @@ public class EventAnimationTransform extends EventAnimation<EventTransform> {
     );
 
     public EventAnimationTransform() {
-        super(0, 0);
+        super(0.2, 0.2);
     }
 
     @Override
-    public void init(VisualBoard b, EventTransform event) {
-        super.init(b, event);
-        if (event.cards.stream().anyMatch(c -> c.isVisibleTo(b.getLocalteam()))) {
-            this.preTime = 0.2;
-            this.postTime = 0.2;
-        }
+    public boolean shouldAnimate() {
+        return this.event.cards.stream().anyMatch(c -> c.isVisibleTo(this.visualBoard.getLocalteam()));
     }
 
     @Override

@@ -236,7 +236,7 @@ public abstract class Card implements Indexable, StringBuildable {
     }
 
     public void muteEffect(Effect e, boolean mute) {
-        if (this.effects.contains(e)) {
+        if (this.effects.contains(e) || this.basicEffects.contains(e)) {
             e.mute = mute;
         }
         if (this.uiCard != null) {
@@ -368,7 +368,7 @@ public abstract class Card implements Indexable, StringBuildable {
     }
 
     public ResolverQueue battlecry(List<List<TargetList<?>>> targetsList) {
-        return this.getTargetedResolvers(EventGroupType.BATTLECRY, List.of(this), targetsList, Effect::battlecry, eff -> !eff.removed);
+        return this.getTargetedResolvers(EventGroupType.BATTLECRY, List.of(this), targetsList, Effect::battlecry, eff -> !eff.removed && !eff.mute);
     }
 
     public ResolverQueue onListenEvent(Event event) {
@@ -379,7 +379,7 @@ public abstract class Card implements Indexable, StringBuildable {
                     if (r == null) {
                         return null;
                     }
-                    return new HookResolver(EventGroupType.FLAG, List.of(this), r, e, eff -> !eff.removed);
+                    return new HookResolver(EventGroupType.FLAG, List.of(this), r, e, eff -> !eff.removed && !eff.mute);
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList()));
@@ -393,7 +393,7 @@ public abstract class Card implements Indexable, StringBuildable {
                     if (r == null) {
                         return null;
                     }
-                    return new HookResolver(EventGroupType.FLAG, List.of(this), r, e, eff -> !eff.removed && eff.owner.isInPlay());
+                    return new HookResolver(EventGroupType.FLAG, List.of(this), r, e, eff -> !eff.removed && !eff.mute && eff.owner.isInPlay());
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList()));

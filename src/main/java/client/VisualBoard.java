@@ -59,7 +59,7 @@ public class VisualBoard extends Board implements
         this.pendingPlays = new PendingManager<>() {
             @Override
             public void onProduce(PendingPlay item) {
-                if (item.card.visualCard != null) {
+                if (item.card.visualCard != null && item.card.board.getCurrentPlayerTurn() == item.card.team) {
                     item.card.visualCard.uiCard.addPendingSource(this);
                 }
                 pendingPlayCards.add(item.card);
@@ -80,7 +80,7 @@ public class VisualBoard extends Board implements
         this.pendingMinionAttacks = new PendingManager<>() {
             @Override
             public void onProduce(PendingMinionAttack item) {
-                if (item.m1.visualCard != null) {
+                if (item.m1.visualCard != null && item.m1.board.getCurrentPlayerTurn() == item.m1.team) {
                     item.m1.visualCard.uiCard.addPendingSource(this);
                 }
             }
@@ -95,10 +95,10 @@ public class VisualBoard extends Board implements
         this.pendingUnleashes = new PendingManager<>() {
             @Override
             public void onProduce(PendingUnleash item) {
-                if (item.source.visualCard != null) {
+                if (item.source.visualCard != null && item.source.board.getCurrentPlayerTurn() == item.source.team) {
                     item.source.visualCard.uiCard.addPendingSource(this);
                 }
-                if (item.m.visualCard != null) {
+                if (item.m.visualCard != null && item.m.board.getCurrentPlayerTurn() == item.m.team) {
                     item.m.visualCard.uiCard.addPendingSource(this);
                 }
             }
@@ -193,7 +193,7 @@ public class VisualBoard extends Board implements
             if (EventGroup.isPush(eventOrGroup)) {
                 EventGroup group = EventGroup.fromString(this, new StringTokenizer(eventOrGroup));
                 this.pushEventGroup(group);
-                this.uiBoard.onEventGroupPushed(group);
+                this.uiBoard.onEventGroupPushed(group, false);
             } else if (EventGroup.isPop(eventOrGroup)) {
                 EventGroup group = this.popEventGroup();
                 this.uiBoard.onEventGroupPopped(group);
@@ -231,7 +231,7 @@ public class VisualBoard extends Board implements
                 EventGroup group = EventGroup.fromString(this, st);
                 this.pushEventGroup(group);
                 anim = this.eventGroupAnimationFactory.newAnimation(group);
-                this.uiBoard.onEventGroupPushed(group);
+                this.uiBoard.onEventGroupPushed(group, anim == null || anim.shouldAnimate());
             } else if (EventGroup.isPop(eventOrGroup)) {
                 EventGroup group = this.popEventGroup();
                 this.uiBoard.onEventGroupPopped(group);

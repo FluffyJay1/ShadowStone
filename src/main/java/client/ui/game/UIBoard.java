@@ -403,7 +403,7 @@ public class UIBoard extends UIBox {
         while (bosIter.hasNext()) {
             int i = bosIter.nextIndex();
             BoardObject bo = (BoardObject) bosIter.next().visualCard;
-            if (bo != null) {
+            if (bo != null && bo.team == this.b.getCurrentPlayerTurn()) {
                 UICard uic = bo.uiCard;
                 if (!bo.status.equals(CardStatus.BOARD)) {
                     // lol
@@ -414,11 +414,15 @@ public class UIBoard extends UIBox {
         }
         // draw pending attack
         for (PendingMinionAttack pma : this.b.pendingMinionAttacks.getPending()) {
-            pma.m1.visualCard.uiCard.drawPendingAttack(g, pma.m2.visualCard.uiCard);
+            if (this.b.getCurrentPlayerTurn() == pma.m1.team) {
+                pma.m1.visualCard.uiCard.drawPendingAttack(g, pma.m2.visualCard.uiCard);
+            }
         }
         // draw pending unleash
         for (PendingUnleash pu : this.b.pendingUnleashes.getPending()) {
-            pu.source.visualCard.uiCard.drawPendingUnleash(g, pu.m.visualCard.uiCard);
+            if (this.b.getCurrentPlayerTurn() == pu.source.team) {
+                pu.source.visualCard.uiCard.drawPendingUnleash(g, pu.m.visualCard.uiCard);
+            }
         }
         for (VisualBoardAnimation ea : this.b.currentAnimations) {
             if (ea.isStarted()) {
@@ -471,13 +475,13 @@ public class UIBoard extends UIBox {
         }
     }
 
-    public void onEventGroupPushed(EventGroup eg) {
+    public void onEventGroupPushed(EventGroup eg, boolean shouldAnimate) {
         if (eg.type.equals(EventGroupType.MINIONATTACKORDER)) {
             for (Card c : eg.cards) {
                 c.uiCard.setCombat(true);
             }
         }
-        if (!eg.description.isEmpty()) {
+        if (!eg.description.isEmpty() && shouldAnimate) {
             this.eventGroupDescriptionContainer.addPanel(eg);
         }
     }

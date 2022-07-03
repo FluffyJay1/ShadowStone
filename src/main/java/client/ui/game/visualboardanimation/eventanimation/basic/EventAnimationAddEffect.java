@@ -11,15 +11,12 @@ import server.event.*;
 public class EventAnimationAddEffect extends EventAnimation<EventAddEffect> {
 
     public EventAnimationAddEffect() {
-        super(0, 0); // default no animation if we're adding effects to invisible things
+        super(0, 0.3);
     }
 
     @Override
-    public void init(VisualBoard b, EventAddEffect event) {
-        super.init(b, event);
-        if (event.c.stream().anyMatch(c -> c.isVisibleTo(b.getLocalteam()))) {
-            this.postTime = 0.3; // if we can see one of them, we animate
-        }
+    public boolean shouldAnimate() {
+        return this.event.c.stream().anyMatch(c -> c.isVisibleTo(this.visualBoard.getLocalteam()));
     }
 
     @Override

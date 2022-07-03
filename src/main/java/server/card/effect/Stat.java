@@ -22,4 +22,5 @@ public enum Stat {
     DISARMED,
     FROZEN,
     FREEZING_TOUCH,
+    CANT_ATTACK_LEADER,
 }

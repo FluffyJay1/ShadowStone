@@ -20,6 +20,11 @@ public class EventAnimationBanish extends EventAnimation<EventBanish> {
     }
 
     @Override
+    public boolean shouldAnimate() {
+        return true;
+    }
+
+    @Override
     public void onStart() {
         this.banishParticles = new ArrayList<>(this.event.cards.size());
         for (Card c : this.event.cards) {

@@ -17,6 +17,11 @@ public class EventAnimationDiscard extends EventAnimation<EventDiscard> {
     }
 
     @Override
+    public boolean shouldAnimate() {
+        return true;
+    }
+
+    @Override
     public void onStart() {
         for (int i = 0; i < this.event.cards.size(); i++) {
             Card c = this.event.cards.get(i);

@@ -82,19 +82,19 @@ public class BoardObject extends Card {
     }
 
     public ResolverQueue onTurnStartAllied() {
-        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onTurnStartAllied, eff -> !eff.removed && eff.owner.isInPlay());
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onTurnStartAllied, eff -> !eff.removed && !eff.mute && eff.owner.isInPlay());
     }
 
     public ResolverQueue onTurnEndAllied() {
-        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onTurnEndAllied, eff -> !eff.removed && eff.owner.isInPlay());
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onTurnEndAllied, eff -> !eff.removed && !eff.mute && eff.owner.isInPlay());
     }
 
     public ResolverQueue onTurnStartEnemy() {
-        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onTurnStartEnemy, eff -> !eff.removed && eff.owner.isInPlay());
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onTurnStartEnemy, eff -> !eff.removed && !eff.mute && eff.owner.isInPlay());
     }
 
     public ResolverQueue onTurnEndEnemy() {
-        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onTurnEndEnemy, eff -> !eff.removed && eff.owner.isInPlay());
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onTurnEndEnemy, eff -> !eff.removed && !eff.mute && eff.owner.isInPlay());
     }
 
     public ResolverQueue lastWords() {
@@ -102,11 +102,11 @@ public class BoardObject extends Card {
     }
 
     public ResolverQueue onEnterPlay() {
-        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onEnterPlay, eff -> !eff.removed && eff.owner.isInPlay());
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onEnterPlay, eff -> !eff.removed && !eff.mute && eff.owner.isInPlay());
     }
 
     public ResolverQueue onLeavePlay() {
-        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onLeavePlay, eff -> !eff.removed && !eff.owner.isInPlay());
+        return this.getResolvers(EventGroupType.FLAG, List.of(this), Effect::onLeavePlay, eff -> !eff.removed && !eff.mute && !eff.owner.isInPlay());
     }
 
     @Override

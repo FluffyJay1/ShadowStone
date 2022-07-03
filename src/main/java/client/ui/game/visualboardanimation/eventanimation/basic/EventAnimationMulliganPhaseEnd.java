@@ -8,4 +8,9 @@ public class EventAnimationMulliganPhaseEnd extends EventAnimation<EventMulligan
     public EventAnimationMulliganPhaseEnd() {
         super(1, 0.5);
     }
+
+    @Override
+    public boolean shouldAnimate() {
+        return true;
+    }
 }

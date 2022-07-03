@@ -10,5 +10,6 @@ public interface VisualBoardAnimation {
     double getTime(); // gets the time elapsed
     boolean isStarted();
     boolean isFinished();
+    boolean shouldAnimate();
     void draw(Graphics g);
 }

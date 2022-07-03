@@ -74,5 +74,6 @@ public class EventAnimationFactory {
         put(EventSpellboost.class, EventAnimationSpellboost.class);
         put(EventSpend.class, EventAnimationSpend.class);
         put(EventDiscard.class, EventAnimationDiscard.class);
+        put(EventMuteEffect.class, EventAnimationMuteEffect.class);
     }};
 }

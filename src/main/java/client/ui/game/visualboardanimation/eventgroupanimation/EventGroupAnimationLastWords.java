@@ -1,13 +1,21 @@
 package client.ui.game.visualboardanimation.eventgroupanimation;
 
+import client.VisualBoard;
 import client.ui.game.UICard;
 import org.newdawn.slick.*;
 
 import client.Game;
+import server.card.CardStatus;
+import server.event.eventgroup.EventGroup;
 
 public class EventGroupAnimationLastWords extends EventGroupAnimation {
     public EventGroupAnimationLastWords() {
         super(0.4);
+    }
+
+    @Override
+    public boolean shouldAnimate() {
+        return this.eventgroup.cards.stream().anyMatch(c -> c.status.equals(CardStatus.GRAVEYARD) || c.isVisibleTo(this.visualBoard.getLocalteam()));
     }
 
     @Override

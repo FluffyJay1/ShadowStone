@@ -48,8 +48,8 @@ public class DungeonRunController {
     private static final int DISCARD_ROUNDS = 2;
     private static final int DISCARD_NUM_OPTIONS = 2;
     private static final int DISCARD_CARDS_PER_OPTION = 2;
-    private static final int ENEMY_DECK_SAMPLE_SIZE = 0;
-    private static final int ENEMY_DECK_SAMPLE_SIZE_PER_LEVEL = 4;
+    private static final int ENEMY_DECK_SAMPLE_SIZE = 2;
+    private static final int ENEMY_DECK_SAMPLE_SIZE_PER_LEVEL = 2;
     private static final int ENEMY_DECK_SAMPLE_ROUNDS = 3;
 
     private static final Map<ExpansionSet, Double> EXPANSION_LOOT_WEIGHTS = new HashMap<>() {{
@@ -116,9 +116,9 @@ public class DungeonRunController {
         ConstructedDeck deck = new ConstructedDeck(spec.leaderText.getTooltip().craft);
         deck.name = "Dungeon Run Deck";
         for (CardText ct : new ExpansionSetBasic().getCards().filterCraft(deck.craft)) {
-            deck.addCard(ct, 2, false);
+            deck.addCard(ct, level >= 2 ? 2 : 1, false);
         }
-        for (CardText ct : new ExpansionSetBasic().getCards().filterCraft(deck.craft)) {
+        for (CardText ct : new ExpansionSetBasic().getCards().filterCraft(ClassCraft.NEUTRAL)) {
             deck.addCard(ct, 1, false);
         }
         WeightedSampler<CardText> extraCardSampler = new WeightedRandomSampler<>();

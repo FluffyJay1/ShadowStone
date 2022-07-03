@@ -13,11 +13,13 @@ import server.resolver.util.ResolverQueue;
 public class MinionAttackResolver extends Resolver {
     final Minion m1;
     final Minion m2;
+    final boolean playerOrdered;
 
-    public MinionAttackResolver(Minion m1, Minion m2) {
+    public MinionAttackResolver(Minion m1, Minion m2, boolean playerOrdered) {
         super(false);
         this.m1 = m1;
         this.m2 = m2;
+        this.playerOrdered = playerOrdered;
     }
 
     @Override
@@ -25,7 +27,7 @@ public class MinionAttackResolver extends Resolver {
         EventGroup attackOrdered = new EventGroup(EventGroupType.MINIONATTACKORDER, List.of(this.m1, this.m2));
         b.pushEventGroup(attackOrdered);
         ResolverQueue queue = new ResolverQueue();
-        b.processEvent(queue, el, new EventMinionAttack(this.m1, this.m2)); // various things are depending on this being first
+        b.processEvent(queue, el, new EventMinionAttack(this.m1, this.m2, this.playerOrdered)); // various things are depending on this being first
         this.resolveQueue(b, queue, el, queue);
         queue = this.m1.strike(this.m2);
         this.resolveQueue(b, queue, el, queue);

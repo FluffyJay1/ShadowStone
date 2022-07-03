@@ -19,9 +19,13 @@ public abstract class EventGroupAnimation implements VisualBoardAnimation {
     public void init(VisualBoard b, EventGroup eventgroup) {
         this.visualBoard = b;
         this.eventgroup = eventgroup;
-        if (eventgroup.cards.stream().noneMatch(c -> c.status.equals(CardStatus.GRAVEYARD) || c.isVisibleTo(b.getLocalteam()))) {
+        if (!this.shouldAnimate()) {
             this.maxTime = 0;
         }
+    }
+
+    public boolean shouldAnimate() {
+        return this.eventgroup.cards.stream().anyMatch(c -> c.isVisibleTo(this.visualBoard.getLocalteam()));
     }
 
     @Override

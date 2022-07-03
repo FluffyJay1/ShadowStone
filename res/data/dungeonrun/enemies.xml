@@ -14,4 +14,9 @@
         <cardset>server.card.cardset.moba.ExpansionSetMoba</cardset>
         <card>server.card.cardset.special.lich.ChainFrost</card>
     </contestant>
+    <contestant leader="server.card.leader.KingCrimson" unleash="server.card.unleashpower.special.EpitaphsProtection">
+        <cardset>server.card.cardset.standard.ExpansionSetStandard</cardset>
+        <cardset>server.card.cardset.anime.ExpansionSetAnime</cardset>
+        <card>server.card.cardset.special.kingcrimson.ItJustWorks</card>
+    </contestant>
 </enemies>

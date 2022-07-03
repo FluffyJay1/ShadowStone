@@ -12,6 +12,11 @@ public class EventAnimationUnleash extends EventAnimation<EventUnleash> {
     }
 
     @Override
+    public boolean shouldAnimate() {
+        return true;
+    }
+
+    @Override
     public void draw(Graphics g) {
         Vector2f pos = this.event.m.uiCard.getAbsPos().sub(this.event.source.uiCard.getAbsPos())
                 .scale((float) (this.normalizedPost())).add(this.event.source.uiCard.getAbsPos());

@@ -14,6 +14,11 @@ public class EventAnimationPlayCard extends EventAnimation<EventPlayCard> {
     }
 
     @Override
+    public boolean shouldAnimate() {
+        return true;
+    }
+
+    @Override
     public void onStart() {
         UICard uic = this.event.c.uiCard;
         this.useCardInAnimation(this.event.c.uiCard);

@@ -40,14 +40,13 @@ public abstract class EventAnimationDamage extends EventAnimation<EventDamage> {
     }
 
     @Override
+    public boolean shouldAnimate() {
+        return !requireNonEmpty || !event.m.isEmpty();
+    }
+
+    @Override
     public void init(VisualBoard b, EventDamage event) {
-        this.visualBoard = b;
-        this.event = event;
-        if (this.requireNonEmpty && event.m.isEmpty()) {
-            this.preTime = 0;
-            this.postTime = 0;
-            return;
-        }
+        super.init(b, event);
         this.dirs = new ArrayList<>(event.m.size());
         this.anglesRad = new ArrayList<>(event.m.size());
         for (Minion m : event.m) {

@@ -28,7 +28,7 @@ public class DiscardResolver extends Resolver {
                 .filter(c -> c.status.equals(CardStatus.HAND))
                 .collect(Collectors.toList());
         if (!cardsInHand.isEmpty()) {
-            EventDiscard discard = new EventDiscard(this.cards);
+            EventDiscard discard = new EventDiscard(cardsInHand);
             b.processEvent(rq, el, discard);
         }
     }

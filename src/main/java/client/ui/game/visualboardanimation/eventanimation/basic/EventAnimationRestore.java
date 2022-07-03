@@ -12,6 +12,11 @@ public class EventAnimationRestore extends EventAnimation<EventRestore> {
     }
 
     @Override
+    public boolean shouldAnimate() {
+        return true;
+    }
+
+    @Override
     public void draw(Graphics g) {
         if (this.processedEvent) {
             g.setColor(Color.green);

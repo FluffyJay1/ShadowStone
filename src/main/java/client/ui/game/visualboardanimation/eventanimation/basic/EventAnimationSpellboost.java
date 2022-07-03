@@ -21,6 +21,7 @@ import server.event.EventSpellboost;
 
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 public class EventAnimationSpellboost extends EventAnimation<EventSpellboost> {
     private static final Supplier<EmissionStrategy> SPELLBOOST_EMISSION_STRATEGY = () -> new EmissionStrategy(
@@ -40,18 +41,12 @@ public class EventAnimationSpellboost extends EventAnimation<EventSpellboost> {
     );
 
     public EventAnimationSpellboost() {
-        super(0, 0);
+        super(0, 0.2);
     }
 
     @Override
-    public void init(VisualBoard b, EventSpellboost event) {
-        super.init(b, event);
-        for (int i = 0; i < event.cards.size(); i++) {
-            if (this.shouldAnimate(i)) {
-                this.postTime = 0.2; // if we can see, we animate
-                break;
-            }
-        }
+    public boolean shouldAnimate() {
+        return IntStream.range(0, this.event.cards.size()).anyMatch(this::shouldAnimate);
     }
 
     private boolean shouldAnimate(int i) {

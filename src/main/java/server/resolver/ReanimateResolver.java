@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class ReanimateResolver extends Resolver {
     Player p;
     int amount, pos;
+    public Minion reanimated;
 
     public ReanimateResolver(Player p, int amount, int pos) {
         super(true);
@@ -38,7 +39,10 @@ public class ReanimateResolver extends Resolver {
                             .filter(c -> c.finalBasicStats.get(Stat.COST) == cost)
                             .collect(Collectors.toList());
                     MinionText selected = ((Minion) SelectRandom.from(highest)).getCardText();
-                    this.resolve(b, rq, el, new CreateCardResolver(selected, this.p.team, CardStatus.BOARD, this.pos));
+                    CreateCardResolver ccr = this.resolve(b, rq, el, new CreateCardResolver(selected, this.p.team, CardStatus.BOARD, this.pos));
+                    if (ccr.event.successful.get(0)) {
+                        this.reanimated = (Minion) ccr.event.cards.get(0);
+                    }
                 });
     }
 }

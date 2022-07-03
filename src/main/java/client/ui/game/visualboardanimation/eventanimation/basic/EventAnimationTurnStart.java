@@ -31,6 +31,11 @@ public class EventAnimationTurnStart extends EventAnimation<EventTurnStart> {
     }
 
     @Override
+    public boolean shouldAnimate() {
+        return true;
+    }
+
+    @Override
     public void onProcess() {
         this.visualBoard.disableInput = this.event.p.team != this.visualBoard.getLocalteam();
     }

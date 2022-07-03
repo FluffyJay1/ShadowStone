@@ -57,6 +57,10 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
     public void init(VisualBoard b, T event) {
         this.visualBoard = b;
         this.event = event;
+        if (!this.shouldAnimate()) {
+            this.preTime = 0;
+            this.postTime = 0;
+        }
     }
 
     public void update(double frametime) {
