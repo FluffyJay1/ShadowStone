@@ -10,16 +10,22 @@ import org.newdawn.slick.state.*;
 import client.Game;
 import client.ui.*;
 import client.ui.menu.*;
+import server.card.cardset.ConstructedDeck;
 
 public class StateMenu extends BasicGameState {
+    private static final double ERROR_DISPLAY_TIME = 5;
     UI ui;
     PlayButton playButton;
     AIDifficultyPanel aiDifficultyPanel;
     GameContainer container;
+    StateBasedGame game;
+    Text errorText;
+    double errorTimer;
 
     @Override
     public void init(GameContainer arg0, StateBasedGame arg1) {
         this.container = arg0;
+        this.game = arg1;
     }
 
     @Override
@@ -57,6 +63,10 @@ public class StateMenu extends BasicGameState {
                 () -> arg1.enterState(Game.STATE_DUNGEONRUN));
         dungeonrunbutton.relpos = true;
         this.ui.addUIElementParent(dungeonrunbutton);
+        GenericButton pvpbutton = new GenericButton(this.ui, new Vector2f(0, 0.35f), new Vector2f(120, 80), "PVP",
+                this::tryEnterPVP);
+        pvpbutton.relpos = true;
+        this.ui.addUIElementParent(pvpbutton);
         this.playButton = new PlayButton(ui);
         this.ui.addUIElementParent(this.playButton);
         this.aiDifficultyPanel = new AIDifficultyPanel(this.ui, new Vector2f());
@@ -64,6 +74,24 @@ public class StateMenu extends BasicGameState {
         this.aiDifficultyPanel.relpos = true;
         this.aiDifficultyPanel.alignh = 1;
         this.ui.addUIElementParent(this.aiDifficultyPanel);
+
+        this.errorText = new Text(this.ui, new Vector2f(0, 0.4f), "Error", 1000, 50, 40, 0, 0);
+        this.errorText.relpos = true;
+        this.errorText.setVisible(false);
+        this.ui.addUIElementParent(this.errorText);
+    }
+
+    private void showError(String message) {
+        this.errorText.setText(message);
+        this.errorTimer = ERROR_DISPLAY_TIME;
+    }
+
+    private void tryEnterPVP() {
+        if (ConstructedDeck.decks.isEmpty()) {
+            this.showError("You need to create a deck first!");
+            return;
+        }
+        this.game.enterState(Game.STATE_PVP);
     }
 
     @Override
@@ -80,7 +108,12 @@ public class StateMenu extends BasicGameState {
     @Override
     public void update(GameContainer arg0, StateBasedGame arg1, int arg2) {
         // TODO Auto-generated method stub
-        this.ui.update(arg2 / 1000.);
+        double frametime = arg2 / 1000.;
+        this.ui.update(frametime);
+        if (this.errorTimer > 0) {
+            this.errorTimer -= frametime;
+        }
+        this.errorText.setVisible(this.errorTimer > 0);
     }
 
     @Override

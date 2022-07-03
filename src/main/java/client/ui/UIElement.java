@@ -490,7 +490,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         if (!this.pointIsInHitbox(x, y) && this.clip) {
             return null;
         }
-        for (UIElement child : this.children) {
+        for (UIElement child : this.getChildren()) {
             UIElement thing = child.topChildAtPos(x, y, requirehitbox, requirescrollable, requiredraggable);
             if (thing != null) {
                 u = thing;

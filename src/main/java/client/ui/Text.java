@@ -17,7 +17,7 @@ public class Text extends UIElement {
     private static final int CACHED_RENDER_PADDING = 10;
     private static Image tempRender;
     private static Graphics tempGraphics;
-    private String text = ""; // private cuz fuck you
+    private String text; // private cuz fuck you
     private final List<List<String>> lines = new ArrayList<>();
     private final List<Float> lineWidths = new ArrayList<>();
     private float maxLineWidth;
@@ -41,7 +41,6 @@ public class Text extends UIElement {
         this.alignv = alignv;
         this.setFont(fontsize);
         this.setText(text);
-        this.isDirty = true;
     }
 
     public void setFont(int fontsize) {
@@ -55,7 +54,7 @@ public class Text extends UIElement {
     }
 
     public void setText(String text) {
-        if (this.text.equals(text)) { // optimization lul
+        if (this.text != null && this.text.equals(text)) { // optimization lul
             return;
         }
         this.text = text;
@@ -176,6 +175,7 @@ public class Text extends UIElement {
                     case "<c>" -> {
                         float drawx = CACHED_RENDER_PADDING + (float) (currlinewidth + (this.maxLineWidth - this.lineWidths.get(i)) * (this.alignh + 1) / 2.);
                         float drawy = CACHED_RENDER_PADDING + (this.lineHeight * i);
+                        tempGraphics.setFont(this.uFontFamily[0]);
                         tempGraphics.drawString("|", drawx - tempGraphics.getFont().getWidth("|") * 0.6f, drawy);
                     }
                     default -> {

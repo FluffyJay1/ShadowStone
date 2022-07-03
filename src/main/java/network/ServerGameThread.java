@@ -18,17 +18,19 @@ import server.card.cardset.*;
  *
  */
 public class ServerGameThread extends Thread {
-    DataStream dsexternal;
-    final DataStream dslocal;
+    final DataStream[] ds; // 0 = local, 1 = external
     final boolean pvp;
     AI ai;
     final ConstructedDeck[] decks;
     private AIConfig config;
+    private boolean peerConnected;
 
-    public ServerGameThread(DataStream dsclient, boolean pvp) {
-        this.dslocal = dsclient;
+    public ServerGameThread(DataStream dslocal, boolean pvp) {
+        this.ds = new DataStream[2];
+        this.ds[0] = dslocal;
         this.pvp = pvp;
         this.decks = new ConstructedDeck[2];
+        this.peerConnected = false;
     }
 
     @Override
@@ -36,28 +38,33 @@ public class ServerGameThread extends Thread {
         if (this.pvp) { // if pvp, wait for a player to connect
             try {
                 ServerSocket serverSocket = new ServerSocket(Game.SERVER_PORT);
-                this.dsexternal = new DataStream(serverSocket.accept());
+                this.ds[1] = new DataStream(serverSocket.accept());
+                this.peerConnected = true;
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         } else {
             DataStream dsai = new DataStream();
-            this.dsexternal = new DataStream();
-            DataStream.pair(dsai, this.dsexternal);
+            this.ds[1] = new DataStream();
+            DataStream.pair(dsai, this.ds[1]);
             this.ai = new AI(dsai, this.config);
             this.ai.start();
         }
         // accept decklists
         while (this.decks[0] == null || this.decks[1] == null) {
-            MessageType mtype = this.dsexternal.receive();
-            if (mtype == MessageType.DECK) {
-                this.setDecklist(1, this.dsexternal.readDecklist());
-            } else {
-                this.dsexternal.discardMessage();
+            for (int i = 0; i < 2; i++) {
+                if (this.ds[i].ready()) {
+                    MessageType mtype = this.ds[i].receive();
+                    if (mtype == MessageType.DECK) {
+                        this.setDecklist(1, this.ds[i].readDecklist());
+                    } else {
+                        this.ds[i].discardMessage();
+                    }
+                }
             }
         }
-        GameController gc = new GameController(List.of(this.dslocal, this.dsexternal),
+        GameController gc = new GameController(List.of(this.ds[0], this.ds[1]),
                 Arrays.stream(this.decks).map(d -> CardSet.getDefaultLeader(d.craft)).collect(Collectors.toList()),
                 Arrays.stream(this.decks).map(d -> CardSet.getDefaultUnleashPower(d.craft)).collect(Collectors.toList()),
                 Arrays.stream(this.decks).collect(Collectors.toList()));
@@ -67,8 +74,13 @@ public class ServerGameThread extends Thread {
             gc.updateGame();
         }
         gc.end();
-        this.dsexternal.close();
-        this.dslocal.close();
+        for (int i = 0; i < 2; i++) {
+            this.ds[i].close();
+        }
+    }
+
+    public boolean isPeerConnected() {
+        return this.peerConnected;
     }
 
     public void setDecklist(int index, ConstructedDeck deck) {

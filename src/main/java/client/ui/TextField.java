@@ -28,6 +28,7 @@ public class TextField extends UIBox {
 
     @Override
     public void update(double frametime) {
+        super.update(frametime);
         if (this.letter) {
             this.spamTimer += frametime;
             while (this.spamTimer >= SPAM_DELAY + SPAM_INTERVAL) {

@@ -24,9 +24,10 @@ import server.card.cardset.*;
 public class Game extends StateBasedGame {
     public static final int STATE_MENU = 0;
     public static final int STATE_GAME = 1;
-    public static int STATE_HELP = 2;
+    public static final int STATE_HELP = 2;
     public static final int STATE_DECKBUILD = 3;
     public static final int STATE_DUNGEONRUN = 4;
+    public static final int STATE_PVP = 5;
     public static final int SERVER_PORT = 9091;
     public static Font[] DEFAULT_FONT;
     static {
@@ -69,6 +70,7 @@ public class Game extends StateBasedGame {
         addState(new StateGame());
         addState(new StateDeckbuild());
         addState(new StateDungeonRun());
+        addState(new StatePVP());
     }
 
     public static void precacheImages() {

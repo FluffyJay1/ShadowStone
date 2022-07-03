@@ -108,8 +108,10 @@ public class UIBoard extends UIBox {
     double playingX;
     List<UICard> cards;
     Consumer<Integer> onGameEnd;
+    public boolean connectionClosed;
+    Runnable onConnectionClosed;
 
-    public UIBoard(UI ui, DataStream ds, Consumer<Integer> onGameEnd) {
+    public UIBoard(UI ui, DataStream ds, Consumer<Integer> onGameEnd, Runnable onConnectionClosed) {
         super(ui, new Vector2f(), new Vector2f(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT), "res/ui/uibox.png");
         this.cards = new ArrayList<>();
         this.b = new VisualBoard(this, 0);
@@ -197,7 +199,10 @@ public class UIBoard extends UIBox {
         this.modalSelectionPanel.setZ(UI_Z_TOP);
         this.addChild(this.modalSelectionPanel);
         this.mulliganChoices = new HashSet<>();
+
+        this.connectionClosed = false;
         this.onGameEnd = onGameEnd;
+        this.onConnectionClosed = onConnectionClosed;
 
         this.teamAssignTimer = Double.POSITIVE_INFINITY;
     }
@@ -449,8 +454,12 @@ public class UIBoard extends UIBox {
     }
 
     private void readDataStream() {
-        if (this.ds.ready()) {
+        if (!this.connectionClosed && this.ds.ready()) {
             MessageType mtype = this.ds.receive();
+            if (mtype == null) {
+                this.connectionClosed = true;
+                this.onConnectionClosed.run();
+            }
             switch (mtype) {
                 case EVENT -> {
                     List<EventBurst> eventBursts = this.ds.readEventBursts();

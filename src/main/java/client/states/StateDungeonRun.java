@@ -122,7 +122,7 @@ public class StateDungeonRun extends BasicGameState {
         DataStream dslocal = new DataStream();
         DataStream dsserver = new DataStream();
         DataStream.pair(dslocal, dsserver);
-        this.uib = new UIBoard(this.ui, dslocal, this::endGame);
+        this.uib = new UIBoard(this.ui, dslocal, this::endGame, () -> {});
         this.ui.addUIElementParent(this.uib);
         this.gameThread = DungeonRunController.startGame(dsserver);
         this.onUpdateRunStatus();

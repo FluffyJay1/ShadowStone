@@ -35,7 +35,7 @@ public class StateGame extends BasicGameState {
         this.dslocal = new DataStream();
         this.dsserver = new DataStream();
         DataStream.pair(dslocal, dsserver);
-        this.uiBoard = new UIBoard(this.ui, this.dslocal, i -> System.out.println("team " + i + "won"));
+        this.uiBoard = new UIBoard(this.ui, this.dslocal, i -> System.out.println("team " + i + " won"), () -> {});
         this.ui.addUIElementParent(this.uiBoard);
         GenericButton quitButton = new GenericButton(this.ui, new Vector2f(0.5f, -0.5f), new Vector2f(150, 50), "Quit",
                 () -> arg1.enterState(Game.STATE_MENU));
