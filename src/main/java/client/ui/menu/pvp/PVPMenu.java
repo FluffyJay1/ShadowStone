@@ -90,6 +90,7 @@ public class PVPMenu extends UIBox {
         DataStream dsserver = new DataStream();
         DataStream.pair(this.dsclient, dsserver);
         StatePVP.serverGameThread = new ServerGameThread(dsserver, true);
+        StatePVP.serverGameThread.start();
     }
 
     private void cancelHost() {
@@ -105,6 +106,13 @@ public class PVPMenu extends UIBox {
             this.dsclient.close();
         }
         if (StatePVP.serverGameThread != null) {
+            if (StatePVP.serverGameThread.serverSocket != null) {
+                try {
+                    StatePVP.serverGameThread.serverSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             StatePVP.serverGameThread.interrupt();
             StatePVP.serverGameThread = null;
         }

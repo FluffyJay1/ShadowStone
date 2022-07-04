@@ -72,6 +72,7 @@ public class StatePVP extends BasicGameState {
         this.ui.addUIElementParent(quitButton);
         this.deckSelectPanel = new DeckSelectPanel(ui, new Vector2f(), false);
         this.deckSelectPanel.setVisible(false);
+        this.deckSelectPanel.setZ(1);
         this.ui.addUIElementParent(this.deckSelectPanel);
 
         this.waitingText = new Text(this.ui, new Vector2f(), "Waiting for them to select their deck...", 1000, 50, 40, 0, 0);
@@ -81,8 +82,10 @@ public class StatePVP extends BasicGameState {
         this.errorText = new Text(this.ui, new Vector2f(0, 0.4f), "Error", 1000, 50, 40, 0, 0);
         this.errorText.relpos = true;
         this.errorText.setVisible(false);
-        this.errorText.setZ(1);
+        this.errorText.setZ(2);
         this.ui.addUIElementParent(this.errorText);
+
+        this.errorTimer = 0;
     }
 
     private void onConnect(DataStream ds) {

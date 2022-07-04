@@ -24,6 +24,7 @@ public class ServerGameThread extends Thread {
     final ConstructedDeck[] decks;
     private AIConfig config;
     private boolean peerConnected;
+    public ServerSocket serverSocket;
 
     public ServerGameThread(DataStream dslocal, boolean pvp) {
         this.ds = new DataStream[2];
@@ -37,12 +38,22 @@ public class ServerGameThread extends Thread {
     public void run() {
         if (this.pvp) { // if pvp, wait for a player to connect
             try {
-                ServerSocket serverSocket = new ServerSocket(Game.SERVER_PORT);
-                this.ds[1] = new DataStream(serverSocket.accept());
-                this.peerConnected = true;
+                this.serverSocket = new ServerSocket(Game.SERVER_PORT);
+                if (!serverSocket.isClosed()) {
+                    this.ds[1] = new DataStream(serverSocket.accept());
+                    this.peerConnected = true;
+                }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+            } finally {
+                if (this.serverSocket != null) {
+                    try {
+                        this.serverSocket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         } else {
             DataStream dsai = new DataStream();

@@ -79,6 +79,7 @@ public class StateMenu extends BasicGameState {
         this.errorText.relpos = true;
         this.errorText.setVisible(false);
         this.ui.addUIElementParent(this.errorText);
+        this.errorTimer = 0;
     }
 
     private void showError(String message) {
