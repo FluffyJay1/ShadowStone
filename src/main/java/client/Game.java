@@ -68,6 +68,7 @@ public class Game extends StateBasedGame {
         // TODO Auto-generated method stub
         addState(new StateMenu());
         addState(new StateGame());
+        addState(new StateHelp());
         addState(new StateDeckbuild());
         addState(new StateDungeonRun());
         addState(new StatePVP());

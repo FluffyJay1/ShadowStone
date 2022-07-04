@@ -67,6 +67,10 @@ public class StateMenu extends BasicGameState {
                 this::tryEnterPVP);
         pvpbutton.relpos = true;
         this.ui.addUIElementParent(pvpbutton);
+        GenericButton helpButton = new GenericButton(this.ui, new Vector2f(0, 0.15f), new Vector2f(120, 80), "How to play",
+                () -> arg1.enterState(Game.STATE_HELP));
+        helpButton.relpos = true;
+        this.ui.addUIElementParent(helpButton);
         this.playButton = new PlayButton(ui);
         this.ui.addUIElementParent(this.playButton);
         this.aiDifficultyPanel = new AIDifficultyPanel(this.ui, new Vector2f());
