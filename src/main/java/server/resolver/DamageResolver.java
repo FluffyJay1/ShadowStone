@@ -13,6 +13,7 @@ public class DamageResolver extends Resolver {
     final List<? extends Minion> targets;
     final List<Integer> damage;
     public final List<Card> destroyed;
+    public EventDamage event;
     Effect effectSource;
     final Card cardSource;
     final String animationString;
@@ -65,15 +66,14 @@ public class DamageResolver extends Resolver {
                 processedDamage.add(this.damage.get(i) > 0 ? this.damage.get(i) : 0);
             }
         }
-        EventDamage event;
         if (this.effectSource != null) {
-            event = b.processEvent(rq, el, new EventDamage(this.effectSource, processedTargets, processedDamage, this.destroyed, this.animationString));
+            this.event = b.processEvent(rq, el, new EventDamage(this.effectSource, processedTargets, processedDamage, this.destroyed, this.animationString));
         } else {
-            event = b.processEvent(rq, el, new EventDamage(this.cardSource, processedTargets, processedDamage, this.destroyed, this.animationString));
+            this.event = b.processEvent(rq, el, new EventDamage(this.cardSource, processedTargets, processedDamage, this.destroyed, this.animationString));
         }
 
         if (this.cardSource.finalStats.get(Stat.LIFESTEAL) > 0) {
-            int totalHeal = event.actualDamage.stream()
+            int totalHeal = this.event.actualDamage.stream()
                     .reduce(0, Integer::sum, Integer::sum);
             this.cardSource.player.getLeader().ifPresent(l -> {
                 this.resolve(b, rq, el, new RestoreResolver(this.effectSource, l, totalHeal));
@@ -82,7 +82,7 @@ public class DamageResolver extends Resolver {
 
         for (int i = 0; i < processedTargets.size(); i++) {
             Minion m = processedTargets.get(i);
-            int damage = processedDamage.get(i);
+            int damage = this.event.actualDamage.get(i);
             rq.addAll(m.onDamaged(damage));
         }
         if (this.resolveDestroy) {

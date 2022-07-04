@@ -35,7 +35,7 @@ public class EventAnimationDamageAOECloud extends EventAnimationDamage {
 
     @Override
     public void onStart() {
-        this.visualBoard.uiBoard.addParticleSystem(new Vector2f(), UIBoard.PARTICLE_Z_BOARD, CLOUD_EMISSION_STRATEGY.get());
+        this.visualBoard.uiBoard.addParticleSystem(this.event.cardSource.uiCard.getPos(), UIBoard.PARTICLE_Z_BOARD, CLOUD_EMISSION_STRATEGY.get());
     }
 
     @Override

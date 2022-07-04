@@ -59,6 +59,7 @@ public class AugmentationBestowal extends SpellText {
 
         public AugmentationBestowalEffect() {
             super(EFFECT_DESCRIPTION);
+            this.untilTurnEndTeam = 0;
         }
 
         @Override

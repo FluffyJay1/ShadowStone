@@ -19,4 +19,9 @@
         <cardset>server.card.cardset.anime.ExpansionSetAnime</cardset>
         <card>server.card.cardset.special.kingcrimson.ItJustWorks</card>
     </contestant>
+    <contestant leader="server.card.leader.Kurumi" unleash="server.card.unleashpower.special.EighthBulletHet">
+        <cardset>server.card.cardset.standard.ExpansionSetStandard</cardset>
+        <cardset>server.card.cardset.anime.ExpansionSetAnime</cardset>
+        <card>server.card.cardset.special.kurumi.CityOfDevouringTime</card>
+    </contestant>
 </enemies>

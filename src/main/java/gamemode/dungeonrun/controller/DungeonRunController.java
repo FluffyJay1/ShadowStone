@@ -105,7 +105,7 @@ public class DungeonRunController {
         for (CardText ct : ExpansionSetBasic.PLAYABLE_SET.filterCraft(ClassCraft.NEUTRAL)) {
             deck.addCard(ct, 1, false);
         }
-        for (CardText ct : ExpansionSetStandard.PLAYABLE_SET.filterCraft(ClassCraft.NEUTRAL, craft)) {
+        for (CardText ct : ExpansionSetStandard.PLAYABLE_SET.filterCraft(craft)) {
             deck.addCard(ct, 1, false);
         }
         return deck;
