@@ -77,6 +77,7 @@ public class StatePVP extends BasicGameState {
 
         this.waitingText = new Text(this.ui, new Vector2f(), "Waiting for them to select their deck...", 1000, 50, 40, 0, 0);
         this.waitingText.setVisible(false);
+        this.waitingText.setZ(2);
         this.ui.addUIElementParent(this.waitingText);
 
         this.errorText = new Text(this.ui, new Vector2f(0, 0.4f), "Error", 1000, 50, 40, 0, 0);

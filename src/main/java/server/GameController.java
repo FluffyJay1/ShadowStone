@@ -41,6 +41,7 @@ public class GameController {
     List<UnleashPowerText> unleashPowers;
     List<ConstructedDeck> decks;
     int teamMultiplier; // if 1, then first index is team 1, if -1 then first index is team -1
+    public boolean disconnected;
 
     public GameController(List<DataStream> players, List<LeaderText> leaders, List<UnleashPowerText> unleashPowers, List<ConstructedDeck> decks) {
         this.b = new ServerBoard(0);
@@ -48,6 +49,7 @@ public class GameController {
         this.leaders = leaders;
         this.unleashPowers = unleashPowers;
         this.decks = decks;
+        this.disconnected = false;
     }
 
     public void startInit() {
@@ -109,6 +111,10 @@ public class GameController {
     }
 
     private void handleGameInput(DataStream ds, int team) {
+        if (ds.error()) {
+            this.disconnected = true;
+            return;
+        }
         while (ds.ready()) {
             MessageType mtype = ds.receive();
             switch (mtype) {
@@ -154,6 +160,10 @@ public class GameController {
         if (!eventBurstString.isEmpty()) {
             for (DataStream ds : this.players) {
                 ds.sendEventBurstString(eventBurstString);
+                if (ds.error()) {
+                    this.disconnected = true;
+                    return;
+                }
             }
         }
     }

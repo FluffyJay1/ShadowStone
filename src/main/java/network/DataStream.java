@@ -30,7 +30,7 @@ public class DataStream {
     public DataStream(Socket socket) {
         try {
             this.socket = socket;
-            this.out = new PrintStream(this.socket.getOutputStream());
+            this.out = new PrintStream(this.socket.getOutputStream(), true);
             this.objectOut = new ObjectOutputStream(this.socket.getOutputStream());
             this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.objectIn = new ObjectInputStream(this.socket.getInputStream());
@@ -240,5 +240,9 @@ public class DataStream {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    public boolean error() {
+        return this.out.checkError();
     }
 }

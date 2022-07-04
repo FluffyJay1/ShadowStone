@@ -68,7 +68,7 @@ public class ServerGameThread extends Thread {
                 if (this.ds[i].ready()) {
                     MessageType mtype = this.ds[i].receive();
                     if (mtype == MessageType.DECK) {
-                        this.setDecklist(1, this.ds[i].readDecklist());
+                        this.setDecklist(i, this.ds[i].readDecklist());
                     } else {
                         this.ds[i].discardMessage();
                     }
@@ -81,7 +81,7 @@ public class ServerGameThread extends Thread {
                 Arrays.stream(this.decks).collect(Collectors.toList()));
         gc.startInit();
         gc.startGame();
-        while (gc.isGamePhase() && !this.isInterrupted()) {
+        while (gc.isGamePhase() && !this.isInterrupted() && !gc.disconnected) {
             gc.updateGame();
         }
         gc.end();

@@ -454,11 +454,17 @@ public class UIBoard extends UIBox {
     }
 
     private void readDataStream() {
+        if (this.ds.error()) {
+            this.connectionClosed = true;
+            this.onConnectionClosed.run();
+            return;
+        }
         if (!this.connectionClosed && this.ds.ready()) {
             MessageType mtype = this.ds.receive();
             if (mtype == null) {
                 this.connectionClosed = true;
                 this.onConnectionClosed.run();
+                return;
             }
             switch (mtype) {
                 case EVENT -> {
