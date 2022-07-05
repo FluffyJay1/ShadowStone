@@ -8,6 +8,7 @@ import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
+import server.card.effect.Stat;
 import server.event.Event;
 import server.event.EventPlayCard;
 import server.resolver.DamageResolver;
@@ -22,13 +23,14 @@ import java.util.stream.Collectors;
 
 public class Japhet extends MinionText {
     public static final String NAME = "Japhet";
-    private static final String ONLISTENEVENT_DESCRIPTION = "Whenever a player plays a card, deal 2 damage a random enemy minion and this minion.";
+    private static final String ONLISTENEVENT_DESCRIPTION = "Whenever a player plays a card, deal X damage a random enemy minion and this minion. " +
+            "X equals this minion's magic.";
     public static final String DESCRIPTION = ONLISTENEVENT_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/indie/japhet.png",
-            CRAFT, TRAITS, RARITY, 5, 2, 2, 10, false, Japhet.class,
+            CRAFT, TRAITS, RARITY, 5, 2, 2, 10, true, Japhet.class,
             new Vector2f(153, 170), 1.3, new EventAnimationDamageOff(),
             List::of,
             List.of());
@@ -49,7 +51,8 @@ public class Japhet extends MinionText {
                                 targets.add(SelectRandom.from(possible));
                             }
                             targets.add((Minion) owner);
-                            this.resolve(b, rq, el, new DamageResolver(effect, targets, 2, true, new EventAnimationDamageOff().toString()));
+                            int x = owner.finalStats.get(Stat.MAGIC);
+                            this.resolve(b, rq, el, new DamageResolver(effect, targets, x, true, new EventAnimationDamageOff().toString()));
                         }
                     });
                 }
