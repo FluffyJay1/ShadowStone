@@ -4,10 +4,9 @@ import java.util.*;
 import java.util.function.Supplier;
 
 import client.ui.Animation;
-import client.ui.interpolation.realvalue.ConstantInterpolation;
-import client.ui.interpolation.realvalue.LinearInterpolation;
-import client.ui.interpolation.realvalue.QuadraticInterpolationA;
-import client.ui.interpolation.realvalue.QuadraticInterpolationB;
+import client.ui.interpolation.meta.ComposedInterpolation;
+import client.ui.interpolation.meta.SequentialInterpolation;
+import client.ui.interpolation.realvalue.*;
 import client.ui.particle.ParticleSystem;
 import client.ui.particle.strategy.EmissionStrategy;
 import client.ui.particle.strategy.property.*;
@@ -110,6 +109,24 @@ public class UICard extends UIBox {
             ))
     );
 
+    private static final Supplier<EmissionStrategy> MUTED_PARTICLES = () -> new EmissionStrategy(
+            new IntervalEmissionTimingStrategy(1, 3),
+            new ComposedEmissionPropertyStrategy(List.of(
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/board/mute.png", new Vector2f(1, 1), 0, 0)),
+                    new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(3.1)),
+                    new ConstantEmissionPropertyStrategy(
+                            Graphics.MODE_ADD, 0, new Vector2f(0, 0),
+                            () -> new QuadraticInterpolationA(0, 0, -1),
+                            () -> new SequentialInterpolation<>(
+                                    List.of(new ComposedInterpolation<>(new SpringInterpolation(1), new LinearInterpolation(1, 1.2)),
+                                            new ComposedInterpolation<>(new SpringInterpolation(1), new LinearInterpolation(1.2, 1))),
+                                    List.of(1., 1.)
+                            )
+                    ),
+                    new RandomAngleEmissionPropertyStrategy(new LinearInterpolation(75, 125))
+            ))
+    );
+
 
     private Card card;
     private Image cardImage, subImage;
@@ -127,6 +144,7 @@ public class UICard extends UIBox {
     private final ParticleSystem stealthParticles;
     private final ParticleSystem specialConditionParticles;
     private final ParticleSystem stalwartParticles;
+    private final ParticleSystem mutedParticles;
 
     public UICard(UI ui, UIBoard uib, Card c) {
         super(ui, new Vector2f(), CARD_DIMENSIONS, "");
@@ -141,6 +159,8 @@ public class UICard extends UIBox {
         this.addChild(this.specialConditionParticles);
         this.stalwartParticles = new ParticleSystem(ui, new Vector2f(), STALWART_PARTICLES.get(), true);
         this.addChild(this.stalwartParticles);
+        this.mutedParticles = new ParticleSystem(ui, new Vector2f(), MUTED_PARTICLES.get(), true);
+        this.addChild(this.mutedParticles);
     }
 
     @Override
@@ -301,6 +321,8 @@ public class UICard extends UIBox {
         }
         this.stalwartParticles.setScale(this.getScale());
         this.stalwartParticles.setPaused(!this.card.isInPlay() || this.card.finalStats.get(Stat.STALWART) == 0);
+        this.mutedParticles.setScale(this.getScale());
+        this.mutedParticles.setPaused(!this.card.isInPlay() || this.card.getFinalEffects(false).noneMatch(e -> e.mute));
         if (!this.isBeingAnimated()) {
             this.updateCardAnimation();
             this.updateFlippedOver();
@@ -352,6 +374,7 @@ public class UICard extends UIBox {
         }
         this.specialConditionParticles.draw(g);
         this.stalwartParticles.draw(g);
+        this.mutedParticles.draw(g);
     }
 
     public void drawCardBack(Graphics g, Vector2f pos, double scale) {

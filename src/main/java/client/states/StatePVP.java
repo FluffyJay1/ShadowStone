@@ -103,6 +103,9 @@ public class StatePVP extends BasicGameState {
 
     @Override
     public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+        if (this.uiBoard != null) {
+            this.uiBoard.musicThemeController.stop();
+        }
         container.getInput().removeListener(this.ui);
         this.menu.shutdownHostServer();
         if (serverGameThread != null) { // just in case

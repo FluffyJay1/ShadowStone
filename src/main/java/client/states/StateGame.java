@@ -53,6 +53,7 @@ public class StateGame extends BasicGameState {
     @Override
     public void leave(GameContainer arg0, StateBasedGame arg1) {
         this.game.interrupt();
+        this.uiBoard.musicThemeController.stop();
         arg0.getInput().removeListener(this.ui);
     }
 

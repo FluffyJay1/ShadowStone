@@ -111,6 +111,8 @@ public class UIBoard extends UIBox {
     public boolean connectionClosed;
     Runnable onConnectionClosed;
 
+    public MusicThemeController musicThemeController;
+
     public UIBoard(UI ui, DataStream ds, Consumer<Integer> onGameEnd, Runnable onConnectionClosed) {
         super(ui, new Vector2f(), new Vector2f(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT), "res/ui/uibox.png");
         this.cards = new ArrayList<>();
@@ -202,9 +204,11 @@ public class UIBoard extends UIBox {
 
         this.connectionClosed = false;
         this.onGameEnd = onGameEnd;
-        this.onConnectionClosed = onConnectionClosed;
+        this.onConnectionClosed = onConnectionClosed; // im sorry elizabeth
 
         this.teamAssignTimer = Double.POSITIVE_INFINITY;
+
+        this.musicThemeController = new MusicThemeController();
     }
 
     @Override
@@ -383,6 +387,8 @@ public class UIBoard extends UIBox {
                 uic.setVisible(false);
             }
         }
+
+        this.musicThemeController.update(frametime);
     }
 
     @Override
@@ -738,6 +744,9 @@ public class UIBoard extends UIBox {
     public void validateTargetingIterators() {
         if (this.targetingSchemeIterator == null) {
             this.cumulativeTargets = new LinkedList<>();
+            if (!this.effectTargetingSchemeIterator.hasNext()) {
+                return;
+            }
             this.targetingSchemeIterator = this.effectTargetingSchemeIterator.next().iterator();
         }
         while(!this.targetingSchemeIterator.hasNext()) {
@@ -762,7 +771,7 @@ public class UIBoard extends UIBox {
                 this.modalSelectionPanel.setVisible(false);
             }
             this.validateTargetingIterators();
-            if (this.targetingSchemeIterator.hasNext()) {
+            if (this.targetingSchemeIterator != null && this.targetingSchemeIterator.hasNext()) {
                 this.currentTargetingScheme = this.targetingSchemeIterator.next();
                 this.currentTargets = this.currentTargetingScheme.makeList();
                 if (this.currentTargetingScheme instanceof CardTargetingScheme) {

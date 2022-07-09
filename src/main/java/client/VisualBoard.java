@@ -130,6 +130,7 @@ public class VisualBoard extends Board implements
         T ret = super.processEvent(e);
 		this.uiBoard.advantageText.setText(String.format("Adv: %.4f", AI.evaluateAdvantage(this, this.getLocalteam())));
         this.uiBoard.cardSelectPanel.updateTrackerText();
+        this.uiBoard.musicThemeController.updateThemeChoice(this);
         if (e instanceof EventGameEnd) {
             this.uiBoard.onGameEnd(((EventGameEnd) e).victory);
         }

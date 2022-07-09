@@ -74,7 +74,7 @@ public class EventAnimationDamageChainFrost extends EventAnimationDamage {
         Vector2f startAbs = this.visualBoard.uiBoard.getAbsPosOfLocal(startPos);
         Vector2f targetAbs = this.event.m.get(0).uiCard.getAbsPos();
         // compute speed
-        this.preTime = startAbs.distance(targetAbs) / PROJECTILE_SPEED;
+        this.preTime = startAbs.distance(targetAbs) / PROJECTILE_SPEED + 0.01; // 0.01 to avoid 0 pretime situations, which could lead to division by 0 or whatever
 
         this.trail = this.visualBoard.uiBoard.addParticleSystem(this.getProjectilePos(), UIBoard.PARTICLE_Z_BOARD, TRAIL.get());
         this.trail.setMoveWithParticles(false);

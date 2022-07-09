@@ -3,6 +3,7 @@ package client.states;
 import java.util.*;
 
 import client.Config;
+import client.MusicThemeController;
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
 import org.newdawn.slick.state.*;
@@ -23,9 +24,10 @@ public class StateMenu extends BasicGameState {
     double errorTimer;
 
     @Override
-    public void init(GameContainer arg0, StateBasedGame arg1) {
+    public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
         this.container = arg0;
         this.game = arg1;
+        MusicThemeController.initThemes();
     }
 
     @Override

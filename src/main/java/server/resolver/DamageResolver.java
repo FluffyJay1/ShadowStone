@@ -75,9 +75,11 @@ public class DamageResolver extends Resolver {
         if (this.cardSource.finalStats.get(Stat.LIFESTEAL) > 0) {
             int totalHeal = this.event.actualDamage.stream()
                     .reduce(0, Integer::sum, Integer::sum);
-            this.cardSource.player.getLeader().ifPresent(l -> {
-                this.resolve(b, rq, el, new RestoreResolver(this.effectSource, l, totalHeal));
-            });
+            if (totalHeal > 0) {
+                this.cardSource.player.getLeader().ifPresent(l -> {
+                    this.resolve(b, rq, el, new RestoreResolver(this.effectSource, l, totalHeal));
+                });
+            }
         }
 
         for (int i = 0; i < processedTargets.size(); i++) {

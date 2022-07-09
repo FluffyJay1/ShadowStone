@@ -82,7 +82,8 @@ public class BerserkerSoul extends SpellText {
                         this.resolve(b, rq, el, new DiscardResolver(dr.drawn.get(0)));
                         Effect additionalAttack = new Effect("+1 attacks this turn (from <b>" + NAME + "</b>).", EffectStats.builder()
                                 .change(Stat.ATTACKS_PER_TURN, 1)
-                                .build());
+                                .build(),
+                                e -> e.untilTurnEndTeam = 0);
                         this.resolve(b, rq, el, new AddEffectResolver(owner, additionalAttack));
                     }
                 }
