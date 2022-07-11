@@ -1,6 +1,8 @@
 package server.card.leader;
 
-import client.tooltip.TooltipMinion;
+import client.tooltip.TooltipLeader;
+import network.Emote;
+import network.EmoteSet;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
 import server.card.CardTrait;
@@ -15,11 +17,19 @@ public class Erika extends LeaderText {
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, "", "res/leader/erika.png",
-            CRAFT, TRAITS, RARITY, 0, 0, 0, 25, false, Erika.class,
+    public static final EmoteSet EMOTESET = EmoteSet.builder()
+            .setLine(Emote.GREETINGS, "Charmed.")
+            .setLine(Emote.THANKS, "Thank you.")
+            .setLine(Emote.SORRY, "Apologies.")
+            .setLine(Emote.WELLPLAYED, "Excellent work!")
+            .setLine(Emote.SHOCKED, "So that's how it's done!")
+            .setLine(Emote.THINKING, "Now what to do?")
+            .setLine(Emote.THREATEN, "You have breathed your last!")
+            .build();
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "res/leader/erika.png",
+            CRAFT, TRAITS, RARITY, Erika.class,
             new Vector2f(), -1, null,
-            List::of,
-            List.of());
+            EMOTESET);
 
     @Override
     protected List<Effect> getSpecialEffects() {
@@ -27,7 +37,7 @@ public class Erika extends LeaderText {
     }
 
     @Override
-    public TooltipMinion getTooltip() {
+    public TooltipLeader getTooltip() {
         return TOOLTIP;
     }
 }

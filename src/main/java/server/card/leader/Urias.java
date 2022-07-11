@@ -1,6 +1,8 @@
 package server.card.leader;
 
-import client.tooltip.TooltipMinion;
+import client.tooltip.TooltipLeader;
+import network.Emote;
+import network.EmoteSet;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
 import server.card.CardTrait;
@@ -15,11 +17,19 @@ public class Urias extends LeaderText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, "", "res/leader/urias.png",
-            CRAFT, TRAITS, RARITY, 0, 0, 0, 25, false, Urias.class,
+    public static final EmoteSet EMOTESET = EmoteSet.builder()
+            .setLine(Emote.GREETINGS, "Greetings.")
+            .setLine(Emote.THANKS, "I am most grateful.")
+            .setLine(Emote.SORRY, "My apologies.")
+            .setLine(Emote.WELLPLAYED, "A worthy performance!")
+            .setLine(Emote.SHOCKED, "Hm?")
+            .setLine(Emote.THINKING, "What is happening here?")
+            .setLine(Emote.THREATEN, "Accept your fate!")
+            .build();
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "res/leader/urias.png",
+            CRAFT, TRAITS, RARITY, Urias.class,
             new Vector2f(), -1, null,
-            List::of,
-            List.of());
+            EMOTESET);
 
     @Override
     protected List<Effect> getSpecialEffects() {
@@ -27,7 +37,7 @@ public class Urias extends LeaderText {
     }
 
     @Override
-    public TooltipMinion getTooltip() {
+    public TooltipLeader getTooltip() {
         return TOOLTIP;
     }
 }

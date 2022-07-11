@@ -226,8 +226,9 @@ public class Text extends UIElement {
             if (this.cachedRender != null) {
                 float drawx = this.getAbsPos().x - (this.maxLineWidth * (this.alignh + 1) / 2f + CACHED_RENDER_PADDING) * this.getScale();
                 float drawy = this.getAbsPos().y - (this.getVOff() + CACHED_RENDER_PADDING) * this.getScale();
-                this.cachedRender.setAlpha(this.getAlpha());
-                g.drawImage(this.cachedRender.getScaledCopy(this.getScale()), drawx, drawy);
+                Image scaledCopy = this.cachedRender.getScaledCopy(this.getScale());
+                scaledCopy.setAlpha(this.getAlpha());
+                g.drawImage(scaledCopy, drawx, drawy);
             }
             this.drawChildren(g);// why not
         }

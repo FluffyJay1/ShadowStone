@@ -1,6 +1,8 @@
 package server.card.leader;
 
-import client.tooltip.TooltipMinion;
+import client.tooltip.TooltipLeader;
+import network.Emote;
+import network.EmoteSet;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
 import server.card.CardTrait;
@@ -15,11 +17,19 @@ public class Yuwan extends LeaderText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, "", "res/leader/yuwan.png",
-            CRAFT, TRAITS, RARITY, 0, 0, 0, 25, false, Yuwan.class,
+    public static final EmoteSet EMOTESET = EmoteSet.builder()
+            .setLine(Emote.GREETINGS, "The pleasure's mine.")
+            .setLine(Emote.THANKS, "Appreciate it.")
+            .setLine(Emote.SORRY, "Apologies.")
+            .setLine(Emote.WELLPLAYED, "Formidable.")
+            .setLine(Emote.SHOCKED, "But how!")
+            .setLine(Emote.THINKING, "Stay on your toes...")
+            .setLine(Emote.THREATEN, "I will have revenge!")
+            .build();
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "res/leader/yuwan.png",
+            CRAFT, TRAITS, RARITY, Yuwan.class,
             new Vector2f(), -1, null,
-            List::of,
-            List.of());
+            EMOTESET);
 
     @Override
     protected List<Effect> getSpecialEffects() {
@@ -27,7 +37,7 @@ public class Yuwan extends LeaderText {
     }
 
     @Override
-    public TooltipMinion getTooltip() {
+    public TooltipLeader getTooltip() {
         return TOOLTIP;
     }
 }

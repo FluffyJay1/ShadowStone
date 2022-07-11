@@ -1,6 +1,6 @@
 package server.card;
 
-import client.tooltip.TooltipMinion;
+import client.tooltip.TooltipLeader;
 import server.Board;
 import server.card.effect.Effect;
 
@@ -23,5 +23,5 @@ public abstract class LeaderText extends MinionText {
     }
 
     protected abstract List<Effect> getSpecialEffects();
-    public abstract TooltipMinion getTooltip();
+    public abstract TooltipLeader getTooltip();
 }

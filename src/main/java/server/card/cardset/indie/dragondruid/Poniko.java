@@ -31,7 +31,7 @@ public class Poniko extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/indie/poniko.png",
             CRAFT, TRAITS, RARITY, 9, 6, 3, 9, false, Poniko.class,
             new Vector2f(85, 150), 1.8, new EventAnimationDamageSlash(),
-            () -> List.of(Tooltip.UNLEASH, Tooltip.BANISH, Tooltip.TRANSFORM, Uboa.TOOLTIP),
+            () -> List.of(Tooltip.DISARMED, Tooltip.WARD, Tooltip.UNLEASH, Tooltip.TRANSFORM, Uboa.TOOLTIP, Tooltip.BANISH),
             List.of());
 
     @Override

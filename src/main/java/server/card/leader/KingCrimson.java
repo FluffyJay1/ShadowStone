@@ -1,6 +1,8 @@
 package server.card.leader;
 
-import client.tooltip.TooltipMinion;
+import client.tooltip.TooltipLeader;
+import network.Emote;
+import network.EmoteSet;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
 import server.card.CardTrait;
@@ -16,11 +18,19 @@ public class KingCrimson extends LeaderText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/leader/kingcrimson.png",
-            CRAFT, TRAITS, RARITY, 0, 0, 0, 25, false, KingCrimson.class,
+    public static final EmoteSet EMOTESET = EmoteSet.builder()
+            .setLine(Emote.GREETINGS, "You should just go home now.")
+            .setLine(Emote.THANKS, "I respect all the work you've done.")
+            .setLine(Emote.SORRY, "You must be troubled.")
+            .setLine(Emote.WELLPLAYED, "I see you've learned.")
+            .setLine(Emote.SHOCKED, "What?!")
+            .setLine(Emote.THINKING, "What's the meaning of this?")
+            .setLine(Emote.THREATEN, "King Crimson has already seen through it.")
+            .build();
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, DESCRIPTION, "res/leader/kingcrimson.png",
+            CRAFT, TRAITS, RARITY, KingCrimson.class,
             new Vector2f(), -1, null,
-            List::of,
-            List.of());
+            EMOTESET);
 
     @Override
     protected List<Effect> getSpecialEffects() {
@@ -28,7 +38,7 @@ public class KingCrimson extends LeaderText {
     }
 
     @Override
-    public TooltipMinion getTooltip() {
+    public TooltipLeader getTooltip() {
         return TOOLTIP;
     }
 }

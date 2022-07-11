@@ -140,7 +140,6 @@ public class EventPutCard extends Event {
                     ((Minion) card).attacksThisTurn = 0;
                 }
             }
-            card.team = this.targetTeam;
             // now adding to
             switch (this.status) {
                 case BOARD -> {
@@ -149,10 +148,14 @@ public class EventPutCard extends Event {
                         if (!card.status.equals(this.status)) {
                             this.cardsEnteringPlay.add(bo);
                         }
-                        destP.getPlayArea().add(this.pos.get(i), bo);
                         if (card instanceof Minion) {
-                            ((Minion) card).summoningSickness = true;
+                            Minion m = (Minion) card;
+                            m.summoningSickness = true;
+                            if (m.team != this.targetTeam || !m.status.equals(this.status)) {
+                                m.attacksThisTurn = 0;
+                            }
                         }
+                        destP.getPlayArea().add(this.pos.get(i), bo);
                         if (bo.team == b.getLocalteam() && b instanceof PendingPlayPositioner) {
                             BoardObject pendingObject = this.play ? bo : null;
                             ((PendingPlayPositioner) b).getPendingPlayPositionProcessor().processOp(bo.getIndex(), pendingObject, true);
@@ -163,6 +166,7 @@ public class EventPutCard extends Event {
                 case DECK -> destP.getDeck().add(this.pos.get(i), card);
                 default -> System.err.println("uhm i don't know where to put this card");
             }
+            card.team = this.targetTeam;
             card.status = this.status;
         }
     }

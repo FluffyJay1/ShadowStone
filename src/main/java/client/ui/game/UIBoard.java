@@ -42,6 +42,7 @@ public class UIBoard extends UIBox {
     public static final double HAND_X_SCALE_LOCAL = 0.22, HAND_X_SCALE_ENEMY = 0.26, HAND_X_SCALE_EXPAND_LOCAL = 0.40;
     private static final float MULLIGAN_FAN_WIDTH = 0.6f, MULLIGAN_KEEP_Y = 0.2f, MULLIGAN_TOSS_Y = -0.2f;
     public static final double CARD_PLAY_Y = 0.2, HAND_EXPAND_Y = 0.30;
+    private static final float EMOTE_Y_LOCAL = 0.25f, EMOTE_Y_ENEMY = -0.27f, EMOTE_SELECT_Y = 0.34f;
     public static final double DECK_X = 0.35, DECK_Y_LOCAL = 0.2, DECK_Y_ENEMY = -0.2;
     public static final float PENDING_X = -0.35f, PENDING_Y = -0.25f, PENDING_Y_SPACING = 0.3f;
     public static final int PARTICLE_Z_BOARD = 1, PARTICLE_Z_SPECIAL = 5, UI_Z_TOP = 10;
@@ -95,6 +96,7 @@ public class UIBoard extends UIBox {
     private final PlayerStatPanel localPlayerStats, enemyPlayerStats;
     public final ClassCraftTrackerPanel localPlayerTracker, enemyPlayerTracker;
     private final MulliganConfirmation mulliganConfirmation;
+    private final EmoteSelectPanel emoteSelectPanel;
     public UICard preSelectedCard, selectedCard, draggingCard, playingCard, attackingMinion,
             unleashingMinion;
     ModalSelectionPanel modalSelectionPanel;
@@ -201,6 +203,15 @@ public class UIBoard extends UIBox {
         this.modalSelectionPanel.setZ(UI_Z_TOP);
         this.addChild(this.modalSelectionPanel);
         this.mulliganChoices = new HashSet<>();
+
+        this.emoteSelectPanel = new EmoteSelectPanel(ui, new Vector2f(0, EMOTE_SELECT_Y), this, emote -> {
+            this.showEmote(this.b.getLocalteam(), emote);
+            this.ds.sendEmote(emote);
+        });
+        this.emoteSelectPanel.relpos = true;
+        this.emoteSelectPanel.setVisible(false);
+        this.emoteSelectPanel.setZ(UI_Z_TOP);
+        this.addChild(this.emoteSelectPanel);
 
         this.connectionClosed = false;
         this.onGameEnd = onGameEnd;
@@ -481,9 +492,18 @@ public class UIBoard extends UIBox {
                         this.skipNextEventAnimations = false;
                     }
                 }
-                case BOARDRESET -> {
-                    this.resetBoard();
-                    this.skipNextEventAnimations = true;
+                case COMMAND -> {
+                    String command = this.ds.readCommand();
+                    if (command.equals("reset")) {
+                        this.resetBoard();
+                        this.skipNextEventAnimations = true;
+                    }
+                }
+                case EMOTE -> {
+                    Emote emote = this.ds.readEmote();
+                    if (emote != null) {
+                        this.showEmote(this.b.getLocalteam() * -1, emote);
+                    }
                 }
                 case TEAMASSIGN -> {
                     int team = this.ds.readTeamAssign();
@@ -593,6 +613,7 @@ public class UIBoard extends UIBox {
         }
         this.handleTargeting(null);
         this.addParticleSystem(this.getLocalPosOfAbs(new Vector2f(x, y)), UIBoard.PARTICLE_Z_BOARD, DUST_EMISSION_STRATEGY.get());
+        this.emoteSelectPanel.setVisible(false);
     }
 
     public void mousePressedCard(UICard c, int button, int x, int y) {
@@ -617,6 +638,7 @@ public class UIBoard extends UIBox {
                     }
                     this.expandHand = true;
                 }
+                this.emoteSelectPanel.setVisible(false);
                 break;
             case UNLEASHPOWER:
                 if (c.getCard().team == this.b.getLocalteam()) {
@@ -626,8 +648,13 @@ public class UIBoard extends UIBox {
                         this.refreshAnimatedUnleashTargets();
                     }
                 }
+                this.emoteSelectPanel.setVisible(false);
                 break;
             case LEADER: // TODO allow leader to attac properly
+                if (button == 1 && c.getCard().team == this.b.getLocalteam()) { // if right click on friendly leader
+                    this.emoteSelectPanel.setVisible(!this.emoteSelectPanel.isVisible());
+                    break;
+                }
             case BOARD:
                 BoardObject bo = (BoardObject) c.getCard();
                 if (bo instanceof Minion && bo.realCard.team == this.b.getLocalteam()
@@ -636,6 +663,7 @@ public class UIBoard extends UIBox {
                     this.refreshAnimatedAttackTargets();
                     c.setOrderingAttack(true);
                 }
+                this.emoteSelectPanel.setVisible(false);
                 break;
             default:
                 break;
@@ -700,10 +728,10 @@ public class UIBoard extends UIBox {
     @Override
     public void keyPressed(int key, char c) {
         if (c == 'z') {
-            this.ds.sendEmote("save");
+            this.ds.sendCommand("save");
         }
         if (c == 'x') {
-            this.ds.sendEmote("load");
+            this.ds.sendCommand("load");
             this.advantageText.setText("KIRA QUEEN DAISAN NO BAKUDAN");
         }
         if (key == Input.KEY_SPACE) {
@@ -903,5 +931,14 @@ public class UIBoard extends UIBox {
 
     public float getElusiveAlpha() {
         return ELUSIVE_ALPHA_INTERPOLATION.get(this.elusiveTimer).floatValue();
+    }
+
+    private void showEmote(int team, Emote emote) {
+        this.b.getPlayer(team).getLeader().ifPresent(l -> {
+            EmoteDisplayUnit edp = new EmoteDisplayUnit(this.ui, new Vector2f(0, team == this.b.getLocalteam() ? EMOTE_Y_LOCAL : EMOTE_Y_ENEMY),
+                    l.getTooltip().emoteSet.getLine(emote));
+            edp.relpos = true;
+            this.addChild(edp);
+        });
     }
 }

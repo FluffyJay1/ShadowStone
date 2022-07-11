@@ -101,18 +101,19 @@ public class DataStream {
         }
     }
 
-    public void sendEmote(String emote) {
+    public void sendEmote(Emote emote) {
         this.out.println(MessageType.EMOTE);
-        this.out.println(emote);
-    }
-
-    public void sendResetBoard() {
-        this.out.println(MessageType.BOARDRESET);
+        this.out.println(emote.name());
     }
 
     public void sendTeamAssign(int team) {
         this.out.println(MessageType.TEAMASSIGN);
         this.out.println(team);
+    }
+
+    public void sendCommand(String command) {
+        this.out.println(MessageType.COMMAND);
+        this.out.println(command);
     }
 
     /**
@@ -184,9 +185,9 @@ public class DataStream {
         return null;
     }
 
-    public String readEmote() {
+    public Emote readEmote() {
         try {
-            return in.readLine();
+            return Emote.valueOf(in.readLine());
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -213,6 +214,15 @@ public class DataStream {
         return 0;
     }
 
+    public String readCommand() {
+        try {
+            return in.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /*
      * If we don't care about the message we just received, we "discard" it, reading
      * the message but not doing anything with it
@@ -224,6 +234,7 @@ public class DataStream {
             case DECK -> this.readDecklist();
             case EMOTE -> this.readEmote();
             case TEAMASSIGN -> this.readTeamAssign();
+            case COMMAND -> this.readCommand();
             default -> {
             }
         }

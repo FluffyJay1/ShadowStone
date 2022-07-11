@@ -1,6 +1,7 @@
 package server;
 
 import network.DataStream;
+import network.Emote;
 import network.MessageType;
 import server.card.Card;
 import server.card.CardStatus;
@@ -128,18 +129,25 @@ public class GameController {
                         ds.discardMessage();
                     }
                     break;
-                case EMOTE:
-                    String emote = ds.readEmote();
-                    if (emote.equals("save")) {
+                case COMMAND:
+                    String command = ds.readCommand();
+                    if (command.equals("save")) {
                         this.b.saveBoardState();
                     }
-                    if (emote.equals("load")) {
+                    if (command.equals("load")) {
                         System.out.println("BITES ZA DUSTO");
                         this.b.loadBoardState();
                         for (DataStream outds : this.players) {
-                            outds.sendResetBoard();
+                            outds.sendCommand("reset");
                         }
                         this.sendEvents();
+                    }
+                    break;
+                case EMOTE:
+                    // forward to other player
+                    Emote emote = ds.readEmote();
+                    if (emote != null) {
+                        this.players.get(this.teamToIndex(team * -1)).sendEmote(emote);
                     }
                     break;
                 default:

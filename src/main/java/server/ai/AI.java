@@ -185,14 +185,18 @@ public class AI extends Thread {
                     this.finishedTurn = false;
                 }
             }
-            case BOARDRESET -> {
-                this.b = new ServerBoard(this.b.getLocalteam());
-                this.b.logEvents = false;
-                this.actionSendQueue = new LinkedList<>();
-                this.waitForEvents = true;
+            case COMMAND -> {
+                String command = this.dslocal.readCommand();
+                if (command.equals("reset")) {
+                    this.b = new ServerBoard(this.b.getLocalteam());
+                    this.b.logEvents = false;
+                    this.actionSendQueue = new LinkedList<>();
+                    this.waitForEvents = true;
+                }
             }
             case TEAMASSIGN -> this.b.setLocalteam(this.dslocal.readTeamAssign());
             default -> {
+                this.dslocal.discardMessage();
             }
         }
     }
