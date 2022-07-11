@@ -17,6 +17,7 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import java.io.IOException;
 import java.util.StringTokenizer;
 
 public class StatePVP extends BasicGameState {
@@ -53,9 +54,14 @@ public class StatePVP extends BasicGameState {
             StringTokenizer st = new StringTokenizer(strarg);
             switch (st.nextToken()) {
                 case DeckSelectPanel.DECK_CONFIRM -> {
-                    this.ds.sendDecklist(this.deckSelectPanel.selectedDeckUnit.deck);
-                    this.waitingText.setVisible(true);
-                    this.deckSelectPanel.setVisible(false);
+                    try {
+                        this.ds.sendDecklist(this.deckSelectPanel.selectedDeckUnit.deck);
+                        this.waitingText.setVisible(true);
+                        this.deckSelectPanel.setVisible(false);
+                    } catch (IOException e) {
+                        this.uiBoard.connectionClosed = true;
+                        this.uiBoard.onConnectionClosed.run();
+                    }
                 }
                 case DeckSelectPanel.DECK_CANCEL -> game.enterState(Game.STATE_MENU);
             }

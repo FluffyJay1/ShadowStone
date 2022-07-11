@@ -14,6 +14,7 @@ import server.resolver.AddEffectResolver;
 import server.resolver.Resolver;
 import server.resolver.util.ResolverQueue;
 
+import java.io.IOException;
 import java.util.List;
 
 public class DungeonRunGameRunner implements Runnable {
@@ -32,35 +33,40 @@ public class DungeonRunGameRunner implements Runnable {
         DataStream.pair(dsai, dsexternal);
         AI ai = new AI(dsai, AIConfig.PRO);
         ai.start();
-        GameController gc = new GameController(List.of(this.dslocal, dsexternal),
-                List.of(this.player.leaderText, this.enemy.leaderText),
-                List.of(this.player.unleashPowerText, this.enemy.unleashPowerText),
-                List.of(this.player.deck, this.enemy.deck));
-        gc.startInit();
-        // adjust the healths based on level
-        gc.resolve(new Resolver(false) {
-            @Override
-            public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                b.getPlayer(gc.indexToTeam(0)).getLeader().ifPresent(l -> {
-                    this.resolve(b, rq, el, new AddEffectResolver(l, new Effect("", EffectStats.builder()
-                            .set(Stat.HEALTH, player.getHealth())
-                            .build()
-                    )));
-                });
-                b.getPlayer(gc.indexToTeam(1)).getLeader().ifPresent(l -> {
-                    this.resolve(b, rq, el, new AddEffectResolver(l, new Effect("", EffectStats.builder()
-                            .set(Stat.HEALTH, enemy.getHealth())
-                            .build()
-                    )));
-                });
+        try {
+            GameController gc = new GameController(List.of(this.dslocal, dsexternal),
+                    List.of(this.player.leaderText, this.enemy.leaderText),
+                    List.of(this.player.unleashPowerText, this.enemy.unleashPowerText),
+                    List.of(this.player.deck, this.enemy.deck));
+            gc.startInit();
+            // adjust the healths based on level
+            gc.resolve(new Resolver(false) {
+                @Override
+                public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                    b.getPlayer(gc.indexToTeam(0)).getLeader().ifPresent(l -> {
+                        this.resolve(b, rq, el, new AddEffectResolver(l, new Effect("", EffectStats.builder()
+                                .set(Stat.HEALTH, player.getHealth())
+                                .build()
+                        )));
+                    });
+                    b.getPlayer(gc.indexToTeam(1)).getLeader().ifPresent(l -> {
+                        this.resolve(b, rq, el, new AddEffectResolver(l, new Effect("", EffectStats.builder()
+                                .set(Stat.HEALTH, enemy.getHealth())
+                                .build()
+                        )));
+                    });
+                }
+            }, 0);
+            gc.startGame();
+            while (gc.isGamePhase() && !Thread.currentThread().isInterrupted()) {
+                gc.updateGame();
             }
-        }, 0);
-        gc.startGame();
-        while (gc.isGamePhase() && !Thread.currentThread().isInterrupted()) {
-            gc.updateGame();
+            gc.end();
+        } catch (IOException e) {
+            // lol
+        } finally {
+            dsexternal.close();
+            this.dslocal.close();
         }
-        gc.end();
-        dsexternal.close();
-        this.dslocal.close();
     }
 }

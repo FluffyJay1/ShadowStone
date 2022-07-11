@@ -13,7 +13,7 @@ import server.card.cardset.*;
 /**
  * thread for p2p battles on same network, one computer acts as server, each
  * thread is a single game
- * 
+ *
  * @author Michael
  *
  */
@@ -62,31 +62,38 @@ public class ServerGameThread extends Thread {
             this.ai = new AI(dsai, this.config);
             this.ai.start();
         }
-        // accept decklists
-        while (this.decks[0] == null || this.decks[1] == null) {
-            for (int i = 0; i < 2; i++) {
-                if (this.ds[i].ready()) {
-                    MessageType mtype = this.ds[i].receive();
-                    if (mtype == MessageType.DECK) {
-                        this.setDecklist(i, this.ds[i].readDecklist());
-                    } else {
-                        this.ds[i].discardMessage();
+        try {
+            // accept decklists
+            while (this.decks[0] == null || this.decks[1] == null) {
+                for (int i = 0; i < 2; i++) {
+                    if (this.ds[i].ready()) {
+                        MessageType mtype = this.ds[i].receive();
+                        if (mtype == MessageType.DECK) {
+                            this.setDecklist(i, this.ds[i].readDecklist());
+                        } else {
+                            this.ds[i].discardMessage();
+                        }
                     }
                 }
             }
-        }
-        GameController gc = new GameController(List.of(this.ds[0], this.ds[1]),
-                Arrays.stream(this.decks).map(d -> CardSet.getDefaultLeader(d.craft)).collect(Collectors.toList()),
-                Arrays.stream(this.decks).map(d -> CardSet.getDefaultUnleashPower(d.craft)).collect(Collectors.toList()),
-                Arrays.stream(this.decks).collect(Collectors.toList()));
-        gc.startInit();
-        gc.startGame();
-        while (gc.isGamePhase() && !this.isInterrupted() && !gc.disconnected) {
-            gc.updateGame();
-        }
-        gc.end();
-        for (int i = 0; i < 2; i++) {
-            this.ds[i].close();
+            GameController gc = new GameController(List.of(this.ds[0], this.ds[1]),
+                    Arrays.stream(this.decks).map(d -> CardSet.getDefaultLeader(d.craft)).collect(Collectors.toList()),
+                    Arrays.stream(this.decks).map(d -> CardSet.getDefaultUnleashPower(d.craft)).collect(Collectors.toList()),
+                    Arrays.stream(this.decks).collect(Collectors.toList()));
+            gc.startInit();
+            System.out.println("benis");
+            gc.startGame();
+            while (gc.isGamePhase() && !this.isInterrupted()) {
+                gc.updateGame();
+            }
+            gc.end();
+        } catch (IOException e) {
+            // lol
+            System.out.println("Server game thread crashed due to ioexception: " + e.getMessage());
+        } finally {
+            for (int i = 0; i < 2; i++) {
+                this.ds[i].close();
+            }
         }
     }
 

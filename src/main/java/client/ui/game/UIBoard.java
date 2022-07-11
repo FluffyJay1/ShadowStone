@@ -1,5 +1,6 @@
 package client.ui.game;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -111,7 +112,7 @@ public class UIBoard extends UIBox {
     List<UICard> cards;
     Consumer<Integer> onGameEnd;
     public boolean connectionClosed;
-    Runnable onConnectionClosed;
+    public Runnable onConnectionClosed;
 
     public MusicThemeController musicThemeController;
 
@@ -173,11 +174,16 @@ public class UIBoard extends UIBox {
         this.addChild(this.enemyPlayerTracker);
 
         this.mulliganConfirmation = new MulliganConfirmation(ui, new Vector2f(0, 0), () -> {
-            this.ds.sendPlayerAction(new MulliganAction(this.b.getPlayer(this.b.getLocalteam()), this.mulliganChoices.stream()
-                    .map(UICard::getCard)
-                    .collect(Collectors.toList()))
-                    .toString());
-            this.mulliganChoices.clear();
+            try {
+                this.ds.sendPlayerAction(new MulliganAction(this.b.getPlayer(this.b.getLocalteam()), this.mulliganChoices.stream()
+                        .map(UICard::getCard)
+                        .collect(Collectors.toList()))
+                        .toString());
+                this.mulliganChoices.clear();
+            } catch (IOException e) {
+                this.connectionClosed = true;
+                this.onConnectionClosed.run();
+            }
         });
         this.mulliganConfirmation.relpos = true;
         this.mulliganConfirmation.setVisible(false);
@@ -206,7 +212,12 @@ public class UIBoard extends UIBox {
 
         this.emoteSelectPanel = new EmoteSelectPanel(ui, new Vector2f(0, EMOTE_SELECT_Y), this, emote -> {
             this.showEmote(this.b.getLocalteam(), emote);
-            this.ds.sendEmote(emote);
+            try {
+                this.ds.sendEmote(emote);
+            } catch (IOException e) {
+                this.connectionClosed = true;
+                this.onConnectionClosed.run();
+            }
         });
         this.emoteSelectPanel.relpos = true;
         this.emoteSelectPanel.setVisible(false);
@@ -471,48 +482,44 @@ public class UIBoard extends UIBox {
     }
 
     private void readDataStream() {
-        if (this.ds.error()) {
+        try {
+            if (!this.connectionClosed && this.ds.ready()) {
+                MessageType mtype = this.ds.receive();
+                switch (mtype) {
+                    case EVENT -> {
+                        List<EventBurst> eventBursts = this.ds.readEventBursts();
+                        this.b.consumeEventBursts(eventBursts);
+                        if (this.skipNextEventAnimations) {
+                            this.b.skipAllAnimations();
+                            this.skipNextEventAnimations = false;
+                        }
+                    }
+                    case COMMAND -> {
+                        String command = this.ds.readCommand();
+                        if (command.equals("reset")) {
+                            this.resetBoard();
+                            this.skipNextEventAnimations = true;
+                        }
+                    }
+                    case EMOTE -> {
+                        Emote emote = this.ds.readEmote();
+                        if (emote != null) {
+                            this.showEmote(this.b.getLocalteam() * -1, emote);
+                        }
+                    }
+                    case TEAMASSIGN -> {
+                        int team = this.ds.readTeamAssign();
+                        this.b.setLocalteam(team);
+                        this.teamAssignTimer = 0;
+                    }
+                    default -> {
+                        this.ds.discardMessage();
+                    }
+                }
+            }
+        } catch (IOException e) {
             this.connectionClosed = true;
             this.onConnectionClosed.run();
-            return;
-        }
-        if (!this.connectionClosed && this.ds.ready()) {
-            MessageType mtype = this.ds.receive();
-            if (mtype == null) {
-                this.connectionClosed = true;
-                this.onConnectionClosed.run();
-                return;
-            }
-            switch (mtype) {
-                case EVENT -> {
-                    List<EventBurst> eventBursts = this.ds.readEventBursts();
-                    this.b.consumeEventBursts(eventBursts);
-                    if (this.skipNextEventAnimations) {
-                        this.b.skipAllAnimations();
-                        this.skipNextEventAnimations = false;
-                    }
-                }
-                case COMMAND -> {
-                    String command = this.ds.readCommand();
-                    if (command.equals("reset")) {
-                        this.resetBoard();
-                        this.skipNextEventAnimations = true;
-                    }
-                }
-                case EMOTE -> {
-                    Emote emote = this.ds.readEmote();
-                    if (emote != null) {
-                        this.showEmote(this.b.getLocalteam() * -1, emote);
-                    }
-                }
-                case TEAMASSIGN -> {
-                    int team = this.ds.readTeamAssign();
-                    this.b.setLocalteam(team);
-                    this.teamAssignTimer = 0;
-                }
-                default -> {
-                }
-            }
         }
     }
 
@@ -690,9 +697,14 @@ public class UIBoard extends UIBox {
             if (this.attackingMinion != null) { // in middle of ordering attack
                 if (c != null && (c.getCard() instanceof Minion) && c.getCard().team != this.b.getLocalteam()
                         && this.attackingMinion.getMinion().realMinion().canAttack(c.getMinion().realMinion())) {
-                    this.ds.sendPlayerAction(
-                            new OrderAttackAction(this.attackingMinion.getMinion().realMinion(), c.getMinion().realMinion())
-                                    .toString());
+                    try {
+                        this.ds.sendPlayerAction(
+                                new OrderAttackAction(this.attackingMinion.getMinion().realMinion(), c.getMinion().realMinion())
+                                        .toString());
+                    } catch (IOException e) {
+                        this.connectionClosed = true;
+                        this.onConnectionClosed.run();
+                    }
                 }
                 this.attackingMinion.setOrderingAttack(false);
                 this.attackingMinion = null;
@@ -727,12 +739,17 @@ public class UIBoard extends UIBox {
     // TODO: remove save scumming debug
     @Override
     public void keyPressed(int key, char c) {
-        if (c == 'z') {
-            this.ds.sendCommand("save");
-        }
-        if (c == 'x') {
-            this.ds.sendCommand("load");
-            this.advantageText.setText("KIRA QUEEN DAISAN NO BAKUDAN");
+        try {
+            if (c == 'z') {
+                this.ds.sendCommand("save");
+            }
+            if (c == 'x') {
+                this.ds.sendCommand("load");
+                this.advantageText.setText("KIRA QUEEN DAISAN NO BAKUDAN");
+            }
+        } catch (IOException e) {
+            this.connectionClosed = true;
+            this.onConnectionClosed.run();
         }
         if (key == Input.KEY_SPACE) {
             System.out.println("KING CRIMSON");
@@ -821,13 +838,23 @@ public class UIBoard extends UIBox {
                         playPos = this.b.pendingPlayPositions.pendingToReal(pendingPos);
                         this.b.pendingPlayPositions.addPendingPositionPreference(pendingPos, (BoardObject) this.playingCard.getCard().realCard);
                     }
-                    this.ds.sendPlayerAction(new PlayCardAction(this.b.realBoard.getPlayer(this.b.getLocalteam()),
-                            this.playingCard.getCard().realCard, playPos,
-                            this.effectCumulativeTargets).toString());
+                    try {
+                        this.ds.sendPlayerAction(new PlayCardAction(this.b.realBoard.getPlayer(this.b.getLocalteam()),
+                                this.playingCard.getCard().realCard, playPos,
+                                this.effectCumulativeTargets).toString());
+                    } catch (IOException e) {
+                        this.connectionClosed = true;
+                        this.onConnectionClosed.run();
+                    }
                 } else if (this.unleashingMinion != null) {
                     // unnecessary check but gets intent across
-                    this.ds.sendPlayerAction(new UnleashMinionAction(this.b.realBoard.getPlayer(this.b.getLocalteam()),
-                            this.unleashingMinion.getMinion().realMinion(), this.effectCumulativeTargets).toString());
+                    try {
+                        this.ds.sendPlayerAction(new UnleashMinionAction(this.b.realBoard.getPlayer(this.b.getLocalteam()),
+                                this.unleashingMinion.getMinion().realMinion(), this.effectCumulativeTargets).toString());
+                    } catch (IOException e) {
+                        this.connectionClosed = true;
+                        this.onConnectionClosed.run();
+                    }
                 }
                 this.stopTargeting();
                 break;

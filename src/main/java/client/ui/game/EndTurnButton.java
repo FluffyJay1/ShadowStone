@@ -5,6 +5,8 @@ import org.newdawn.slick.geom.*;
 import client.ui.*;
 import server.playeraction.*;
 
+import java.io.IOException;
+
 public class EndTurnButton extends UIBox {
     final UIBoard b;
     final Text text;
@@ -27,7 +29,12 @@ public class EndTurnButton extends UIBox {
     public void mouseReleased(int button, int x, int y) {
         if (this.pointIsInHitbox(x, y)) {
             if (!this.b.b.disableInput) {
-                this.b.ds.sendPlayerAction(new EndTurnAction(this.b.b.getLocalteam()).toString());
+                try {
+                    this.b.ds.sendPlayerAction(new EndTurnAction(this.b.b.getLocalteam()).toString());
+                } catch (IOException e) {
+                    this.b.connectionClosed = true;
+                    this.b.onConnectionClosed.run();
+                }
                 this.b.handleTargeting(null);
                 this.b.b.disableInput = true;
             }

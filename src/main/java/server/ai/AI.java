@@ -1,5 +1,6 @@
 package server.ai;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -149,33 +150,33 @@ public class AI extends Thread {
 
     @Override
     public void run() {
-        while (this.b.getWinner() == 0 && !this.isInterrupted()) {
-            this.readDataStream();
-            Player localPlayer = this.b.getPlayer(this.b.getLocalteam());
-            if (!this.isInterrupted() && !this.waitForEvents) {
-                if (!localPlayer.mulliganed && !localPlayer.getHand().isEmpty()) {
-                    // do mulligan thing
-                    List<Card> mulliganChoices = this.chooseMulligan();
-                    this.dslocal.sendPlayerAction(new MulliganAction(localPlayer, mulliganChoices).toString());
-                    this.waitForEvents = true;
-                }
-                if (this.b.getCurrentPlayerTurn() == this.b.getLocalteam() && !this.finishedTurn) {
-                    if (this.actionSendQueue.isEmpty() && this.b.getWinner() == 0) {
-                        this.AIThink();
+        try {
+            while (this.b.getWinner() == 0 && !this.isInterrupted()) {
+                this.readDataStream();
+                Player localPlayer = this.b.getPlayer(this.b.getLocalteam());
+                if (!this.isInterrupted() && !this.waitForEvents) {
+                    if (!localPlayer.mulliganed && !localPlayer.getHand().isEmpty()) {
+                        // do mulligan thing
+                        List<Card> mulliganChoices = this.chooseMulligan();
+                        this.dslocal.sendPlayerAction(new MulliganAction(localPlayer, mulliganChoices).toString());
+                        this.waitForEvents = true;
                     }
-                    this.sendNextAction();
-                    this.waitForEvents = true;
+                    if (this.b.getCurrentPlayerTurn() == this.b.getLocalteam() && !this.finishedTurn) {
+                        if (this.actionSendQueue.isEmpty() && this.b.getWinner() == 0) {
+                            this.AIThink();
+                        }
+                        this.sendNextAction();
+                        this.waitForEvents = true;
+                    }
                 }
             }
+        } catch (IOException e) {
+            // lol;
         }
     }
 
-    private void readDataStream() {
+    private void readDataStream() throws IOException{
         MessageType mtype = this.dslocal.receive();
-        if (mtype == null) {
-            this.interrupt();
-            return;
-        }
         switch (mtype) {
             case EVENT -> {
                 List<EventBurst> eventBursts = this.dslocal.readEventBursts();
@@ -273,7 +274,7 @@ public class AI extends Thread {
         this.actionSendQueue.addAll(actionStack);
     }
 
-    private void sendNextAction() {
+    private void sendNextAction() throws IOException {
         // TODO: check if action is still valid
         if (this.actionSendQueue.isEmpty()) {
             // invalid state, maybe something is up

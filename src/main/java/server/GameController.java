@@ -15,6 +15,7 @@ import server.resolver.Resolver;
 import server.resolver.util.ResolverQueue;
 import utils.SelectRandom;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -42,7 +43,6 @@ public class GameController {
     List<UnleashPowerText> unleashPowers;
     List<ConstructedDeck> decks;
     int teamMultiplier; // if 1, then first index is team 1, if -1 then first index is team -1
-    public boolean disconnected;
 
     public GameController(List<DataStream> players, List<LeaderText> leaders, List<UnleashPowerText> unleashPowers, List<ConstructedDeck> decks) {
         this.b = new ServerBoard(0);
@@ -50,12 +50,13 @@ public class GameController {
         this.leaders = leaders;
         this.unleashPowers = unleashPowers;
         this.decks = decks;
-        this.disconnected = false;
     }
 
-    public void startInit() {
+    public void startInit() throws IOException {
         this.teamMultiplier = Math.random() > 0.5 ? 1 : -1;
+        System.out.println("1");
         this.sendTeamAssignments();
+        System.out.println("2");
         Resolver startResolver = new Resolver(false) {
             @Override
             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
@@ -78,10 +79,12 @@ public class GameController {
             }
         };
         this.b.resolve(startResolver, 0);
+        System.out.println("3");
         this.sendEvents();
+        System.out.println("4");
     }
 
-    public void startGame() {
+    public void startGame() throws IOException {
         this.b.resolve(new DrawResolver(this.b.player1, 3), 0);
         this.b.resolve(new DrawResolver(this.b.player2, 4), 0);
         this.sendEvents();
@@ -91,7 +94,7 @@ public class GameController {
         return this.b.getWinner() == 0;
     }
 
-    public void updateGame() {
+    public void updateGame() throws IOException {
         for (int i = 0; i <= 1; i++) {
             this.handleGameInput(this.players.get(i), indexToTeam(i));
         }
@@ -102,7 +105,7 @@ public class GameController {
 
     }
 
-    public void resolve(Resolver r, int team) {
+    public void resolve(Resolver r, int team) throws IOException {
         this.b.resolve(r, team);
         this.sendEvents();
     }
@@ -111,11 +114,7 @@ public class GameController {
         return this.b.getWinner();
     }
 
-    private void handleGameInput(DataStream ds, int team) {
-        if (ds.error()) {
-            this.disconnected = true;
-            return;
-        }
+    private void handleGameInput(DataStream ds, int team) throws IOException {
         while (ds.ready()) {
             MessageType mtype = ds.receive();
             switch (mtype) {
@@ -157,21 +156,17 @@ public class GameController {
         }
     }
 
-    private void sendTeamAssignments() {
+    private void sendTeamAssignments() throws IOException {
         for (int i = 0; i <= 1; i++) {
             this.players.get(i).sendTeamAssign(this.indexToTeam(i));
         }
     }
 
-    private void sendEvents() {
+    private void sendEvents() throws IOException {
         String eventBurstString = this.b.retrieveEventBurstString();
         if (!eventBurstString.isEmpty()) {
             for (DataStream ds : this.players) {
                 ds.sendEventBurstString(eventBurstString);
-                if (ds.error()) {
-                    this.disconnected = true;
-                    return;
-                }
             }
         }
     }

@@ -17,10 +17,8 @@ import server.event.eventburst.EventBurst;
  */
 public class DataStream {
     Socket socket;
-    PrintStream out;
-    ObjectOutputStream objectOut;
-    BufferedReader in;
-    ObjectInputStream objectIn;
+    ObjectOutputStream out;
+    ObjectInputStream in;
     private MessageType lastMessageType;
 
     public DataStream() {
@@ -30,10 +28,8 @@ public class DataStream {
     public DataStream(Socket socket) {
         try {
             this.socket = socket;
-            this.out = new PrintStream(this.socket.getOutputStream(), true);
-            this.objectOut = new ObjectOutputStream(this.socket.getOutputStream());
-            this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-            this.objectIn = new ObjectInputStream(this.socket.getInputStream());
+            this.out = new ObjectOutputStream(this.socket.getOutputStream());
+            this.in = new ObjectInputStream(this.socket.getInputStream());
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -61,9 +57,8 @@ public class DataStream {
     }
 
     private void pipeOut(PipedOutputStream pos) {
-        this.out = new PrintStream(pos, true, StandardCharsets.UTF_16);
         try {
-            this.objectOut = new ObjectOutputStream(pos);
+            this.out = new ObjectOutputStream(pos);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -71,63 +66,62 @@ public class DataStream {
     }
 
     private void pipeIn(PipedInputStream pis) {
-        this.in = new BufferedReader(new InputStreamReader(pis, StandardCharsets.UTF_16));
         try {
-            this.objectIn = new ObjectInputStream(pis);
+            this.in = new ObjectInputStream(pis);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
-    public void sendEventBurstString(String eventBurstString) {
-        this.out.println(MessageType.EVENT);
-        this.out.println(eventBurstString);
-        this.out.println(Game.BLOCK_END);
+    public void sendEventBurstString(String eventBurstString) throws IOException {
+        // the first thing we write must be a non-object so the dumb available() method works
+        this.out.writeInt(MessageType.EVENT.ordinal());
+        this.out.writeObject(eventBurstString);
+        this.out.flush();
     }
 
-    public void sendPlayerAction(String action) {
-        this.out.println(MessageType.PLAYERACTION);
-        this.out.print(action);
+    public void sendPlayerAction(String action) throws IOException {
+        // the first thing we write must be a non-object so the dumb available() method works
+        this.out.writeInt(MessageType.PLAYERACTION.ordinal());
+        this.out.writeObject(action);
+        this.out.flush();
     }
 
-    public void sendDecklist(ConstructedDeck deck) {
-        this.out.println(MessageType.DECK);
-        try {
-            this.objectOut.writeObject(deck);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    public void sendEmote(Emote emote) throws IOException {
+        // the first thing we write must be a non-object so the dumb available() method works
+        this.out.writeInt(MessageType.EMOTE.ordinal());
+        this.out.writeObject(emote);
+        this.out.flush();
     }
 
-    public void sendEmote(Emote emote) {
-        this.out.println(MessageType.EMOTE);
-        this.out.println(emote.name());
+    public void sendDecklist(ConstructedDeck deck) throws IOException {
+        // the first thing we write must be a non-object so the dumb available() method works
+        this.out.writeInt(MessageType.DECK.ordinal());
+        this.out.writeObject(deck);
+        this.out.flush();
     }
 
-    public void sendTeamAssign(int team) {
-        this.out.println(MessageType.TEAMASSIGN);
-        this.out.println(team);
+    public void sendTeamAssign(int team) throws IOException {
+        // the first thing we write must be a non-object so the dumb available() method works
+        this.out.writeInt(MessageType.TEAMASSIGN.ordinal());
+        this.out.writeInt(team);
+        this.out.flush();
     }
 
-    public void sendCommand(String command) {
-        this.out.println(MessageType.COMMAND);
-        this.out.println(command);
+    public void sendCommand(String command) throws IOException {
+        // the first thing we write must be a non-object so the dumb available() method works
+        this.out.writeInt(MessageType.COMMAND.ordinal());
+        this.out.writeObject(command);
+        this.out.flush();
     }
 
     /**
-     * Return whether the next read won't block
-     * @return true if the next read won't block
+     * Check if there is an incoming message (reads may still block)
+     * @return true if there is an incoming message
      */
-    public boolean ready() {
-        try {
-            return this.in.ready();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return false;
+    public boolean ready() throws IOException {
+        return this.in.available() >= 4; // can read int
     }
 
     /*
@@ -135,89 +129,57 @@ public class DataStream {
      * corresponding read...() method to finish reading the message
      * returns null if the connection was closed
      */
-    public MessageType receive() {
-        String header = "";
-        try {
-            header = in.readLine();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        if (header == null) { // connection closed by peer
-            return null;
-        }
-        try {
-            MessageType mtype = MessageType.valueOf(header);
-            this.lastMessageType = mtype;
-            return mtype;
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public MessageType receive() throws IOException {
+        MessageType mtype = MessageType.values()[in.readInt()];
+        this.lastMessageType = mtype;
+        return mtype;
     }
 
-    public List<EventBurst> readEventBursts() {
+    public List<EventBurst> readEventBursts() throws IOException {
         try {
-            StringBuilder events = new StringBuilder();
-            String line = in.readLine();
-            while (!line.equals(Game.BLOCK_END)) {
-                if (!events.isEmpty()) {
-                    events.append("\n");
-                }
-                events.append(line);
-                line = in.readLine();
-            }
-            String s = events.toString();
-            return EventBurst.parseEventBursts(s);
-        } catch (IOException e) {
+            return EventBurst.parseEventBursts((String) in.readObject());
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public String readPlayerAction() {
+    public String readPlayerAction() throws IOException {
         try {
-            return in.readLine();
-        } catch (IOException e) {
+            return (String) in.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Emote readEmote() throws IOException {
+        try {
+            return (Emote) in.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ConstructedDeck readDecklist() throws IOException {
+        try {
+            return (ConstructedDeck) this.in.readObject();
+        } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
     }
 
-    public Emote readEmote() {
-        try {
-            return Emote.valueOf(in.readLine());
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
+    public int readTeamAssign() throws IOException {
+        return in.readInt();
     }
 
-    public ConstructedDeck readDecklist() {
+    public String readCommand() throws IOException {
         try {
-            return (ConstructedDeck) this.objectIn.readObject();
-        } catch (ClassNotFoundException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public int readTeamAssign() {
-        try {
-            return Integer.parseInt(in.readLine());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    public String readCommand() {
-        try {
-            return in.readLine();
-        } catch (IOException e) {
+            return (String) in.readObject();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;
@@ -227,7 +189,7 @@ public class DataStream {
      * If we don't care about the message we just received, we "discard" it, reading
      * the message but not doing anything with it
      */
-    public void discardMessage() {
+    public void discardMessage() throws IOException {
         switch (this.lastMessageType) {
             case EVENT -> this.readEventBursts();
             case PLAYERACTION -> this.readPlayerAction();
@@ -253,7 +215,4 @@ public class DataStream {
         }
     }
 
-    public boolean error() {
-        return this.out.checkError();
-    }
 }
