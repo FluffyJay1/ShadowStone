@@ -29,7 +29,7 @@ public class Enoch extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/indie/enoch.png",
             CRAFT, TRAITS, RARITY, 7, 2, 2, 20, true, Enoch.class,
             new Vector2f(151, 141), 1.3, new EventAnimationDamageOff(),
-            () -> List.of(Tooltip.WARD, Tooltip.STALWART),
+            () -> List.of(Tooltip.WARD, Tooltip.STALWART, Tooltip.NECROMANCY),
             List.of());
 
     @Override

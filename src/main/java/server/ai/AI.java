@@ -117,6 +117,10 @@ public class AI extends Thread {
 
     private static final double END_TURN_WEIGHT = 1;
 
+    // min score diff to trigger an emote
+    private static final double EMOTE_SCORE_CHANGE_THRESHOLD = 15;
+    private static final double EMOTE_SCORE_CHANGE_THRESHOLD_PER_TURN = 1;
+
     // Statistics to gauge AI evaluation speed
     private final int[] width = new int[SAMPLING_MAX_DEPTH + 1];
     private final int[] maxBranches = new int[SAMPLING_MAX_DEPTH + 1];
@@ -132,11 +136,15 @@ public class AI extends Thread {
     // highly unlikely that we need this but just to be complete
     private final Set<DeterministicBoardStateNode> traversedNodes;
 
+    // for big board swings, the AI should emote
+    private int lastPlayerTurn;
+    private double lastPlayerStartScore;
+
     AIConfig config;
     ServerBoard b;
     final DataStream dslocal;
     List<String> actionSendQueue;
-    boolean waitForEvents, finishedTurn;
+    boolean waitForEvents, finishedTurn, sentGG;
 
     public AI(DataStream dslocal, AIConfig config) {
         this.config = config;
@@ -160,6 +168,38 @@ public class AI extends Thread {
                         List<Card> mulliganChoices = this.chooseMulligan();
                         this.dslocal.sendPlayerAction(new MulliganAction(localPlayer, mulliganChoices).toString());
                         this.waitForEvents = true;
+                    } else if (this.b.getWinner() != 0 && !this.sentGG) {
+                        this.sentGG = true;
+                        if (this.b.getWinner() == this.b.getLocalteam()) {
+                            if (this.lastPlayerTurn == this.b.getLocalteam() && this.lastPlayerStartScore < 0) {
+                                // if lethal from comeback
+                                this.dslocal.sendEmote(Math.random() > 0.5 ? Emote.THREATEN : Emote.WELLPLAYED);
+                            } else {
+                                this.dslocal.sendEmote(Emote.THREATEN);
+                            }
+                        } else {
+                            if (this.lastPlayerTurn == this.b.getLocalteam() * -1 && this.lastPlayerStartScore > 0) {
+                                // if lethal from comeback
+                                this.dslocal.sendEmote(Math.random() > 0.5 ? Emote.SHOCKED : Emote.WELLPLAYED);
+                            } else {
+                                this.dslocal.sendEmote(Emote.WELLPLAYED);
+                            }
+                        }
+                    } else if (this.b.getCurrentPlayerTurn() != this.lastPlayerTurn) {
+                        double currentScore = evaluateAdvantage(this.b, this.b.getLocalteam());
+                        double diff = EMOTE_SCORE_CHANGE_THRESHOLD + EMOTE_SCORE_CHANGE_THRESHOLD_PER_TURN * this.b.getPlayer(this.lastPlayerTurn).turn;
+                        // if comeback
+                        if (this.lastPlayerTurn == this.b.getLocalteam() && currentScore > 0 && lastPlayerStartScore < 0
+                                && currentScore > this.lastPlayerStartScore + diff) {
+                            // taunt them
+                            this.dslocal.sendEmote(Emote.THREATEN);
+                        } else if (this.lastPlayerTurn == this.b.getLocalteam() * -1 && currentScore < 0 && lastPlayerStartScore > 0
+                                && currentScore < this.lastPlayerStartScore - diff) {
+                            // wow well played
+                            this.dslocal.sendEmote(Math.random() > 0.5 ? Emote.SHOCKED : Emote.WELLPLAYED);
+                        }
+                        this.lastPlayerTurn = this.b.getCurrentPlayerTurn();
+                        this.lastPlayerStartScore = currentScore;
                     }
                     if (this.b.getCurrentPlayerTurn() == this.b.getLocalteam() && !this.finishedTurn) {
                         if (this.actionSendQueue.isEmpty() && this.b.getWinner() == 0) {
@@ -175,7 +215,7 @@ public class AI extends Thread {
         }
     }
 
-    private void readDataStream() throws IOException{
+    private void readDataStream() throws IOException {
         MessageType mtype = this.dslocal.receive();
         switch (mtype) {
             case EVENT -> {
@@ -773,7 +813,18 @@ public class AI extends Thread {
                 .filter(Minion::canAttack)
                 .map(m -> m.finalStats.get(Stat.ATTACK) * (m.finalStats.get(Stat.ATTACKS_PER_TURN) - m.attacksThisTurn))
                 .reduce(0, Integer::sum);
+        int potentialLeaderDamage = attackingMinions.get()
+                .filter(Minion::canAttack)
+                .filter(Minion::attackLeaderConditions)
+                .map(m -> m.finalStats.get(Stat.ATTACK) * (m.finalStats.get(Stat.ATTACKS_PER_TURN) - m.attacksThisTurn))
+                .reduce(0, Integer::sum);
         int threatenDamage = attackingMinions.get()
+                .filter(Minion::canAttackEventually)
+                .map(m -> m.finalStats.get(Stat.ATTACK) * m.finalStats.get(Stat.ATTACKS_PER_TURN))
+                .reduce(0, Integer::sum);
+        int threatenLeaderDamage = attackingMinions.get()
+                .filter(Minion::canAttackEventually)
+                .filter(Minion::attackLeaderConditions)
                 .map(m -> m.finalStats.get(Stat.ATTACK) * m.finalStats.get(Stat.ATTACKS_PER_TURN))
                 .reduce(0, Integer::sum);
         int attackers = attackingMinions.get()
@@ -782,6 +833,7 @@ public class AI extends Thread {
         List<Minion> defendingMinons = b.getMinions(team, false, true)
                 .filter(m -> m.finalStats.get(Stat.WARD) > 0)
                 .collect(Collectors.toList());
+        int leaderhp = l.health + shield;
         int ehp = defendingMinons.stream()
                 .map(m -> m.health)
                 .reduce(l.health + shield, Integer::sum);
@@ -789,27 +841,25 @@ public class AI extends Thread {
         if (shield > 0) {
             defenders++;
         }
-        /*
-        Turn-dependent evaluation is a bad idea, because of evaluation can get cut off in the middle
-        e.g. one branch may look better than another branch, because the first branch didn't evaluate
-        deep enough where an end turn was the only option
-        
-        this following branch is experimental, so the AI doesn't think a turn sucks because it 
-        reached max depth before being able to attack with its minions
-        */
         if (b.getCurrentPlayerTurn() != team) {
             threatenDamage = potentialDamage;
+            threatenLeaderDamage = potentialLeaderDamage;
         }
         // if there are more defenders than attacks, then minions shouldn't be
         // able to touch face
         if (defenders >= attackers) {
-            ehp = Math.max(ehp - threatenDamage, l.health);
+            ehp = Math.max(ehp - threatenDamage, leaderhp);
         } else {
-            if (threatenDamage >= ehp) {
-                // they're threatening lethal if i dont do anything
-                return -30 + ehp - threatenDamage;
+            ehp = Math.max(ehp - threatenDamage, leaderhp - threatenLeaderDamage);
+            if (ehp < 0) {
+                if (team == b.getCurrentPlayerTurn()) {
+                    // they're threatening lethal if i dont do anything
+                    return -30 + ehp;
+                } else {
+                    // they have lethal, i am ded
+                    return -60 + ehp;
+                }
             }
-            ehp -= threatenDamage;
         }
         return 6 * Math.log(ehp);
     }

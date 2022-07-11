@@ -75,42 +75,36 @@ public class DataStream {
     }
 
     public void sendEventBurstString(String eventBurstString) throws IOException {
-        // the first thing we write must be a non-object so the dumb available() method works
         this.out.writeInt(MessageType.EVENT.ordinal());
         this.out.writeObject(eventBurstString);
         this.out.flush();
     }
 
     public void sendPlayerAction(String action) throws IOException {
-        // the first thing we write must be a non-object so the dumb available() method works
         this.out.writeInt(MessageType.PLAYERACTION.ordinal());
         this.out.writeObject(action);
         this.out.flush();
     }
 
     public void sendEmote(Emote emote) throws IOException {
-        // the first thing we write must be a non-object so the dumb available() method works
         this.out.writeInt(MessageType.EMOTE.ordinal());
         this.out.writeObject(emote);
         this.out.flush();
     }
 
     public void sendDecklist(ConstructedDeck deck) throws IOException {
-        // the first thing we write must be a non-object so the dumb available() method works
         this.out.writeInt(MessageType.DECK.ordinal());
         this.out.writeObject(deck);
         this.out.flush();
     }
 
     public void sendTeamAssign(int team) throws IOException {
-        // the first thing we write must be a non-object so the dumb available() method works
         this.out.writeInt(MessageType.TEAMASSIGN.ordinal());
         this.out.writeInt(team);
         this.out.flush();
     }
 
     public void sendCommand(String command) throws IOException {
-        // the first thing we write must be a non-object so the dumb available() method works
         this.out.writeInt(MessageType.COMMAND.ordinal());
         this.out.writeObject(command);
         this.out.flush();

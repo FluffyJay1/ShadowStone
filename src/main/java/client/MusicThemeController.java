@@ -18,6 +18,9 @@ import server.card.cardset.indie.portalhunter.Judge;
 import server.card.cardset.indie.runemage.Japhet;
 import server.card.cardset.indie.shadowshaman.Enoch;
 import server.card.cardset.indie.swordpaladin.Susie;
+import server.card.cardset.special.batter.Alpha;
+import server.card.cardset.special.batter.Epsilon;
+import server.card.cardset.special.batter.Omega;
 import server.card.cardset.special.kurumi.CityOfDevouringTime;
 
 import java.util.List;
@@ -53,7 +56,7 @@ public class MusicThemeController {
                 new Theme("res/music/king_crimson.ogg", b -> cardIsInPlay(b, new KingCrimson())),
                 new Theme("res/music/rain_in_the_park.ogg", b -> cardIsInPlay(b, new Yoshino())),
                 new Theme("res/music/rude_buster.ogg", b -> anyCardIsInPlay(b, List.of(new Ralsei(), new Susie()))),
-                new Theme("res/music/pepper_steak.ogg", b -> cardIsInPlay(b, new Batter())),
+                new Theme("res/music/pepper_steak.ogg", b -> anyCardIsInPlay(b, List.of(new Batter(), new Alpha(), new Omega(), new Epsilon()))),
                 new Theme("res/music/fighto.ogg", b -> true)
         );
     }

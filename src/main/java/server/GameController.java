@@ -181,6 +181,7 @@ public class GameController {
                 // forward to other player
                 Emote emote = ds.readEmote();
                 if (emote != null) {
+                    System.out.println("player " + team + " sent emote " + emote);
                     this.players.get(this.teamToIndex(team * -1)).sendEmote(emote);
                 }
                 break;

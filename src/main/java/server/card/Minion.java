@@ -61,7 +61,7 @@ public class Minion extends BoardObject {
         }
         attack += bonus;
         // if disarmed, then attack isn't quite as useful
-        if (this.finalStats.get(Stat.DISARMED) > 0 || this.finalStats.get(Stat.FROZEN) > 0) {
+        if (!this.canAttackEventually()) {
             attack /= 2;
         }
         double effectiveHealth = this.getEffectiveHealth();
@@ -129,8 +129,12 @@ public class Minion extends BoardObject {
     public boolean canAttack() {
         return this.team == this.board.getCurrentPlayerTurn() && this.status.equals(CardStatus.BOARD)
                 && this.attacksThisTurn < this.finalStats.get(Stat.ATTACKS_PER_TURN)
-                && this.finalStats.get(Stat.DISARMED) == 0 && this.finalStats.get(Stat.FROZEN) == 0
+                && this.canAttackEventually()
                 && this.attackMinionConditions();
+    }
+
+    public boolean canAttackEventually() {
+        return this.finalStats.get(Stat.DISARMED) == 0 && this.finalStats.get(Stat.FROZEN) == 0;
     }
 
     // like getAttackableTargets but for a single target
@@ -145,12 +149,12 @@ public class Minion extends BoardObject {
                 && (m.status.equals(CardStatus.BOARD) ? this.attackMinionConditions() : this.attackLeaderConditions());
     }
 
-    private boolean attackMinionConditions() {
+    public boolean attackMinionConditions() {
         return !this.summoningSickness || this.finalStats.get(Stat.STORM) > 0
                 || this.finalStats.get(Stat.RUSH) > 0;
     }
 
-    private boolean attackLeaderConditions() {
+    public boolean attackLeaderConditions() {
         return (!this.summoningSickness || this.finalStats.get(Stat.STORM) > 0) && this.finalStats.get(Stat.CANT_ATTACK_LEADER) == 0;
     }
 
