@@ -28,7 +28,7 @@ public class EndTurnAction extends PlayerAction {
 
     @Override
     public String toString() {
-        return this.id + " " + this.team + "\n";
+        return this.id + " " + this.team + " ";
     }
 
     public static EndTurnAction fromString(Board b, StringTokenizer st) {

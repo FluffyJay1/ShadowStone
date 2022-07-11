@@ -44,7 +44,7 @@ public class MulliganAction extends PlayerAction {
         for (Card c : this.choices) {
             sb.append(c.toReference());
         }
-        return sb.append("\n").toString();
+        return sb.toString();
     }
 
     public static MulliganAction fromString(Board b, StringTokenizer st) {

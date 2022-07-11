@@ -17,7 +17,7 @@ public class EmoteDisplayUnit extends UIBox {
 
     public EmoteDisplayUnit(UI ui, Vector2f pos, String message) {
         super(ui, pos, new Vector2f(), "");
-        this.text = new Text(ui, new Vector2f(), message, 500, 30, 32, 0, 0);
+        this.text = new Text(ui, new Vector2f(), message, 600, 40, 42, 0, 0);
         this.addChild(text);
         this.timer = 0;
     }

@@ -37,7 +37,7 @@ public class PlayCardAction extends PlayerAction {
 
     @Override
     public String toString() {
-        return ID + " " + this.p.team + " " + this.c.toReference() + this.pos + " " + Card.targetsToString(this.battlecryTargets) + "\n"; // YEAHH
+        return ID + " " + this.p.team + " " + this.c.toReference() + this.pos + " " + Card.targetsToString(this.battlecryTargets); // YEAHH
     }
 
     public static PlayCardAction fromString(Board b, StringTokenizer st) {

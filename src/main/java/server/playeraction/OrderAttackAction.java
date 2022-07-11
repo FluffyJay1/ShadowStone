@@ -31,7 +31,7 @@ public class OrderAttackAction extends PlayerAction {
 
     @Override
     public String toString() {
-        return ID + " " + this.attacker.toReference() + this.victim.toReference() + "\n";
+        return ID + " " + this.attacker.toReference() + this.victim.toReference();
     }
 
     public static OrderAttackAction fromString(Board b, StringTokenizer st) {

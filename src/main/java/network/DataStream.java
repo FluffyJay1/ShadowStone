@@ -116,14 +116,6 @@ public class DataStream {
         this.out.flush();
     }
 
-    /**
-     * Check if there is an incoming message (reads may still block)
-     * @return true if there is an incoming message
-     */
-    public boolean ready() throws IOException {
-        return this.in.available() >= 4; // can read int
-    }
-
     /*
      * two parter, first use this method to determine message type, then use a
      * corresponding read...() method to finish reading the message

@@ -2,6 +2,7 @@ package client.ui.game;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.SynchronousQueue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -83,6 +84,8 @@ public class UIBoard extends UIBox {
 
     public VisualBoard b;
     public final DataStream ds;
+    private final Thread dsReadingThread;
+    private final SynchronousQueue<Runnable> bufferedUpdates; // stuff that the dsReadingThread wants to do on this thread
     boolean expandHand = false;
     boolean draggingUnleash = false;
     boolean skipNextEventAnimations = false;
@@ -121,6 +124,14 @@ public class UIBoard extends UIBox {
         this.cards = new ArrayList<>();
         this.b = new VisualBoard(this, 0);
         this.ds = ds;
+        this.dsReadingThread = new Thread(() -> {
+            while (!this.connectionClosed) {
+                this.readDataStream();
+            }
+        });
+        this.dsReadingThread.start();
+        this.bufferedUpdates = new SynchronousQueue<>();
+
         this.eventGroupDescriptionContainer = new EventGroupDescriptionContainer(ui, new Vector2f(-0.5f, 0));
         this.eventGroupDescriptionContainer.relpos = true;
         this.eventGroupDescriptionContainer.alignh = -1;
@@ -181,8 +192,7 @@ public class UIBoard extends UIBox {
                         .toString());
                 this.mulliganChoices.clear();
             } catch (IOException e) {
-                this.connectionClosed = true;
-                this.onConnectionClosed.run();
+                this.close();
             }
         });
         this.mulliganConfirmation.relpos = true;
@@ -215,8 +225,7 @@ public class UIBoard extends UIBox {
             try {
                 this.ds.sendEmote(emote);
             } catch (IOException e) {
-                this.connectionClosed = true;
-                this.onConnectionClosed.run();
+                this.close();
             }
         });
         this.emoteSelectPanel.relpos = true;
@@ -237,7 +246,9 @@ public class UIBoard extends UIBox {
     public void update(double frametime) {
         super.update(frametime);
         this.b.update(frametime);
-        this.readDataStream();
+        for (Runnable update = bufferedUpdates.poll(); update != null; update = bufferedUpdates.poll()) {
+            update.run();
+        }
 
         this.elusiveTimer = (this.elusiveTimer + frametime) % ELUSIVE_TIME_PER_CYCLE;
         if (this.teamAssignTimer < TEAM_ASSIGN_TIME) {
@@ -481,45 +492,47 @@ public class UIBoard extends UIBox {
         g.setColor(Color.white);
     }
 
+    // blocking, so this is called from the dsReadingThread
     private void readDataStream() {
         try {
-            if (!this.connectionClosed && this.ds.ready()) {
-                MessageType mtype = this.ds.receive();
-                switch (mtype) {
-                    case EVENT -> {
-                        List<EventBurst> eventBursts = this.ds.readEventBursts();
+            MessageType mtype = this.ds.receive();
+            switch (mtype) {
+                case EVENT -> {
+                    List<EventBurst> eventBursts = this.ds.readEventBursts();
+                    this.bufferedUpdates.put(() -> {
                         this.b.consumeEventBursts(eventBursts);
                         if (this.skipNextEventAnimations) {
                             this.b.skipAllAnimations();
                             this.skipNextEventAnimations = false;
                         }
+                    });
+                }
+                case COMMAND -> {
+                    String command = this.ds.readCommand();
+                    if (command.equals("reset")) {
+                        this.bufferedUpdates.put(this::resetBoard);
+                        this.skipNextEventAnimations = true;
                     }
-                    case COMMAND -> {
-                        String command = this.ds.readCommand();
-                        if (command.equals("reset")) {
-                            this.resetBoard();
-                            this.skipNextEventAnimations = true;
-                        }
+                }
+                case EMOTE -> {
+                    Emote emote = this.ds.readEmote();
+                    if (emote != null) {
+                        this.showEmote(this.b.getLocalteam() * -1, emote);
                     }
-                    case EMOTE -> {
-                        Emote emote = this.ds.readEmote();
-                        if (emote != null) {
-                            this.showEmote(this.b.getLocalteam() * -1, emote);
-                        }
-                    }
-                    case TEAMASSIGN -> {
-                        int team = this.ds.readTeamAssign();
-                        this.b.setLocalteam(team);
-                        this.teamAssignTimer = 0;
-                    }
-                    default -> {
-                        this.ds.discardMessage();
-                    }
+                }
+                case TEAMASSIGN -> {
+                    int team = this.ds.readTeamAssign();
+                    this.b.setLocalteam(team);
+                    this.teamAssignTimer = 0;
+                }
+                default -> {
+                    this.ds.discardMessage();
                 }
             }
         } catch (IOException e) {
-            this.connectionClosed = true;
-            this.onConnectionClosed.run();
+            this.close();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -702,8 +715,7 @@ public class UIBoard extends UIBox {
                                 new OrderAttackAction(this.attackingMinion.getMinion().realMinion(), c.getMinion().realMinion())
                                         .toString());
                     } catch (IOException e) {
-                        this.connectionClosed = true;
-                        this.onConnectionClosed.run();
+                        this.close();
                     }
                 }
                 this.attackingMinion.setOrderingAttack(false);
@@ -748,8 +760,7 @@ public class UIBoard extends UIBox {
                 this.advantageText.setText("KIRA QUEEN DAISAN NO BAKUDAN");
             }
         } catch (IOException e) {
-            this.connectionClosed = true;
-            this.onConnectionClosed.run();
+            this.close();
         }
         if (key == Input.KEY_SPACE) {
             System.out.println("KING CRIMSON");
@@ -843,8 +854,7 @@ public class UIBoard extends UIBox {
                                 this.playingCard.getCard().realCard, playPos,
                                 this.effectCumulativeTargets).toString());
                     } catch (IOException e) {
-                        this.connectionClosed = true;
-                        this.onConnectionClosed.run();
+                        this.close();
                     }
                 } else if (this.unleashingMinion != null) {
                     // unnecessary check but gets intent across
@@ -852,8 +862,7 @@ public class UIBoard extends UIBox {
                         this.ds.sendPlayerAction(new UnleashMinionAction(this.b.realBoard.getPlayer(this.b.getLocalteam()),
                                 this.unleashingMinion.getMinion().realMinion(), this.effectCumulativeTargets).toString());
                     } catch (IOException e) {
-                        this.connectionClosed = true;
-                        this.onConnectionClosed.run();
+                        this.close();
                     }
                 }
                 this.stopTargeting();
@@ -967,5 +976,25 @@ public class UIBoard extends UIBox {
             edp.relpos = true;
             this.addChild(edp);
         });
+    }
+
+    /**
+     * Perform cleanup when we exit the game, to e.g. go to another screen
+     */
+    public void exit() {
+        this.musicThemeController.stop();
+        this.close();
+    }
+
+    /**
+     * Close datastream connections
+     */
+    public void close() {
+        if (!connectionClosed) {
+            this.ds.close();
+            this.connectionClosed = true;
+            this.onConnectionClosed.run();
+            this.dsReadingThread.interrupt();
+        }
     }
 }

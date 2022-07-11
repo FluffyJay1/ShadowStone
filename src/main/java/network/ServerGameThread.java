@@ -64,24 +64,34 @@ public class ServerGameThread extends Thread {
         }
         try {
             // accept decklists
-            while (this.decks[0] == null || this.decks[1] == null) {
-                for (int i = 0; i < 2; i++) {
-                    if (this.ds[i].ready()) {
-                        MessageType mtype = this.ds[i].receive();
-                        if (mtype == MessageType.DECK) {
-                            this.setDecklist(i, this.ds[i].readDecklist());
-                        } else {
-                            this.ds[i].discardMessage();
+            for (int i = 0; i < 2; i++) {
+                int finalI = i;
+                Thread dsReadingThread = new Thread(() -> {
+                    try {
+                        while (this.decks[finalI] == null) {
+                            MessageType mtype = this.ds[finalI].receive();
+                            if (mtype == MessageType.DECK) {
+                                this.setDecklist(finalI, this.ds[finalI].readDecklist());
+                                this.notify();
+                                return;
+                            } else {
+                                this.ds[finalI].discardMessage();
+                            }
                         }
+                    } catch (IOException e) {
+                        this.ds[finalI].close();
                     }
-                }
+                });
+                dsReadingThread.start();
+            }
+            while (this.decks[0] == null || this.decks[1] == null) {
+                this.wait();
             }
             GameController gc = new GameController(List.of(this.ds[0], this.ds[1]),
                     Arrays.stream(this.decks).map(d -> CardSet.getDefaultLeader(d.craft)).collect(Collectors.toList()),
                     Arrays.stream(this.decks).map(d -> CardSet.getDefaultUnleashPower(d.craft)).collect(Collectors.toList()),
                     Arrays.stream(this.decks).collect(Collectors.toList()));
             gc.startInit();
-            System.out.println("benis");
             gc.startGame();
             while (gc.isGamePhase() && !this.isInterrupted()) {
                 gc.updateGame();
@@ -90,6 +100,8 @@ public class ServerGameThread extends Thread {
         } catch (IOException e) {
             // lol
             System.out.println("Server game thread crashed due to ioexception: " + e.getMessage());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         } finally {
             for (int i = 0; i < 2; i++) {
                 this.ds[i].close();

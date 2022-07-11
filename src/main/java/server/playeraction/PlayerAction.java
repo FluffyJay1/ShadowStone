@@ -26,7 +26,7 @@ public abstract class PlayerAction {
 
     @Override
     public String toString() {
-        return this.id + "\n";
+        return this.id + " ";
     }
 
     public static PlayerAction createFromString(Board b, StringTokenizer st) {

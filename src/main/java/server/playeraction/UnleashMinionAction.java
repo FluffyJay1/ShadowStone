@@ -37,7 +37,7 @@ public class UnleashMinionAction extends PlayerAction {
 
     @Override
     public String toString() {
-        return ID + " " + p.team + " " + m.toReference() + Card.targetsToString(this.unleashTargets) + "\n";
+        return ID + " " + p.team + " " + m.toReference() + Card.targetsToString(this.unleashTargets);
     }
 
     public static UnleashMinionAction fromString(Board b, StringTokenizer st) {

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.concurrent.SynchronousQueue;
 
 /**
  * Controller for one round
@@ -42,6 +43,8 @@ public class GameController {
     List<LeaderText> leaders;
     List<UnleashPowerText> unleashPowers;
     List<ConstructedDeck> decks;
+    private boolean[] crashed;
+    private final SynchronousQueue<Runnable> bufferedUpdates; // stuff that the dsReadingThread wants to do on this thread
     int teamMultiplier; // if 1, then first index is team 1, if -1 then first index is team -1
 
     public GameController(List<DataStream> players, List<LeaderText> leaders, List<UnleashPowerText> unleashPowers, List<ConstructedDeck> decks) {
@@ -50,13 +53,29 @@ public class GameController {
         this.leaders = leaders;
         this.unleashPowers = unleashPowers;
         this.decks = decks;
+        for (int i = 0; i <= 1; i++) {
+            int finalI = i;
+            Thread dsReadingThread = new Thread(() -> {
+                while (true) {
+                    try {
+                        this.handleGameInput(this.players.get(finalI), indexToTeam(finalI));
+                    } catch (IOException e) {
+                        this.crashed[finalI] = true;
+                        break;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            dsReadingThread.start();
+        }
+        this.crashed = new boolean[2];
+        this.bufferedUpdates = new SynchronousQueue<>();
     }
 
     public void startInit() throws IOException {
         this.teamMultiplier = Math.random() > 0.5 ? 1 : -1;
-        System.out.println("1");
         this.sendTeamAssignments();
-        System.out.println("2");
         Resolver startResolver = new Resolver(false) {
             @Override
             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
@@ -79,9 +98,7 @@ public class GameController {
             }
         };
         this.b.resolve(startResolver, 0);
-        System.out.println("3");
         this.sendEvents();
-        System.out.println("4");
     }
 
     public void startGame() throws IOException {
@@ -95,8 +112,13 @@ public class GameController {
     }
 
     public void updateGame() throws IOException {
+        for (Runnable update = bufferedUpdates.poll(); update != null; update = bufferedUpdates.poll()) {
+            update.run();
+        }
         for (int i = 0; i <= 1; i++) {
-            this.handleGameInput(this.players.get(i), indexToTeam(i));
+            if (this.crashed[i]) {
+                throw new IOException();
+            }
         }
     }
 
@@ -114,45 +136,57 @@ public class GameController {
         return this.b.getWinner();
     }
 
-    private void handleGameInput(DataStream ds, int team) throws IOException {
-        while (ds.ready()) {
-            MessageType mtype = ds.receive();
-            switch (mtype) {
-                case PLAYERACTION:
-                    if (this.b.getCurrentPlayerTurn() != team * -1) {
-                        String action = ds.readPlayerAction();
-                        System.out.println("team " + team + " action: " + action);
+    // blocking, so this is called from the dsReadingThread
+    private void handleGameInput(DataStream ds, int team) throws IOException, InterruptedException {
+        // okay exception handling is ugly
+        MessageType mtype = ds.receive();
+        switch (mtype) {
+            case PLAYERACTION:
+                if (this.b.getCurrentPlayerTurn() != team * -1) {
+                    String action = ds.readPlayerAction();
+                    System.out.println("team " + team + " action: " + action);
+                    this.bufferedUpdates.put(() -> {
                         this.b.executePlayerAction(new StringTokenizer(action));
-                        this.sendEvents();
-                    } else {
-                        ds.discardMessage();
-                    }
-                    break;
-                case COMMAND:
-                    String command = ds.readCommand();
-                    if (command.equals("save")) {
-                        this.b.saveBoardState();
-                    }
-                    if (command.equals("load")) {
-                        System.out.println("BITES ZA DUSTO");
-                        this.b.loadBoardState();
-                        for (DataStream outds : this.players) {
-                            outds.sendCommand("reset");
+                        try {
+                            this.sendEvents();
+                        } catch (IOException e) {
+                            this.crashed[teamToIndex(team)] = true;
                         }
-                        this.sendEvents();
-                    }
-                    break;
-                case EMOTE:
-                    // forward to other player
-                    Emote emote = ds.readEmote();
-                    if (emote != null) {
-                        this.players.get(this.teamToIndex(team * -1)).sendEmote(emote);
-                    }
-                    break;
-                default:
+                    });
+                } else {
                     ds.discardMessage();
-                    break;
-            }
+                }
+                break;
+            case COMMAND:
+                String command = ds.readCommand();
+                if (command.equals("save")) {
+                    this.bufferedUpdates.put(this.b::saveBoardState);
+                }
+                if (command.equals("load")) {
+                    System.out.println("BITES ZA DUSTO");
+                    this.bufferedUpdates.put(() -> {
+                        try {
+                            this.b.loadBoardState();
+                            for (DataStream outds : this.players) {
+                                outds.sendCommand("reset");
+                            }
+                            this.sendEvents();
+                        } catch (IOException e) {
+                            this.crashed[teamToIndex(team)] = true;
+                        }
+                    });
+                }
+                break;
+            case EMOTE:
+                // forward to other player
+                Emote emote = ds.readEmote();
+                if (emote != null) {
+                    this.players.get(this.teamToIndex(team * -1)).sendEmote(emote);
+                }
+                break;
+            default:
+                ds.discardMessage();
+                break;
         }
     }
 

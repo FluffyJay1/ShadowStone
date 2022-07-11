@@ -130,7 +130,7 @@ public class StateDungeonRun extends BasicGameState {
 
     private void endGame(int team) {
         this.gameThread.interrupt();
-        this.uib.musicThemeController.stop();
+        this.uib.exit();
         this.ui.removeUIElementParent(this.uib);
         DungeonRunController.endGame(team == this.uib.b.getLocalteam());
         this.onUpdateRunStatus();
@@ -139,7 +139,7 @@ public class StateDungeonRun extends BasicGameState {
     @Override
     public void leave(GameContainer arg0, StateBasedGame arg1) {
         if (this.uib != null) {
-            this.uib.musicThemeController.stop();
+            this.uib.exit();
         }
         arg0.getInput().removeListener(this.ui);
     }

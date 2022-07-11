@@ -59,8 +59,7 @@ public class StatePVP extends BasicGameState {
                         this.waitingText.setVisible(true);
                         this.deckSelectPanel.setVisible(false);
                     } catch (IOException e) {
-                        this.uiBoard.connectionClosed = true;
-                        this.uiBoard.onConnectionClosed.run();
+                        this.uiBoard.close();
                     }
                 }
                 case DeckSelectPanel.DECK_CANCEL -> game.enterState(Game.STATE_MENU);
@@ -110,7 +109,7 @@ public class StatePVP extends BasicGameState {
     @Override
     public void leave(GameContainer container, StateBasedGame game) throws SlickException {
         if (this.uiBoard != null) {
-            this.uiBoard.musicThemeController.stop();
+            this.uiBoard.exit();
         }
         container.getInput().removeListener(this.ui);
         this.menu.shutdownHostServer();

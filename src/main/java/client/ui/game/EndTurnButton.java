@@ -32,8 +32,7 @@ public class EndTurnButton extends UIBox {
                 try {
                     this.b.ds.sendPlayerAction(new EndTurnAction(this.b.b.getLocalteam()).toString());
                 } catch (IOException e) {
-                    this.b.connectionClosed = true;
-                    this.b.onConnectionClosed.run();
+                    this.b.close();
                 }
                 this.b.handleTargeting(null);
                 this.b.b.disableInput = true;
