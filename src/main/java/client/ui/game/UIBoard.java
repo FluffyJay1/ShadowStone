@@ -124,12 +124,6 @@ public class UIBoard extends UIBox {
         this.cards = new ArrayList<>();
         this.b = new VisualBoard(this, 0);
         this.ds = ds;
-        this.dsReadingThread = new Thread(() -> {
-            while (!this.connectionClosed) {
-                this.readDataStream();
-            }
-        });
-        this.dsReadingThread.start();
         this.bufferedUpdates = new SynchronousQueue<>();
 
         this.eventGroupDescriptionContainer = new EventGroupDescriptionContainer(ui, new Vector2f(-0.5f, 0));
@@ -240,6 +234,13 @@ public class UIBoard extends UIBox {
         this.teamAssignTimer = Double.POSITIVE_INFINITY;
 
         this.musicThemeController = new MusicThemeController();
+
+        this.dsReadingThread = new Thread(() -> {
+            while (!this.connectionClosed) {
+                this.readDataStream();
+            }
+        });
+        this.dsReadingThread.start();
     }
 
     @Override
@@ -517,7 +518,7 @@ public class UIBoard extends UIBox {
                 case EMOTE -> {
                     Emote emote = this.ds.readEmote();
                     if (emote != null) {
-                        this.showEmote(this.b.getLocalteam() * -1, emote);
+                        this.bufferedUpdates.put(() -> this.showEmote(this.b.getLocalteam() * -1, emote));
                     }
                 }
                 case TEAMASSIGN -> {

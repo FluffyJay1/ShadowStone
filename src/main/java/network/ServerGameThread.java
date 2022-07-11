@@ -35,7 +35,7 @@ public class ServerGameThread extends Thread {
     }
 
     @Override
-    public void run() {
+    public synchronized void run() {
         if (this.pvp) { // if pvp, wait for a player to connect
             try {
                 this.serverSocket = new ServerSocket(Game.SERVER_PORT);
@@ -72,7 +72,6 @@ public class ServerGameThread extends Thread {
                             MessageType mtype = this.ds[finalI].receive();
                             if (mtype == MessageType.DECK) {
                                 this.setDecklist(finalI, this.ds[finalI].readDecklist());
-                                this.notify();
                                 return;
                             } else {
                                 this.ds[finalI].discardMessage();
@@ -113,8 +112,9 @@ public class ServerGameThread extends Thread {
         return this.peerConnected;
     }
 
-    public void setDecklist(int index, ConstructedDeck deck) {
+    public synchronized void setDecklist(int index, ConstructedDeck deck) {
         this.decks[index] = deck;
+        this.notify();
     }
 
     public void setAIConfig(AIConfig config) {
