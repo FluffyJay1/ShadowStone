@@ -96,11 +96,12 @@ public class ServerGameThread extends Thread {
                 gc.updateGame();
             }
             gc.end();
+            sleep(10000); // give 10 seconds for animations to play out or whatever
         } catch (IOException e) {
             // lol
             System.out.println("Server game thread crashed due to ioexception: " + e.getMessage());
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.out.println("Server game thread sleep interrupted");
         } finally {
             for (int i = 0; i < 2; i++) {
                 this.ds[i].close();
