@@ -17,6 +17,10 @@ repositories {
     mavenCentral() 
 }
 
+compileJava {
+    sourceCompatibility = 15
+}
+
 jar {
     archiveBaseName = 'ShadowStone'
     archiveVersion =  '0.1.0'

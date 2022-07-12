@@ -23,9 +23,9 @@ public class BoardStateNodeTest {
         when(mockSampler.sample()).thenReturn(List.of("a", "b", "c"));
         when(mockSampler.size()).thenReturn(3);
         // b1 -> b2 -> b3
-        DeterministicBoardStateNode b1 = new DeterministicBoardStateNode(1, 1, "", mockSampler);
-        DeterministicBoardStateNode b2 = Mockito.spy(new DeterministicBoardStateNode(1, 2, "", mockSampler));
-        DeterministicBoardStateNode b3 = Mockito.spy(new DeterministicBoardStateNode(1, 3, "", mockSampler));
+        DeterministicBoardStateNode b1 = new DeterministicBoardStateNode(1, 1, mockSampler);
+        DeterministicBoardStateNode b2 = Mockito.spy(new DeterministicBoardStateNode(1, 2, mockSampler));
+        DeterministicBoardStateNode b3 = Mockito.spy(new DeterministicBoardStateNode(1, 3, mockSampler));
         b2.logEvaluation("a", b3);
         b1.logEvaluation("a", b2);
         // see if b1 is what we expect
