@@ -19,6 +19,10 @@ public abstract class Board {
     private int localteam;
     private int winner;
 
+    // table of all cards
+    // an index into this table uniquely identifies a card
+    public List<Card> cardTable;
+
     // the hierarchy of groups we are under
     public List<EventGroup> eventGroups;
 
@@ -35,6 +39,7 @@ public abstract class Board {
         this.winner = 0;
         this.player1 = new Player(this, 1);
         this.player2 = new Player(this, -1);
+        this.cardTable = new ArrayList<>();
         this.eventGroups = new LinkedList<>();
         this.mulligan = true;
     }
@@ -96,27 +101,11 @@ public abstract class Board {
                 .filter(t::canTarget);
     }
 
+    /**
+     * @return All the cards associated with this board, in the order they were created, as a stream.
+     */
     public Stream<Card> getCards() {
-        // love me some stream concatenation
-        return Stream.concat(
-                Stream.concat(
-                        Stream.concat(
-                                this.getPlayerCards(0, Player::getPlayArea),
-                                this.getPlayerCards(0, Player::getHand)
-                        ),
-                        Stream.concat(
-                                this.getPlayerCards(0, Player::getDeck),
-                                this.getPlayerCards(0, Player::getGraveyard)
-                        )
-                ),
-                Stream.concat(
-                        Stream.concat(
-                                this.getPlayerCards(0, Player::getBanished),
-                                this.getPlayerCard(0, Player::getUnleashPower)
-                        ),
-                        this.getPlayerCard(0, Player::getLeader)
-                )
-        );
+        return this.cardTable.stream();
     }
 
     /**

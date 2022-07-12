@@ -1,4 +1,3 @@
-rework card references
 new unleash powers, proper unleash power value calculation
 effect ward
 can't be attacked

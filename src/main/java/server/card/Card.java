@@ -32,6 +32,7 @@ public abstract class Card implements Indexable, StringBuildable {
     public Player player; // functional dependency with team but who cares
     public boolean alive = true; // alive means not marked for death
     public int team;
+    private int ref; // index in the board's cardTable
     private int cardpos;
     public int spellboosts;
     private final CardText cardText;
@@ -417,7 +418,7 @@ public abstract class Card implements Indexable, StringBuildable {
 
     @Override
     public void appendStringToBuilder(StringBuilder builder) {
-        builder.append(this.getClass().getName()).append(" ").append(this.team).append(" ")
+        builder.append(this.getRef()).append(" ").append(this.getClass().getName()).append(" ").append(this.team).append(" ")
                 .append(this.alive).append(" ").append(this.cardPosToString()).append(this.basicEffects.size()).append(" ");
         for (Effect e : this.basicEffects) {
             e.appendStringToBuilder(builder);
@@ -429,7 +430,7 @@ public abstract class Card implements Indexable, StringBuildable {
     }
 
     public String toReference() {
-        return this.team + " " + this.cardPosToString();
+        return this.getRef() + " ";
     }
 
     public static String referenceOrNull(Card c) {
@@ -441,23 +442,8 @@ public abstract class Card implements Indexable, StringBuildable {
         if (firsttoken.equals("null")) {
             return null;
         }
-        int team = Integer.parseInt(firsttoken);
-        Player p = b.getPlayer(team);
-        String sStatus = reference.nextToken();
-        CardStatus csStatus = CardStatus.valueOf(sStatus);
-        int cardpos = Integer.parseInt(reference.nextToken());
-        if (cardpos == -1) { // mission failed we'll get em next time
-            return null;
-        }
-        return switch (csStatus) {
-            case HAND -> p.getHand().get(cardpos);
-            case BOARD -> p.getPlayArea().get(cardpos);
-            case DECK -> p.getDeck().get(cardpos);
-            case GRAVEYARD -> p.getGraveyard().get(cardpos);
-            case UNLEASHPOWER -> p.getUnleashPower().orElse(null);
-            case LEADER -> p.getLeader().orElse(null);
-            case BANISHED -> p.getBanished().get(cardpos);
-        };
+        int ref = Integer.parseInt(firsttoken);
+        return b.cardTable.get(ref);
     }
 
     public static int compareDefault(Card a, Card b) {
@@ -481,5 +467,13 @@ public abstract class Card implements Indexable, StringBuildable {
 
     public CardText getCardText() {
         return cardText;
+    }
+
+    public int getRef() {
+        return ref;
+    }
+
+    public void setRef(int ref) {
+        this.ref = ref;
     }
 }

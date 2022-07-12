@@ -53,8 +53,7 @@ public class EventCreateCard extends Event {
                 case HAND -> {
                     if (p.getHand().size() < p.maxHandSize) {
                         p.getHand().add(cardpos, c);
-                        this.successful.add(true);
-                        this.successfullyCreatedCards.add(c);
+                        this.successfullyCreate(b, c);
                     } else {
                         c.alive = false;
                         p.shadows++;
@@ -69,8 +68,7 @@ public class EventCreateCard extends Event {
                         if (c instanceof Minion) {
                             ((Minion) c).summoningSickness = true;
                         }
-                        this.successful.add(true);
-                        this.successfullyCreatedCards.add(c);
+                        this.successfullyCreate(b, c);
                         if (bo.team == b.getLocalteam() && b instanceof PendingPlayPositioner) {
                             ((PendingPlayPositioner) b).getPendingPlayPositionProcessor().processOp(bo.getIndex(), null, true);
                         }
@@ -80,8 +78,7 @@ public class EventCreateCard extends Event {
                 }
                 case DECK -> {
                     p.getDeck().add(cardpos, c);
-                    this.successful.add(true);
-                    this.successfullyCreatedCards.add(c);
+                    this.successfullyCreate(b, c);
                 }
                 case UNLEASHPOWER -> {
                     this.prevUP = p.getUnleashPower().orElse(null);
@@ -90,14 +87,12 @@ public class EventCreateCard extends Event {
                         p.getGraveyard().add(this.prevUP);
                     }
                     b.getPlayer(this.team).setUnleashPower((UnleashPower) c);
-                    this.successful.add(true);
-                    this.successfullyCreatedCards.add(c);
+                    this.successfullyCreate(b, c);
                 }
                 case LEADER -> {
                     this.prevLeader = p.getLeader().orElse(null);
                     p.setLeader((Leader) c);
-                    this.successful.add(true);
-                    this.successfullyCreatedCards.add(c);
+                    this.successfullyCreate(b, c);
                 }
                 default -> this.successful.add(false);
             }
@@ -107,10 +102,17 @@ public class EventCreateCard extends Event {
         }
     }
 
+    private void successfullyCreate(Board b, Card c) {
+        this.successful.add(true);
+        this.successfullyCreatedCards.add(c);
+        c.setRef(b.cardTable.size());
+        b.cardTable.add(c);
+    }
+
     @Override
     public void undo(Board b) {
         Player p = b.getPlayer(this.team);
-        for (int i = 0; i < this.cards.size(); i++) {
+        for (int i = this.cards.size() - 1; i >= 0; i--) {
             Card c = this.cards.get(i);
             CardStatus status = c.status;
             if (this.successful.get(i)) {
@@ -131,6 +133,7 @@ public class EventCreateCard extends Event {
                     }
                     case LEADER -> b.getPlayer(this.team).setLeader(this.prevLeader);
                 }
+                b.cardTable.remove(c.getRef());
             }
             if (b instanceof ServerBoard) {
                 ServerBoard sb = (ServerBoard) b;

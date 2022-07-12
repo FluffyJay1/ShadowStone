@@ -81,6 +81,8 @@ public class EventTransform extends Event {
                 }
                 c.status = CardStatus.BANISHED;
                 p.getBanished().add(c);
+                replacement.setRef(b.cardTable.size());
+                b.cardTable.add(replacement);
             }
             if (b instanceof ClientBoard) {
                 ((ClientBoard) b).cardsCreated.add(replacement);
@@ -92,6 +94,7 @@ public class EventTransform extends Event {
     public void undo(Board b) {
         for (int i = this.cards.size() - 1; i >= 0; i--) {
             Card c = this.cards.get(i);
+            Card replacement = this.into.get(i);
             Player p = b.getPlayer(c.team);
             c.alive = this.alive.get(i);
             CardStatus status = this.prevStatus.get(i);
@@ -114,6 +117,7 @@ public class EventTransform extends Event {
                     bo.lastBoardEpoch = this.prevLastBoardEpoch.get(i);
                 }
                 c.status = status;
+                b.cardTable.remove(replacement.getRef());
             }
         }
         if (this.cards.size() > 0) {
