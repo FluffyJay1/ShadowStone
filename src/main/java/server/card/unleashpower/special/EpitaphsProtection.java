@@ -25,7 +25,7 @@ public class EpitaphsProtection extends UnleashPowerText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/special/epitaphsprotection.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "unleashpower/special/epitaphsprotection.png",
             CRAFT, TRAITS, RARITY, 2, EpitaphsProtection.class,
             new Vector2f(154, 92), 3,
             () -> List.of(Tooltip.SHIELD, Tooltip.UNLEASH),

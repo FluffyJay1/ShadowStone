@@ -39,7 +39,7 @@ public class StateHelp extends BasicGameState {
         quitButton.relpos = true;
         quitButton.setZ(1);
         this.ui.addUIElementParent(quitButton);
-        UIElement helpGraphic = new UIElement(ui, new Vector2f(), "res/howtoplay.png");
+        UIElement helpGraphic = new UIElement(ui, new Vector2f(), "howtoplay.png");
         this.ui.addUIElementParent(helpGraphic);
         Text extraText = new Text(ui, new Vector2f(0, 0.5f), "Ingame, click on cards to read what they do, and click on text to read about what bolded words mean",
                 1500, 50, 40, 0, 1);

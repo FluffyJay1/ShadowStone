@@ -12,7 +12,7 @@ public class EndTurnButton extends UIBox {
     final Text text;
 
     public EndTurnButton(UI ui, UIBoard b) {
-        super(ui, new Vector2f(0.38f, 0), new Vector2f(128, 128), "res/ui/border.png");
+        super(ui, new Vector2f(0.38f, 0), new Vector2f(128, 128), "ui/border.png");
         this.text = new Text(ui, new Vector2f(0, 0), "<b>END TURN</b>", 128, 24, 30, 0, 0);
         text.setParent(this);
         this.b = b;

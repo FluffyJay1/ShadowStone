@@ -27,7 +27,7 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
     private static final Supplier<EmissionStrategy> SPARKLE_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(4),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/sparkle.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/misc/sparkle.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.2, 0.4)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0.2, new Vector2f(0, 0),

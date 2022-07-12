@@ -22,7 +22,7 @@ public class Xiangling extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/anime/xiangling.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/anime/xiangling.png",
             CRAFT, TRAITS, RARITY, 4, 2, 2, 2, true, Xiangling.class,
             new Vector2f(153, 135), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Guoba.TOOLTIP),

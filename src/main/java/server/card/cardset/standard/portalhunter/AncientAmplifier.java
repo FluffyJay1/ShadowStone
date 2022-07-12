@@ -30,7 +30,7 @@ public class AncientAmplifier extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/standard/ancientamplifier.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/standard/ancientamplifier.png",
             CRAFT, TRAITS, RARITY, 1, AncientAmplifier.class,
             new Vector2f(150, 163), 1.3,
             () -> List.of(Tooltip.COUNTDOWN, AncientArtifact.TOOLTIP, AnalyzingArtifact.TOOLTIP, MysticArtifact.TOOLTIP, RadiantArtifact.TOOLTIP),

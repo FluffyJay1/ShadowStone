@@ -30,7 +30,7 @@ public class Kurumi extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/anime/kurumi.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/anime/kurumi.png",
             CRAFT, TRAITS, RARITY, 7, 3, 3, 3, false, Kurumi.class,
             new Vector2f(152, 125), 1.8, new EventAnimationDamageShoot(),
             () -> List.of(Tooltip.RUSH, Tooltip.BATTLECRY, Tooltip.UNLEASH, Tooltip.CHOOSE),

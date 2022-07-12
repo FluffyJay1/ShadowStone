@@ -25,7 +25,7 @@ public class TriangleKerchiefEffect extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/indie/trianglekerchiefeffect.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/indie/trianglekerchiefeffect.png",
             CRAFT, TRAITS, RARITY, 0, TriangleKerchiefEffect.class,
             () -> List.of(Tooltip.STEALTH),
             List.of());

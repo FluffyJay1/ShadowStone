@@ -28,7 +28,7 @@ public class Susie extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/indie/susie.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/indie/susie.png",
             CRAFT, TRAITS, RARITY, 6, 3, 1, 6, false, Susie.class,
             new Vector2f(151, 141), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.WARD, Tooltip.UNLEASH),

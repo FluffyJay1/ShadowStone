@@ -24,7 +24,7 @@ public class EventAnimationTransform extends EventAnimation<EventTransform> {
     private static final Supplier<EmissionStrategy> DUST_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(16),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/dust.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/misc/dust.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.5, 1)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0.1, new Vector2f(0, 300),

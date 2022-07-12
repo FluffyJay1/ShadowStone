@@ -26,7 +26,7 @@ public class Camieux extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/camieux.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/camieux.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 1, true, Camieux.class,
             new Vector2f(143, 150), 1.4, new EventAnimationDamageShoot(),
             () -> List.of(Tooltip.LASTWORDS),

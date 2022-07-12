@@ -22,7 +22,7 @@ public class ElanasPrayer extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/standard/elanasprayer.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/standard/elanasprayer.png",
             CRAFT, TRAITS, RARITY, 3, ElanasPrayer.class,
             new Vector2f(150, 140), 1.5,
             List::of,

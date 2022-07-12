@@ -12,7 +12,7 @@ public class EventGroupAnimationBattlecry extends EventGroupAnimation {
 
     @Override
     public void draw(Graphics g) {
-        Image img = Game.getImage("res/game/battlecry.png");
+        Image img = Game.getImage("game/battlecry.png");
         UICard uiCard = this.eventgroup.cards.get(0).uiCard;
         for (int i = 0; i < 4; i++) {
             float xoffset = ((38f * i) % 64) - 32;

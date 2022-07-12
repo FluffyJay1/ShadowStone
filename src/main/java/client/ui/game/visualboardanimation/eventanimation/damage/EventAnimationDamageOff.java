@@ -21,17 +21,17 @@ import java.util.function.Supplier;
 public class EventAnimationDamageOff extends EventAnimationDamage {
     // these must be suppliers to avoid ExceptionInInitializerError
     private static final Supplier<Image> CIRCLE_IMAGE = () -> {
-        Image i = Game.getImage("res/animation/circle.png");
+        Image i = Game.getImage("animation/circle.png");
         i.setFilter(Image.FILTER_NEAREST);
         return i;
     };
     private static final Supplier<Image> HORIZONTAL_IMAGE = () -> {
-        Image i = Game.getImage("res/animation/horizontalline.png");
+        Image i = Game.getImage("animation/horizontalline.png");
         i.setFilter(Image.FILTER_NEAREST);
         return i;
     };
     private static final Supplier<Image> VERTICAL_IMAGE = () -> {
-        Image i = Game.getImage("res/animation/verticalline.png");
+        Image i = Game.getImage("animation/verticalline.png");
         i.setFilter(Image.FILTER_NEAREST);
         return i;
     };
@@ -40,7 +40,7 @@ public class EventAnimationDamageOff extends EventAnimationDamage {
             new InstantEmissionTimingStrategy(1),
             new ComposedEmissionPropertyStrategy(List.of(
                     new AnimationEmissionPropertyStrategy(() -> {
-                        Animation anim = new Animation("res/animation/bloodsplatter.png", new Vector2f(3, 1), 0, 0, Image.FILTER_NEAREST);
+                        Animation anim = new Animation("animation/bloodsplatter.png", new Vector2f(3, 1), 0, 0, Image.FILTER_NEAREST);
                         anim.play = true;
                         anim.setFrameInterval(0.025);
                         return anim;

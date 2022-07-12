@@ -26,7 +26,7 @@ public class Erika extends LeaderText {
             .setLine(Emote.THINKING, "Now what to do?")
             .setLine(Emote.THREATEN, "You have breathed your last!")
             .build();
-    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "res/leader/erika.png",
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "leader/erika.png",
             CRAFT, TRAITS, RARITY, Erika.class,
             new Vector2f(), -1, null,
             EMOTESET);

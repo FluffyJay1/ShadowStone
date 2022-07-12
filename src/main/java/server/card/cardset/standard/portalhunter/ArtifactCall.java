@@ -24,7 +24,7 @@ public class ArtifactCall extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/standard/artifactcall.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/standard/artifactcall.png",
             CRAFT, TRAITS, RARITY, 2, ArtifactCall.class,
             () -> List.of(Tooltip.RESONANCE),
             List.of());

@@ -43,21 +43,21 @@ public class MusicThemeController {
     public static void initThemes() throws SlickException {
         // higher on the list = higher priority
         THEMES = List.of(
-                new Theme("res/music/fang_of_critias.ogg", b -> b.getMinions(0, false, true)
+                new Theme("music/fang_of_critias.ogg", b -> b.getMinions(0, false, true)
                         .anyMatch(m -> m.getFinalEffects(true).anyMatch(e -> e instanceof BerserkerSoul.EffectBerserkerSoul))),
-                new Theme("res/music/avatar_beat.ogg", b -> cardIsInPlay(b, new Judge())),
-                new Theme("res/music/uboa.ogg", b -> cardIsInPlay(b, new Uboa())),
-                new Theme("res/music/stardust_crusaders.ogg", b -> cardIsInPlay(b, new Jotaro())),
-                new Theme("res/music/rhapsody_rage.ogg", b -> cardIsInPlay(b, new Kurumi())),
-                new Theme("res/music/o_rosto_de_um_assassino.ogg", b -> cardIsInPlay(b, new Enoch())),
-                new Theme("res/music/minuit_a_fond_la_caisse.ogg", b -> cardIsInPlay(b, new Japhet())),
-                new Theme("res/music/fake_orchestra.ogg", b -> cardIsInPlay(b, new Dedan())),
-                new Theme("res/music/rhapsody_flame.ogg", b -> cardIsInPlay(b, new CityOfDevouringTime())),
-                new Theme("res/music/king_crimson.ogg", b -> cardIsInPlay(b, new KingCrimson())),
-                new Theme("res/music/rain_in_the_park.ogg", b -> cardIsInPlay(b, new Yoshino())),
-                new Theme("res/music/rude_buster.ogg", b -> anyCardIsInPlay(b, List.of(new Ralsei(), new Susie()))),
-                new Theme("res/music/pepper_steak.ogg", b -> anyCardIsInPlay(b, List.of(new Batter(), new Alpha(), new Omega(), new Epsilon()))),
-                new Theme("res/music/fighto.ogg", b -> true)
+                new Theme("music/avatar_beat.ogg", b -> cardIsInPlay(b, new Judge())),
+                new Theme("music/uboa.ogg", b -> cardIsInPlay(b, new Uboa())),
+                new Theme("music/stardust_crusaders.ogg", b -> cardIsInPlay(b, new Jotaro())),
+                new Theme("music/rhapsody_rage.ogg", b -> cardIsInPlay(b, new Kurumi())),
+                new Theme("music/o_rosto_de_um_assassino.ogg", b -> cardIsInPlay(b, new Enoch())),
+                new Theme("music/minuit_a_fond_la_caisse.ogg", b -> cardIsInPlay(b, new Japhet())),
+                new Theme("music/fake_orchestra.ogg", b -> cardIsInPlay(b, new Dedan())),
+                new Theme("music/rhapsody_flame.ogg", b -> cardIsInPlay(b, new CityOfDevouringTime())),
+                new Theme("music/king_crimson.ogg", b -> cardIsInPlay(b, new KingCrimson())),
+                new Theme("music/rain_in_the_park.ogg", b -> cardIsInPlay(b, new Yoshino())),
+                new Theme("music/rude_buster.ogg", b -> anyCardIsInPlay(b, List.of(new Ralsei(), new Susie()))),
+                new Theme("music/pepper_steak.ogg", b -> anyCardIsInPlay(b, List.of(new Batter(), new Alpha(), new Omega(), new Epsilon()))),
+                new Theme("music/fighto.ogg", b -> true)
         );
     }
 

@@ -24,7 +24,7 @@ public class IDidThat extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/ididthat.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/ididthat.png",
             CRAFT, TRAITS, RARITY, 2, IDidThat.class,
             List::of,
             List.of());

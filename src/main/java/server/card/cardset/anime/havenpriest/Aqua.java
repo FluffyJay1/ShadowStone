@@ -31,7 +31,7 @@ public class Aqua extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/anime/aqua.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/anime/aqua.png",
             CRAFT, TRAITS, RARITY, 6, 0, 3, 10, false, Aqua.class,
             new Vector2f(162, 140), 1.6, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.RUSH, Tooltip.BATTLECRY, Tooltip.REANIMATE, Tooltip.UNLEASH, Tooltip.WARD, Tooltip.CLASH, Tooltip.MUTE,

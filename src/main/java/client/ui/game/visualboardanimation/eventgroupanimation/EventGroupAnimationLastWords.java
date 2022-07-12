@@ -20,7 +20,7 @@ public class EventGroupAnimationLastWords extends EventGroupAnimation {
 
     @Override
     public void draw(Graphics g) {
-        Image img = Game.getImage("res/game/lastwords.png");
+        Image img = Game.getImage("game/lastwords.png");
         UICard uiCard = this.eventgroup.cards.get(0).uiCard;
         float yoffset = (float) (-this.normalizedTime() * 128) + 64;
         g.drawImage(img, uiCard.getAbsPos().x - img.getWidth() / 2,

@@ -28,7 +28,7 @@ public class TribunalOfGoodAndEvil extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/tribunalofgoodandevil.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/basic/tribunalofgoodandevil.png",
             CRAFT, TRAITS, RARITY, 4, TribunalOfGoodAndEvil.class,
             new Vector2f(150, 150), 1.2,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Tooltip.LASTWORDS),

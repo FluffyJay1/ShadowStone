@@ -24,7 +24,7 @@ public class DeckDisplayPanel extends UIBox {
     final boolean edit;
 
     public DeckDisplayPanel(UI ui, Vector2f pos, boolean edit) {
-        super(ui, pos, new Vector2f(1600, 500), "res/ui/uiboxborder.png");
+        super(ui, pos, new Vector2f(1600, 500), "ui/uiboxborder.png");
         this.margins.set(10, 10);
         this.edit = edit;
         if (edit) {

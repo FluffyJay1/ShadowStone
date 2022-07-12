@@ -31,7 +31,7 @@ public class ItsOkToDie extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/itsoktodie.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/basic/itsoktodie.png",
             CRAFT, TRAITS, RARITY, 3, ItsOkToDie.class,
             new Vector2f(172, 210), 1.3,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Tooltip.RUSH),

@@ -18,7 +18,7 @@ public class UnleashEchoExistence extends UnleashPowerText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/echoexistence.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "unleashpower/basic/echoexistence.png",
             CRAFT, TRAITS, RARITY, 2, UnleashEchoExistence.class,
             new Vector2f(430, 445), 1.5,
             () -> List.of(Tooltip.UNLEASH),

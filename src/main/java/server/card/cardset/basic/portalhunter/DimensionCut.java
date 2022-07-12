@@ -25,7 +25,7 @@ public class DimensionCut extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/dimensioncut.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/dimensioncut.png",
             CRAFT, TRAITS, RARITY, 2, DimensionCut.class,
             () -> List.of(Tooltip.RESONANCE),
             List.of());

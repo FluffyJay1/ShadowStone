@@ -32,7 +32,7 @@ public class Madotsuki extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/indie/madotsuki.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/indie/madotsuki.png",
             CRAFT, TRAITS, RARITY, 4, 3, 2, 4, false, Madotsuki.class,
             new Vector2f(150, 118), 1.6, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, BikeEffect.TOOLTIP, CatEffect.TOOLTIP, FatEffect.TOOLTIP, KnifeEffect.TOOLTIP,

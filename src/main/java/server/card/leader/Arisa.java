@@ -26,7 +26,7 @@ public class Arisa extends LeaderText {
             .setLine(Emote.THINKING, "What should I do?")
             .setLine(Emote.THREATEN, "Time for target practice!")
             .build();
-    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "res/leader/arisa.png",
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "leader/arisa.png",
             CRAFT, TRAITS, RARITY, Arisa.class,
             new Vector2f(), -1, null,
             EMOTESET);

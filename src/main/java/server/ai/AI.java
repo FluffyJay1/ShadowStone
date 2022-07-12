@@ -836,7 +836,7 @@ public class AI extends Thread {
         int leaderhp = l.health + shield;
         int ehp = defendingMinons.stream()
                 .map(m -> m.health)
-                .reduce(l.health + shield, Integer::sum);
+                .reduce(leaderhp, Integer::sum);
         long defenders = defendingMinons.size();
         if (shield > 0) {
             defenders++;
@@ -851,7 +851,7 @@ public class AI extends Thread {
             ehp = Math.max(ehp - threatenDamage, leaderhp);
         } else {
             ehp = Math.max(ehp - threatenDamage, leaderhp - threatenLeaderDamage);
-            if (ehp < 0) {
+            if (ehp <= 0) {
                 if (team == b.getCurrentPlayerTurn()) {
                     // they're threatening lethal if i dont do anything
                     return -30 + ehp;

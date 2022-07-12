@@ -26,7 +26,7 @@ public class Urias extends LeaderText {
             .setLine(Emote.THINKING, "What is happening here?")
             .setLine(Emote.THREATEN, "Accept your fate!")
             .build();
-    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "res/leader/urias.png",
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "leader/urias.png",
             CRAFT, TRAITS, RARITY, Urias.class,
             new Vector2f(), -1, null,
             EMOTESET);

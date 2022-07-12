@@ -29,7 +29,7 @@ public class Japhet extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/indie/japhet.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/indie/japhet.png",
             CRAFT, TRAITS, RARITY, 5, 2, 2, 10, true, Japhet.class,
             new Vector2f(153, 170), 1.3, new EventAnimationDamageOff(),
             List::of,

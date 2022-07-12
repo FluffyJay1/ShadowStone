@@ -25,7 +25,7 @@ public class SiegeTank extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/moba/siegetank.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/moba/siegetank.png",
             CRAFT, TRAITS, RARITY, 5, 2, 2, 5, false, SiegeTank.class,
             new Vector2f(), -1, new EventAnimationDamageShoot(),
             () -> List.of(Tooltip.UNLEASH, Tooltip.CHOOSE, Tooltip.BLAST),

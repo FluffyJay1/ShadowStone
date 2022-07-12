@@ -31,7 +31,7 @@ public class KelHolyMarksman extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/kelholymarksman.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/kelholymarksman.png",
             CRAFT, TRAITS, RARITY, 5, 4, 1, 3, false, KelHolyMarksman.class,
             new Vector2f(154, 154), 1.4, new EventAnimationDamageArrow(),
             () -> List.of(Tooltip.UNLEASH),

@@ -25,12 +25,12 @@ import java.util.function.Supplier;
 // special animation for the chain frost spell
 // assumes exactly 1 target
 public class EventAnimationDamageChainFrost extends EventAnimationDamage {
-    private static final Supplier<Image> PROJECTILE_IMAGE = () -> Game.getImage("res/particle/attack/chainfrost.png");
+    private static final Supplier<Image> PROJECTILE_IMAGE = () -> Game.getImage("particle/attack/chainfrost.png");
     private static final double PROJECTILE_SPEED = 1000;
     public static final Supplier<EmissionStrategy> TRAIL = () -> new EmissionStrategy(
             new IntervalEmissionTimingStrategy(1, 0.03),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/attack/chainfrosttrail.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/attack/chainfrosttrail.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.7)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0, new Vector2f(),
@@ -44,7 +44,7 @@ public class EventAnimationDamageChainFrost extends EventAnimationDamage {
     public static final Supplier<EmissionStrategy> HIT = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(25),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/attack/chainfrostimpact.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/attack/chainfrostimpact.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.25, 0.5)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0.03, new Vector2f(),

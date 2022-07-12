@@ -16,7 +16,7 @@ public class Leonidas extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.COMMANDER);
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/leonidas.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/leonidas.png",
             CRAFT, TRAITS, RARITY, 9, 7, 3, 8, true, Leonidas.class,
             new Vector2f(161, 126), 1.8, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.LASTWORDS, LeonidasResolve.TOOLTIP),

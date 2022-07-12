@@ -26,7 +26,7 @@ public class TemptressVampire extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/temptressvampire.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/temptressvampire.png",
             CRAFT, TRAITS, RARITY, 9, 5, 3, 5, true, TemptressVampire.class,
             new Vector2f(150, 160), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),

@@ -16,7 +16,7 @@ public class ConjureGolem extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/conjuregolem.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/conjuregolem.png",
             CRAFT, TRAITS, RARITY, 2, ConjureGolem.class,
             () -> List.of(ClayGolem.TOOLTIP),
             List.of());

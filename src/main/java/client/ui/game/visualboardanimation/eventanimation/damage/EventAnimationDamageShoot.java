@@ -22,7 +22,7 @@ public class EventAnimationDamageShoot extends EventAnimationDamage {
     private static final Function<Vector2f, EmissionStrategy> SHOOT_DUST_STRATEGY = (dir) -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(15),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/dust.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/misc/dust.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.5, 0.8)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0.1, new Vector2f(),
@@ -37,7 +37,7 @@ public class EventAnimationDamageShoot extends EventAnimationDamage {
     private static final Function<Vector2f, EmissionStrategy> SHOOT_FIRE_STRATEGY = (dir) -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(6),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/fire.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/misc/fire.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.1, 0.35)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0.15, new Vector2f(),
@@ -52,7 +52,7 @@ public class EventAnimationDamageShoot extends EventAnimationDamage {
     private static final Function<Vector2f, EmissionStrategy> SHOOT_SHRAPNEL_STRATEGY = (dir) -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(20),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/attack/shrapnel.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/attack/shrapnel.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.25, 0.5)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0.003, new Vector2f(),
@@ -64,7 +64,7 @@ public class EventAnimationDamageShoot extends EventAnimationDamage {
             ))
     );
     // these must be suppliers to avoid ExceptionInInitializerError
-    private static final Supplier<Image> SHOOT_PROJECTILE = () -> Game.getImage("res/particle/attack/round.png");
+    private static final Supplier<Image> SHOOT_PROJECTILE = () -> Game.getImage("particle/attack/round.png");
 
     public EventAnimationDamageShoot() {
         super(0.15, true);

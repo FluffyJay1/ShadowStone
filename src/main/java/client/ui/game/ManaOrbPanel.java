@@ -14,12 +14,12 @@ public class ManaOrbPanel extends UIBox {
     List<UIElement> orbs;
     Text manaText;
     public ManaOrbPanel(UI ui, Vector2f pos) {
-        super(ui, pos, new Vector2f(TEXT_WIDTH + FAN_WIDTH + 62, 45), "res/ui/uiboxborder.png");
+        super(ui, pos, new Vector2f(TEXT_WIDTH + FAN_WIDTH + 62, 45), "ui/uiboxborder.png");
         this.margins.set(15, 10);
         this.orbs = new ArrayList<>();
         for (int i = 0; i < MAX_DISPLAYED_ORBS; i++) {
             float x = TEXT_WIDTH / 2 + FAN_WIDTH * ((i + 0.5f) / MAX_DISPLAYED_ORBS - 0.5f);
-            UIElement orb = new UIElement(ui, new Vector2f(x, 0), new Animation("res/game/manaorb.png", new Vector2f(2, 1), 0, 0));
+            UIElement orb = new UIElement(ui, new Vector2f(x, 0), new Animation("game/manaorb.png", new Vector2f(2, 1), 0, 0));
             orb.setVisible(false);
             orb.setScale(ORB_SCALE);
             this.orbs.add(orb);

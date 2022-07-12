@@ -13,7 +13,7 @@ public class AIDifficultyPanel extends UIBox {
     List<DifficultySelectionButton> buttons;
     int selected;
     public AIDifficultyPanel(UI ui, Vector2f pos) {
-        super(ui, pos, new Vector2f(250, 300), "res/ui/uiboxborder.png");
+        super(ui, pos, new Vector2f(250, 300), "ui/uiboxborder.png");
         Text text = new Text(ui, new Vector2f(0, -100), "Choose AI difficulty", 220, 25, 30, 0, 0);
         this.addChild(text);
         this.buttons = new ArrayList<>();
@@ -47,7 +47,7 @@ public class AIDifficultyPanel extends UIBox {
         int index;
         boolean selected;
         DifficultySelectionButton(UI ui, Vector2f pos, String message, int index) {
-            super(ui, pos, new Vector2f(200, 40), new Animation("res/ui/button.png", new Vector2f(2, 1), 0, 0));
+            super(ui, pos, new Vector2f(200, 40), new Animation("ui/button.png", new Vector2f(2, 1), 0, 0));
             this.margins.set(15, 10);
             this.addChild(new Text(ui, new Vector2f(0, 0), message, this.getWidth(true), 20, 24, 0, 0));
             this.index = index;

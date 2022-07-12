@@ -29,7 +29,7 @@ public class AmethystGiant extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/amethystgiant.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/amethystgiant.png",
             CRAFT, TRAITS, RARITY, 9, 6, 3, 9, true, AmethystGiant.class,
             new Vector2f(145, 135), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.RUSH, Tooltip.ELUSIVE),

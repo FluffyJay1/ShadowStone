@@ -21,7 +21,7 @@ public class AielaDragonKnight extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/aieladragonknight.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/aieladragonknight.png",
             CRAFT, TRAITS, RARITY, 3, 2, 1, 2, true, AielaDragonKnight.class,
             new Vector2f(138, 150), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.LASTWORDS),

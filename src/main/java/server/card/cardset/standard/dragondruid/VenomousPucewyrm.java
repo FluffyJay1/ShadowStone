@@ -26,7 +26,7 @@ public class VenomousPucewyrm extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/venomouspucewyrm.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/venomouspucewyrm.png",
             CRAFT, TRAITS, RARITY, 5, 4, 2, 5, true, VenomousPucewyrm.class,
             new Vector2f(143, 151), 1.3, new EventAnimationDamageSlash(),
             List::of,

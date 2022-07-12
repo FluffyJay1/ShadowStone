@@ -12,7 +12,7 @@ public class PlayButton extends UIBox {
     public final DeckSelectPanel deckspanel;
 
     public PlayButton(UI ui) {
-        super(ui, new Vector2f(0, 0), new Vector2f(128, 128), "res/ui/uiboxborder.png");
+        super(ui, new Vector2f(0, 0), new Vector2f(128, 128), "ui/uiboxborder.png");
         this.relpos = true;
         this.text = new Text(ui, new Vector2f(0, 0), "<b>PLAY GAME</b>", 128, 24, 30, 0, 0);
         text.setParent(this);

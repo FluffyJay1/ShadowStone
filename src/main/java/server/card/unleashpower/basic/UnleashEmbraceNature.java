@@ -18,7 +18,7 @@ public class UnleashEmbraceNature extends UnleashPowerText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/embracenature.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "unleashpower/basic/embracenature.png",
             CRAFT, TRAITS, RARITY, 2, UnleashEmbraceNature.class,
             new Vector2f(653, 565), 3,
             () -> List.of(Tooltip.UNLEASH),

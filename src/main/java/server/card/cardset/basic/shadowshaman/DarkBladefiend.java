@@ -30,7 +30,7 @@ public class DarkBladefiend extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/darkbladefiend.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/darkbladefiend.png",
             CRAFT, TRAITS, RARITY, 5, 3, 2, 5, true, DarkBladefiend.class,
             new Vector2f(161, 173), 1.25, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.WARD, Tooltip.NECROMANCY),

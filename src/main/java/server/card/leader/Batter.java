@@ -26,7 +26,7 @@ public class Batter extends LeaderText {
             .setLine(Emote.THINKING, "Damn, this lardass is beefier than I expected.")
             .setLine(Emote.THREATEN, "Purification in progress.")
             .build();
-    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "The purifier.", "res/card/indie/batter.png",
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "The purifier.", "card/indie/batter.png",
             CRAFT, TRAITS, RARITY, Batter.class,
             new Vector2f(112, 120), 2, null,
             EMOTESET);

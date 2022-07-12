@@ -24,7 +24,7 @@ public class EventAnimationDamageRocks extends EventAnimationDamage {
     private static final Supplier<EmissionStrategy> EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(6),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/attack/rock.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/attack/rock.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.5, 0.9)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0.15, new Vector2f(0, 400),
@@ -37,7 +37,7 @@ public class EventAnimationDamageRocks extends EventAnimationDamage {
             ))
     );
     // these must be suppliers to avoid ExceptionInInitializerError
-    private static final Supplier<Image> ROCK = () -> Game.getImage("res/particle/attack/rock.png").getScaledCopy(1);
+    private static final Supplier<Image> ROCK = () -> Game.getImage("particle/attack/rock.png").getScaledCopy(1);
 
     private List<Double> randomAngles;
 

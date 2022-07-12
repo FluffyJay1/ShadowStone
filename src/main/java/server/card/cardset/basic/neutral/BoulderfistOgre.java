@@ -17,7 +17,7 @@ public class BoulderfistOgre extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/boulderfistogre.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/boulderfistogre.png",
             CRAFT, TRAITS, RARITY, 6, 6, 0, 7, true, BoulderfistOgre.class,
             new Vector2f(158, 164), 1.5, new EventAnimationDamageSlash(),
             List::of,

@@ -23,7 +23,7 @@ public class EventAnimationDamageFire extends EventAnimationDamage {
     private static final Supplier<EmissionStrategy> CHARGING_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new IntervalEmissionTimingStrategy(3, 0.05),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/fire.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/misc/fire.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.2, 0.6)),
                     new ConstantEmissionPropertyStrategy(Graphics.MODE_ADD, 0.6, new Vector2f(0, -300),
                             () -> new LinearInterpolation(1, 0),
@@ -37,7 +37,7 @@ public class EventAnimationDamageFire extends EventAnimationDamage {
     private static final Supplier<EmissionStrategy> EXPLOSION_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(10),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/fire.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/misc/fire.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.5, 0.9)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0.65, new Vector2f(0, 0),

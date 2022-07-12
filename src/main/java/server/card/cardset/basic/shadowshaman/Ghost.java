@@ -22,7 +22,7 @@ public class Ghost extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/ghost.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/ghost.png",
             CRAFT, TRAITS, RARITY, 1, 1, 1, 1, false, Ghost.class,
             new Vector2f(124, 142), 1.3, null,
             () -> List.of(Tooltip.STORM, Tooltip.BANISH),

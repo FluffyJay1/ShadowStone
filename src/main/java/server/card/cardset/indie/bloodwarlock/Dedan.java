@@ -30,7 +30,7 @@ public class Dedan extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/indie/dedan.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/indie/dedan.png",
             CRAFT, TRAITS, RARITY, 5, 2, 2, 5, true, Dedan.class,
             new Vector2f(135, 106), 1.7, new EventAnimationDamageOff(),
             () -> List.of(Elsen.TOOLTIP, Tooltip.VENGEANCE),

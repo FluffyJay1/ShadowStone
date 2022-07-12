@@ -22,7 +22,7 @@ public class DeckSelectPanel extends UIBox {
     final boolean deckbuild;
 
     public DeckSelectPanel(UI ui, Vector2f pos, boolean deckbuild) {
-        super(ui, pos, new Vector2f(700, 600), "res/ui/uiboxborder.png");
+        super(ui, pos, new Vector2f(700, 600), "ui/uiboxborder.png");
         this.margins.set(10, 10);
         this.deckbuild = deckbuild;
         this.addChild(new Text(ui, new Vector2f(0, -250), "Select a deck", 300, 20, 34, 0, 0));
@@ -58,7 +58,7 @@ public class DeckSelectPanel extends UIBox {
         this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f(this.getWidth(true), 400));
         this.scroll.clip = true;
         this.addChild(this.scroll);
-        this.highlight = new UIBox(ui, new Vector2f(), new Vector2f(190, 110), "res/ui/highlight.png");
+        this.highlight = new UIBox(ui, new Vector2f(), new Vector2f(190, 110), "ui/highlight.png");
         this.highlight.setVisible(false);
         this.highlight.ignorehitbox = true;
         this.scroll.addChild(this.highlight);

@@ -18,7 +18,7 @@ public class EventAnimationDamageAOECloud extends EventAnimationDamage {
     private static final Supplier<EmissionStrategy> CLOUD_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(40),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/attack/purplecloud.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/attack/purplecloud.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(1)),
                     new ConstantEmissionPropertyStrategy(Graphics.MODE_NORMAL, 0.2, new Vector2f(0, 0),
                             () -> new QuadraticInterpolationB(1, 0, 0),

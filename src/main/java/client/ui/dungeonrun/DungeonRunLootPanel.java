@@ -22,7 +22,7 @@ public class DungeonRunLootPanel extends UIBox {
     boolean inited;
 
     public DungeonRunLootPanel(UI ui, Vector2f pos, Runnable onFinish) {
-        super(ui, pos, new Vector2f(1600, 500), "res/ui/uiboxborder.png");
+        super(ui, pos, new Vector2f(1600, 500), "ui/uiboxborder.png");
         this.text = new Text(ui, new Vector2f(0, -225), "bruh", 1000, 20, 34, 0, 0);
         this.addChild(text);
         this.treasureChoices = new ArrayList<>();

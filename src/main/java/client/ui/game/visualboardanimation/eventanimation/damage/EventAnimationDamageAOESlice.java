@@ -27,8 +27,8 @@ import static org.newdawn.slick.opengl.renderer.SGL.GL_ONE;
 import static org.newdawn.slick.opengl.renderer.SGL.GL_SRC_ALPHA;
 
 public class EventAnimationDamageAOESlice extends EventAnimationDamage {
-    private static final Supplier<Image> SLICE_IMAGE = () -> Game.getImage("res/particle/attack/slice.png");
-    private static final Supplier<Image> SLICE_WAKE_IMAGE = () -> Game.getImage("res/particle/attack/slicewake.png");
+    private static final Supplier<Image> SLICE_IMAGE = () -> Game.getImage("particle/attack/slice.png");
+    private static final Supplier<Image> SLICE_WAKE_IMAGE = () -> Game.getImage("particle/attack/slicewake.png");
     private static final float SLICE_SCALE = 1;
     private static final float SLICE_WAKE_SCALE = 4;
 
@@ -38,7 +38,7 @@ public class EventAnimationDamageAOESlice extends EventAnimationDamage {
     private static final Supplier<EmissionStrategy> GLOW_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(3),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation(Game.getImage("res/particle/misc/glow.png"))),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation(Game.getImage("particle/misc/glow.png"))),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.1, 0.4)),
                     new ConstantEmissionPropertyStrategy(Graphics.MODE_ADD, 0.04, new Vector2f(),
                             () -> new QuadraticInterpolationA(0.3, 0, -0.3),

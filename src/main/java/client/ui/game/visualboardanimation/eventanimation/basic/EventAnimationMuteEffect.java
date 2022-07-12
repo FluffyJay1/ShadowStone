@@ -28,7 +28,7 @@ public class EventAnimationMuteEffect extends EventAnimation<EventMuteEffect> {
     private static final Supplier<EmissionStrategy> MUTE_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(1),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/board/mute.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/board/mute.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(1)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0, new Vector2f(),

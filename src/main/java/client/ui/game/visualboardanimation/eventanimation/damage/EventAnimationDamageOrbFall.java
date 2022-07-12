@@ -25,7 +25,7 @@ import static org.newdawn.slick.opengl.renderer.SGL.GL_SRC_ALPHA;
 
 public class EventAnimationDamageOrbFall extends EventAnimationDamage {
     // these must be suppliers to avoid ExceptionInInitializerError
-    private static final Supplier<Image> ORB_IMAGE = () -> Game.getImage("res/particle/attack/orb.png");
+    private static final Supplier<Image> ORB_IMAGE = () -> Game.getImage("particle/attack/orb.png");
 
     private static final Interpolation<Double> ORB_FALL_OFFSET = new QuadraticInterpolationA(-150, 0, -15);
     private static final Interpolation<Double> ORB_FALL_SCALE = new QuadraticInterpolationA(2.5, 1.2, -0.5);
@@ -34,7 +34,7 @@ public class EventAnimationDamageOrbFall extends EventAnimationDamage {
     private static final Supplier<EmissionStrategy> ORB_EXPLOSION = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(4),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/attack/orbfragment.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/attack/orbfragment.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.3, 0.5)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0.02, new Vector2f(0, 800),

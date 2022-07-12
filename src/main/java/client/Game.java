@@ -3,11 +3,7 @@ package client;
 import java.awt.*;
 import java.awt.Font;
 import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import gamemode.dungeonrun.controller.DungeonRunController;
 import org.newdawn.slick.*;
@@ -33,10 +29,10 @@ public class Game extends StateBasedGame {
     static {
         try {
             DEFAULT_FONT = new Font[]{
-                    Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream("res/font/iunito/Iunito-Regular.ttf")), // regular
-                    Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream("res/font/iunito/Iunito-Black.ttf")), // bold
-                    Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream("res/font/iunito/Iunito-Italic.ttf")), // italic
-                    Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream("res/font/iunito/Iunito-BlackItalic.ttf")), // bold + italic
+                    Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream("font/iunito/Iunito-Regular.ttf")), // regular
+                    Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream("font/iunito/Iunito-Black.ttf")), // bold
+                    Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream("font/iunito/Iunito-Italic.ttf")), // italic
+                    Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream("font/iunito/Iunito-BlackItalic.ttf")), // bold + italic
             };
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
@@ -72,20 +68,6 @@ public class Game extends StateBasedGame {
         addState(new StateDeckbuild());
         addState(new StateDungeonRun());
         addState(new StatePVP());
-    }
-
-    public static void precacheImages() {
-        try {
-            List<Path> pngs = Files.walk(Path.of("res"))
-                    .filter(p -> !Files.isDirectory(p) && p.toString().endsWith("png"))
-                    .collect(Collectors.toList());
-            for (Path p : pngs) {
-                String pathString = p.toString();
-                images.put(pathString, new Image(pathString));
-            }
-        } catch (IOException | SlickException e) {
-            e.printStackTrace();
-        }
     }
 
     public static Image getImage(String path) {

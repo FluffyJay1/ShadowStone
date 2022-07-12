@@ -19,7 +19,7 @@ public class UnleashImbueMagic extends UnleashPowerText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/imbuemagic.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "unleashpower/basic/imbuemagic.png",
             CRAFT, TRAITS, RARITY, 2, UnleashImbueMagic.class,
             new Vector2f(393, 733), 1.5,
             () -> List.of(Tooltip.UNLEASH),

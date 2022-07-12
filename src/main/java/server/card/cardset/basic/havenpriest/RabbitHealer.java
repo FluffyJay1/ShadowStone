@@ -25,7 +25,7 @@ public class RabbitHealer extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/rabbithealer.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/rabbithealer.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, RabbitHealer.class,
             new Vector2f(174, 163), 1.2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),

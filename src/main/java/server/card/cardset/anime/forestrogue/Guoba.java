@@ -27,7 +27,7 @@ public class Guoba extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/anime/guoba.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/anime/guoba.png",
             CRAFT, TRAITS, RARITY, 2, Guoba.class,
             new Vector2f(153, 149), 1.3,
             () -> List.of(Tooltip.BATTLECRY, Guoba.TOOLTIP),

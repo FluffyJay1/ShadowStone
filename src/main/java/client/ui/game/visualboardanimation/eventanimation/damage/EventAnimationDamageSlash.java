@@ -20,7 +20,7 @@ public class EventAnimationDamageSlash extends EventAnimationDamage {
     private static final Supplier<EmissionStrategy> EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(1),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/attack/slash.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/attack/slash.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.6)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0, new Vector2f(0, 0),
@@ -30,7 +30,7 @@ public class EventAnimationDamageSlash extends EventAnimationDamage {
             ))
     );
     // these must be suppliers to avoid ExceptionInInitializerError
-    private static final Supplier<Image> SLASH_PROJECTILE = () -> Game.getImage("res/particle/attack/slashprojectile.png").getScaledCopy(1.5f);
+    private static final Supplier<Image> SLASH_PROJECTILE = () -> Game.getImage("particle/attack/slashprojectile.png").getScaledCopy(1.5f);
 
     public EventAnimationDamageSlash() {
         super(0.2, true);

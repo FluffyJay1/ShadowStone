@@ -27,7 +27,7 @@ public class KingCrimson extends LeaderText {
             .setLine(Emote.THINKING, "What's the meaning of this?")
             .setLine(Emote.THREATEN, "King Crimson has already seen through it.")
             .build();
-    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, DESCRIPTION, "res/leader/kingcrimson.png",
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, DESCRIPTION, "leader/kingcrimson.png",
             CRAFT, TRAITS, RARITY, KingCrimson.class,
             new Vector2f(), -1, null,
             EMOTESET);

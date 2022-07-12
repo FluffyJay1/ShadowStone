@@ -25,7 +25,7 @@ public class MortonTheManipulator extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/mortonthemanipulator.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/mortonthemanipulator.png",
             CRAFT, TRAITS, RARITY, 4, 3, 2, 3, false, MortonTheManipulator.class,
             new Vector2f(153, 137), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.UNLEASH),

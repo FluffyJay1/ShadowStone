@@ -32,7 +32,7 @@ public class ElectromagicalRhino extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/electromagicalrhino.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/electromagicalrhino.png",
             CRAFT, TRAITS, RARITY, 7, 0, 3, 7, true, Icarus.class,
             new Vector2f(152, 190), 1.2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.RUSH, Tooltip.BATTLECRY, Tooltip.STRIKE, ArtifactRhino.TOOLTIP),

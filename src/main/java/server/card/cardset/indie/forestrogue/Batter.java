@@ -24,7 +24,7 @@ public class Batter extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/indie/batter.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/indie/batter.png",
             CRAFT, TRAITS, RARITY, 5, 2, 2, 2, true, Batter.class,
             new Vector2f(112, 120), 2, new EventAnimationDamageOff(),
             () -> List.of(Tooltip.RUSH, Tooltip.MINIONSTRIKE, Tooltip.TRANSFORM, Spectre.TOOLTIP),

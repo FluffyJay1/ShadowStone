@@ -25,7 +25,7 @@ public class SaveSecretBase extends UnleashPowerText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/special/savesecretbase.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "unleashpower/special/savesecretbase.png",
             CRAFT, TRAITS, RARITY, 2, SaveSecretBase.class,
             new Vector2f(), -1,
             () -> List.of(Tooltip.UNLEASH),

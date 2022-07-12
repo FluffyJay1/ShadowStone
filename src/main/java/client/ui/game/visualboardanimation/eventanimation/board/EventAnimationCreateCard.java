@@ -31,7 +31,7 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
     private static final Supplier<EmissionStrategy> DUST_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(10),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/dust.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/misc/dust.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.7)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0.2, new Vector2f(0, 700),
@@ -46,7 +46,7 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
     private static final Supplier<EmissionStrategy> GLOW_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(7),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/star.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/misc/star.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.3, 0.6)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0.05, new Vector2f(0, 4200),

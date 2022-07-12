@@ -27,7 +27,7 @@ public class Ralsei extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/indie/ralsei.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/indie/ralsei.png",
             CRAFT, TRAITS, RARITY, 4, 1, 2, 5, false, Ralsei.class,
             new Vector2f(154, 174), 1.25, new EventAnimationDamageMagicHit(),
             () -> List.of(Tooltip.UNLEASH),

@@ -26,7 +26,7 @@ public class Luna extends LeaderText {
             .setLine(Emote.THINKING, "What should I do?")
             .setLine(Emote.THREATEN, "You should come on my adventure!")
             .build();
-    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "res/leader/luna.png",
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "leader/luna.png",
             CRAFT, TRAITS, RARITY, Luna.class,
             new Vector2f(), -1, null,
             EMOTESET);

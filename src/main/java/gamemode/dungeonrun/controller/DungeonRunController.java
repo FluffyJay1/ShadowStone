@@ -68,7 +68,7 @@ public class DungeonRunController {
         try {
             dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
             DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new File("res/data/dungeonrun/enemies.xml"));
+            Document doc = db.parse(DungeonRunController.class.getClassLoader().getResourceAsStream("data/dungeonrun/enemies.xml"));
             doc.getDocumentElement().normalize();
             // get list of <enemy>
             // parse them into EnemySpecs

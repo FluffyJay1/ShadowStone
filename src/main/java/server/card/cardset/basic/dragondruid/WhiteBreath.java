@@ -19,7 +19,7 @@ public class WhiteBreath extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/whitebreath.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/whitebreath.png",
             CRAFT, TRAITS, RARITY, 2, WhiteBreath.class,
             List::of,
             List.of());

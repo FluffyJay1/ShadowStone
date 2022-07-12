@@ -27,7 +27,7 @@ public class Chimera extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/chimera.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/chimera.png",
             CRAFT, TRAITS, RARITY, 9, 5, 2, 5, true, Chimera.class,
             new Vector2f(143, 158), 1.4, new EventAnimationDamageClaw(),
             () -> List.of(Tooltip.SPELLBOOST, Tooltip.BATTLECRY),

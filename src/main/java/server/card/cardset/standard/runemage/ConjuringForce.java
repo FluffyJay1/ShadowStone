@@ -22,7 +22,7 @@ public class ConjuringForce extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/standard/conjuringforce.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/standard/conjuringforce.png",
             CRAFT, TRAITS, RARITY, 4, ConjuringForce.class,
             new Vector2f(), -1,
             List::of,

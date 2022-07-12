@@ -28,7 +28,7 @@ public class EventAnimationDamageDoubleSlice extends EventAnimationDamage {
     private static final Supplier<EmissionStrategy> SLICE_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new DurationLimitingEmissionTimingStrategy(SLICE_INTERVAL * 1.5, new IntervalEmissionTimingStrategy(1,SLICE_INTERVAL)),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation(Game.getImage("res/particle/attack/slicesingle.png"))),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation(Game.getImage("particle/attack/slicesingle.png"))),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(SLICE_TIME)),
                     new ConstantEmissionPropertyStrategy(Graphics.MODE_ADD, 0, new Vector2f(),
                             () -> new QuadraticInterpolationA(0, 1, -1),
@@ -41,7 +41,7 @@ public class EventAnimationDamageDoubleSlice extends EventAnimationDamage {
     private static final Supplier<EmissionStrategy> SLICE_HIT_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new DurationLimitingEmissionTimingStrategy(SLICE_INTERVAL * 1.5, new IntervalEmissionTimingStrategy(10, SLICE_INTERVAL)),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation(Game.getImage("res/particle/attack/slicehit.png"))),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation(Game.getImage("particle/attack/slicehit.png"))),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.3)),
                     new ConstantEmissionPropertyStrategy(Graphics.MODE_ADD, 0, new Vector2f(),
                             () -> new LinearInterpolation(1, 0),
@@ -55,7 +55,7 @@ public class EventAnimationDamageDoubleSlice extends EventAnimationDamage {
     private static final Supplier<EmissionStrategy> GLOW_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(3),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation(Game.getImage("res/particle/misc/glow.png"))),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation(Game.getImage("particle/misc/glow.png"))),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.1, 0.4)),
                     new ConstantEmissionPropertyStrategy(Graphics.MODE_ADD, 0.04, new Vector2f(),
                             () -> new QuadraticInterpolationA(0.3, 0, -0.3),

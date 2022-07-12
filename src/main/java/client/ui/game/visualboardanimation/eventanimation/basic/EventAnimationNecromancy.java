@@ -24,7 +24,7 @@ public class EventAnimationNecromancy extends EventAnimation<EventNecromancy> {
     private static final Supplier<EmissionStrategy> NECROMANCY_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(1),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/game/necromancy.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("game/necromancy.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.6)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0, new Vector2f(),

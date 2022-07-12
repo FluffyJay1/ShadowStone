@@ -25,7 +25,7 @@ public class PyroxeneDragon extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/pyroxenedragon.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/pyroxenedragon.png",
             CRAFT, TRAITS, RARITY, 4, 3, 2, 4, true, PyroxeneDragon.class,
             new Vector2f(151, 160), 1.2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.LASTWORDS),

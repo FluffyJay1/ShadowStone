@@ -18,7 +18,7 @@ public class DracomancersRites extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/standard/dracomancersrites.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/standard/dracomancersrites.png",
             CRAFT, TRAITS, RARITY, 3, DracomancersRites.class,
             new Vector2f(123, 145), 1.4,
             List::of,

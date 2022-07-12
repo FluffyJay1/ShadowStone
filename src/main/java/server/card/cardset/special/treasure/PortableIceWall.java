@@ -16,7 +16,7 @@ public class PortableIceWall extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/special/portableicewall.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/special/portableicewall.png",
             CRAFT, TRAITS, RARITY, 1, 3, 1, 15, true, PortableIceWall.class,
             new Vector2f(147, 184), 1.2, new EventAnimationDamageMagicHit(),
             () -> List.of(Tooltip.DISARMED, Tooltip.WARD, Tooltip.FREEZING_TOUCH),

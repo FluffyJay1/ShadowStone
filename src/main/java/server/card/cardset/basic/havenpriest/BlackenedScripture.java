@@ -22,7 +22,7 @@ public class BlackenedScripture extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/blackenedscripture.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/blackenedscripture.png",
             CRAFT, TRAITS, RARITY, 2, BlackenedScripture.class,
             () -> List.of(Tooltip.BANISH),
             List.of());

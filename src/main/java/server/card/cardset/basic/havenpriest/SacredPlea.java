@@ -23,7 +23,7 @@ public class SacredPlea extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/sacredplea.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/basic/sacredplea.png",
             CRAFT, TRAITS, RARITY, 1, SacredPlea.class,
             new Vector2f(132, 148), 1.4,
             () -> List.of(Tooltip.COUNTDOWN),

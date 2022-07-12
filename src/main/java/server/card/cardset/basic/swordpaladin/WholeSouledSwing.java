@@ -25,7 +25,7 @@ public class WholeSouledSwing extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/wholesouledswing.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/wholesouledswing.png",
             CRAFT, TRAITS, RARITY, 2, WholeSouledSwing.class,
             () -> List.of(Knight.TOOLTIP),
             List.of());

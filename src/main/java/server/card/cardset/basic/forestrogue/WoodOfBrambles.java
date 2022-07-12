@@ -21,7 +21,7 @@ public class WoodOfBrambles extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/woodofbrambles.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/basic/woodofbrambles.png",
             CRAFT, TRAITS, RARITY, 2, WoodOfBrambles.class,
             new Vector2f(), -1,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Fairy.TOOLTIP, Tooltip.AURA, Tooltip.CLASH),

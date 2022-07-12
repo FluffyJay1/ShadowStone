@@ -9,7 +9,7 @@ public class GenericButton extends UIBox {
     private boolean enabled;
 
     public GenericButton(UI ui, Vector2f pos, Vector2f dim, String message, Runnable onClick) {
-        super(ui, pos, dim, new Animation("res/ui/button.png", new Vector2f(2, 1), 0, 0));
+        super(ui, pos, dim, new Animation("ui/button.png", new Vector2f(2, 1), 0, 0));
         this.originalDim = dim.copy();
         this.text = new Text(ui, new Vector2f(0, 0), message, dim.x * 0.8f, 20, 24, 0, 0);
         this.text.relpos = true;

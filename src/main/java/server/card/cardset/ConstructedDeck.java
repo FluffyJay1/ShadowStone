@@ -258,13 +258,6 @@ public class ConstructedDeck implements Serializable {
                 e.printStackTrace();
             }
 
-        } else {
-            try {
-                f.createNewFile();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
 
     }

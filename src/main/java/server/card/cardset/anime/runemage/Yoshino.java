@@ -33,7 +33,7 @@ public class Yoshino extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/anime/yoshino.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/anime/yoshino.png",
             CRAFT, TRAITS, RARITY, 5, 3, 0, 6, false, Yoshino.class,
             new Vector2f(165, 143), 1.6, new EventAnimationDamageMagicHit(),
             () -> List.of(Tooltip.WARD, Tooltip.FREEZING_TOUCH, Tooltip.BATTLECRY, Tooltip.SPELLBOOST, Tooltip.UNLEASH),

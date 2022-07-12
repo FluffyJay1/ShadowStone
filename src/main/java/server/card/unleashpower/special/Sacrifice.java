@@ -26,7 +26,7 @@ public class Sacrifice extends UnleashPowerText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/special/sacrifice.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "unleashpower/special/sacrifice.png",
             CRAFT, TRAITS, RARITY, 0, Sacrifice.class,
             new Vector2f(), -1,
             () -> List.of(Tooltip.UNLEASH),

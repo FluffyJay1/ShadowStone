@@ -18,7 +18,7 @@ public class MoltenGiant extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/moltengiant.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/moltengiant.png",
             CRAFT, TRAITS, RARITY, 15, 8, 4, 8, true, MoltenGiant.class,
             new Vector2f(150, 145), 1.3, new EventAnimationDamageFire(),
             List::of,

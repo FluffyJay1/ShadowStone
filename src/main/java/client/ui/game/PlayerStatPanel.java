@@ -9,7 +9,7 @@ import server.Player;
 public class PlayerStatPanel extends UIBox {
     Text handSizeText, deckSizeText, shadowsText;
     public PlayerStatPanel(UI ui, Vector2f pos) {
-        super(ui, pos, new Vector2f(200, 140), "res/ui/uiboxborder.png");
+        super(ui, pos, new Vector2f(200, 140), "ui/uiboxborder.png");
         this.margins.set(20, 20);
         this.handSizeText = new Text(ui, new Vector2f(0, -this.getHeight(true) / 2), "Hand:",
                 this.getWidth(true), 20, 20, 0, -1);

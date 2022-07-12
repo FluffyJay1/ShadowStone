@@ -27,7 +27,7 @@ public class Lich extends LeaderText {
             .setLine(Emote.THINKING, "A chill wind...")
             .setLine(Emote.THREATEN, "Feel my cold embrace!")
             .build();
-    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, DESCRIPTION, "res/leader/lich.png",
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, DESCRIPTION, "leader/lich.png",
             CRAFT, TRAITS, RARITY, Lich.class,
             new Vector2f(), -1, null,
             EMOTESET);

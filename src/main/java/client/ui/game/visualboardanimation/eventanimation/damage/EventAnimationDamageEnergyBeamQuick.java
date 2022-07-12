@@ -43,7 +43,7 @@ public class EventAnimationDamageEnergyBeamQuick extends EventAnimationDamage {
     private static final Supplier<EmissionStrategy> ENERGY_HIT_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(25),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/energy.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/misc/energy.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.4, 1.0)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0.01, new Vector2f(0, 0),

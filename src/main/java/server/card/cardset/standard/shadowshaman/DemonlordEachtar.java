@@ -32,7 +32,7 @@ public class DemonlordEachtar extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/demonlordeachtar.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/demonlordeachtar.png",
             CRAFT, TRAITS, RARITY, 7, 5, 2, 6, true, DemonlordEachtar.class,
             new Vector2f(120, 120), 1.8, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.NECROMANCY, Zombie.TOOLTIP, Tooltip.RUSH),

@@ -28,7 +28,7 @@ public class Maahes extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/maahes.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/maahes.png",
             CRAFT, TRAITS, RARITY, 5, 5, 2, 5, true, Maahes.class,
             new Vector2f(150, 145), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),

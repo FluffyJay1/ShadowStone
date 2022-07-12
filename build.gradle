@@ -22,8 +22,20 @@ compileJava {
 }
 
 jar {
+    dependsOn includeNatives
     archiveBaseName = 'ShadowStone'
     archiveVersion =  '0.1.0'
+    manifest {
+        attributes 'Main-Class': 'client.Game'
+    }
+    from {
+        configurations.runtimeClasspath
+                .collect { file ->
+                    file.isDirectory() ? file : zipTree(file).matching {
+                        exclude "*.dll", "*.so", "*.jnilib", "*.dylib" // these will be manually included
+                    }
+                }
+    }
 }
 
 dependencies {
@@ -39,7 +51,7 @@ run {
     dependsOn includeNatives
     // https://github.com/cjstehno/gradle-natives
     systemProperty 'java.library.path', "${System.getProperty("java.library.path")}" +
-        "${File.pathSeparator}build/libs/native/"
+        "${File.pathSeparator}build/libs"
 }
 
 test {
@@ -48,5 +60,5 @@ test {
 
 natives {
     configurations = ['runtimeClasspath']
-    outputDir = 'libs/native'
+    outputDir = 'libs'
 }

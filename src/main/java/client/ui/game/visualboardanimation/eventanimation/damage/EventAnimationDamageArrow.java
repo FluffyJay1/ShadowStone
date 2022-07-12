@@ -26,7 +26,7 @@ public class EventAnimationDamageArrow extends EventAnimationDamage {
     private static final Supplier<EmissionStrategy> BARRAGE_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new DurationLimitingEmissionTimingStrategy(0.08, new IntervalEmissionTimingStrategy(1, 0.03)),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/attack/arrow.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/attack/arrow.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.8)),
                     new ConstantEmissionPropertyStrategy(Graphics.MODE_ADD, 0, new Vector2f(0, 0),
                             () -> new QuadraticInterpolationB(1, 0, 0),
@@ -42,7 +42,7 @@ public class EventAnimationDamageArrow extends EventAnimationDamage {
     private static final Supplier<EmissionStrategy> FINAL_STRIKE_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(2),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/attack/arrow.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/attack/arrow.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.6)),
                     new ConstantEmissionPropertyStrategy(Graphics.MODE_ADD, 0, new Vector2f(0, 0),
                             () -> new QuadraticInterpolationB(1, 0, 0),
@@ -58,7 +58,7 @@ public class EventAnimationDamageArrow extends EventAnimationDamage {
     private static final Supplier<EmissionStrategy> GLOW_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(3),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation(Game.getImage("res/particle/misc/glow.png"))),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation(Game.getImage("particle/misc/glow.png"))),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.1, 0.4)),
                     new ConstantEmissionPropertyStrategy(Graphics.MODE_ADD, 0.04, new Vector2f(),
                             () -> new QuadraticInterpolationA(0.3, 0, -0.3),

@@ -27,7 +27,7 @@ public class UndyingResentment extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/undyingresentment.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/undyingresentment.png",
             CRAFT, TRAITS, RARITY, 2, UndyingResentment.class,
             () -> List.of(Tooltip.NECROMANCY),
             List.of());

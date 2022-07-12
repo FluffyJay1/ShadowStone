@@ -24,7 +24,7 @@ public class HallowedDogma extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/halloweddogma.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/halloweddogma.png",
             CRAFT, TRAITS, RARITY, 2, HallowedDogma.class,
             () -> List.of(Tooltip.COUNTDOWN),
             List.of());

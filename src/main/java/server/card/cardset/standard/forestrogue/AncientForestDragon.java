@@ -26,7 +26,7 @@ public class AncientForestDragon extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/ancientforestdragon.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/ancientforestdragon.png",
             CRAFT, TRAITS, RARITY, 8, 6, 2, 8, true, AncientForestDragon.class,
             new Vector2f(126, 202), 1.5, new EventAnimationDamageFire(),
             () -> List.of(Tooltip.WARD, Tooltip.BATTLECRY, Tooltip.ELUSIVE),

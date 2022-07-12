@@ -21,7 +21,7 @@ public class AnalyzingArtifact extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.ARTIFACT);
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/analyzingartifact.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/analyzingartifact.png",
             CRAFT, TRAITS, RARITY, 1, 2, 1, 1, true, AnalyzingArtifact.class,
             new Vector2f(158, 188), 1.2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.LASTWORDS),

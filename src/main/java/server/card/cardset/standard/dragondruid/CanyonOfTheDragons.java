@@ -24,7 +24,7 @@ public class CanyonOfTheDragons extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/standard/canyonofthedragons.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/standard/canyonofthedragons.png",
             CRAFT, TRAITS, RARITY, 7, CanyonOfTheDragons.class,
             new Vector2f(143, 148), 1.3,
             () -> List.of(Tooltip.COUNTDOWN, Dragon.TOOLTIP),

@@ -28,7 +28,7 @@ public class Ragnaros extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/ragnaros.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/ragnaros.png",
             CRAFT, TRAITS, RARITY, 8, 8, 3, 8, true, Ragnaros.class,
             new Vector2f(155, 155), 1.3, new EventAnimationDamageFire(),
             () -> List.of(Tooltip.DISARMED),

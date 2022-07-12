@@ -23,7 +23,7 @@ public class GlimmeringWings extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/glimmeringwings.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/glimmeringwings.png",
             CRAFT, TRAITS, RARITY, 2, GlimmeringWings.class,
             List::of,
             List.of());

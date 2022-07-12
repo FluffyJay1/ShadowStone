@@ -27,7 +27,7 @@ public class SukunaBraveAndSmall extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/sukunabraveandsmall.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/sukunabraveandsmall.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, false, SukunaBraveAndSmall.class,
             new Vector2f(160, 160), 1.2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.UNLEASH),

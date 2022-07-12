@@ -27,7 +27,7 @@ public class FeatherfallHourglass extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/featherfallhourglass.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/basic/featherfallhourglass.png",
             CRAFT, TRAITS, RARITY, 1, FeatherfallHourglass.class,
             new Vector2f(145, 143), 1.2,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Tooltip.SPEND, Tooltip.LASTWORDS, TimeOwl.TOOLTIP),

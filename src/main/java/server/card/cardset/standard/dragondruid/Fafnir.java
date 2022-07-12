@@ -25,7 +25,7 @@ public class Fafnir extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/fafnir.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/fafnir.png",
             CRAFT, TRAITS, RARITY, 9, 8, 4, 10, true, Fafnir.class,
             new Vector2f(136, 203), 1.2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),

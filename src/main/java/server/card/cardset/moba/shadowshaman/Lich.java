@@ -32,7 +32,7 @@ public class Lich extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/moba/lich.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/moba/lich.png",
             CRAFT, TRAITS, RARITY, 4, 4, 2, 2, true, Lich.class,
             new Vector2f(137, 154), 1.5, new EventAnimationDamageMagicHit(),
             () -> List.of(Tooltip.RUSH, Tooltip.BATTLECRY),

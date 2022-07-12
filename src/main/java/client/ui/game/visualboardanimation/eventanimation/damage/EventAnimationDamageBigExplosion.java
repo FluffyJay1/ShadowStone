@@ -20,7 +20,7 @@ public class EventAnimationDamageBigExplosion extends EventAnimationDamage {
     private static final Supplier<EmissionStrategy> EXPLOSION_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(20),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/fire.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/misc/fire.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.3, 0.8)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0.01, new Vector2f(0, 0),

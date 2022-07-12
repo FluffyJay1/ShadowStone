@@ -13,7 +13,7 @@ public class DungeonRunMenu extends UIBox {
     private static final float BUTTON_SPACING = 20;
     GenericButton playButton, endRunButton, deckButton;
     public DungeonRunMenu(UI ui, Vector2f pos, Runnable onClickPlay, Runnable onClickDeck, Runnable onClickEndRun, Runnable onClickMenu) {
-        super(ui, pos, new Vector2f(500, Config.WINDOW_HEIGHT), "res/ui/uiboxborder.png");
+        super(ui, pos, new Vector2f(500, Config.WINDOW_HEIGHT), "ui/uiboxborder.png");
         this.margins.set(10, 25);
         this.playButton = new GenericButton(ui, new Vector2f(0, -0.5f), BUTTON_DIM, "<b>Play</b>", onClickPlay);
         this.playButton.relpos = true;

@@ -70,7 +70,7 @@ public class UIBoard extends UIBox {
     private static final Supplier<EmissionStrategy> DUST_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(6),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/dust.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/misc/dust.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.4)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0.1, new Vector2f(0, 700),
@@ -120,7 +120,7 @@ public class UIBoard extends UIBox {
     public MusicThemeController musicThemeController;
 
     public UIBoard(UI ui, DataStream ds, Consumer<Integer> onGameEnd, Runnable onConnectionClosed) {
-        super(ui, new Vector2f(), new Vector2f(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT), "res/ui/uibox.png");
+        super(ui, new Vector2f(), new Vector2f(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT), "ui/uibox.png");
         this.cards = new ArrayList<>();
         this.b = new VisualBoard(this, 0);
         this.ds = ds;

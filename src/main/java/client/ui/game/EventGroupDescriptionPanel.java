@@ -17,18 +17,18 @@ public class EventGroupDescriptionPanel extends UIBox {
     private double time;
     final private UIElement loading, check;
     public EventGroupDescriptionPanel(UI ui, Vector2f pos, float width, EventGroup eg) {
-        super(ui, pos, new Vector2f(width, 0), "res/ui/uiboxborder.png");
+        super(ui, pos, new Vector2f(width, 0), "ui/uiboxborder.png");
         this.margins.set(20, 20);
         this.eg = eg;
         Image iconImage = null;
         float iconWidth = 0;
         switch (eg.type) {
-            case CLASH -> iconImage = Game.getImage("res/game/clash.png");
-            case ONATTACK -> iconImage = Game.getImage("res/game/attack.png");
-            case ONATTACKED -> iconImage = Game.getImage("res/game/defend.png");
-            case FLAG -> iconImage = Game.getImage("res/game/flag.png");
-            case LASTWORDS -> iconImage = Game.getImage("res/game/lastwords.png");
-            case UNLEASH -> iconImage = Game.getImage("res/game/unleash.png");
+            case CLASH -> iconImage = Game.getImage("game/clash.png");
+            case ONATTACK -> iconImage = Game.getImage("game/attack.png");
+            case ONATTACKED -> iconImage = Game.getImage("game/defend.png");
+            case FLAG -> iconImage = Game.getImage("game/flag.png");
+            case LASTWORDS -> iconImage = Game.getImage("game/lastwords.png");
+            case UNLEASH -> iconImage = Game.getImage("game/unleash.png");
         }
         UIElement icon = null;
         if (iconImage != null) {
@@ -71,11 +71,11 @@ public class EventGroupDescriptionPanel extends UIBox {
             this.setDim(new Vector2f(this.getWidth(false), text.getHeight(false) + this.margins.y * 2));
             text.setPos(new Vector2f(-this.getWidth(true)/2, -this.getHeight(true)/2), 1);
         }
-        this.check = new UIElement(ui, new Vector2f(this.getWidth(false)/2, 0), "res/ui/check.png");
+        this.check = new UIElement(ui, new Vector2f(this.getWidth(false)/2, 0), "ui/check.png");
         this.check.alignh = -1;
         this.check.setVisible(false);
         this.addChild(check);
-        Animation loadingAnimation = new Animation("res/ui/loading.png", new Vector2f(4, 2), 0, 0);
+        Animation loadingAnimation = new Animation("ui/loading.png", new Vector2f(4, 2), 0, 0);
         loadingAnimation.play = true;
         loadingAnimation.loop = true;
         loadingAnimation.setFrameInterval(0.1);

@@ -21,7 +21,7 @@ public class CardSelectPanel extends UIBox {
     private String trackerText;
 
     public CardSelectPanel(UI ui, UIBoard b) {
-        super(ui, new Vector2f(-0.35f, -0.14f), new Vector2f(450, 550), "res/ui/uiboxborder.png");
+        super(ui, new Vector2f(-0.35f, -0.14f), new Vector2f(450, 550), "ui/uiboxborder.png");
         this.relpos = true;
         this.uib = b;
         this.margins.set(10, 10);

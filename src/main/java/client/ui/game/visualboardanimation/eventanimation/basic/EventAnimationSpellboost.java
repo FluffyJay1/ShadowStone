@@ -27,7 +27,7 @@ public class EventAnimationSpellboost extends EventAnimation<EventSpellboost> {
     private static final Supplier<EmissionStrategy> SPELLBOOST_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new DurationLimitingEmissionTimingStrategy(0.3, new IntervalEmissionTimingStrategy(4, 0.01)),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/game/battlecry.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("game/battlecry.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.1, 0.2)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0.7, new Vector2f(),

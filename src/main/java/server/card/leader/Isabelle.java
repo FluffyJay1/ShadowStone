@@ -26,7 +26,7 @@ public class Isabelle extends LeaderText {
             .setLine(Emote.THINKING, "Hmm... Quite the enigma...")
             .setLine(Emote.THREATEN, "You don't stand a chance!")
             .build();
-    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "res/leader/isabelle.png",
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "leader/isabelle.png",
             CRAFT, TRAITS, RARITY, Isabelle.class,
             new Vector2f(), -1, null,
             EMOTESET);

@@ -24,7 +24,7 @@ public class LeonidasResolve extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.COMMANDER);
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/standard/leonidasresolve.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/standard/leonidasresolve.png",
             CRAFT, TRAITS, RARITY, 9, LeonidasResolve.class,
             new Vector2f(), -1,
             () -> List.of(Tooltip.RUSH),

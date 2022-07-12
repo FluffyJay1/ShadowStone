@@ -25,7 +25,7 @@ public class SummonSnow extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/summonsnow.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/summonsnow.png",
             CRAFT, TRAITS, RARITY, 3, SummonSnow.class,
             () -> List.of(Snowman.TOOLTIP, Tooltip.SPELLBOOST),
             List.of());

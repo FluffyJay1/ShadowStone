@@ -28,7 +28,7 @@ public class PrisonOfPain extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/standard/prisonofpain.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/standard/prisonofpain.png",
             CRAFT, TRAITS, RARITY, 3, PrisonOfPain.class,
             new Vector2f(127, 211), 1.3,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY),

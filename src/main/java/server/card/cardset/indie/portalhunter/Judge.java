@@ -30,7 +30,7 @@ public class Judge extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/indie/judge.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/indie/judge.png",
             CRAFT, TRAITS, RARITY, 8, 2, 3, 2, false, Judge.class,
             new Vector2f(150, 175), 1.1, new EventAnimationDamageOff(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.TRANSFORM, Puppet.TOOLTIP, Tooltip.UNLEASH, Tooltip.STORM),

@@ -24,7 +24,7 @@ public class TheCandle extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/special/thecandle.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/special/thecandle.png",
             CRAFT, TRAITS, RARITY, 1, TheCandle.class,
             List::of,
             List.of());

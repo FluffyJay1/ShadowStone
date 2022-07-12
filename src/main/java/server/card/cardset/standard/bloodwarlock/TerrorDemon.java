@@ -21,7 +21,7 @@ public class TerrorDemon extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/terrordemon.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/terrordemon.png",
             CRAFT, TRAITS, RARITY, 4, 2, 1, 4, true, TerrorDemon.class,
             new Vector2f(166, 134), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.LIFESTEAL, Tooltip.UNLEASH),

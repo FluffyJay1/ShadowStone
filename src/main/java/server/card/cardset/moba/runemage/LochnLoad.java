@@ -22,7 +22,7 @@ public class LochnLoad extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/moba/lochnload.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/moba/lochnload.png",
             CRAFT, TRAITS, RARITY, 3, LochnLoad.class,
             List::of,
             List.of());

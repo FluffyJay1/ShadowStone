@@ -24,7 +24,7 @@ public class EventAnimationSpend extends EventAnimation<EventSpend> {
             new InstantEmissionTimingStrategy(num),
             new ComposedEmissionPropertyStrategy(List.of(
                     new AnimationEmissionPropertyStrategy(() -> {
-                        Animation anim = new Animation("res/game/manaorb.png", new Vector2f(2, 1), 0, 0);
+                        Animation anim = new Animation("game/manaorb.png", new Vector2f(2, 1), 0, 0);
                         anim.play = true;
                         anim.setFrameInterval(0.2);
                         return anim;

@@ -19,7 +19,7 @@ public class CardSetDisplayPanel extends UIBox {
     final List<CardDisplayUnit> cards = new ArrayList<>();
 
     public CardSetDisplayPanel(UI ui, Vector2f pos) {
-        super(ui, pos, new Vector2f(1600, 500), "res/ui/uiboxborder.png");
+        super(ui, pos, new Vector2f(1600, 500), "ui/uiboxborder.png");
         this.margins.set(10, 10);
         this.addChild(new Text(ui, new Vector2f(0, -225), "Cards", 300, 20, 34, 0, 0));
         this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f(this.getWidth(true), 400));

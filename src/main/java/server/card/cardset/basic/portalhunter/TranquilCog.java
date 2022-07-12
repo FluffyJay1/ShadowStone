@@ -29,7 +29,7 @@ public class TranquilCog extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "res/card/basic/tranquilcog.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/basic/tranquilcog.png",
             CRAFT, TRAITS, RARITY, 3, TranquilCog.class,
             new Vector2f(153, 153), 1.3,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Tooltip.RESONANCE, Tooltip.LASTWORDS),

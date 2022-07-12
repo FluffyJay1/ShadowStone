@@ -18,7 +18,7 @@ public class TextField extends UIBox {
     double cursorFlashTimer = 0;
 
     public TextField(UI ui, Vector2f pos, Vector2f dim, String text, Text dispText) {
-        super(ui, pos, dim, "res/ui/uiboxborder.png");
+        super(ui, pos, dim, "ui/uiboxborder.png");
         this.text = text;
         this.dispText = dispText;
         this.dispText.setText(text);

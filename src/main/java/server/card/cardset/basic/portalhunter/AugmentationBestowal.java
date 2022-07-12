@@ -22,7 +22,7 @@ public class AugmentationBestowal extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/augmentationbestowal.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/augmentationbestowal.png",
             CRAFT, TRAITS, RARITY, 1, AugmentationBestowal.class,
             List::of,
             List.of());

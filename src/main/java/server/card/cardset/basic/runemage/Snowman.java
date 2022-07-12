@@ -17,7 +17,7 @@ public class Snowman extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/snowman.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/snowman.png",
             CRAFT, TRAITS, RARITY, 1, 1, 1, 1, true, Snowman.class,
             new Vector2f(150, 130), 1.5, new EventAnimationDamageSlash(),
             List::of,

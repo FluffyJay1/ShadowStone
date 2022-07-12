@@ -23,11 +23,11 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class EventAnimationDamageFireball extends EventAnimationDamage {
-    private static final Supplier<Image> PROJECTILE_IMAGE = () -> Game.getImage("res/particle/attack/fireball.png");
+    private static final Supplier<Image> PROJECTILE_IMAGE = () -> Game.getImage("particle/attack/fireball.png");
     public static final Supplier<EmissionStrategy> TRAIL = () -> new EmissionStrategy(
             new IntervalEmissionTimingStrategy(1, 0.04),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/attack/fireballtrail.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/attack/fireballtrail.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.6)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0.5, new Vector2f(),
@@ -42,7 +42,7 @@ public class EventAnimationDamageFireball extends EventAnimationDamage {
     public static final Supplier<EmissionStrategy> HIT = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(10),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/fire.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/misc/fire.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.5, 0.9)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0.65, new Vector2f(0, 0),

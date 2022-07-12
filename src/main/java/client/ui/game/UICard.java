@@ -67,7 +67,7 @@ public class UICard extends UIBox {
     private static final Supplier<EmissionStrategy> STEALTH_PARTICLES = () -> new EmissionStrategy(
             new IntervalEmissionTimingStrategy(3, 0.08),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/smoke.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/misc/smoke.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(1)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0.15, new Vector2f(0, 10),
@@ -83,7 +83,7 @@ public class UICard extends UIBox {
     private static final Supplier<EmissionStrategy> SPECIAL_CONDITION_PARTICLES = () -> new EmissionStrategy(
             new IntervalEmissionTimingStrategy(12, 0.08),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/misc/sparkle.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/misc/sparkle.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.5)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 1, new Vector2f(0, 0),
@@ -99,7 +99,7 @@ public class UICard extends UIBox {
     private static final Supplier<EmissionStrategy> STALWART_PARTICLES = () -> new EmissionStrategy(
             new IntervalEmissionTimingStrategy(1, 1.5),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/board/stalwart.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/board/stalwart.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(1)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0, new Vector2f(0, 0),
@@ -112,7 +112,7 @@ public class UICard extends UIBox {
     private static final Supplier<EmissionStrategy> MUTED_PARTICLES = () -> new EmissionStrategy(
             new IntervalEmissionTimingStrategy(1, 3),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/board/mute.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/board/mute.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(3.1)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_ADD, 0, new Vector2f(0, 0),
@@ -378,7 +378,7 @@ public class UICard extends UIBox {
     }
 
     public void drawCardBack(Graphics g, Vector2f pos, double scale) {
-        Image image = Game.getImage("res/ui/cardback.png").getScaledCopy((int) this.getOriginalDim().x,
+        Image image = Game.getImage("ui/cardback.png").getScaledCopy((int) this.getOriginalDim().x,
                 (int) this.getOriginalDim().y).getScaledCopy((float) scale);
         g.drawImage(image, (int) (pos.x - image.getWidth() / 2),
                 (int) (pos.y - image.getHeight() / 2));
@@ -459,7 +459,7 @@ public class UICard extends UIBox {
             case GOLD -> "gold";
             case LEGENDARY -> "legendary";
         };
-        imagePath = "res/game/border" + rarity + type + ".png";
+        imagePath = "game/border" + rarity + type + ".png";
         Image borderImage = Game.getImage(imagePath).getScaledCopy((int) (scale * BORDER_DIMENSIONS.x), (int) (scale * BORDER_DIMENSIONS.y));
         g.drawImage(borderImage, (int) (pos.x - borderImage.getWidth() / 2),
                 (int) (pos.y - borderImage.getHeight() / 2));
@@ -486,7 +486,7 @@ public class UICard extends UIBox {
     public void drawOnBoard(Graphics g, Vector2f pos, double scale) {
         this.drawIcons(g, pos, scale);
         if (this.card.finalStats.get(Stat.ELUSIVE) > 0) {
-            Image i = Game.getImage("res/game/elusive.png");
+            Image i = Game.getImage("game/elusive.png");
             i = i.getScaledCopy((float) scale);
             i.setAlpha(this.uib.getElusiveAlpha());
             g.setDrawMode(Graphics.MODE_ADD);
@@ -511,7 +511,7 @@ public class UICard extends UIBox {
                 }
             }
             if (this.card.finalStats.get(Stat.WARD) > 0) {
-                Image i = Game.getImage("res/game/ward.png");
+                Image i = Game.getImage("game/ward.png");
                 i = i.getScaledCopy((float) scale);
                 if (this.card.finalStats.get(Stat.STEALTH) > 0) {
                     i.setAlpha(0.5f);
@@ -519,42 +519,42 @@ public class UICard extends UIBox {
                 g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
             }
             if (this.card.finalStats.get(Stat.SHIELD) > 0) {
-                Image i = Game.getImage("res/game/shield.png");
+                Image i = Game.getImage("game/shield.png");
                 i = i.getScaledCopy((float) scale);
                 g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
             }
             if (this.card.finalStats.get(Stat.DISARMED) > 0) {
-                Image i = Game.getImage("res/game/disarmed.png");
+                Image i = Game.getImage("game/disarmed.png");
                 i = i.getScaledCopy((float) scale);
                 g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
             }
             if (this.card.finalStats.get(Stat.FROZEN) > 0) {
-                Image i = Game.getImage("res/game/frozen.png");
+                Image i = Game.getImage("game/frozen.png");
                 i = i.getScaledCopy((float) scale);
                 g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
             }
             this.drawOffensiveStat(g, pos, scale, this.card.finalStats.get(Stat.ATTACK),
                     this.card.finalBasicStats.get(Stat.ATTACK),
-                    new Vector2f(-MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE, Game.getImage("res/game/statattack.png"));
+                    new Vector2f(-MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE, Game.getImage("game/statattack.png"));
             this.drawOffensiveStat(g, pos, scale, this.card.finalStats.get(Stat.MAGIC),
                     this.card.finalBasicStats.get(Stat.MAGIC),
-                    new Vector2f(0, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE, Game.getImage("res/game/statmagic.png"));
+                    new Vector2f(0, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE, Game.getImage("game/statmagic.png"));
             this.drawHealthStat(g, pos, scale, this.getMinion().health,
                     this.card.finalStats.get(Stat.HEALTH),
                     this.card.finalBasicStats.get(Stat.HEALTH),
                     new Vector2f(MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE);
             if (this.card.finalStats.get(Stat.SHIELD) > 0) {
                 this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.SHIELD),
-                        SHIELD_POS_BOARD, STAT_DEFAULT_SIZE, Color.white, Game.getImage("res/game/statshield.png"), STAT_ICON_DEFAULT_SCALE);
+                        SHIELD_POS_BOARD, STAT_DEFAULT_SIZE, Color.white, Game.getImage("game/statshield.png"), STAT_ICON_DEFAULT_SCALE);
             }
         }
         if (this.card.finalStats.contains(Stat.COUNTDOWN)) {
             this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.COUNTDOWN), COUNTDOWN_POS,
-                    50, Color.white, Game.getImage("res/game/statcountdown.png"), STAT_ICON_COUNTDOWN_SCALE);
+                    50, Color.white, Game.getImage("game/statcountdown.png"), STAT_ICON_COUNTDOWN_SCALE);
         }
         // if marked for death
         if (!this.card.alive) {
-            Image i = Game.getImage("res/game/markedfordeath.png");
+            Image i = Game.getImage("game/markedfordeath.png");
             i = i.getScaledCopy((float) scale);
             g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
         }
@@ -574,40 +574,40 @@ public class UICard extends UIBox {
     public void updateIconList() {
         this.icons.clear();
         if (this.card.finalStats.get(Stat.BANE) > 0) {
-            this.icons.add(Game.getImage("res/game/baneicon.png"));
+            this.icons.add(Game.getImage("game/baneicon.png"));
         }
         if (this.card.finalStats.get(Stat.POISONOUS) > 0) {
-            this.icons.add(Game.getImage("res/game/poisonousicon.png"));
+            this.icons.add(Game.getImage("game/poisonousicon.png"));
         }
         if (this.card.finalStats.get(Stat.LIFESTEAL) > 0) {
-            this.icons.add(Game.getImage("res/game/lifestealicon.png"));
+            this.icons.add(Game.getImage("game/lifestealicon.png"));
         }
         if (this.card.finalStats.get(Stat.FREEZING_TOUCH) > 0) {
-            this.icons.add(Game.getImage("res/game/freezingtouchicon.png"));
+            this.icons.add(Game.getImage("game/freezingtouchicon.png"));
         }
         if (this.card instanceof BoardObject) {
             BoardObject bo = (BoardObject) this.card;
             if (bo.hasResolvers(Effect::lastWords)) {
-                this.icons.add(Game.getImage("res/game/lastwordsicon.png"));
+                this.icons.add(Game.getImage("game/lastwordsicon.png"));
             }
             if (bo.hasResolvers(e -> e.onListenEventWhileInPlay(null)) || bo.hasResolvers(Effect::onTurnStartAllied)
                     || bo.hasResolvers(Effect::onTurnEndAllied) || bo.hasResolvers(Effect::onTurnStartEnemy)
                     || bo.hasResolvers(Effect::onTurnEndEnemy) || bo.hasResolvers(Effect::onEnterPlay) || bo.hasResolvers(Effect::onLeavePlay)
                     || bo.hasResolvers(e -> e.onDamaged(0))) {
-                this.icons.add(Game.getImage("res/game/flagicon.png"));
+                this.icons.add(Game.getImage("game/flagicon.png"));
             }
         }
         if (this.card instanceof Minion) {
             Minion m = (Minion) this.card;
             Leader dummy = new Leader(this.uib.b, new Rowen());
             if (m.hasResolvers(e -> e.strike(dummy)) || m.hasResolvers(e -> e.minionStrike(dummy)) || m.hasResolvers(e -> e.leaderStrike(dummy))) {
-                this.icons.add(Game.getImage("res/game/attackicon.png"));
+                this.icons.add(Game.getImage("game/attackicon.png"));
             }
             if (m.hasResolvers(e -> e.retaliate(dummy))) {
-                this.icons.add(Game.getImage("res/game/defendicon.png"));
+                this.icons.add(Game.getImage("game/defendicon.png"));
             }
             if (m.hasResolvers(e -> e.clash(dummy))) {
-                this.icons.add(Game.getImage("res/game/clashicon.png"));
+                this.icons.add(Game.getImage("game/clashicon.png"));
             }
         }
     }
@@ -650,22 +650,22 @@ public class UICard extends UIBox {
         if (this.card instanceof Minion) {
             this.drawOffensiveStat(g, pos, scale, this.card.finalStats.get(Stat.ATTACK),
                     this.card.finalBasicStats.get(Stat.ATTACK),
-                    new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND - MINION_STAT_POS_OFFSET_HAND), STAT_DEFAULT_SIZE, Game.getImage("res/game/statattack.png"));
+                    new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND - MINION_STAT_POS_OFFSET_HAND), STAT_DEFAULT_SIZE, Game.getImage("game/statattack.png"));
             this.drawOffensiveStat(g, pos, scale, this.card.finalStats.get(Stat.MAGIC),
                     this.card.finalBasicStats.get(Stat.MAGIC),
-                    new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND), STAT_DEFAULT_SIZE, Game.getImage("res/game/statmagic.png"));
+                    new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND), STAT_DEFAULT_SIZE, Game.getImage("game/statmagic.png"));
             this.drawHealthStat(g, pos, scale, this.getMinion().health,
                     this.card.finalStats.get(Stat.HEALTH),
                     this.card.finalBasicStats.get(Stat.HEALTH),
                     new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND + MINION_STAT_POS_OFFSET_HAND), STAT_DEFAULT_SIZE);
             if (this.card.finalStats.get(Stat.SHIELD) > 0) {
                 this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.SHIELD),
-                        SHIELD_POS_HAND, STAT_DEFAULT_SIZE, Color.white, Game.getImage("res/game/statshield.png"), STAT_ICON_DEFAULT_SCALE);
+                        SHIELD_POS_HAND, STAT_DEFAULT_SIZE, Color.white, Game.getImage("game/statshield.png"), STAT_ICON_DEFAULT_SCALE);
             }
         }
         if (this.card.finalStats.contains(Stat.COUNTDOWN)) {
             this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.COUNTDOWN), COUNTDOWN_POS,
-                    50, Color.white, Game.getImage("res/game/statcountdown.png"), STAT_ICON_COUNTDOWN_SCALE);
+                    50, Color.white, Game.getImage("game/statcountdown.png"), STAT_ICON_COUNTDOWN_SCALE);
         }
     }
 
@@ -688,7 +688,7 @@ public class UICard extends UIBox {
         if (cost < basecost) {
             c = Color.green;
         }
-        this.drawStatNumber(g, pos, scale, cost, relpos, fontsize, c, Game.getImage("res/game/statcost.png"), STAT_ICON_DEFAULT_SCALE);
+        this.drawStatNumber(g, pos, scale, cost, relpos, fontsize, c, Game.getImage("game/statcost.png"), STAT_ICON_DEFAULT_SCALE);
     }
 
     public void drawOffensiveStat(Graphics g, Vector2f pos, double scale, int stat, int basestat, Vector2f relpos, double fontsize, Image icon) {
@@ -710,7 +710,7 @@ public class UICard extends UIBox {
         } else if (health > basehealth) {
             c = Color.green;
         }
-        this.drawStatNumber(g, pos, scale, health, relpos, fontsize, c, Game.getImage("res/game/stathealth.png"), STAT_ICON_DEFAULT_SCALE);
+        this.drawStatNumber(g, pos, scale, health, relpos, fontsize, c, Game.getImage("game/stathealth.png"), STAT_ICON_DEFAULT_SCALE);
     }
 
     public void drawPendingPlayPosition(Graphics g, Vector2f drawPos) {

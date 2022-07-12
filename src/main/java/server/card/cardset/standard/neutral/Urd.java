@@ -25,7 +25,7 @@ public class Urd extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/urd.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/urd.png",
             CRAFT, TRAITS, RARITY, 4, 3, 2, 3, true, Urd.class,
             new Vector2f(188, 130), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),

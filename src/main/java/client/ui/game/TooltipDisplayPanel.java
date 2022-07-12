@@ -17,7 +17,7 @@ public class TooltipDisplayPanel extends UIBox {
     final UIBox cardImageDisplayer;
 
     public TooltipDisplayPanel(UI ui) {
-        super(ui, new Vector2f(0, 0), new Vector2f(430, 0), "res/ui/uiboxborder.png");
+        super(ui, new Vector2f(0, 0), new Vector2f(430, 0), "ui/uiboxborder.png");
         this.margins.set(10, 10);
         this.alignv = -1;
         this.cardImageDisplayer = new UIBox(ui, new Vector2f(), new Vector2f( 300, 360));

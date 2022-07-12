@@ -26,7 +26,7 @@ public class SellswordLucius extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/sellswordlucius.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/sellswordlucius.png",
             CRAFT, TRAITS, RARITY, 1, 1, 1, 1, true, SellswordLucius.class,
             new Vector2f(155, 149), 1.22, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.SPEND),

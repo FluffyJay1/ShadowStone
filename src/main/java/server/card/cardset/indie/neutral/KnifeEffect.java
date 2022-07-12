@@ -24,7 +24,7 @@ public class KnifeEffect extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/indie/knifeeffect.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/indie/knifeeffect.png",
             CRAFT, TRAITS, RARITY, 1, KnifeEffect.class,
             List::of,
             List.of());

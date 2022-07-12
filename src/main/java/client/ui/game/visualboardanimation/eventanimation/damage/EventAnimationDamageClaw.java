@@ -22,7 +22,7 @@ public class EventAnimationDamageClaw extends EventAnimationDamage {
             new InstantEmissionTimingStrategy(1),
             new ComposedEmissionPropertyStrategy(List.of(
                     new AnimationEmissionPropertyStrategy(() -> {
-                        Animation anim = new Animation("res/particle/attack/claw.png", new Vector2f(4, 3), 0, 0);
+                        Animation anim = new Animation("particle/attack/claw.png", new Vector2f(4, 3), 0, 0);
                         anim.play = true;
                         anim.setFrameInterval(0.025);
                         return anim;

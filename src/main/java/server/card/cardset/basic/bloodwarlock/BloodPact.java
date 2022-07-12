@@ -25,7 +25,7 @@ public class BloodPact extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/bloodpact.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/bloodpact.png",
             CRAFT, TRAITS, RARITY, 2, BloodPact.class,
             List::of,
             List.of());

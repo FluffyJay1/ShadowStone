@@ -10,7 +10,7 @@ public class UnleashButton extends UIElement {
     double timey = 0;
 
     public UnleashButton(UI ui, UIBoard b) {
-        super(ui, new Vector2f(0, 0), "res/ui/unleashbutton.png");
+        super(ui, new Vector2f(0, 0), "ui/unleashbutton.png");
         this.text = new Text(ui, new Vector2f(0, 0), "<b>UNLEASH</b>", 128, 24, 30, 0, 0);
         text.setParent(this);
         this.uib = b;

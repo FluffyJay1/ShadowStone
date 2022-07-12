@@ -26,7 +26,7 @@ public class Yuwan extends LeaderText {
             .setLine(Emote.THINKING, "Stay on your toes...")
             .setLine(Emote.THREATEN, "I will have revenge!")
             .build();
-    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "res/leader/yuwan.png",
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "leader/yuwan.png",
             CRAFT, TRAITS, RARITY, Yuwan.class,
             new Vector2f(), -1, null,
             EMOTESET);

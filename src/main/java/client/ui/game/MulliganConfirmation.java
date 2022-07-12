@@ -14,11 +14,11 @@ public class MulliganConfirmation extends UIElement {
 
     public MulliganConfirmation(UI ui, Vector2f pos, Runnable onConfirm) {
         super(ui, pos);
-        UIBox topBox = new UIBox(ui, new Vector2f(0, -(HEIGHT + MIDDLE_GAP)/4), new Vector2f(WIDTH, (HEIGHT - MIDDLE_GAP) / 2), "res/ui/uiboxborder.png");
+        UIBox topBox = new UIBox(ui, new Vector2f(0, -(HEIGHT + MIDDLE_GAP)/4), new Vector2f(WIDTH, (HEIGHT - MIDDLE_GAP) / 2), "ui/uiboxborder.png");
         topBox.margins.set(20, 20);
         topBox.setAlpha(BOX_ALPHA);
         this.addChild(topBox);
-        UIBox botBox = new UIBox(ui, new Vector2f(0, (HEIGHT + MIDDLE_GAP)/4), new Vector2f(WIDTH, (HEIGHT - MIDDLE_GAP) / 2), "res/ui/uiboxborder.png");
+        UIBox botBox = new UIBox(ui, new Vector2f(0, (HEIGHT + MIDDLE_GAP)/4), new Vector2f(WIDTH, (HEIGHT - MIDDLE_GAP) / 2), "ui/uiboxborder.png");
         botBox.margins.set(20, 20);
         botBox.setAlpha(BOX_ALPHA);
         this.addChild(botBox);

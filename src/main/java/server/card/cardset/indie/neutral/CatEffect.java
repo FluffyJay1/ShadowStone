@@ -25,7 +25,7 @@ public class CatEffect extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/indie/cateffect.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/indie/cateffect.png",
             CRAFT, TRAITS, RARITY, 0, CatEffect.class,
             () -> List.of(Tooltip.WARD),
             List.of());

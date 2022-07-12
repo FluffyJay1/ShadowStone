@@ -29,7 +29,7 @@ public class MagicOwl extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/magicowl.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/magicowl.png",
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, false, MagicOwl.class,
             new Vector2f(155, 195), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.UNLEASH, Tooltip.SPELLBOOST),

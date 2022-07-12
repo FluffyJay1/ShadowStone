@@ -20,7 +20,7 @@ public class EventAnimationRemoveEffect extends EventAnimation<EventRemoveEffect
 
     @Override
     public void draw(Graphics g) {
-        Image img = Game.getImage("res/game/battlecry.png");
+        Image img = Game.getImage("game/battlecry.png");
         for (int i = 0; i < 4; i++) {
             float xoffset = (float) Math.random() * 150 - 75;
             float yoffset = (float) (this.normalizedPost() * 160) - 80 + (float) Math.random() * 150 - 75;

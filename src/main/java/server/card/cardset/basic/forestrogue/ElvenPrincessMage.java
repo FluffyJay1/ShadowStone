@@ -28,7 +28,7 @@ public class ElvenPrincessMage extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/basic/elvenprincessmage.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/elvenprincessmage.png",
             CRAFT, TRAITS, RARITY, 4, 3, 1, 5, false, ElvenPrincessMage.class,
             new Vector2f(151, 130), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.UNLEASH, Fairy.TOOLTIP),

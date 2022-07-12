@@ -34,7 +34,7 @@ public class EventAnimationAddEffect extends EventAnimation<EventAddEffect> {
 
     @Override
     public void draw(Graphics g) {
-        Image img = Game.getImage("res/game/battlecry.png");
+        Image img = Game.getImage("game/battlecry.png");
         for (int ind = 0; ind < this.event.c.size(); ind++) {
             if (this.event.successful.get(ind)) {
                 Card c = this.event.c.get(ind);

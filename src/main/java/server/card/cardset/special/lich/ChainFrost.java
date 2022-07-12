@@ -25,7 +25,7 @@ public class ChainFrost extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/special/chainfrost.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/special/chainfrost.png",
             CRAFT, TRAITS, RARITY, 7, ChainFrost.class,
             List::of,
             List.of());

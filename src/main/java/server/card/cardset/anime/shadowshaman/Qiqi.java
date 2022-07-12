@@ -31,7 +31,7 @@ public class Qiqi extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/anime/qiqi.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/anime/qiqi.png",
             CRAFT, TRAITS, RARITY, 5, 3, 2, 3, false, Qiqi.class,
             new Vector2f(150, 169), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.FREEZING_TOUCH, Tooltip.BATTLECRY, Tooltip.NECROMANCY, Tooltip.LIFESTEAL, Tooltip.UNLEASH, Tooltip.REANIMATE),

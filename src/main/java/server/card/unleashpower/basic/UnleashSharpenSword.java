@@ -19,7 +19,7 @@ public class UnleashSharpenSword extends UnleashPowerText {
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/sharpensword.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "unleashpower/basic/sharpensword.png",
             CRAFT, TRAITS, RARITY, 2, UnleashSharpenSword.class,
             new Vector2f(500, 330), 3,
             () -> List.of(Tooltip.UNLEASH),

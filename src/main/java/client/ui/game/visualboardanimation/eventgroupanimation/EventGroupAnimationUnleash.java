@@ -12,7 +12,7 @@ public class EventGroupAnimationUnleash extends EventGroupAnimation {
 
     @Override
     public void draw(Graphics g) {
-        Image img = Game.getImage("res/game/unleash.png");
+        Image img = Game.getImage("game/unleash.png");
         UICard uiCard = this.eventgroup.cards.get(0).uiCard;
         float yoffset = (float) (Math.pow(1 - this.normalizedTime(), 2) * 150) - 50;
         g.drawImage(img, uiCard.getAbsPos().x - img.getWidth() / 2,

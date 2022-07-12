@@ -13,7 +13,7 @@ public class ClassCraftTrackerPanel extends UIBox {
     Text text;
 
     public ClassCraftTrackerPanel(UI ui, Vector2f pos) {
-        super(ui, pos, new Vector2f(200, 66), "res/ui/uiboxborder.png");
+        super(ui, pos, new Vector2f(200, 66), "ui/uiboxborder.png");
         this.text = new Text(ui, new Vector2f(), "", 180, 20, 20, 0, 0);
         this.addChild(this.text);
     }

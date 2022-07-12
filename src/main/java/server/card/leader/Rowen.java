@@ -23,7 +23,7 @@ public class Rowen extends LeaderText {
             .setLine(Emote.THINKING, "Think, Rowen...")
             .setLine(Emote.THREATEN, "Hear the dragon's roar!")
             .build();
-    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "res/leader/smile.png",
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "leader/smile.png",
             CRAFT, TRAITS, RARITY, Rowen.class,
             new Vector2f(), -1, null,
             EMOTESET);

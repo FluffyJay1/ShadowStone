@@ -18,7 +18,7 @@ public class ParticleSystemCommon {
     public static final Supplier<EmissionStrategy> BANISH = () -> new EmissionStrategy(
             new IntervalEmissionTimingStrategy(1, 0.12),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/board/banish.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/board/banish.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(0.5)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0.2, new Vector2f(0, 120),
@@ -31,7 +31,7 @@ public class ParticleSystemCommon {
     public static final Supplier<EmissionStrategy> DESTROY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(25),
             new ComposedEmissionPropertyStrategy(List.of(
-                    new AnimationEmissionPropertyStrategy(() -> new Animation("res/particle/board/vapor.png", new Vector2f(1, 1), 0, 0)),
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/board/vapor.png", new Vector2f(1, 1), 0, 0)),
                     new MaxTimeEmissionPropertyStrategy(new LinearInterpolation(0.2, 1)),
                     new ConstantEmissionPropertyStrategy(
                             Graphics.MODE_NORMAL, 0.1, new Vector2f(0, 200),

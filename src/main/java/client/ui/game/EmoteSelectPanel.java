@@ -25,13 +25,13 @@ public class EmoteSelectPanel extends UIElement {
     public EmoteSelectPanel(UI ui, Vector2f pos, UIBoard board, Consumer<Emote> onSelectEmote) {
         super(ui, pos, "");
         this.buttons = List.of(
-                new EmoteSelectButton(ui, new Vector2f(), Emote.GREETINGS, "res/ui/emotegreetings.png", onSelectEmote),
-                new EmoteSelectButton(ui, new Vector2f(), Emote.THANKS, "res/ui/emotethanks.png", onSelectEmote),
-                new EmoteSelectButton(ui, new Vector2f(), Emote.SORRY, "res/ui/emotesorry.png", onSelectEmote),
-                new EmoteSelectButton(ui, new Vector2f(), Emote.WELLPLAYED, "res/ui/emotewellplayed.png", onSelectEmote),
-                new EmoteSelectButton(ui, new Vector2f(), Emote.SHOCKED, "res/ui/emoteshocked.png", onSelectEmote),
-                new EmoteSelectButton(ui, new Vector2f(), Emote.THINKING, "res/ui/emotethinking.png", onSelectEmote),
-                new EmoteSelectButton(ui, new Vector2f(), Emote.THREATEN, "res/ui/emotethreaten.png", onSelectEmote)
+                new EmoteSelectButton(ui, new Vector2f(), Emote.GREETINGS, "ui/emotegreetings.png", onSelectEmote),
+                new EmoteSelectButton(ui, new Vector2f(), Emote.THANKS, "ui/emotethanks.png", onSelectEmote),
+                new EmoteSelectButton(ui, new Vector2f(), Emote.SORRY, "ui/emotesorry.png", onSelectEmote),
+                new EmoteSelectButton(ui, new Vector2f(), Emote.WELLPLAYED, "ui/emotewellplayed.png", onSelectEmote),
+                new EmoteSelectButton(ui, new Vector2f(), Emote.SHOCKED, "ui/emoteshocked.png", onSelectEmote),
+                new EmoteSelectButton(ui, new Vector2f(), Emote.THINKING, "ui/emotethinking.png", onSelectEmote),
+                new EmoteSelectButton(ui, new Vector2f(), Emote.THREATEN, "ui/emotethreaten.png", onSelectEmote)
         );
         for (int i = 0; i < this.buttons.size(); i++) {
             EmoteSelectButton button = this.buttons.get(i);
@@ -64,7 +64,7 @@ public class EmoteSelectPanel extends UIElement {
         Emote emote;
 
         public EmoteSelectButton(UI ui, Vector2f pos, Emote emote, String iconPath, Consumer<Emote> onClick) {
-            super(ui, pos, new Animation("res/ui/emotebutton.png", new Vector2f(2, 1), 0, 0));
+            super(ui, pos, new Animation("ui/emotebutton.png", new Vector2f(2, 1), 0, 0));
             this.hitcircle = true;
             this.emote = emote;
             UIElement icon = new UIElement(ui, new Vector2f(), iconPath);

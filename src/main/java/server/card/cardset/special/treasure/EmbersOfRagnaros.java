@@ -23,7 +23,7 @@ public class EmbersOfRagnaros extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/special/embersofragnaros.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/special/embersofragnaros.png",
             CRAFT, TRAITS, RARITY, 3, EmbersOfRagnaros.class,
             List::of,
             List.of());

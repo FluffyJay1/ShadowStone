@@ -21,7 +21,7 @@ public class FatesHand extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "res/card/basic/fateshand.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/fateshand.png",
             CRAFT, TRAITS, RARITY, 5, FatesHand.class,
             () -> List.of(Tooltip.SPELLBOOST),
             List.of());

@@ -22,7 +22,7 @@ public class UnleashTapSoul extends UnleashPowerText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "res/unleashpower/basic/tapsoul.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "unleashpower/basic/tapsoul.png",
             CRAFT, TRAITS, RARITY, 2, UnleashTapSoul.class,
             new Vector2f(445, 515), 1,
             () -> List.of(Tooltip.VENGEANCE, Tooltip.UNLEASH),

@@ -28,7 +28,7 @@ public class Rahab extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "res/card/standard/rahab.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/rahab.png",
             CRAFT, TRAITS, RARITY, 4, 2, 2, 6, true, Rahab.class,
             new Vector2f(151, 160), 1.2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.WARD),

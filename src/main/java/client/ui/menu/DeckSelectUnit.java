@@ -12,7 +12,7 @@ public class DeckSelectUnit extends UIBox {
     public ConstructedDeck deck;
 
     public DeckSelectUnit(UI ui) {
-        super(ui, new Vector2f(0, 0), new Vector2f(180, 100), "res/ui/uiboxborder.png");
+        super(ui, new Vector2f(0, 0), new Vector2f(180, 100), "ui/uiboxborder.png");
         this.text = new Text(ui, new Vector2f(0, 0), "A deck", 180, 20, 30, 0, 0);
         this.addChild(this.text);
     }

@@ -24,13 +24,13 @@ public class DungeonRunStatusPanel extends UIBox {
     private final UIBox highlight;
     private final Text gameEndText;
     public DungeonRunStatusPanel(UI ui, Vector2f pos) {
-        super(ui, pos, new Vector2f(Config.WINDOW_WIDTH - 500, Config.WINDOW_HEIGHT), "res/ui/uiboxborder.png");
+        super(ui, pos, new Vector2f(Config.WINDOW_WIDTH - 500, Config.WINDOW_HEIGHT), "ui/uiboxborder.png");
         this.margins.set(30, 30);
         this.items = new ArrayList<>();
         this.scroll = new ScrollingContext(ui, new Vector2f(), new Vector2f(this.getWidth(true), this.getHeight(true)));
         this.scroll.clip = true;
         this.addChild(scroll);
-        this.highlight = new UIBox(ui, new Vector2f(), new Vector2f(Config.WINDOW_WIDTH - 560, ITEM_HEIGHT), "res/ui/highlight.png");
+        this.highlight = new UIBox(ui, new Vector2f(), new Vector2f(Config.WINDOW_WIDTH - 560, ITEM_HEIGHT), "ui/highlight.png");
         this.highlight.setVisible(false);
         this.highlight.ignorehitbox = true;
         this.highlight.setZ(10);
@@ -95,7 +95,7 @@ public class DungeonRunStatusPanel extends UIBox {
         Text nameText, classText, signatureCardText;
 
         public DungeonRunStatusPanelItem(UI ui, Vector2f pos, Contestant enemy) {
-            super(ui, pos, new Vector2f(Config.WINDOW_WIDTH - 560, ITEM_HEIGHT), "res/ui/uiboxborder.png");
+            super(ui, pos, new Vector2f(Config.WINDOW_WIDTH - 560, ITEM_HEIGHT), "ui/uiboxborder.png");
             this.margins.set(30, 10);
             this.leader = new CardDisplayUnit(ui, new Vector2f(-(float)this.getWidth(true) / 2, 0), enemy.leaderText);
             this.leader.alignh = -1;
