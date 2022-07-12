@@ -49,7 +49,7 @@ public class Aqua extends MinionText {
                 return new ResolverWithDescription(BATTLECRY_DESCRIPTION, new Resolver(true) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new ReanimateResolver(owner.player, 10, owner.getIndex() + 1));
+                        this.resolve(b, rq, el, new ReanimateResolver(owner.player, 5, owner.getIndex() + 1));
                         List<Minion> healTargets = b.getMinions(owner.team, true, true).collect(Collectors.toList());
                         this.resolve(b, rq, el, new RestoreResolver(effect, healTargets, 5));
                     }

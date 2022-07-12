@@ -40,7 +40,8 @@ public class BerserkerSoul extends SpellText {
                 return List.of(new CardTargetingScheme(this, 1, 1, "Choose an allied minion with 3 attack or less.") {
                     @Override
                     protected boolean criteria(Card c) {
-                        return c.status.equals(CardStatus.BOARD) && c instanceof Minion && c.team == this.getCreator().owner.team;
+                        return c.status.equals(CardStatus.BOARD) && c instanceof Minion && c.team == this.getCreator().owner.team
+                                && c.finalStats.get(Stat.ATTACK) <= 3;
                     }
                 });
             }
