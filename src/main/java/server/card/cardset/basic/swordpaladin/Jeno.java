@@ -20,7 +20,7 @@ import java.util.List;
 
 public class Jeno extends MinionText {
     public static final String NAME = "Jeno, Levin Vanguard";
-    public static final String DESCRIPTION = "<b>Rush</b>.\n<b>Battlecry</b>: <b>Spend(2)</b> to gain <b>Last Words<b>: Summon 2 <b>Knights</b>.";
+    public static final String DESCRIPTION = "<b>Rush</b>.\n<b>Battlecry</b>: <b>Spend(2)</b> to gain <b>Last Words</b>: Summon 2 <b>Knights</b>.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);

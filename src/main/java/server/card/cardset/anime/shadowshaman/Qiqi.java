@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 public class Qiqi extends MinionText {
     public static final String NAME = "Qiqi";
     private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: <b>Necromancy(6)</b> - Give all allied cards in play and in your hand <b>Lifesteal</b>.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: <b>Reanimate(X + 5)</b> and give it <b>Lifesteal</b>. X equals this minion's magic.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: <b>Reanimate(X+5)</b> and give it <b>Lifesteal</b>. X equals this minion's magic.";
     public static final String DESCRIPTION = "<b>Freezing Touch</b>.\n" + BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;

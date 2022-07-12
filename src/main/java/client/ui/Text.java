@@ -3,6 +3,8 @@ package client.ui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import client.Config;
 import org.newdawn.slick.*;
@@ -77,15 +79,12 @@ public class Text extends UIElement {
         this.maxLineWidth = 0;
         StringTokenizer stlines = new StringTokenizer(text, "\n");
         while (stlines.hasMoreTokens()) {
-            // StringTokenizer st = new StringTokenizer(stlines.nextToken(), "
-            // ");
             String[] words = stlines.nextToken().split("(?<= )|(?<=</?[bic]>)|(?=</?[bic]>)");
             List<String> line = new ArrayList<>();
             StringBuilder sameFontStreak = new StringBuilder(); // to reduce calls to drawString
             float currlinewidth = 0;
 
             for (String token : words) { // why do i do this
-                // String token = st.nextToken();
                 if (token.matches("</?[bic]>")) {
                     if (sameFontStreak.length() > 0) {
                         String sameFontStreakString = sameFontStreak.toString();
@@ -112,17 +111,41 @@ public class Text extends UIElement {
                             line.add(sameFontStreakString);
                             currlinewidth += this.uFontFamily[flags].getWidth(sameFontStreakString);
                         }
+                        List<String> transferredTokens = new ArrayList<>();
                         // remove excess spaces at end of line
-                        if (line.size() > 0) {
-                            String last = line.get(line.size() - 1);
-                            String lastTrimmed = last.replaceAll("\\s+$", "");
-                            currlinewidth += this.uFontFamily[flags].getWidth(lastTrimmed) - this.uFontFamily[flags].getWidth(last);
-                            line.set(line.size() - 1, lastTrimmed);
+                        for (int i = line.size() - 1; i > 0; i--) {
+                            String last = line.get(i);
+                            // find token in that line that isn't a tag
+                            if (!last.matches("</?[bic]>")) {
+                                String lastTrimmed = last.replaceAll("\\s+$", "");
+                                if (lastTrimmed.equals(last) && i < line.size() - 1) {
+                                    // if last didn't end with whitespace, and tags came after it, we merge
+                                    Pattern pattern = Pattern.compile("[^\\s]+$");
+                                    Matcher matcher = pattern.matcher(last);
+                                    if (matcher.find()) {
+                                        lastTrimmed = lastTrimmed.substring(0, matcher.start()).replaceAll("\\s+$", "");
+                                        // transfer the last word of the last line
+                                        transferredTokens.add(matcher.group());
+                                        // transfer all the tags that came after it
+                                        while (i < line.size() - 1) {
+                                            // undo the tags temporarily
+                                            String tag = line.remove(line.size() - 1);
+                                            switch (tag) {
+                                                case "<b>" -> flags = flags & ~1;
+                                                case "</b>" -> flags = flags | 1;
+                                                case "<i>" -> flags = flags & ~2;
+                                                case "</i>" -> flags = flags | 2;
+                                            }
+                                            transferredTokens.add(1, tag);
+                                        }
+                                    }
+                                }
+                                currlinewidth += this.uFontFamily[flags].getWidth(lastTrimmed) - this.uFontFamily[flags].getWidth(last);
+                                line.set(i, lastTrimmed);
+                                break;
+                            }
                         }
                         sameFontStreak = new StringBuilder();
-                        if (!trimmedToken.isEmpty()) {
-                            sameFontStreak.append(trimmedToken);
-                        }
                         this.lines.add(line);
                         this.lineWidths.add(currlinewidth);
                         if (currlinewidth > this.maxLineWidth) {
@@ -130,6 +153,27 @@ public class Text extends UIElement {
                         }
                         line = new ArrayList<>();
                         currlinewidth = 0;
+                        if (!transferredTokens.isEmpty()) {
+                            // insert transferred word and reapply tags
+                            String transferredWord = transferredTokens.get(0);
+                            line.add(transferredWord);
+                            currlinewidth += this.uFontFamily[flags].getWidth(transferredWord);
+                            for (int i = 1; i < transferredTokens.size(); i++) {
+                                String tag = transferredTokens.get(i);
+                                line.add(tag);
+                                switch (tag) {
+                                    case "<b>" -> flags = flags | 1;
+                                    case "</b>" -> flags = flags & ~1;
+                                    case "<i>" -> flags = flags | 2;
+                                    case "</i>" -> flags = flags & ~2;
+                                }
+                            }
+                        }
+                        if (!transferredTokens.isEmpty()) {
+                            sameFontStreak.append(token);
+                        } else {
+                            sameFontStreak.append(trimmedToken);
+                        }
                     } else {
                         sameFontStreak.append(token);
                     }

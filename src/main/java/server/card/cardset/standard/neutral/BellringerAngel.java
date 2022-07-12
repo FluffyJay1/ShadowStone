@@ -14,7 +14,7 @@ import java.util.List;
 
 public class BellringerAngel extends MinionText {
     public static final String NAME = "Bellringer Angel";
-    public static final String DESCRIPTION = "<b>Ward</b>.\n<b>Last Words</b>: draw a card.";
+    public static final String DESCRIPTION = "<b>Ward</b>.\n<b>Last Words</b>: Draw a card.";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();

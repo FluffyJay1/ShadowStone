@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class Defile extends SpellText {
     public static final String NAME = "Defile";
-    public static final String DESCRIPTION = "Deal 1 damage to all minions. If any die, cast this again.";
+    public static final String DESCRIPTION = "Deal 1 damage to all minions. If it kills any minions, repeat this effect.";
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();

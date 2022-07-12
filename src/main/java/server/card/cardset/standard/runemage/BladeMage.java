@@ -17,7 +17,7 @@ import java.util.List;
 
 public class BladeMage extends MinionText {
     public static final String NAME = "Blade Mage";
-    public static final String DESCRIPTION = "<b>Storm</b>. " + EffectSpellboostDiscount.DESCRIPTION;
+    public static final String DESCRIPTION = "<b>Storm</b>.\n" + EffectSpellboostDiscount.DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
