@@ -17,6 +17,8 @@ import server.resolver.util.ResolverQueue;
 import java.io.IOException;
 import java.util.List;
 
+import static java.lang.Thread.sleep;
+
 public class DungeonRunGameRunner implements Runnable {
     final DataStream dslocal;
     Contestant player, enemy;
@@ -62,7 +64,8 @@ public class DungeonRunGameRunner implements Runnable {
                 gc.updateGame();
             }
             gc.end();
-        } catch (IOException e) {
+            sleep(10000); // give 10 seconds for animations to play out or whatever and for the ai to emote
+        } catch (IOException | InterruptedException e) {
             // lol
         } finally {
             dsexternal.close();
