@@ -371,14 +371,6 @@ public class DungeonRunController {
                 e.printStackTrace();
             }
 
-        } else {
-            try {
-                f.createNewFile();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
-
     }
 }
