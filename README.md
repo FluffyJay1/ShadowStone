@@ -33,6 +33,12 @@ Hosts will have to set up port forwarding.
 
 Cheating isn't hard, so stick to playing with friends.
 
+## Super secret ingame keyboard shortcuts
+
+- `z`: Save the current board state (persists on disk)
+- `x`: Load the saved board state
+- Space: Skip all animations
+
 ## Mechanics
 
 ### Similarities to Hearthstone and Shadowverse
