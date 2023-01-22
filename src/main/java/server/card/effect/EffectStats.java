@@ -15,9 +15,10 @@ import java.util.*;
  * (like an effect that buffs health by 2)
  */
 public class EffectStats implements Cloneable, StringBuildable {
-    // what's an enum
     // set of stats that we'll ensure to keep non-negative in between applications
     private static final Set<Stat> NON_NEGATIVE_PER_STEP = new HashSet<>(List.of(Stat.SHIELD));
+    // set of stats that are allowed to be negative at the end
+    private static final Set<Stat> ALLOW_NEGATIVE = new HashSet<>(List.of(Stat.ARMOR));
 
     public StatSet set = new StatSet(), change = new StatSet();
 
@@ -162,7 +163,7 @@ public class EffectStats implements Cloneable, StringBuildable {
         // lol
         public void makeNonNegative() {
             for (Stat stat : this.stats.keySet()) {
-                if (this.get(stat) < 0) {
+                if (this.get(stat) < 0 && !ALLOW_NEGATIVE.contains(stat)) {
                     this.set(stat, 0);
                 }
             }

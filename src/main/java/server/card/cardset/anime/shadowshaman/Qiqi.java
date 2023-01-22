@@ -12,10 +12,7 @@ import server.card.effect.EffectStats;
 import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
-import server.resolver.AddEffectResolver;
-import server.resolver.NecromancyResolver;
-import server.resolver.ReanimateResolver;
-import server.resolver.Resolver;
+import server.resolver.*;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
@@ -25,45 +22,51 @@ import java.util.stream.Stream;
 
 public class Qiqi extends MinionText {
     public static final String NAME = "Qiqi";
-    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: <b>Necromancy(6)</b> - Give all allied cards in play and in your hand <b>Lifesteal</b>.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: <b>Reanimate(X+5)</b> and give it <b>Lifesteal</b>. X equals this minion's magic.";
-    public static final String DESCRIPTION = "<b>Freezing Touch</b>.\n" + BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
+    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Give all other allied cards in play and in your hand <b>Lifesteal</b>. <b>Necromancy(7)</b> - <b>Reanimate(7)</b> first.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Summon a <b>Herald of Frost</b> and set its <b>Countdown</b> to X. X equals this minion's magic.";
+    public static final String DESCRIPTION = "<b>Freezing Touch</b>. <b>Lifesteal</b>.\n" + BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/anime/qiqi.png",
-            CRAFT, TRAITS, RARITY, 5, 3, 2, 3, false, Qiqi.class,
+            CRAFT, TRAITS, RARITY, 7, 1, 2, 7, false, Qiqi.class,
             new Vector2f(150, 169), 1.4, new EventAnimationDamageSlash(),
-            () -> List.of(Tooltip.FREEZING_TOUCH, Tooltip.BATTLECRY, Tooltip.NECROMANCY, Tooltip.LIFESTEAL, Tooltip.UNLEASH, Tooltip.REANIMATE),
+            () -> List.of(Tooltip.FREEZING_TOUCH, Tooltip.LIFESTEAL, Tooltip.BATTLECRY, Tooltip.NECROMANCY, Tooltip.REANIMATE,
+                    Tooltip.UNLEASH, HeraldOfFrost.TOOLTIP, Tooltip.COUNTDOWN),
             List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
                 .set(Stat.FREEZING_TOUCH, 1)
+                .set(Stat.LIFESTEAL, 1)
                 .build()) {
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
-                return new ResolverWithDescription(BATTLECRY_DESCRIPTION, new NecromancyResolver(this, 6, new Resolver(false) {
+                Effect effect = this;
+                return new ResolverWithDescription(BATTLECRY_DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        List<Card> relevant = Stream.concat(owner.player.getPlayArea().stream(),owner.player.getHand().stream()).collect(Collectors.toList());
+                        this.resolve(b, rq, el, new NecromancyResolver(effect, 7, new ReanimateResolver(owner.player, 7, owner.getIndex() + 1)));
+                        List<Card> relevant = Stream.concat(owner.player.getPlayArea().stream(),owner.player.getHand().stream())
+                                .filter(c -> c != owner)
+                                .collect(Collectors.toList());
                         Effect buff = new Effect("<b>Lifesteal</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
                                 .set(Stat.LIFESTEAL, 1)
                                 .build());
                         this.resolve(b, rq, el, new AddEffectResolver(relevant, buff));
                     }
-                }));
+                });
             }
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.VALUE_OF_LIFESTEAL * 2; // idk
+                return AI.VALUE_OF_LIFESTEAL * 5 + 3.5; // idk
             }
 
             @Override
             public boolean battlecrySpecialConditions() {
-                return this.owner.player.shadows >= 6;
+                return this.owner.player.shadows >= 7;
             }
 
             @Override
@@ -71,21 +74,19 @@ public class Qiqi extends MinionText {
                 return new ResolverWithDescription(UNLEASH_DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                        CreateCardResolver ccr = this.resolve(b, rq, el, new CreateCardResolver(new HeraldOfFrost(), owner.team, CardStatus.BOARD, owner.getIndex() + 1));
                         int x = owner.finalStats.get(Stat.MAGIC);
-                        ReanimateResolver rr = this.resolve(b, rq, el, new ReanimateResolver(owner.player, 5 + x, owner.getIndex() + 1));
-                        if (rr.reanimated != null) {
-                            Effect buff = new Effect("<b>Lifesteal</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
-                                    .set(Stat.LIFESTEAL, 1)
-                                    .build());
-                            this.resolve(b, rq, el, new AddEffectResolver(rr.reanimated, buff));
-                        }
+                        Effect countdown = new Effect("<b>Countdown(" + x + ") (from <b>" + NAME + "</b>).", EffectStats.builder()
+                                .set(Stat.COUNTDOWN, x)
+                                .build());
+                        this.resolve(b, rq, el, new AddEffectResolver(ccr.event.successfullyCreatedCards, countdown));
                     }
                 });
             }
 
             @Override
             public double getPresenceValue(int refs) {
-                return (5 + this.owner.finalStats.get(Stat.MAGIC)) / 4. + AI.VALUE_OF_LIFESTEAL;
+                return AI.valueForSummoning(List.of(new HeraldOfFrost().constructInstance(owner.board)), refs) * owner.finalStats.get(Stat.MAGIC) / 2;
             }
         });
     }

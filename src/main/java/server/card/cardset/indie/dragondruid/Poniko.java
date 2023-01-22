@@ -29,7 +29,7 @@ public class Poniko extends MinionText {
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/indie/poniko.png",
-            CRAFT, TRAITS, RARITY, 9, 6, 3, 9, false, Poniko.class,
+            CRAFT, TRAITS, RARITY, 10, 6, 3, 10, false, Poniko.class,
             new Vector2f(85, 150), 1.8, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.DISARMED, Tooltip.WARD, Tooltip.UNLEASH, Tooltip.TRANSFORM, Uboa.TOOLTIP, Tooltip.BANISH),
             List.of());

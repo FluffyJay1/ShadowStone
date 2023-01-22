@@ -4,10 +4,12 @@ import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
+import server.Player;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
+import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.CreateCardResolver;
@@ -19,16 +21,18 @@ import server.resolver.util.ResolverQueue;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class FrontlineCavalier extends MinionText {
     public static final String NAME = "Frontline Cavalier";
-    public static final String DESCRIPTION = "Whenever an allied Officer comes into play, restore 1 health to your leader.\n" +
-            "<b>Unleash</b>: Summon 2 <b>Heavy Knights</b>.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Summon X <b>Heavy Knights</b>. X equals this minion's magic.";
+    public static final String DESCRIPTION = UNLEASH_DESCRIPTION + "\nWhenever an allied Officer comes into play, restore 1 health to your leader.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.COMMANDER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/frontlinecavalier.png",
-            CRAFT, TRAITS, RARITY, 4, 3, 2, 4, false, FrontlineCavalier.class,
+            CRAFT, TRAITS, RARITY, 4, 3, 2, 5, false, FrontlineCavalier.class,
             new Vector2f(163, 160), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.UNLEASH, HeavyKnight.TOOLTIP),
             List.of());
@@ -40,12 +44,15 @@ public class FrontlineCavalier extends MinionText {
 
             @Override
             public ResolverWithDescription unleash(List<TargetList<?>> targetList) {
-                String resolverDescription = "<b>Unleash</b>: Summon 2 <b>Heavy Knights</b>.";
-                return new ResolverWithDescription(resolverDescription, new Resolver(false) {
+                return new ResolverWithDescription(UNLEASH_DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        List<CardText> summons = List.of(new HeavyKnight(), new HeavyKnight());
-                        List<Integer> pos = List.of(owner.getIndex() + 1, owner.getIndex());
+                        int x = owner.finalStats.get(Stat.MAGIC);
+                        List<CardText> summons = Collections.nCopies(x, new HeavyKnight());
+                        List<Integer> pos = IntStream.range(0, x)
+                                .map(i -> owner.getIndex() + (i + 1) * (i % 2)) // 0 2 0 4 0 6...
+                                .boxed()
+                                .collect(Collectors.toList());
                         this.resolve(b, rq, el, new CreateCardResolver(summons, owner.team, CardStatus.BOARD, pos));
                     }
                 });
@@ -79,9 +86,10 @@ public class FrontlineCavalier extends MinionText {
             @Override
             public double getPresenceValue(int refs) {
                 if (this.cachedInstances == null) {
-                    this.cachedInstances = Collections.nCopies(2, new HeavyKnight().constructInstance(this.owner.board));
+                    this.cachedInstances = Collections.nCopies(Player.MAX_MAX_BOARD_SIZE, new HeavyKnight().constructInstance(this.owner.board));
                 }
-                return AI.VALUE_PER_HEAL * 2 + AI.valueForSummoning(this.cachedInstances, refs) / 2;
+                int x = owner.finalStats.get(Stat.MAGIC);
+                return AI.VALUE_PER_HEAL * 2 + AI.valueForSummoning(this.cachedInstances.subList(0, Math.min(x, this.cachedInstances.size())), refs) / 2;
             }
         });
     }

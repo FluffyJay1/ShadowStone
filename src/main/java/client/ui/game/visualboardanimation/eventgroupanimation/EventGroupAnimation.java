@@ -24,6 +24,7 @@ public abstract class EventGroupAnimation implements VisualBoardAnimation {
         }
     }
 
+    @Override
     public boolean shouldAnimate() {
         return this.eventgroup.cards.stream().anyMatch(c -> c.isVisibleTo(this.visualBoard.getLocalteam()));
     }

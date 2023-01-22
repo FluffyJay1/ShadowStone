@@ -37,6 +37,10 @@ public class EventRemoveEffect extends Event {
             if (!e.removed) {
                 Card c = e.owner;
                 c.removeEffect(e, false);
+                if (b instanceof ServerBoard) {
+                    ServerBoard sb = (ServerBoard) b;
+                    sb.unregisterEffect(e);
+                }
                 if (c instanceof Minion) {
                     Minion m = ((Minion) c);
                     this.oldHealth.set(i, m.health);
@@ -64,6 +68,10 @@ public class EventRemoveEffect extends Event {
             Card c = e.owner;
             if (!this.oldRemoved.get(i)) {
                 c.addEffect(false, this.prevPos.get(i), e);
+                if (b instanceof ServerBoard) {
+                    ServerBoard sb = (ServerBoard) b;
+                    sb.registerNewEffect(e);
+                }
                 c.alive = this.oldAlive.get(i);
                 if (c instanceof Minion) {
                     Minion m = (Minion) c;

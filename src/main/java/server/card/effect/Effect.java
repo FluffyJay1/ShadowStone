@@ -75,7 +75,7 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     }
 
     public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
@@ -93,7 +93,7 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     }
 
     public ResolverWithDescription unleash(List<TargetList<?>> targetList) {
-        return null;
+        return UNIMPLEMENTED_RESOLVER;
     }
 
     public List<TargetingScheme<?>> getUnleashTargetingSchemes() {

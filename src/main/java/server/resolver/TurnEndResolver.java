@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 import server.*;
 import server.card.*;
 import server.card.effect.Effect;
-import server.card.effect.EffectStats;
-import server.card.effect.Stat;
 import server.event.*;
 import server.resolver.util.ResolverQueue;
 

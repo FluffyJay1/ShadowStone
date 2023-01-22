@@ -62,6 +62,11 @@ public class Yoshino extends MinionText {
             }
 
             @Override
+            public double getBattlecryValue(int refs) {
+                return AI.valueForBuff(0,owner.finalStats.get(Stat.MAGIC), 0);
+            }
+
+            @Override
             public ResolverWithDescription unleash(List<TargetList<?>> targetList) {
                 Effect effect = this;
                 return new ResolverWithDescription(UNLEASH_DESCRIPTION, new Resolver(false) {

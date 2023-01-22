@@ -87,7 +87,7 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
                 if (c.status.equals(CardStatus.DECK)) {
                     alignWeight = DECK_ALIGN_WEIGHT; // put cards closer to the deck
                 }
-                float fanX = (float) ((1 - this.visualBoard.uiBoard.getWidthInRel(uic.getWidth(false)))
+                float fanX = (float) ((1 - this.visualBoard.uiBoard.getLocalWidthInRel(uic.getWidth(false)))
                         * (i + alignWeight - this.event.cards.size() / 2.)) / (this.event.cards.size() - 1 + EDGE_PADDING * 2);
                 float fanY = c.team == this.visualBoard.getLocalteam() ? TEAM_OFFSET : -TEAM_OFFSET;
                 uic.setPos(new Vector2f(fanX, fanY), 0.999);

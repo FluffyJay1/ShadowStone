@@ -16,6 +16,7 @@ import server.card.ClassCraft;
 import server.card.cardset.CardSet;
 import server.card.cardset.ConstructedDeck;
 import server.card.cardset.ExpansionSet;
+import server.card.cardset.anime.ExpansionSetAnime;
 import server.card.cardset.basic.ExpansionSetBasic;
 import server.card.cardset.indie.ExpansionSetIndie;
 import server.card.cardset.moba.ExpansionSetMoba;
@@ -54,9 +55,10 @@ public class DungeonRunController {
 
     private static final Map<ExpansionSet, Double> EXPANSION_LOOT_WEIGHTS = new HashMap<>() {{
         put(new ExpansionSetBasic(), 0.5);
-        put(new ExpansionSetStandard(), 1.5);
-        put(new ExpansionSetIndie(), 1.);
-        put(new ExpansionSetMoba(), 1.);
+        put(new ExpansionSetStandard(), 1.);
+        put(new ExpansionSetIndie(), 1.5);
+        put(new ExpansionSetMoba(), 1.5);
+        put(new ExpansionSetAnime(), 1.5);
     }};
 
     public static void generateRun(ClassCraft starterCraft) {

@@ -33,8 +33,10 @@ public class UICard extends UIBox {
     private static final Vector2f COST_POS = new Vector2f(-0.4f, -0.4f);
     private static final Vector2f COST_POS_UNLEASHPOWER = new Vector2f(0, -0.3f);
     private static final Vector2f COUNTDOWN_POS = new Vector2f(0.15f, 0.15f);
-    private static final Vector2f SHIELD_POS_HAND = new Vector2f(-0.18f, 0.42f);
-    private static final Vector2f SHIELD_POS_BOARD = new Vector2f(0.4f, 0.2f);
+    private static final Vector2f DAMAGE_MODIFIERS_POS_HAND = new Vector2f(-0.18f, 0.42f);
+    private static final float DAMAGE_MODIFIERS_SPREAD_HAND = 0.2f;
+    private static final Vector2f DAMAGE_MODIFIERS_POS_BOARD = new Vector2f(0.4f, 0.2f);
+    private static final float DAMAGE_MODIFIERS_SPREAD_BOARD = 0.1f;
     private static final float MINION_STAT_POS_BASE_BOARD = 0.4f;
     private static final float MINION_STAT_POS_OFFSET_BOARD = 0.4f;
     private static final float MINION_STAT_POS_BASE_HAND = -0.4f;
@@ -543,9 +545,15 @@ public class UICard extends UIBox {
                     this.card.finalStats.get(Stat.HEALTH),
                     this.card.finalBasicStats.get(Stat.HEALTH),
                     new Vector2f(MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE);
+            if (this.card.finalStats.get(Stat.ARMOR) != 0) {
+                this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.ARMOR),
+                        DAMAGE_MODIFIERS_POS_BOARD, STAT_DEFAULT_SIZE, this.card.finalStats.get(Stat.ARMOR) < 0 ? Color.red : Color.white,
+                        Game.getImage("game/statarmor.png"), STAT_ICON_DEFAULT_SCALE);
+            }
             if (this.card.finalStats.get(Stat.SHIELD) > 0) {
+                Vector2f iconpos = this.card.finalStats.get(Stat.ARMOR) == 0 ? DAMAGE_MODIFIERS_POS_BOARD : new Vector2f(DAMAGE_MODIFIERS_POS_BOARD.x, DAMAGE_MODIFIERS_POS_BOARD.y - DAMAGE_MODIFIERS_SPREAD_BOARD);
                 this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.SHIELD),
-                        SHIELD_POS_BOARD, STAT_DEFAULT_SIZE, Color.white, Game.getImage("game/statshield.png"), STAT_ICON_DEFAULT_SCALE);
+                        iconpos, STAT_DEFAULT_SIZE, Color.white, Game.getImage("game/statshield.png"), STAT_ICON_DEFAULT_SCALE);
             }
         }
         if (this.card.finalStats.contains(Stat.COUNTDOWN)) {
@@ -658,9 +666,15 @@ public class UICard extends UIBox {
                     this.card.finalStats.get(Stat.HEALTH),
                     this.card.finalBasicStats.get(Stat.HEALTH),
                     new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND + MINION_STAT_POS_OFFSET_HAND), STAT_DEFAULT_SIZE);
+            if (this.card.finalStats.get(Stat.ARMOR) != 0) {
+                this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.ARMOR),
+                        DAMAGE_MODIFIERS_POS_HAND, STAT_DEFAULT_SIZE, this.card.finalStats.get(Stat.ARMOR) < 0 ? Color.red : Color.white,
+                        Game.getImage("game/statarmor.png"), STAT_ICON_DEFAULT_SCALE);
+            }
             if (this.card.finalStats.get(Stat.SHIELD) > 0) {
+                Vector2f iconpos = this.card.finalStats.get(Stat.ARMOR) == 0 ? DAMAGE_MODIFIERS_POS_HAND : new Vector2f(DAMAGE_MODIFIERS_POS_HAND.x + DAMAGE_MODIFIERS_SPREAD_HAND, DAMAGE_MODIFIERS_POS_HAND.y);
                 this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.SHIELD),
-                        SHIELD_POS_HAND, STAT_DEFAULT_SIZE, Color.white, Game.getImage("game/statshield.png"), STAT_ICON_DEFAULT_SCALE);
+                        iconpos, STAT_DEFAULT_SIZE, Color.white, Game.getImage("game/statshield.png"), STAT_ICON_DEFAULT_SCALE);
             }
         }
         if (this.card.finalStats.contains(Stat.COUNTDOWN)) {

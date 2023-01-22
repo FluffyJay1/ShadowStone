@@ -15,6 +15,7 @@ import utils.SelectRandom;
 public class StateGame extends BasicGameState {
     public static ConstructedDeck tempdeck;
     public static AIConfig tempConfig;
+    public static int tempTeamMultiplier;
     UI ui;
     UIBoard uiBoard;
     ServerGameThread game;
@@ -46,6 +47,7 @@ public class StateGame extends BasicGameState {
         this.game.setDecklist(0, tempdeck);
         this.game.setDecklist(1, SelectRandom.from(ConstructedDeck.decks));
         this.game.setAIConfig(tempConfig);
+        this.game.setTeamMultiplier(tempTeamMultiplier);
         this.game.start();
     }
 

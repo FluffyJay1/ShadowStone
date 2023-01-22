@@ -23,20 +23,20 @@ import java.util.stream.Collectors;
 public class Guoba extends AmuletText {
     public static final String NAME = "Guoba";
     private static final String ONTURNEND_DESCRIPTION = "At the end of each player's turn, deal 2 damage to a random enemy minion.";
-    public static final String DESCRIPTION = "<b>Countdown(2)</b>.\n" + ONTURNEND_DESCRIPTION;
+    public static final String DESCRIPTION = "<b>Countdown(1)</b>.\n" + ONTURNEND_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/anime/guoba.png",
             CRAFT, TRAITS, RARITY, 2, Guoba.class,
             new Vector2f(153, 149), 1.3,
-            () -> List.of(Tooltip.BATTLECRY, Guoba.TOOLTIP),
+            () -> List.of(Tooltip.COUNTDOWN),
             List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(Stat.COUNTDOWN, 2)
+                .set(Stat.COUNTDOWN, 1)
                 .build()) {
             @Override
             public ResolverWithDescription onTurnEndAllied() {

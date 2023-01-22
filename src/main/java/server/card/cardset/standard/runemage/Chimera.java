@@ -22,7 +22,7 @@ import java.util.List;
 
 public class Chimera extends MinionText {
     public static final String NAME = "Chimera";
-    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Deal 4 damage to an enemy minion.";
+    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Deal 5 damage to an enemy minion.";
     public static final String DESCRIPTION = EffectSpellboostDiscount.DESCRIPTION + "\n" + BATTLECRY_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.SILVER;
@@ -38,7 +38,7 @@ public class Chimera extends MinionText {
         return List.of(new Effect(BATTLECRY_DESCRIPTION) {
             @Override
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
-                return List.of(new CardTargetingScheme(this, 0, 1, "Deal 4 damage to an enemy minion.") {
+                return List.of(new CardTargetingScheme(this, 0, 1, "Deal 5 damage to an enemy minion.") {
                     @Override
                     protected boolean criteria(Card c) {
                         return c.status.equals(CardStatus.BOARD) && c instanceof Minion && c.team != this.getCreator().owner.team;
@@ -53,7 +53,7 @@ public class Chimera extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 4, true, new EventAnimationDamageClaw().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 5, true, new EventAnimationDamageClaw().toString()));
                         });
                     }
                 });
@@ -61,7 +61,7 @@ public class Chimera extends MinionText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.valueOfMinionDamage(4);
+                return AI.valueOfMinionDamage(5);
             }
         }, new EffectSpellboostDiscount());
     }

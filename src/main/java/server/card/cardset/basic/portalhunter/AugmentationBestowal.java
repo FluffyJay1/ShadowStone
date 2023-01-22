@@ -44,7 +44,7 @@ public class AugmentationBestowal extends SpellText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return 4; // it's a bretty good card
+                return 10; // it's a bretty good card
             }
         });
     }

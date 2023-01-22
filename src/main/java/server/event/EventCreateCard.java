@@ -5,6 +5,7 @@ import java.util.*;
 import client.*;
 import server.*;
 import server.card.*;
+import server.card.effect.Effect;
 
 // Changes references, should not run concurrent with other events
 public class EventCreateCard extends Event {
@@ -46,6 +47,12 @@ public class EventCreateCard extends Event {
         this.prevShadows = p.shadows;
         for (int i = 0; i < this.cards.size(); i++) {
             Card c = this.cards.get(i);
+            if (b instanceof ServerBoard) {
+                ServerBoard sb = (ServerBoard) b;
+                for (Effect e : c.getEffects(true)) {
+                    sb.registerNewEffect(e);
+                }
+            }
             int cardpos = this.cardpos.get(i);
             c.team = this.team;
             c.status = this.status;
@@ -114,6 +121,12 @@ public class EventCreateCard extends Event {
         Player p = b.getPlayer(this.team);
         for (int i = this.cards.size() - 1; i >= 0; i--) {
             Card c = this.cards.get(i);
+            if (b instanceof ServerBoard) {
+                ServerBoard sb = (ServerBoard) b;
+                for (Effect e : c.getEffects(true)) {
+                    sb.unregisterEffect(e);
+                }
+            }
             CardStatus status = c.status;
             if (this.successful.get(i)) {
                 switch (status) {

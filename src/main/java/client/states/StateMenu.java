@@ -18,6 +18,7 @@ public class StateMenu extends BasicGameState {
     UI ui;
     PlayButton playButton;
     AIDifficultyPanel aiDifficultyPanel;
+    FirstPlayerPanel firstPlayerPanel;
     GameContainer container;
     StateBasedGame game;
     Text errorText;
@@ -42,16 +43,22 @@ public class StateMenu extends BasicGameState {
                     if (playButton.deckspanel.selectedDeckUnit != null) {
                         StateGame.tempdeck = playButton.deckspanel.selectedDeckUnit.deck;
                         StateGame.tempConfig = this.aiDifficultyPanel.getSelectedDifficulty();
+                        StateGame.tempTeamMultiplier = this.firstPlayerPanel.getTeamMultiplier();
                         arg1.enterState(Game.STATE_GAME);
                     }
                     break;
                 case DeckSelectPanel.DECK_CANCEL:
                     this.aiDifficultyPanel.setVisible(false);
+                    this.firstPlayerPanel.setVisible(false);
                     break;
                 case PlayButton.CLICKED:
                     this.aiDifficultyPanel.setPos(new Vector2f(0.5f + this.aiDifficultyPanel.getWidth(false) / Config.WINDOW_WIDTH, 0), 1);
                     this.aiDifficultyPanel.setPos(new Vector2f(0.5f, 0), 0.99);
                     this.aiDifficultyPanel.setVisible(true);
+                    float firstplayery = (this.aiDifficultyPanel.getHeightInRel(false) + this.firstPlayerPanel.getHeightInRel(false)) / 2;
+                    this.firstPlayerPanel.setPos(new Vector2f(0.5f + this.firstPlayerPanel.getWidth(false) / Config.WINDOW_WIDTH, firstplayery), 1);
+                    this.firstPlayerPanel.setPos(new Vector2f(0.5f, firstplayery), 0.99);
+                    this.firstPlayerPanel.setVisible(true);
                     break;
                 default:
                     break;
@@ -80,6 +87,12 @@ public class StateMenu extends BasicGameState {
         this.aiDifficultyPanel.relpos = true;
         this.aiDifficultyPanel.alignh = 1;
         this.ui.addUIElementParent(this.aiDifficultyPanel);
+
+        this.firstPlayerPanel = new FirstPlayerPanel(this.ui, new Vector2f());
+        this.firstPlayerPanel.setVisible(false);
+        this.firstPlayerPanel.relpos = true;
+        this.firstPlayerPanel.alignh = 1;
+        this.ui.addUIElementParent(this.firstPlayerPanel);
 
         this.errorText = new Text(this.ui, new Vector2f(0, 0.4f), "Error", 1000, 50, 40, 0, 0);
         this.errorText.relpos = true;

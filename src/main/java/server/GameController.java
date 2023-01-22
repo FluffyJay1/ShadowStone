@@ -71,10 +71,17 @@ public class GameController {
         }
         this.crashed = new boolean[2];
         this.bufferedUpdates = new SynchronousQueue<>();
+        this.teamMultiplier = 0;
+    }
+
+    public void setTeamMultiplier(int teamMultiplier) {
+        this.teamMultiplier = teamMultiplier;
     }
 
     public void startInit() throws IOException {
-        this.teamMultiplier = Math.random() > 0.5 ? 1 : -1;
+        if (this.teamMultiplier == 0) {
+            this.teamMultiplier = Math.random() > 0.5 ? 1 : -1;
+        }
         this.sendTeamAssignments();
         Resolver startResolver = new Resolver(false) {
             @Override

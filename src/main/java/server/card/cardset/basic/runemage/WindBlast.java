@@ -2,8 +2,7 @@ package server.card.cardset.basic.runemage;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageEnergyBeamQuick;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageWind;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
@@ -55,7 +54,7 @@ public class WindBlast extends SpellText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             int damage = owner.spellboosts + 1;
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, damage, true, new EventAnimationDamageMagicHit().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, damage, true, new EventAnimationDamageWind().toString()));
                         });
                     }
                 });

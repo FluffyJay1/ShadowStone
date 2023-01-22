@@ -21,12 +21,12 @@ import java.util.List;
 
 public class MortonTheManipulator extends MinionText {
     public static final String NAME = "Morton the Manipulator";
-    public static final String DESCRIPTION = "<b>Unleash</b>: Take control of an enemy minion that costs 2 or less.";
+    public static final String DESCRIPTION = "<b>Unleash</b>: Take control of an enemy minion that costs X or less. X equals this minion's magic.";
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/mortonthemanipulator.png",
-            CRAFT, TRAITS, RARITY, 4, 3, 2, 3, false, MortonTheManipulator.class,
+            CRAFT, TRAITS, RARITY, 3, 3, 2, 3, false, MortonTheManipulator.class,
             new Vector2f(153, 137), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.UNLEASH),
             List.of());
@@ -36,11 +36,11 @@ public class MortonTheManipulator extends MinionText {
         return List.of(new Effect(DESCRIPTION) {
             @Override
             public List<TargetingScheme<?>> getUnleashTargetingSchemes() {
-                return List.of(new CardTargetingScheme(this, 0, 1, "Take control of an enemy minion that costs 2 or less.") {
+                return List.of(new CardTargetingScheme(this, 0, 1, "Take control of an enemy minion that costs X or less. X equals this minion's magic.") {
                     @Override
                     protected boolean criteria(Card c) {
                         return c.status.equals(CardStatus.BOARD) && c instanceof Minion && c.team != this.getCreator().owner.team
-                                && c.finalBasicStats.get(Stat.COST) <= 2;
+                                && c.finalBasicStats.get(Stat.COST) <= owner.finalStats.get(Stat.MAGIC);
                     }
                 });
             }

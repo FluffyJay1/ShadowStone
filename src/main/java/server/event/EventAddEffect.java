@@ -44,6 +44,10 @@ public class EventAddEffect extends Event {
                 e1.printStackTrace();
             }
             this.successful.add(c.addEffect(false, clonede));
+            if (b instanceof ServerBoard) {
+                ServerBoard sb = (ServerBoard) b;
+                sb.registerNewEffect(clonede);
+            }
             this.effects.add(clonede);
             this.oldHealth.add(0);
             this.oldAlive.add(c.alive);
@@ -78,6 +82,10 @@ public class EventAddEffect extends Event {
         for (int i = this.c.size() - 1; i >= 0; i--) {
             Card c = this.c.get(i);
             c.removeEffect(this.effects.get(i), true);
+            if (b instanceof ServerBoard) {
+                ServerBoard sb = (ServerBoard) b;
+                sb.unregisterEffect(this.effects.get(i));
+            }
             if (c instanceof Minion) {
                 Minion m = ((Minion) c);
                 m.health = this.oldHealth.get(i);

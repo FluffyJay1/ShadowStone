@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
+import client.ui.game.visualboardanimation.eventgroupanimation.EventGroupAnimation;
 import client.ui.game.visualboardanimation.eventgroupanimation.EventGroupAnimationFactory;
 
 import client.ui.game.*;
@@ -231,7 +232,11 @@ public class VisualBoard extends Board implements
             if (EventGroup.isPush(eventOrGroup)) {
                 EventGroup group = EventGroup.fromString(this, st);
                 this.pushEventGroup(group);
-                anim = this.eventGroupAnimationFactory.newAnimation(group);
+                EventGroupAnimation ega = this.eventGroupAnimationFactory.newAnimation(group);
+                // Don't animate event groups if they encompass no events
+                if (ega == null || this.inputeventliststrings.isEmpty() || !EventGroup.isPop(this.inputeventliststrings.get(0))) {
+                    anim = ega;
+                }
                 this.uiBoard.onEventGroupPushed(group, anim == null || anim.shouldAnimate());
             } else if (EventGroup.isPop(eventOrGroup)) {
                 EventGroup group = this.popEventGroup();

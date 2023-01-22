@@ -71,6 +71,50 @@ public class ServerBoard extends Board {
         this.enableOutput = true;
     }
 
+    // Whenever a new effect gets added, do some preprocessing to optimize lookup
+    public void registerNewEffect(Effect e) {
+        // because these types of effects are rare but need to be checked frequently,
+        // register these to the ServerBoard to optimize lookup
+        if (e instanceof EffectAura) {
+            this.auras.add((EffectAura) e);
+        }
+        if (e instanceof EffectWithDependentStats) {
+            this.dependentStats.add((EffectWithDependentStats) e);
+        }
+        if (e.untilTurnEndTeam != null) {
+            this.effectsToRemoveAtEndOfTurn.add(e);
+        }
+        if (e.onListenEvent(null) != Effect.UNIMPLEMENTED_RESOLVER) {
+            e.owner.listeners.add(e);
+            this.listeners.add(e.owner);
+        }
+        if (e.onListenEventWhileInPlay(null) != Effect.UNIMPLEMENTED_RESOLVER) {
+            e.owner.whileInPlayListeners.add(e);
+        }
+    }
+
+    // opposite of registerNewEffect, when we no longer need to lookup something
+    public void unregisterEffect(Effect e) {
+        if (e instanceof EffectAura) {
+            this.auras.remove((EffectAura) e);
+        }
+        if (e instanceof EffectWithDependentStats) {
+            this.dependentStats.remove((EffectWithDependentStats) e);
+        }
+        if (e.untilTurnEndTeam != null) {
+            this.effectsToRemoveAtEndOfTurn.remove(e);
+        }
+        if (e.onListenEvent(null) != Effect.UNIMPLEMENTED_RESOLVER) {
+            e.owner.listeners.remove(e);
+            if (e.owner.listeners.isEmpty()) {
+                this.listeners.remove(e.owner);
+            }
+        }
+        if (e.onListenEventWhileInPlay(null) != Effect.UNIMPLEMENTED_RESOLVER) {
+            e.owner.whileInPlayListeners.remove(e);
+        }
+    }
+
     public Stream<EffectAura> getActiveAuras() {
         return this.auras.stream()
                 .filter(aura -> !aura.mute && aura.owner.isInPlay());

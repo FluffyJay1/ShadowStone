@@ -69,14 +69,16 @@ public class EventDamage extends Event {
                 this.addedEffects.add(shieldRemover);
             } else {
                 // normal damage processing
-                if ((poisonous && minion.finalStats.get(Stat.STALWART) == 0 && this.damage.get(i) > 0 && !(minion instanceof Leader))
-                        || (minion.health > 0 && minion.health <= this.damage.get(i)) && minion.alive) {
+                // 0 damage against negative armor should still be 0 damage
+                int damageAdjusted = this.damage.get(i) == 0 ? 0 : Math.max(0, this.damage.get(i) - minion.finalStats.get(Stat.ARMOR));
+                if ((poisonous && minion.finalStats.get(Stat.STALWART) == 0 && damageAdjusted > 0 && !(minion instanceof Leader))
+                        || (minion.health > 0 && minion.health <= damageAdjusted) && minion.alive) {
                     minion.alive = false;
                     this.markedForDeath.add(minion);
                 }
-                minion.health -= this.damage.get(i);
-                this.actualDamage.set(i, this.damage.get(i));
-                if (this.damage.get(i) > 0 && this.cardSource.finalStats.get(Stat.FREEZING_TOUCH) > 0) {
+                minion.health -= damageAdjusted;
+                this.actualDamage.set(i, damageAdjusted);
+                if (damageAdjusted > 0 && this.cardSource.finalStats.get(Stat.FREEZING_TOUCH) > 0) {
                     Effect frozen = new Effect("", EffectStats.builder()
                             .set(Stat.FROZEN, 1)
                             .build());

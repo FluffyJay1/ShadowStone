@@ -36,11 +36,11 @@ public class EpitaphsProtection extends UnleashPowerText {
         return List.of(new Effect(DESCRIPTION) {
             @Override
             public ResolverWithDescription onUnleashPre(Minion target) {
-            String resolverDescription = "Give the unleashed minion <b>Shield(1)</b>.";
+            String resolverDescription = "Give the unleashed minion <b>Shield(1)</b> until the end of the opponent's turn.";
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        Effect shield = new Effect("<b>Shield(1)</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
+                        Effect shield = new Effect("<b>Shield(1)</b> until the end of the opponent's turn (from <b>" + NAME + "</b>).", EffectStats.builder()
                                 .change(Stat.SHIELD, 1)
                                 .build(),
                                 e -> e.untilTurnEndTeam = -1);

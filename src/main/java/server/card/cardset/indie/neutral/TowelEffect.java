@@ -49,7 +49,7 @@ public class TowelEffect extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            Effect buff = new Effect("<b>Shield(2)</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
+                            Effect buff = new Effect("", EffectStats.builder()
                                     .change(Stat.SHIELD, 2)
                                     .build());
                             this.resolve(b, rq, el, new AddEffectResolver(c, buff));

@@ -6,7 +6,9 @@ import client.PendingPlayPositioner;
 import client.VisualBoard;
 import server.Board;
 import server.Player;
+import server.ServerBoard;
 import server.card.*;
+import server.card.effect.Effect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +60,15 @@ public class EventTransform extends Event {
             Card replacement = this.into.get(i);
             replacement.status = c.status;
             replacement.team = c.team;
+            if (b instanceof ServerBoard) {
+                ServerBoard sb = (ServerBoard) b;
+                for (Effect e : c.getEffects(true)) {
+                    sb.unregisterEffect(e);
+                }
+                for (Effect e : replacement.getEffects(true)) {
+                    sb.registerNewEffect(e);
+                }
+            }
             if (!c.status.equals(CardStatus.GRAVEYARD)) {
                 c.alive = false;
                 switch (c.status) {
@@ -95,6 +106,15 @@ public class EventTransform extends Event {
         for (int i = this.cards.size() - 1; i >= 0; i--) {
             Card c = this.cards.get(i);
             Card replacement = this.into.get(i);
+            if (b instanceof ServerBoard) {
+                ServerBoard sb = (ServerBoard) b;
+                for (Effect e : replacement.getEffects(true)) {
+                    sb.unregisterEffect(e);
+                }
+                for (Effect e : c.getEffects(true)) {
+                    sb.registerNewEffect(e);
+                }
+            }
             Player p = b.getPlayer(c.team);
             c.alive = this.alive.get(i);
             CardStatus status = this.prevStatus.get(i);

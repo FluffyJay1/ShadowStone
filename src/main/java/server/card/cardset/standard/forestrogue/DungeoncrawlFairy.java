@@ -5,6 +5,7 @@ import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageOrbFall;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.target.CardTargetingScheme;
@@ -57,7 +58,7 @@ public class DungeoncrawlFairy extends MinionText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return 1;
+                return AI.VALUE_OF_BOUNCE_ALLIED;
             }
         });
     }

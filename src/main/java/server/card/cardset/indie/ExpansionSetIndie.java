@@ -16,7 +16,7 @@ import server.card.cardset.indie.swordpaladin.Susie;
 
 public class ExpansionSetIndie extends ExpansionSet {
     public static final CardSet UNPLAYABLE_SET = new CardSet(new Spectre(), new Japhet(), new BikeEffect(), new CatEffect(), new FatEffect(),
-            new KnifeEffect(), new MedamaudeEffect(), new MidgetEffect(), new TowelEffect(), new TriangleKerchiefEffect(), new Uboa());
+            new KnifeEffect(), new MedamaudeEffect(), new MidgetEffect(), new TowelEffect(), new TriangleKerchiefEffect(), new Uboa(), new WitchEffect());
     public static final CardSet PLAYABLE_SET = new CardSet(new Batter(), new Judge(), new Enoch(), new Elsen(), new Dedan(), new LordOfTheSecondZone(),
             new Madotsuki(), new Poniko(), new Ralsei(), new Susie());
 

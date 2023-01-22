@@ -21,7 +21,7 @@ public class Immortal extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/moba/immortal.png",
-            CRAFT, TRAITS, RARITY, 6, 5, 2, 3, true, Immortal.class,
+            CRAFT, TRAITS, RARITY, 5, 5, 2, 3, true, Immortal.class,
             new Vector2f(147, 136), 1.4, new EventAnimationDamageEnergyBeamQuick(),
             () -> List.of(Tooltip.SHIELD),
             List.of());

@@ -25,8 +25,9 @@ import java.util.stream.Collectors;
 
 public class Magnolia extends MinionText {
     public static final String NAME = "Magnolia, Battlefield Muse";
-    public static final String DESCRIPTION = "At the end of your turn, give +1/+0/+1 to all allied Officer minions.\n" +
-            "<b>Unleash</b>: Put a random 1-cost minion and 2-cost minion from your deck into play.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Put a random X-cost minion and (X-1)-cost minion from your deck into play. " +
+            "X equals this minion's magic.";
+    public static final String DESCRIPTION = UNLEASH_DESCRIPTION + "\nAt the end of your turn, give +1/+1/+1 to all allied Officer minions.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.COMMANDER);
@@ -41,20 +42,20 @@ public class Magnolia extends MinionText {
         return List.of(new Effect(DESCRIPTION) {
             @Override
             public ResolverWithDescription unleash(List<TargetList<?>> targetList) {
-                String resolverDescription = "<b>Unleash</b>: Put a random 1-cost minion and 2-cost minion from your deck into play.";
-                return new ResolverWithDescription(resolverDescription, new Resolver(true) {
+                return new ResolverWithDescription(UNLEASH_DESCRIPTION, new Resolver(true) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Card> target = new ArrayList<>(2);
                         List<Integer> pos = new ArrayList<>(2);
-                        for (int cost = 1; cost <= 2; cost++) {
-                            int finalCost = cost;
+                        int x = owner.finalStats.get(Stat.MAGIC);
+                        for (int i = 0; i < 2; i++) {
+                            int cost = x - 1 + i;
                             List<Card> eligible = owner.player.getDeck().stream()
-                                    .filter(c -> c instanceof Minion && c.finalStats.get(Stat.COST) == finalCost)
+                                    .filter(c -> c instanceof Minion && c.finalStats.get(Stat.COST) == cost)
                                     .collect(Collectors.toList());
                             if (!eligible.isEmpty()) {
                                 target.add(SelectRandom.from(eligible));
-                                pos.add(owner.getIndex() + 2 - cost);
+                                pos.add(owner.getIndex() + 1 - i);
                             }
                         }
                         if (!target.isEmpty()) {
@@ -66,15 +67,16 @@ public class Magnolia extends MinionText {
 
             @Override
             public ResolverWithDescription onTurnEndAllied() {
-                String resolverDescription = "At the end of your turn, give +1/+0/+1 to all allied Officer minions.";
+                String resolverDescription = "At the end of your turn, give +1/+1/+1 to all allied Officer minions.";
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> targets = owner.board.getMinions(owner.team, false, true)
                                 .filter(m -> m.finalTraits.contains(CardTrait.OFFICER))
                                 .collect(Collectors.toList());
-                        Effect buff = new Effect("+1/+0/+1 (from <b>Magnolia, Battlefield Muse</b>).", EffectStats.builder()
+                        Effect buff = new Effect("+1/+1/+1 (from <b>Magnolia, Battlefield Muse</b>).", EffectStats.builder()
                                 .change(Stat.ATTACK, 1)
+                                .change(Stat.MAGIC, 1)
                                 .change(Stat.HEALTH, 1)
                                 .build());
                         this.resolve(b, rq, el, new AddEffectResolver(targets, buff));
@@ -85,7 +87,7 @@ public class Magnolia extends MinionText {
             @Override
             public double getPresenceValue(int refs) {
                 // idk some pretty powerful shit going on here
-                return AI.valueForBuff(1, 0, 1) * 6 / 2 + 3 / 2.;
+                return AI.valueForBuff(1, 1, 1) * 6 / 2 + 3 / 2.;
             }
         });
 

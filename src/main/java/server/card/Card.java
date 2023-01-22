@@ -53,8 +53,8 @@ public abstract class Card implements Indexable, StringBuildable {
             basicEffects = new PositionedList<>(new ArrayList<>(), e -> e.basic = true),
             removedEffects = new PositionedList<>(new ArrayList<>(), e -> e.removed = true);
 
-    private final Set<Effect> listeners = new TreeSet<>(Comparator.comparing((Effect l) -> l.basic ? 0 : 1).thenComparingInt(Effect::getIndex));
-    private final Set<Effect> whileInPlayListeners = new TreeSet<>(Comparator.comparing((Effect l) -> l.basic ? 0 : 1).thenComparingInt(Effect::getIndex));
+    public final Set<Effect> listeners = new TreeSet<>(Comparator.comparing((Effect l) -> l.basic ? 0 : 1).thenComparingInt(Effect::getIndex));
+    public final Set<Effect> whileInPlayListeners = new TreeSet<>(Comparator.comparing((Effect l) -> l.basic ? 0 : 1).thenComparingInt(Effect::getIndex));
 
     public Card(Board board, CardText cardText) {
         this.board = board;
@@ -158,27 +158,6 @@ public abstract class Card implements Indexable, StringBuildable {
         e.removed = false;
         this.removedEffects.remove(e);
         this.getEffects(basic).add(pos, e);
-        if (e.owner.board instanceof ServerBoard) {
-            // because these types of effects are rare but need to be checked frequently,
-            // register these to the ServerBoard to optimize lookup
-            ServerBoard sb = (ServerBoard) e.owner.board;
-            if (e instanceof EffectAura) {
-                sb.auras.add((EffectAura) e);
-            }
-            if (e instanceof EffectWithDependentStats) {
-                sb.dependentStats.add((EffectWithDependentStats) e);
-            }
-            if (e.untilTurnEndTeam != null) {
-                sb.effectsToRemoveAtEndOfTurn.add(e);
-            }
-            if (e.onListenEvent(null) != Effect.UNIMPLEMENTED_RESOLVER) {
-                this.listeners.add(e);
-                sb.listeners.add(this);
-            }
-            if (e.onListenEventWhileInPlay(null) != Effect.UNIMPLEMENTED_RESOLVER) {
-                this.whileInPlayListeners.add(e);
-            }
-        }
         if (e.auraSource != null) {
             e.auraSource.currentActiveEffects.put(this, e);
         }
@@ -196,27 +175,6 @@ public abstract class Card implements Indexable, StringBuildable {
             this.effects.remove(e);
             if (!purge) {
                 this.removedEffects.add(e);
-            }
-            if (e.owner.board instanceof ServerBoard) {
-                ServerBoard sb = (ServerBoard) e.owner.board;
-                if (e instanceof EffectAura) {
-                    sb.auras.remove((EffectAura) e);
-                }
-                if (e instanceof EffectWithDependentStats) {
-                    sb.dependentStats.remove((EffectWithDependentStats) e);
-                }
-                if (e.untilTurnEndTeam != null) {
-                    sb.effectsToRemoveAtEndOfTurn.remove(e);
-                }
-                if (e.onListenEvent(null) != Effect.UNIMPLEMENTED_RESOLVER) {
-                    this.listeners.remove(e);
-                    if (this.listeners.isEmpty()) {
-                        sb.listeners.remove(this);
-                    }
-                }
-                if (e.onListenEventWhileInPlay(null) != Effect.UNIMPLEMENTED_RESOLVER) {
-                    this.whileInPlayListeners.remove(e);
-                }
             }
             if (e.auraSource != null) {
                 e.auraSource.currentActiveEffects.remove(this);

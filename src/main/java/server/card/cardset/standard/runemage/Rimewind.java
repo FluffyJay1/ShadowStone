@@ -78,7 +78,7 @@ public class Rimewind extends SpellText {
                     this.cachedInstances = Collections.nCopies(Player.MAX_MAX_BOARD_SIZE, new Snowman().constructInstance(this.owner.board));
                 }
                 int numSummoned = this.owner.spellboosts + 1;
-                double bounceVal = Math.min(AI.VALUE_OF_DESTROY, this.owner.spellboosts + 1);
+                double bounceVal = Math.min(AI.VALUE_OF_BOUNCE_ENEMY, this.owner.spellboosts + 1);
                 return bounceVal + AI.valueForSummoning(this.cachedInstances.subList(0, Math.min(numSummoned, this.cachedInstances.size())), refs);
             }
         });

@@ -23,4 +23,5 @@ public enum Stat {
     FROZEN,
     FREEZING_TOUCH,
     CANT_ATTACK_LEADER,
+    ARMOR,
 }

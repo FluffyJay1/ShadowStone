@@ -65,11 +65,16 @@ public class AI extends Thread {
 
     public static final double VALUE_OF_FREEZING_TOUCH = 1;
 
-    public static final double VALUE_OF_POISONOUS = 1;
+    public static final double VALUE_OF_FREEZE = 0.5;
+
+    public static final double VALUE_OF_POISONOUS = 2;
 
     public static final double VALUE_OF_LIFESTEAL = 1;
 
     public static final double VALUE_OF_MUTE = 1;
+
+    public static final double VALUE_OF_BOUNCE_ALLIED = 0.5;
+    public static final double VALUE_OF_BOUNCE_ENEMY = 2.5;
     /*
      * We can't expect the AI to traverse every single possible node in the decision
      * tree before making a move (especially considering rng), so after a certain

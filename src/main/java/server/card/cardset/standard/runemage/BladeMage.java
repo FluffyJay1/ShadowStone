@@ -22,7 +22,7 @@ public class BladeMage extends MinionText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/blademage.png",
-            CRAFT, TRAITS, RARITY, 5, 2, 2, 2, true, BladeMage.class,
+            CRAFT, TRAITS, RARITY, 5, 3, 2, 2, true, BladeMage.class,
             new Vector2f(182, 145), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.STORM, Tooltip.SPELLBOOST),
             List.of());

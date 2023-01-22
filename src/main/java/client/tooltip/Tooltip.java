@@ -117,6 +117,9 @@ public class Tooltip {
             "Causes effects on a card to not respond, like <b>Unleash</b> and <b>Last Words</b> abilities. " +
                     "Does not remove static traits like stats or <b>Ward</b>.",
             () -> List.of(UNLEASH, LASTWORDS, WARD));
+    public static final Tooltip ARMOR = new Tooltip("Armor(X)",
+            "Each instance of damage this character receives is reduced by X. Negative values of X increase damage received, only if the source of damage is greater than 0.",
+            List::of);
 
     public final String name;
     public final String description;

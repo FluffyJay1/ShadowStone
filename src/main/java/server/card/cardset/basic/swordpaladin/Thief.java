@@ -22,12 +22,13 @@ import java.util.List;
 
 public class Thief extends MinionText {
     public static final String NAME = "Thief";
-    public static final String DESCRIPTION = "<b>Clash</b>: Draw a card.\n<b>Unleash</b>: Gain +0/+0/+2 and <b>Rush</b>.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Gain +0/+0/+X and <b>Rush</b>. X equals this minion's magic.";
+    public static final String DESCRIPTION = "<b>Clash</b>: Draw a card.\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/thief.png",
-            CRAFT, TRAITS, RARITY, 3, 2, 1, 2, false, Thief.class,
+            CRAFT, TRAITS, RARITY, 3, 2, 1, 3, false, Thief.class,
             new Vector2f(162, 151), 1.22, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.CLASH),
             List.of());
@@ -37,12 +38,12 @@ public class Thief extends MinionText {
         return List.of(new Effect(DESCRIPTION) {
             @Override
             public ResolverWithDescription unleash(List<TargetList<?>> targetList) {
-                String resolverDescription = "<b>Unleash</b>: Gain +0/+0/+2 and <b>Rush</b>.";
-                return new ResolverWithDescription(resolverDescription, new Resolver(false) {
+                return new ResolverWithDescription(UNLEASH_DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        Effect buff = new Effect("+0/+0/+2 and <b>Rush</b> (from <b>Unleash</b>).", EffectStats.builder()
-                                .change(Stat.HEALTH, 2)
+                        int x = owner.finalStats.get(Stat.MAGIC);
+                        Effect buff = new Effect("+0/+0/+" + x + " and <b>Rush</b> (from <b>Unleash</b>).", EffectStats.builder()
+                                .change(Stat.HEALTH, x)
                                 .set(Stat.RUSH, 1)
                                 .build());
                         this.resolve(b, rq, el, new AddEffectResolver(owner, buff));

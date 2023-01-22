@@ -56,7 +56,7 @@ public class NaturesGuidance extends SpellText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return 1 + AI.VALUE_PER_CARD_IN_HAND;
+                return AI.VALUE_OF_BOUNCE_ALLIED + AI.VALUE_PER_CARD_IN_HAND;
             }
         });
     }

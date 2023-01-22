@@ -233,12 +233,22 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
     }
 
     // get a width value in terms of relpos coordinates
-    public float getWidthInRel(float absWidth) {
+    public float getLocalWidthInRel(float absWidth) {
         return absWidth / this.getWidth(true);
     }
 
-    public float getHeightInRel(float absHeight) {
+    public float getLocalHeightInRel(float absHeight) {
         return absHeight / this.getHeight(true);
+    }
+
+    public float getWidthInRel(boolean margin) {
+        float parentWidth = this.parent == null ? Config.WINDOW_WIDTH : this.parent.getWidth(true);
+        return this.getWidth(margin) / parentWidth;
+    }
+
+    public float getHeightInRel(boolean margin) {
+        float parentHeight = this.parent == null ? Config.WINDOW_HEIGHT : this.parent.getHeight(true);
+        return this.getHeight(margin) / parentHeight;
     }
 
     public Vector2f getPosOfRel(Vector2f relpos) {

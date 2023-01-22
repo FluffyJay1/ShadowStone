@@ -60,7 +60,7 @@ public class TriangleKerchiefEffect extends SpellText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.VALUE_OF_SHIELD + AI.valueForBuff(0, 0, 2);
+                return AI.VALUE_OF_STEALTH;
             }
         });
     }

@@ -3,7 +3,7 @@ package server.card.cardset.standard.neutral;
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageAOESlice;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageWind;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
@@ -31,7 +31,7 @@ public class GrimnirWarCyclone extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/grimnirwarcyclone.png",
             CRAFT, TRAITS, RARITY, 3, 2, 1, 3, true, GrimnirWarCyclone.class,
-            new Vector2f(150, 152), 1.3, new EventAnimationDamageSlash(),
+            new Vector2f(150, 152), 1.3, new EventAnimationDamageWind(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.SPEND),
             List.of());
 

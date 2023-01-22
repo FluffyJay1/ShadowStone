@@ -27,7 +27,7 @@ public class Jotaro extends MinionText {
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/anime/jotaro.png",
-            CRAFT, TRAITS, RARITY, 8, 4, 2, 4, false, Jotaro.class,
+            CRAFT, TRAITS, RARITY, 9, 4, 2, 4, false, Jotaro.class,
             new Vector2f(134, 173), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, YareYareDaze.TOOLTIP),
             List.of());
@@ -64,7 +64,7 @@ public class Jotaro extends MinionText {
 
             @Override
             public ResolverWithDescription strike(Minion target) {
-                Effect buff = new Effect("<b>Shield(1)</b> (from <b>Strike</b>).", EffectStats.builder()
+                Effect buff = new Effect("<b>Shield(1)</b> until the end of the turn (from <b>Strike</b>).", EffectStats.builder()
                         .change(Stat.SHIELD, 1)
                         .build(),
                         e -> e.untilTurnEndTeam = 0);

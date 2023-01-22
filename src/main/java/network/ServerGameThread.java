@@ -25,6 +25,7 @@ public class ServerGameThread extends Thread {
     private AIConfig config;
     private boolean peerConnected;
     public ServerSocket serverSocket;
+    private int teamMultiplier;
 
     public ServerGameThread(DataStream dslocal, boolean pvp) {
         this.ds = new DataStream[2];
@@ -32,6 +33,11 @@ public class ServerGameThread extends Thread {
         this.pvp = pvp;
         this.decks = new ConstructedDeck[2];
         this.peerConnected = false;
+        this.teamMultiplier = 0;
+    }
+
+    public void setTeamMultiplier(int teamMultiplier) {
+        this.teamMultiplier = teamMultiplier;
     }
 
     @Override
@@ -90,6 +96,7 @@ public class ServerGameThread extends Thread {
                     Arrays.stream(this.decks).map(d -> CardSet.getDefaultLeader(d.craft)).collect(Collectors.toList()),
                     Arrays.stream(this.decks).map(d -> CardSet.getDefaultUnleashPower(d.craft)).collect(Collectors.toList()),
                     Arrays.stream(this.decks).collect(Collectors.toList()));
+            gc.setTeamMultiplier(this.teamMultiplier);
             gc.startInit();
             gc.startGame();
             while (gc.isGamePhase() && !this.isInterrupted()) {

@@ -99,7 +99,7 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
                 uic.setScale(UICard.SCALE_MOVE);
                 uic.setZ(UICard.Z_MOVE);
                 // fan the cards between [-PRE_FAN_WIDTH/2, PRE_FAN_WIDTH/2]
-                float fanX = PRE_FAN_WIDTH * (float) ((1 - this.visualBoard.uiBoard.getWidthInRel(uic.getWidth(false)))
+                float fanX = PRE_FAN_WIDTH * (float) ((1 - this.visualBoard.uiBoard.getLocalWidthInRel(uic.getWidth(false)))
                         * (i + 0.5f - this.event.cards.size() / 2.)) / (this.event.cards.size() - 1 + EDGE_PADDING * 2);
                 uic.setPos(new Vector2f(0, ENTRANCE_OFFSET_Y), 1);
                 uic.setPos(new Vector2f(fanX, 0), 0.999);
@@ -113,7 +113,7 @@ public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
             Card c = this.event.cards.get(i);
             UICard uic = c.uiCard;
             // fan the cards between [-0.5, 0.5]
-            float fanX = (float) ((1 - this.visualBoard.uiBoard.getWidthInRel(uic.getWidth(false)))
+            float fanX = (float) ((1 - this.visualBoard.uiBoard.getLocalWidthInRel(uic.getWidth(false)))
                     * (i + 0.5f - this.event.cards.size() / 2.)) / (this.event.cards.size() - 1 + EDGE_PADDING * 2);
             uic.setPos(new Vector2f(fanX, 0), 0.9999);
         }
