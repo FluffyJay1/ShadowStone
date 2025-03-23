@@ -24,7 +24,7 @@ import java.util.List;
 public class ElvenPrincessMage extends MinionText {
     public static final String NAME = "Elven Princess Mage";
     public static final String DESCRIPTION = "<b>Unleash</b>: Add 2 <b>Fairies</b> to your hand and set their cost to 0, " +
-            "and gain +X/+0/+0 and <b>Rush</b> until the end of the turn. X equals this minion's magic.";
+            "and gain +M/+0/+0 and <b>Rush</b> until the end of the turn.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();

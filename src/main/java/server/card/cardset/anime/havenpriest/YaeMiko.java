@@ -23,8 +23,7 @@ public class YaeMiko extends MinionText {
     public static final String NAME = "Yae Miko";
     private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: If there are 3 or more allied amulets in play, destroy them and <b>Blast(3)</b> X times. " +
             "X equals the number of amulets destroyed.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Return this minion to your hand and subtract X from its cost, then summon a <b>Sesshou Sakura</b>. " +
-            "X equals this minion's magic.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Return this minion to your hand and subtract M from its cost, then summon a <b>Sesshou Sakura</b>.";
     public static final String DESCRIPTION = "<b>Rush</b>.\n" + BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;

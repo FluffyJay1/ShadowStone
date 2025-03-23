@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 
 public class Mona extends MinionText {
     public static final String NAME = "Mona Megistus";
-    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Give all enemy minions <b>Armor(-X)</b>. X equals the number of times this card has been <b>Spellboosted</b>.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Summon a <b>Phantom of Fate</b> and give it +0/+X/+X. X equals this minion's magic.";
+    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Give all enemy minions <b>Armor(-S)</b>.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Summon a <b>Phantom of Fate</b> and give it +0/+M/+M.";
     public static final String DESCRIPTION = BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;

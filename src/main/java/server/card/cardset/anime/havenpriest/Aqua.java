@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class Aqua extends MinionText {
     public static final String NAME = "Aqua";
     private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: <b>Reanimate(5)</b> and restore 5 health to all allies.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Gain +0/+0/+X and <b>Ward</b>. X equals this minion's magic.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Gain +0/+0/+M and <b>Ward</b>.";
     private static final String CLASH_DESCRIPTION = "<b>Clash</b>: <b>Mute</b> the enemy minion.";
     private static final String ONTURNEND_DESCRIPTION = "At the end of your turn, summon a <b>Zombie</b> for your opponent.";
     public static final String DESCRIPTION = "<b>Rush</b>.\n" + BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION + "\n" + CLASH_DESCRIPTION

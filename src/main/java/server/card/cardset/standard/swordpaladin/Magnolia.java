@@ -25,8 +25,7 @@ import java.util.stream.Collectors;
 
 public class Magnolia extends MinionText {
     public static final String NAME = "Magnolia, Battlefield Muse";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Put a random X-cost minion and (X-1)-cost minion from your deck into play. " +
-            "X equals this minion's magic.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Put a random M-cost minion and (M-1)-cost minion from your deck into play.";
     public static final String DESCRIPTION = UNLEASH_DESCRIPTION + "\nAt the end of your turn, give +1/+1/+1 to all allied Officer minions.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;

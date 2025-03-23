@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class Ralsei extends MinionText {
     public static final String NAME = "Ralsei";
-    public static final String DESCRIPTION = "<b>Unleash</b>: Restore X health to all allies. Give all enemy minions -X/-0/-0. X equals this minion's magic.";
+    public static final String DESCRIPTION = "<b>Unleash</b>: Restore M health to all allies. Give all enemy minions -M/-0/-0.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();

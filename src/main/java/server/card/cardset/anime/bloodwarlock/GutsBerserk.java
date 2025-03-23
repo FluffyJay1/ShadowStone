@@ -30,7 +30,7 @@ public class GutsBerserk extends MinionText {
     public static final String NAME = "Guts, Berserk";
     private static final String ONLISTENEVENT_DESCRIPTION = "Whenever this minion or your leader takes damage, gain +1/+1/+1.";
     private static final String ONTURNEND_DESCRIPTION = "At the end of each player's turn, attack a random character, allies and leaders included.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Deal X damage to all characters. X equals this minion's magic.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Deal M damage to all characters.";
     public static final String DESCRIPTION = "<b>Disarmed</b>. <b>Stalwart</b>.\n" + UNLEASH_DESCRIPTION + "\n" + ONLISTENEVENT_DESCRIPTION + "\n" + ONTURNEND_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;

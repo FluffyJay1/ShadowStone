@@ -6,7 +6,7 @@ import server.card.effect.EffectWithDependentStats;
 import server.card.effect.Stat;
 
 public class EffectSpellboostDiscount extends EffectWithDependentStats {
-    public static final String DESCRIPTION = "Costs 1 less for each time this card has been <b>Spellboosted</b>.";
+    public static final String DESCRIPTION = "Costs <b>S</b> less.";
     // required by reflection
     public EffectSpellboostDiscount() {
         super(DESCRIPTION, true);

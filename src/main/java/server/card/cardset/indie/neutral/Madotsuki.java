@@ -24,23 +24,24 @@ import java.util.List;
 
 public class Madotsuki extends MinionText {
     public static final String NAME = "Madotsuki";
-    private static final String RELEVANT_CARDS = "<b>Bike Effect</b>, <b>Cat Effect</b>, <b>Fat Effect</b>, <b>Knife Effect</b>, <b>Medamaude Effect</b>, " +
-            "<b>Midget Effect</b>, <b>Towel Effect</b>, <b>Triangle Kerchief Effect</b>, and <b>Witch Effect</b>.";
-    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Randomly put X of the following into your hand: " + RELEVANT_CARDS
-            + " X equals this minion's magic.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Gain <b>Rush</b>, and randomly put X of the following into your hand: " + RELEVANT_CARDS
-            + " X equals this minion's magic.";
+    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Randomly put M <b>Dream Effect</b> cards into your hand.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Gain <b>Rush</b>, and randomly put M <b>Dream Effect</b> cards into your hand.";
     public static final String DESCRIPTION = BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
+    public static final Tooltip DREAM_EFFECTS_TOOLTIP = new Tooltip("Dream Effect Cards",
+                    "<b>Bike Effect</b>, <b>Cat Effect</b>, <b>Fat Effect</b>, <b>Knife Effect</b>, <b>Medamaude Effect</b>, <b>Midget Effect</b>, <b>Towel Effect</b>, <b>Triangle Kerchief Effect</b>, and <b>Witch Effect</b>.",
+                    () -> List.of(BikeEffect.TOOLTIP, CatEffect.TOOLTIP, FatEffect.TOOLTIP, KnifeEffect.TOOLTIP,
+                                    MedamaudeEffect.TOOLTIP, MidgetEffect.TOOLTIP, TowelEffect.TOOLTIP,
+                                    TriangleKerchiefEffect.TOOLTIP, WitchEffect.TOOLTIP));
+
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/indie/madotsuki.png",
             CRAFT, TRAITS, RARITY, 4, 3, 2, 5, false, Madotsuki.class,
             new Vector2f(150, 118), 1.6, new EventAnimationDamageSlash(),
-            () -> List.of(Tooltip.BATTLECRY, BikeEffect.TOOLTIP, CatEffect.TOOLTIP, FatEffect.TOOLTIP, KnifeEffect.TOOLTIP,
-                    MedamaudeEffect.TOOLTIP, MidgetEffect.TOOLTIP, TowelEffect.TOOLTIP, TriangleKerchiefEffect.TOOLTIP, WitchEffect.TOOLTIP, Tooltip.UNLEASH,
-                    Tooltip.RUSH),
+            () -> List.of(Tooltip.BATTLECRY, DREAM_EFFECTS_TOOLTIP, Tooltip.UNLEASH, Tooltip.RUSH),
             List.of());
+
 
     @Override
     protected List<Effect> getSpecialEffects() {

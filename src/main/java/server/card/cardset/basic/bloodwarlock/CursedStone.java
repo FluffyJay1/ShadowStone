@@ -20,7 +20,7 @@ import server.resolver.util.ResolverQueue;
 
 public class CursedStone extends MinionText {
     public static final String NAME = "Cursed Stone";
-    public static final String DESCRIPTION = "<b>Unleash</b>: <b>Blast(X)</b> and gain <b>Last Words</b>: Deal X damage to a random allied minion. X equals this minion's magic.";
+    public static final String DESCRIPTION = "<b>Unleash</b>: <b>Blast(M)</b> and gain <b>Last Words</b>: Deal M damage to a random allied minion.";
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();

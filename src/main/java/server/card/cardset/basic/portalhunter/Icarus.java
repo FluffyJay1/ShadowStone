@@ -28,7 +28,7 @@ public class Icarus extends MinionText {
     public static final String NAME = "Icarus";
     private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Put 2 <b>Ancient Artifacts</b> into your deck.";
     private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Put a random Artifact from your deck into your hand, " +
-            "and gain +X/+0/+0 and <b>Rush</b> until the end of the turn. X equals this minion's magic.";
+            "and gain +M/+0/+0 and <b>Rush</b> until the end of the turn.";
     public static final String DESCRIPTION = BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.SILVER;

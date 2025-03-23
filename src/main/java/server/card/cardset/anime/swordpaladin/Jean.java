@@ -23,7 +23,7 @@ import java.util.List;
 public class Jean extends MinionText {
     public static final String NAME = "Jean Gunnhildr";
     private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Summon a <b>Dandelion Field</b>.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Return an enemy minion to the opponent's hand and add X to its cost. X equals this minion's magic.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Return an enemy minion to the opponent's hand and add M to its cost.";
     public static final String DESCRIPTION = BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;

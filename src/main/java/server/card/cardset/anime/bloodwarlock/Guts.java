@@ -31,7 +31,7 @@ public class Guts extends MinionText {
     public static final String NAME = "Guts";
     private static final String ONLISTENEVENT_DESCRIPTION = "Whenever this minion or your leader takes damage, gain +1/+1/+1. " +
             "Then if this minion has at least 5 magic, <b>Transform</b> into a <b>Guts, Berserk</b>.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: <b>Blast(X)</b>. X equals this minion's magic.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: <b>Blast(M)</b>.";
     public static final String DESCRIPTION = "<b>Ward</b>. <b>Stalwart</b>.\n" + UNLEASH_DESCRIPTION + "\n" + ONLISTENEVENT_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;

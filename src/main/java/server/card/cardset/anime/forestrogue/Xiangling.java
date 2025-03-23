@@ -27,7 +27,7 @@ public class Xiangling extends MinionText {
     public static final String NAME = "Xiangling";
     private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Give your leader the following effect: "
             + "\"At the end of your even-numbered turns, deal 1 damage to all enemy minions.\" (This effect stacks and lasts for the rest of the match).";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Summon a <b>Guoba</b> and set its <b>Countdown</b> to X. X equals this minion's magic.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Summon a <b>Guoba</b> and set its <b>Countdown</b> to M.";
     public static final String DESCRIPTION = BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.GOLD;

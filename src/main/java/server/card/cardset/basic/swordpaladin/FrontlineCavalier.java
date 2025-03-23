@@ -26,7 +26,7 @@ import java.util.stream.IntStream;
 
 public class FrontlineCavalier extends MinionText {
     public static final String NAME = "Frontline Cavalier";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Summon X <b>Heavy Knights</b>. X equals this minion's magic.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Summon M <b>Heavy Knights</b>.";
     public static final String DESCRIPTION = UNLEASH_DESCRIPTION + "\nWhenever an allied Officer comes into play, restore 1 health to your leader.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.SILVER;

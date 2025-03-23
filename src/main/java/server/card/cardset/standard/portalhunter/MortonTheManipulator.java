@@ -21,7 +21,7 @@ import java.util.List;
 
 public class MortonTheManipulator extends MinionText {
     public static final String NAME = "Morton the Manipulator";
-    public static final String DESCRIPTION = "<b>Unleash</b>: Take control of an enemy minion that costs X or less. X equals this minion's magic.";
+    public static final String DESCRIPTION = "<b>Unleash</b>: Take control of an enemy minion that costs M or less.";
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
@@ -36,7 +36,7 @@ public class MortonTheManipulator extends MinionText {
         return List.of(new Effect(DESCRIPTION) {
             @Override
             public List<TargetingScheme<?>> getUnleashTargetingSchemes() {
-                return List.of(new CardTargetingScheme(this, 0, 1, "Take control of an enemy minion that costs X or less. X equals this minion's magic.") {
+                return List.of(new CardTargetingScheme(this, 0, 1, "Take control of an enemy minion that costs M or less.") {
                     @Override
                     protected boolean criteria(Card c) {
                         return c.status.equals(CardStatus.BOARD) && c instanceof Minion && c.team != this.getCreator().owner.team

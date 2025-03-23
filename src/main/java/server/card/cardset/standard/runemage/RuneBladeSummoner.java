@@ -25,7 +25,7 @@ import java.util.List;
 
 public class RuneBladeSummoner extends MinionText {
     public static final String NAME = "Rune Blade Summoner";
-    public static final String DESCRIPTION = "<b>Battlecry</b>: Gain +X/+0/+X. X equals the number of times this card has been <b>Spellboosted</b>.";
+    public static final String DESCRIPTION = "<b>Battlecry</b>: Gain +<b>S</b>/+0/+<b>S</b>.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();

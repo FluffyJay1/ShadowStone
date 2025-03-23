@@ -25,8 +25,7 @@ import java.util.List;
 
 public class Rimewind extends SpellText {
     public static final String NAME = "Rimewind";
-    public static final String DESCRIPTION = "Return an enemy minion with X + 1 health or less to the opponent's hand and summon X + 1 <b>Snowmen</b>. " +
-            "X equals the number of times this card has been <b>Spellboosted</b>.";
+    public static final String DESCRIPTION = "Return an enemy minion with <b>S</b> + 1 health or less to the opponent's hand and summon <b>S</b> + 1 <b>Snowmen</b>.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
@@ -44,7 +43,7 @@ public class Rimewind extends SpellText {
             private List<Card> cachedInstances; // for getBattlecryValue, preview the value of the created cards
             @Override
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
-                String description = "Return an enemy minion with X + 1 health or less to the opponent's hand. X equals the number of times this card has been <b>Spellboosted</b>.";
+                String description = "Return an enemy minion with S + 1 health or less to the opponent's hand.";
                 return List.of(new CardTargetingScheme(this, 1, 1, description) {
                     @Override
                     protected boolean criteria(Card c) {

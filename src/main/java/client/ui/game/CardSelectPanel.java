@@ -77,7 +77,7 @@ public class CardSelectPanel extends UIBox {
             }
             String infoText = this.trackerText;
             if (this.uib.selectedCard.getCard().finalStats.get(Stat.SPELLBOOSTABLE) > 0) {
-                infoText += "Spellboosts: " + this.uib.selectedCard.getCard().spellboosts;
+                infoText += "<b>S</b>: " + this.uib.selectedCard.getCard().spellboosts;
             }
             if (!infoText.isEmpty()) {
                 this.info.setVisible(true);

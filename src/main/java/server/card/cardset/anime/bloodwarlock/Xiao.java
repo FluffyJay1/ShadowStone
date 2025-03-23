@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class Xiao extends MinionText {
     public static final String NAME = "Xiao";
     private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Summon a <b>Yaksha's Mask</b>.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Deal X damage a random enemy minion and the enemy leader. X equals this minion's magic.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Deal M damage a random enemy minion and the enemy leader.";
     public static final String DESCRIPTION = "<b>Rush</b>.\n" + BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;

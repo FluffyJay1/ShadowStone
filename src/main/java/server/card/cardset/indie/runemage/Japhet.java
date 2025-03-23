@@ -23,8 +23,7 @@ import java.util.stream.Collectors;
 
 public class Japhet extends MinionText {
     public static final String NAME = "Japhet";
-    private static final String ONLISTENEVENT_DESCRIPTION = "Whenever a player plays a card, deal X damage a random enemy minion and this minion. " +
-            "X equals this minion's magic.";
+    private static final String ONLISTENEVENT_DESCRIPTION = "Whenever a player plays a card, deal M damage a random enemy minion and this minion.";
     public static final String DESCRIPTION = ONLISTENEVENT_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.GOLD;

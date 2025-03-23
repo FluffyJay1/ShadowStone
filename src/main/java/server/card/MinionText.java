@@ -39,9 +39,9 @@ public abstract class MinionText extends BoardObjectText {
         ret.add(e);
         if (tooltip.basicUnleash) {
             Effect unl = new Effect(
-                    "<b>Unleash</b>: Deal X damage to an enemy minion. X equals this minion's magic.") {
+                    "<b>Unleash</b>: Deal M damage to an enemy minion.") {
                 public List<TargetingScheme<?>> getUnleashTargetingSchemes() {
-                    return List.of(new CardTargetingScheme(this, 0, 1, "Deal X damage to an enemy minion. X equals this minion's magic.") {
+                    return List.of(new CardTargetingScheme(this, 0, 1, "Deal M damage to an enemy minion.") {
                         @Override
                         protected boolean criteria(Card c) {
                             return c.status == CardStatus.BOARD && c instanceof Minion
@@ -53,7 +53,7 @@ public abstract class MinionText extends BoardObjectText {
                 @Override
                 public ResolverWithDescription unleash(List<TargetList<?>> targetList) {
                     Effect effect = this; // anonymous fuckery
-                    String resolverDescription = "<b>Unleash</b>: Deal X damage to an enemy minion. X equals this minion's magic.";
+                    String resolverDescription = "<b>Unleash</b>: Deal M damage to an enemy minion.";
                     return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                         @Override
                         public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {

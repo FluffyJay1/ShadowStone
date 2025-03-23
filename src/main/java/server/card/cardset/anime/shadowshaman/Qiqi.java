@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 public class Qiqi extends MinionText {
     public static final String NAME = "Qiqi";
     private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Give all other allied cards in play and in your hand <b>Lifesteal</b>. <b>Necromancy(7)</b> - <b>Reanimate(7)</b> first.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Summon a <b>Herald of Frost</b> and set its <b>Countdown</b> to X. X equals this minion's magic.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Summon a <b>Herald of Frost</b> and set its <b>Countdown</b> to M.";
     public static final String DESCRIPTION = "<b>Freezing Touch</b>. <b>Lifesteal</b>.\n" + BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;

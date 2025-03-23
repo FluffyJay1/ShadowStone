@@ -22,7 +22,7 @@ import java.util.List;
 
 public class Thief extends MinionText {
     public static final String NAME = "Thief";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Gain +0/+0/+X and <b>Rush</b>. X equals this minion's magic.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Gain +0/+0/+M and <b>Rush</b>.";
     public static final String DESCRIPTION = "<b>Clash</b>: Draw a card.\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.BRONZE;

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class KelHolyMarksman extends MinionText {
     public static final String NAME = "Kel, Holy Marksman";
-    private static final String ONLISTENEVENT_DESCRIPTION = "Whenever your leader's health is restored, deal X damage to all enemy minions. X equals this minion's magic.";
+    private static final String ONLISTENEVENT_DESCRIPTION = "Whenever your leader's health is restored, deal M damage to all enemy minions.";
     private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Gain +0/+1/+0. Restore 2 health to your leader.";
     public static final String DESCRIPTION = ONLISTENEVENT_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;

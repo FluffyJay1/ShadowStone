@@ -21,7 +21,7 @@ import java.util.List;
 
 public class SummonSnow extends SpellText {
     public static final String NAME = "Summon Snow";
-    public static final String DESCRIPTION = "Summon X + 1 <b>Snowmen</b>. X equals the number of times this card has been <b>Spellboosted</b>.";
+    public static final String DESCRIPTION = "Summon <b>S</b> + 1 <b>Snowmen</b>.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();

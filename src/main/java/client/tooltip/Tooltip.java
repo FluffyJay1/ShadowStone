@@ -64,7 +64,7 @@ public class Tooltip {
             "If you have at least X <b>Shadows</b>, consume them to activate a bonus effect.",
             () -> List.of(SHADOW));
     public static final Tooltip SPELLBOOST = new Tooltip("Spellboost",
-            "When you play a spell, you <b>Spellboost</b> the cards in your hand. Only certain cards can take advantage of its effects.",
+            "When you play a spell, you <b>Spellboost</b> the cards in your hand. Only certain cards can take advantage of its effects. <b>\"S\"</b> is used to denote the number of times a cards has been spellboosted.",
             List::of);
     public static final Tooltip SPEND = new Tooltip("Spend(X)",
             "If you have at least X mana leftover, consume them to activate bonus effects.",

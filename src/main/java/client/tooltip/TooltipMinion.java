@@ -23,7 +23,7 @@ public class TooltipMinion extends TooltipCard {
                          List<Function<Card, String>> trackers) {
         super(name,
                 "minion\nA:" + attack + ", M:" + magic + ", H:" + health + "\n \n" + description + (basicUnleash
-                        ? "\n <b>Unleash</b>: Deal X damage to an enemy minion. X equals this minion's magic.\n"
+                        ? "\n <b>Unleash</b>: Deal M damage to an enemy minion.\n"
                         : ""),
                 imagepath, craft, traits, rarity, cost, minionTextClass, artFocusPos, artFocusScale, references, trackers);
         this.basicUnleash = basicUnleash;

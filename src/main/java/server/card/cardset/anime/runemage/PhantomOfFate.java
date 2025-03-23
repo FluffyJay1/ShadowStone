@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class PhantomOfFate extends MinionText {
     public static final String NAME = "Phantom of Fate";
-    private static final String LASTWORDS_DESCRIPTION = "<b>Last Words</b>: Deal X damage to all enemy minions. X equals this minion's magic.";
+    private static final String LASTWORDS_DESCRIPTION = "<b>Last Words</b>: Deal M damage to all enemy minions.";
     public static final String DESCRIPTION = "<b>Ward</b>. <b>Countdown(1)</b>.\n" + LASTWORDS_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;

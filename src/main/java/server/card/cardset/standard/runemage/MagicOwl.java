@@ -25,7 +25,7 @@ import java.util.List;
 
 public class MagicOwl extends MinionText {
     public static final String NAME = "Magic Owl";
-    public static final String DESCRIPTION = "<b>Unleash</b>: <b>Spellboost</b> the cards in your hand X times and gain <b>Rush</b>. X equals this minion's magic.";
+    public static final String DESCRIPTION = "<b>Unleash</b>: <b>Spellboost</b> the cards in your hand M times and gain <b>Rush</b>.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();

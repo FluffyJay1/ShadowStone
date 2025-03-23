@@ -8,6 +8,7 @@
             "type": "java",
             "name": "Launch Game",
             "request": "launch",
+            "preLaunchTask": "gradle: run",
             "mainClass": "client.Game"
         },
         {

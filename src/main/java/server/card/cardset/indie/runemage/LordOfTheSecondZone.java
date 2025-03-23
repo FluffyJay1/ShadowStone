@@ -26,7 +26,7 @@ public class LordOfTheSecondZone extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/indie/lordofthesecondzone.png",
             CRAFT, TRAITS, RARITY, 5, LordOfTheSecondZone.class,
-            () -> List.of(Tooltip.TRANSFORM, Japhet.TOOLTIP),
+            () -> List.of(Tooltip.TRANSFORM, Japhet.TOOLTIP, Tooltip.SPELLBOOST),
             List.of());
 
     @Override

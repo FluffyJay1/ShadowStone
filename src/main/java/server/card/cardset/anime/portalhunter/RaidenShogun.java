@@ -27,10 +27,8 @@ import java.util.stream.IntStream;
 
 public class RaidenShogun extends MinionText {
     public static final String NAME = "Raiden Shogun";
-    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Deal X damage evenly split among all enemy minions, prioritizing in clockwise order. " +
-            "X equals this minion's attack.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Summon an <b>Eye of Stormy Judgement</b> and set its <b>Countdown</b> to X. " +
-            "X equals this minion's magic.";
+    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Deal A damage evenly split among all enemy minions, prioritizing in clockwise order.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Summon an <b>Eye of Stormy Judgement</b> and set its <b>Countdown</b> to M.";
     private static final String ONLISTENEVENT_DESCRIPTION = "Whenever you play a card while this is in your hand, gain +1/+0/+0.";
     public static final String DESCRIPTION = "<b>Rush</b>.\n" + BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION + "\n" + ONLISTENEVENT_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;

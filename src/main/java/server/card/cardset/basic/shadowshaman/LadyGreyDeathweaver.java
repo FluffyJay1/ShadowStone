@@ -25,8 +25,7 @@ import java.util.List;
 
 public class LadyGreyDeathweaver extends MinionText {
     public static final String NAME = "Lady Grey, Deathweaver";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: <b>Reanimate(X)</b> and gain +X/+0/+0 and <b>Rush</b> until the end of the turn. " +
-            "X equals this minion's magic.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: <b>Reanimate(M)</b> and gain +M/+0/+0 and <b>Rush</b> until the end of the turn.";
     public static final String DESCRIPTION = "<b>Lifesteal</b>.\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.SILVER;

@@ -22,7 +22,7 @@ import java.util.List;
 
 public class WindBlast extends SpellText {
     public static final String NAME = "Wind Blast";
-    public static final String DESCRIPTION = "Deal X + 1 damage to an enemy minion. X equals the number of times this card has been <b>Spellboosted</b>.";
+    public static final String DESCRIPTION = "Deal <b>S</b> + 1 damage to an enemy minion.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();

@@ -23,7 +23,7 @@ import java.util.List;
 
 public class Susie extends MinionText {
     public static final String NAME = "Susie";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Deal X + Y damage to an enemy. X equals this minion's attack, Y equals this minion's magic.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Deal A + M damage to an enemy.";
     public static final String DESCRIPTION = "<b>Ward</b>.\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.GOLD;

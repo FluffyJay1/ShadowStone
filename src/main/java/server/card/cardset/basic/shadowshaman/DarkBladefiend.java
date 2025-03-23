@@ -24,8 +24,7 @@ import java.util.stream.Collectors;
 
 public class DarkBladefiend extends MinionText {
     public static final String NAME = "Dark Bladefiend";
-    private static final String ONTURNENDALLIED_DESCRIPTION = "At the end of your turn, perform <b>Necromancy(2)</b>: Deal X damage to a random enemy minion. " +
-            "X equals this minion's magic.";
+    private static final String ONTURNENDALLIED_DESCRIPTION = "At the end of your turn, perform <b>Necromancy(2)</b>: Deal M damage to a random enemy minion.";
     public static final String DESCRIPTION = "<b>Ward</b>.\n" + ONTURNENDALLIED_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;

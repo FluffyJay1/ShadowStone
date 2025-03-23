@@ -47,7 +47,7 @@ public class Game extends StateBasedGame {
 
     public static void main(String[] args) throws SlickException {
         AppGameContainer app = new AppGameContainer(new Game("ShadowStone"));
-        app.setDisplayMode(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT, true);
+        app.setDisplayMode(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT, false);
         // app.setTargetFrameRate(15);
         Log.setVerbose(false);
         app.start();

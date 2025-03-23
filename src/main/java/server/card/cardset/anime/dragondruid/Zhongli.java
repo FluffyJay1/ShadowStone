@@ -26,8 +26,7 @@ import java.util.stream.Collectors;
 public class Zhongli extends MinionText {
     public static final String NAME = "Zhongli";
     private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Deal 5 damage to all enemies and <b>Disarm</b> them until the end of the opponent's turn.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Summon a <b>Stone Stele</b>. Give all allies <b>Shield(X)</b> until the end of the opponent's turn. " +
-            "X equals this minion's magic.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Summon a <b>Stone Stele</b>. Give all allies <b>Shield(M)</b> until the end of the opponent's turn.";
     public static final String DESCRIPTION = BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;

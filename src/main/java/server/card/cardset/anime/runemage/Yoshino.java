@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
 
 public class Yoshino extends MinionText {
     public static final String NAME = "Yoshino Himekawa";
-    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Gain +0/+X/+0. X equals the number of times this card has been <b>Spellboosted</b>.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Deal 1 damage to a random enemy minion X times. X equals this minion's magic.";
+    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Gain +0/+<b>S</b>/+0.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Deal 1 damage to a random enemy minion M times.";
     public static final String DESCRIPTION = "<b>Ward</b>. <b>Freezing Touch</b>.\n" + BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.GOLD;
