@@ -28,10 +28,17 @@ public class Minion extends BoardObject {
 
     private double getEffectiveHealth() {
         double health = this.health;
-        if (this.finalStats.get(Stat.SHIELD) > 0) {
+        int armor = this.finalStats.get(Stat.ARMOR);
+        if (armor > 0) {
+            health += armor * 3; // suppose it tanks 3 hits
+        } else if (armor < 0) {
+            health = Math.max(health / (-armor + 1), 1); // min 1 health
+        }
+        int shield = this.finalStats.get(Stat.SHIELD);
+        if (shield > 0) {
             // existence of shield has some value on its own
             // let's say average 2 dmg overflow
-            health += this.finalStats.get(Stat.SHIELD) + 2;
+            health += shield + 2;
         }
         return health;
     }

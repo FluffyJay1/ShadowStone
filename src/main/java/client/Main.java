@@ -1,5 +1,7 @@
 package client;
 
 public class Main {
-    // lmao
+    public static void main(String[] args) {
+        
+    }
 }

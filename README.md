@@ -10,7 +10,7 @@ from scratch.
 
 ## Requirements
 
-- Java 15+
+- Java 21+
 
 - Tolerance for fullscreen 1080p
 

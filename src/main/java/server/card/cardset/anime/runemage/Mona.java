@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class Mona extends MinionText {
     public static final String NAME = "Mona Megistus";
-    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Give all enemy minions <b>Armor(-S)</b>.";
+    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Reduce all enemy minions' <b>Armor</b> by <b>S</b>.";
     private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Summon a <b>Phantom of Fate</b> and give it +0/+M/+M.";
     public static final String DESCRIPTION = BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
@@ -46,7 +46,7 @@ public class Mona extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         int x = owner.spellboosts;
-                        Effect debuff = new Effect("<b>Armor(-" + x + ")</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
+                        Effect debuff = new Effect("-" + x + "<b>Armor</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
                                 .change(Stat.ARMOR, -x)
                                 .build());
                         List<Minion> relevant = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
