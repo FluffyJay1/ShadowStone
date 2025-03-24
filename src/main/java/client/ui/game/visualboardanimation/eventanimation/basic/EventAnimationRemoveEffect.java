@@ -5,6 +5,7 @@ import org.newdawn.slick.*;
 import client.Game;
 import client.VisualBoard;
 import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
+import server.card.Card;
 import server.card.effect.*;
 import server.event.*;
 
@@ -16,6 +17,21 @@ public class EventAnimationRemoveEffect extends EventAnimation<EventRemoveEffect
     @Override
     public boolean shouldAnimate() {
         return this.event.effects.stream().anyMatch(e -> e.owner.isVisibleTo(this.visualBoard.getLocalteam()));
+    }
+
+    @Override
+    public void onProcess() {
+        boolean anySucceeded = false;
+        for (int ind = 0; ind < this.event.effects.size(); ind++) {
+            Card c = this.event.effects.get(ind).owner;
+            if (c.isVisibleTo(this.visualBoard.getLocalteam())) {
+                anySucceeded = true;
+                c.uiCard.startAnimatingStatChangeFromEffect(this.event.effects.get(ind).effectStats);
+            }
+        }
+        if (!anySucceeded) {
+            this.postTime = 0;
+        }
     }
 
     @Override

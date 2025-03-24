@@ -68,6 +68,7 @@ public class EventAnimationSetEffectStats extends EventAnimation<EventSetEffectS
                 UICard uic = c.uiCard;
                 int z = c.status.equals(CardStatus.BOARD) ? UIBoard.PARTICLE_Z_BOARD : UIBoard.PARTICLE_Z_SPECIAL;
                 this.visualBoard.uiBoard.addParticleSystem(uic.getPos(), z, new ScaledEmissionStrategy(SET_EMISSION_STRATEGY.get(), uic.getScale()));
+                uic.startAnimatingStatChangeFromEffect(this.event.newStats.get(i));
             }
         }
     }

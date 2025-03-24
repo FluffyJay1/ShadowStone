@@ -65,6 +65,8 @@ public class UICard extends UIBox {
     private static final int READY_BORDER_WIDTH = 2;
     private static final int READY_BORDER_PADDING = 6;
     private static final Color LOCKED_COLOR = new Color(0.3f, 0.2f, 0.3f);
+    private static final double STAT_CHANGE_FONT_INCREASE_TIME = 0.4;
+    private static final double STAT_CHANGE_FONT_INCREASE_SCALE = 2;
 
     private static final Supplier<EmissionStrategy> STEALTH_PARTICLES = () -> new EmissionStrategy(
             new IntervalEmissionTimingStrategy(3, 0.08),
@@ -147,6 +149,7 @@ public class UICard extends UIBox {
     private final ParticleSystem specialConditionParticles;
     private final ParticleSystem stalwartParticles;
     private final ParticleSystem mutedParticles;
+    private final EnumMap<Stat, Double> statFontSizeIncreaseAnimationTimer; // e.g. EventAnimationAddEffect bumping stats, should make font size bigger
 
     public UICard(UI ui, UIBoard uib, Card c) {
         super(ui, new Vector2f(), CARD_DIMENSIONS, "");
@@ -155,6 +158,7 @@ public class UICard extends UIBox {
         this.icons = new ArrayList<>();
         this.updateFlippedOver();
         this.pendingSources = new HashSet<>();
+        this.statFontSizeIncreaseAnimationTimer = new EnumMap<>(Stat.class);
         this.stealthParticles = new ParticleSystem(ui, new Vector2f(), STEALTH_PARTICLES.get(), true);
         this.addChild(this.stealthParticles);
         this.specialConditionParticles = new ParticleSystem(ui, new Vector2f(), SPECIAL_CONDITION_PARTICLES.get(), true);
@@ -259,6 +263,21 @@ public class UICard extends UIBox {
         return !this.pendingSources.isEmpty();
     }
 
+    public void startAnimatingStatChangeFromEffect(EffectStats effectStats) {
+        for (Stat stat : Stat.values()) {
+            if (effectStats.set.contains(stat) || effectStats.change.get(stat) != 0) {
+                this.statFontSizeIncreaseAnimationTimer.put(stat, STAT_CHANGE_FONT_INCREASE_TIME);
+            }
+        }
+    }
+
+    private double getStatFontSize(Stat stat) {
+        if (this.statFontSizeIncreaseAnimationTimer.containsKey(stat)) {
+            return STAT_CHANGE_FONT_INCREASE_SCALE * STAT_DEFAULT_SIZE;
+        }
+        return STAT_DEFAULT_SIZE;
+    }
+
     public void updateCardAnimation() {
         float scale = switch (this.card.status) {
             case BOARD, LEADER -> SCALE_BOARD;
@@ -331,6 +350,15 @@ public class UICard extends UIBox {
         }
         if (this.isPending()) {
             this.pendingTimer = (this.pendingTimer + frametime) % PENDING_TIME_PER_CYCLE;
+        }
+        for (Iterator<Map.Entry<Stat, Double>> it = this.statFontSizeIncreaseAnimationTimer.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<Stat, Double> entry = it.next();
+            double newTime = entry.getValue() - frametime;
+            if (newTime < 0) {
+                it.remove();
+            } else {
+                this.statFontSizeIncreaseAnimationTimer.put(entry.getKey(), newTime);
+            }
         }
     }
 
@@ -482,7 +510,7 @@ public class UICard extends UIBox {
             g.setColor(org.newdawn.slick.Color.white);
         }
         this.drawCostStat(g, pos, scale, this.card.finalStats.get(Stat.COST),
-                this.card.finalBasicStats.get(Stat.COST), COST_POS_UNLEASHPOWER, STAT_DEFAULT_SIZE);
+                this.card.finalBasicStats.get(Stat.COST), COST_POS_UNLEASHPOWER, this.getStatFontSize(Stat.COST));
     }
 
     public void drawOnBoard(Graphics g, Vector2f pos, double scale) {
@@ -537,28 +565,28 @@ public class UICard extends UIBox {
             }
             this.drawOffensiveStat(g, pos, scale, this.card.finalStats.get(Stat.ATTACK),
                     this.card.finalBasicStats.get(Stat.ATTACK),
-                    new Vector2f(-MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE, Game.getImage("game/statattack.png"));
+                    new Vector2f(-MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), this.getStatFontSize(Stat.ATTACK), Game.getImage("game/statattack.png"));
             this.drawOffensiveStat(g, pos, scale, this.card.finalStats.get(Stat.MAGIC),
                     this.card.finalBasicStats.get(Stat.MAGIC),
-                    new Vector2f(0, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE, Game.getImage("game/statmagic.png"));
+                    new Vector2f(0, MINION_STAT_POS_BASE_BOARD), this.getStatFontSize(Stat.MAGIC), Game.getImage("game/statmagic.png"));
             this.drawHealthStat(g, pos, scale, this.getMinion().health,
                     this.card.finalStats.get(Stat.HEALTH),
                     this.card.finalBasicStats.get(Stat.HEALTH),
-                    new Vector2f(MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), STAT_DEFAULT_SIZE);
+                    new Vector2f(MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), this.getStatFontSize(Stat.HEALTH));
             if (this.card.finalStats.get(Stat.ARMOR) != 0) {
                 this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.ARMOR),
-                        DAMAGE_MODIFIERS_POS_BOARD, STAT_DEFAULT_SIZE, this.card.finalStats.get(Stat.ARMOR) < 0 ? Color.red : Color.white,
+                        DAMAGE_MODIFIERS_POS_BOARD, this.getStatFontSize(Stat.ARMOR), this.card.finalStats.get(Stat.ARMOR) < 0 ? Color.red : Color.white,
                         Game.getImage("game/statarmor.png"), STAT_ICON_DEFAULT_SCALE);
             }
             if (this.card.finalStats.get(Stat.SHIELD) > 0) {
                 Vector2f iconpos = this.card.finalStats.get(Stat.ARMOR) == 0 ? DAMAGE_MODIFIERS_POS_BOARD : new Vector2f(DAMAGE_MODIFIERS_POS_BOARD.x, DAMAGE_MODIFIERS_POS_BOARD.y - DAMAGE_MODIFIERS_SPREAD_BOARD);
                 this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.SHIELD),
-                        iconpos, STAT_DEFAULT_SIZE, Color.white, Game.getImage("game/statshield.png"), STAT_ICON_DEFAULT_SCALE);
+                        iconpos, this.getStatFontSize(Stat.SHIELD), Color.white, Game.getImage("game/statshield.png"), STAT_ICON_DEFAULT_SCALE);
             }
         }
         if (this.card.finalStats.contains(Stat.COUNTDOWN)) {
             this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.COUNTDOWN), COUNTDOWN_POS,
-                    50, Color.white, Game.getImage("game/statcountdown.png"), STAT_ICON_COUNTDOWN_SCALE);
+                    this.getStatFontSize(Stat.COUNTDOWN) * STAT_ICON_COUNTDOWN_SCALE / STAT_ICON_DEFAULT_SCALE, Color.white, Game.getImage("game/statcountdown.png"), STAT_ICON_COUNTDOWN_SCALE);
         }
         // if marked for death
         if (!this.card.alive) {
@@ -654,27 +682,27 @@ public class UICard extends UIBox {
             drawReadyBorder(g, pos, scale, Color.cyan);
         }
         this.drawCostStat(g, pos, scale, this.card.finalStats.get(Stat.COST),
-                this.card.finalBasicStats.get(Stat.COST), COST_POS, STAT_DEFAULT_SIZE);
+                this.card.finalBasicStats.get(Stat.COST), COST_POS, this.getStatFontSize(Stat.COST));
         if (this.card instanceof Minion) {
             this.drawOffensiveStat(g, pos, scale, this.card.finalStats.get(Stat.ATTACK),
                     this.card.finalBasicStats.get(Stat.ATTACK),
-                    new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND - MINION_STAT_POS_OFFSET_HAND), STAT_DEFAULT_SIZE, Game.getImage("game/statattack.png"));
+                    new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND - MINION_STAT_POS_OFFSET_HAND), this.getStatFontSize(Stat.ATTACK), Game.getImage("game/statattack.png"));
             this.drawOffensiveStat(g, pos, scale, this.card.finalStats.get(Stat.MAGIC),
                     this.card.finalBasicStats.get(Stat.MAGIC),
-                    new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND), STAT_DEFAULT_SIZE, Game.getImage("game/statmagic.png"));
+                    new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND), this.getStatFontSize(Stat.MAGIC), Game.getImage("game/statmagic.png"));
             this.drawHealthStat(g, pos, scale, this.getMinion().health,
                     this.card.finalStats.get(Stat.HEALTH),
                     this.card.finalBasicStats.get(Stat.HEALTH),
-                    new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND + MINION_STAT_POS_OFFSET_HAND), STAT_DEFAULT_SIZE);
+                    new Vector2f(MINION_STAT_POS_BASE_HAND, MINION_STAT_POS_CENTER_HAND + MINION_STAT_POS_OFFSET_HAND), this.getStatFontSize(Stat.HEALTH));
             if (this.card.finalStats.get(Stat.ARMOR) != 0) {
                 this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.ARMOR),
-                        DAMAGE_MODIFIERS_POS_HAND, STAT_DEFAULT_SIZE, this.card.finalStats.get(Stat.ARMOR) < 0 ? Color.red : Color.white,
+                        DAMAGE_MODIFIERS_POS_HAND, this.getStatFontSize(Stat.ARMOR), this.card.finalStats.get(Stat.ARMOR) < 0 ? Color.red : Color.white,
                         Game.getImage("game/statarmor.png"), STAT_ICON_DEFAULT_SCALE);
             }
             if (this.card.finalStats.get(Stat.SHIELD) > 0) {
                 Vector2f iconpos = this.card.finalStats.get(Stat.ARMOR) == 0 ? DAMAGE_MODIFIERS_POS_HAND : new Vector2f(DAMAGE_MODIFIERS_POS_HAND.x + DAMAGE_MODIFIERS_SPREAD_HAND, DAMAGE_MODIFIERS_POS_HAND.y);
                 this.drawStatNumber(g, pos, scale, this.card.finalStats.get(Stat.SHIELD),
-                        iconpos, STAT_DEFAULT_SIZE, Color.white, Game.getImage("game/statshield.png"), STAT_ICON_DEFAULT_SCALE);
+                        iconpos, this.getStatFontSize(Stat.SHIELD), Color.white, Game.getImage("game/statshield.png"), STAT_ICON_DEFAULT_SCALE);
             }
         }
         if (this.card.finalStats.contains(Stat.COUNTDOWN)) {

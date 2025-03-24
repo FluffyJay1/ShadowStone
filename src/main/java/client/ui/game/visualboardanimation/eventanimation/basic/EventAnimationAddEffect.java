@@ -21,15 +21,19 @@ public class EventAnimationAddEffect extends EventAnimation<EventAddEffect> {
 
     @Override
     public void onProcess() {
+        boolean anySucceeded = false;
         for (int ind = 0; ind < this.event.c.size(); ind++) {
             if (this.event.successful.get(ind)) {
                 Card c = this.event.c.get(ind);
                 if (c.isVisibleTo(this.visualBoard.getLocalteam())) {
-                    return;
+                    anySucceeded = true;
+                    c.uiCard.startAnimatingStatChangeFromEffect(this.event.effects.get(ind).effectStats);
                 }
             }
         }
-        this.postTime = 0;
+        if (!anySucceeded) {
+            this.postTime = 0;
+        }
     }
 
     @Override
