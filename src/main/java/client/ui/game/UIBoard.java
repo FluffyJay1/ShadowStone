@@ -647,7 +647,7 @@ public class UIBoard extends UIBox {
                 this.preSelectedCard = c;
                 this.draggingCard = c;
             }
-        } else if (!this.handleTargeting(c) && !c.isBeingAnimated()) { // if we clicked on a card
+        } else if (this.getCurrentTargetingCard() == null && !c.isBeingAnimated()) { // if we clicked on a card
             this.preSelectedCard = c;
             switch (c.getCard().status) {
             case HAND:
@@ -746,6 +746,12 @@ public class UIBoard extends UIBox {
                 this.draggingCard.setDragging(false);
                 this.draggingCard = null;
             }
+        }
+    }
+
+    public void mouseReleasedCard(UICard c, int button, int x, int y) {
+        if (!this.handleTargeting(c)) {
+            this.mouseReleased(button, x, y);
         }
     }
 

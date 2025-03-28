@@ -32,7 +32,7 @@ public class Minion extends BoardObject {
         if (armor > 0) {
             health += armor * 3; // suppose it tanks 3 hits
         } else if (armor < 0) {
-            health = Math.max(health / (-armor + 1), 1); // min 1 health
+            health = Math.max((health + armor) / (-armor * 0.25 + 1), 1); // min 1 health, bonus damage factors in at least once
         }
         int shield = this.finalStats.get(Stat.SHIELD);
         if (shield > 0) {

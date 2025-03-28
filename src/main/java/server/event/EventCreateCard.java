@@ -47,12 +47,6 @@ public class EventCreateCard extends Event {
         this.prevShadows = p.shadows;
         for (int i = 0; i < this.cards.size(); i++) {
             Card c = this.cards.get(i);
-            if (b instanceof ServerBoard) {
-                ServerBoard sb = (ServerBoard) b;
-                for (Effect e : c.getEffects(true)) {
-                    sb.registerNewEffect(e);
-                }
-            }
             int cardpos = this.cardpos.get(i);
             c.team = this.team;
             c.status = this.status;
@@ -103,6 +97,12 @@ public class EventCreateCard extends Event {
                 }
                 default -> this.successful.add(false);
             }
+            if (this.successful.get(i) && b instanceof ServerBoard) {
+                ServerBoard sb = (ServerBoard) b;
+                for (Effect e : c.getEffects(true)) {
+                    sb.registerNewEffect(e);
+                }
+            }
             if (b instanceof ClientBoard) {
                 ((ClientBoard) b).cardsCreated.add(c);
             }
@@ -121,14 +121,14 @@ public class EventCreateCard extends Event {
         Player p = b.getPlayer(this.team);
         for (int i = this.cards.size() - 1; i >= 0; i--) {
             Card c = this.cards.get(i);
-            if (b instanceof ServerBoard) {
-                ServerBoard sb = (ServerBoard) b;
-                for (Effect e : c.getEffects(true)) {
-                    sb.unregisterEffect(e);
-                }
-            }
             CardStatus status = c.status;
             if (this.successful.get(i)) {
+                if (b instanceof ServerBoard) {
+                    ServerBoard sb = (ServerBoard) b;
+                    for (Effect e : c.getEffects(true)) {
+                        sb.unregisterEffect(e);
+                    }
+                }
                 switch (status) {
                     case HAND -> p.getHand().remove(c);
                     case BOARD -> {

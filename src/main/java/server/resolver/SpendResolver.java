@@ -29,7 +29,9 @@ public class SpendResolver extends Resolver {
         if (p.mana >= this.amount) {
             this.wasSuccessful = true;
             b.processEvent(rq, el, new EventSpend(this.source, this.amount));
-            this.resolve(b, rq, el, this.onSuccess);
+            if (this.onSuccess != null) {
+                this.resolve(b, rq, el, this.onSuccess);
+            }
         }
     }
 

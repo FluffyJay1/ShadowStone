@@ -180,7 +180,7 @@ public class UICard extends UIBox {
 
     @Override
     public void mouseReleased(int button, int x, int y) {
-        this.uib.mouseReleased(button, x, y);
+        this.uib.mouseReleasedCard(this, button, x, y);
     }
 
     @Override

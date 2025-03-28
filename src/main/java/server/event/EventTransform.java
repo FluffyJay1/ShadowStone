@@ -130,6 +130,7 @@ public class EventTransform extends Event {
                         }
                     }
                     case DECK -> p.getDeck().set(pos, c);
+                    default -> c.setIndex(pos); // just to be sure
                 }
                 if (c instanceof BoardObject) {
                     BoardObject bo = (BoardObject) c;

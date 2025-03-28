@@ -182,15 +182,22 @@ public abstract class Board {
         String[] lines = s.split(Game.EVENT_END);
         for (String line : lines) {
             if (!line.isEmpty()) {
-                StringTokenizer st = new StringTokenizer(line);
-                char firstChar = line.charAt(0);
-                if (firstChar == EventGroup.PUSH_TOKEN) {
-                    this.pushEventGroup(EventGroup.fromString(this, st));
-                } else if (firstChar == EventGroup.POP_TOKEN) {
-                    this.popEventGroup();
-                } else {
-                    Event e = EventFactory.fromString(this, st);
-                    this.processEvent(e);
+                try {
+                    StringTokenizer st = new StringTokenizer(line);
+                    char firstChar = line.charAt(0);
+                    if (firstChar == EventGroup.PUSH_TOKEN) {
+                        this.pushEventGroup(EventGroup.fromString(this, st));
+                    } else if (firstChar == EventGroup.POP_TOKEN) {
+                        this.popEventGroup();
+                    } else {
+                        Event e = EventFactory.fromString(this, st);
+                        this.processEvent(e);
+                    }
+                } catch (Exception e) {
+                    System.out.println("EXCEPTION WHILE PARSING THIS EVENT");
+                    System.out.println(line);
+                    e.printStackTrace();
+                    throw e;
                 }
             }
         }
