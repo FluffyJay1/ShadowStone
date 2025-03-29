@@ -11,6 +11,7 @@ import client.ui.game.UIBoard;
 import client.ui.menu.CardDisplayUnit;
 import client.ui.menu.ClassSelectPanel;
 import client.ui.menu.DeckDisplayPanel;
+import client.ui.menu.SettingsButton;
 import gamemode.dungeonrun.controller.DungeonRunController;
 import network.DataStream;
 import org.newdawn.slick.GameContainer;
@@ -106,6 +107,8 @@ public class StateDungeonRun extends BasicGameState {
         this.cardTooltip.setVisible(false);
         this.ui.addUIElementParent(this.cardTooltip);
         this.onUpdateRunStatus();
+
+        this.ui.addUIElementParent(new SettingsButton(ui));
     }
 
     private void onUpdateRunStatus() {

@@ -146,6 +146,7 @@ public class StateDeckbuild extends BasicGameState {
         this.cardTooltip.setVisible(false);
         this.ui.addUIElementParent(this.cardTooltip);
 
+        this.ui.addUIElementParent(new SettingsButton(ui));
     }
 
     private void enterDeckbuilding() {

@@ -45,11 +45,13 @@ public class Game extends StateBasedGame {
 
     public static final Map<String, UnicodeFont> fonts = new HashMap<>();
 
+    private static AppGameContainer app;
+
     public static void main(String[] args) throws SlickException {
-        AppGameContainer app = new AppGameContainer(new Game("ShadowStone"));
-        app.setDisplayMode(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT, false);
+        app = new AppGameContainer(new Game("ShadowStone"));
+        app.setDisplayMode(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT, Config.instance.fullscreen);
         // app.setTargetFrameRate(15);
-        Log.setVerbose(false);
+        Log.setVerbose(true);
         app.start();
     }
 
@@ -62,6 +64,7 @@ public class Game extends StateBasedGame {
     @Override
     public void initStatesList(GameContainer container) {
         // TODO Auto-generated method stub
+        applyConfig();
         addState(new StateMenu());
         addState(new StateGame());
         addState(new StateHelp());
@@ -143,6 +146,36 @@ public class Game extends StateBasedGame {
 
     public static Color toSlickColor(java.awt.Color color) {
         return new Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+    }
+
+    private static void applyConfig() {
+        try {
+            app.setFullscreen(Config.instance.fullscreen);
+        } catch (SlickException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        app.setMusicVolume(Config.instance.music ? 1 : 0);
+    }
+
+    public static void setFullscreen(boolean fullscreen) {
+        Config.instance.fullscreen = fullscreen;
+        Config.instance.saveToFile();
+        applyConfig();
+    }
+
+    public static boolean getFullscreen() {
+        return Config.instance.fullscreen;
+    }
+
+    public static void setMusic(boolean music) {
+        Config.instance.music = music;
+        Config.instance.saveToFile();
+        applyConfig();
+    }
+
+    public static boolean getMusic() {
+        return Config.instance.music;
     }
 
 }

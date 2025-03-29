@@ -6,6 +6,7 @@ import client.ui.Text;
 import client.ui.UI;
 import client.ui.game.UIBoard;
 import client.ui.menu.DeckSelectPanel;
+import client.ui.menu.SettingsButton;
 import client.ui.menu.pvp.PVPMenu;
 import network.DataStream;
 import network.ServerGameThread;
@@ -92,6 +93,8 @@ public class StatePVP extends BasicGameState {
         this.ui.addUIElementParent(this.errorText);
 
         this.errorTimer = 0;
+
+        this.ui.addUIElementParent(new SettingsButton(ui));
     }
 
     private void onConnect(DataStream ds) {

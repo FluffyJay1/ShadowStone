@@ -7,6 +7,7 @@ import org.newdawn.slick.state.*;
 import client.Game;
 import client.ui.*;
 import client.ui.game.*;
+import client.ui.menu.SettingsButton;
 import network.*;
 import server.ai.AIConfig;
 import server.card.cardset.*;
@@ -49,6 +50,8 @@ public class StateGame extends BasicGameState {
         this.game.setAIConfig(tempConfig);
         this.game.setTeamMultiplier(tempTeamMultiplier);
         this.game.start();
+
+        this.ui.addUIElementParent(new SettingsButton(ui));
     }
 
     @Override

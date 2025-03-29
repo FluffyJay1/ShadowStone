@@ -5,6 +5,8 @@ import client.ui.GenericButton;
 import client.ui.Text;
 import client.ui.UI;
 import client.ui.UIElement;
+import client.ui.menu.SettingsButton;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -45,6 +47,8 @@ public class StateHelp extends BasicGameState {
                 1500, 50, 40, 0, 1);
         extraText.relpos = true;
         this.ui.addUIElementParent(extraText);
+
+        this.ui.addUIElementParent(new SettingsButton(ui));
     }
 
     @Override

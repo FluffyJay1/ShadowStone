@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /**
  * Class to store, serialize and deserialize config settings
@@ -13,9 +14,13 @@ import java.io.ObjectOutputStream;
  * @author micha
  *
  */
-public class Config {
+public class Config implements Serializable {
+    public static Config instance = loadFromFile();
     public static int WINDOW_WIDTH = 1920;
     public static int WINDOW_HEIGHT = 1080;
+
+    public boolean fullscreen;
+    public boolean music;
 
     /**
      * Serializes and saves the config to file
