@@ -20,7 +20,8 @@ import client.Game;
 public class Animation implements Cloneable {
     private final SpriteSheet sheet;
     private int frame = 0;
-    private double timer = 0, frameInterval = 1;
+    private double timer = 0;
+    private double[] frameIntervals = { 1 };
     public boolean play = false, loop = false, hflip = false, vflip = false;
 
     /**
@@ -74,12 +75,24 @@ public class Animation implements Cloneable {
      *            the time interval between frames
      */
     public void setFrameInterval(double interval) {
-        this.timer = 0;
         if (interval != 0) {
-            this.frameInterval = interval;
+            this.setFrameIntervals(new double[] { interval });
         } else {
-            this.frameInterval = 0.00001; // yeah close enough
+            this.setFrameIntervals(new double[] { 0.00001 }); // yeah close enough
         }
+    }
+
+    public void setFrameIntervals(double[] intervals) {
+        this.timer = 0;
+        this.frameIntervals = intervals;
+    }
+
+    private double getCurrentFrameInterval() {
+        return this.frameIntervals[Math.min(this.frame, this.frameIntervals.length - 1)];
+    }
+
+    public int getNumFrames() {
+        return this.sheet.getHorizontalCount() * this.sheet.getVerticalCount();
     }
 
     /**
@@ -90,11 +103,11 @@ public class Animation implements Cloneable {
      */
     public void setFrame(int frame) {
         this.frame = frame;
-        if (this.frame > this.sheet.getHorizontalCount() * this.sheet.getVerticalCount()) {
+        if (this.frame >= this.getNumFrames()) {
             if (this.loop) {
-                this.frame %= this.sheet.getHorizontalCount() * this.sheet.getVerticalCount();
+                this.frame %= this.getNumFrames();
             } else {
-                this.frame = this.sheet.getHorizontalCount() * this.sheet.getVerticalCount() - 1;
+                this.frame = this.getNumFrames() - 1;
                 this.play = false;
             }
         }
@@ -106,17 +119,9 @@ public class Animation implements Cloneable {
     public void update(double frametime) {
         if (this.play) {
             this.timer += frametime;
-            if (this.timer > this.frameInterval) {
-                this.frame += (int) (this.timer / this.frameInterval);
-                this.timer %= this.frameInterval;
-            }
-            if (this.frame >= this.sheet.getHorizontalCount() * this.sheet.getVerticalCount()) {
-                if (this.loop) {
-                    this.frame %= this.sheet.getHorizontalCount() * this.sheet.getVerticalCount();
-                } else {
-                    this.frame = this.sheet.getHorizontalCount() * this.sheet.getVerticalCount() - 1;
-                    this.play = false;
-                }
+            while (this.timer > this.getCurrentFrameInterval() && this.play) {
+                this.timer -= this.getCurrentFrameInterval();
+                this.setFrame(this.frame + 1);
             }
         }
     }

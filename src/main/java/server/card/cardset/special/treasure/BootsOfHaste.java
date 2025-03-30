@@ -2,7 +2,6 @@ package server.card.cardset.special.treasure;
 
 import client.tooltip.TooltipSpell;
 import server.ServerBoard;
-import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.effect.EffectAura;
@@ -11,7 +10,6 @@ import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
-import server.resolver.DrawResolver;
 import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;

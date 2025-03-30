@@ -2,6 +2,7 @@ package server.card.cardset.indie.neutral;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageOmoriStab;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 
@@ -48,7 +49,7 @@ public class Omori extends MinionText {
 
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/indie/omori.png",
             CRAFT, TRAITS, RARITY, 4, 3, 2, 5, false, Omori.class,
-            new Vector2f(178, 131), 1.6, new EventAnimationDamageSlash(), // TODO KNIFe
+            new Vector2f(178, 131), 1.6, new EventAnimationDamageOmoriStab(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.CHOOSE, EMOTIONS_TOOLTIP, Tooltip.UNLEASH, Tooltip.TRANSFORM, Tooltip.COUNTDOWN),
             List.of());
 

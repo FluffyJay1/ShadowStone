@@ -1,15 +1,11 @@
 package server.card.cardset.special.treasure;
 
 import client.tooltip.TooltipSpell;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageAOEFire;
 import server.ServerBoard;
-import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
 import server.card.target.TargetList;
 import server.event.Event;
-import server.resolver.CreateCardResolver;
-import server.resolver.DamageResolver;
 import server.resolver.PutCardResolver;
 import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
@@ -36,7 +32,6 @@ public class HornOfCenarius extends SpellText {
         return List.of(new Effect(DESCRIPTION) {
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
-                Effect effect = this;
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(true) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
