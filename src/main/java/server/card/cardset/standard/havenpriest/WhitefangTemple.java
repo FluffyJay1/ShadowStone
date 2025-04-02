@@ -2,6 +2,8 @@ package server.card.cardset.standard.havenpriest;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipAmulet;
+import client.ui.Animation;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
@@ -33,7 +35,7 @@ public class WhitefangTemple extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/standard/whitefangtemple.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/standard/whitefangtemple.png"),
             CRAFT, TRAITS, RARITY, 3, WhitefangTemple.class,
             new Vector2f(139, 204), 1.4,
             () -> List.of(Tooltip.COUNTDOWN, HolywingDragon.TOOLTIP),

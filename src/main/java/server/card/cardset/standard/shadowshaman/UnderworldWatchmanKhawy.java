@@ -2,6 +2,7 @@ package server.card.cardset.standard.shadowshaman;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -29,7 +30,7 @@ public class UnderworldWatchmanKhawy extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/underworldwatchmankhawy.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/underworldwatchmankhawy.png"),
             CRAFT, TRAITS, RARITY, 7, 4, 2, 5, true, UnderworldWatchmanKhawy.class,
             new Vector2f(150, 200), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.LASTWORDS),

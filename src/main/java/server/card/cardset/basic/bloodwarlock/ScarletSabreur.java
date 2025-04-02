@@ -2,6 +2,7 @@ package server.card.cardset.basic.bloodwarlock;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageDoubleSlice;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
@@ -30,7 +31,7 @@ public class ScarletSabreur extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/scarletsabreur.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/scarletsabreur.png"),
             CRAFT, TRAITS, RARITY, 5, 2, 2, 4, true, ScarletSabreur.class,
             new Vector2f(169, 130), 1.5, new EventAnimationDamageDoubleSlice(),
             () -> List.of(Tooltip.BANE, Tooltip.BATTLECRY),

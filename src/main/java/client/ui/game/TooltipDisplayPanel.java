@@ -1,11 +1,10 @@
 package client.ui.game;
 
-import client.Game;
 import client.tooltip.TooltipCard;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Vector2f;
 
 import client.tooltip.Tooltip;
+import client.ui.Animation;
 import client.ui.Text;
 import client.ui.UI;
 import client.ui.UIBox;
@@ -43,8 +42,8 @@ public class TooltipDisplayPanel extends UIBox {
         this.description.setPos(new Vector2f(-this.getWidth(true) / 2,
                 this.name.getBottom(false, false) + 10), 1);
         if (tooltip instanceof TooltipCard) {
-            Image image = Game.getImage(((TooltipCard) this.tooltip).imagepath);
-            this.cardImageDisplayer.setImage(image);
+            Animation animation = ((TooltipCard) this.tooltip).animation.get();
+            this.cardImageDisplayer.setAnimation(animation);
             this.cardImageDisplayer.setVisible(true);
         } else {
             this.cardImageDisplayer.setVisible(false);

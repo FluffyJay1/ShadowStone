@@ -1,6 +1,8 @@
 package client.tooltip;
 
 import org.newdawn.slick.geom.Vector2f;
+
+import client.ui.Animation;
 import server.card.*;
 
 import java.util.Collection;
@@ -12,7 +14,7 @@ import java.util.function.Supplier;
 // used to store metadata on a card
 public abstract class TooltipCard extends Tooltip {
     public final Class<? extends CardText> cardTextClass;
-    public String imagepath;
+    public Supplier<Animation> animation;
     public final int cost;
     public final ClassCraft craft;
     public final CardRarity rarity;
@@ -22,11 +24,11 @@ public abstract class TooltipCard extends Tooltip {
     // original
     public final List<Function<Card, String>> trackers;
 
-    public TooltipCard(String name, String description, String imagepath, ClassCraft craft, List<CardTrait> traits, CardRarity rarity, int cost,
+    public TooltipCard(String name, String description, Supplier<Animation> animation, ClassCraft craft, List<CardTrait> traits, CardRarity rarity, int cost,
                        Class<? extends CardText> cardTextClass, Vector2f artFocusPos, double artFocusScale, Supplier<List<Tooltip>> references,
                        List<Function<Card, String>> trackers) {
         super(name, cost + "-cost " + craft.toString() + " " + listTraits(traits) + description, references);
-        this.imagepath = imagepath;
+        this.animation = animation;
         this.craft = craft;
         this.traits = traits;
         this.rarity = rarity;

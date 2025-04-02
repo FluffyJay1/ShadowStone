@@ -2,6 +2,7 @@ package server.card.cardset.standard.bloodwarlock;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.*;
@@ -21,7 +22,7 @@ public class TerrorDemon extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/terrordemon.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/terrordemon.png"),
             CRAFT, TRAITS, RARITY, 4, 2, 1, 4, true, TerrorDemon.class,
             new Vector2f(166, 134), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.LIFESTEAL, Tooltip.UNLEASH),

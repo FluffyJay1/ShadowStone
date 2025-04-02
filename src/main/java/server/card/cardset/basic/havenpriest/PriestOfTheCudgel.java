@@ -2,6 +2,7 @@ package server.card.cardset.basic.havenpriest;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -24,7 +25,7 @@ public class PriestOfTheCudgel extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/priestofthecudgel.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/priestofthecudgel.png"),
             CRAFT, TRAITS, RARITY, 4, 3, 1, 5, false, PriestOfTheCudgel.class,
             new Vector2f(162, 140), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.UNLEASH, Tooltip.BANISH),

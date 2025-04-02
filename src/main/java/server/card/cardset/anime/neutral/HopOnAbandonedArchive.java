@@ -1,13 +1,13 @@
 package server.card.cardset.anime.neutral;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Vector2f;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipAmulet;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
+import client.ui.Animation;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.AmuletText;
@@ -33,7 +33,13 @@ public class HopOnAbandonedArchive extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/anime/hoponabandonedarchive.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION,
+            () -> new Animation("card/anime/hoponabandonedarchive.png", new Vector2f(40, 1), 0, 0, Image.FILTER_LINEAR,
+                    anim -> {
+                        anim.play = true;
+                        anim.loop = true;
+                        anim.setFrameInterval(0.05);
+                    }),
             CRAFT, TRAITS, RARITY, 3, HopOnAbandonedArchive.class,
             new Vector2f(143, 168), 1.3,
             () -> List.of(Tooltip.COUNTDOWN),

@@ -1,6 +1,8 @@
 package server.card.cardset.standard.havenpriest;
 
 import client.tooltip.TooltipAmulet;
+import client.ui.Animation;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.card.*;
@@ -22,7 +24,7 @@ public class ElanasPrayer extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/standard/elanasprayer.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/standard/elanasprayer.png"),
             CRAFT, TRAITS, RARITY, 3, ElanasPrayer.class,
             new Vector2f(150, 140), 1.5,
             List::of,

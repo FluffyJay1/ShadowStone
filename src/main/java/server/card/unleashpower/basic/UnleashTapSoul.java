@@ -3,8 +3,7 @@ package server.card.unleashpower.basic;
 import java.util.*;
 
 import client.tooltip.*;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageDefault;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
 import org.newdawn.slick.geom.Vector2f;
 import server.*;
@@ -22,7 +21,7 @@ public class UnleashTapSoul extends UnleashPowerText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "unleashpower/basic/tapsoul.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, () -> new Animation("unleashpower/basic/tapsoul.png"),
             CRAFT, TRAITS, RARITY, 2, UnleashTapSoul.class,
             new Vector2f(445, 515), 1,
             () -> List.of(Tooltip.VENGEANCE, Tooltip.UNLEASH),

@@ -1,6 +1,7 @@
 package server.card.cardset.standard.havenpriest;
 
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageEnergyBeam;
 import org.newdawn.slick.geom.Vector2f;
 import server.ai.AI;
@@ -24,7 +25,7 @@ public class IncandescentDragon extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/incandescentdragon.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/incandescentdragon.png"),
             CRAFT, TRAITS, RARITY, 8, 8, 2, 6, true, IncandescentDragon.class,
             new Vector2f(142, 160), 1.3, new EventAnimationDamageEnergyBeam(),
             List::of,

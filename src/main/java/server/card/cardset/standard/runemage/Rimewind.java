@@ -2,6 +2,7 @@ package server.card.cardset.standard.runemage;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import server.Player;
 import server.ServerBoard;
 import server.ai.AI;
@@ -29,7 +30,7 @@ public class Rimewind extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/standard/rimewind.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/standard/rimewind.png"),
             CRAFT, TRAITS, RARITY, 5, Rimewind.class,
             () -> List.of(Snowman.TOOLTIP, Tooltip.SPELLBOOST),
             List.of());

@@ -2,6 +2,8 @@ package server.card.cardset.basic.shadowshaman;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
 import server.card.CardTrait;
@@ -22,7 +24,7 @@ public class Ghost extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/ghost.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/ghost.png"),
             CRAFT, TRAITS, RARITY, 1, 1, 1, 1, false, Ghost.class,
             new Vector2f(124, 142), 1.3, null,
             () -> List.of(Tooltip.STORM, Tooltip.BANISH),

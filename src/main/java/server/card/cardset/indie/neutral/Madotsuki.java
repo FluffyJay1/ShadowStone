@@ -2,6 +2,7 @@ package server.card.cardset.indie.neutral;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -36,7 +37,7 @@ public class Madotsuki extends MinionText {
                                     MedamaudeEffect.TOOLTIP, MidgetEffect.TOOLTIP, TowelEffect.TOOLTIP,
                                     TriangleKerchiefEffect.TOOLTIP, WitchEffect.TOOLTIP));
 
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/indie/madotsuki.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/indie/madotsuki.png"),
             CRAFT, TRAITS, RARITY, 4, 3, 2, 5, false, Madotsuki.class,
             new Vector2f(150, 118), 1.6, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, DREAM_EFFECTS_TOOLTIP, Tooltip.UNLEASH, Tooltip.RUSH),

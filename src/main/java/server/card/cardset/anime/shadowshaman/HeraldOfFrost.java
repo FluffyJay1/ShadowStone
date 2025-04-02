@@ -2,6 +2,8 @@ package server.card.cardset.anime.shadowshaman;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipAmulet;
+import client.ui.Animation;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
@@ -29,7 +31,7 @@ public class HeraldOfFrost extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/anime/heraldoffrost.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/anime/heraldoffrost.png"),
             CRAFT, TRAITS, RARITY, 3, HeraldOfFrost.class,
             new Vector2f(), -1,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.FROZEN),

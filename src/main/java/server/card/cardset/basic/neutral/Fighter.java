@@ -1,5 +1,6 @@
 package server.card.cardset.basic.neutral;
 
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.*;
 
@@ -15,7 +16,7 @@ public class Fighter extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/fighter.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/fighter.png"),
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, Fighter.class,
             new Vector2f(), -1, new EventAnimationDamageSlash(),
             List::of,

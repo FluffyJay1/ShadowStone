@@ -2,6 +2,8 @@ package server.card.cardset.standard.havenpriest;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipAmulet;
+import client.ui.Animation;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
@@ -29,7 +31,7 @@ public class MoriaeEncomium extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/standard/moriaeencomium.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/standard/moriaeencomium.png"),
             CRAFT, TRAITS, RARITY, 2, MoriaeEncomium.class,
             new Vector2f(150, 150), 1.2,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Tooltip.LASTWORDS),

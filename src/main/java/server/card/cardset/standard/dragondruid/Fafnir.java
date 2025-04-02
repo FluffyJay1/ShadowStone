@@ -2,6 +2,7 @@ package server.card.cardset.standard.dragondruid;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageAOEFire;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
@@ -25,7 +26,7 @@ public class Fafnir extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/fafnir.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/fafnir.png"),
             CRAFT, TRAITS, RARITY, 9, 8, 4, 10, true, Fafnir.class,
             new Vector2f(136, 203), 1.2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),

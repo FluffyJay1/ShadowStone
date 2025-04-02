@@ -2,11 +2,10 @@ package server.card.cardset.indie.neutral;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageOmoriStab;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 
-import server.Player;
 import server.ServerBoard;
 import server.card.BoardObject;
 import server.card.Card;
@@ -47,7 +46,7 @@ public class Omori extends MinionText {
                     "<b>" + EmotionSad.NAME + "</b>, <b>" + EmotionAngry.NAME + "</b>, and <b>" + EmotionHappy.NAME + "</b>.",
                     () -> List.of(EmotionSad.TOOLTIP, EmotionAngry.TOOLTIP, EmotionHappy.TOOLTIP));
 
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/indie/omori.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/indie/omori.png"),
             CRAFT, TRAITS, RARITY, 4, 3, 2, 5, false, Omori.class,
             new Vector2f(178, 131), 1.6, new EventAnimationDamageOmoriStab(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.CHOOSE, EMOTIONS_TOOLTIP, Tooltip.UNLEASH, Tooltip.TRANSFORM, Tooltip.COUNTDOWN),

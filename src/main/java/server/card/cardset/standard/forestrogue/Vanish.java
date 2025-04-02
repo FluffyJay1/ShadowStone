@@ -1,6 +1,7 @@
 package server.card.cardset.standard.forestrogue;
 
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import server.ServerBoard;
 import server.card.*;
 import server.card.effect.Effect;
@@ -24,7 +25,7 @@ public class Vanish extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/standard/vanish.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/standard/vanish.png"),
             CRAFT, TRAITS, RARITY, 6, Vanish.class,
             List::of,
             List.of());

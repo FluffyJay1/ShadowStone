@@ -1,6 +1,7 @@
 package server.card.cardset.basic.runemage;
 
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import server.ai.AI;
 import server.card.CardRarity;
 import server.card.CardTrait;
@@ -19,7 +20,7 @@ public class Insight extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/insight.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/insight.png"),
             CRAFT, TRAITS, RARITY, 1, Insight.class,
             List::of,
             List.of());

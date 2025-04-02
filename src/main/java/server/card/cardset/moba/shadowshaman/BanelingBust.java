@@ -2,6 +2,7 @@ package server.card.cardset.moba.shadowshaman;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
 import server.ServerBoard;
 import server.ai.AI;
@@ -25,7 +26,7 @@ public class BanelingBust extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/moba/banelingbust.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/moba/banelingbust.png"),
             CRAFT, TRAITS, RARITY, 7, BanelingBust.class,
             () -> List.of(Tooltip.BLAST),
             List.of());

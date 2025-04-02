@@ -2,6 +2,7 @@ package server.card.cardset.basic.forestrogue;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
@@ -24,7 +25,7 @@ public class ForestWhispers extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/forestwhispers.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/forestwhispers.png"),
             CRAFT, TRAITS, RARITY, 4, ForestWhispers.class,
             () -> List.of(Tooltip.TRANSFORM, Fairy.TOOLTIP),
             List.of());

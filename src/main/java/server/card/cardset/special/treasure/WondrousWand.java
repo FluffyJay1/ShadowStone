@@ -1,6 +1,7 @@
 package server.card.cardset.special.treasure;
 
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.CardRarity;
@@ -26,7 +27,7 @@ public class WondrousWand extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/special/wondrouswand.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/special/wondrouswand.png"),
             CRAFT, TRAITS, RARITY, 3, WondrousWand.class,
             List::of,
             List.of());

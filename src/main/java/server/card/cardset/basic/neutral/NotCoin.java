@@ -1,13 +1,12 @@
 package server.card.cardset.basic.neutral;
 
-import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import server.ServerBoard;
 import server.card.CardRarity;
 import server.card.CardTrait;
 import server.card.ClassCraft;
 import server.card.SpellText;
-import server.card.cardset.standard.neutral.ServantOfDarkness;
 import server.card.effect.Effect;
 import server.card.effect.common.EffectUnleashPowerOneTimeCost;
 import server.card.target.TargetList;
@@ -26,7 +25,7 @@ public class NotCoin extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/notcoin.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/notcoin.png"),
             CRAFT, TRAITS, RARITY, 0, NotCoin.class,
             List::of,
             List.of());

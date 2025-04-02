@@ -2,6 +2,7 @@ package server.card.cardset.basic.portalhunter;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -25,7 +26,7 @@ public class IronforgedFighter extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/ironforgedfighter.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/ironforgedfighter.png"),
             CRAFT, TRAITS, RARITY, 4, 4, 1, 4, true, IronforgedFighter.class,
             new Vector2f(174, 139), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, RadiantArtifact.TOOLTIP),

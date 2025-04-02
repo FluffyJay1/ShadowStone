@@ -2,6 +2,7 @@ package server.card.cardset.indie.dragondruid;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -27,7 +28,7 @@ public class Uboa extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/indie/uboa.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/indie/uboa.png"),
             CRAFT, TRAITS, RARITY, 9, 6, 3, 6, true, Uboa.class,
             new Vector2f(150, 180), 1, new EventAnimationDamageMagicHit(),
             () -> List.of(Tooltip.STORM, Tooltip.BANISH),

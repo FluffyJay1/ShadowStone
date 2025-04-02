@@ -1,7 +1,7 @@
 package server.card.cardset.basic.neutral;
 
-import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
@@ -24,7 +24,7 @@ public class IDidThat extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/ididthat.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/ididthat.png"),
             CRAFT, TRAITS, RARITY, 1, IDidThat.class,
             List::of,
             List.of());

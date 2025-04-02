@@ -2,6 +2,7 @@ package server.card.cardset.basic.forestrogue;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageOrbFall;
 import org.newdawn.slick.geom.Vector2f;
 import server.ai.AI;
@@ -20,7 +21,7 @@ public class FairyWhisperer extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/fairywhisperer.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/fairywhisperer.png"),
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, FairyWhisperer.class,
             new Vector2f(150, 121), 1.5, new EventAnimationDamageOrbFall(),
             () -> List.of(Tooltip.BATTLECRY, Fairy.TOOLTIP),

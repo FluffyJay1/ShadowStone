@@ -2,6 +2,7 @@ package server.card.cardset.anime.shadowshaman;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -28,7 +29,7 @@ public class Qiqi extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/anime/qiqi.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/anime/qiqi.png"),
             CRAFT, TRAITS, RARITY, 7, 1, 2, 7, false, Qiqi.class,
             new Vector2f(150, 169), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.FREEZING_TOUCH, Tooltip.LIFESTEAL, Tooltip.BATTLECRY, Tooltip.NECROMANCY, Tooltip.REANIMATE,

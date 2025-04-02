@@ -1,6 +1,8 @@
 package server.card.cardset.basic.portalhunter;
 
 import client.tooltip.*;
+import client.ui.Animation;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.ai.AI;
 import server.card.*;
@@ -17,7 +19,7 @@ public class PuppetRoom extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/basic/puppetroom.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/basic/puppetroom.png"),
             CRAFT, TRAITS, RARITY, 2, PuppetRoom.class,
             new Vector2f(), -1,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Puppet.TOOLTIP),

@@ -2,8 +2,8 @@ package server.card.cardset.basic.bloodwarlock;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageDoubleSlice;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
@@ -29,7 +29,7 @@ public class DarkGeneral extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/darkgeneral.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/darkgeneral.png"),
             CRAFT, TRAITS, RARITY, 4, 4, 2, 3, true, DarkGeneral.class,
             new Vector2f(131, 157), 1.3, new EventAnimationDamageDoubleSlice(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.STORM, Tooltip.VENGEANCE),

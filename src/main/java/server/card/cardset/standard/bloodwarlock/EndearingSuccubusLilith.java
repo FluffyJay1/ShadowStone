@@ -1,6 +1,7 @@
 package server.card.cardset.standard.bloodwarlock;
 
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
@@ -21,7 +22,7 @@ public class EndearingSuccubusLilith extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/endearingsuccubuslilith.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/endearingsuccubuslilith.png"),
             CRAFT, TRAITS, RARITY, 3, 1, 2, 5, true, EndearingSuccubusLilith.class,
             new Vector2f(144, 150), 1.3, new EventAnimationDamageSlash(),
             List::of,

@@ -2,6 +2,7 @@ package server.card.cardset.anime.swordpaladin;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipAmulet;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageWind;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -32,7 +33,7 @@ public class DandelionField extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/anime/dandelionfield.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/anime/dandelionfield.png"),
             CRAFT, TRAITS, RARITY, 3, DandelionField.class,
             new Vector2f(), -1,
             () -> List.of(Tooltip.COUNTDOWN),

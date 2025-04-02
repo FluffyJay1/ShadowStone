@@ -2,6 +2,7 @@ package server.card.cardset.special.kurumi;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipAmulet;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageAOECloud;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -28,7 +29,7 @@ public class CityOfDevouringTime extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/special/cityofdevouringtime.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/special/cityofdevouringtime.png"),
             CRAFT, TRAITS, RARITY, 4, CityOfDevouringTime.class,
             new Vector2f(), -1,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.LIFESTEAL),

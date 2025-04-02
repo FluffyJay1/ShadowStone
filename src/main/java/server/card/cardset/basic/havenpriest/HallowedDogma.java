@@ -2,6 +2,7 @@ package server.card.cardset.basic.havenpriest;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import server.ServerBoard;
 import server.card.*;
 import server.card.effect.Effect;
@@ -24,7 +25,7 @@ public class HallowedDogma extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/halloweddogma.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/halloweddogma.png"),
             CRAFT, TRAITS, RARITY, 2, HallowedDogma.class,
             () -> List.of(Tooltip.COUNTDOWN),
             List.of());

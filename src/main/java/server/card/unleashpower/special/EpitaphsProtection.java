@@ -2,6 +2,8 @@ package server.card.unleashpower.special;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipUnleashPower;
+import client.ui.Animation;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.UnleashPowerText;
@@ -25,7 +27,7 @@ public class EpitaphsProtection extends UnleashPowerText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "unleashpower/special/epitaphsprotection.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, () -> new Animation("unleashpower/special/epitaphsprotection.png"),
             CRAFT, TRAITS, RARITY, 2, EpitaphsProtection.class,
             new Vector2f(154, 92), 3,
             () -> List.of(Tooltip.SHIELD, Tooltip.UNLEASH),

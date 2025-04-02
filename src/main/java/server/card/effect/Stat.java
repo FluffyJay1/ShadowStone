@@ -24,4 +24,5 @@ public enum Stat {
     FREEZING_TOUCH,
     CANT_ATTACK_LEADER,
     ARMOR,
+    UNYIELDING,
 }

@@ -2,6 +2,7 @@ package server.card.cardset.standard.portalhunter;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
@@ -24,7 +25,7 @@ public class ArtifactCall extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/standard/artifactcall.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/standard/artifactcall.png"),
             CRAFT, TRAITS, RARITY, 2, ArtifactCall.class,
             () -> List.of(Tooltip.RESONANCE),
             List.of());

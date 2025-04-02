@@ -2,6 +2,7 @@ package server.card.cardset.anime.bloodwarlock;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageShoot;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
@@ -36,7 +37,7 @@ public class Guts extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/anime/guts.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/anime/guts.png"),
             CRAFT, TRAITS, RARITY, 5, 2, 1, 5, false, Guts.class,
             new Vector2f(142, 147), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.WARD, Tooltip.STALWART, Tooltip.UNLEASH, Tooltip.BLAST, Tooltip.TRANSFORM, GutsBerserk.TOOLTIP),

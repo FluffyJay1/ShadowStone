@@ -1,6 +1,7 @@
 package server.card.leader;
 
 import client.tooltip.TooltipLeader;
+import client.ui.Animation;
 import network.Emote;
 import network.EmoteSet;
 import org.newdawn.slick.geom.Vector2f;
@@ -23,7 +24,7 @@ public class Rowen extends LeaderText {
             .setLine(Emote.THINKING, "Think, Rowen...")
             .setLine(Emote.THREATEN, "Hear the dragon's roar!")
             .build();
-    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "leader/smile.png",
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", () -> new Animation("leader/smile.png"),
             CRAFT, TRAITS, RARITY, Rowen.class,
             new Vector2f(), -1, null,
             EMOTESET);

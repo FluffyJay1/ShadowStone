@@ -3,8 +3,7 @@ package server.card.unleashpower.basic;
 import java.util.*;
 
 import client.tooltip.*;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageDefault;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
 import org.newdawn.slick.geom.Vector2f;
 import server.*;
@@ -23,7 +22,7 @@ public class UnleashBegetUndead extends UnleashPowerText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, "unleashpower/basic/begetundead.png",
+    public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, () -> new Animation("unleashpower/basic/begetundead.png"),
             CRAFT, TRAITS, RARITY, 2, UnleashBegetUndead.class,
             new Vector2f(410, 460), 4,
             () -> List.of(Tooltip.UNLEASH, Tooltip.LASTWORDS, Skeleton.TOOLTIP),

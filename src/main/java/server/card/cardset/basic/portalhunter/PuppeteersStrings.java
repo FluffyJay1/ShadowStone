@@ -1,8 +1,8 @@
 package server.card.cardset.basic.portalhunter;
 
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageAOESlice;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
@@ -25,7 +25,7 @@ public class PuppeteersStrings extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/puppeteersstrings.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/puppeteersstrings.png"),
             CRAFT, TRAITS, RARITY, 4, PuppeteersStrings.class,
             () -> List.of(Puppet.TOOLTIP),
             List.of());

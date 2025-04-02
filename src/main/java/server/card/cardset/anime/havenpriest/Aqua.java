@@ -2,6 +2,7 @@ package server.card.cardset.anime.havenpriest;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -31,7 +32,7 @@ public class Aqua extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/anime/aqua.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/anime/aqua.png"),
             CRAFT, TRAITS, RARITY, 6, 0, 3, 10, false, Aqua.class,
             new Vector2f(162, 140), 1.6, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.RUSH, Tooltip.BATTLECRY, Tooltip.REANIMATE, Tooltip.UNLEASH, Tooltip.WARD, Tooltip.CLASH, Tooltip.MUTE,

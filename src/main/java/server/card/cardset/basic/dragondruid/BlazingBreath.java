@@ -1,6 +1,7 @@
 package server.card.cardset.basic.dragondruid;
 
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
 import server.ServerBoard;
 import server.ai.AI;
@@ -23,7 +24,7 @@ public class BlazingBreath extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/blazingbreath.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/blazingbreath.png"),
             CRAFT, TRAITS, RARITY, 1, BlazingBreath.class,
             List::of,
             List.of());

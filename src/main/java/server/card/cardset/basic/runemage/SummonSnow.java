@@ -2,6 +2,7 @@ package server.card.cardset.basic.runemage;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import server.Player;
 import server.ServerBoard;
 import server.ai.AI;
@@ -25,7 +26,7 @@ public class SummonSnow extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/summonsnow.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/summonsnow.png"),
             CRAFT, TRAITS, RARITY, 3, SummonSnow.class,
             () -> List.of(Snowman.TOOLTIP, Tooltip.SPELLBOOST),
             List.of());

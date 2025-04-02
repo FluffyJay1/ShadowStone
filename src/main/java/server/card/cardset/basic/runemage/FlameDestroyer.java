@@ -2,6 +2,7 @@ package server.card.cardset.basic.runemage;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageClaw;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
@@ -19,7 +20,7 @@ public class FlameDestroyer extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/flamedestroyer.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/flamedestroyer.png"),
             CRAFT, TRAITS, RARITY, 9, 7, 3, 7, true, FlameDestroyer.class,
             new Vector2f(150, 200), 1.2, new EventAnimationDamageClaw(),
             () -> List.of(Tooltip.SPELLBOOST),

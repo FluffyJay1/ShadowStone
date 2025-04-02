@@ -1,6 +1,8 @@
 package server.card.cardset.standard.runemage;
 
 import client.tooltip.TooltipAmulet;
+import client.ui.Animation;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.card.*;
@@ -22,7 +24,7 @@ public class ConjuringForce extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/standard/conjuringforce.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/standard/conjuringforce.png"),
             CRAFT, TRAITS, RARITY, 4, ConjuringForce.class,
             new Vector2f(), -1,
             List::of,

@@ -4,6 +4,7 @@ import java.util.List;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.CardRarity;
@@ -32,7 +33,7 @@ public class TenKilometerRun extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/anime/tenkilometerrun.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/anime/tenkilometerrun.png"),
             CRAFT, TRAITS, RARITY, 2, TenKilometerRun.class,
             () -> List.of(Tooltip.BANE, Tooltip.POISONOUS, Tooltip.STORM, Tooltip.SHIELD, Tooltip.ELUSIVE, Tooltip.STALWART, EverySingleDay.TOOLTIP),
             List.of());

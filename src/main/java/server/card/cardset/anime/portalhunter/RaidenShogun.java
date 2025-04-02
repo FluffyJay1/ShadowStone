@@ -2,6 +2,7 @@ package server.card.cardset.anime.portalhunter;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageAOESlice;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageDoubleSlice;
 import org.newdawn.slick.geom.Vector2f;
@@ -34,7 +35,7 @@ public class RaidenShogun extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/anime/raidenshogun.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/anime/raidenshogun.png"),
             CRAFT, TRAITS, RARITY, 7, 3, 3, 5, false, Kurumi.class,
             new Vector2f(139, 146), 1.8, new EventAnimationDamageDoubleSlice(),
             () -> List.of(Tooltip.RUSH, Tooltip.BATTLECRY, Tooltip.UNLEASH, EyeOfStormyJudgement.TOOLTIP, Tooltip.COUNTDOWN),

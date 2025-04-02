@@ -2,6 +2,7 @@ package server.card.cardset.special.batter;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageOff;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
@@ -20,7 +21,7 @@ public class Alpha extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/special/alpha.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/special/alpha.png"),
             CRAFT, TRAITS, RARITY, 4, 2, 2, 2, true, Alpha.class,
             new Vector2f(), -1, new EventAnimationDamageOff(),
             () -> List.of(Tooltip.BANE),

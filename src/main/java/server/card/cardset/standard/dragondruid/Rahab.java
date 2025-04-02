@@ -2,6 +2,7 @@ package server.card.cardset.standard.dragondruid;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -28,7 +29,7 @@ public class Rahab extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/rahab.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/rahab.png"),
             CRAFT, TRAITS, RARITY, 4, 2, 2, 6, true, Rahab.class,
             new Vector2f(151, 160), 1.2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.WARD),

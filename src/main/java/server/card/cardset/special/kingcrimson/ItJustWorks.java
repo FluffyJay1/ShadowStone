@@ -1,6 +1,7 @@
 package server.card.cardset.special.kingcrimson;
 
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import server.ServerBoard;
 import server.card.*;
 import server.card.effect.Effect;
@@ -23,7 +24,7 @@ public class ItJustWorks extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/special/itjustworks.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/special/itjustworks.png"),
             CRAFT, TRAITS, RARITY, 2, ItJustWorks.class,
             List::of,
             List.of());

@@ -1,6 +1,7 @@
 package server.card.leader;
 
 import client.tooltip.TooltipLeader;
+import client.ui.Animation;
 import network.Emote;
 import network.EmoteSet;
 import org.newdawn.slick.geom.Vector2f;
@@ -26,7 +27,7 @@ public class Yuwan extends LeaderText {
             .setLine(Emote.THINKING, "Stay on your toes...")
             .setLine(Emote.THREATEN, "I will have revenge!")
             .build();
-    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "leader/yuwan.png",
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", () -> new Animation("leader/yuwan.png"),
             CRAFT, TRAITS, RARITY, Yuwan.class,
             new Vector2f(), -1, null,
             EMOTESET);

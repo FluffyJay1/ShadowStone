@@ -3,6 +3,7 @@ package server.card.cardset.moba.runemage;
 import java.util.*;
 
 import client.tooltip.*;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageBigExplosion;
 import server.*;
 import server.ai.AI;
@@ -22,7 +23,7 @@ public class LochnLoad extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/moba/lochnload.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/moba/lochnload.png"),
             CRAFT, TRAITS, RARITY, 3, LochnLoad.class,
             List::of,
             List.of());

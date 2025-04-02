@@ -2,7 +2,9 @@ package server.card.cardset.indie.neutral;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipAmulet;
+import client.ui.Animation;
 
+import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Vector2f;
 import server.ai.AI;
 import server.card.*;
@@ -20,7 +22,13 @@ public class EmotionAngry extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/indie/emotionangry.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION,
+            () -> new Animation("card/indie/emotionangry.png", new Vector2f(3, 1), 0, 0, Image.FILTER_NEAREST,
+                    anim -> {
+                        anim.play = true;
+                        anim.loop = true;
+                        anim.setFrameInterval(0.2);
+                    }),
             CRAFT, TRAITS, RARITY, 3, EmotionAngry.class,
             new Vector2f(), -1,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.AURA, Tooltip.ARMOR),

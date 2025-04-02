@@ -121,6 +121,10 @@ public class Tooltip {
             "Each instance of damage this character receives is reduced by X. Negative values of X increase damage received, only if the source of damage is greater than 0.",
             List::of);
 
+    public static final Tooltip UNYIELDING = new Tooltip("Unyielding",
+            "Cards with <b>Unyielding</b> cannot be brought below 1 health via damage.",
+            List::of);
+
     public final String name;
     public final String description;
     public Supplier<List<Tooltip>> references;

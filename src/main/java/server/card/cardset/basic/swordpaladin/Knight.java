@@ -1,5 +1,6 @@
 package server.card.cardset.basic.swordpaladin;
 
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.*;
 
@@ -15,7 +16,7 @@ public class Knight extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/knight.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/knight.png"),
             CRAFT, TRAITS, RARITY, 1, 1, 1, 1, true, Knight.class,
             new Vector2f(), -1, new EventAnimationDamageSlash(),
             List::of,

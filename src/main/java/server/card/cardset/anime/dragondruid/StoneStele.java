@@ -2,6 +2,7 @@ package server.card.cardset.anime.dragondruid;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipAmulet;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageEnergyBeamQuick;
 import org.newdawn.slick.geom.Vector2f;
 import server.ai.AI;
@@ -22,7 +23,7 @@ public class StoneStele extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/anime/stonestele.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/anime/stonestele.png"),
             CRAFT, TRAITS, RARITY, 3, StoneStele.class,
             new Vector2f(), -1,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.AURA, Tooltip.BLAST),

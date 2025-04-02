@@ -2,6 +2,7 @@ package server.card.cardset.indie.neutral;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageOff;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
@@ -20,7 +21,7 @@ public class Elsen extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/indie/elsen.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/indie/elsen.png"),
             CRAFT, TRAITS, RARITY, 0, 0, 1, 4, true, Elsen.class,
             new Vector2f(156, 188), 1.25, new EventAnimationDamageOff(),
             () -> List.of(Tooltip.TRANSFORM, Spectre.TOOLTIP),

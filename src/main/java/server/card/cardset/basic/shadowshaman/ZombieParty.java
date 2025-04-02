@@ -2,8 +2,7 @@ package server.card.cardset.basic.shadowshaman;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageDefault;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
 import server.ServerBoard;
 import server.ai.AI;
@@ -26,7 +25,7 @@ public class ZombieParty extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/zombieparty.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/zombieparty.png"),
             CRAFT, TRAITS, RARITY, 2, ZombieParty.class,
             () -> List.of(Tooltip.SPEND, Zombie.TOOLTIP),
             List.of());

@@ -1,6 +1,7 @@
 package server.card.cardset.standard.runemage;
 
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
@@ -24,7 +25,7 @@ public class KaleidoscopicGlow extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/standard/kaleidoscopicglow.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/standard/kaleidoscopicglow.png"),
             CRAFT, TRAITS, RARITY, 2, KaleidoscopicGlow.class,
             List::of,
             List.of());

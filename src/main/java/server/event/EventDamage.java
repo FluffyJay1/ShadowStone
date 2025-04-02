@@ -71,13 +71,16 @@ public class EventDamage extends Event {
                 // normal damage processing
                 // 0 damage against negative armor should still be 0 damage
                 int damageAdjusted = this.damage.get(i) == 0 ? 0 : Math.max(0, this.damage.get(i) - minion.finalStats.get(Stat.ARMOR));
-                if ((poisonous && minion.finalStats.get(Stat.STALWART) == 0 && damageAdjusted > 0 && !(minion instanceof Leader))
-                        || (minion.health > 0 && minion.health <= damageAdjusted) && minion.alive) {
+                minion.health -= damageAdjusted;
+                if (minion.finalStats.get(Stat.UNYIELDING) > 0 && minion.health < 1 && minion.finalStats.get(Stat.HEALTH) > 0) {
+                    minion.health = 1;
+                }
+                this.actualDamage.set(i, damageAdjusted);
+                boolean diesToPoisonous = (poisonous && minion.finalStats.get(Stat.STALWART) == 0 && damageAdjusted > 0 && !(minion instanceof Leader));
+                if (minion.alive && (minion.health <= 0 || diesToPoisonous)) {
                     minion.alive = false;
                     this.markedForDeath.add(minion);
                 }
-                minion.health -= damageAdjusted;
-                this.actualDamage.set(i, damageAdjusted);
                 if (damageAdjusted > 0 && this.cardSource.finalStats.get(Stat.FREEZING_TOUCH) > 0) {
                     Effect frozen = new Effect("", EffectStats.builder()
                             .set(Stat.FROZEN, 1)

@@ -3,6 +3,7 @@ package server.card.cardset.basic.dragondruid;
 import java.util.*;
 
 import client.tooltip.*;
+import client.ui.Animation;
 import server.*;
 import server.ai.AI;
 import server.card.*;
@@ -19,7 +20,7 @@ public class DragonOracle extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/dragonoracle.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/dragonoracle.png"),
             CRAFT, TRAITS, RARITY, 2, DragonOracle.class,
             () -> List.of(Tooltip.OVERFLOW),
             List.of());

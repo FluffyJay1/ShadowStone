@@ -40,6 +40,10 @@ public class Minion extends BoardObject {
             // let's say average 2 dmg overflow
             health += shield + 2;
         }
+        if (this.finalStats.get(Stat.UNYIELDING) > 0) {
+            // this is harder to evaluate since unyielding is usually not a permanent effect
+            health += 4;
+        }
         return health;
     }
 

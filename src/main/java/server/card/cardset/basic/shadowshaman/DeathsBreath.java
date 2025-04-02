@@ -2,6 +2,7 @@ package server.card.cardset.basic.shadowshaman;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
@@ -27,7 +28,7 @@ public class DeathsBreath extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/deathsbreath.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/deathsbreath.png"),
             CRAFT, TRAITS, RARITY, 6, DeathsBreath.class,
             () -> List.of(Zombie.TOOLTIP, Tooltip.NECROMANCY, Tooltip.WARD),
             List.of());

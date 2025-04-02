@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.BoardObject;
@@ -28,7 +29,7 @@ public class EverySingleDay extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/anime/everysingleday.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/anime/everysingleday.png"),
             CRAFT, TRAITS, RARITY, 2, EverySingleDay.class,
             () -> List.of(Tooltip.MUTE, OneHundredPushups.TOOLTIP),
             List.of());

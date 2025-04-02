@@ -2,6 +2,7 @@ package server.card.cardset.anime.portalhunter;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipAmulet;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
 import org.newdawn.slick.geom.Vector2f;
 import server.ai.AI;
@@ -22,7 +23,7 @@ public class EyeOfStormyJudgement extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/anime/eyeofstormyjudgement.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/anime/eyeofstormyjudgement.png"),
             CRAFT, TRAITS, RARITY, 3, EyeOfStormyJudgement.class,
             new Vector2f(), -1,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.AURA, Tooltip.STRIKE),

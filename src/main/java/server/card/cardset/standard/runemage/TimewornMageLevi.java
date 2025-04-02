@@ -2,6 +2,7 @@ package server.card.cardset.standard.runemage;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -27,7 +28,7 @@ public class TimewornMageLevi extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/timewornmagelevi.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/timewornmagelevi.png"),
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, false, TimewornMageLevi.class,
             new Vector2f(160, 141), 1.5, new EventAnimationDamageFire(),
             () -> List.of(Tooltip.UNLEASH, CrimsonSorcery.TOOLTIP, Tooltip.RUSH),

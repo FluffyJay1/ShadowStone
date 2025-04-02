@@ -2,6 +2,7 @@ package server.card.cardset.anime.runemage;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSplash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -29,7 +30,7 @@ public class Mona extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/anime/mona.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/anime/mona.png"),
             CRAFT, TRAITS, RARITY, 3, 3, 1, 3, false, Mona.class,
             new Vector2f(150, 135), 1.6, new EventAnimationDamageSplash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.ARMOR, Tooltip.SPELLBOOST, Tooltip.UNLEASH, PhantomOfFate.TOOLTIP),

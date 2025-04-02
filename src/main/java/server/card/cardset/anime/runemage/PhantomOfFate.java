@@ -2,6 +2,7 @@ package server.card.cardset.anime.runemage;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSplash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -26,7 +27,7 @@ public class PhantomOfFate extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/anime/phantomoffate.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/anime/phantomoffate.png"),
             CRAFT, TRAITS, RARITY, 3, 0, 0, 1, true, PhantomOfFate.class,
             new Vector2f(), -1, new EventAnimationDamageSplash(),
             () -> List.of(Tooltip.WARD, Tooltip.COUNTDOWN, Tooltip.LASTWORDS),

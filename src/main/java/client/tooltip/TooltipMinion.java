@@ -1,5 +1,6 @@
 package client.tooltip;
 
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
 import org.newdawn.slick.geom.*;
 
@@ -17,7 +18,7 @@ public class TooltipMinion extends TooltipCard {
     public final boolean basicUnleash;
     public final String attackAnimation;
 
-    public TooltipMinion(String name, String description, String imagepath, ClassCraft craft, List<CardTrait> traits, CardRarity rarity, int cost, int attack,
+    public TooltipMinion(String name, String description, Supplier<Animation> animation, ClassCraft craft, List<CardTrait> traits, CardRarity rarity, int cost, int attack,
                          int magic, int health, boolean basicUnleash, Class<? extends MinionText> minionTextClass, Vector2f artFocusPos,
                          double artFocusScale, EventAnimationDamage attackAnimation, Supplier<List<Tooltip>> references,
                          List<Function<Card, String>> trackers) {
@@ -25,7 +26,7 @@ public class TooltipMinion extends TooltipCard {
                 "minion\nA:" + attack + ", M:" + magic + ", H:" + health + "\n \n" + description + (basicUnleash
                         ? "\n <b>Unleash</b>: Deal M damage to an enemy minion.\n"
                         : ""),
-                imagepath, craft, traits, rarity, cost, minionTextClass, artFocusPos, artFocusScale, references, trackers);
+                animation, craft, traits, rarity, cost, minionTextClass, artFocusPos, artFocusScale, references, trackers);
         this.basicUnleash = basicUnleash;
         if (basicUnleash) {
             this.references = () -> {

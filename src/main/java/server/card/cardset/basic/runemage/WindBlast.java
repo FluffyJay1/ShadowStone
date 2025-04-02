@@ -2,6 +2,7 @@ package server.card.cardset.basic.runemage;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageWind;
 import server.ServerBoard;
 import server.ai.AI;
@@ -26,7 +27,7 @@ public class WindBlast extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/windblast.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/windblast.png"),
             CRAFT, TRAITS, RARITY, 2, WindBlast.class,
             () -> List.of(Tooltip.SPELLBOOST),
             List.of());

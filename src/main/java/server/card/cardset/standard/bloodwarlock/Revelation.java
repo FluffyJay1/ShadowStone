@@ -2,6 +2,7 @@ package server.card.cardset.standard.bloodwarlock;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageAOEFire;
 import server.ServerBoard;
 import server.ai.AI;
@@ -28,7 +29,7 @@ public class Revelation extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/standard/revelation.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/standard/revelation.png"),
             CRAFT, TRAITS, RARITY, 8, Revelation.class,
             () -> List.of(Tooltip.VENGEANCE),
             List.of());

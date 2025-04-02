@@ -1,6 +1,7 @@
 package server.card.cardset.special.treasure;
 
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFireball;
 import server.ServerBoard;
 import server.ai.AI;
@@ -23,7 +24,7 @@ public class EmbersOfRagnaros extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/special/embersofragnaros.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/special/embersofragnaros.png"),
             CRAFT, TRAITS, RARITY, 3, EmbersOfRagnaros.class,
             List::of,
             List.of());

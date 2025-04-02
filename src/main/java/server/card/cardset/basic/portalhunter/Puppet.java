@@ -1,5 +1,6 @@
 package server.card.cardset.basic.portalhunter;
 
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.*;
 
@@ -15,7 +16,7 @@ public class Puppet extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/puppet.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/puppet.png"),
             CRAFT, TRAITS, RARITY, 0, 1, 0, 1, false, Puppet.class,
             new Vector2f(161, 143), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.RUSH, Tooltip.COUNTDOWN),

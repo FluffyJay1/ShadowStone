@@ -1,7 +1,7 @@
 package server.card.cardset.basic.runemage;
 
 import client.tooltip.TooltipSpell;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageEnergyBeam;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
 import server.ServerBoard;
 import server.ai.AI;
@@ -25,7 +25,7 @@ public class MagicMissile extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/magicmissile.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/magicmissile.png"),
             CRAFT, TRAITS, RARITY, 2, MagicMissile.class,
             List::of,
             List.of());

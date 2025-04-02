@@ -2,6 +2,8 @@ package server.card.cardset.basic.havenpriest;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipAmulet;
+import client.ui.Animation;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.ai.AI;
 import server.card.AmuletText;
@@ -27,7 +29,7 @@ public class FeatherfallHourglass extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/basic/featherfallhourglass.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/basic/featherfallhourglass.png"),
             CRAFT, TRAITS, RARITY, 1, FeatherfallHourglass.class,
             new Vector2f(145, 143), 1.2,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.BATTLECRY, Tooltip.SPEND, Tooltip.LASTWORDS, TimeOwl.TOOLTIP),

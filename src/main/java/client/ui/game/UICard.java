@@ -131,9 +131,22 @@ public class UICard extends UIBox {
             ))
     );
 
+    private static final Supplier<EmissionStrategy> UNYIELDING_PARTICLES = () -> new EmissionStrategy(
+            new IntervalEmissionTimingStrategy(1, 0.25),
+            new ComposedEmissionPropertyStrategy(List.of(
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/board/unyielding.png", new Vector2f(1, 1), 0, 0)),
+                    new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(1)),
+                    new ConstantEmissionPropertyStrategy(
+                            Graphics.MODE_NORMAL, 0, new Vector2f(0, 0),
+                            () -> new QuadraticInterpolationA(0, 0, -4),
+                            () -> new LinearInterpolation(0.6, 0.8)
+                    ),
+                    new RandomAngleEmissionPropertyStrategy(new LinearInterpolation(-50, 50))
+            ))
+    );
 
     private Card card;
-    private Image cardImage, subImage;
+    private Animation cardAnimation;
     private final UIBoard uib;
     private final List<Image> icons;
     private boolean flippedOver; // draw the back of the card instead
@@ -149,6 +162,7 @@ public class UICard extends UIBox {
     private final ParticleSystem specialConditionParticles;
     private final ParticleSystem stalwartParticles;
     private final ParticleSystem mutedParticles;
+    private final ParticleSystem unyieldingParticles;
     private final EnumMap<Stat, Double> statFontSizeIncreaseAnimationTimer; // e.g. EventAnimationAddEffect bumping stats, should make font size bigger
 
     public UICard(UI ui, UIBoard uib, Card c) {
@@ -167,6 +181,9 @@ public class UICard extends UIBox {
         this.addChild(this.stalwartParticles);
         this.mutedParticles = new ParticleSystem(ui, new Vector2f(), MUTED_PARTICLES.get(), true);
         this.addChild(this.mutedParticles);
+        this.unyieldingParticles = new ParticleSystem(ui, new Vector2f(MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), UNYIELDING_PARTICLES.get(), true);
+        this.unyieldingParticles.relpos = true;
+        this.addChild(this.unyieldingParticles);
     }
 
     @Override
@@ -190,6 +207,7 @@ public class UICard extends UIBox {
 
     public void setCard(Card card) {
         this.card = card;
+        this.cardAnimation = card.getCardText().getTooltip().animation.get();
         if (card instanceof UnleashPower) {
             this.setDim(new Vector2f(UNLEASH_POWER_RADIUS * 2, UNLEASH_POWER_RADIUS * 2));
             this.hitcircle = true;
@@ -278,7 +296,7 @@ public class UICard extends UIBox {
         return STAT_DEFAULT_SIZE;
     }
 
-    public void updateCardAnimation() {
+    public void updateCardUIProperties() {
         float scale = switch (this.card.status) {
             case BOARD, LEADER -> SCALE_BOARD;
             case HAND -> {
@@ -329,6 +347,7 @@ public class UICard extends UIBox {
     @Override
     public void update(double frametime) {
         super.update(frametime);
+        this.updateCardAnimation(frametime);
         this.stealthParticles.setScale(this.getScale());
         this.stealthParticles.setPaused(!this.card.isInPlay() || this.card.finalStats.get(Stat.STEALTH) == 0);
         if (this.card.realCard.player != null) {
@@ -344,8 +363,10 @@ public class UICard extends UIBox {
         this.stalwartParticles.setPaused(!this.card.isInPlay() || this.card.finalStats.get(Stat.STALWART) == 0);
         this.mutedParticles.setScale(this.getScale());
         this.mutedParticles.setPaused(!this.card.isInPlay() || this.card.getFinalEffects(false).noneMatch(e -> e.mute));
+        this.unyieldingParticles.setScale(this.getScale());
+        this.unyieldingParticles.setPaused(!this.card.isInPlay() || !(this.card instanceof Minion) || this.card.finalStats.get(Stat.UNYIELDING) == 0);
         if (!this.isBeingAnimated()) {
-            this.updateCardAnimation();
+            this.updateCardUIProperties();
             this.updateFlippedOver();
         }
         if (this.isPending()) {
@@ -359,6 +380,12 @@ public class UICard extends UIBox {
             } else {
                 this.statFontSizeIncreaseAnimationTimer.put(entry.getKey(), newTime);
             }
+        }
+    }
+
+    public void updateCardAnimation(double frametime) {
+        if (this.cardAnimation != null) {
+            this.cardAnimation.update(frametime);
         }
     }
 
@@ -405,6 +432,7 @@ public class UICard extends UIBox {
         this.specialConditionParticles.draw(g);
         this.stalwartParticles.draw(g);
         this.mutedParticles.draw(g);
+        this.unyieldingParticles.draw(g);
     }
 
     public void drawCardBack(Graphics g, Vector2f pos, double scale) {
@@ -415,19 +443,14 @@ public class UICard extends UIBox {
     }
 
     public void drawCardArt(Graphics g, Vector2f pos, double scale, CardStatus status, Color filter) {
-        // get image if it doesn't exist
-        if (this.cardImage == null && this.card.getTooltip().imagepath != null) {
-            this.cardImage = Game.getImage(this.card.getTooltip().imagepath).getScaledCopy((int) this.getOriginalDim().x,
-                    (int) this.getOriginalDim().y);
+        if (this.cardAnimation == null) {
+            return;
         }
-        // generate the zoomed in image if we don't have one yet
-        if (this.subImage == null) {
-            this.subImage = this.generateZoomedSubImage(this.getOriginalDim());
-        }
+        Image currentFrame = this.cardAnimation.getCurrentFrame();
         // for an unleash power, draw it in a circle
         if (this.card instanceof UnleashPower) {
             // scale it
-            Image scaledCopy = this.subImage.getScaledCopy((float) scale);
+            Image scaledCopy = this.generateZoomedSubImage(currentFrame, this.getOriginalDim()).getScaledCopy((float) scale);
             Circle c = new Circle(pos.x, pos.y, (float) (UNLEASH_POWER_RADIUS * scale));
             g.setColor(filter);
             g.texture(c, scaledCopy, true);
@@ -436,9 +459,9 @@ public class UICard extends UIBox {
             Image scaledCopy;
             // if its a thing on board, zoom in
             if (status.equals(CardStatus.BOARD) || status.equals(CardStatus.LEADER)) {
-                scaledCopy = this.subImage.getScaledCopy((float) scale);
+                scaledCopy = this.generateZoomedSubImage(currentFrame, this.getOriginalDim()).getScaledCopy((float) scale);
             } else {
-                scaledCopy = this.cardImage.getScaledCopy((float) scale);
+                scaledCopy = currentFrame.getScaledCopy((int) this.getOriginalDim().x, (int) this.getOriginalDim().y).getScaledCopy((float) scale);
             }
             g.drawImage(scaledCopy, (int) (pos.x - scaledCopy.getWidth() / 2),
                     (int) (pos.y - scaledCopy.getHeight() / 2),
@@ -446,9 +469,8 @@ public class UICard extends UIBox {
         }
     }
 
-    private Image generateZoomedSubImage(Vector2f intendedDimensions) {
+    private Image generateZoomedSubImage(Image originalImage, Vector2f intendedDimensions) {
         TooltipCard tooltip = this.card.getTooltip();
-        Image originalImage = Game.getImage(tooltip.imagepath);
         if (tooltip.artFocusScale <= 0) {
             // use original art, scaled to fill intended dimensions
             float xr = originalImage.getWidth() / intendedDimensions.x;

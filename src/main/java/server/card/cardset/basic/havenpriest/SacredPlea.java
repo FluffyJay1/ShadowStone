@@ -2,6 +2,8 @@ package server.card.cardset.basic.havenpriest;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipAmulet;
+import client.ui.Animation;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.ai.AI;
 import server.card.AmuletText;
@@ -23,7 +25,7 @@ public class SacredPlea extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/basic/sacredplea.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/basic/sacredplea.png"),
             CRAFT, TRAITS, RARITY, 1, SacredPlea.class,
             new Vector2f(132, 148), 1.4,
             () -> List.of(Tooltip.COUNTDOWN),

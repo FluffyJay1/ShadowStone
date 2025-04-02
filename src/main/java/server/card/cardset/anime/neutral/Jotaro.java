@@ -2,6 +2,7 @@ package server.card.cardset.anime.neutral;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ai.AI;
@@ -26,7 +27,7 @@ public class Jotaro extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/anime/jotaro.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/anime/jotaro.png"),
             CRAFT, TRAITS, RARITY, 9, 4, 2, 4, false, Jotaro.class,
             new Vector2f(134, 173), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, YareYareDaze.TOOLTIP),

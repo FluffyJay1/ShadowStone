@@ -2,6 +2,7 @@ package server.card.cardset.basic.shadowshaman;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
@@ -20,7 +21,7 @@ public class BoneChimera extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/bonechimera.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/bonechimera.png"),
             CRAFT, TRAITS, RARITY, 3, 1, 1, 1, true, BoneChimera.class,
             new Vector2f(125, 152), 1.25, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.LASTWORDS, Skeleton.TOOLTIP),

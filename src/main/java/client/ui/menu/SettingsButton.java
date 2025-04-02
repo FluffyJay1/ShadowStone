@@ -17,6 +17,7 @@ import org.newdawn.slick.geom.Vector2f;
 public class SettingsButton extends UIElement {
     public SettingsButton(UI ui) {
         super(ui, new Vector2f(-0.5f, -0.5f));
+        this.setZ(100);
         this.relpos = true;
         UIBox panel = new UIBox(ui, new Vector2f(-0.5f, -0.5f), new Vector2f(250, 250), "ui/uiboxborder.png");
         panel.relpos = true;

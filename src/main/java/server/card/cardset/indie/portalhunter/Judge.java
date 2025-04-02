@@ -2,6 +2,7 @@ package server.card.cardset.indie.portalhunter;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageOff;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -30,7 +31,7 @@ public class Judge extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/indie/judge.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/indie/judge.png"),
             CRAFT, TRAITS, RARITY, 8, 3, 3, 3, false, Judge.class,
             new Vector2f(150, 175), 1.1, new EventAnimationDamageOff(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.TRANSFORM, Puppet.TOOLTIP, Tooltip.UNLEASH, Tooltip.STORM),

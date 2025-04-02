@@ -2,6 +2,7 @@ package server.card.cardset.basic.portalhunter;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -33,7 +34,7 @@ public class Icarus extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/icarus.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/icarus.png"),
             CRAFT, TRAITS, RARITY, 2, 2, 1, 2, false, Icarus.class,
             new Vector2f(122, 119), 1.55, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, AncientArtifact.TOOLTIP, Tooltip.UNLEASH),

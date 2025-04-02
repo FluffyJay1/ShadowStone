@@ -814,6 +814,7 @@ public class AI extends Thread {
             return -99999 + l.health; // u dont want to be dead
         }
         int shield = l.finalStats.get(Stat.SHIELD);
+        int armor = l.finalStats.get(Stat.ARMOR);
         Supplier<Stream<Minion>> attackingMinions = () -> b.getMinions(team * -1,  true, true);
         // TODO add if can attack check
         // TODO factor in damage limiting effects like durandal
@@ -824,7 +825,7 @@ public class AI extends Thread {
         int potentialLeaderDamage = attackingMinions.get()
                 .filter(Minion::canAttack)
                 .filter(Minion::attackLeaderConditions)
-                .map(m -> m.finalStats.get(Stat.ATTACK) * (m.finalStats.get(Stat.ATTACKS_PER_TURN) - m.attacksThisTurn))
+                .map(m -> Math.max(m.finalStats.get(Stat.ATTACK) - armor, 0) * (m.finalStats.get(Stat.ATTACKS_PER_TURN) - m.attacksThisTurn))
                 .reduce(0, Integer::sum);
         int threatenDamage = attackingMinions.get()
                 .filter(Minion::canAttackEventually)
@@ -833,7 +834,7 @@ public class AI extends Thread {
         int threatenLeaderDamage = attackingMinions.get()
                 .filter(Minion::canAttackEventually)
                 .filter(Minion::attackLeaderConditions)
-                .map(m -> m.finalStats.get(Stat.ATTACK) * m.finalStats.get(Stat.ATTACKS_PER_TURN))
+                .map(m -> Math.max(m.finalStats.get(Stat.ATTACK) - armor, 0) * m.finalStats.get(Stat.ATTACKS_PER_TURN))
                 .reduce(0, Integer::sum);
         int attackers = attackingMinions.get()
                 .map(m -> m.finalStats.get(Stat.ATTACKS_PER_TURN))
@@ -860,7 +861,9 @@ public class AI extends Thread {
         } else {
             ehp = Math.max(ehp - threatenDamage, leaderhp - threatenLeaderDamage);
             if (ehp <= 0) {
-                if (team == b.getCurrentPlayerTurn()) {
+                if (l.finalStats.get(Stat.UNYIELDING) > 0) {
+                    ehp = 1;
+                } else if (team == b.getCurrentPlayerTurn()) {
                     // they're threatening lethal if i dont do anything
                     return -30 + ehp;
                 } else {

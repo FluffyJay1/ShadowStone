@@ -1,6 +1,7 @@
 package server.card.leader;
 
 import client.tooltip.TooltipLeader;
+import client.ui.Animation;
 import network.Emote;
 import network.EmoteSet;
 import org.newdawn.slick.geom.Vector2f;
@@ -26,7 +27,7 @@ public class Eris extends LeaderText {
             .setLine(Emote.THINKING, "The possibilities are infinite...")
             .setLine(Emote.THREATEN, "I will liberate you!")
             .build();
-    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", "leader/eris.png",
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "", () -> new Animation("leader/eris.png"),
             CRAFT, TRAITS, RARITY, Eris.class,
             new Vector2f(), -1, null,
             EMOTESET);

@@ -2,6 +2,7 @@ package server.card.cardset.standard.shadowshaman;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageDoubleSlice;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
@@ -19,7 +20,7 @@ public class MordecaiTheDuelist extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/mordecaitheduelist.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/mordecaitheduelist.png"),
             CRAFT, TRAITS, RARITY, 8, 5, 2, 5, true, MordecaiTheDuelist.class,
             new Vector2f(150, 155), 1.5, new EventAnimationDamageDoubleSlice(),
             () -> List.of(Tooltip.LASTWORDS),

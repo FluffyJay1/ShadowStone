@@ -2,6 +2,7 @@ package server.card.cardset.basic.havenpriest;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import server.ServerBoard;
 import server.card.*;
 import server.card.effect.Effect;
@@ -22,7 +23,7 @@ public class BlackenedScripture extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/blackenedscripture.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/blackenedscripture.png"),
             CRAFT, TRAITS, RARITY, 2, BlackenedScripture.class,
             () -> List.of(Tooltip.BANISH),
             List.of());

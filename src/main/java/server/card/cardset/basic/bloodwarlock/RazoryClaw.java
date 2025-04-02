@@ -1,6 +1,7 @@
 package server.card.cardset.basic.bloodwarlock;
 
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageClaw;
 import server.ServerBoard;
 import server.ai.AI;
@@ -23,7 +24,7 @@ public class RazoryClaw extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/razoryclaw.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/razoryclaw.png"),
             CRAFT, TRAITS, RARITY, 2, RazoryClaw.class,
             List::of,
             List.of());

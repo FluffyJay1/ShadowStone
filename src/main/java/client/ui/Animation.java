@@ -1,5 +1,7 @@
 package client.ui;
 
+import java.util.function.Consumer;
+
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Vector2f;
@@ -24,6 +26,16 @@ public class Animation implements Cloneable {
     private double[] frameIntervals = { 1 };
     public boolean play = false, loop = false, hflip = false, vflip = false;
 
+    public Animation(String path, Vector2f framedim, int spacing, int margin, int filter, Consumer<Animation> setters) {
+        Image i = Game.getImage(path);
+        i.setFilter(filter);
+        this.sheet = new SpriteSheet(i, (int) ((i.getWidth() - margin * 2) / framedim.x) - spacing,
+                (int) ((i.getHeight() - margin * 2) / framedim.y) - spacing, spacing, margin);
+        if (setters != null) {
+            setters.accept(this);
+        }
+    }
+
     /**
      * Constructor for animation object
      * 
@@ -38,10 +50,7 @@ public class Animation implements Cloneable {
      * @param filter filter type from Image class
      */
     public Animation(String path, Vector2f framedim, int spacing, int margin, int filter) {
-        Image i = Game.getImage(path);
-        i.setFilter(filter);
-        this.sheet = new SpriteSheet(i, (int) ((i.getWidth() - margin * 2) / framedim.x) - spacing,
-                (int) ((i.getHeight() - margin * 2) / framedim.y) - spacing, spacing, margin);
+        this(path, framedim, spacing, margin, filter, null);
     }
 
     /**
@@ -58,6 +67,10 @@ public class Animation implements Cloneable {
      */
     public Animation(String path, Vector2f framedim, int spacing, int margin) {
         this(path, framedim, spacing, margin, Image.FILTER_LINEAR);
+    }
+
+    public Animation(String path) {
+        this(path, new Vector2f(1, 1), 0, 0);
     }
 
     /**

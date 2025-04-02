@@ -1,6 +1,7 @@
 package server.card.cardset.basic.bloodwarlock;
 
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageAOECloud;
 import server.ServerBoard;
 import server.ai.AI;
@@ -22,7 +23,7 @@ public class Defile extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/basic/defile.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/defile.png"),
             CRAFT, TRAITS, RARITY, 2, Defile.class,
             List::of,
             List.of());

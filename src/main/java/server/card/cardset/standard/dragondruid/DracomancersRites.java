@@ -1,6 +1,8 @@
 package server.card.cardset.standard.dragondruid;
 
 import client.tooltip.TooltipAmulet;
+import client.ui.Animation;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.card.*;
 import server.card.effect.Effect;
@@ -18,7 +20,7 @@ public class DracomancersRites extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/standard/dracomancersrites.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/standard/dracomancersrites.png"),
             CRAFT, TRAITS, RARITY, 3, DracomancersRites.class,
             new Vector2f(123, 145), 1.4,
             List::of,

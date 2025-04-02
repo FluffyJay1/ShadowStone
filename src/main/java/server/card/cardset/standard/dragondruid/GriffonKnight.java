@@ -2,6 +2,7 @@ package server.card.cardset.standard.dragondruid;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageArrow;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -26,7 +27,7 @@ public class GriffonKnight extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/griffonknight.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/griffonknight.png"),
             CRAFT, TRAITS, RARITY, 3, 2, 1, 3, true, GriffonKnight.class,
             new Vector2f(125, 156), 1.2, new EventAnimationDamageArrow(),
             () -> List.of(Tooltip.BATTLECRY),

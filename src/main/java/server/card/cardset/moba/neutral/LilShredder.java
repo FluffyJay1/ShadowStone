@@ -2,6 +2,7 @@ package server.card.cardset.moba.neutral;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageShoot;
 import server.ServerBoard;
 import server.ai.AI;
@@ -27,7 +28,7 @@ public class LilShredder extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, "card/moba/lilshredder.png",
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/moba/lilshredder.png"),
             CRAFT, TRAITS, RARITY, 4, LilShredder.class,
             () -> List.of(Tooltip.ARMOR),
             List.of());

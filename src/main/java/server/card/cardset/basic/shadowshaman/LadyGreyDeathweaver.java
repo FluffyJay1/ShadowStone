@@ -2,6 +2,7 @@ package server.card.cardset.basic.shadowshaman;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -30,7 +31,7 @@ public class LadyGreyDeathweaver extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/basic/ladygreydeathweaver.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/ladygreydeathweaver.png"),
             CRAFT, TRAITS, RARITY, 2, 1, 2, 3, false, LadyGreyDeathweaver.class,
             new Vector2f(150, 140), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.LIFESTEAL, Tooltip.UNLEASH, Tooltip.REANIMATE, Tooltip.RUSH),

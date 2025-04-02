@@ -42,6 +42,12 @@ public class CardDisplayUnit extends UIBox {
         this.alert(CARD_CLICK + " " + cardText.toString(), button, clickCount);
     }
 
+    @Override
+    public void update(double frametime) {
+        super.update(frametime);
+        this.uicard.updateCardAnimation(frametime);
+    }
+
     private Card getCardFrom(CardText cardText) {
         Card card = cardText.constructInstance(null);
         card.status = this.status;

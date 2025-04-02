@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import client.tooltip.*;
+import client.ui.Animation;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.*;
 import server.ai.AI;
@@ -22,7 +24,7 @@ public class WellOfDestination extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/standard/wellofdestination.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/standard/wellofdestination.png"),
             CRAFT, TRAITS, RARITY, 2, WellOfDestination.class,
             new Vector2f(), -1,
             List::of,

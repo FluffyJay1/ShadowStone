@@ -1,9 +1,10 @@
 package client;
 
-import org.lwjgl.Sys;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import server.Board;
+import server.Player;
+import server.card.BoardObject;
 import server.card.CardText;
 import server.card.cardset.anime.dragondruid.KingCrimson;
 import server.card.cardset.anime.neutral.Jotaro;
@@ -22,6 +23,7 @@ import server.card.cardset.special.batter.Alpha;
 import server.card.cardset.special.batter.Epsilon;
 import server.card.cardset.special.batter.Omega;
 import server.card.cardset.special.kurumi.CityOfDevouringTime;
+import server.card.cardset.special.omori.OmoriDidNotSuccumb;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -45,6 +47,8 @@ public class MusicThemeController {
         THEMES = List.of(
                 new Theme("music/fang_of_critias.ogg", b -> b.getMinions(0, false, true)
                         .anyMatch(m -> m.getFinalEffects(true).anyMatch(e -> e instanceof BerserkerSoul.EffectBerserkerSoul))),
+                new Theme("music/omori_omega.ogg", b -> cardInPlayMatches(b, bo -> bo.getCardText().equals(new OmoriDidNotSuccumb()) && b.getPlayerCard(bo.team, Player::getLeader).anyMatch(l -> l.health == 1))),
+                new Theme("music/omori.ogg", b -> cardIsInPlay(b, new OmoriDidNotSuccumb())),
                 new Theme("music/avatar_beat.ogg", b -> cardIsInPlay(b, new Judge())),
                 new Theme("music/uboa.ogg", b -> cardIsInPlay(b, new Uboa())),
                 new Theme("music/stardust_crusaders.ogg", b -> cardIsInPlay(b, new Jotaro())),
@@ -94,12 +98,16 @@ public class MusicThemeController {
         }
     }
 
+    private static boolean cardInPlayMatches(Board b, Predicate<BoardObject> predicate) {
+        return b.getBoardObjects(0, true, true, true, true).anyMatch(predicate);
+    }
+
     private static boolean cardIsInPlay(Board b, CardText card) {
-        return b.getBoardObjects(0, true, true, true, true).anyMatch(bo -> bo.getCardText().equals(card));
+        return cardInPlayMatches(b, bo -> bo.getCardText().equals(card));
     }
 
     private static boolean anyCardIsInPlay(Board b, List<CardText> cards) {
-        return b.getBoardObjects(0, true, true, true, true).anyMatch(bo -> cards.contains(bo.getCardText()));
+        return cardInPlayMatches(b, bo -> cards.contains(bo.getCardText()));
     }
 
     private static class Theme {

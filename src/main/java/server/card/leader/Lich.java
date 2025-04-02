@@ -1,6 +1,7 @@
 package server.card.leader;
 
 import client.tooltip.TooltipLeader;
+import client.ui.Animation;
 import network.Emote;
 import network.EmoteSet;
 import org.newdawn.slick.geom.Vector2f;
@@ -27,7 +28,7 @@ public class Lich extends LeaderText {
             .setLine(Emote.THINKING, "A chill wind...")
             .setLine(Emote.THREATEN, "Feel my cold embrace!")
             .build();
-    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, DESCRIPTION, "leader/lich.png",
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, DESCRIPTION, () -> new Animation("leader/lich.png"),
             CRAFT, TRAITS, RARITY, Lich.class,
             new Vector2f(), -1, null,
             EMOTESET);

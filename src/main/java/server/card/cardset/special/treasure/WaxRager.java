@@ -2,6 +2,7 @@ package server.card.cardset.special.treasure;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
@@ -19,7 +20,7 @@ public class WaxRager extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/special/waxrager.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/special/waxrager.png"),
             CRAFT, TRAITS, RARITY, 3, 5, 1, 1, true, WaxRager.class,
             new Vector2f(147, 148), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.LASTWORDS),

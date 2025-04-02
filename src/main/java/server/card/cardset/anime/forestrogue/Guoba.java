@@ -2,6 +2,7 @@ package server.card.cardset.anime.forestrogue;
 
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipAmulet;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -27,7 +28,7 @@ public class Guoba extends AmuletText {
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, "card/anime/guoba.png",
+    public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/anime/guoba.png"),
             CRAFT, TRAITS, RARITY, 2, Guoba.class,
             new Vector2f(153, 149), 1.3,
             () -> List.of(Tooltip.COUNTDOWN),

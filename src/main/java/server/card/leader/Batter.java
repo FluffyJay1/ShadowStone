@@ -1,6 +1,7 @@
 package server.card.leader;
 
 import client.tooltip.TooltipLeader;
+import client.ui.Animation;
 import network.Emote;
 import network.EmoteSet;
 import org.newdawn.slick.geom.Vector2f;
@@ -26,7 +27,7 @@ public class Batter extends LeaderText {
             .setLine(Emote.THINKING, "Damn, this lardass is beefier than I expected.")
             .setLine(Emote.THREATEN, "Purification in progress.")
             .build();
-    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "The purifier.", "card/indie/batter.png",
+    public static final TooltipLeader TOOLTIP = new TooltipLeader(NAME, "The purifier.", () -> new Animation("card/indie/batter.png"),
             CRAFT, TRAITS, RARITY, Batter.class,
             new Vector2f(112, 120), 2, null,
             EMOTESET);

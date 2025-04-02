@@ -1,6 +1,7 @@
 package server.card.cardset.standard.bloodwarlock;
 
 import client.tooltip.TooltipMinion;
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
 import org.newdawn.slick.geom.Vector2f;
 import server.Player;
@@ -18,7 +19,7 @@ public class MoltenGiant extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/moltengiant.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/moltengiant.png"),
             CRAFT, TRAITS, RARITY, 15, 8, 4, 8, true, MoltenGiant.class,
             new Vector2f(150, 145), 1.3, new EventAnimationDamageFire(),
             List::of,

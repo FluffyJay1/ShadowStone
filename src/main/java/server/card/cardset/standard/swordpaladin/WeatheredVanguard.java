@@ -2,6 +2,7 @@ package server.card.cardset.standard.swordpaladin;
 
 import java.util.*;
 
+import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.*;
 
@@ -23,7 +24,7 @@ public class WeatheredVanguard extends MinionText {
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.COMMANDER);
-    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, "card/standard/weatheredvanguard.png",
+    public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/weatheredvanguard.png"),
             CRAFT, TRAITS, RARITY, 3, 2, 1, 4, true, WeatheredVanguard.class,
             new Vector2f(155, 120), 1.6, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.SPEND, HeavyKnight.TOOLTIP),
