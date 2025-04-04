@@ -21,7 +21,7 @@ import java.util.List;
 
 public class WholeSouledSwing extends SpellText {
     public static final String NAME = "Whole-Souled Swing";
-    public static final String DESCRIPTION = "If there are fewer allied minions than enemy minions, summon a <b>Knight</b>. Deal 3 damage to an enemy minion";
+    public static final String DESCRIPTION = "If there are fewer allied minions than enemy minions, summon a <b>Knight</b>. Deal 3 damage to an enemy minion.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();

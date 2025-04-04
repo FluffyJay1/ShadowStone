@@ -24,4 +24,9 @@
         <cardset>server.card.cardset.anime.ExpansionSetAnime</cardset>
         <card>server.card.cardset.special.kurumi.CityOfDevouringTime</card>
     </contestant>
+    <contestant leader="server.card.leader.Omori" unleash="server.card.unleashpower.special.LookAtOmori">
+        <cardset>server.card.cardset.standard.ExpansionSetStandard</cardset>
+        <cardset>server.card.cardset.anime.ExpansionSetIndie</cardset>
+        <card>server.card.cardset.special.omori.OmoriDidNotSuccumb</card>
+    </contestant>
 </enemies>

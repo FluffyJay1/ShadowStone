@@ -19,12 +19,12 @@ import java.util.List;
 
 public class EventAnimationTurnStart extends EventAnimation<EventTurnStart> {
     private final Interpolation<Double> TEXT_SLIDE_X = new ComposedInterpolation<>(new ClampedInterpolation(0, 1.5),
-            new SequentialInterpolation<>(List.of(new QuadraticInterpolationA(-0.3, -0.03, -0.2), new LinearInterpolation(-0.03, 0.03), new QuadraticInterpolationA(0.03, 0.3, 0.2)),
-                    List.of(0.2, 0.6, 0.2)));
+            new SequentialInterpolation<>(List.of(new QuadraticInterpolationA(-0.3, -0.02, -0.2), new LinearInterpolation(-0.02, 0.02), new QuadraticInterpolationA(0.02, 0.3, 0.2)),
+                    List.of(0.15, 0.7, 0.15)));
     private final Interpolation<Double> TEXT_ALPHA = new ComposedInterpolation<>(new ClampedInterpolation(0, 1.5),
             new SequentialInterpolation<>(List.of(new LinearInterpolation(0, 1), new ConstantInterpolation(1), new LinearInterpolation(1, 0)),
                     List.of(0.2, 0.6, 0.2)));
-    private final Interpolation<Double> FADE_ALPHA = new ComposedInterpolation<>(new ClampedInterpolation(0, 1.5), new QuadraticInterpolationA(0, 0, -3));
+    private final Interpolation<Double> FADE_ALPHA = new ComposedInterpolation<>(new ClampedInterpolation(0, 1.5), new QuadraticInterpolationA(0, 0, -3.5));
 
     public EventAnimationTurnStart() {
         super(0.5, 1);
@@ -44,8 +44,8 @@ public class EventAnimationTurnStart extends EventAnimation<EventTurnStart> {
     public void draw(Graphics g) {
         g.setColor(new Color(0, 0, 0, FADE_ALPHA.get(this.getTime()).floatValue()));
         g.fillRect(0, 0, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
-        UnicodeFont fontbig = Game.getFont(80, true, false);
-        UnicodeFont fontsmall = Game.getFont(50, true, false);
+        UnicodeFont fontbig = Game.getFont(100, true, false);
+        UnicodeFont fontsmall = Game.getFont(70, true, false);
         String dstring = "TURN START", tstring = "", ustring = "";
         int unleashTurn = 0;
         switch (this.event.p.team * this.event.p.board.getLocalteam()) { // ez hack

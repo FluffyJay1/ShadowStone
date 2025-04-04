@@ -46,7 +46,6 @@ public class Acceleratium extends AmuletText {
                             .map(bo -> (Minion) bo)
                             .collect(Collectors.toList());
                     if (!relevant.isEmpty()) {
-                        Effect effect = this;
                         return new ResolverWithDescription(ONLISTENEVENT_DESCRIPTION, new Resolver(false) {
                             @Override
                             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {

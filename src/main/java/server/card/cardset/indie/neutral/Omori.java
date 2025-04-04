@@ -35,7 +35,7 @@ import server.resolver.util.ResolverQueue;
 import java.util.List;
 
 public class Omori extends MinionText {
-    public static final String NAME = "Omori";
+    public static final String NAME = "OMORI";
     private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: <b>Choose</b> an <b>Emotion</b> card to summon.";
     private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Select another card in play, and <b>Choose</b> an <b>Emotion</b> card to <b>Transform</b> it into. Set its <b>Countdown</b> to M.";
     public static final String DESCRIPTION = BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;

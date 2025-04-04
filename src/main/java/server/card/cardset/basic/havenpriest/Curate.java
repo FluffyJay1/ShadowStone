@@ -26,7 +26,7 @@ public class Curate extends MinionText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/curate.png"),
-            CRAFT, TRAITS, RARITY, 7, 5, 3, 5, true, Curate.class,
+            CRAFT, TRAITS, RARITY, 7, 5, 3, 6, true, Curate.class,
             new Vector2f(169, 143), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());

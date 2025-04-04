@@ -1,5 +1,6 @@
 package server.card.cardset.special.treasure;
 
+import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
 import client.ui.Animation;
 import server.ServerBoard;
@@ -25,7 +26,7 @@ public class BootsOfHaste extends SpellText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/special/bootsofhaste.png"),
             CRAFT, TRAITS, RARITY, 1, BootsOfHaste.class,
-            List::of,
+            () -> List.of(Tooltip.AURA),
             List.of());
 
     @Override

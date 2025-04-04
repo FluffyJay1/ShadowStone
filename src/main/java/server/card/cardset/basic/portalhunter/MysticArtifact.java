@@ -27,7 +27,7 @@ public class MysticArtifact extends MinionText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.ARTIFACT);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/mysticartifact.png"),
-            CRAFT, TRAITS, RARITY, 2, 2, 1, 3, true, MysticArtifact.class,
+            CRAFT, TRAITS, RARITY, 2, 2, 1, 4, true, MysticArtifact.class,
             new Vector2f(150, 138), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.WARD, Tooltip.BATTLECRY),
             List.of());

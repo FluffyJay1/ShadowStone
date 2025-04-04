@@ -24,7 +24,7 @@ public class YakshasMask extends AmuletText {
     public static final String NAME = "Yaksha's Mask";
     private static final String AURA_DESCRIPTION = "<b>Aura</b>: The allied minion directly clockwise to this has +3/+3/+0 and <b>Bane</b>.";
     private static final String ONTURNEND_DESCRIPTION = "At the end of your turn, deal 1 damage to your leader.";
-    private static final String NONAURA_DESCRIPTION = "<b>Countdown(5)</b>.\n" + ONTURNEND_DESCRIPTION;
+    private static final String NONAURA_DESCRIPTION = "<b>Countdown(4)</b>.\n" + ONTURNEND_DESCRIPTION;
     public static final String DESCRIPTION =  NONAURA_DESCRIPTION + "\n" + AURA_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
@@ -54,7 +54,7 @@ public class YakshasMask extends AmuletText {
                     }
                 },
                 new Effect(NONAURA_DESCRIPTION, EffectStats.builder()
-                        .set(Stat.COUNTDOWN, 5)
+                        .set(Stat.COUNTDOWN, 4)
                         .build()) {
                     @Override
                     public ResolverWithDescription onTurnEndAllied() {

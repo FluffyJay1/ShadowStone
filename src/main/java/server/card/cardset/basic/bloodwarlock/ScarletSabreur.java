@@ -18,7 +18,6 @@ import server.card.target.TargetingScheme;
 import server.event.Event;
 import server.resolver.DamageResolver;
 import server.resolver.Resolver;
-import server.resolver.RestoreResolver;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
@@ -26,21 +25,22 @@ import java.util.List;
 
 public class ScarletSabreur extends MinionText {
     public static final String NAME = "Scarlet Sabreur";
-    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Deal 2 damage to an enemy minion, then restore 2 health to your leader.";
-    public static final String DESCRIPTION = "<b>Bane</b>.\n" + BATTLECRY_DESCRIPTION;
+    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Deal 2 damage to an enemy minion.";
+    public static final String DESCRIPTION = "<b>Bane</b>. <b>Lifesteal</b>.\n" + BATTLECRY_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/scarletsabreur.png"),
             CRAFT, TRAITS, RARITY, 5, 2, 2, 4, true, ScarletSabreur.class,
             new Vector2f(169, 130), 1.5, new EventAnimationDamageDoubleSlice(),
-            () -> List.of(Tooltip.BANE, Tooltip.BATTLECRY),
+            () -> List.of(Tooltip.BANE, Tooltip.LIFESTEAL, Tooltip.BATTLECRY),
             List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
                 .set(Stat.BANE, 1)
+                .set(Stat.LIFESTEAL, 1)
                 .build()) {
             @Override
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
@@ -60,9 +60,6 @@ public class ScarletSabreur extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 2, true, new EventAnimationDamageSlash().toString()));
-                        });
-                        owner.player.getLeader().ifPresent(l -> {
-                            this.resolve(b, rq, el, new RestoreResolver(effect, l, 2));
                         });
                     }
                 });

@@ -23,7 +23,7 @@ public class Paimon extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/anime/paimon.png"),
-            CRAFT, TRAITS, RARITY, 3, 0, 2, 2, true, Paimon.class,
+            CRAFT, TRAITS, RARITY, 3, 0, 2, 3, true, Paimon.class,
             new Vector2f(160, 145), 1.3, new EventAnimationDamageOrbFall(),
             () -> List.of(Tooltip.STEALTH, Tooltip.AURA),
             List.of());

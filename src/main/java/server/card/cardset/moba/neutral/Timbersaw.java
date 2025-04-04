@@ -31,7 +31,7 @@ public class Timbersaw extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/moba/timbersaw.png"),
-            CRAFT, TRAITS, RARITY, 4, 1, 3, 4, true, Timbersaw.class,
+            CRAFT, TRAITS, RARITY, 6, 3, 3, 5, true, Timbersaw.class,
             new Vector2f(), -1, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.RUSH, Tooltip.CLASH, Tooltip.ARMOR),
             List.of());

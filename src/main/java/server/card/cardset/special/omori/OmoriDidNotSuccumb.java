@@ -32,7 +32,7 @@ public class OmoriDidNotSuccumb extends AmuletText {
     public static final String NAME = "OMORI did not succumb.";
     private static final String AURA_DESCRIPTION = "<b>Aura</b>: Your leader has <b>Unyielding</b>.";
     private static final String ONTURNEND_DESCRIPTION = "At the end of your turn, deal 2 damage to both leaders.";
-    public static final String DESCRIPTION = "<b>Countdown(5)</b>.\n" + AURA_DESCRIPTION + "\n" + ONTURNEND_DESCRIPTION;
+    public static final String DESCRIPTION = "<b>Countdown(3)</b>.\n" + AURA_DESCRIPTION + "\n" + ONTURNEND_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
@@ -65,8 +65,8 @@ public class OmoriDidNotSuccumb extends AmuletText {
                         return 3; // idk
                     }
                 },
-                new Effect("<b>Countdown(5)</b>." + ONTURNEND_DESCRIPTION, EffectStats.builder()
-                        .set(Stat.COUNTDOWN, 5)
+                new Effect("<b>Countdown(3)</b>." + ONTURNEND_DESCRIPTION, EffectStats.builder()
+                        .set(Stat.COUNTDOWN, 3)
                         .build()) {
                     @Override
                     public ResolverWithDescription onTurnEndAllied() {

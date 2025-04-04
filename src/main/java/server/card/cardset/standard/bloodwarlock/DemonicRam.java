@@ -22,7 +22,7 @@ import java.util.List;
 
 public class DemonicRam extends MinionText {
     public static final String NAME = "Demonic Ram";
-    public static final String DESCRIPTION = "Whenever your leader takes damage during your turn, restore 2 health to your leader.";
+    public static final String DESCRIPTION = "Whenever your leader takes damage during your turn, restore 3 health to your leader.";
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
@@ -46,7 +46,7 @@ public class DemonicRam extends MinionText {
                                 @Override
                                 public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                                     owner.player.getLeader().ifPresent(l -> {
-                                        this.resolve(b, rq, el, new RestoreResolver(effect, l, 2));
+                                        this.resolve(b, rq, el, new RestoreResolver(effect, l, 3));
                                     });
                                 }
                             });
@@ -59,7 +59,7 @@ public class DemonicRam extends MinionText {
             @Override
             public double getPresenceValue(int refs) {
                 // i really dont know how to evaluate this
-                return AI.VALUE_PER_HEAL * 2;
+                return AI.VALUE_PER_HEAL * 3;
             }
         });
     }

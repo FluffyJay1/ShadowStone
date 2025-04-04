@@ -21,7 +21,7 @@ public class Baneling extends MinionText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/moba/baneling.png"),
-            CRAFT, TRAITS, RARITY, 3, 1, 0, 1, false, Baneling.class,
+            CRAFT, TRAITS, RARITY, 3, 1, 0, 1, true, Baneling.class,
             new Vector2f(253, 271), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.LASTWORDS, Tooltip.BLAST),
             List.of());

@@ -25,7 +25,9 @@ public class EventMinionAttack extends Event {
     @Override
     public void resolve(Board b) {
         this.prevAttacksThisTurn = this.m1.attacksThisTurn;
-        this.m1.attacksThisTurn++;
+        if (this.playerOrdered) {
+            this.m1.attacksThisTurn++;
+        }
         if (this.m1.team == this.m1.board.getLocalteam() && this.m1.board instanceof PendingMinionAttack.PendingMinionAttacker && this.playerOrdered) {
             ((PendingMinionAttack.PendingMinionAttacker) this.m1.board).getPendingMinionAttackProcessor().process(new PendingMinionAttack(this.m1, this.m2));
         }

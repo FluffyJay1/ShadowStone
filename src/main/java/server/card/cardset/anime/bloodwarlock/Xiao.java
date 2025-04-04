@@ -35,7 +35,7 @@ public class Xiao extends MinionText {
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/anime/xiao.png"),
-            CRAFT, TRAITS, RARITY, 4, 3, 1, 4, false, Guts.class,
+            CRAFT, TRAITS, RARITY, 5, 3, 1, 4, false, Guts.class,
             new Vector2f(146, 151), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.RUSH, Tooltip.BATTLECRY, YakshasMask.TOOLTIP, Tooltip.UNLEASH),
             List.of());

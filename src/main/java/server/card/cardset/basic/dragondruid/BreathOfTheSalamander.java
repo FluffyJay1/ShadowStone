@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 public class BreathOfTheSalamander extends SpellText {
     public static final String NAME = "Breath of the Salamander";
-    public static final String DESCRIPTION = "Deal 3 damage to an enemy minion. Then <b>Spend(4)</b> to deal 2 damage to all enemy minions.";
+    public static final String DESCRIPTION = "Deal 4 damage to an enemy minion. Then <b>Spend(4)</b> to deal 2 damage to all enemy minions.";
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
@@ -58,7 +58,7 @@ public class BreathOfTheSalamander extends SpellText {
                         List<Card> markedForDeath = new LinkedList<>();
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             DamageResolver r = this.resolve(b, rq, el,
-                                    new DamageResolver(effect, (Minion) c, 3, false, new EventAnimationDamageFire().toString()));
+                                    new DamageResolver(effect, (Minion) c, 4, false, new EventAnimationDamageFire().toString()));
                             markedForDeath.addAll(r.destroyed);
                         });
                         this.resolve(b, rq, el, new SpendResolver(effect, 4, new Resolver(false) {

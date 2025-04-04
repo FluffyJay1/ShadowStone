@@ -20,7 +20,7 @@ import java.util.List;
 
 public class BlazingBreath extends SpellText {
     public static final String NAME = "Blazing Breath";
-    public static final String DESCRIPTION = "Deal 2 damage to an enemy minion.";
+    public static final String DESCRIPTION = "Deal 3 damage to an enemy minion.";
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
@@ -49,7 +49,7 @@ public class BlazingBreath extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 2, true, new EventAnimationDamageFire().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 3, true, new EventAnimationDamageFire().toString()));
                         });
                     }
                 });
@@ -57,7 +57,7 @@ public class BlazingBreath extends SpellText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.valueOfMinionDamage(2);
+                return AI.valueOfMinionDamage(3);
             }
         });
     }

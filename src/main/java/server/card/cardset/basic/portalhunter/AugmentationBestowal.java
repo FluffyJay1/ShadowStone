@@ -70,7 +70,6 @@ public class AugmentationBestowal extends SpellText {
                         .filter(bo -> bo.team == this.owner.team && bo.finalTraits.contains(CardTrait.ARTIFACT) && bo instanceof Minion)
                         .count();
                 if (count > 0) {
-                    Effect effect = this;
                     return new ResolverWithDescription(EFFECT_DESCRIPTION, new Resolver(false) {
                         @Override
                         public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {

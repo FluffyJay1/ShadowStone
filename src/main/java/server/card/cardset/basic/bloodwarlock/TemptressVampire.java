@@ -9,6 +9,8 @@ import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
+import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
@@ -23,19 +25,22 @@ import java.util.List;
 
 public class TemptressVampire extends MinionText {
     public static final String NAME = "Temptress Vampire";
-    public static final String DESCRIPTION = "<b>Battlecry</b>: Deal 5 damage to an enemy. Restore 5 health to your leader.";
+    public static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Deal 5 damage to an enemy. Restore 5 health to your leader.";
+    public static final String DESCRIPTION = "<b>Lifesteal</b>.\n" + BATTLECRY_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/temptressvampire.png"),
-            CRAFT, TRAITS, RARITY, 9, 5, 3, 5, true, TemptressVampire.class,
+            CRAFT, TRAITS, RARITY, 9, 5, 3, 6, true, TemptressVampire.class,
             new Vector2f(150, 160), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {
-        return List.of(new Effect(DESCRIPTION) {
+        return List.of(new Effect(DESCRIPTION, EffectStats.builder()
+                .set(Stat.LIFESTEAL, 1)
+                .build()) {
             @Override
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
                 return List.of(new CardTargetingScheme(this, 0, 1, "Deal 5 damage to an enemy.") {
@@ -49,7 +54,7 @@ public class TemptressVampire extends MinionText {
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 Effect effect = this;
-                return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
+                return new ResolverWithDescription(BATTLECRY_DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
