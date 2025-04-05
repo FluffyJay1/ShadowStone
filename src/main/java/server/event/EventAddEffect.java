@@ -44,7 +44,7 @@ public class EventAddEffect extends Event {
                 e1.printStackTrace();
             }
             this.successful.add(c.addEffect(false, clonede));
-            if (b instanceof ServerBoard) {
+            if (this.successful.get(i) && b instanceof ServerBoard) {
                 ServerBoard sb = (ServerBoard) b;
                 sb.registerNewEffect(clonede);
             }

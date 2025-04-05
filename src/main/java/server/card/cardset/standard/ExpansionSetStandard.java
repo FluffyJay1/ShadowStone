@@ -27,7 +27,7 @@ public class ExpansionSetStandard extends ExpansionSet {
             new KaleidoscopicGlow(), new MagicOwl(), new RaioOmenOfTruth(), new Rimewind(), new RuneBladeSummoner(), new TimewornMageLevi(),
             new DemonlordEachtar(), new MischievousSpirit(), new MordecaiTheDuelist(), new NecroAssassin(), new PrinceCatacomb(),
             new ShadowReaper(), new UnderworldWatchmanKhawy(), new Assassin(), new Cuhullin(), new Leonidas(), new Magnolia(),
-            new WeatheredVanguard(), new StonetuskBoar(), new CallOfCocytus(), new Ragnaros());
+            new WeatheredVanguard(), new StonetuskBoar(), new CallOfCocytus(), new Ragnaros(), new LathamHonorableKnight(), new ForestArchelon());
 
     @Override
     public CardSet getCards() {

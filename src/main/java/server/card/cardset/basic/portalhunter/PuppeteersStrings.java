@@ -26,7 +26,7 @@ public class PuppeteersStrings extends SpellText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/puppeteersstrings.png"),
-            CRAFT, TRAITS, RARITY, 4, PuppeteersStrings.class,
+            CRAFT, TRAITS, RARITY, 3, PuppeteersStrings.class,
             () -> List.of(Puppet.TOOLTIP),
             List.of());
 

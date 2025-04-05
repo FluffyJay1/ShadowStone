@@ -28,7 +28,7 @@ public class AncientAmplifier extends AmuletText {
     public static final String NAME = "Ancient Amplifier";
     private static final String ONTURNENDALLIED_DESCRIPTION = "At the end of your turn, randomly put 2 of the following into your deck: " +
             "<b>Ancient Artifact</b>, <b>Analyzing Artifact</b>, <b>Mystic Artifact</b>, and <b>Radiant Artifact</b>.";
-    public static final String DESCRIPTION = "<b>Countdown(3)</b>.\n" + ONTURNENDALLIED_DESCRIPTION;
+    public static final String DESCRIPTION = "<b>Countdown(4)</b>.\n" + ONTURNENDALLIED_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
@@ -40,7 +40,7 @@ public class AncientAmplifier extends AmuletText {
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
-                .set(Stat.COUNTDOWN, 3)
+                .set(Stat.COUNTDOWN, 4)
                 .build()) {
             @Override
             public ResolverWithDescription onTurnEndAllied() {

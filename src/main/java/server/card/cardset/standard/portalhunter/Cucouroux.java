@@ -28,7 +28,7 @@ public class Cucouroux extends MinionText {
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/cucouroux.png"),
-            CRAFT, TRAITS, RARITY, 3, 3, 1, 2, true, Cucouroux.class,
+            CRAFT, TRAITS, RARITY, 3, 3, 1, 3, true, Cucouroux.class,
             new Vector2f(160, 145), 1.4, new EventAnimationDamageShoot(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.SPEND, Camieux.TOOLTIP, Tooltip.MINIONSTRIKE),
             List.of());

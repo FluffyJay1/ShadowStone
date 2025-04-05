@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class Maahes extends MinionText {
     public static final String NAME = "Maahes";
-    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: If at least 2 other cards were payed this turn, deal 2 damage to all enemies.";
+    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: If at least 2 other cards were played this turn, deal 2 damage to all enemies.";
     public static final String DESCRIPTION = "<b>Ward</b>.\n" + BATTLECRY_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.GOLD;

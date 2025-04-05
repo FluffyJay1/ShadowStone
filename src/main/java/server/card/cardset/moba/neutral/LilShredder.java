@@ -29,7 +29,7 @@ public class LilShredder extends SpellText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/moba/lilshredder.png"),
-            CRAFT, TRAITS, RARITY, 4, LilShredder.class,
+            CRAFT, TRAITS, RARITY, 6, LilShredder.class,
             () -> List.of(Tooltip.ARMOR),
             List.of());
 

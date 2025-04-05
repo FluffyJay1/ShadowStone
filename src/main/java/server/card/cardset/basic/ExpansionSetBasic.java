@@ -31,7 +31,7 @@ public class ExpansionSetBasic extends ExpansionSet {
             new Acceleratium(), new MagisteelLion(), new Icarus(), new AugmentationBestowal(), new DimensionCut(), new TranquilCog(),
             new IronforgedFighter(), new PuppeteersStrings(), new PureheartedSinger(), new DarkBladefiend(), new DeathsBreath(),
             new GaluaOfTwoBreaths(), new Conflagration(), new Siegfried(), new ForestWhispers(), new IDidThat(), new BoulderfistOgre(),
-            new ItsOkToDie(), new Maahes(), new ElvenPrincessMage(), new LancerOfTheTempest(), new Meteor());
+            new ItsOkToDie(), new Maahes(), new ElvenPrincessMage(), new LancerOfTheTempest(), new Meteor(), new Quickblader());
 
     @Override
     public CardSet getCards() {
