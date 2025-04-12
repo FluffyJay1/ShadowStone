@@ -4,6 +4,7 @@ import org.newdawn.slick.geom.*;
 
 import client.tooltip.*;
 import client.ui.*;
+import server.Board;
 import server.card.Card;
 import server.card.effect.*;
 
@@ -90,7 +91,26 @@ public class CardSelectPanel extends UIBox {
             StringBuilder effectstext = new StringBuilder("Effects:\n");
             for (Effect e : this.uib.selectedCard.getCard().getEffects(false)) {
                 if (!e.description.isEmpty()) {
-                    effectstext.append("<b>></b> ").append(e.description).append(e.mute ? " [<b>MUTED</b>]" : "").append("\n");
+                    effectstext.append("<b>></b> ").append(e.description);
+                    if (e.untilTurnEndTeam != null) {
+                        effectstext.append(" (Removed ");
+                        if (e.owner.team * e.untilTurnEndTeam * -1 != this.uib.b.getCurrentPlayerTurn() && (e.untilTurnEndCount == null || e.untilTurnEndCount.intValue() <= 0 || (!this.uib.b.getPhase().equals(Board.Phase.AFTER_TURN) && e.untilTurnEndCount.intValue() == 1))) {
+                            effectstext.append("at the end of this turn");
+                        } else {
+                            effectstext.append("after ").append(e.untilTurnEndCount.intValue()).append(" of ");
+                            effectstext.append(switch(e.untilTurnEndTeam) {
+                                case 1 -> "your";
+                                case -1 -> "your opponent's";
+                                default -> "either players'";
+                            });
+                            effectstext.append(" turns pass");
+                        }
+                        effectstext.append(".)");
+                    }
+                    if (e.mute) {
+                        effectstext.append(" [<b>MUTED</b>]");
+                    }
+                    effectstext.append("\n");
                 }
             }
             this.effects.setText(effectstext.toString());

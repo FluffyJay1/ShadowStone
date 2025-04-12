@@ -19,7 +19,7 @@ import server.resolver.util.ResolverQueue;
 
 public class LochnLoad extends SpellText {
     public static final String NAME = "Loch-n-Load";
-    public static final String DESCRIPTION = "Choose 2 enemy minions. Deal 2 damage to them and 1 damage to their adjacent minions.";
+    public static final String DESCRIPTION = "Choose 2 enemy minions. Deal 3 damage to them and 1 damage to their adjacent minions.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
@@ -53,7 +53,7 @@ public class LochnLoad extends SpellText {
                             List<Integer> d = new LinkedList<>();
                             int pos = targeted.getIndex();
                             m.add((Minion) targeted);
-                            d.add(2);
+                            d.add(3);
                             for (int i = -1; i <= 1; i += 2) {
                                 int offsetPos = pos + i;
                                 BoardObject adjacent = b.getPlayer(owner.team * -1).getPlayArea().get(offsetPos);
@@ -73,7 +73,7 @@ public class LochnLoad extends SpellText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return (AI.valueOfMinionDamage(2) * 2 + AI.valueOfMinionDamage(1) * 4) / 2.;
+                return (AI.valueOfMinionDamage(3) * 2 + AI.valueOfMinionDamage(1) * 4) / 2.;
             }
         });
     }

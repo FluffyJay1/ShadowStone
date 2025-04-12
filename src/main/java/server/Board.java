@@ -18,6 +18,7 @@ public abstract class Board {
     private int currentPlayerTurn;
     private int localteam;
     private int winner;
+    private Phase phase;
 
     // table of all cards
     // an index into this table uniquely identifies a card
@@ -42,6 +43,7 @@ public abstract class Board {
         this.cardTable = new ArrayList<>();
         this.eventGroups = new LinkedList<>();
         this.mulligan = true;
+        this.phase = Phase.DURING_TURN;
     }
 
     public Board(int localteam) {
@@ -260,5 +262,20 @@ public abstract class Board {
 
     public void setWinner(int winner) {
         this.winner = winner;
+    }
+
+    public Phase getPhase() {
+        return this.phase;
+    }
+
+    public void setPhase(Phase phase) {
+        this.phase = phase;
+    }
+
+    // for ui purposes i guess
+    public static enum Phase {
+        DURING_TURN,
+        AFTER_TURN,
+        // why is mulligan not here? idk
     }
 }

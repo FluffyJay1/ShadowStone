@@ -44,6 +44,10 @@ public class Minion extends BoardObject {
             // this is harder to evaluate since unyielding is usually not a permanent effect
             health += 4;
         }
+        if (this.finalStats.get(Stat.INVULNERABLE) > 0) {
+            // idk
+            health += 20;
+        }
         return health;
     }
 
@@ -59,6 +63,9 @@ public class Minion extends BoardObject {
         // 0.9 * sqrt(atk * hp) + 0.1 * sqrt(magic * hp^(0.4)) + 1
         int attack = this.finalStats.get(Stat.ATTACK);
         int magic = this.finalStats.get(Stat.MAGIC);
+        if (this.finalStats.get(Stat.CLEAVE) > 0) {
+            attack *= 3;
+        }
         if (this.finalStats.get(Stat.LIFESTEAL) > 0) {
             sum += attack * AI.VALUE_PER_HEAL;
         }
@@ -69,6 +76,9 @@ public class Minion extends BoardObject {
         }
         if (this.finalStats.get(Stat.POISONOUS) > 0 && attack > 0) {
             bonus = 6;
+            if (this.finalStats.get(Stat.CLEAVE) > 0) {
+                bonus *= 18; // lol
+            }
         }
         attack += bonus;
         // if disarmed, then attack isn't quite as useful
@@ -117,7 +127,7 @@ public class Minion extends BoardObject {
         }
 
         // love how you can't reuse streams
-        if (minions.get().anyMatch(m -> m.finalStats.get(Stat.WARD) > 0)) {
+        if (this.finalStats.get(Stat.IGNORE_WARD) == 0 && minions.get().anyMatch(m -> m.finalStats.get(Stat.WARD) > 0)) {
             return minions.get().filter(m -> m.finalStats.get(Stat.WARD) > 0);
         }
         return attackable;
@@ -153,9 +163,10 @@ public class Minion extends BoardObject {
         if (!this.canAttack()) {
             return false;
         }
-        boolean ward = this.board.getMinions(this.team * -1, true, true)
-                .anyMatch(potentialWard -> potentialWard.finalStats.get(Stat.STEALTH) == 0
-                        && potentialWard.finalStats.get(Stat.WARD) > 0);
+        boolean ward = this.finalStats.get(Stat.IGNORE_WARD) == 0
+                && this.board.getMinions(this.team * -1, true, true)
+                        .anyMatch(potentialWard -> potentialWard.finalStats.get(Stat.STEALTH) == 0
+                                && potentialWard.finalStats.get(Stat.WARD) > 0);
         return m.isInPlay() && (!ward || m.finalStats.get(Stat.WARD) > 0) && m.canBeAttacked()
                 && (m.status.equals(CardStatus.BOARD) ? this.attackMinionConditions() : this.attackLeaderConditions());
     }

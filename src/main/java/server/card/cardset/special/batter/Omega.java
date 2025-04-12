@@ -24,7 +24,7 @@ public class Omega extends MinionText {
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/special/omega.png"),
-            CRAFT, TRAITS, RARITY, 4, 2, 2, 2, true, Omega.class,
+            CRAFT, TRAITS, RARITY, 4, 3, 3, 3, true, Omega.class,
             new Vector2f(), -1, new EventAnimationDamageOff(),
             () -> List.of(Tooltip.STRIKE),
             List.of());

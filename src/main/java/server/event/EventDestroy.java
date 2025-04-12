@@ -56,7 +56,7 @@ public class EventDestroy extends Event {
                 this.prevLastBoardPos.set(i, bo.lastBoardPos);
                 this.prevLastBoardEpoch.set(i, bo.lastBoardEpoch);
             }
-            if (!c.status.equals(CardStatus.GRAVEYARD) && !(this.cause.equals(Cause.EFFECT) && c.finalStats.get(Stat.STALWART) > 0)) {
+            if (!c.status.equals(CardStatus.GRAVEYARD) && !(this.cause.equals(Cause.EFFECT) && (c.finalStats.get(Stat.STALWART) > 0 || c.finalStats.get(Stat.INVULNERABLE) > 0))) {
                 this.successful.set(i, true);
                 if (!this.cause.equals(Cause.CAST)) {
                     p.shadows++;

@@ -19,7 +19,7 @@ import server.card.effect.Stat;
 public class Quickblader extends MinionText {
     public static final String NAME = "Quickblader";
     public static final String DESCRIPTION = "<b>Storm</b>.";
-    public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
+    public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/quickblader.png"),

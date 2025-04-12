@@ -1,7 +1,6 @@
 package server.event;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import client.Game;
 import server.*;
@@ -9,12 +8,12 @@ import server.card.Minion;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.effect.Stat;
-import server.resolver.AddEffectResolver;
 
 public class EventTurnEnd extends Event {
     public static final int ID = 14;
     public final Player p;
     private List<Effect> addedEffects;
+    private Board.Phase prevPhase;
 
     public EventTurnEnd(Player p) {
         super(ID);
@@ -23,6 +22,8 @@ public class EventTurnEnd extends Event {
 
     @Override
     public void resolve(Board b) {
+        this.prevPhase = b.getPhase();
+        b.setPhase(Board.Phase.AFTER_TURN);
         // unfreeze
         this.addedEffects = new ArrayList<>(p.getPlayArea().size() + 1);
         b.getMinions(p.team, true, true)
@@ -41,6 +42,7 @@ public class EventTurnEnd extends Event {
         for (Effect e : this.addedEffects) {
             e.owner.removeEffect(e, true);
         }
+        b.setPhase(this.prevPhase);
     }
 
     @Override

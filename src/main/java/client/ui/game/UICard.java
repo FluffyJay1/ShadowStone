@@ -67,6 +67,7 @@ public class UICard extends UIBox {
     private static final Color LOCKED_COLOR = new Color(0.3f, 0.2f, 0.3f);
     private static final double STAT_CHANGE_FONT_INCREASE_TIME = 0.4;
     private static final double STAT_CHANGE_FONT_INCREASE_SCALE = 2;
+    private static final double INVULNERABLE_IMAGE_SPIN_PERIOD = 4;
 
     private static final Supplier<EmissionStrategy> STEALTH_PARTICLES = () -> new EmissionStrategy(
             new IntervalEmissionTimingStrategy(3, 0.08),
@@ -164,6 +165,7 @@ public class UICard extends UIBox {
     private final ParticleSystem mutedParticles;
     private final ParticleSystem unyieldingParticles;
     private final EnumMap<Stat, Double> statFontSizeIncreaseAnimationTimer; // e.g. EventAnimationAddEffect bumping stats, should make font size bigger
+    private double invulnerableTimer;
 
     public UICard(UI ui, UIBoard uib, Card c) {
         super(ui, new Vector2f(), CARD_DIMENSIONS, "");
@@ -184,6 +186,7 @@ public class UICard extends UIBox {
         this.unyieldingParticles = new ParticleSystem(ui, new Vector2f(MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), UNYIELDING_PARTICLES.get(), true);
         this.unyieldingParticles.relpos = true;
         this.addChild(this.unyieldingParticles);
+        this.invulnerableTimer = 0;
     }
 
     @Override
@@ -371,6 +374,9 @@ public class UICard extends UIBox {
         }
         if (this.isPending()) {
             this.pendingTimer = (this.pendingTimer + frametime) % PENDING_TIME_PER_CYCLE;
+        }
+        if (this.card.finalStats.get(Stat.INVULNERABLE) > 0) {
+            this.invulnerableTimer = (this.invulnerableTimer + frametime) % INVULNERABLE_IMAGE_SPIN_PERIOD;
         }
         for (Iterator<Map.Entry<Stat, Double>> it = this.statFontSizeIncreaseAnimationTimer.entrySet().iterator(); it.hasNext();) {
             Map.Entry<Stat, Double> entry = it.next();
@@ -583,6 +589,12 @@ public class UICard extends UIBox {
             if (this.card.finalStats.get(Stat.FROZEN) > 0) {
                 Image i = Game.getImage("game/frozen.png");
                 i = i.getScaledCopy((float) scale);
+                g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
+            }
+            if (this.card.finalStats.get(Stat.INVULNERABLE) > 0) {
+                Image i = Game.getImage("game/invulnerable.png");
+                i = i.getScaledCopy((float) scale);
+                i.rotate((float) -(360 * this.invulnerableTimer / INVULNERABLE_IMAGE_SPIN_PERIOD));
                 g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
             }
             this.drawOffensiveStat(g, pos, scale, this.card.finalStats.get(Stat.ATTACK),

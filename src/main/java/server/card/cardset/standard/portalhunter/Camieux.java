@@ -23,12 +23,12 @@ import java.util.stream.Collectors;
 
 public class Camieux extends MinionText {
     public static final String NAME = "Camieux, Gunpowder Gal";
-    public static final String DESCRIPTION = "<b>Last Words</b>: Deal 1 damage to a random enemy. Do this 3 times.";
+    public static final String DESCRIPTION = "<b>Last Words</b>: Deal 1 damage to a random enemy. Do this 4 times.";
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/camieux.png"),
-            CRAFT, TRAITS, RARITY, 2, 2, 1, 1, true, Camieux.class,
+            CRAFT, TRAITS, RARITY, 2, 3, 1, 1, true, Camieux.class,
             new Vector2f(143, 150), 1.4, new EventAnimationDamageShoot(),
             () -> List.of(Tooltip.LASTWORDS),
             List.of());
@@ -43,7 +43,7 @@ public class Camieux extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         b.pushEventGroup(new EventGroup(EventGroupType.CONCURRENTDAMAGE));
-                        for (int i = 0; i < 3; i++) {
+                        for (int i = 0; i < 4; i++) {
                             List<Minion> relevant = b.getMinions(owner.team * -1, true, true).collect(Collectors.toList());
                             if (!relevant.isEmpty()) {
                                 this.resolve(b, rq, el, new DamageResolver(effect, SelectRandom.from(relevant), 1, true, new EventAnimationDamageShoot().toString()));
@@ -56,7 +56,7 @@ public class Camieux extends MinionText {
 
             @Override
             public double getLastWordsValue(int refs) {
-                return AI.VALUE_PER_DAMAGE * 3;
+                return AI.VALUE_PER_DAMAGE * 4;
             }
         });
     }

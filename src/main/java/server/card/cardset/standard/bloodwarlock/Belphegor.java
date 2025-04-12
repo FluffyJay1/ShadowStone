@@ -32,7 +32,7 @@ public class Belphegor extends MinionText {
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/belphegor.png"),
-            CRAFT, TRAITS, RARITY, 4, 4, 2, 4, true, Belphegor.class,
+            CRAFT, TRAITS, RARITY, 5, 4, 2, 4, true, Belphegor.class,
             new Vector2f(142, 136), 1.7, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.VENGEANCE),
             List.of());

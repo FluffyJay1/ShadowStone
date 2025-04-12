@@ -16,6 +16,7 @@ public class EventTurnStart extends Event {
     private boolean prevCanUnleash;
     private List<Boolean> prevSickness;
     private List<Integer> prevAttacks;
+    private Board.Phase prevPhase;
 
     public EventTurnStart(Player p) {
         super(ID);
@@ -24,6 +25,7 @@ public class EventTurnStart extends Event {
 
     @Override
     public void resolve(Board b) {
+        this.prevPhase = b.getPhase();
         this.prevCurrentPlayerTurn = this.p.board.getCurrentPlayerTurn();
         this.prevUnleashesThisTurn = this.p.getUnleashPower().map(up -> up.unleashesThisTurn).orElse(0);
         this.prevCardsPlayedThisTurn = this.p.cardsPlayedThisTurn;
@@ -35,6 +37,7 @@ public class EventTurnStart extends Event {
         this.p.getUnleashPower().ifPresent(up -> up.unleashesThisTurn = 0);
         this.p.cardsPlayedThisTurn = 0;
         this.p.turn++;
+        b.setPhase(Board.Phase.DURING_TURN);
         if ((this.p.team == 1 && this.p.turn >= Player.UNLEASH_FIRST_TURN)
         || (this.p.team == -1 && this.p.turn >= Player.UNLEASH_SECOND_TURN)) {
             this.p.unleashAllowed = true;
@@ -68,6 +71,7 @@ public class EventTurnStart extends Event {
                 m.attacksThisTurn = this.prevAttacks.get(i);
             }
         }
+        b.setPhase(this.prevPhase);
     }
 
     @Override

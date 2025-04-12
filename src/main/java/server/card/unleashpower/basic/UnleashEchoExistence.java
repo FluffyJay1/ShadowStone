@@ -16,7 +16,7 @@ import server.resolver.util.ResolverQueue;
 
 public class UnleashEchoExistence extends UnleashPowerText {
     public static final String NAME = "Echo Existence";
-    public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. If it has already attacked this turn, add a copy of it to your deck and subtract 2 from its cost.";
+    public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. If it has already attacked this turn, add a copy of it to your deck and subtract 4 from its cost.";
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
@@ -32,7 +32,7 @@ public class UnleashEchoExistence extends UnleashPowerText {
             @Override
             public ResolverWithDescription onUnleashPost(Minion m) {
                 Effect effect = this; // anonymous fuckery
-                String resolverDescription = "If the unleashed minion has attacked this turn, add a copy of it to your deck and subtract 2 from its cost.";
+                String resolverDescription = "If the unleashed minion has attacked this turn, add a copy of it to your deck and subtract 4 from its cost.";
                 return new ResolverWithDescription(resolverDescription, new Resolver(true) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
@@ -40,8 +40,8 @@ public class UnleashEchoExistence extends UnleashPowerText {
                             CreateCardResolver ccr = new CreateCardResolver(m.getCardText(), effect.owner.team, CardStatus.DECK,
                                     (int) (effect.owner.board.getPlayer(effect.owner.team).getDeck().size() * Math.random()));
                             this.resolve(b, rq, el, ccr);
-                            Effect esc = new Effect("-2 cost (from <b>Echo Existence</b>).");
-                            esc.effectStats.change.set(Stat.COST, -2);
+                            Effect esc = new Effect("-4 cost (from <b>Echo Existence</b>).");
+                            esc.effectStats.change.set(Stat.COST, -4);
                             this.resolve(b, rq, el, new AddEffectResolver(ccr.event.successfullyCreatedCards, esc));
                         }
                     }

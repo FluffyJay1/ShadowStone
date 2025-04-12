@@ -27,7 +27,7 @@ public class DungeoncrawlFairy extends MinionText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/dungeoncrawlfairy.png"),
-            CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, DungeoncrawlFairy.class,
+            CRAFT, TRAITS, RARITY, 2, 3, 1, 2, true, DungeoncrawlFairy.class,
             new Vector2f(120, 121), 1.5, new EventAnimationDamageOrbFall(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());

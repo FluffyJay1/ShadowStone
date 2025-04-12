@@ -21,7 +21,7 @@ import java.util.List;
 
 public class ZombieParty extends SpellText {
     public static final String NAME = "Zombie Party";
-    public static final String DESCRIPTION = "Deal 3 damage to an enemy minion. Then <b>Spend(5)</b> to summon 3 <b>Zombies</b>.";
+    public static final String DESCRIPTION = "Deal 4 damage to an enemy minion. Then <b>Spend(5)</b> to summon 3 <b>Zombies</b>.";
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
@@ -51,7 +51,7 @@ public class ZombieParty extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                        this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 3, true, new EventAnimationDamageMagicHit().toString()));
+                        this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 4, true, new EventAnimationDamageMagicHit().toString()));
                         });
                         List<CardText> zombies = Collections.nCopies(3, new Zombie());
                         List<Integer> pos = Collections.nCopies(3, -1);
@@ -65,7 +65,7 @@ public class ZombieParty extends SpellText {
                 if (this.cachedInstances == null) {
                     this.cachedInstances = Collections.nCopies(3, new Zombie().constructInstance(this.owner.board));
                 }
-                return AI.valueOfMinionDamage(3) + AI.valueForSummoning(this.cachedInstances, refs) / 5;
+                return AI.valueOfMinionDamage(4) + AI.valueForSummoning(this.cachedInstances, refs) / 5;
             }
 
             @Override

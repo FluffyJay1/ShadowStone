@@ -22,7 +22,7 @@ import java.util.List;
 
 public class AncientForestDragon extends MinionText {
     public static final String NAME = "Ancient Forest Dragon";
-    private static final String BATTLECRY_DESCRIPTION = "<b>Battlery</b>: Give all allied cards on board <b>Elusive</b>.";
+    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Give all allied cards on board <b>Elusive</b>.";
     public static final String DESCRIPTION = "<b>Ward</b>.\n" + BATTLECRY_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.GOLD;

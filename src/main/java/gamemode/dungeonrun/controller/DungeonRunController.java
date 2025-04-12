@@ -54,7 +54,7 @@ public class DungeonRunController {
     private static final int ENEMY_DECK_SAMPLE_ROUNDS = 3;
 
     private static final Map<ExpansionSet, Double> EXPANSION_LOOT_WEIGHTS = new HashMap<>() {{
-        put(new ExpansionSetBasic(), 0.5);
+        put(new ExpansionSetBasic(), 1.);
         put(new ExpansionSetStandard(), 1.);
         put(new ExpansionSetIndie(), 1.5);
         put(new ExpansionSetMoba(), 1.5);

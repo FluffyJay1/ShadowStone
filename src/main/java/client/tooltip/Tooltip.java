@@ -64,7 +64,7 @@ public class Tooltip {
             "If you have at least X <b>Shadows</b>, consume them to activate a bonus effect.",
             () -> List.of(SHADOW));
     public static final Tooltip SPELLBOOST = new Tooltip("Spellboost",
-            "When you play a spell, you <b>Spellboost</b> the cards in your hand. Only certain cards can take advantage of its effects. <b>\"S\"</b> is used to denote the number of times a cards has been spellboosted.",
+            "When you play a spell, you <b>Spellboost</b> the cards in your hand. Only certain cards can take advantage of its effects. <b>\"S\"</b> is used to denote the number of times a cards has been <b>Spellboosted</b>.",
             List::of);
     public static final Tooltip SPEND = new Tooltip("Spend(X)",
             "If you have at least X mana leftover, consume them to activate bonus effects.",
@@ -120,10 +120,15 @@ public class Tooltip {
     public static final Tooltip ARMOR = new Tooltip("Armor(X)",
             "Each instance of damage this character receives is reduced by X. Negative values of X increase damage received, only if the source of damage is greater than 0.",
             List::of);
-
     public static final Tooltip UNYIELDING = new Tooltip("Unyielding",
             "Cards with <b>Unyielding</b> cannot be brought below 1 health via damage.",
             List::of);
+    public static final Tooltip CLEAVE = new Tooltip("Cleave",
+            "Attacks also damage adjacent minions. Does not apply when retaliating.",
+            List::of);
+    public static final Tooltip INVULNERABLE = new Tooltip("Invulnerable",
+            "Cannot take damage or be explicitly destroyed. (Doesn't prevent <b>Banish</b>, <b>Countdown</b>, or health being set to 0 via effects.)",
+            () -> List.of(BANISH, COUNTDOWN));
 
     public final String name;
     public final String description;

@@ -21,10 +21,13 @@ public class TurnEndResolver extends Resolver {
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         b.processEvent(rq, el, new EventTurnEnd(p));
         ResolverQueue subList = new ResolverQueue();
+        List<Effect> relevantEffectsToTick = b.effectsToRemoveAtEndOfTurn.stream()
+                .filter(eff -> eff.owner.team * eff.untilTurnEndTeam * -1 != this.p.team && eff.untilTurnEndCount != null)
+                .toList();
+        b.processEvent(rq, el, new EventDecrementEffectTurnEndCount(relevantEffectsToTick));
         List<Effect> relevantEffectsToRemove = b.effectsToRemoveAtEndOfTurn.stream()
-                .filter(eff -> eff.owner.team * eff.untilTurnEndTeam * -1 != this.p.team)
-                .collect(Collectors.toList());
-        this.resolve(b, subList, el, new RemoveEffectResolver(relevantEffectsToRemove));
+                .filter(eff -> eff.owner.team * eff.untilTurnEndTeam * -1 != this.p.team && (eff.untilTurnEndCount == null || eff.untilTurnEndCount.intValue() <= 0))
+                .toList();
         // avoid concurrent modification
         List<BoardObject> ours = this.p.board.getBoardObjects(this.p.team, true, true, true, true).collect(Collectors.toList());
         for (BoardObject bo : ours) {
@@ -40,6 +43,8 @@ public class TurnEndResolver extends Resolver {
                 this.resolveQueue(b, subList, el, bo.onTurnEndEnemy());
             }
         }
+        this.resolveQueue(b, subList, el, subList);
+        this.resolve(b, subList, el, new RemoveEffectResolver(relevantEffectsToRemove)); // remove at the end to allow ephemeral effects to trigger their onturnend on last time
         this.resolveQueue(b, subList, el, subList);
     }
 

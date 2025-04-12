@@ -27,7 +27,7 @@ public class MagisteelLion extends MinionText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/magisteellion.png"),
-            CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, MagisteelLion.class,
+            CRAFT, TRAITS, RARITY, 2, 3, 1, 2, true, MagisteelLion.class,
             new Vector2f(187, 128), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, AnalyzingArtifact.TOOLTIP),
             List.of());

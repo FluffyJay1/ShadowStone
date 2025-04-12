@@ -25,7 +25,7 @@ public class Epsilon extends MinionText {
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/special/epsilon.png"),
-            CRAFT, TRAITS, RARITY, 4, 2, 2, 2, true, Epsilon.class,
+            CRAFT, TRAITS, RARITY, 4, 3, 3, 3, true, Epsilon.class,
             new Vector2f(), -1, new EventAnimationDamageOff(),
             () -> List.of(Tooltip.MINIONSTRIKE),
             List.of());

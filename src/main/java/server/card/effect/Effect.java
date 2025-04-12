@@ -53,6 +53,8 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     // ServerBoard, then the TurnEndResolver checks these and removes them
     // 1 is on friendly team end, 0 for either team, -1 for enemy team end, null for nothing at all
     public Integer untilTurnEndTeam = null;
+    // for effects that last x turns
+    public Integer untilTurnEndCount = null;
 
     // who needs a factory
 
@@ -281,6 +283,7 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
                 .append(Effect.referenceOrNull(this.auraSource)).append(this.description)
                 .append(Game.STRING_END).append(" ").append(this.mute).append(" ")
                 .append(this.untilTurnEndTeam == null ? "null" : this.untilTurnEndTeam).append(" ")
+                .append(this.untilTurnEndCount == null ? "null" : this.untilTurnEndCount).append(" ")
                 .append(this.extraStateString());
         this.effectStats.appendStringToBuilder(builder);
     }
@@ -296,6 +299,8 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
             boolean mute = Boolean.parseBoolean(st.nextToken());
             String untilTurnEndTeamString = st.nextToken();
             Integer untilTurnEndTeam = untilTurnEndTeamString.equals("null") ? null : Integer.valueOf(untilTurnEndTeamString);
+            String untilTurnEndCountString = st.nextToken();
+            Integer untilTurnEndCount = untilTurnEndCountString.equals("null") ? null : Integer.valueOf(untilTurnEndCountString);
             Effect ef;
             ef = c.getDeclaredConstructor().newInstance();
             ef.description = description;
@@ -303,6 +308,7 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
             ef.auraSource = aura;
             ef.mute = mute;
             ef.untilTurnEndTeam = untilTurnEndTeam;
+            ef.untilTurnEndCount = untilTurnEndCount;
             ef.loadExtraState(b, st);
             ef.effectStats = EffectStats.fromString(st);
             return ef;
@@ -368,5 +374,10 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     @Override
     public void setIndex(int index) {
         this.pos = index;
+    }
+
+    public void setUntilTurnEnd(int team, int numTurns) {
+        this.untilTurnEndTeam = team;
+        this.untilTurnEndCount = numTurns;
     }
 }

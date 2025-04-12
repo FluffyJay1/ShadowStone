@@ -29,7 +29,7 @@ public class Beastmaster extends MinionText {
     public static final String DESCRIPTION = "<b>Aura</b>: adjacent minions have +1 attacks per turn.\n<b>Unleash</b>: Summon M <b>Stonetusk Boars</b>.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.SILVER;
-    public static final List<CardTrait> TRAITS = List.of();
+    public static final List<CardTrait> TRAITS = List.of(CardTrait.COMMANDER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/moba/beastmaster.png"),
             CRAFT, TRAITS, RARITY, 5, 2, 2, 4, false, Beastmaster.class,
             new Vector2f(140, 100), 2, new EventAnimationDamageSlash(),

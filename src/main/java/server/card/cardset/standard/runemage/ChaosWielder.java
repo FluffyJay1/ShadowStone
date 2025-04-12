@@ -35,7 +35,7 @@ public class ChaosWielder extends MinionText {
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/chaoswielder.png"),
-            CRAFT, TRAITS, RARITY, 5, 2, 2, 3, false, ChaosWielder.class,
+            CRAFT, TRAITS, RARITY, 5, 3, 2, 2, false, ChaosWielder.class,
             new Vector2f(166, 114), 1.6, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.SPELLBOOST, Tooltip.BATTLECRY, Tooltip.UNLEASH, Tooltip.RUSH),
             List.of());

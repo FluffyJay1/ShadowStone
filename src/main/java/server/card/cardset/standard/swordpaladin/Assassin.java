@@ -29,7 +29,7 @@ public class Assassin extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/assassin.png"),
-            CRAFT, TRAITS, RARITY, 2, 2, 1, 2, true, Assassin.class,
+            CRAFT, TRAITS, RARITY, 2, 3, 1, 2, true, Assassin.class,
             new Vector2f(138, 155), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.STEALTH),
             List.of());

@@ -47,11 +47,27 @@ public class MinionAttackResolver extends Resolver {
             this.resolveQueue(b, queue, el, queue);
         }
         if (this.m1.alive && this.m1.isInPlay() && this.m2.alive && this.m2.isInPlay()) {
-            List<Card> destroyed = new ArrayList<>(2);
+            List<Card> destroyed = new ArrayList<>(4);
             int damage1 = this.m1.finalStats.get(Stat.ATTACK);
             int damage2 = this.m2.finalStats.get(Stat.ATTACK);
+            // gleave
+            List<Minion> targets1 = new ArrayList<>(3);
+            List<Integer> damages1 = new ArrayList<>(3);
+            targets1.add(this.m2);
+            damages1.add(damage1);
+            if (this.m1.finalStats.get(Stat.CLEAVE) > 0 && this.m2.status.equals(CardStatus.BOARD)) {
+                int pos = this.m2.getIndex();
+                for (int i = -1; i <= 1; i += 2) {
+                    int offsetPos = pos + i;
+                    BoardObject adjacent = b.getPlayer(this.m2.team).getPlayArea().get(offsetPos);
+                    if (adjacent instanceof Minion) {
+                        targets1.add((Minion) adjacent);
+                        damages1.add(damage1);
+                    }
+                }
+            }
             b.pushEventGroup(new EventGroup(EventGroupType.MINIONCOMBAT));
-            DamageResolver d1 = new DamageResolver(this.m1, List.of(this.m2), List.of(damage1), false, m1.getTooltip().attackAnimation);
+            DamageResolver d1 = new DamageResolver(this.m1, targets1, damages1, false, m1.getTooltip().attackAnimation);
             DamageResolver d2 = new DamageResolver(this.m2, List.of(this.m1), List.of(damage2), false, m2.getTooltip().attackAnimation);
             this.resolve(b, rq, el, d1);
             this.resolve(b, rq, el, d2);

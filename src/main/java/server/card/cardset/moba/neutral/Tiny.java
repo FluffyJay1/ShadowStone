@@ -25,7 +25,7 @@ public class Tiny extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/moba/tiny.png"),
-            CRAFT, TRAITS, RARITY, 3, 2, 2, 3, false, Tiny.class,
+            CRAFT, TRAITS, RARITY, 3, 3, 2, 3, false, Tiny.class,
             new Vector2f(), -1, new EventAnimationDamageRocks(),
             () -> List.of(Tooltip.UNLEASH, Tooltip.RUSH),
             List.of());

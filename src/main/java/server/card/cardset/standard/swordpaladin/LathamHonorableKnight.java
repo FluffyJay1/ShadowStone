@@ -60,7 +60,7 @@ public class LathamHonorableKnight extends MinionText {
             @Override
             public double getBattlecryValue(int refs) {
                 // return some bullshit
-                return AI.VALUE_PER_CARD_IN_HAND * 4;
+                return 5;
             }
         });
     }

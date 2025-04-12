@@ -19,7 +19,7 @@ public class ExpansionSetIndie extends ExpansionSet {
             new KnifeEffect(), new MedamaudeEffect(), new MidgetEffect(), new TowelEffect(), new TriangleKerchiefEffect(), new Uboa(), new WitchEffect(),
             new EmotionSad(), new EmotionAngry(), new EmotionHappy());
     public static final CardSet PLAYABLE_SET = new CardSet(new Batter(), new Judge(), new Enoch(), new Elsen(), new Dedan(), new LordOfTheSecondZone(),
-            new Madotsuki(), new Poniko(), new Ralsei(), new Susie(), new Omori());
+            new Madotsuki(), new Poniko(), new Ralsei(), new Susie(), new Omori(), new MarisPicnic());
 
     @Override
     public CardSet getCards() {

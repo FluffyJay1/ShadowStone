@@ -27,7 +27,7 @@ public class IronforgedFighter extends MinionText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/ironforgedfighter.png"),
-            CRAFT, TRAITS, RARITY, 4, 4, 1, 4, true, IronforgedFighter.class,
+            CRAFT, TRAITS, RARITY, 4, 5, 1, 3, true, IronforgedFighter.class,
             new Vector2f(174, 139), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, RadiantArtifact.TOOLTIP),
             List.of());

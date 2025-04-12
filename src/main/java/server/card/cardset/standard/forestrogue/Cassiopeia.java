@@ -30,7 +30,7 @@ public class Cassiopeia extends MinionText {
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/cassiopeia.png"),
-            CRAFT, TRAITS, RARITY, 6, 3, 2, 3, true, Cassiopeia.class,
+            CRAFT, TRAITS, RARITY, 6, 4, 2, 3, true, Cassiopeia.class,
             new Vector2f(150, 145), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());

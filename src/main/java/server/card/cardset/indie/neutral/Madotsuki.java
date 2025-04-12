@@ -38,7 +38,7 @@ public class Madotsuki extends MinionText {
                                     TriangleKerchiefEffect.TOOLTIP, WitchEffect.TOOLTIP));
 
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/indie/madotsuki.png"),
-            CRAFT, TRAITS, RARITY, 4, 3, 2, 5, false, Madotsuki.class,
+            CRAFT, TRAITS, RARITY, 4, 4, 2, 4, false, Madotsuki.class,
             new Vector2f(150, 118), 1.6, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, DREAM_EFFECTS_TOOLTIP, Tooltip.UNLEASH, Tooltip.RUSH),
             List.of());

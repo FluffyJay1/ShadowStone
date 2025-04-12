@@ -30,7 +30,7 @@ public class BeetleWarrior extends MinionText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/beetlewarrior.png"),
-            CRAFT, TRAITS, RARITY, 3, 2, 1, 4, true, BeetleWarrior.class,
+            CRAFT, TRAITS, RARITY, 3, 3, 1, 3, true, BeetleWarrior.class,
             new Vector2f(150, 145), 1.5, new EventAnimationDamageArrow(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.STORM),
             List.of());

@@ -25,4 +25,7 @@ public enum Stat {
     CANT_ATTACK_LEADER,
     ARMOR,
     UNYIELDING,
+    IGNORE_WARD,
+    CLEAVE,
+    INVULNERABLE,
 }

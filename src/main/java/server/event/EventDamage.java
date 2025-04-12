@@ -71,12 +71,15 @@ public class EventDamage extends Event {
                 // normal damage processing
                 // 0 damage against negative armor should still be 0 damage
                 int damageAdjusted = this.damage.get(i) == 0 ? 0 : Math.max(0, this.damage.get(i) - minion.finalStats.get(Stat.ARMOR));
+                if (minion.finalStats.get(Stat.INVULNERABLE) > 0) {
+                    damageAdjusted = 0;
+                }
                 minion.health -= damageAdjusted;
                 if (minion.finalStats.get(Stat.UNYIELDING) > 0 && minion.health < 1 && minion.finalStats.get(Stat.HEALTH) > 0) {
                     minion.health = 1;
                 }
                 this.actualDamage.set(i, damageAdjusted);
-                boolean diesToPoisonous = (poisonous && minion.finalStats.get(Stat.STALWART) == 0 && damageAdjusted > 0 && !(minion instanceof Leader));
+                boolean diesToPoisonous = (poisonous && minion.finalStats.get(Stat.STALWART) == 0 && minion.finalStats.get(Stat.INVULNERABLE) == 0 && damageAdjusted > 0 && !(minion instanceof Leader));
                 if (minion.alive && (minion.health <= 0 || diesToPoisonous)) {
                     minion.alive = false;
                     this.markedForDeath.add(minion);

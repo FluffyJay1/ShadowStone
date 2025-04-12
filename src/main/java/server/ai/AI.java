@@ -818,8 +818,14 @@ public class AI extends Thread {
         Supplier<Stream<Minion>> attackingMinions = () -> b.getMinions(team * -1,  true, true);
         // TODO add if can attack check
         // TODO factor in damage limiting effects like durandal
+        // this must be what the ppl who designed the tax code feel like
         int potentialDamage = attackingMinions.get()
                 .filter(Minion::canAttack)
+                .map(m -> m.finalStats.get(Stat.ATTACK) * (m.finalStats.get(Stat.ATTACKS_PER_TURN) - m.attacksThisTurn))
+                .reduce(0, Integer::sum);
+        int potentialBypassWardDamage = attackingMinions.get()
+                .filter(Minion::canAttack)
+                .filter(m -> m.finalStats.get(Stat.IGNORE_WARD) > 0)
                 .map(m -> m.finalStats.get(Stat.ATTACK) * (m.finalStats.get(Stat.ATTACKS_PER_TURN) - m.attacksThisTurn))
                 .reduce(0, Integer::sum);
         int potentialLeaderDamage = attackingMinions.get()
@@ -829,6 +835,11 @@ public class AI extends Thread {
                 .reduce(0, Integer::sum);
         int threatenDamage = attackingMinions.get()
                 .filter(Minion::canAttackEventually)
+                .map(m -> m.finalStats.get(Stat.ATTACK) * m.finalStats.get(Stat.ATTACKS_PER_TURN))
+                .reduce(0, Integer::sum);
+        int threatenBypassWardDamage = attackingMinions.get()
+                .filter(Minion::canAttackEventually)
+                .filter(m -> m.finalStats.get(Stat.IGNORE_WARD) > 0)
                 .map(m -> m.finalStats.get(Stat.ATTACK) * m.finalStats.get(Stat.ATTACKS_PER_TURN))
                 .reduce(0, Integer::sum);
         int threatenLeaderDamage = attackingMinions.get()
@@ -853,23 +864,21 @@ public class AI extends Thread {
         if (b.getCurrentPlayerTurn() != team) {
             threatenDamage = potentialDamage;
             threatenLeaderDamage = potentialLeaderDamage;
+            threatenBypassWardDamage = potentialBypassWardDamage;
         }
         // if there are more defenders than attacks, then minions shouldn't be
         // able to touch face
-        if (defenders >= attackers) {
-            ehp = Math.max(ehp - threatenDamage, leaderhp);
-        } else {
-            ehp = Math.max(ehp - threatenDamage, leaderhp - threatenLeaderDamage);
-            if (ehp <= 0) {
-                if (l.finalStats.get(Stat.UNYIELDING) > 0) {
-                    ehp = 1;
-                } else if (team == b.getCurrentPlayerTurn()) {
-                    // they're threatening lethal if i dont do anything
-                    return -30 + ehp;
-                } else {
-                    // they have lethal, i am ded
-                    return -60 + ehp;
-                }
+        int baseline = defenders >= attackers ?  leaderhp - threatenBypassWardDamage :  leaderhp - threatenLeaderDamage;
+        ehp = Math.max(ehp - threatenDamage, baseline);
+        if (ehp <= 0 || threatenBypassWardDamage >= leaderhp) {
+            if (l.finalStats.get(Stat.UNYIELDING) > 0) {
+                ehp = 1;
+            } else if (team == b.getCurrentPlayerTurn()) {
+                // they're threatening lethal if i dont do anything
+                return -30 + ehp;
+            } else {
+                // they have lethal, i am ded
+                return -60 + ehp;
             }
         }
         return 6 * Math.log(ehp);

@@ -21,7 +21,7 @@ import java.util.List;
 
 public class WholeSouledSwing extends SpellText {
     public static final String NAME = "Whole-Souled Swing";
-    public static final String DESCRIPTION = "If there are fewer allied minions than enemy minions, summon a <b>Knight</b>. Deal 3 damage to an enemy minion.";
+    public static final String DESCRIPTION = "If there are fewer allied minions than enemy minions, summon a <b>Knight</b>. Deal 4 damage to an enemy minion.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
@@ -36,7 +36,7 @@ public class WholeSouledSwing extends SpellText {
             private List<Card> cachedInstances; // for getBattlecryValue, preview the value of the created cards
             @Override
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
-                return List.of(new CardTargetingScheme(this, 1, 1, "Deal 3 damage to an enemy minion.") {
+                return List.of(new CardTargetingScheme(this, 1, 1, "Deal 4 damage to an enemy minion.") {
                     @Override
                     protected boolean criteria(Card c) {
                         return c.status.equals(CardStatus.BOARD) && c instanceof Minion && c.team != this.getCreator().owner.team;
@@ -56,7 +56,7 @@ public class WholeSouledSwing extends SpellText {
                             this.resolve(b, rq, el, new CreateCardResolver(new Knight(), owner.team, CardStatus.BOARD, -1));
                         }
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 3, true, new EventAnimationDamageDoubleSlice().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 4, true, new EventAnimationDamageDoubleSlice().toString()));
                         });
                     }
                 });
@@ -67,7 +67,7 @@ public class WholeSouledSwing extends SpellText {
                 if (this.cachedInstances == null) {
                     this.cachedInstances = List.of(new Knight().constructInstance(this.owner.board));
                 }
-                return AI.valueOfMinionDamage(3) + AI.valueForSummoning(this.cachedInstances, refs) / 2;
+                return AI.valueOfMinionDamage(4) + AI.valueForSummoning(this.cachedInstances, refs) / 2;
             }
 
             @Override

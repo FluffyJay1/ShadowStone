@@ -47,7 +47,7 @@ public class Omori extends MinionText {
                     () -> List.of(EmotionSad.TOOLTIP, EmotionAngry.TOOLTIP, EmotionHappy.TOOLTIP));
 
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/indie/omori.png"),
-            CRAFT, TRAITS, RARITY, 4, 3, 2, 5, false, Omori.class,
+            CRAFT, TRAITS, RARITY, 4, 4, 2, 4, false, Omori.class,
             new Vector2f(178, 131), 1.6, new EventAnimationDamageOmoriStab(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.CHOOSE, EMOTIONS_TOOLTIP, Tooltip.UNLEASH, Tooltip.TRANSFORM, Tooltip.COUNTDOWN),
             List.of());

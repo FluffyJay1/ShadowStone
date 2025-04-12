@@ -31,7 +31,7 @@ public class DragoonScyther extends MinionText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/dragoonscyther.png"),
-            CRAFT, TRAITS, RARITY, 3, 2, 1, 2, true, DragoonScyther.class,
+            CRAFT, TRAITS, RARITY, 3, 3, 1, 2, true, DragoonScyther.class,
             new Vector2f(146, 155), 1.4, new EventAnimationDamageDoubleSlice(),
             () -> List.of(Tooltip.BANE, Tooltip.BATTLECRY, Tooltip.STORM, Tooltip.OVERFLOW),
             List.of());

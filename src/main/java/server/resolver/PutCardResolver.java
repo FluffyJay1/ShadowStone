@@ -15,6 +15,7 @@ public class PutCardResolver extends Resolver {
     private final List<Integer> pos;
     private final boolean resolveDestroy;
     public final List<Card> destroyed;
+    public EventPutCard event;
 
     public PutCardResolver(List<? extends Card> c, CardStatus status, int team, List<Integer> pos, boolean resolveDestroy) {
         super(false);
@@ -32,7 +33,7 @@ public class PutCardResolver extends Resolver {
 
     @Override
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-        b.processEvent(rq, el, new EventPutCard(this.c, this.status, this.team, this.pos, false, this.destroyed));
+        this.event = b.processEvent(rq, el, new EventPutCard(this.c, this.status, this.team, this.pos, false, this.destroyed));
         if (this.resolveDestroy) {
             this.resolve(b, rq, el, new DestroyResolver(this.destroyed, EventDestroy.Cause.NATURAL));
         }

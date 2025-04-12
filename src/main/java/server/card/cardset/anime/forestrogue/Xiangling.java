@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 
 public class Xiangling extends MinionText {
     public static final String NAME = "Xiangling";
-    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Give your leader the following effect: "
-            + "\"At the end of your even-numbered turns, deal 1 damage to all enemy minions.\" (This effect stacks and lasts for the rest of the match).";
+    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Give your leader the following effect for 3 turns: "
+            + "\"At the end of your turn, deal 1 damage to all enemy minions.\" (This effect stacks.)";
     private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Summon a <b>Guoba</b> and set its <b>Countdown</b> to M.";
     public static final String DESCRIPTION = BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
@@ -87,27 +87,24 @@ public class Xiangling extends MinionText {
     }
 
     public static class EffectPyronado extends Effect {
-        private static String EFFECT_DESCRIPTION = "At the end of your even-numbered turns, deal 1 damage to all enemy minions (from <b>Xiangling</b>).";
+        private static String EFFECT_DESCRIPTION = "At the end of your turn, deal 1 damage to all enemy minions (from <b>Xiangling</b>).";
 
         // required for reflection
         public EffectPyronado() {
             super(EFFECT_DESCRIPTION);
+            this.setUntilTurnEnd(1, 3);
         }
 
         @Override
         public ResolverWithDescription onTurnEndAllied() {
-            if (this.owner.player.turn % 2 == 0) {
-                Effect effect = this;
-                return new ResolverWithDescription(EFFECT_DESCRIPTION, new Resolver(false) {
-                    @Override
-                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        List<Minion> relevant = owner.board.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
-                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, 1, true, new EventAnimationDamageAOEFire(owner.team * -1, false).toString()));
-                    }
-                });
-            } else {
-                return null;
-            }
+            Effect effect = this;
+            return new ResolverWithDescription(EFFECT_DESCRIPTION, new Resolver(false) {
+                @Override
+                public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                    List<Minion> relevant = owner.board.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
+                    this.resolve(b, rq, el, new DamageResolver(effect, relevant, 1, true, new EventAnimationDamageAOEFire(owner.team * -1, false).toString()));
+                }
+            });
         }
 
         @Override
