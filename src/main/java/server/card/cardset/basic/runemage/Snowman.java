@@ -9,12 +9,14 @@ import server.card.CardTrait;
 import server.card.ClassCraft;
 import server.card.MinionText;
 import server.card.effect.Effect;
+import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 
 import java.util.List;
 
 public class Snowman extends MinionText {
     public static final String NAME = "Snowman";
-    public static final String DESCRIPTION = "";
+    public static final String DESCRIPTION = "<b>Freezing Touch</b>.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
@@ -26,7 +28,9 @@ public class Snowman extends MinionText {
 
     @Override
     protected List<Effect> getSpecialEffects() {
-        return List.of();
+        return List.of(new Effect(DESCRIPTION, EffectStats.builder()
+                .set(Stat.FREEZING_TOUCH, 1)
+                .build()));
     }
 
     @Override

@@ -21,7 +21,7 @@ public class DracomancersRites extends AmuletText {
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/standard/dracomancersrites.png"),
-            CRAFT, TRAITS, RARITY, 3, DracomancersRites.class,
+            CRAFT, TRAITS, RARITY, 2, DracomancersRites.class,
             new Vector2f(123, 145), 1.4,
             List::of,
             List.of());
@@ -43,6 +43,11 @@ public class DracomancersRites extends AmuletText {
                     }
                 }
                 return null;
+            }
+
+            @Override
+            public double getPresenceValue(int refs) {
+                return 2;
             }
         });
     }

@@ -21,6 +21,7 @@ public class TurnStartResolver extends Resolver {
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         ResolverQueue buffer = new ResolverQueue();
         b.processEvent(buffer, el, new EventTurnStart(p));
+        b.processEvent(buffer, el, new EventEffectPerTurnCounterReset(new ArrayList<>(b.effectsWithPerTurnCounters)));
         b.processEvent(buffer, el, new EventManaChange(this.p, 1, false, true, false));
         b.processEvent(buffer, el, new EventManaChange(this.p, this.p.maxmana - this.p.mana, true, false, false));
         // avoid concurrent modification

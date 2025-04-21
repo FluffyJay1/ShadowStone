@@ -1,0 +1,58 @@
+package gamemode.dungeonrun.passive;
+
+import java.util.List;
+
+import client.tooltip.Tooltip;
+import gamemode.dungeonrun.Passive;
+import server.ServerBoard;
+import server.card.CardStatus;
+import server.card.CardText;
+import server.card.CardVisibility;
+import server.card.SpellText;
+import server.card.cardset.CardSet;
+import server.card.effect.Effect;
+import server.event.Event;
+import server.resolver.CreateCardResolver;
+import server.resolver.Resolver;
+import server.resolver.meta.ResolverWithDescription;
+import server.resolver.util.ResolverQueue;
+import utils.SelectRandom;
+
+public class TurnEndRandomSpell extends Passive {
+    public static final String DESCRIPTION = "At the end of your turn, if you have 6 or less cards in your hand, put a random spell into your hand.";
+
+    @Override
+    public Tooltip getTooltip() {
+        return new Tooltip("GAMBA", DESCRIPTION, List::of);
+    }
+
+    @Override
+    public List<Effect> getEffects() {
+        return List.of(new EffectTurnEndRandomSpell());
+    }
+    
+    public static class EffectTurnEndRandomSpell extends Effect {
+        // required for reflection
+        public EffectTurnEndRandomSpell() {
+            super(DESCRIPTION);
+        }
+
+        @Override
+        public ResolverWithDescription onTurnEndAllied() {
+            return new ResolverWithDescription(DESCRIPTION, new Resolver(true) {
+                @Override
+                public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                    if (owner.player.getHand().size() <= 6) {
+                        CardText randomCard = SelectRandom.from(CardSet.PLAYABLE_SET.get().stream().filter(ct -> ct instanceof SpellText).toList());
+                        this.resolve(b, rq, el, new CreateCardResolver(randomCard, owner.team, CardStatus.HAND, -1, CardVisibility.ALLIES));
+                    }
+                }
+            });
+        }
+
+        @Override
+        public double getPresenceValue(int refs) {
+            return 2;
+        }
+    }
+}

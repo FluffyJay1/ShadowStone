@@ -210,7 +210,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
             if (u.isVisible()) {
                 float childTop = u.getChildLocalTop(offset + this.getVAlignOffset() + u.getPos().y);
                 if (u.clip) {
-                    childTop = -u.getVOff() + u.getPos().y + offset;
+                    childTop = -u.getVOff() + this.getVAlignOffset() + u.getPos().y + offset;
                 }
                 y = Math.min(y, childTop);
             }

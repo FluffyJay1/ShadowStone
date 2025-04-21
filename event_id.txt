@@ -23,8 +23,8 @@
 22: RemoveEffect
 23: GainShadow
 24: EventDecrementEffectTurnEndCount
-25: OnAttack - DELETED, see event groups
-26: OnAttacked - DELETED, see event groups
+25: EventEffectPerTurnCounterIncrement
+26: EventEffectPerTurnCounterReset
 27: Clash - DELETED, see event groups
 28: GameEnd
 29: MuteEffect

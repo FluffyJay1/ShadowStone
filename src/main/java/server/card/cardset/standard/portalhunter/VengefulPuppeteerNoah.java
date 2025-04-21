@@ -20,12 +20,13 @@ import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class VengefulPuppeteerNoah extends MinionText {
     public static final String NAME = "Vengeful Puppeteer Noah";
-    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Put a <b>Puppet</b> in your hand. " +
+    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Put 2 <b>Puppets</b> in your hand. " +
             "Give +1/+0/+0 and <b>Storm</b> to all <b>Puppets</b> in your hand.";
     public static final String DESCRIPTION = "<b>Storm</b>.\n" + BATTLECRY_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
@@ -48,7 +49,7 @@ public class VengefulPuppeteerNoah extends MinionText {
                 return new ResolverWithDescription(BATTLECRY_DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new CreateCardResolver(new Puppet(), owner.team, CardStatus.HAND, -1));
+                        this.resolve(b, rq, el, new CreateCardResolver(List.of(new Puppet(), new Puppet()), owner.team, CardStatus.HAND, List.of(-1, -1)));
                         List<Card> buffTargets = owner.player.getHand().stream()
                                 .filter(c -> c.getCardText() instanceof Puppet)
                                 .collect(Collectors.toList());
@@ -64,7 +65,7 @@ public class VengefulPuppeteerNoah extends MinionText {
             @Override
             public double getBattlecryValue(int refs) {
                 if (this.cachedInstances == null) {
-                    this.cachedInstances = List.of(new Puppet().constructInstance(this.owner.board));
+                    this.cachedInstances = Collections.nCopies(2, new Puppet().constructInstance(this.owner.board));
                 }
                 int numPuppets = (int) this.owner.player.getHand().stream()
                         .filter(c -> c.getCardText() instanceof Puppet)

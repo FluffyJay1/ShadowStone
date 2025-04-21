@@ -142,7 +142,7 @@ public class DeterministicBoardStateNode extends BoardStateNode {
     public String toString() {
         StringBuilder ret = new StringBuilder(this.debugString()).append("\n");
         for (Map.Entry<String, BoardStateNode> e : this.branches.entrySet()) {
-            ret.append(e.getKey().equals(this.getMax().action) ? "->[" : "- [").append(e.getValue().debugString()).append("] ").append(e.getKey());
+            ret.append(e.getKey().equals(this.getMax().action) ? "->[" : "- [").append(e.getValue().debugString()).append("] ").append(e.getKey()).append("\n");
         }
         return ret.toString();
     }

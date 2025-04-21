@@ -2,6 +2,7 @@ package server.card.effect;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -14,7 +15,9 @@ import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.event.*;
+import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
+import server.resolver.util.ResolverQueue;
 import utils.Indexable;
 import utils.StringBuildable;
 
@@ -55,6 +58,10 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     public Integer untilTurnEndTeam = null;
     // for effects that last x turns
     public Integer untilTurnEndCount = null;
+
+    // for effects that limit how many times an effect can trigger per turn
+    // basically allows effects to store int vars that properly serialize/clone and reset each turn
+    public Map<String, Integer> perTurnCounters = new HashMap<>();
 
     // who needs a factory
 
@@ -283,8 +290,12 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
                 .append(Effect.referenceOrNull(this.auraSource)).append(this.description)
                 .append(Game.STRING_END).append(" ").append(this.mute).append(" ")
                 .append(this.untilTurnEndTeam == null ? "null" : this.untilTurnEndTeam).append(" ")
-                .append(this.untilTurnEndCount == null ? "null" : this.untilTurnEndCount).append(" ")
-                .append(this.extraStateString());
+                .append(this.untilTurnEndCount == null ? "null" : this.untilTurnEndCount).append(" ");
+        builder.append(this.perTurnCounters.size()).append(" ");
+        for (Entry<String, Integer> ptc : this.perTurnCounters.entrySet()) {
+            builder.append(ptc.getKey()).append(Game.STRING_END).append(ptc.getValue()).append(" ");
+        }
+        builder.append(this.extraStateString());
         this.effectStats.appendStringToBuilder(builder);
     }
 
@@ -301,6 +312,14 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
             Integer untilTurnEndTeam = untilTurnEndTeamString.equals("null") ? null : Integer.valueOf(untilTurnEndTeamString);
             String untilTurnEndCountString = st.nextToken();
             Integer untilTurnEndCount = untilTurnEndCountString.equals("null") ? null : Integer.valueOf(untilTurnEndCountString);
+            int numPTCs = Integer.parseInt(st.nextToken());
+            Map<String, Integer> perTurnCounters = new HashMap<>();
+            for (int i = 0; i < numPTCs; i++) {
+                String key = st.nextToken(Game.STRING_END).trim();
+                st.nextToken(" \n"); // THANKS STRING TOKENIZER
+                int count = Integer.parseInt(st.nextToken());
+                perTurnCounters.put(key, count);
+            }
             Effect ef;
             ef = c.getDeclaredConstructor().newInstance();
             ef.description = description;
@@ -311,13 +330,14 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
             ef.untilTurnEndCount = untilTurnEndCount;
             ef.loadExtraState(b, st);
             ef.effectStats = EffectStats.fromString(st);
+            ef.perTurnCounters = perTurnCounters;
             return ef;
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     // override this shit, end with space
@@ -337,6 +357,7 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     public Effect clone() throws CloneNotSupportedException {
         Effect e = (Effect) super.clone(); // shallow copy
         e.effectStats = this.effectStats.clone();
+        e.perTurnCounters = new HashMap<>(this.perTurnCounters);
         return e;
     }
 
@@ -380,4 +401,38 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
         this.untilTurnEndTeam = team;
         this.untilTurnEndCount = numTurns;
     }
+
+    // do not store a reference to this
+    public PerTurnCounter perTurnCounter(String key) {
+        return new PerTurnCounter(key);
+    }
+
+    public class PerTurnCounter {
+        String key;
+
+        protected PerTurnCounter(String key) {
+            this.key = key;
+        }
+
+        public Resolver limit(int limit, Resolver resolverToWrap) {
+            if (this.getCount() < limit) {
+                return new Resolver(false) {
+                    @Override
+                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                        if (PerTurnCounter.this.getCount() < limit) {
+                            b.processEvent(rq, el, new EventEffectPerTurnCounterIncrement(Effect.this, PerTurnCounter.this.key));
+                            this.resolve(b, rq, el, resolverToWrap);
+                        }
+                    }
+                };
+            } else {
+                return null;
+            }
+        }
+
+        private int getCount() {
+            return Effect.this.perTurnCounters.getOrDefault(key, 0);
+        }
+    }
+
 }

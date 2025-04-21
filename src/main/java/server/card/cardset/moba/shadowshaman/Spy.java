@@ -30,7 +30,7 @@ import server.resolver.util.ResolverQueue;
 
 public class Spy extends MinionText {
     public static final String NAME = "Spy";
-    public static final String LASTWORDS_DESCRIPTION = "<b>Last Words</b>: At the start of your next turn, perform <b>Necromancy(4)</b> to summon a <b>Spy</b>.";
+    public static final String LASTWORDS_DESCRIPTION = "<b>Last Words</b>: At the start of your next turn, perform <b>Necromancy(5)</b> to summon a <b>Spy</b>.";
     public static final String DEPENDENT_STATS_DESCRIPTION = "Has <b>Poisonous</b> while <b>Stealthed</b>.";
     public static final String OTHER_DESCRIPTION = "<b>Stealth</b>.";
     public static final String DESCRIPTION = OTHER_DESCRIPTION + "\n" + DEPENDENT_STATS_DESCRIPTION + "\n" + LASTWORDS_DESCRIPTION;
@@ -80,7 +80,7 @@ public class Spy extends MinionText {
 
                     @Override
                     public double getLastWordsValue(int refs) {
-                        return AI.valueForSummoning(List.of(new Spy().constructInstance(owner.board)), refs) / 4;
+                        return AI.valueForSummoning(List.of(new Spy().constructInstance(owner.board)), refs) / 5;
                     }
                 }
         );
@@ -92,7 +92,7 @@ public class Spy extends MinionText {
     }
 
     public static class EffectDeadRinger extends Effect {
-        public static final String EFFECT_DESCRIPTION = "At the start of your turn, perform <b>Necromancy(4)</b> to summon a <b>Spy</b> (from <b>" + NAME + "</b>).";
+        public static final String EFFECT_DESCRIPTION = "At the start of your turn, perform <b>Necromancy(5)</b> to summon a <b>Spy</b> (from <b>" + NAME + "</b>).";
 
         public EffectDeadRinger() {
             super(EFFECT_DESCRIPTION);
@@ -104,7 +104,7 @@ public class Spy extends MinionText {
             return new ResolverWithDescription(EFFECT_DESCRIPTION, new Resolver(true) {
                 @Override
                 public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                    this.resolve(b, rq, el, new NecromancyResolver(effect, 4, new CreateCardResolver(new Spy(), owner.team, CardStatus.BOARD, -1)));
+                    this.resolve(b, rq, el, new NecromancyResolver(effect, 5, new CreateCardResolver(new Spy(), owner.team, CardStatus.BOARD, -1)));
                     this.resolve(b, rq, el, new RemoveEffectResolver(List.of(effect)));
                 }
             });

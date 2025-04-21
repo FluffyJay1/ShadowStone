@@ -1,5 +1,6 @@
 package gamemode.dungeonrun.controller;
 
+import gamemode.dungeonrun.Passive;
 import gamemode.dungeonrun.model.Contestant;
 import gamemode.dungeonrun.model.EnemySpec;
 import gamemode.dungeonrun.model.Run;
@@ -22,6 +23,7 @@ import server.card.cardset.indie.ExpansionSetIndie;
 import server.card.cardset.moba.ExpansionSetMoba;
 import server.card.cardset.special.treasure.Treasures;
 import server.card.cardset.standard.ExpansionSetStandard;
+import utils.SelectRandom;
 import utils.WeightedRandomSampler;
 import utils.WeightedSampler;
 
@@ -39,18 +41,22 @@ import java.util.function.Function;
 public class DungeonRunController {
     private static final String SAVE_PATH = "dungeonrun.dat";
     public static Run run;
+    private static final int PASSIVE_ROUNDS = 1;
+    private static final int PASSIVE_NUM_OPTIONS = 3;
+    private static final List<Integer> PASSIVE_OFFER_STAGES = List.of(1, 3);
     private static final int TREASURE_ROUNDS = 1;
     private static final int TREASURE_NUM_OPTIONS = 3;
     private static final int TREASURE_CARDS_PER_OPTION = 1;
+    private static final List<Integer> TREASURE_OFFER_STAGES = List.of(0, 2, 4);
     private static final int LOOT_ENEMY_ROUNDS = 1;
     private static final int LOOT_CLASS_ROUNDS = 2;
     private static final int LOOT_NUM_OPTIONS = 3;
     private static final int LOOT_CARDS_PER_OPTION = 2;
-    private static final int DISCARD_ROUNDS = 2;
+    private static final int DISCARD_ROUNDS = 1;
     private static final int DISCARD_NUM_OPTIONS = 2;
-    private static final int DISCARD_CARDS_PER_OPTION = 2;
+    private static final int DISCARD_CARDS_PER_OPTION = 3;
     private static final int ENEMY_DECK_SAMPLE_SIZE = 2;
-    private static final int ENEMY_DECK_SAMPLE_SIZE_PER_LEVEL = 2;
+    private static final int ENEMY_DECK_SAMPLE_SIZE_PER_LEVEL = 3;
     private static final int ENEMY_DECK_SAMPLE_ROUNDS = 3;
 
     private static final Map<ExpansionSet, Double> EXPANSION_LOOT_WEIGHTS = new HashMap<>() {{
@@ -65,7 +71,7 @@ public class DungeonRunController {
         run = new Run();
         run.state = RunState.PENDING;
         // generate player
-        run.player = new Contestant(CardSet.getDefaultLeader(starterCraft), CardSet.getDefaultUnleashPower(starterCraft), getDeckForClass(starterCraft), 3, List.of());
+        run.player = new Contestant(CardSet.getDefaultLeader(starterCraft), CardSet.getDefaultUnleashPower(starterCraft), getDeckForClass(starterCraft), 3, List.of(), List.of());
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {
             dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
@@ -89,7 +95,8 @@ public class DungeonRunController {
             while (!enemySpecs.isEmpty()) {
                 EnemySpec spec = enemySpecs.remove((int) (Math.random() * enemySpecs.size()));
                 ConstructedDeck deck = getDeckForSpec(spec, level);
-                run.enemies.add(new Contestant(spec.leaderText, spec.unleashPowerText, deck, level, spec.cards));
+                List<Passive> passives = generatePassivesForEnemyLevel(level);
+                run.enemies.add(new Contestant(spec.leaderText, spec.unleashPowerText, deck, level, spec.cards, passives));
                 level++;
             }
         } catch (ParserConfigurationException | IOException | SAXException e) {
@@ -118,7 +125,7 @@ public class DungeonRunController {
         ConstructedDeck deck = new ConstructedDeck(spec.leaderText.getTooltip().craft);
         deck.name = "Dungeon Run Deck";
         for (CardText ct : new ExpansionSetBasic().getCards().filterCraft(deck.craft)) {
-            deck.addCard(ct, level >= 2 ? 2 : 1, false);
+            deck.addCard(ct, 1, false);
         }
         for (CardText ct : new ExpansionSetBasic().getCards().filterCraft(ClassCraft.NEUTRAL)) {
             deck.addCard(ct, 1, false);
@@ -139,6 +146,10 @@ public class DungeonRunController {
         return deck;
     }
 
+    private static List<Passive> generatePassivesForEnemyLevel(int level) {
+        return SelectRandom.from(Passive.ALL, level / 2);
+    }
+
     public static Thread startGame(DataStream dsserver) {
         DungeonRunGameRunner runner = new DungeonRunGameRunner(dsserver, run.player, run.enemies.get(run.current));
         Thread t = new Thread(runner);
@@ -155,6 +166,7 @@ public class DungeonRunController {
                 run.state = RunState.WON;
             } else {
                 run.state = RunState.LOOTING;
+                determinePassiveOptions();
                 determineTreasureOptions();
                 determineLootOptions();
                 determineDiscardOptions();
@@ -166,8 +178,13 @@ public class DungeonRunController {
     }
 
     // end looting and move on
-    public static void endLooting(List<Integer> treasureChoices, List<Integer> lootChoices, List<Integer> discardChoices) {
+    public static void endLooting(List<Integer> passiveChoices, List<Integer> treasureChoices, List<Integer> lootChoices, List<Integer> discardChoices) {
         run.current++;
+        for (int round = 0; round < passiveChoices.size(); round++) {
+            int choice = passiveChoices.get(round);
+            List<Passive> option = run.passiveOptions.get(round).get(choice);
+            run.player.passives.addAll(option);
+        }
         for (int round = 0; round < treasureChoices.size(); round++) {
             int choice = treasureChoices.get(round);
             List<CardText> option = run.treasureOptions.get(round).get(choice);
@@ -203,15 +220,28 @@ public class DungeonRunController {
         run = null;
     }
 
+    private static void determinePassiveOptions() {
+        run.passiveOptions = new ArrayList<>(PASSIVE_ROUNDS);
+        if (PASSIVE_OFFER_STAGES.contains(run.current)) {
+            for (int i = 0; i < PASSIVE_ROUNDS; i++) {
+                List<Passive> choices = SelectRandom.from(Passive.ALL, PASSIVE_NUM_OPTIONS);
+                List<List<Passive>> round = choices.stream().map(List::of).toList(); // yuh
+                run.passiveOptions.add(round);
+            }
+        }
+    }
+
     private static void determineTreasureOptions() {
         run.treasureOptions = new ArrayList<>(TREASURE_ROUNDS);
-        WeightedSampler<CardText> treasureSampler = new WeightedRandomSampler<>();
-        for (CardText ct : Treasures.CARDS) {
-            treasureSampler.add(ct, 1); // todo weight treasures differently?
-        }
-        for (int i = 0; i < TREASURE_ROUNDS; i++) {
-            List<CardText> topOptions = treasureSampler.sample();
-            run.treasureOptions.add(distributeOptions(topOptions, TREASURE_NUM_OPTIONS, TREASURE_CARDS_PER_OPTION));
+        if (TREASURE_OFFER_STAGES.contains(run.current)) {
+            WeightedSampler<CardText> treasureSampler = new WeightedRandomSampler<>();
+            for (CardText ct : Treasures.CARDS) {
+                treasureSampler.add(ct, 1); // todo weight treasures differently?
+            }
+            for (int i = 0; i < TREASURE_ROUNDS; i++) {
+                List<CardText> topOptions = treasureSampler.sample();
+                run.treasureOptions.add(distributeOptions(topOptions, TREASURE_NUM_OPTIONS, TREASURE_CARDS_PER_OPTION));
+            }
         }
     }
 

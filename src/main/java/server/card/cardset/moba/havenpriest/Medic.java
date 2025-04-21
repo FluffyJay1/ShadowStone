@@ -38,7 +38,7 @@ import utils.SelectRandom;
 public class Medic extends MinionText {
     public static final String NAME = "Medic";
     private static final String ONTURNEND_DESCRIPTION = "At the end of your turn, restore M health to a random ally with the most missing health, twice.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Select another allied minion, and <b>Choose</b> one give until the end of your turn: +M/+0/+0 or <b>Invulnerable</b>.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Select another allied minion. <b>Choose</b> which effect to give until the end of your turn: <b>Rush</b> and +M/+0/+0, or <b>Rush</b> and <b>Invulnerable</b>.";
     public static final String DESCRIPTION = ONTURNEND_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.SILVER;
@@ -46,7 +46,7 @@ public class Medic extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/moba/medic.png"),
             CRAFT, TRAITS, RARITY, 4, 2, 3, 4, false, Medic.class,
             new Vector2f(), -1, new EventAnimationDamageSlash(),
-            () -> List.of(Tooltip.UNLEASH, Tooltip.CHOOSE, Tooltip.INVULNERABLE),
+            () -> List.of(Tooltip.UNLEASH, Tooltip.CHOOSE, Tooltip.RUSH, Tooltip.INVULNERABLE),
             List.of());
 
     @Override
@@ -58,13 +58,13 @@ public class Medic extends MinionText {
                         new CardTargetingScheme(this, 0, 1, "Select a card to buff.") {
                             @Override
                             protected boolean criteria(Card c) {
-                                return c instanceof BoardObject && c.isInPlay() && c.team == owner.team && c.status.equals(CardStatus.BOARD) && c != this.getCreator().owner;
+                                return c instanceof Minion && c.isInPlay() && c.team == owner.team && c.status.equals(CardStatus.BOARD) && c != this.getCreator().owner;
                             }
 
                         },
                         new ModalTargetingScheme(this, 1, "<b>Choose</b> 1", List.of(
-                                new ModalOption("Give the minion +M/+0/+0 until the end of the turn."),
-                                new ModalOption("Give the minion <b>Invulnerable</b> until the end of the turn.")
+                                new ModalOption("Give the minion <b>Rush</b> and +M/+0/+0 until the end of the turn."),
+                                new ModalOption("Give the minion <b>Rush</b> and <b>Invulnerable</b> until the end of the turn.")
                         )) {
                             @Override
                             public boolean isApplicable(List<TargetList<?>> alreadyTargeted) {
@@ -87,15 +87,17 @@ public class Medic extends MinionText {
                                 if (option == 0) {
                                     // kritz
                                     int m = owner.finalStats.get(Stat.MAGIC);
-                                    Effect buff = new Effect("+" + m + "/+0/+0 (from <b>" + NAME + "</b>).", EffectStats.builder()
+                                    Effect buff = new Effect("<b>Rush</b> and +" + m + "/+0/+0 (from <b>" + NAME + "</b>).", EffectStats.builder()
+                                            .set(Stat.RUSH, 1)
                                             .change(Stat.ATTACK, m)
                                             .build(),
                                             e -> e.setUntilTurnEnd(0, 1));
                                     this.resolve(b, rq, el, new AddEffectResolver(targeted, buff));
                                 } else {
                                     // normal uber
-                                    Effect buff = new Effect("<b>Invulnerable</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
-                                            .change(Stat.INVULNERABLE, 1)
+                                    Effect buff = new Effect("<b>Rush</b> and <b>Invulnerable</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
+                                            .set(Stat.RUSH, 1)
+                                            .set(Stat.INVULNERABLE, 1)
                                             .build(),
                                             e -> e.setUntilTurnEnd(0, 1));
                                     this.resolve(b, rq, el, new AddEffectResolver(targeted, buff));

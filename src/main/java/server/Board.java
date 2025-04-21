@@ -196,8 +196,8 @@ public abstract class Board {
                         this.processEvent(e);
                     }
                 } catch (Exception e) {
-                    System.out.println("EXCEPTION WHILE PARSING THIS EVENT");
-                    System.out.println(line);
+                    System.err.println("EXCEPTION WHILE PARSING THIS EVENT");
+                    System.err.println(line);
                     e.printStackTrace();
                     throw e;
                 }

@@ -3,6 +3,7 @@ package server.card.cardset;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import server.UnleashPowerText;
 import server.card.*;
@@ -144,5 +145,9 @@ public class CardSet implements Iterable<CardText> {
     @Override
     public Iterator<CardText> iterator() {
         return this.cardTexts.iterator();
+    }
+
+    public Stream<CardText> stream() {
+        return this.cardTexts.stream();
     }
 }

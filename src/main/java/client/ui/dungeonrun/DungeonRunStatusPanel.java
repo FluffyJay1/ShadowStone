@@ -92,7 +92,8 @@ public class DungeonRunStatusPanel extends UIBox {
         Contestant enemy;
         CardDisplayUnit leader, unleashpower;
         List<CardDisplayUnit> signatureCards;
-        Text nameText, classText, signatureCardText;
+        ScrollingContext passiveTextScrollingContext;
+        Text nameText, classText, passiveText;
 
         public DungeonRunStatusPanelItem(UI ui, Vector2f pos, Contestant enemy) {
             super(ui, pos, new Vector2f(Config.WINDOW_WIDTH - 560, ITEM_HEIGHT), "ui/uiboxborder.png");
@@ -101,19 +102,23 @@ public class DungeonRunStatusPanel extends UIBox {
             this.leader.alignh = -1;
             this.leader.setCardStatus(CardStatus.LEADER);
             this.addChild(this.leader);
-            this.unleashpower = new CardDisplayUnit(ui, new Vector2f(this.leader.getRight(false, false) + 10, 0), enemy.unleashPowerText);
+            this.unleashpower = new CardDisplayUnit(ui, new Vector2f(this.leader.getRight(false, false), 0), enemy.unleashPowerText);
             this.unleashpower.alignh = -1;
             this.unleashpower.setCardStatus(CardStatus.UNLEASHPOWER);
             this.addChild(this.unleashpower);
             this.nameText = new Text(ui, new Vector2f(this.unleashpower.getRight(false, false), 0), "Name",
-                    200, 35, 44, -1, 0);
+                    250, 20, 40, -1, 1);
             this.addChild(this.nameText);
-            this.classText = new Text(ui, new Vector2f(this.nameText.getRight(false, false), 0), "Class",
-                    200, 22, 24, -1, 0);
+            this.classText = new Text(ui, new Vector2f(this.nameText.getLeft(false, false), 0), "Class",
+                    this.nameText.getWidth(true), 22, 25, -1, -1);
             this.addChild(this.classText);
-            this.signatureCardText = new Text(ui, new Vector2f(this.classText.getRight(false, false), 0), "Signature Cards include:",
-                    150, 15, 20, -1, 0);
-            this.addChild(this.signatureCardText);
+            this.passiveTextScrollingContext = new ScrollingContext(ui, new Vector2f(this.classText.getRight(false, false), 0), new Vector2f(450, this.getHeight(true)));
+            this.passiveTextScrollingContext.alignh = -1;
+            this.passiveTextScrollingContext.margins = new Vector2f(5, 5);
+            this.passiveTextScrollingContext.clip = true;
+            this.addChild(passiveTextScrollingContext);
+            this.passiveText = new Text(ui, new Vector2f(-this.passiveTextScrollingContext.getWidth(true) / 2, 0), "passives", this.passiveTextScrollingContext.getWidth(true), 20, 25, -1, 0);
+            this.passiveTextScrollingContext.addChild(this.passiveText);
             this.signatureCards = new ArrayList<>(MAX_SIGNATURE_CARDS);
             this.setEnemy(enemy);
         }
@@ -125,8 +130,9 @@ public class DungeonRunStatusPanel extends UIBox {
             this.unleashpower.setCardText(enemy.unleashPowerText);
             this.nameText.setText(enemy.leaderText.getTooltip().name);
             this.classText.setText(enemy.leaderText.getTooltip().craft.toString());
+            this.passiveText.setText(enemy.passives.stream().map(p -> "- " + p.getTooltip().description).reduce((a, b) -> a + "\n" + b).orElse("<i>(no passives)</b>"));
             this.clearSignatureCards();
-            float startX = this.signatureCardText.getRight(false, false) + CARD_SPACING;
+            float startX = this.passiveTextScrollingContext.getRight(false, false) + CARD_SPACING;
             for (int i = 0; i < this.enemy.specialCards.size() && i < MAX_SIGNATURE_CARDS; i++) {
                 CardDisplayUnit cdu = new CardDisplayUnit(this.ui, new Vector2f(startX, 0), this.enemy.specialCards.get(i));
                 cdu.alignh = -1;

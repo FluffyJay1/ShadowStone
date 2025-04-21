@@ -1,5 +1,6 @@
 package gamemode.dungeonrun.controller;
 
+import gamemode.dungeonrun.Passive;
 import gamemode.dungeonrun.model.Contestant;
 import network.DataStream;
 import server.GameController;
@@ -50,12 +51,22 @@ public class DungeonRunGameRunner implements Runnable {
                                 .set(Stat.HEALTH, player.getHealth())
                                 .build()
                         )));
+                        for (Passive passive : player.passives) {
+                            for (Effect effect : passive.getEffects()) {
+                                this.resolve(b, rq, el, new AddEffectResolver(l, effect));
+                            }
+                        };
                     });
                     b.getPlayer(gc.indexToTeam(1)).getLeader().ifPresent(l -> {
                         this.resolve(b, rq, el, new AddEffectResolver(l, new Effect("", EffectStats.builder()
                                 .set(Stat.HEALTH, enemy.getHealth())
                                 .build()
                         )));
+                        for (Passive passive : enemy.passives) {
+                            for (Effect effect : passive.getEffects()) {
+                                this.resolve(b, rq, el, new AddEffectResolver(l, effect));
+                            }
+                        };
                     });
                 }
             }, 0);

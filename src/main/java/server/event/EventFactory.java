@@ -35,6 +35,8 @@ public class EventFactory {
             case EventTurnStart.ID -> EventTurnStart.fromString(b, st);
             case EventUnleash.ID -> EventUnleash.fromString(b, st);
             case EventDecrementEffectTurnEndCount.ID -> EventDecrementEffectTurnEndCount.fromString(b, st);
+            case EventEffectPerTurnCounterIncrement.ID -> EventEffectPerTurnCounterIncrement.fromString(b, st);
+            case EventEffectPerTurnCounterReset.ID -> EventEffectPerTurnCounterReset.fromString(b, st);
             default -> null;
         };
     }

@@ -51,6 +51,9 @@ public class ServerBoard extends Board {
     // see Card, TurnEndResolver
     public List<Effect> effectsToRemoveAtEndOfTurn;
 
+    // see PerTurnCounter
+    public Set<Effect> effectsWithPerTurnCounters;
+
     public ServerBoard(int localteam) {
         super(localteam);
     }
@@ -67,6 +70,7 @@ public class ServerBoard extends Board {
         this.dependentStats = new HashSet<>();
         this.listeners = new HashSet<>();
         this.effectsToRemoveAtEndOfTurn = new ArrayList<>();
+        this.effectsWithPerTurnCounters = new HashSet<>();
 
         this.enableOutput = true;
     }

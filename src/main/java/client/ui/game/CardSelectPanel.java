@@ -97,7 +97,7 @@ public class CardSelectPanel extends UIBox {
                         if (e.owner.team * e.untilTurnEndTeam * -1 != this.uib.b.getCurrentPlayerTurn() && (e.untilTurnEndCount == null || e.untilTurnEndCount.intValue() <= 0 || (!this.uib.b.getPhase().equals(Board.Phase.AFTER_TURN) && e.untilTurnEndCount.intValue() == 1))) {
                             effectstext.append("at the end of this turn");
                         } else {
-                            effectstext.append("after ").append(e.untilTurnEndCount.intValue()).append(" of ");
+                            effectstext.append("after ").append(e.untilTurnEndCount == null ? 1 : e.untilTurnEndCount.intValue()).append(" of ");
                             effectstext.append(switch(e.untilTurnEndTeam) {
                                 case 1 -> "your";
                                 case -1 -> "your opponent's";

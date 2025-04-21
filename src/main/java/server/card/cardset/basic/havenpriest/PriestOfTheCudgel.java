@@ -8,6 +8,7 @@ import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.card.*;
 import server.card.effect.Effect;
+import server.card.effect.Stat;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
@@ -21,12 +22,12 @@ import java.util.List;
 
 public class PriestOfTheCudgel extends MinionText {
     public static final String NAME = "Priest of the Cudgel";
-    public static final String DESCRIPTION = "<b>Unleash</b>: <b>Banish</b> an enemy minion with 3 health or less.";
+    public static final String DESCRIPTION = "<b>Unleash</b>: <b>Banish</b> an enemy minion with M health or less.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/priestofthecudgel.png"),
-            CRAFT, TRAITS, RARITY, 4, 3, 1, 5, false, PriestOfTheCudgel.class,
+            CRAFT, TRAITS, RARITY, 4, 3, 3, 4, false, PriestOfTheCudgel.class,
             new Vector2f(162, 140), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.UNLEASH, Tooltip.BANISH),
             List.of());
@@ -36,11 +37,11 @@ public class PriestOfTheCudgel extends MinionText {
         return List.of(new Effect(DESCRIPTION) {
             @Override
             public List<TargetingScheme<?>> getUnleashTargetingSchemes() {
-                return List.of(new CardTargetingScheme(this, 0, 1, "<b>Banish</b> an enemy minion with 3 health or less.") {
+                return List.of(new CardTargetingScheme(this, 0, 1, "<b>Banish</b> an enemy minion with M health or less.") {
                     @Override
                     protected boolean criteria(Card c) {
                         return c.status.equals(CardStatus.BOARD) && c instanceof Minion
-                                && c.team != this.getCreator().owner.team && ((Minion) c).health <= 3;
+                                && c.team != this.getCreator().owner.team && ((Minion) c).health <= owner.finalStats.get(Stat.MAGIC);
                     }
                 });
             }
