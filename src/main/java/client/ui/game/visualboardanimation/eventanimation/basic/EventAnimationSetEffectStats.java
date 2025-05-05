@@ -12,7 +12,6 @@ import client.ui.particle.strategy.property.*;
 import client.ui.particle.strategy.timing.InstantEmissionTimingStrategy;
 import org.newdawn.slick.*;
 
-import client.VisualBoard;
 import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.*;
@@ -60,7 +59,8 @@ public class EventAnimationSetEffectStats extends EventAnimation<EventSetEffectS
         return true;
     }
 
-    public void onProcess() {
+    @Override
+    public void beforeProcess() {
         for (int i = 0; i < this.event.targets.size(); i++) {
             if (this.shouldAnimate(i)) {
                 Effect e = this.event.targets.get(i);

@@ -2,8 +2,12 @@ package server.event;
 
 import java.util.*;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import client.Game;
 import client.PendingPlayPositioner;
+import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -16,7 +20,7 @@ public class EventPutCard extends Event {
     public final CardStatus status;
     private final boolean play;
     public final int targetTeam;
-    private List<CardStatus> prevStatus;
+    public List<CardStatus> prevStatus;
     private List<List<Effect>> prevEffects;
     private List<List<Boolean>> prevMute;
     private List<Integer> prevPos;
@@ -34,8 +38,10 @@ public class EventPutCard extends Event {
     final List<BoardObject> cardsEnteringPlay = new ArrayList<>();
     final List<BoardObject> cardsLeavingPlay = new ArrayList<>();
     List<Card> markedForDeath;
+    // not proud of incorporating client animation logic into serverside game logic, but it's what we have to do
+    private final String animationString;
 
-    public EventPutCard(List<? extends Card> c, CardStatus status, int team, List<Integer> pos, boolean play, List<Card> markedForDeath) {
+    public EventPutCard(List<? extends Card> c, CardStatus status, int team, List<Integer> pos, boolean play, List<Card> markedForDeath, @NotNull String animationString) {
         super(ID);
         this.cards = c;
         this.status = status;
@@ -43,6 +49,7 @@ public class EventPutCard extends Event {
         this.pos = pos;
         this.play = play;
         this.markedForDeath = markedForDeath;
+        this.animationString = animationString;
     }
 
     @Override
@@ -245,6 +252,7 @@ public class EventPutCard extends Event {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(this.id).append(" ")
+                .append(this.animationString)
                 .append(this.cards.size()).append(" ")
                 .append(this.status.toString()).append(" ")
                 .append(this.targetTeam).append(" ")
@@ -256,6 +264,7 @@ public class EventPutCard extends Event {
     }
 
     public static EventPutCard fromString(Board b, StringTokenizer st) {
+        String animString = EventAnimation.extractAnimationString(st);
         int size = Integer.parseInt(st.nextToken());
         String sStatus = st.nextToken();
         CardStatus csStatus = CardStatus.valueOf(sStatus);
@@ -269,7 +278,7 @@ public class EventPutCard extends Event {
             int poss = Integer.parseInt(st.nextToken());
             pos.add(poss);
         }
-        return new EventPutCard(c, csStatus, targetteam, pos, play, null);
+        return new EventPutCard(c, csStatus, targetteam, pos, play, null, animString);
     }
 
     // if we are moving to the board (but not from board), we shouldn't attempt to move cards if they don't fit on the board
@@ -299,5 +308,10 @@ public class EventPutCard extends Event {
     @Override
     public boolean conditions() {
         return true;
+    }
+
+    @Override
+    public @Nullable String getAnimationString() {
+        return this.animationString;
     }
 }

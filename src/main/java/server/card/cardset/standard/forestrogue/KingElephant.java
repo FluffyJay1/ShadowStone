@@ -3,7 +3,6 @@ package server.card.cardset.standard.forestrogue;
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.Animation;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageFire;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 
 import org.newdawn.slick.geom.Vector2f;

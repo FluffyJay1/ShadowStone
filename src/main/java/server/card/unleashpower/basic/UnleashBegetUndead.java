@@ -52,7 +52,7 @@ public class UnleashBegetUndead extends UnleashPowerText {
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new DamageResolver(effect, m, 1, true, new EventAnimationDamageMagicHit().toString()));
+                        this.resolve(b, rq, el, new DamageResolver(effect, m, 1, true, new EventAnimationDamageMagicHit()));
                     }
                 });
             }

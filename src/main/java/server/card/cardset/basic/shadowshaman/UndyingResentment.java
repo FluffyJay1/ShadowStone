@@ -22,7 +22,7 @@ import java.util.List;
 
 public class UndyingResentment extends SpellText {
     public static final String NAME = "Undying Resentment";
-    public static final String DESCRIPTION = "Deal 3 damage to an enemy minion. <b>Necromancy(2)</b>: Deal 5 damage instead.";
+    public static final String DESCRIPTION = "Deal 4 damage to an enemy minion. <b>Necromancy(2)</b>: Deal 6 damage instead.";
     public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
@@ -51,10 +51,10 @@ public class UndyingResentment extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            NecromancyResolver necromancyResolver = new NecromancyResolver(effect, 2, new DamageResolver(effect, (Minion) c, 5, true, new EventAnimationDamageMagicHit().toString()));
+                            NecromancyResolver necromancyResolver = new NecromancyResolver(effect, 2, new DamageResolver(effect, (Minion) c, 6, true, new EventAnimationDamageMagicHit()));
                             this.resolve(b, rq, el, necromancyResolver);
                             if (!necromancyResolver.wasSuccessful()) {
-                                this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 3, true, new EventAnimationDamageMagicHit().toString()));
+                                this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 4, true, new EventAnimationDamageMagicHit()));
                             }
                         });
                     }

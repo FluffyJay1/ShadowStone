@@ -19,7 +19,7 @@ import java.util.List;
 
 public class BlackenedScripture extends SpellText {
     public static final String NAME = "Blackened Scripture";
-    public static final String DESCRIPTION = "<b>Banish</b> an enemy minion with 3 health or less.";
+    public static final String DESCRIPTION = "<b>Banish</b> an enemy minion with 4 health or less.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
@@ -37,7 +37,7 @@ public class BlackenedScripture extends SpellText {
                     @Override
                     protected boolean criteria(Card c) {
                         return c.status.equals(CardStatus.BOARD) && c instanceof Minion
-                                && c.team != this.getCreator().owner.team && ((Minion) c).health <= 3;
+                                && c.team != this.getCreator().owner.team && ((Minion) c).health <= 4;
                     }
                 });
             }
@@ -56,7 +56,7 @@ public class BlackenedScripture extends SpellText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return 3;
+                return 4;
             }
         });
     }

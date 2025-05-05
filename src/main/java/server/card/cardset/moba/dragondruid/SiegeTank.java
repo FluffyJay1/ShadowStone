@@ -67,7 +67,7 @@ public class SiegeTank extends MinionText {
                         int option = ((ModalTargetList) targetList.get(0)).targeted.get(0);
                         switch (option) {
                             case 0 -> {
-                                this.resolve(b, rq, el, new BlastResolver(effect, 5, new EventAnimationDamageShoot().toString()));
+                                this.resolve(b, rq, el, new BlastResolver(effect, 5, new EventAnimationDamageShoot()));
                             }
                             case 1 -> {
                                 getStillTargetableCards(Effect::getUnleashTargetingSchemes, targetList, 1).findFirst().ifPresent(targeted -> {
@@ -84,7 +84,7 @@ public class SiegeTank extends MinionText {
                                             d.add(2);
                                         }
                                     }
-                                    this.resolve(b, rq, el, new DamageResolver(effect, m, d, true, new EventAnimationDamageBigExplosion().toString()));
+                                    this.resolve(b, rq, el, new DamageResolver(effect, m, d, true, new EventAnimationDamageBigExplosion()));
                                 });
                             }
                         }

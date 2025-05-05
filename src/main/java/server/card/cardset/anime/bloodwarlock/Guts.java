@@ -56,7 +56,7 @@ public class Guts extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         int x = owner.finalStats.get(Stat.MAGIC);
-                        this.resolve(b, rq, el, new BlastResolver(effect, x, new EventAnimationDamageShoot().toString()));
+                        this.resolve(b, rq, el, new BlastResolver(effect, x, new EventAnimationDamageShoot()));
                     }
                 });
             }

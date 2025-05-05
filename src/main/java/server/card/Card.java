@@ -301,7 +301,8 @@ public abstract class Card implements Indexable, StringBuildable {
     public boolean validateTargets(List<List<TargetingScheme<?>>> schemes, List<List<TargetList<?>>> targets) {
         for (int i = 0; i < schemes.size(); i++) {
             for (int j = 0; j < schemes.get(i).size(); j++) {
-                if (!schemes.get(i).get(j).isValid((TargetList) targets.get(i).get(j))) {
+                TargetingScheme<?> scheme = schemes.get(i).get(j);
+                if (scheme.isApplicable(targets.get(i)) && !scheme.isValid((TargetList) targets.get(i).get(j))) {
                     return false;
                 }
             }

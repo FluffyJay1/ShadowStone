@@ -79,7 +79,7 @@ public class Yoshino extends MinionText {
                             if (!choices.isEmpty()) {
                                 Minion choice = SelectRandom.from(choices);
                                 this.resolve(b, rq, el, new DamageResolver(effect, choice, 1, true,
-                                        new EventAnimationDamageMagicHit().toString()));
+                                        new EventAnimationDamageMagicHit()));
                             }
                         }
                         b.popEventGroup();

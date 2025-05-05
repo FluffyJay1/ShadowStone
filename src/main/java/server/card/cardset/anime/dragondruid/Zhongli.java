@@ -48,7 +48,7 @@ public class Zhongli extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> relevant = b.getMinions(owner.team * -1, true, true).collect(Collectors.toList());
-                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, 5, true, new EventAnimationDamagePlanetBefall(owner.team * -1).toString()));
+                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, 5, true, new EventAnimationDamagePlanetBefall(owner.team * -1)));
                         List<Minion> disarmtargets = b.getMinions(owner.team * -1, true, true).collect(Collectors.toList());
                         Effect disarm = new Effect("<b>Disarmed</b> until the end of your turn (from <b>" + NAME + "</b>).", EffectStats.builder()
                                 .set(Stat.DISARMED, 1)

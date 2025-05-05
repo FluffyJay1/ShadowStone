@@ -1,4 +1,4 @@
-package client.ui.game.visualboardanimation.eventanimation.board;
+package client.ui.game.visualboardanimation.eventanimation.putcard;
 
 import client.VisualBoard;
 import client.ui.Animation;
@@ -12,6 +12,8 @@ import org.newdawn.slick.*;
 
 import client.ui.game.*;
 import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
+import client.ui.game.visualboardanimation.eventanimation.board.EventAnimationCreateCard;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.card.*;
 import server.event.*;
@@ -20,7 +22,12 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
-    private static final int EDGE_PADDING = 1;
+    /*
+     * If subclasses have no additional parameters, all they need to implement
+     * the () constructor, nothing else is needed. If the animation requires
+     * some parameters, they will need to implement a
+     * extraParamString() and fromExtraParams(StringTokenizer) method.
+     */
     private static final float TEAM_OFFSET = 0.06f;
     private static final float DECK_ALIGN_WEIGHT = 0.9f; //0 means left, 1 means right
 
@@ -88,7 +95,7 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
                     alignWeight = DECK_ALIGN_WEIGHT; // put cards closer to the deck
                 }
                 float fanX = (float) ((1 - this.visualBoard.uiBoard.getLocalWidthInRel(uic.getWidth(false)))
-                        * (i + alignWeight - this.event.cards.size() / 2.)) / (this.event.cards.size() - 1 + EDGE_PADDING * 2);
+                        * (i + alignWeight - this.event.cards.size() / 2.)) / (this.event.cards.size() - 1 + EventAnimationCreateCard.EDGE_PADDING * 2);
                 float fanY = c.team == this.visualBoard.getLocalteam() ? TEAM_OFFSET : -TEAM_OFFSET;
                 uic.setPos(new Vector2f(fanX, fanY), 0.999);
             }
@@ -104,6 +111,17 @@ public class EventAnimationPutCard extends EventAnimation<EventPutCard> {
                 if (this.event.successful.get(i) && !uic.isFlippedOver()) {
                     EmissionStrategy strategy = new ScaledEmissionStrategy(SPARKLE_EMISSION_STRATEGY.get(), uic.getScale());
                     this.visualBoard.uiBoard.addParticleSystem(uic.getPos(), UIBoard.PARTICLE_Z_SPECIAL, strategy);
+                }
+            }
+        } else if (this.event.status.equals(CardStatus.BOARD)) {
+            for (int i = 0; i < this.event.cards.size(); i++) {
+                Card c = this.event.cards.get(i);
+                UICard uic = c.uiCard;
+                if (this.event.prevStatus.get(i).equals(CardStatus.DECK) && this.event.successful.get(i)) {
+                    Vector2f destPos = this.visualBoard.uiBoard.getBoardPosFor(c.getIndex(), c.team, this.visualBoard.getPlayer(c.team).getPlayArea().size());
+                    uic.setPos(destPos.copy().add(new Vector2f(0, EventAnimationCreateCard.ENTRANCE_OFFSET_Y)), 1);
+                    Vector2f localPosOfRel = this.visualBoard.uiBoard.getLocalPosOfRel(destPos);
+                    this.visualBoard.uiBoard.addParticleSystem(localPosOfRel, UIBoard.PARTICLE_Z_BOARD, EventAnimationCreateCard.DUST_EMISSION_STRATEGY.get());
                 }
             }
         }

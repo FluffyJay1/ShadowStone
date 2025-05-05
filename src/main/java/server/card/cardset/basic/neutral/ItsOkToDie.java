@@ -50,7 +50,7 @@ public class ItsOkToDie extends AmuletText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> targets = b.getMinions(0, false, true).collect(Collectors.toList());
                         this.resolve(b, rq, el, new DamageResolver(effect, targets, 1, true,
-                                new EventAnimationDamageAOEFire(0, false).toString()));
+                                new EventAnimationDamageAOEFire(0, false)));
                         List<Minion> rushTargets = b.getMinions(owner.team, false, true).collect(Collectors.toList());
                         Effect buff = new Effect("<b>Rush</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
                                 .set(Stat.RUSH, 1)

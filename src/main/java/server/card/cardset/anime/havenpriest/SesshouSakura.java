@@ -48,7 +48,7 @@ public class SesshouSakura extends AmuletText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         int x = owner.finalStats.get(Stat.COUNTDOWN);
-                        this.resolve(b, rq, el, new BlastResolver(effect, x + 1, new EventAnimationDamageMagicHit().toString()));
+                        this.resolve(b, rq, el, new BlastResolver(effect, x + 1, new EventAnimationDamageMagicHit()));
                     }
                 });
             }
@@ -65,7 +65,7 @@ public class SesshouSakura extends AmuletText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         int x = (int) b.getBoardObjects(owner.team, false, false, true, true).count();
-                        this.resolve(b, rq, el, new BlastResolver(effect, x, new EventAnimationDamageMagicHit().toString()));
+                        this.resolve(b, rq, el, new BlastResolver(effect, x, new EventAnimationDamageMagicHit()));
                     }
                 });
             }

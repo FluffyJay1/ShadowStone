@@ -50,7 +50,7 @@ public class GrimnirWarCyclone extends MinionText {
                         for (int i = 0; i < 4; i++) {
                             List<Minion> targets = b.getMinions(owner.team * -1, true, true).collect(Collectors.toList());
                             this.resolve(b, rq, el, new DamageResolver(effect, targets, 1, true,
-                                    new EventAnimationDamageAOESlice(owner.team * -1, true).toString()));
+                                    new EventAnimationDamageAOESlice(owner.team * -1, true)));
                         }
                     }
                 }));

@@ -51,7 +51,7 @@ public class ZombieParty extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                        this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 4, true, new EventAnimationDamageMagicHit().toString()));
+                        this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 4, true, new EventAnimationDamageMagicHit()));
                         });
                         List<CardText> zombies = Collections.nCopies(3, new Zombie());
                         List<Integer> pos = Collections.nCopies(3, -1);

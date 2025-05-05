@@ -47,7 +47,7 @@ public class PhantomOfFate extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         int x = owner.finalStats.get(Stat.MAGIC);
                         List<Minion> relevant = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
-                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, x, true, new EventAnimationDamageSplash().toString()));
+                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, x, true, new EventAnimationDamageSplash()));
                     }
                 });
             }

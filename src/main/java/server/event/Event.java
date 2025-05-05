@@ -2,6 +2,8 @@ package server.event;
 
 import java.util.*;
 
+import org.jetbrains.annotations.Nullable;
+
 import client.Game;
 import server.*;
 import server.card.*;
@@ -51,5 +53,10 @@ public abstract class Event {
     // overridden
     public List<BoardObject> cardsLeavingPlay() {
         return List.of();
+    }
+
+    // overridden
+    public @Nullable String getAnimationString() {
+        return null;
     }
 }

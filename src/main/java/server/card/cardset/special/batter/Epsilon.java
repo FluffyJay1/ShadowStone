@@ -41,7 +41,7 @@ public class Epsilon extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> relevant = b.getMinions(owner.team * -1, true, false).collect(Collectors.toList());
-                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, 2, true, new EventAnimationDamageOff().toString()));
+                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, 2, true, new EventAnimationDamageOff()));
                     }
                 });
             }

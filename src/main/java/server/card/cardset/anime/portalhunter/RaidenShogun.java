@@ -59,7 +59,7 @@ public class RaidenShogun extends MinionText {
                                 .boxed()
                                 .collect(Collectors.toList());
                         this.resolve(b, rq, el, new DamageResolver(effect, targets, damage, true,
-                                new EventAnimationDamageAOESlice(owner.team * -1, false).toString()));
+                                new EventAnimationDamageAOESlice(owner.team * -1, false)));
                     }
                 });
             }

@@ -57,7 +57,7 @@ public class GutsBerserk extends MinionText {
                         int x = owner.finalStats.get(Stat.MAGIC);
                         List<Minion> targets = b.getMinions(0, true, true).collect(Collectors.toList());
                         this.resolve(b, rq, el, new DamageResolver(effect, targets, x, true,
-                                new EventAnimationDamageAOEFire(0, true).toString()));
+                                new EventAnimationDamageAOEFire(0, true)));
                     }
                 });
             }

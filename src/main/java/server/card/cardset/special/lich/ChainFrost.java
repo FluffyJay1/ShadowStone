@@ -54,7 +54,7 @@ public class ChainFrost extends SpellText {
                             Minion target = (Minion) c;
                             for (int i = 0; i < 14; i++) {
                                 ResolverQueue subQueue = new ResolverQueue();
-                                this.resolve(b, subQueue, el, new DamageResolver(effect, target, 3, true, new EventAnimationDamageChainFrost().toString()));
+                                this.resolve(b, subQueue, el, new DamageResolver(effect, target, 3, true, new EventAnimationDamageChainFrost()));
                                 this.resolveQueue(b, subQueue, el, subQueue);
                                 Minion finalTarget = target;
                                 List<Minion> nextTargets = b.getMinions(owner.team * -1, false, true)

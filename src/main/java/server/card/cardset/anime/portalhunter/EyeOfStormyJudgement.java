@@ -63,7 +63,7 @@ public class EyeOfStormyJudgement extends AmuletText {
 
         @Override
         public ResolverWithDescription strike(Minion target) {
-            return new ResolverWithDescription(EFFECT_DESCRIPTION, new DamageResolver(this, target, 1, true, new EventAnimationDamageMagicHit().toString()));
+            return new ResolverWithDescription(EFFECT_DESCRIPTION, new DamageResolver(this, target, 1, true, new EventAnimationDamageMagicHit()));
         }
 
         @Override

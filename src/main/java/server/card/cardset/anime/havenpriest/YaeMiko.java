@@ -4,6 +4,8 @@ import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
+import client.ui.game.visualboardanimation.eventanimation.destroy.EventAnimationDestroyDarkElectro;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
@@ -18,11 +20,10 @@ import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class YaeMiko extends MinionText {
     public static final String NAME = "Yae Miko";
-    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: If there are 3 or more allied amulets in play, destroy them and <b>Blast(3)</b> X times. " +
+    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: If there are 3 or more allied <b>Countdown</b> amulets in play, destroy them and <b>Blast(3)</b> X times. " +
             "X equals the number of amulets destroyed.";
     private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Return this minion to your hand and subtract M from its cost, then summon a <b>Sesshou Sakura</b>.";
     public static final String DESCRIPTION = "<b>Rush</b>.\n" + BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
@@ -32,7 +33,7 @@ public class YaeMiko extends MinionText {
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/anime/yaemiko.png"),
             CRAFT, TRAITS, RARITY, 5, 3, 2, 6, false, Aqua.class,
             new Vector2f(151, 134), 1.6, new EventAnimationDamageMagicHit(),
-            () -> List.of(Tooltip.RUSH, Tooltip.BATTLECRY, Tooltip.BLAST, Tooltip.UNLEASH, SesshouSakura.TOOLTIP),
+            () -> List.of(Tooltip.RUSH, Tooltip.BATTLECRY, Tooltip.COUNTDOWN, Tooltip.BLAST, Tooltip.UNLEASH, SesshouSakura.TOOLTIP),
             List.of());
 
     @Override
@@ -46,11 +47,11 @@ public class YaeMiko extends MinionText {
                 return new ResolverWithDescription(BATTLECRY_DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        List<BoardObject> amulets = b.getBoardObjects(owner.team, false, false, true, true).collect(Collectors.toList());
+                        List<BoardObject> amulets = b.getBoardObjects(owner.team, false, false, true, true).filter(bo -> bo.finalStats.contains(Stat.COUNTDOWN)).toList();
                         if (amulets.size() >= 3) {
-                            this.resolve(b, rq, el, new DestroyResolver(amulets));
+                            this.resolve(b, rq, el, new DestroyResolver(amulets, new EventAnimationDestroyDarkElectro()));
                             for (int i = 0; i < amulets.size(); i++) {
-                                this.resolve(b, rq, el, new BlastResolver(effect, 3, new EventAnimationDamageMagicHit().toString()));
+                                this.resolve(b, rq, el, new BlastResolver(effect, 3, new EventAnimationDamageMagicHit()));
                             }
                         }
                     }
@@ -59,7 +60,7 @@ public class YaeMiko extends MinionText {
 
             @Override
             public boolean battlecrySpecialConditions() {
-                return this.owner.board.getBoardObjects(this.owner.team, false, false, true, true).count() >= 3;
+                return this.owner.board.getBoardObjects(this.owner.team, false, false, true, true).filter(bo -> bo.finalStats.contains(Stat.COUNTDOWN)).count() >= 3;
             }
 
             @Override

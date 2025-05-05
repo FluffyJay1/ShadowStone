@@ -39,6 +39,7 @@ public class Player implements StringBuildable {
     public boolean mulliganed;
     public int cardsPlayedThisTurn;
     public int shadows;
+    public int selfDamageCount;
 
     public Player(Board board, int team) {
         this.board = board;
@@ -83,6 +84,7 @@ public class Player implements StringBuildable {
         this.mulliganed = false;
         this.cardsPlayedThisTurn = 0;
         this.shadows = 0;
+        this.selfDamageCount = 0;
     }
 
     public List<Card> getDeck() {
@@ -159,7 +161,8 @@ public class Player implements StringBuildable {
                 .append(this.unleashAllowed).append(" ")
                 .append(this.mulliganed).append(" ")
                 .append(this.cardsPlayedThisTurn).append(" ")
-                .append(this.shadows).append(" ");
+                .append(this.shadows).append(" ")
+                .append(this.selfDamageCount).append(" ");
     }
 
     // uh

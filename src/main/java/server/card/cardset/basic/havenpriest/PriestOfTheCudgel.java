@@ -6,13 +6,16 @@ import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
+import server.ai.AI;
 import server.card.*;
 import server.card.effect.Effect;
+import server.card.effect.EffectStats;
 import server.card.effect.Stat;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.event.Event;
+import server.resolver.AddEffectResolver;
 import server.resolver.BanishResolver;
 import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
@@ -22,7 +25,7 @@ import java.util.List;
 
 public class PriestOfTheCudgel extends MinionText {
     public static final String NAME = "Priest of the Cudgel";
-    public static final String DESCRIPTION = "<b>Unleash</b>: <b>Banish</b> an enemy minion with M health or less.";
+    public static final String DESCRIPTION = "<b>Unleash</b>: <b>Banish</b> an enemy minion with M health or less and gain <b>Rush</b>.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
@@ -54,8 +57,17 @@ public class PriestOfTheCudgel extends MinionText {
                         getStillTargetableCards(Effect::getUnleashTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             this.resolve(b, rq, el, new BanishResolver(c));
                         });
+                        Effect buff = new Effect("<b>Rush</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
+                                .set(Stat.RUSH, 1)
+                                .build());
+                        this.resolve(b, rq, el, new AddEffectResolver(owner, buff));
                     }
                 });
+            }
+
+            @Override
+            public double getPresenceValue(int refs) {
+                return Math.min(owner.finalStats.get(Stat.MAGIC), AI.VALUE_OF_BANISH);
             }
         });
     }

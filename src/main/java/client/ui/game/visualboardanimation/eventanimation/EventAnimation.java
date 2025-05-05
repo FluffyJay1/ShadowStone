@@ -7,9 +7,11 @@ import org.newdawn.slick.*;
 import client.*;
 import server.event.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 /**
  * Base class for handling animations on the board. The general idea is given a
@@ -76,6 +78,7 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
             pre = this.scheduledPre.peek();
         }
         if (!this.processedEvent && !this.isPre() && this.event != null) {
+            this.beforeProcess();
             this.visualBoard.processEvent(this.event);
             this.onProcess();
             this.processedEvent = true;
@@ -162,6 +165,10 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
 
     }
 
+    public void beforeProcess() {
+        
+    }
+
     public void onProcess() {
 
     }
@@ -187,5 +194,63 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
         public int compareTo(ScheduledAnimation o) {
             return Double.compare(this.time, o.time);
         }
+    }
+
+    public static String stringOrNull(EventAnimation ed) {
+        if (ed == null) {
+            return "null ";
+        }
+        return ed.toString();
+    }
+
+    public String toString() {
+        String s = this.extraParamString();
+        int numTokens = new StringTokenizer(s).countTokens() + 1;
+        return numTokens + " " + this.getClass().getName() + " " + s;
+    }
+
+    // override this
+    public String extraParamString() {
+        return "";
+    }
+
+    // if animation info is stored in a string, and that string gets serialized
+    // as part of a larger object, when deserializing that object this will
+    // retrieve the animation string and not actually do reflection to create
+    // the animation
+    public static String extractAnimationString(StringTokenizer st) {
+        String firstToken = st.nextToken();
+        if (firstToken.equals("null")) {
+            return "null ";
+        }
+        int numTokens = Integer.parseInt(firstToken);
+        StringBuilder sb = new StringBuilder(firstToken).append(" ");
+        for (int i = 0; i < numTokens; i++) {
+            sb.append(st.nextToken()).append(" ");
+        }
+        return sb.toString();
+    }
+
+    // so much catch
+    public static EventAnimation fromString(StringTokenizer st) {
+        String firstToken = st.nextToken();
+        if (firstToken.equals("null")) {
+            return null;
+        }
+        String className = st.nextToken();
+        try {
+            Class<? extends EventAnimation> edclass = Class.forName(className).asSubclass(EventAnimation.class);
+            try {
+                return (EventAnimation) edclass.getMethod("fromExtraParams", StringTokenizer.class).invoke(null, st);
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                // assume it has the default constructor then
+                return edclass.getConstructor().newInstance();
+            }
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

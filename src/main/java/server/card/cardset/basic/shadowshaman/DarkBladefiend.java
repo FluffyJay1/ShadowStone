@@ -56,7 +56,7 @@ public class DarkBladefiend extends MinionText {
                                     Minion target = SelectRandom.from(targets);
                                     int damage = owner.finalStats.get(Stat.MAGIC);
                                     this.resolve(b, rq, el, new DamageResolver(effect, target, damage, true,
-                                            new EventAnimationDamageDoubleSlice().toString()));
+                                            new EventAnimationDamageDoubleSlice()));
                                 }
                             }));
                         }

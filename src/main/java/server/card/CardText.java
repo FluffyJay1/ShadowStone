@@ -14,7 +14,7 @@ import java.util.List;
  * battlecry, then getEffects() will contain an effect that has a battlecry
  * hook.
  */
-public abstract class CardText implements Serializable {
+public abstract class CardText implements Serializable, Comparable<CardText> {
     public abstract List<Effect> getEffects();
     public abstract TooltipCard getTooltip();
     public abstract Card constructInstance(Board b);
@@ -41,5 +41,10 @@ public abstract class CardText implements Serializable {
     @Override
     public int hashCode() {
         return this.getClass().hashCode();
+    }
+
+    @Override
+    public int compareTo(CardText o) {
+        return this.toString().compareTo(o.toString());
     }
 }

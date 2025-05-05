@@ -59,7 +59,7 @@ public class Susie extends MinionText {
                         getStillTargetableCards(Effect::getUnleashTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             int x = owner.finalStats.get(Stat.ATTACK);
                             int y = owner.finalStats.get(Stat.MAGIC);
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, x + y, true, new EventAnimationDamageSlash().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, x + y, true, new EventAnimationDamageSlash()));
                         });
                     }
                 });

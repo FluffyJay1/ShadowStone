@@ -14,7 +14,7 @@ import server.card.cardset.standard.swordpaladin.*;
 
 public class ExpansionSetStandard extends ExpansionSet {
     public static final CardSet UNPLAYABLE_SET = new CardSet(new ArtifactRhino(), new Camieux(), new LeonidasResolve(),
-            new ServantOfDarkness());
+            new ServantOfDarkness(), new CelestialShikigami(), new DemonicShikigami(), new PaperShikigami());
 
     public static final CardSet PLAYABLE_SET = new CardSet(new Belphegor(), new DemonicRam(), new DemonKey(), new EndearingSuccubusLilith(),
             new MoltenGiant(), new PrisonOfPain(), new Revelation(), new TerrorDemon(), new AielaDragonKnight(), new CanyonOfTheDragons(),
@@ -28,7 +28,12 @@ public class ExpansionSetStandard extends ExpansionSet {
             new DemonlordEachtar(), new MischievousSpirit(), new MordecaiTheDuelist(), new NecroAssassin(), new PrinceCatacomb(),
             new ShadowReaper(), new UnderworldWatchmanKhawy(), new Assassin(), new Cuhullin(), new Leonidas(), new Magnolia(),
             new WeatheredVanguard(), new StonetuskBoar(), new CallOfCocytus(), new Ragnaros(), new LathamHonorableKnight(), new ForestArchelon(),
-            new KingElephant());
+            new KingElephant(), new Okami(), new OmnisPrimeOkami(), new KuonFounderOfOnmyodo(), new CurseCrafter(), new Ouroboros(),
+            new FrostfireDragon(), new LurchingCorpse(), new Nephthys(), new DiabolusAgito(), new DarkAirjammer(), new SnarlingChains(),
+            new MaelstromSerpent(), new DiabolicDrain(), new DireBond(), new Baphomet(), new RedHotBoots(), new DevourerOfHeavens(),
+            new ForgottenSanctuary(), new ThemisDecree(), new LionOfTheGoldenCity(), new Tenko(), new GarudaRulerOfStorms(), new RadianceAngel(),
+            new Aegina(), new MugnierPurifyingLight(), new MechWingSwordsman(), new Substitution(), new CaptivatingConductor(), new ThatWhichErases(),
+            new TylleTheWorldgate(), new MiriamSyntheticBeing(), new KnowerOfHistory(), new DyneMasterSwordsman());
 
     @Override
     public CardSet getCards() {

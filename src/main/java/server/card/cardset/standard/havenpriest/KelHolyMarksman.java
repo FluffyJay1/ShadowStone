@@ -66,7 +66,7 @@ public class KelHolyMarksman extends MinionText {
                         public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                             int damage = owner.finalStats.get(Stat.MAGIC);
                             List<Minion> targets = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
-                            this.resolve(b, rq, el, new DamageResolver(effect, targets, damage, true, new EventAnimationDamageArrow().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, targets, damage, true, new EventAnimationDamageArrow()));
                         }
                     });
                 }

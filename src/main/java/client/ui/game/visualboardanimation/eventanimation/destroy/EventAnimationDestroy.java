@@ -1,4 +1,4 @@
-package client.ui.game.visualboardanimation.eventanimation.basic;
+package client.ui.game.visualboardanimation.eventanimation.destroy;
 
 import client.ui.game.UIBoard;
 import client.ui.game.UICard;
@@ -9,13 +9,30 @@ import server.card.Card;
 import server.event.EventDestroy;
 
 public class EventAnimationDestroy extends EventAnimation<EventDestroy> {
+    /*
+     * If subclasses have no additional parameters, all they need to implement
+     * the () constructor, nothing else is needed. If the animation requires
+     * some parameters, they will need to implement a
+     * extraParamString() and fromExtraParams(StringTokenizer) method.
+     */
+    private final boolean requireNonEmpty;
+
     public EventAnimationDestroy() {
-        super(0, 0.3);
+        this(0, true);
+    }
+
+    public EventAnimationDestroy(double preTime, boolean requireNonEmpty) {
+        this(preTime, 0.3, requireNonEmpty);
+    }
+
+    public EventAnimationDestroy(double preTime, double postTime, boolean requireNonEmpty) {
+        super(preTime, postTime);
+        this.requireNonEmpty = requireNonEmpty;
     }
 
     @Override
     public boolean shouldAnimate() {
-        return true;
+        return !requireNonEmpty || !event.cards.isEmpty();
     }
 
     @Override

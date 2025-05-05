@@ -48,7 +48,7 @@ public class Maahes extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (owner.player.cardsPlayedThisTurn > 2) {
                             List<Minion> targets = b.getMinions(owner.team * -1, true, true).collect(Collectors.toList());
-                            this.resolve(b, rq, el, new DamageResolver(effect, targets, 2, true, new EventAnimationDamageAOESlice(owner.team * -1, true).toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, targets, 2, true, new EventAnimationDamageAOESlice(owner.team * -1, true)));
                         }
                     }
                 });

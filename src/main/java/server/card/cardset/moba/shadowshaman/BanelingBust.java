@@ -4,6 +4,7 @@ import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
 import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
+import client.ui.game.visualboardanimation.eventanimation.destroy.EventAnimationDestroyDarkElectro;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
@@ -47,9 +48,9 @@ public class BanelingBust extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> relevant = b.getMinions(owner.team, false, true).collect(Collectors.toList());
-                        this.resolve(b, rq, el, new DestroyResolver(relevant, EventDestroy.Cause.EFFECT));
+                        this.resolve(b, rq, el, new DestroyResolver(relevant, EventDestroy.Cause.EFFECT, new EventAnimationDestroyDarkElectro()));
                         for (int i = 0; i < relevant.size(); i++) {
-                            this.resolve(b, rq, el, new BlastResolver(effect, relevant.size(), new EventAnimationDamageMagicHit().toString()));
+                            this.resolve(b, rq, el, new BlastResolver(effect, relevant.size(), new EventAnimationDamageMagicHit()));
                         }
                     }
                 });

@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class EventAnimationCreateCard extends EventAnimation<EventCreateCard> {
-    private static final int EDGE_PADDING = 1;
+    public static final int EDGE_PADDING = 1;
     private static final float PRE_FAN_WIDTH = 0.05f;
-    private static final float ENTRANCE_OFFSET_Y = 0.05f;
+    public static final float ENTRANCE_OFFSET_Y = 0.05f;
 
-    private static final Supplier<EmissionStrategy> DUST_EMISSION_STRATEGY = () -> new EmissionStrategy(
+    public static final Supplier<EmissionStrategy> DUST_EMISSION_STRATEGY = () -> new EmissionStrategy(
             new InstantEmissionTimingStrategy(10),
             new ComposedEmissionPropertyStrategy(List.of(
                     new AnimationEmissionPropertyStrategy(() -> new Animation("particle/misc/dust.png", new Vector2f(1, 1), 0, 0)),

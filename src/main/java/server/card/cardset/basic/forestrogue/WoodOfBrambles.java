@@ -84,7 +84,7 @@ public class WoodOfBrambles extends AmuletText {
         @Override
         public ResolverWithDescription clash(Minion target) {
             String resolverDescription = "<b>Clash</b>: deal 1 damage to the enemy minion (from <b>Wood of Bramble's Aura</b>).";
-            return new ResolverWithDescription(resolverDescription, new DamageResolver(this, target, 1, true, new EventAnimationDamageDefault().toString()));
+            return new ResolverWithDescription(resolverDescription, new DamageResolver(this, target, 1, true, new EventAnimationDamageDefault()));
         }
 
         @Override

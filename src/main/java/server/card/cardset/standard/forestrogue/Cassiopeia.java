@@ -49,7 +49,7 @@ public class Cassiopeia extends MinionText {
                             List<Minion> choices = owner.board.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
                             if (!choices.isEmpty()) {
                                 Minion choice = SelectRandom.from(choices);
-                                this.resolve(b, rq, el, new DamageResolver(effect, choice, 1, true, new EventAnimationDamageOrbFall().toString()));
+                                this.resolve(b, rq, el, new DamageResolver(effect, choice, 1, true, new EventAnimationDamageOrbFall()));
                             }
                         }
                         b.popEventGroup();

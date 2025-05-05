@@ -37,7 +37,7 @@ public class Heavy extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/moba/heavy.png"),
-            CRAFT, TRAITS, RARITY, 8, 6, 1, 12, true, Heavy.class,
+            CRAFT, TRAITS, RARITY, 7, 6, 1, 12, true, Heavy.class,
             new Vector2f(), -1, new EventAnimationDamageShoot(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.FROZEN, Tooltip.STRIKE, Tooltip.BLAST),
             List.of());
@@ -72,7 +72,7 @@ public class Heavy extends MinionText {
                         b.pushEventGroup(new EventGroup(EventGroupType.CONCURRENTDAMAGE));
                         int a = owner.finalStats.get(Stat.ATTACK);
                         for (int i = 0; i < a; i++) {
-                            this.resolve(b, rq, el, new BlastResolver(effect, 1, new EventAnimationDamageShoot().toString()));
+                            this.resolve(b, rq, el, new BlastResolver(effect, 1, new EventAnimationDamageShoot()));
                         }
                         b.popEventGroup();
                     }

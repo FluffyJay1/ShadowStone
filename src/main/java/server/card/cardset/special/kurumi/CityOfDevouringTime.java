@@ -48,7 +48,7 @@ public class CityOfDevouringTime extends AmuletText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> targets = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
-                        DamageResolver dr = this.resolve(b, rq, el, new DamageResolver(effect, targets, 1, true, new EventAnimationDamageAOECloud().toString()));
+                        DamageResolver dr = this.resolve(b, rq, el, new DamageResolver(effect, targets, 1, true, new EventAnimationDamageAOECloud()));
                         int x = (int) dr.event.actualDamage.stream().filter(i -> i > 0).count();
                         this.resolve(b, rq, el, new ManaChangeResolver(owner.player, x, true, false, true));
                         if (x >= 2) {

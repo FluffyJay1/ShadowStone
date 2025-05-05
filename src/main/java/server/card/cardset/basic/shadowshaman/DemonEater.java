@@ -4,6 +4,8 @@ import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
+import client.ui.game.visualboardanimation.eventanimation.destroy.EventAnimationDestroyDarkElectro;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
@@ -52,7 +54,7 @@ public class DemonEater extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DestroyResolver(c));
+                            this.resolve(b, rq, el, new DestroyResolver(c, new EventAnimationDestroyDarkElectro()));
                             this.resolve(b, rq, el, new DrawResolver(owner.player, 2));
                         });
                     }

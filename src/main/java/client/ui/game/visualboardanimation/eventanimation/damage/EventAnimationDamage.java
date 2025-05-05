@@ -9,10 +9,8 @@ import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
 import server.card.Minion;
 import server.event.*;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.newdawn.slick.opengl.renderer.SGL.GL_ONE;
@@ -117,65 +115,5 @@ public abstract class EventAnimationDamage extends EventAnimation<EventDamage> {
         Image scaledCopy = image.getScaledCopy(scale);
         scaledCopy.setAlpha(alpha);
         g.drawImage(scaledCopy, pos.x - scaledCopy.getWidth() / 2, pos.y - scaledCopy.getHeight() / 2);
-    }
-
-    // so serverboard have no use for animations, so they should not reflect
-    // so in this string we encode the number of tokens that they should skip
-    public static String stringOrNull(EventAnimationDamage ed) {
-        if (ed == null) {
-            return "null ";
-        }
-        return ed.toString();
-    }
-
-    public String toString() {
-        String s = this.extraParamString();
-        int numTokens = new StringTokenizer(s).countTokens() + 1;
-        return numTokens + " " + this.getClass().getName() + " " + s;
-    }
-
-    // override this
-    public String extraParamString() {
-        return "";
-    }
-
-    // if animation info is stored in a string, and that string gets serialized
-    // as part of a larger object, when deserializing that object this will
-    // retrieve the animation string and not actually do reflection to create
-    // the animation
-    public static String extractAnimationString(StringTokenizer st) {
-        String firstToken = st.nextToken();
-        if (firstToken.equals("null")) {
-            return "null ";
-        }
-        int numTokens = Integer.parseInt(firstToken);
-        StringBuilder sb = new StringBuilder(firstToken).append(" ");
-        for (int i = 0; i < numTokens; i++) {
-            sb.append(st.nextToken()).append(" ");
-        }
-        return sb.toString();
-    }
-
-    // so much catch
-    public static EventAnimationDamage fromString(StringTokenizer st) {
-        String firstToken = st.nextToken();
-        if (firstToken.equals("null")) {
-            return new EventAnimationDamageDefault();
-        }
-        String className = st.nextToken();
-        try {
-            Class<? extends EventAnimationDamage> edclass = Class.forName(className).asSubclass(EventAnimationDamage.class);
-            try {
-                return (EventAnimationDamage) edclass.getMethod("fromExtraParams", StringTokenizer.class).invoke(null, st);
-            } catch (InvocationTargetException | IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                // assume it has the default constructor then
-                return edclass.getConstructor().newInstance();
-            }
-        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

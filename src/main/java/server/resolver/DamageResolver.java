@@ -3,6 +3,9 @@ package server.resolver;
 import java.util.*;
 
 import org.jetbrains.annotations.NotNull;
+
+import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
 import server.*;
 import server.card.*;
 import server.card.effect.*;
@@ -36,15 +39,25 @@ public class DamageResolver extends Resolver {
         this.animationString = animationString;
     }
 
+    public DamageResolver(Card source, List<? extends Minion> targets, List<Integer> damage,
+            boolean resolveDestroy, @NotNull EventAnimationDamage eventAnimationDamage) {
+        this(source, targets, damage, resolveDestroy, EventAnimation.stringOrNull(eventAnimationDamage));
+    }
+
     public DamageResolver(Effect source, List<? extends Minion> targets, List<Integer> damage,
                           boolean resolveDestroy, @NotNull String animationString) {
         this(source.owner, targets, damage, resolveDestroy, animationString);
         this.effectSource = source;
     }
 
+    public DamageResolver(Effect source, List<? extends Minion> targets, List<Integer> damage,
+                          boolean resolveDestroy, @NotNull EventAnimationDamage eventAnimationDamage) {
+        this(source, targets, damage, resolveDestroy, EventAnimation.stringOrNull(eventAnimationDamage));
+    }
+
     public DamageResolver(Effect source, List<? extends Minion> targets, int damage,
-                          boolean resolveDestroy, @NotNull String animationString) {
-        this(source.owner, targets, Collections.nCopies(targets.size(), damage), resolveDestroy, animationString);
+                          boolean resolveDestroy, @NotNull EventAnimationDamage eventAnimationDamage) {
+        this(source.owner, targets, Collections.nCopies(targets.size(), damage), resolveDestroy, eventAnimationDamage);
         this.effectSource = source;
     }
 
@@ -52,6 +65,11 @@ public class DamageResolver extends Resolver {
                           boolean resolveDestroy, @NotNull String animationString) {
         this(source.owner, List.of(target), List.of(damage), resolveDestroy, animationString);
         this.effectSource = source;
+    }
+
+    public DamageResolver(Effect source, Minion target, int damage,
+                          boolean resolveDestroy, @NotNull EventAnimationDamage eventAnimationDamage) {
+        this(source, target, damage, resolveDestroy, EventAnimation.stringOrNull(eventAnimationDamage));
     }
 
     @Override
@@ -73,7 +91,7 @@ public class DamageResolver extends Resolver {
         }
 
         if (this.cardSource.finalStats.get(Stat.LIFESTEAL) > 0) {
-            int totalHeal = this.event.actualDamage.stream()
+            int totalHeal = this.event.actualNonOverkillDamage.stream()
                     .reduce(0, Integer::sum, Integer::sum);
             if (totalHeal > 0) {
                 this.cardSource.player.getLeader().ifPresent(l -> {

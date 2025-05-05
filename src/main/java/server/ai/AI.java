@@ -111,10 +111,10 @@ public class AI extends Thread {
     // extra weight for unleash, scales off of presence value
     private static final double UNLEASH_WEIGHT_PER_PRESENCE = 1;
 
-    private static final double ATTACK_TOTAL_WEIGHT = 2;
+    private static final double ATTACK_TOTAL_WEIGHT = 6;
 
     // how much extra weight to put into the attack action, scales off of the minion's attack
-    private static final double ATTACK_WEIGHT_MULTIPLIER = 1;
+    private static final double ATTACK_WEIGHT_MULTIPLIER = 2;
 
     // How much to multiply the weight per extra damage overkill from attacking a low health minion
     // encourage better trades
@@ -305,18 +305,18 @@ public class AI extends Thread {
                     this.totalEvaluated, (float) this.totalCacheHits / this.totalEvaluated);
             System.out.printf("%d reevaluations, %.2f reevaluation rate\n", this.totalReevaluations, (float) this.totalReevaluations / this.totalCacheHits);
 
-            System.out.println("Nodes Traversed---");
-            temp = dbsn;
-            while (true) {
-                String nextAction = temp.getMax().action;
-                System.out.println(temp.toString());
-                BoardStateNode next = temp.branches.get(nextAction);
-                if (next instanceof DeterministicBoardStateNode) {
-                    temp = (DeterministicBoardStateNode) next;
-                } else {
-                    break;
-                }
-            }
+            // System.out.println("Nodes Traversed---");
+            // temp = dbsn;
+            // while (true) {
+            //     String nextAction = temp.getMax().action;
+            //     System.out.println(temp.toString());
+            //     BoardStateNode next = temp.branches.get(nextAction);
+            //     if (next instanceof DeterministicBoardStateNode) {
+            //         temp = (DeterministicBoardStateNode) next;
+            //     } else {
+            //         break;
+            //     }
+            // }
             System.out.println("------------------");
         }
         this.actionSendQueue.addAll(actionStack);
@@ -409,19 +409,27 @@ public class AI extends Thread {
             if (traverse.rng) {
                 // rng, re-evaluate action many times, channel an average score into an RNGBoardStateNode
                 int trials = Math.max(SelectRandom.ditherRound(Math.pow(this.config.rngDensityMultiplier, dbsn.totalBranches) * (this.config.rngMaxTrials - depth * this.config.rngTrialReduction)), this.config.rngMinTrials);
-                RNGBoardStateNode nextBsn = (RNGBoardStateNode) dbsn.branches.get(action); // trust
-                if (nextBsn != null) {
+                BoardStateNode nextBsn = dbsn.branches.get(action);
+                if (nextBsn != null && !(nextBsn instanceof RNGBoardStateNode)) {
+                    // usually means you have a resolver with RNG but wasn't flagged appropriately
+                    System.err.println("Expected a RNG node, instead found: ");
+                    System.err.println(nextBsn.toString());
+                    System.err.println("From action: " + action);
+                    throw new IllegalStateException("rng");
+                }
+                RNGBoardStateNode nextRNGBSN = (RNGBoardStateNode) nextBsn; // trust
+                if (nextRNGBSN != null) {
                     // if previously evaluated this rng branch, see if we can add some trials to it
-                    trials = Math.max(1, trials - nextBsn.trials);
+                    trials = Math.max(1, trials - nextRNGBSN.trials);
                 } else {
-                    nextBsn = new RNGBoardStateNode(team);
-                    nextBsn.addTrial(traverse.next);
+                    nextRNGBSN = new RNGBoardStateNode(team);
+                    nextRNGBSN.addTrial(traverse.next);
                 }
                 for (int j = 1; j < trials; j++) {
-                    traverse = this.traverseAction(dbsn, state, action, depth, sampleRate, maxSamples, filterLethal, nextBsn);
-                    nextBsn.addTrial(traverse.next);
+                    traverse = this.traverseAction(dbsn, state, action, depth, sampleRate, maxSamples, filterLethal, nextRNGBSN);
+                    nextRNGBSN.addTrial(traverse.next);
                 }
-                dbsn.logEvaluation(action, nextBsn);
+                dbsn.logEvaluation(action, nextRNGBSN);
             } else {
                 // not rng, whatever
                 dbsn.logEvaluation(action, traverse.next);

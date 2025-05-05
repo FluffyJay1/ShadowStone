@@ -31,7 +31,7 @@ public class Baneling extends MinionText {
         return List.of(new Effect(DESCRIPTION) {
             @Override
             public ResolverWithDescription lastWords() {
-                return new ResolverWithDescription(DESCRIPTION, new BlastResolver(this, 5, new EventAnimationDamageMagicHit().toString()));
+                return new ResolverWithDescription(DESCRIPTION, new BlastResolver(this, 5, new EventAnimationDamageMagicHit()));
             }
 
             @Override

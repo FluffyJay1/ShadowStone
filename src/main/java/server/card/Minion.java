@@ -119,16 +119,16 @@ public class Minion extends BoardObject {
         }
         Supplier<Stream<Minion>> minions = () -> this.board.getMinions(this.team * -1, false, true)
                 .filter(Minion::canBeAttacked);
-        Stream<Minion> attackable = minions.get();
-
-        // TODO add restrictions on can't attack leader
-        if (this.attackLeaderConditions()) {
-            attackable = Stream.concat(attackable, this.board.getPlayer(this.team * -1).getLeader().stream().filter(Minion::canBeAttacked));
-        }
 
         // love how you can't reuse streams
         if (this.finalStats.get(Stat.IGNORE_WARD) == 0 && minions.get().anyMatch(m -> m.finalStats.get(Stat.WARD) > 0)) {
             return minions.get().filter(m -> m.finalStats.get(Stat.WARD) > 0);
+        }
+
+        Stream<Minion> attackable = this.finalStats.get(Stat.SMORC) > 0 ? Stream.empty() : minions.get();
+        // TODO add restrictions on can't attack leader
+        if (this.attackLeaderConditions()) {
+            attackable = Stream.concat(attackable, this.board.getPlayer(this.team * -1).getLeader().stream().filter(Minion::canBeAttacked));
         }
         return attackable;
     }
@@ -167,6 +167,10 @@ public class Minion extends BoardObject {
                 && this.board.getMinions(this.team * -1, true, true)
                         .anyMatch(potentialWard -> potentialWard.finalStats.get(Stat.STEALTH) == 0
                                 && potentialWard.finalStats.get(Stat.WARD) > 0);
+        if (this.finalStats.get(Stat.SMORC) > 0 && !(m.status.equals(CardStatus.LEADER) || m.finalStats.get(Stat.WARD) > 0)) {
+            // smorc condition requires ward or leader
+            return false;
+        }
         return m.isInPlay() && (!ward || m.finalStats.get(Stat.WARD) > 0) && m.canBeAttacked()
                 && (m.status.equals(CardStatus.BOARD) ? this.attackMinionConditions() : this.attackLeaderConditions());
     }

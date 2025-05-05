@@ -50,7 +50,7 @@ public class Sniper extends MinionText {
         return List.of(new Effect(DESCRIPTION) {
             @Override
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
-                return List.of(new CardTargetingScheme(this, 1, 1, DESCRIPTION) {
+                return List.of(new CardTargetingScheme(this, 0, 1, DESCRIPTION) {
                     @Override
                     protected boolean criteria(Card c) {
                         return c.status.equals(CardStatus.BOARD) && c instanceof Minion && c.team != this.getCreator().owner.team;
@@ -65,7 +65,7 @@ public class Sniper extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 15, true, new EventAnimationDamageShoot().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 15, true, new EventAnimationDamageShoot()));
                         });
                     }
                 });
@@ -82,8 +82,7 @@ public class Sniper extends MinionText {
                         || !this.owner.status.equals(CardStatus.HAND) || ((EventPlayCard) event).c == this.owner) {
                     return null;
                 }
-                // it's our team turn end
-                Effect e = new Effect("", EffectStats.builder()
+                Effect e = new Effect("-1 cost.", EffectStats.builder()
                         .change(Stat.COST, -1)
                         .build());
                 return new ResolverWithDescription(ONLISTENEVENT_DESCRIPTION, new AddEffectResolver(this.owner, e));

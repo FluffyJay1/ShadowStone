@@ -2,8 +2,12 @@ package server.event;
 
 import java.util.*;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import client.Game;
 import client.PendingPlayPositioner;
+import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
 import server.*;
 import server.card.*;
 import server.card.effect.Stat;
@@ -23,11 +27,18 @@ public class EventDestroy extends Event {
     private int prevShadows1, prevShadows2;
     public List<Boolean> successful;
     final List<BoardObject> cardsLeavingPlay = new ArrayList<>(); // required for listeners
+    // not proud of incorporating client animation logic into serverside game logic, but it's what we have to do
+    private final String animationString;
 
-    public EventDestroy(List<? extends Card> c, Cause cause) {
+    public EventDestroy(List<? extends Card> c, Cause cause, @NotNull String animationString) {
         super(ID);
         this.cards = c;
         this.cause = cause;
+        this.animationString = animationString;
+    }
+
+    public EventDestroy(List<? extends Card> c, Cause cause) {
+        this(c, cause, EventAnimation.stringOrNull(null));
     }
 
     @Override
@@ -133,7 +144,7 @@ public class EventDestroy extends Event {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.id).append(" ").append(this.cause.name()).append(" ").append(this.cards.size()).append(" ");
+        builder.append(this.id).append(" ").append(this.cause.name()).append(" ").append(this.animationString).append(this.cards.size()).append(" ");
         for (Card card : this.cards) {
             builder.append(card.toReference());
         }
@@ -142,18 +153,24 @@ public class EventDestroy extends Event {
 
     public static EventDestroy fromString(Board b, StringTokenizer st) {
         Cause cause = Cause.valueOf(st.nextToken());
+        String animString = EventAnimation.extractAnimationString(st);
         int size = Integer.parseInt(st.nextToken());
         ArrayList<Card> c = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             Card card = Card.fromReference(b, st);
             c.add(card);
         }
-        return new EventDestroy(c, cause);
+        return new EventDestroy(c, cause, animString);
     }
 
     @Override
     public boolean conditions() {
-        return !this.cards.isEmpty();
+        return true;
+    }
+
+    @Override
+    public @Nullable String getAnimationString() {
+        return this.animationString;
     }
 
     public enum Cause {

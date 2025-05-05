@@ -63,7 +63,7 @@ public class LochnLoad extends SpellText {
                                 }
                             }
                             DamageResolver dr = this.resolve(b, rq, el,
-                                    new DamageResolver(effect, m, d, false, new EventAnimationDamageBigExplosion().toString()));
+                                    new DamageResolver(effect, m, d, false, new EventAnimationDamageBigExplosion()));
                             markedForDeath.addAll(dr.destroyed);
                         });
                         this.resolve(b, rq, el, new DestroyResolver(markedForDeath, EventDestroy.Cause.NATURAL));

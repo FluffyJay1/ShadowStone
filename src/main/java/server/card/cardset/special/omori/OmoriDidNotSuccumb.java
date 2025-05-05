@@ -75,7 +75,7 @@ public class OmoriDidNotSuccumb extends AmuletText {
                             @Override
                             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                                 List<Leader> leaders = owner.board.getPlayerCard(0, Player::getLeader).toList();
-                                this.resolve(b, rq, el, new DamageResolver(effect, leaders, 2, true, new EventAnimationDamageOmoriStab().toString()));
+                                this.resolve(b, rq, el, new DamageResolver(effect, leaders, 2, true, new EventAnimationDamageOmoriStab()));
                             }
                         });
                     };

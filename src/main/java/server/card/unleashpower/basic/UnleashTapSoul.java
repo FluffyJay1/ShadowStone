@@ -55,7 +55,7 @@ public class UnleashTapSoul extends UnleashPowerText {
                         Player p = b.getPlayer(effect.owner.team);
                         if (!p.vengeance()) {
                             this.resolve(b, rq, el, new DamageResolver(effect,
-                                    effect.owner.board.getPlayer(effect.owner.team).getLeader().orElse(null), 2, true, new EventAnimationDamageMagicHit().toString()));
+                                    effect.owner.board.getPlayer(effect.owner.team).getLeader().orElse(null), 2, true, new EventAnimationDamageMagicHit()));
                         }
                     }
                 });

@@ -11,7 +11,10 @@ import server.card.CardVisibility;
 import server.card.SpellText;
 import server.card.cardset.CardSet;
 import server.card.effect.Effect;
+import server.card.effect.EffectStats;
+import server.card.effect.Stat;
 import server.event.Event;
+import server.resolver.AddEffectResolver;
 import server.resolver.CreateCardResolver;
 import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
@@ -19,7 +22,7 @@ import server.resolver.util.ResolverQueue;
 import utils.SelectRandom;
 
 public class TurnEndRandomSpell extends Passive {
-    public static final String DESCRIPTION = "At the end of your turn, if you have 6 or less cards in your hand, put a random spell into your hand.";
+    public static final String DESCRIPTION = "At the end of your turn, if you have 5 or less cards in your hand, put a random spell into your hand and subtract 2 from its cost.";
 
     @Override
     public Tooltip getTooltip() {
@@ -42,9 +45,13 @@ public class TurnEndRandomSpell extends Passive {
             return new ResolverWithDescription(DESCRIPTION, new Resolver(true) {
                 @Override
                 public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                    if (owner.player.getHand().size() <= 6) {
+                    if (owner.player.getHand().size() <= 5) {
                         CardText randomCard = SelectRandom.from(CardSet.PLAYABLE_SET.get().stream().filter(ct -> ct instanceof SpellText).toList());
-                        this.resolve(b, rq, el, new CreateCardResolver(randomCard, owner.team, CardStatus.HAND, -1, CardVisibility.ALLIES));
+                        CreateCardResolver ccr = this.resolve(b, rq, el, new CreateCardResolver(randomCard, owner.team, CardStatus.HAND, -1, CardVisibility.ALLIES));
+                        Effect costBuff = new Effect("-2 cost (from passive).", EffectStats.builder()
+                                .change(Stat.COST, -2)
+                                .build());
+                        this.resolve(b, rq, el, new AddEffectResolver(ccr.event.successfullyCreatedCards, costBuff));
                     }
                 }
             });

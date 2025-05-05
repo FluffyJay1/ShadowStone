@@ -55,7 +55,7 @@ public class Beastmaster extends MinionText {
                         int x = owner.finalStats.get(Stat.MAGIC);
                         List<CardText> summons = Collections.nCopies(x, new StonetuskBoar());
                         List<Integer> pos = IntStream.range(0, x)
-                                .map(i -> owner.getIndex() + (i + 1) * (i % 2)) // 0 2 0 4 0 6...
+                                .map(i -> owner.getIndex() + (i + 1) * ((i + 1) % 2)) // 1 0 3 0 5 0...
                                 .boxed()
                                 .collect(Collectors.toList());
                         this.resolve(b, rq, el, new CreateCardResolver(summons, owner.team, CardStatus.BOARD, pos));

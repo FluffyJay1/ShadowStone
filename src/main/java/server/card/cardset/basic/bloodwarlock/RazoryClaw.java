@@ -50,9 +50,9 @@ public class RazoryClaw extends SpellText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             owner.player.getLeader().ifPresent(l -> {
-                                this.resolve(b, rq, el, new DamageResolver(effect, l, 2, true, new EventAnimationDamageClaw().toString()));
+                                this.resolve(b, rq, el, new DamageResolver(effect, l, 2, true, new EventAnimationDamageClaw()));
                             });
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 4, true, new EventAnimationDamageClaw().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 4, true, new EventAnimationDamageClaw()));
                         });
                     }
                 });

@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
 import server.*;
 import server.card.*;
 import server.event.*;
@@ -25,7 +26,7 @@ public class DrawResolver extends Resolver {
         List<Card> markedForDeath = new LinkedList<>();
         int numToDraw = Math.min(this.num, this.p.getDeck().size());
         EventPutCard epc = b.processEvent(rq, el, new EventPutCard(List.copyOf(this.p.getDeck().subList(0, numToDraw)), CardStatus.HAND, this.p.team,
-                Collections.nCopies(numToDraw, -1), false, markedForDeath));
+                Collections.nCopies(numToDraw, -1), false, markedForDeath, EventAnimation.stringOrNull(null)));
         drawn = IntStream.range(0, epc.cards.size())
                 .filter(i -> epc.successful.get(i))
                 .mapToObj(epc.cards::get)

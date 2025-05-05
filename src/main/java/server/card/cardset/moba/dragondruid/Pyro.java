@@ -54,7 +54,7 @@ public class Pyro extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> targets = b.getMinions(owner.team * -1, true, true).toList();
-                        this.resolve(b, rq, el, new DamageResolver(effect, targets, 2, true, new EventAnimationDamageAOEFire(owner.team * -1, true).toString()));
+                        this.resolve(b, rq, el, new DamageResolver(effect, targets, 2, true, new EventAnimationDamageAOEFire(owner.team * -1, true)));
                         List<Minion> afterburnTargets = b.getMinions(owner.team * -1, true, true).toList();
                         this.resolve(b, rq, el, new AddEffectResolver(afterburnTargets, new EffectAfterburn()));
                     }
@@ -89,7 +89,7 @@ public class Pyro extends MinionText {
                 @Override
                 public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                     if (owner instanceof Minion) {
-                        this.resolve(b, rq, el, new DamageResolver(effect, (Minion) owner, 1, true, new EventAnimationDamageFire().toString()));
+                        this.resolve(b, rq, el, new DamageResolver(effect, (Minion) owner, 1, true, new EventAnimationDamageFire()));
                     }
                 }
             });

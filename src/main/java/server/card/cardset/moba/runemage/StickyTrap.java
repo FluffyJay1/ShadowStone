@@ -26,7 +26,7 @@ import server.resolver.util.ResolverQueue;
 
 public class StickyTrap extends MinionText {
     public static final String NAME = "Sticky Trap";
-    public static final String DESCRIPTION = "At the start of your turn, deal H damage to all enemy minions and destroy this minion.";
+    public static final String DESCRIPTION = "At the start of your turn, deal this minion's health as damage to all enemy minions and destroy this minion.";
     public static final ClassCraft CRAFT = ClassCraft.RUNEMAGE;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
@@ -46,8 +46,8 @@ public class StickyTrap extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> relevant = b.getMinions(owner.team * -1, false, false).toList();
-                        int h = owner.finalStats.get(Stat.HEALTH);
-                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, h, true, new EventAnimationDamageAOEFire(owner.team * -1, false).toString()));
+                        int h = owner instanceof Minion ? ((Minion) owner).health : 0; // doesnt hurt to be extra sure
+                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, h, true, new EventAnimationDamageAOEFire(owner.team * -1, false)));
                         this.resolve(b, rq, el, new DestroyResolver(owner));
                     }
                 });

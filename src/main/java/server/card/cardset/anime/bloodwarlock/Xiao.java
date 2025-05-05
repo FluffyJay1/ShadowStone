@@ -73,7 +73,7 @@ public class Xiao extends MinionText {
                         }
                         targets.addAll(b.getPlayerCard(owner.team * -1, Player::getLeader).collect(Collectors.toList()));
                         int x = owner.finalStats.get(Stat.MAGIC);
-                        this.resolve(b, rq, el, new DamageResolver(effect, targets, x, true, new EventAnimationDamageWind().toString()));
+                        this.resolve(b, rq, el, new DamageResolver(effect, targets, x, true, new EventAnimationDamageWind()));
                     }
                 });
             }

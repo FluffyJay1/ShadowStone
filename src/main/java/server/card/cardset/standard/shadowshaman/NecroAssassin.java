@@ -4,6 +4,8 @@ import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
+import client.ui.game.visualboardanimation.eventanimation.destroy.EventAnimationDestroyDarkElectro;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
@@ -53,11 +55,11 @@ public class NecroAssassin extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DestroyResolver(c));
+                            this.resolve(b, rq, el, new DestroyResolver(c, new EventAnimationDestroyDarkElectro()));
                             List<Minion> relevant = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
                             if (!relevant.isEmpty()) {
                                 Minion choice = SelectRandom.from(relevant);
-                                this.resolve(b, rq, el, new DestroyResolver(choice));
+                                this.resolve(b, rq, el, new DestroyResolver(choice, new EventAnimationDestroyDarkElectro()));
                             }
                         });
                     }

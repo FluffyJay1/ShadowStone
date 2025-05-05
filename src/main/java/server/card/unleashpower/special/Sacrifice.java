@@ -3,6 +3,7 @@ package server.card.unleashpower.special;
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipUnleashPower;
 import client.ui.Animation;
+import client.ui.game.visualboardanimation.eventanimation.destroy.EventAnimationDestroyDarkElectro;
 
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -43,7 +44,7 @@ public class Sacrifice extends UnleashPowerText {
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new DestroyResolver(target));
+                        this.resolve(b, rq, el, new DestroyResolver(target, new EventAnimationDestroyDarkElectro()));
                         this.resolve(b, rq, el, new ManaChangeResolver(owner.player, target.health, true, false, true));
                         this.resolve(b, rq, el, new DrawResolver(owner.player, 1));
                     }

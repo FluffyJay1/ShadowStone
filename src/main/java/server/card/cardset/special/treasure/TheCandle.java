@@ -42,7 +42,7 @@ public class TheCandle extends SpellText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> targets = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
                         this.resolve(b, rq, el, new DamageResolver(effect, targets, 4, true,
-                                new EventAnimationDamageAOEFire(owner.team * -1, false).toString()));
+                                new EventAnimationDamageAOEFire(owner.team * -1, false)));
                         int shufflePos = SelectRandom.positionsToAdd(owner.player.getDeck().size(), 1).get(0);
                         this.resolve(b, rq, el, new CreateCardResolver(new TheCandle(), owner.team, CardStatus.DECK, shufflePos));
                     }

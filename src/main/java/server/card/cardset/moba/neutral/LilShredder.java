@@ -46,7 +46,7 @@ public class LilShredder extends SpellText {
                             List<Minion> targets = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
                             if (!targets.isEmpty()) {
                                 Minion selected = SelectRandom.from(targets);
-                                this.resolve(b, rq, el, new DamageResolver(effect, selected, 1, true, new EventAnimationDamageShoot().toString()));
+                                this.resolve(b, rq, el, new DamageResolver(effect, selected, 1, true, new EventAnimationDamageShoot()));
                                 if (selected.alive) {
                                     Effect debuff = new Effect("-1 <b>Armor</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
                                             .change(Stat.ARMOR, -1)

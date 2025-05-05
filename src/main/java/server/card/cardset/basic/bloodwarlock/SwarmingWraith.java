@@ -43,11 +43,11 @@ public class SwarmingWraith extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (owner.player.vengeance()) {
                             b.getPlayer(owner.team * -1).getLeader().ifPresent(l -> {
-                                this.resolve(b, rq, el, new DamageResolver(effect, l, 2, true, new EventAnimationDamageFire().toString()));
+                                this.resolve(b, rq, el, new DamageResolver(effect, l, 2, true, new EventAnimationDamageFire()));
                             });
                         } else {
                             b.getPlayer(owner.team).getLeader().ifPresent(l -> {
-                                this.resolve(b, rq, el, new DamageResolver(effect, l, 2, true, new EventAnimationDamageFire().toString()));
+                                this.resolve(b, rq, el, new DamageResolver(effect, l, 2, true, new EventAnimationDamageFire()));
                             });
                         }
                     }

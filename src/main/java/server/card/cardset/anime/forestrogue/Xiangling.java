@@ -102,7 +102,7 @@ public class Xiangling extends MinionText {
                 @Override
                 public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                     List<Minion> relevant = owner.board.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
-                    this.resolve(b, rq, el, new DamageResolver(effect, relevant, 1, true, new EventAnimationDamageAOEFire(owner.team * -1, false).toString()));
+                    this.resolve(b, rq, el, new DamageResolver(effect, relevant, 1, true, new EventAnimationDamageAOEFire(owner.team * -1, false)));
                 }
             });
         }

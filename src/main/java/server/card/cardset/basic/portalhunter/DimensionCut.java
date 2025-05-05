@@ -21,7 +21,7 @@ import java.util.List;
 
 public class DimensionCut extends SpellText {
     public static final String NAME = "Dimension Cut";
-    public static final String DESCRIPTION = "Deal 3 damage to an enemy minion. If <b>Resonance</b> is active for you, deal 5 damage instead.";
+    public static final String DESCRIPTION = "Deal 4 damage to an enemy minion. If <b>Resonance</b> is active for you, deal 6 damage instead.";
     public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
@@ -50,8 +50,8 @@ public class DimensionCut extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            int damage = owner.player.resonance() ? 5 : 3;
-                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, damage, true, new EventAnimationDamageDoubleSlice().toString()));
+                            int damage = owner.player.resonance() ? 6 : 4;
+                            this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, damage, true, new EventAnimationDamageDoubleSlice()));
                         });
                     }
                 });
@@ -59,7 +59,7 @@ public class DimensionCut extends SpellText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.valueOfMinionDamage(4); // close enough
+                return AI.valueOfMinionDamage(5); // close enough
             }
 
             @Override

@@ -70,7 +70,7 @@ public class Cucouroux extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (target.status.equals(CardStatus.BOARD)) {
-                            this.resolve(b, rq, el, new DamageResolver(effect, target, 2, true, new EventAnimationDamageShoot().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, target, 2, true, new EventAnimationDamageShoot()));
                         }
                     }
                 });

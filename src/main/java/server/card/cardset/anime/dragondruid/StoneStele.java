@@ -63,7 +63,7 @@ public class StoneStele extends AmuletText {
 
         @Override
         public ResolverWithDescription onTurnStartAllied() {
-            return new ResolverWithDescription(EFFECT_DESCRIPTION, new BlastResolver(this, 1, new EventAnimationDamageEnergyBeamQuick().toString()));
+            return new ResolverWithDescription(EFFECT_DESCRIPTION, new BlastResolver(this, 1, new EventAnimationDamageEnergyBeamQuick()));
         }
 
         @Override

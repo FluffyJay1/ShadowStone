@@ -58,7 +58,7 @@ public class BreathOfTheSalamander extends SpellText {
                         List<Card> markedForDeath = new LinkedList<>();
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             DamageResolver r = this.resolve(b, rq, el,
-                                    new DamageResolver(effect, (Minion) c, 4, false, new EventAnimationDamageFire().toString()));
+                                    new DamageResolver(effect, (Minion) c, 4, false, new EventAnimationDamageFire()));
                             markedForDeath.addAll(r.destroyed);
                         });
                         this.resolve(b, rq, el, new SpendResolver(effect, 4, new Resolver(false) {
@@ -66,7 +66,7 @@ public class BreathOfTheSalamander extends SpellText {
                             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                                 List<Minion> relevant = b.getMinions(owner.team * -1, false, false).collect(Collectors.toList());
                                 DamageResolver r = this.resolve(b, rq, el,
-                                        new DamageResolver(effect, relevant, 2, false, new EventAnimationDamageAOEFire(owner.team * -1, false).toString()));
+                                        new DamageResolver(effect, relevant, 2, false, new EventAnimationDamageAOEFire(owner.team * -1, false)));
                                 markedForDeath.addAll(r.destroyed);
                             }
                         }));

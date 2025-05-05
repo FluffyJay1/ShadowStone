@@ -82,7 +82,7 @@ public class Tooltip {
             "<b>Retaliate</b> effects on a minion activate whenever they are attacked.",
             List::of);
     public static final Tooltip LIFESTEAL = new Tooltip("Lifesteal",
-            "After a card with <b>Lifesteal</b> deals damage, it restores health to the owner's leader equal to the damage dealt.",
+            "After a card with <b>Lifesteal</b> deals damage, it restores health to the owner's leader equal to the damage dealt (excluding overkill damage).",
             List::of);
     public static final Tooltip STEALTH = new Tooltip("Stealth",
             "Cards with <b>Stealth</b> can't be targeted by the enemy for attacks and effects. They lose <b>Stealth</b> after trying to deal damage.",
@@ -129,6 +129,9 @@ public class Tooltip {
     public static final Tooltip INVULNERABLE = new Tooltip("Invulnerable",
             "Cannot take damage or be explicitly destroyed. (Doesn't prevent <b>Banish</b>, <b>Countdown</b>, or health being set to 0 via effects.)",
             () -> List.of(BANISH, COUNTDOWN));
+    public static final Tooltip SMORC = new Tooltip("SMOrc",
+            "Can only attack the enemy leader and minions with <b>Ward</b>.",
+            () -> List.of(WARD));
 
     public final String name;
     public final String description;

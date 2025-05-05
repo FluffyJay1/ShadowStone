@@ -49,7 +49,7 @@ public class Belphegor extends MinionText {
                         this.resolve(b, rq, el, new DrawResolver(owner.player, 2));
                         if (!owner.player.vengeance()) {
                             owner.player.getLeader().ifPresent(l -> {
-                                this.resolve(b, rq, el, new DamageResolver(effect, l, l.health - Player.VENGEANCE_THRESHOLD, true, new EventAnimationDamageFire().toString()));
+                                this.resolve(b, rq, el, new DamageResolver(effect, l, l.health - Player.VENGEANCE_THRESHOLD, true, new EventAnimationDamageFire()));
                             });
                         }
                     }

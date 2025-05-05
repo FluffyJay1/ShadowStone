@@ -2,6 +2,7 @@ package server.resolver;
 
 import java.util.*;
 
+import client.ui.game.visualboardanimation.eventanimation.destroy.EventAnimationDestroy;
 import server.*;
 import server.card.*;
 import server.card.effect.Stat;
@@ -11,16 +12,29 @@ import server.resolver.util.ResolverQueue;
 public class DestroyResolver extends Resolver {
     final List<? extends Card> cards;
     final EventDestroy.Cause cause;
+    final String animationString;
 
-    public DestroyResolver(List<? extends Card> cards, EventDestroy.Cause cause) {
+    public DestroyResolver(List<? extends Card> cards, EventDestroy.Cause cause, EventAnimationDestroy animation) {
         super(false);
         this.cards = cards;
         this.cause = cause;
         this.essential = true;
+        this.animationString = EventAnimationDestroy.stringOrNull(animation);
+    }
+    public DestroyResolver(List<? extends Card> cards, EventDestroy.Cause cause) {
+        this(cards, cause, null);
     }
 
     public DestroyResolver(List<? extends Card> cards) {
         this(cards, EventDestroy.Cause.EFFECT);
+    }
+
+    public DestroyResolver(List<? extends Card> cards, EventAnimationDestroy animation) {
+        this(cards, EventDestroy.Cause.EFFECT, animation);
+    }
+
+    public DestroyResolver(Card card, EventAnimationDestroy animation) {
+        this(List.of(card), animation);
     }
 
     public DestroyResolver(Card card) {
@@ -42,7 +56,7 @@ public class DestroyResolver extends Resolver {
             this.resolve(b, rq, el, new BanishResolver(cardsToBanish));
         }
         if (!cardsToDestroy.isEmpty()) {
-            EventDestroy destroy = new EventDestroy(cardsToDestroy, this.cause);
+            EventDestroy destroy = new EventDestroy(cardsToDestroy, this.cause, this.animationString);
             b.processEvent(rq, el, destroy);
             for (BoardObject bo : destroy.cardsLeavingPlay()) {
                 if (bo instanceof Leader) {

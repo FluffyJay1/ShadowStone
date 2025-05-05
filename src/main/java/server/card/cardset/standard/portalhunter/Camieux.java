@@ -46,7 +46,7 @@ public class Camieux extends MinionText {
                         for (int i = 0; i < 4; i++) {
                             List<Minion> relevant = b.getMinions(owner.team * -1, true, true).collect(Collectors.toList());
                             if (!relevant.isEmpty()) {
-                                this.resolve(b, rq, el, new DamageResolver(effect, SelectRandom.from(relevant), 1, true, new EventAnimationDamageShoot().toString()));
+                                this.resolve(b, rq, el, new DamageResolver(effect, SelectRandom.from(relevant), 1, true, new EventAnimationDamageShoot()));
                             }
                         }
                         b.popEventGroup();

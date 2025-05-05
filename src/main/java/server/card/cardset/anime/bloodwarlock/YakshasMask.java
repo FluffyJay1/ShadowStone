@@ -63,7 +63,7 @@ public class YakshasMask extends AmuletText {
                             @Override
                             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                                 owner.player.getLeader().ifPresent(l -> {
-                                    this.resolve(b, rq, el, new DamageResolver(effect, l, 1, true, new EventAnimationDamageWind().toString()));
+                                    this.resolve(b, rq, el, new DamageResolver(effect, l, 1, true, new EventAnimationDamageWind()));
                                 });
                             }
                         });

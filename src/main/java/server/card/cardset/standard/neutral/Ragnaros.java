@@ -50,7 +50,7 @@ public class Ragnaros extends MinionText {
                         if (!possible.isEmpty()) {
                             Minion target = SelectRandom.from(possible);
                             this.resolve(b, rq, el, new DamageResolver(effect, target, 8, true,
-                                    new EventAnimationDamageFireball().toString()));
+                                    new EventAnimationDamageFireball()));
                         }
                     }
                 });

@@ -61,7 +61,7 @@ public abstract class MinionText extends BoardObjectText {
                                 Minion target = (Minion) c;
                                 DamageResolver dr = new DamageResolver(effect, List.of(target),
                                         List.of(effect.owner.finalStats.get(Stat.MAGIC)), true,
-                                        new EventAnimationDamageEnergyBeam().toString());
+                                        new EventAnimationDamageEnergyBeam());
                                 this.resolve(b, rq, el, dr);
                             });
                         }

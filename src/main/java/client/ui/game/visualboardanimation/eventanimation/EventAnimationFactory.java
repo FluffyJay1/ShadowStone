@@ -9,6 +9,8 @@ import client.ui.game.visualboardanimation.eventanimation.basic.*;
 import client.ui.game.visualboardanimation.eventanimation.board.*;
 import client.VisualBoard;
 import client.ui.game.visualboardanimation.eventanimation.damage.*;
+import client.ui.game.visualboardanimation.eventanimation.destroy.EventAnimationDestroy;
+import client.ui.game.visualboardanimation.eventanimation.putcard.EventAnimationPutCard;
 import server.event.*;
 
 /**
@@ -31,10 +33,12 @@ public class EventAnimationFactory {
     public <T extends Event> EventAnimation<T> newAnimation(T event) {
         // TODO: check to see if we want to use a special animation or not
         EventAnimation<T> anim = null;
-        if (event instanceof EventDamage) {
+        String eventAnimationString = event.getAnimationString(); 
+        if (eventAnimationString != null) {
             // lol
-            anim = (EventAnimation<T>) EventAnimationDamage.fromString(new StringTokenizer(((EventDamage) event).animationString));
-        } else {
+            anim = (EventAnimation<T>) EventAnimation.fromString(new StringTokenizer(eventAnimationString)); // could return null
+        } 
+        if (anim == null) {
             // by the grace of allah this cast is safe
             Class<? extends EventAnimation<T>> animClass = (Class<? extends EventAnimation<T>>) eventToAnimationMap.get(event.getClass());
             if (animClass == null) {
@@ -55,7 +59,7 @@ public class EventAnimationFactory {
 
     private static final Map<Class<? extends Event>, Class<? extends EventAnimation<? extends Event>>> eventToAnimationMap = new HashMap<>() {{
         put(EventAddEffect.class, EventAnimationAddEffect.class);
-        put(EventDamage.class, EventAnimationDamage.class);
+        put(EventDamage.class, EventAnimationDamageDefault.class);
         put(EventRemoveEffect.class, EventAnimationRemoveEffect.class);
         put(EventRestore.class, EventAnimationRestore.class);
         put(EventTurnStart.class, EventAnimationTurnStart.class);

@@ -50,7 +50,7 @@ public class Enoch extends MinionText {
                             if (!nr.wasSuccessful()) {
                                 Minion m = (Minion) owner;
                                 int x = m.health / 2;
-                                this.resolve(b, rq, el, new DamageResolver(effect, m, x, true, new EventAnimationDamageOff().toString()));
+                                this.resolve(b, rq, el, new DamageResolver(effect, m, x, true, new EventAnimationDamageOff()));
                             }
                         }
                     }

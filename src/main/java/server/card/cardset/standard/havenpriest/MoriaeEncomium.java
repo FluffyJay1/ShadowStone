@@ -3,6 +3,7 @@ package server.card.cardset.standard.havenpriest;
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipAmulet;
 import client.ui.Animation;
+import client.ui.game.visualboardanimation.eventanimation.destroy.EventAnimationDestroyDarkElectro;
 
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
@@ -60,7 +61,7 @@ public class MoriaeEncomium extends AmuletText {
                         List<Minion> possibleTargets = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
                         if (!possibleTargets.isEmpty()) {
                             Minion target = SelectRandom.from(possibleTargets);
-                            this.resolve(b, rq, el, new DestroyResolver(target));
+                            this.resolve(b, rq, el, new DestroyResolver(target, new EventAnimationDestroyDarkElectro()));
                         }
                     }
                 });

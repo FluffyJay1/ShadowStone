@@ -48,7 +48,7 @@ public class Guoba extends AmuletText {
                         List<Minion> targets = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
                         if (!targets.isEmpty()) {
                             Minion selected = SelectRandom.from(targets);
-                            this.resolve(b, rq, el, new DamageResolver(effect, selected, 2, true, new EventAnimationDamageFire().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, selected, 2, true, new EventAnimationDamageFire()));
                         }
                     }
                 });
@@ -63,7 +63,7 @@ public class Guoba extends AmuletText {
                         List<Minion> targets = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
                         if (!targets.isEmpty()) {
                             Minion selected = SelectRandom.from(targets);
-                            this.resolve(b, rq, el, new DamageResolver(effect, selected, 2, true, new EventAnimationDamageFire().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, selected, 2, true, new EventAnimationDamageFire()));
                         }
                     }
                 });

@@ -95,7 +95,7 @@ public class EmotionHappy extends AmuletText {
 
         @Override
         public ResolverWithDescription clash(Minion target) {
-            return new ResolverWithDescription("<b>Clash</b>: Deal 1 damage to the enemy minion (from <b>" + NAME + "'s Aura</b>).", new DamageResolver(this, target, 1, true, new EventAnimationDamageMagicHit().toString()));
+            return new ResolverWithDescription("<b>Clash</b>: Deal 1 damage to the enemy minion (from <b>" + NAME + "'s Aura</b>).", new DamageResolver(this, target, 1, true, new EventAnimationDamageMagicHit()));
         }
 
         @Override

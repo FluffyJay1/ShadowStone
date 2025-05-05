@@ -1,7 +1,10 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -31,7 +34,7 @@ public class SelectRandom {
      * @param <T> Type of the item
      * @return A list of items from that list, randomly chosen
      */
-    public static <T> List<T> from(List<T> list, int num) { // helper
+    public static <T> List<T> from(Collection<T> list, int num) { // helper
         List<T> copy = new ArrayList<>(list);
         List<T> ret = new ArrayList<>(num);
         for (int i = 0; i < num && !copy.isEmpty(); i++) {
@@ -61,6 +64,34 @@ public class SelectRandom {
             return from(relevant);
         }
         return null;
+    }
+
+    /**
+     * Given a list, randomly select up to num items, ensuring that the selected
+     * items are different in some trait. The trait to differentiate on is
+     * determined by the selector function.
+     * 
+     * @param <T> Type of the item
+     * @param <R> Type of the trait (should have a sensible equals() implementation)
+     * @param list The list to choose from
+     * @param selector Function extracting the trait to bucketize on
+     * @param num Number of items to choose
+     * @return A list of selections, size which might be less than num
+     */
+    public static <T, R> List<T> havingDifferent(Collection<T> list, Function<T, R> selector, int num) {
+        Map<R, List<T>> buckets = new HashMap<>();
+        for (T element : list) {
+            R bucket = selector.apply(element);
+            List<T> relevantList = buckets.get(bucket);
+            if (relevantList == null) {
+                relevantList = new ArrayList<>();
+                buckets.put(bucket, relevantList);
+            }
+            relevantList.add(element);
+        }
+        List<List<T>> chosenBuckets = from(buckets.values(), num);
+        List<T> chosen = chosenBuckets.stream().map(SelectRandom::from).toList();
+        return chosen;
     }
 
     /**

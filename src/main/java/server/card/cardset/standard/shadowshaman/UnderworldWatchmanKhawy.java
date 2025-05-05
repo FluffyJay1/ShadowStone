@@ -4,6 +4,8 @@ import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
+import client.ui.game.visualboardanimation.eventanimation.destroy.EventAnimationDestroyDarkElectro;
+
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
@@ -50,7 +52,7 @@ public class UnderworldWatchmanKhawy extends MinionText {
                         Minion target = SelectRandom.oneOfWith(b.getMinions(owner.team * -1, false, true).collect(Collectors.toList()),
                                 m -> m.finalStats.get(Stat.ATTACK), Integer::max);
                         if (target != null) {
-                            this.resolve(b, rq, el, new DestroyResolver(target));
+                            this.resolve(b, rq, el, new DestroyResolver(target, new EventAnimationDestroyDarkElectro()));
                             owner.player.getLeader().ifPresent(l -> {
                                 this.resolve(b, rq, el, new RestoreResolver(effect, l, target.finalStats.get(Stat.ATTACK)));
                             });

@@ -2,6 +2,7 @@ package server.card.cardset.basic.dragondruid;
 
 import client.tooltip.TooltipSpell;
 import client.ui.Animation;
+import client.ui.game.visualboardanimation.eventanimation.destroy.EventAnimationDestroyDarkElectro;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
@@ -47,7 +48,7 @@ public class BlackBreath extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            this.resolve(b, rq, el, new DestroyResolver(c));
+                            this.resolve(b, rq, el, new DestroyResolver(c, new EventAnimationDestroyDarkElectro()));
                         });
                     }
                 });

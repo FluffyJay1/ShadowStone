@@ -3,6 +3,7 @@ package server.card.effect.common;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
 import org.jetbrains.annotations.NotNull;
 import server.*;
@@ -23,10 +24,10 @@ public class EffectLastWordsAlliedBlast extends Effect {
     public EffectLastWordsAlliedBlast() { }
 
     // sourceString: what to put in the description as where it came from
-    public EffectLastWordsAlliedBlast(String sourceString, int damage, @NotNull String animationString) {
-        super("<b>Last Words</b>: deal " + damage + " damage to a random allied minion (from " + sourceString + ").");
+    public EffectLastWordsAlliedBlast(String sourceString, int damage, @NotNull EventAnimationDamage animation) {
+        super("<b>Last Words</b>: Deal " + damage + " damage to a random allied minion (from " + sourceString + ").");
         this.damage = damage;
-        this.animationString = animationString;
+        this.animationString = EventAnimation.stringOrNull(animation);
     }
 
     @Override

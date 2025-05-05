@@ -3,8 +3,10 @@ package server.event;
 import java.util.*;
 
 import client.Game;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
+import client.ui.game.visualboardanimation.eventanimation.EventAnimation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import server.*;
 import server.card.*;
 import server.card.effect.Effect;
@@ -23,13 +25,15 @@ public class EventDamage extends Event {
     private List<Integer> oldHealth;
     private List<Boolean> oldAlive;
     private List<Effect> addedEffects;
+    private int oldSelfDamageCount;
     public final List<Card> markedForDeath;
     public final List<Integer> actualDamage;
+    public final List<Integer> actualNonOverkillDamage;
     public final Card cardSource; // used for animation probably (relied on for minion attack)
     public Effect effectSource; // used for animation probably, may be null
 
     // not proud of incorporating client animation logic into serverside game logic, but it's what we have to do
-    public final String animationString;
+    private final String animationString;
 
     public EventDamage(Card source, List<Minion> m, List<Integer> damage,
             List<Card> markedForDeath, @NotNull String animationString) {
@@ -40,6 +44,7 @@ public class EventDamage extends Event {
         this.markedForDeath = Objects.requireNonNullElseGet(markedForDeath, ArrayList::new);
         this.animationString = animationString;
         this.actualDamage = new ArrayList<>(this.damage.size());
+        this.actualNonOverkillDamage = new ArrayList<>(this.damage.size());
     }
 
     public EventDamage(Effect source, List<Minion> m, List<Integer> damage, List<Card> markedForDeath, @NotNull String animationString) {
@@ -52,12 +57,14 @@ public class EventDamage extends Event {
         this.oldHealth = new ArrayList<>(this.m.size());
         this.oldAlive = new ArrayList<>(this.m.size());
         this.addedEffects = new ArrayList<>(this.m.size() * 3);
+        this.oldSelfDamageCount = b.getPlayer(b.getCurrentPlayerTurn()).selfDamageCount;
         boolean poisonous = this.cardSource.finalStats.get(Stat.POISONOUS) > 0;
         for (int i = 0; i < this.m.size(); i++) { // sure
             Minion minion = this.m.get(i);
             this.oldHealth.add(minion.health);
             this.oldAlive.add(minion.alive);
             this.actualDamage.add(0);
+            this.actualNonOverkillDamage.add(0);
             int shield = minion.finalStats.get(Stat.SHIELD);
             if (shield > 0) {
                 // negate damage, reduce shield
@@ -74,11 +81,12 @@ public class EventDamage extends Event {
                 if (minion.finalStats.get(Stat.INVULNERABLE) > 0) {
                     damageAdjusted = 0;
                 }
+                this.actualDamage.set(i, damageAdjusted);
+                this.actualNonOverkillDamage.set(i, Math.min(damageAdjusted, Math.max(0, minion.health)));
                 minion.health -= damageAdjusted;
                 if (minion.finalStats.get(Stat.UNYIELDING) > 0 && minion.health < 1 && minion.finalStats.get(Stat.HEALTH) > 0) {
                     minion.health = 1;
                 }
-                this.actualDamage.set(i, damageAdjusted);
                 boolean diesToPoisonous = (poisonous && minion.finalStats.get(Stat.STALWART) == 0 && minion.finalStats.get(Stat.INVULNERABLE) == 0 && damageAdjusted > 0 && !(minion instanceof Leader));
                 if (minion.alive && (minion.health <= 0 || diesToPoisonous)) {
                     minion.alive = false;
@@ -90,6 +98,9 @@ public class EventDamage extends Event {
                             .build());
                     minion.addEffect(false, frozen);
                     this.addedEffects.add(frozen);
+                }
+                if (minion instanceof Leader && minion.team == b.getCurrentPlayerTurn()) {
+                    b.getPlayer(b.getCurrentPlayerTurn()).selfDamageCount++;
                 }
             }
         }
@@ -112,6 +123,7 @@ public class EventDamage extends Event {
         for (Effect e : this.addedEffects) {
             e.owner.removeEffect(e, true);
         }
+        b.getPlayer(b.getCurrentPlayerTurn()).selfDamageCount = this.oldSelfDamageCount;
     }
 
     @Override
@@ -129,7 +141,7 @@ public class EventDamage extends Event {
 
     public static EventDamage fromString(Board b, StringTokenizer st) {
         // no reflection yet
-        String animString = EventAnimationDamage.extractAnimationString(st);
+        String animString = EventAnimation.extractAnimationString(st);
         Card cardSource = Card.fromReference(b, st);
         Effect effectSource = Effect.fromReference(b, st);
         int size = Integer.parseInt(st.nextToken());
@@ -149,5 +161,10 @@ public class EventDamage extends Event {
     @Override
     public boolean conditions() {
         return true;
+    }
+
+    @Override
+    public @Nullable String getAnimationString() {
+        return this.animationString;
     }
 }

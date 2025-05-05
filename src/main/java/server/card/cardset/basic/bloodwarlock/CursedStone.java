@@ -41,8 +41,8 @@ public class CursedStone extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         int damage = owner.finalStats.get(Stat.MAGIC);
-                        this.resolve(b, rq, el, new BlastResolver(effect, damage, new EventAnimationDamageEnergyBeam().toString()));
-                        Effect lw = new EffectLastWordsAlliedBlast("<b>Unleash</b>", damage, new EventAnimationDamageEnergyBeam().toString());
+                        this.resolve(b, rq, el, new BlastResolver(effect, damage, new EventAnimationDamageEnergyBeam()));
+                        Effect lw = new EffectLastWordsAlliedBlast("<b>Unleash</b>", damage, new EventAnimationDamageEnergyBeam());
                         this.resolve(b, rq, el, new AddEffectResolver(effect.owner, lw));
                     }
                 });

@@ -51,7 +51,7 @@ public class Japhet extends MinionText {
                             }
                             targets.add((Minion) owner);
                             int x = owner.finalStats.get(Stat.MAGIC);
-                            this.resolve(b, rq, el, new DamageResolver(effect, targets, x, true, new EventAnimationDamageOff().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, targets, x, true, new EventAnimationDamageOff()));
                         }
                     });
                 }

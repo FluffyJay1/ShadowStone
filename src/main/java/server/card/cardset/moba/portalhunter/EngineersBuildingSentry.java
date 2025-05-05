@@ -44,7 +44,7 @@ public class EngineersBuildingSentry extends MinionText {
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(true) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new BlastResolver(effect, owner.finalStats.get(Stat.MAGIC), new EventAnimationDamageSmallExplosion().toString()));
+                        this.resolve(b, rq, el, new BlastResolver(effect, owner.finalStats.get(Stat.MAGIC), new EventAnimationDamageSmallExplosion()));
                     }
                 });
             }

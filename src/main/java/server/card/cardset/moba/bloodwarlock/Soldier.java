@@ -51,7 +51,7 @@ public class Soldier extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         owner.player.getLeader().ifPresent(l -> {
-                            this.resolve(b, rq, el, new DamageResolver(effect, l, 3, true, new EventAnimationDamageSmallExplosion().toString()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, l, 3, true, new EventAnimationDamageSmallExplosion()));
                             int missing = l.finalStats.get(Stat.HEALTH) - l.health;
                             int buffAmount = missing / 3;
                             Effect buff = new Effect("+" + buffAmount + "/+" + buffAmount + "/+0 (from <b>Battlecry</b>).", EffectStats.builder()

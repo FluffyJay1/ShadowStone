@@ -42,7 +42,7 @@ public class EmbersOfRagnaros extends SpellText {
                             List<Minion> targets = b.getMinions(owner.team * -1, true, true).collect(Collectors.toList());
                             if (!targets.isEmpty()) {
                                 Minion selected = SelectRandom.from(targets);
-                                this.resolve(b, rq, el, new DamageResolver(effect, selected, 8, true, new EventAnimationDamageFireball().toString()));
+                                this.resolve(b, rq, el, new DamageResolver(effect, selected, 8, true, new EventAnimationDamageFireball()));
                             }
                         }
                     }

@@ -28,4 +28,5 @@ public enum Stat {
     IGNORE_WARD,
     CLEAVE,
     INVULNERABLE,
+    SMORC,
 }

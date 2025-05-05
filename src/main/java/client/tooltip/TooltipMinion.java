@@ -16,7 +16,7 @@ public class TooltipMinion extends TooltipCard {
     public final int magic;
     public final int health;
     public final boolean basicUnleash;
-    public final String attackAnimation;
+    public final EventAnimationDamage attackAnimation;
 
     public TooltipMinion(String name, String description, Supplier<Animation> animation, ClassCraft craft, List<CardTrait> traits, CardRarity rarity, int cost, int attack,
                          int magic, int health, boolean basicUnleash, Class<? extends MinionText> minionTextClass, Vector2f artFocusPos,
@@ -44,6 +44,6 @@ public class TooltipMinion extends TooltipCard {
         this.attack = attack;
         this.magic = magic;
         this.health = health;
-        this.attackAnimation = EventAnimationDamage.stringOrNull(attackAnimation);
+        this.attackAnimation = attackAnimation;
     }
 }

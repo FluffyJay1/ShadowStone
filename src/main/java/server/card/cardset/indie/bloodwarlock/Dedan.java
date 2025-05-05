@@ -69,7 +69,7 @@ public class Dedan extends MinionText {
                                     b.pushEventGroup(new EventGroup(EventGroupType.CONCURRENTDAMAGE));
                                     for (int i = 0; i < count; i++) {
                                         if (!owner.player.vengeance()) {
-                                            this.resolve(b, rq, el, new DamageResolver(effect, l, 1, true, new EventAnimationDamageOff().toString()));
+                                            this.resolve(b, rq, el, new DamageResolver(effect, l, 1, true, new EventAnimationDamageOff()));
                                         }
                                     }
                                     b.popEventGroup();

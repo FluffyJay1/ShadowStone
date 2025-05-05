@@ -71,7 +71,7 @@ public class DandelionField extends AmuletText {
                         return new ResolverWithDescription(LISTENER_DESCRIPTION, new PutCardResolver(minionsToReturn, CardStatus.HAND, owner.team * -1, pos, true));
                     }
                     if (!minionsToDamage.isEmpty()) {
-                        return new ResolverWithDescription(LISTENER_DESCRIPTION, new DamageResolver(effect, minionsToDamage, 1, true, new EventAnimationDamageWind().toString()));
+                        return new ResolverWithDescription(LISTENER_DESCRIPTION, new DamageResolver(effect, minionsToDamage, 1, true, new EventAnimationDamageWind()));
                     }
                 }
                 return null;

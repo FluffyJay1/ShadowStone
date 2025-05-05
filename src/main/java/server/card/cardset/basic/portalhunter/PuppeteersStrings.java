@@ -44,7 +44,7 @@ public class PuppeteersStrings extends SpellText {
                         List<Integer> pos = Collections.nCopies(3, -1);
                         this.resolve(b, rq, el, new CreateCardResolver(cards, owner.team, CardStatus.HAND, pos));
                         List<Minion> targets = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
-                        this.resolve(b, rq, el, new DamageResolver(effect, targets, 1, true, new EventAnimationDamageAOESlice(owner.team * -1, false).toString()));
+                        this.resolve(b, rq, el, new DamageResolver(effect, targets, 1, true, new EventAnimationDamageAOESlice(owner.team * -1, false)));
                     }
                 });
             }

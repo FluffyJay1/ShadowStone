@@ -7,7 +7,7 @@ import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationD
 import org.newdawn.slick.geom.Vector2f;
 
 import server.ServerBoard;
-import server.card.BoardObject;
+import server.card.Amulet;
 import server.card.Card;
 import server.card.CardRarity;
 import server.card.CardStatus;
@@ -37,7 +37,7 @@ import java.util.List;
 public class Omori extends MinionText {
     public static final String NAME = "OMORI";
     private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: <b>Choose</b> an <b>Emotion</b> card to summon.";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Select another card in play, and <b>Choose</b> an <b>Emotion</b> card to <b>Transform</b> it into. Set its <b>Countdown</b> to M.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Select another amulet in play, and <b>Choose</b> an <b>Emotion</b> card to <b>Transform</b> it into. Set its <b>Countdown</b> to M.";
     public static final String DESCRIPTION = BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
@@ -93,7 +93,7 @@ public class Omori extends MinionText {
                         new CardTargetingScheme(this, 0, 1, "Select a card to <b>Transform</b>.") {
                             @Override
                             protected boolean criteria(Card c) {
-                                return c instanceof BoardObject && c.isInPlay() && c.status.equals(CardStatus.BOARD) && c != this.getCreator().owner;
+                                return c instanceof Amulet && c.isInPlay() && c.status.equals(CardStatus.BOARD) && c != this.getCreator().owner;
                             }
 
                         },

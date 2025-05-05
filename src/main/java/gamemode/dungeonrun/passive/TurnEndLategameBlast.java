@@ -31,7 +31,7 @@ public class TurnEndLategameBlast extends Passive {
         @Override
         public ResolverWithDescription onTurnEndAllied() {
             if (owner.player.maxmana >= 10) {
-                return new ResolverWithDescription(DESCRIPTION, new BlastResolver(this, 4, new EventAnimationDamageEnergyBeam().toString()));
+                return new ResolverWithDescription(DESCRIPTION, new BlastResolver(this, 4, new EventAnimationDamageEnergyBeam()));
             } else {
                 return null;
             }

@@ -63,7 +63,7 @@ public class Meteor extends SpellText {
                                 }
                             }
                             this.resolve(b, rq, el, new DamageResolver(effect, m, d, true,
-                                    new EventAnimationDamageBigExplosion().toString()));
+                                    new EventAnimationDamageBigExplosion()));
                         });
                     }
                 });
