@@ -22,9 +22,7 @@ import server.resolver.util.ResolverQueue;
 import utils.SelectRandom;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.IntStream;
 
 public class Nephthys extends MinionText {
