@@ -33,7 +33,8 @@ public class ExpansionSetStandard extends ExpansionSet {
             new MaelstromSerpent(), new DiabolicDrain(), new DireBond(), new Baphomet(), new RedHotBoots(), new DevourerOfHeavens(),
             new ForgottenSanctuary(), new ThemisDecree(), new LionOfTheGoldenCity(), new Tenko(), new GarudaRulerOfStorms(), new RadianceAngel(),
             new Aegina(), new MugnierPurifyingLight(), new MechWingSwordsman(), new Substitution(), new CaptivatingConductor(), new ThatWhichErases(),
-            new TylleTheWorldgate(), new MiriamSyntheticBeing(), new KnowerOfHistory(), new DyneMasterSwordsman());
+            new TylleTheWorldgate(), new MiriamSyntheticBeing(), new KnowerOfHistory(), new DyneMasterSwordsman(), new SkyGladiator(),
+            new InesMaidenOfClouds(), new DarkDragoonForte(), new DragonewtScholar());
 
     @Override
     public CardSet getCards() {

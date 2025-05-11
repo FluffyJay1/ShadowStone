@@ -54,7 +54,7 @@ public class ArtifactRhino extends MinionText {
 
                     @Override
                     public boolean isActive() {
-                        return this.owner.isInPlay() || this.owner.status.equals(CardStatus.HAND);
+                        return this.owner.isInPlay();
                     }
                 },
                 new Effect(OTHER_DESCRIPTION + "\n" + STRIKE_DESCRIPTION, EffectStats.builder()

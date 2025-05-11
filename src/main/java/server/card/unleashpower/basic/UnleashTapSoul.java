@@ -38,7 +38,7 @@ public class UnleashTapSoul extends UnleashPowerText {
                             .change(Stat.COST, -2)
                             .build();
                 }
-                return new EffectStats();
+                return this.baselineStats;
             }
 
             @Override

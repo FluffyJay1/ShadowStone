@@ -146,6 +146,20 @@ public class UICard extends UIBox {
             ))
     );
 
+    private static final Supplier<EmissionStrategy> INTIMIDATE_PARTICLES = () -> new EmissionStrategy(
+            new IntervalEmissionTimingStrategy(1, 0.2),
+            new ComposedEmissionPropertyStrategy(List.of(
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/board/intimidate.png", new Vector2f(1, 1), 0, 0)),
+                    new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(1)),
+                    new ConstantEmissionPropertyStrategy(
+                            Graphics.MODE_ADD, 0.15, new Vector2f(0, 0),
+                            () -> new QuadraticInterpolationB(0, 0, 2),
+                            () -> new LinearInterpolation(0.9, 1.2)
+                    ),
+                    new RandomAngleEmissionPropertyStrategy(new LinearInterpolation(-20, 20))
+            ))
+    );
+
     private Card card;
     private Animation cardAnimation;
     private final UIBoard uib;
@@ -164,6 +178,7 @@ public class UICard extends UIBox {
     private final ParticleSystem stalwartParticles;
     private final ParticleSystem mutedParticles;
     private final ParticleSystem unyieldingParticles;
+    private final ParticleSystem intimidateParticles;
     private final EnumMap<Stat, Double> statFontSizeIncreaseAnimationTimer; // e.g. EventAnimationAddEffect bumping stats, should make font size bigger
     private double invulnerableTimer;
 
@@ -186,6 +201,8 @@ public class UICard extends UIBox {
         this.unyieldingParticles = new ParticleSystem(ui, new Vector2f(MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), UNYIELDING_PARTICLES.get(), true);
         this.unyieldingParticles.relpos = true;
         this.addChild(this.unyieldingParticles);
+        this.intimidateParticles = new ParticleSystem(ui, new Vector2f(), INTIMIDATE_PARTICLES.get(), true);
+        this.addChild(this.intimidateParticles);
         this.invulnerableTimer = 0;
     }
 
@@ -368,6 +385,8 @@ public class UICard extends UIBox {
         this.mutedParticles.setPaused(!this.card.isInPlay() || this.card.getFinalEffects(false).noneMatch(e -> e.mute));
         this.unyieldingParticles.setScale(this.getScale());
         this.unyieldingParticles.setPaused(!this.card.isInPlay() || !(this.card instanceof Minion) || this.card.finalStats.get(Stat.UNYIELDING) == 0);
+        this.intimidateParticles.setScale(this.getScale());
+        this.intimidateParticles.setPaused(!this.card.isInPlay() || this.card.finalStats.get(Stat.INTIMIDATE) == 0);
         if (!this.isBeingAnimated()) {
             this.updateCardUIProperties();
             this.updateFlippedOver();
@@ -439,6 +458,7 @@ public class UICard extends UIBox {
         this.stalwartParticles.draw(g);
         this.mutedParticles.draw(g);
         this.unyieldingParticles.draw(g);
+        this.intimidateParticles.draw(g);
     }
 
     public void drawCardBack(Graphics g, Vector2f pos, double scale) {
@@ -571,7 +591,7 @@ public class UICard extends UIBox {
             if (this.card.finalStats.get(Stat.WARD) > 0) {
                 Image i = Game.getImage("game/ward.png");
                 i = i.getScaledCopy((float) scale);
-                if (this.card.finalStats.get(Stat.STEALTH) > 0) {
+                if (this.card.finalStats.get(Stat.STEALTH) > 0 || this.card.finalStats.get(Stat.INTIMIDATE) > 0) {
                     i.setAlpha(0.5f);
                 }
                 g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);

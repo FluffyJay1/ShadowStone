@@ -54,7 +54,7 @@ public class Spy extends MinionText {
                                     .set(Stat.POISONOUS, 1)
                                     .build();
                         }
-                        return new EffectStats();
+                        return this.baselineStats;
                     }
 
                     @Override

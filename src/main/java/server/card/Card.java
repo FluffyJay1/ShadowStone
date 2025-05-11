@@ -55,6 +55,7 @@ public abstract class Card implements Indexable, StringBuildable {
 
     public final Set<Effect> listeners = new TreeSet<>(Comparator.comparing((Effect l) -> l.basic ? 0 : 1).thenComparingInt(Effect::getIndex));
     public final Set<Effect> whileInPlayListeners = new TreeSet<>(Comparator.comparing((Effect l) -> l.basic ? 0 : 1).thenComparingInt(Effect::getIndex));
+    public final Set<Effect> whileInPlayStateTrackers = new TreeSet<>(Comparator.comparing((Effect l) -> l.basic ? 0 : 1).thenComparingInt(Effect::getIndex));
 
     public Card(Board board, CardText cardText) {
         this.board = board;
@@ -350,6 +351,30 @@ public abstract class Card implements Indexable, StringBuildable {
                 .filter(e -> !e.mute)
                 .map(e -> {
                     ResolverWithDescription r = e.onListenEventWhileInPlay(event);
+                    if (r == null) {
+                        return null;
+                    }
+                    return new HookResolver(EventGroupType.FLAG, List.of(this), r, e, eff -> !eff.removed && !eff.mute && eff.owner.isInPlay());
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList()));
+    }
+
+    public void saveStateTrackers() {
+        for (Effect e : this.whileInPlayStateTrackers) {
+            e.lastCheckedStateToTrack = e.stateToTrack();
+        }
+    }
+
+    public ResolverQueue onListenStateChangeWhileInPlay() {
+        return new ResolverQueue(this.whileInPlayStateTrackers.stream()
+                .filter(e -> !e.mute)
+                .map(e -> {
+                    Object newState = e.stateToTrack();
+                    if (e.lastCheckedStateToTrack == null || Objects.equals(e.lastCheckedStateToTrack, newState)) {
+                        return null;
+                    }
+                    ResolverWithDescription r = e.onListenStateChangeWhileInPlay(newState);
                     if (r == null) {
                         return null;
                     }

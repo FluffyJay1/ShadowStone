@@ -44,6 +44,9 @@ public class Minion extends BoardObject {
             // this is harder to evaluate since unyielding is usually not a permanent effect
             health += 4;
         }
+        if (this.finalStats.get(Stat.INTIMIDATE) > 0) {
+            health += 2;
+        }
         if (this.finalStats.get(Stat.INVULNERABLE) > 0) {
             // idk
             health += 20;
@@ -108,7 +111,7 @@ public class Minion extends BoardObject {
     }
 
     public boolean canBeAttacked() {
-        return this.finalStats.get(Stat.STEALTH) == 0;
+        return this.finalStats.get(Stat.STEALTH) == 0 && this.finalStats.get(Stat.INTIMIDATE) == 0;
     }
     // remember to change logic in canAttack(Minion) and shouldBeUnfrozen()
     // ideally this is functionally equivalent to minions.filter(this::canAttack)
@@ -134,7 +137,7 @@ public class Minion extends BoardObject {
     }
 
     public boolean shouldBeUnfrozen() {
-        if (this.finalStats.get(Stat.FROZEN) == 0 || this.attacksThisTurn == this.finalStats.get(Stat.ATTACKS_PER_TURN)
+        if (this.finalStats.get(Stat.FROZEN) == 0 || this.attacksThisTurn >= this.finalStats.get(Stat.ATTACKS_PER_TURN)
                 || this.finalStats.get(Stat.DISARMED) > 0
                 || (this.summoningSickness && this.finalStats.get(Stat.STORM) == 0 && this.finalStats.get(Stat.RUSH) == 0)) {
             return false;
@@ -165,7 +168,7 @@ public class Minion extends BoardObject {
         }
         boolean ward = this.finalStats.get(Stat.IGNORE_WARD) == 0
                 && this.board.getMinions(this.team * -1, true, true)
-                        .anyMatch(potentialWard -> potentialWard.finalStats.get(Stat.STEALTH) == 0
+                        .anyMatch(potentialWard -> potentialWard.canBeAttacked()
                                 && potentialWard.finalStats.get(Stat.WARD) > 0);
         if (this.finalStats.get(Stat.SMORC) > 0 && !(m.status.equals(CardStatus.LEADER) || m.finalStats.get(Stat.WARD) > 0)) {
             // smorc condition requires ward or leader

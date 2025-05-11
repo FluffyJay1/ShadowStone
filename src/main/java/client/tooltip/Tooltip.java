@@ -31,7 +31,7 @@ public class Tooltip {
             "Minions with <b>Rush</b> can immediately attack enemy minions on the turn they're played.",
             List::of);
     public static final Tooltip WARD = new Tooltip("Ward",
-            "If there is a minion with <b>Ward</b>, it must be attacked before targets without <b>Ward</b> can be attacked.",
+            "If there is a minion with <b>Ward</b> that can be attacked, it must be attacked before targets without <b>Ward</b> can be attacked.",
             List::of);
     public static final Tooltip BANE = new Tooltip("Bane",
             "Minions with <b>Bane</b> automatically destroy the other minion after engaging in combat.",
@@ -132,6 +132,9 @@ public class Tooltip {
     public static final Tooltip SMORC = new Tooltip("SMOrc",
             "Can only attack the enemy leader and minions with <b>Ward</b>.",
             () -> List.of(WARD));
+    public static final Tooltip INTIMIDATE = new Tooltip("Intimidate",
+            "Minions with <b>Intimidate</b> cannot be attacked.",
+            List::of);
 
     public final String name;
     public final String description;

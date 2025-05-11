@@ -7,6 +7,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.jetbrains.annotations.Nullable;
+
 import client.*;
 import server.*;
 import server.card.*;
@@ -62,6 +64,8 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     // for effects that limit how many times an effect can trigger per turn
     // basically allows effects to store int vars that properly serialize/clone and reset each turn
     public Map<String, Integer> perTurnCounters = new HashMap<>();
+
+    public Object lastCheckedStateToTrack = null;
 
     // who needs a factory
 
@@ -218,12 +222,21 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
     resolver or null, then check the details of the event inside the resolver
     if this returns UNIMPLEMENTED_RESOLVER, then we know it doesn't have a listener
      */
-    public ResolverWithDescription onListenEvent(Event event) {
+    public ResolverWithDescription onListenEvent(@Nullable Event event) {
         return UNIMPLEMENTED_RESOLVER;
     }
 
     // for more optimization
-    public ResolverWithDescription onListenEventWhileInPlay(Event event) {
+    public ResolverWithDescription onListenEventWhileInPlay(@Nullable Event event) {
+        return UNIMPLEMENTED_RESOLVER;
+    }
+
+    // whatever this returns, make sure it implements .equals()
+    public Object stateToTrack() {
+        return null;
+    }
+
+    public ResolverWithDescription onListenStateChangeWhileInPlay(@Nullable Object newState) {
         return UNIMPLEMENTED_RESOLVER;
     }
 

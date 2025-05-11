@@ -9,21 +9,34 @@ package server.card.effect;
 public abstract class EffectWithDependentStats extends Effect {
     public boolean awaitingUpdate; // whether the server has issued an update resolver already for this effect
     public EffectStats lastCheckedExpectedStats;
+    public EffectStats baselineStats; // stats to use when the calculation isn't active
 
     // required for reflection
     public EffectWithDependentStats() {
-        this.awaitingUpdate = false;
-        this.lastCheckedExpectedStats = new EffectStats();
+        this("");
     }
 
     public EffectWithDependentStats(String description) {
-        this();
-        this.description = description;
+        this(description, true);
     }
 
     public EffectWithDependentStats(String description, boolean bonusStats) {
-        this(description);
+        this(description, bonusStats, new EffectStats());
+    }
+    public EffectWithDependentStats(String description, boolean bonusStats, EffectStats baselineStats) {
+        this.awaitingUpdate = false;
+        this.lastCheckedExpectedStats = new EffectStats();
+        this.baselineStats = baselineStats;
+        this.effectStats.copy(baselineStats);
+        this.description = description;
         this.bonusStats = bonusStats;
+    }
+
+    @Override
+    public EffectWithDependentStats clone() throws CloneNotSupportedException {
+        EffectWithDependentStats ret = (EffectWithDependentStats) super.clone();
+        ret.baselineStats = this.baselineStats.clone();
+        return ret;
     }
 
     /**

@@ -78,6 +78,8 @@ public class AI extends Thread {
 
     public static final double VALUE_PER_ARMOR = 1.5;
 
+    public static final double VALUE_OF_INTIMIDATE = 1;
+
     /*
      * We can't expect the AI to traverse every single possible node in the decision
      * tree before making a move (especially considering rng), so after a certain

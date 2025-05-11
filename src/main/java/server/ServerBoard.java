@@ -68,7 +68,7 @@ public class ServerBoard extends Board {
         this.lastCheckedActiveDependentStats = new HashSet<>();
         this.auras = new HashSet<>();
         this.dependentStats = new HashSet<>();
-        this.listeners = new HashSet<>();
+        this.listeners = new TreeSet<>(Comparator.comparing(Card::getRef));
         this.effectsToRemoveAtEndOfTurn = new ArrayList<>();
         this.effectsWithPerTurnCounters = new HashSet<>();
 
@@ -95,6 +95,9 @@ public class ServerBoard extends Board {
         if (e.onListenEventWhileInPlay(null) != Effect.UNIMPLEMENTED_RESOLVER) {
             e.owner.whileInPlayListeners.add(e);
         }
+        if (e.onListenStateChangeWhileInPlay(null) != Effect.UNIMPLEMENTED_RESOLVER) {
+            e.owner.whileInPlayStateTrackers.add(e);
+        }
     }
 
     // opposite of registerNewEffect, when we no longer need to lookup something
@@ -116,6 +119,9 @@ public class ServerBoard extends Board {
         }
         if (e.onListenEventWhileInPlay(null) != Effect.UNIMPLEMENTED_RESOLVER) {
             e.owner.whileInPlayListeners.remove(e);
+        }
+        if (e.onListenStateChangeWhileInPlay(null) != Effect.UNIMPLEMENTED_RESOLVER) {
+            e.owner.whileInPlayStateTrackers.remove(e);
         }
     }
 
@@ -176,6 +182,8 @@ public class ServerBoard extends Board {
         if (this.getWinner() != 0 || !e.conditions()) {
             return e;
         }
+        List<Card> cardsToPerformStateTrackingFor = this.getEverythingInPlay(this.getCurrentPlayerTurn()).toList();
+        cardsToPerformStateTrackingFor.forEach(Card::saveStateTrackers);
         String eventString = e.toString();
         e.resolve(this);
         if (el != null) {
@@ -185,6 +193,7 @@ public class ServerBoard extends Board {
             this.currentBurst.append(eventString);
         }
 
+        cardsToPerformStateTrackingFor.forEach(c -> { if (c.isInPlay()) rq.addAll(c.onListenStateChangeWhileInPlay()); });
         this.updateAuras(rq);
         this.updateDependentStats(rq);
 
@@ -198,16 +207,7 @@ public class ServerBoard extends Board {
                 rq.addAll(bo.onLeavePlay());
             }
         }
-        this.getBoardObjects(this.getCurrentPlayerTurn(), true, true, true, false)
-                .forEach(bo -> rq.addAll(bo.onListenEventWhileInPlay(e)));
-        this.getPlayer(this.getCurrentPlayerTurn()).getUnleashPower().ifPresent(up -> {
-            rq.addAll(up.onListenEventWhileInPlay(e));
-        });
-        this.getBoardObjects(this.getCurrentPlayerTurn() * -1, true, true, true, false)
-                .forEach(bo -> rq.addAll(bo.onListenEventWhileInPlay(e)));
-        this.getPlayer(this.getCurrentPlayerTurn() * -1).getUnleashPower().ifPresent(up -> {
-            rq.addAll(up.onListenEventWhileInPlay(e));
-        });
+        this.getEverythingInPlay(this.getCurrentPlayerTurn()).forEach(c -> rq.addAll(c.onListenEventWhileInPlay(e)));
         for (Card c : this.listeners) {
             rq.addAll(c.onListenEvent(e));
         }
@@ -298,18 +298,18 @@ public class ServerBoard extends Board {
 
         for (EffectWithDependentStats dependent : addedDependents) {
             EffectStats calculated = dependent.calculateStats();
-            if (!dependent.awaitingUpdate && !calculated.equals(new EffectStats())) {
+            if (!dependent.awaitingUpdate && !calculated.equals(dependent.baselineStats)) {
                 dependent.awaitingUpdate = true;
                 effectsToUpdate.add(dependent);
             }
             dependent.lastCheckedExpectedStats = calculated;
         }
         for (EffectWithDependentStats dependent : removedDependents) {
-            if (!dependent.awaitingUpdate && !dependent.lastCheckedExpectedStats.equals(new EffectStats())) {
+            if (!dependent.awaitingUpdate && !dependent.lastCheckedExpectedStats.equals(dependent.baselineStats)) {
                 dependent.awaitingUpdate = true;
                 effectsToUpdate.add(dependent);
             }
-            dependent.lastCheckedExpectedStats = new EffectStats();
+            dependent.lastCheckedExpectedStats = dependent.baselineStats;
         }
         for (EffectWithDependentStats dependent : retainedDependents) {
             EffectStats calculated = dependent.calculateStats();
@@ -328,7 +328,7 @@ public class ServerBoard extends Board {
                     List<EffectStats> stats = new ArrayList<>(effectsToUpdate.size());
                     for (EffectWithDependentStats effToUpdate : effectsToUpdate) {
                         effToUpdate.awaitingUpdate = false;
-                        EffectStats calculated = effToUpdate.isActive() && !effToUpdate.mute ? effToUpdate.calculateStats() : new EffectStats();
+                        EffectStats calculated = effToUpdate.isActive() && !effToUpdate.mute ? effToUpdate.calculateStats() : effToUpdate.baselineStats;
                         if (!effToUpdate.effectStats.equals(calculated)) {
                             eff.add(effToUpdate);
                             stats.add(calculated);

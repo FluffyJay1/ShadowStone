@@ -33,7 +33,7 @@ public class UnleashFeedFervor extends UnleashPowerText {
                             .change(Stat.COST, -1)
                             .build();
                 }
-                return new EffectStats();
+                return this.baselineStats;
             }
 
             @Override

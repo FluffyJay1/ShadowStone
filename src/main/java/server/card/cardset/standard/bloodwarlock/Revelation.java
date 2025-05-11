@@ -44,7 +44,7 @@ public class Revelation extends SpellText {
                             .change(Stat.COST, -4)
                             .build();
                 }
-                return new EffectStats();
+                return this.baselineStats;
             }
 
             @Override

@@ -9,16 +9,15 @@ public class EffectSpellboostDiscount extends EffectWithDependentStats {
     public static final String DESCRIPTION = "Costs <b>S</b> less.";
     // required by reflection
     public EffectSpellboostDiscount() {
-        super(DESCRIPTION, true);
-        this.effectStats.set.set(Stat.SPELLBOOSTABLE, 1);
+        super(DESCRIPTION, true, EffectStats.builder().set(Stat.SPELLBOOSTABLE, 1).build());
     }
 
     @Override
     public EffectStats calculateStats() {
-        EffectStats ret = new EffectStats();
-        ret.set.set(Stat.SPELLBOOSTABLE, 1);
-        ret.change.set(Stat.COST, -this.owner.spellboosts);
-        return ret;
+        return EffectStats.builder()
+            .set(Stat.SPELLBOOSTABLE, 1)
+            .change(Stat.COST, -this.owner.spellboosts)
+            .build();
     }
 
     @Override

@@ -134,6 +134,27 @@ public abstract class Board {
     }
 
     /**
+     * Get every card in play, in order that e.g. hooks are expected to resolve
+     * @param firstTeam The first team to iterate through
+     * @return All cards in play
+     */
+    public Stream<Card> getEverythingInPlay(int firstTeam) {
+        if (firstTeam == 0) {
+            firstTeam = 1;
+        }
+        return Stream.concat(
+                Stream.concat(
+                    this.getBoardObjects(firstTeam, true, true, true, false),
+                    this.getPlayer(firstTeam).getUnleashPower().stream()
+                ),
+                Stream.concat(
+                    this.getBoardObjects(firstTeam * -1, true, true, true, false),
+                    this.getPlayer(firstTeam * -1).getUnleashPower().stream()
+                )
+        );
+    }
+
+    /**
      * Fetches minions only (excludes amulets by definition) so we don't have to
      * cast stuff ourselves, otherwise identical to getBoardObjects
      *
