@@ -48,7 +48,7 @@ public class InesMaidenOfClouds extends MinionText {
             }
 
             @Override
-            public ResolverWithDescription onListenStateChangeWhileInPlay(@Nullable Object newState) {
+            public ResolverWithDescription onListenStateChangeWhileInPlay(@Nullable Object oldState, @Nullable Object newState) {
                 if (newState != null) {
                     boolean newResonance = (Boolean) newState;
                     if (newResonance) {

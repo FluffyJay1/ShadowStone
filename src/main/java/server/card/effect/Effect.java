@@ -236,7 +236,7 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
         return null;
     }
 
-    public ResolverWithDescription onListenStateChangeWhileInPlay(@Nullable Object newState) {
+    public ResolverWithDescription onListenStateChangeWhileInPlay(@Nullable Object oldState, @Nullable Object newState) {
         return UNIMPLEMENTED_RESOLVER;
     }
 

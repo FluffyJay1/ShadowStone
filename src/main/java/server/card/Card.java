@@ -374,7 +374,7 @@ public abstract class Card implements Indexable, StringBuildable {
                     if (e.lastCheckedStateToTrack == null || Objects.equals(e.lastCheckedStateToTrack, newState)) {
                         return null;
                     }
-                    ResolverWithDescription r = e.onListenStateChangeWhileInPlay(newState);
+                    ResolverWithDescription r = e.onListenStateChangeWhileInPlay(e.lastCheckedStateToTrack, newState);
                     if (r == null) {
                         return null;
                     }

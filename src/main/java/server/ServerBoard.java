@@ -95,7 +95,7 @@ public class ServerBoard extends Board {
         if (e.onListenEventWhileInPlay(null) != Effect.UNIMPLEMENTED_RESOLVER) {
             e.owner.whileInPlayListeners.add(e);
         }
-        if (e.onListenStateChangeWhileInPlay(null) != Effect.UNIMPLEMENTED_RESOLVER) {
+        if (e.onListenStateChangeWhileInPlay(null, null) != Effect.UNIMPLEMENTED_RESOLVER) {
             e.owner.whileInPlayStateTrackers.add(e);
         }
     }
@@ -120,7 +120,7 @@ public class ServerBoard extends Board {
         if (e.onListenEventWhileInPlay(null) != Effect.UNIMPLEMENTED_RESOLVER) {
             e.owner.whileInPlayListeners.remove(e);
         }
-        if (e.onListenStateChangeWhileInPlay(null) != Effect.UNIMPLEMENTED_RESOLVER) {
+        if (e.onListenStateChangeWhileInPlay(null, null) != Effect.UNIMPLEMENTED_RESOLVER) {
             e.owner.whileInPlayStateTrackers.remove(e);
         }
     }
