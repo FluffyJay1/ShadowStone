@@ -31,7 +31,7 @@ public class LordAtomy extends MinionText {
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/lordatomy.png"),
-            CRAFT, TRAITS, RARITY, 10, 10, 4, 10, true, LordAtomy.class,
+            CRAFT, TRAITS, RARITY, 9, 9, 3, 9, true, LordAtomy.class,
             new Vector2f(150, 180), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());

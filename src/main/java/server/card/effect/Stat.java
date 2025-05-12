@@ -30,4 +30,5 @@ public enum Stat {
     INVULNERABLE,
     SMORC,
     INTIMIDATE,
+    REPEL,
 }

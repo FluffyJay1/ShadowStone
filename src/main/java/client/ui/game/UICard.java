@@ -114,6 +114,19 @@ public class UICard extends UIBox {
             ))
     );
 
+    private static final Supplier<EmissionStrategy> REPEL_PARTICLES = () -> new EmissionStrategy(
+            new IntervalEmissionTimingStrategy(1, 1.5),
+            new ComposedEmissionPropertyStrategy(List.of(
+                    new AnimationEmissionPropertyStrategy(() -> new Animation("particle/board/repel.png", new Vector2f(1, 1), 0, 0)),
+                    new MaxTimeEmissionPropertyStrategy(new ConstantInterpolation(1)),
+                    new ConstantEmissionPropertyStrategy(
+                            Graphics.MODE_ADD, 0, new Vector2f(0, 0),
+                            () -> new QuadraticInterpolationA(0, 0, -4),
+                            () -> new LinearInterpolation(0.8, 1.2)
+                    )
+            ))
+    );
+
     private static final Supplier<EmissionStrategy> MUTED_PARTICLES = () -> new EmissionStrategy(
             new IntervalEmissionTimingStrategy(1, 3),
             new ComposedEmissionPropertyStrategy(List.of(
@@ -176,6 +189,7 @@ public class UICard extends UIBox {
     private final ParticleSystem stealthParticles;
     private final ParticleSystem specialConditionParticles;
     private final ParticleSystem stalwartParticles;
+    private final ParticleSystem repelParticles;
     private final ParticleSystem mutedParticles;
     private final ParticleSystem unyieldingParticles;
     private final ParticleSystem intimidateParticles;
@@ -196,6 +210,8 @@ public class UICard extends UIBox {
         this.addChild(this.specialConditionParticles);
         this.stalwartParticles = new ParticleSystem(ui, new Vector2f(), STALWART_PARTICLES.get(), true);
         this.addChild(this.stalwartParticles);
+        this.repelParticles = new ParticleSystem(ui, new Vector2f(), REPEL_PARTICLES.get(), true);
+        this.addChild(this.repelParticles);
         this.mutedParticles = new ParticleSystem(ui, new Vector2f(), MUTED_PARTICLES.get(), true);
         this.addChild(this.mutedParticles);
         this.unyieldingParticles = new ParticleSystem(ui, new Vector2f(MINION_STAT_POS_OFFSET_BOARD, MINION_STAT_POS_BASE_BOARD), UNYIELDING_PARTICLES.get(), true);
@@ -381,6 +397,8 @@ public class UICard extends UIBox {
         }
         this.stalwartParticles.setScale(this.getScale());
         this.stalwartParticles.setPaused(!this.card.isInPlay() || this.card.finalStats.get(Stat.STALWART) == 0);
+        this.repelParticles.setScale(this.getScale());
+        this.repelParticles.setPaused(!this.card.isInPlay() || this.card.finalStats.get(Stat.REPEL) == 0);
         this.mutedParticles.setScale(this.getScale());
         this.mutedParticles.setPaused(!this.card.isInPlay() || this.card.getFinalEffects(false).noneMatch(e -> e.mute));
         this.unyieldingParticles.setScale(this.getScale());
@@ -456,6 +474,7 @@ public class UICard extends UIBox {
         }
         this.specialConditionParticles.draw(g);
         this.stalwartParticles.draw(g);
+        this.repelParticles.draw(g);
         this.mutedParticles.draw(g);
         this.unyieldingParticles.draw(g);
         this.intimidateParticles.draw(g);

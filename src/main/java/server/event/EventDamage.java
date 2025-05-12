@@ -78,7 +78,7 @@ public class EventDamage extends Event {
                 // normal damage processing
                 // 0 damage against negative armor should still be 0 damage
                 int damageAdjusted = this.damage.get(i) == 0 ? 0 : Math.max(0, this.damage.get(i) - minion.finalStats.get(Stat.ARMOR));
-                if (minion.finalStats.get(Stat.INVULNERABLE) > 0) {
+                if (minion.finalStats.get(Stat.INVULNERABLE) > 0 || (this.effectSource != null && minion.finalStats.get(Stat.REPEL) > 0)) {
                     damageAdjusted = 0;
                 }
                 this.actualDamage.set(i, damageAdjusted);

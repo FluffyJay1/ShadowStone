@@ -47,6 +47,9 @@ public class Minion extends BoardObject {
         if (this.finalStats.get(Stat.INTIMIDATE) > 0) {
             health += 2;
         }
+        if (this.finalStats.get(Stat.REPEL) > 0) {
+            health += 2;
+        }
         if (this.finalStats.get(Stat.INVULNERABLE) > 0) {
             // idk
             health += 20;

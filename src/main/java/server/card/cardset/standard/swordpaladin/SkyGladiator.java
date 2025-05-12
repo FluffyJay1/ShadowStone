@@ -42,7 +42,7 @@ public class SkyGladiator extends MinionText {
             public ResolverWithDescription onListenEventWhileInPlay(Event e) {
                 if (e != null) {
                     List<BoardObject> relevant = e.cardsEnteringPlay().stream()
-                            .filter(bo -> bo.finalTraits.contains(CardTrait.OFFICER) && bo != this.owner && bo.team == this.owner.team)
+                            .filter(bo -> bo.finalTraits.contains(CardTrait.OFFICER) && bo instanceof Minion && bo != this.owner && bo.team == this.owner.team)
                             .toList();
                     if (!relevant.isEmpty()) {
                         return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {

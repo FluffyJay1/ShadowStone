@@ -80,6 +80,10 @@ public class AI extends Thread {
 
     public static final double VALUE_OF_INTIMIDATE = 1;
 
+    public static final double VALUE_OF_STALWART = 1;
+
+    public static final double VALUE_OF_REPEL = 1;
+
     /*
      * We can't expect the AI to traverse every single possible node in the decision
      * tree before making a move (especially considering rng), so after a certain

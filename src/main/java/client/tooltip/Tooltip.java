@@ -135,6 +135,9 @@ public class Tooltip {
     public static final Tooltip INTIMIDATE = new Tooltip("Intimidate",
             "Minions with <b>Intimidate</b> cannot be attacked.",
             List::of);
+    public static final Tooltip REPEL = new Tooltip("Repel",
+            "Reduce damage taken from spells or effects to 0.",
+            List::of);
 
     public final String name;
     public final String description;

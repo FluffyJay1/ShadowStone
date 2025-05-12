@@ -34,7 +34,8 @@ public class ExpansionSetStandard extends ExpansionSet {
             new ForgottenSanctuary(), new ThemisDecree(), new LionOfTheGoldenCity(), new Tenko(), new GarudaRulerOfStorms(), new RadianceAngel(),
             new Aegina(), new MugnierPurifyingLight(), new MechWingSwordsman(), new Substitution(), new CaptivatingConductor(), new ThatWhichErases(),
             new TylleTheWorldgate(), new MiriamSyntheticBeing(), new KnowerOfHistory(), new DyneMasterSwordsman(), new SkyGladiator(),
-            new InesMaidenOfClouds(), new DarkDragoonForte(), new DragonewtScholar(), new LordAtomy());
+            new InesMaidenOfClouds(), new DarkDragoonForte(), new DragonewtScholar(), new LordAtomy(), new CaptainLecia(), new ElfGirlLiza(),
+            new LeafMan(), new GravekeeperSonia(), new CharlottaTinyJustice());
 
     @Override
     public CardSet getCards() {
