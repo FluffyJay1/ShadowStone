@@ -16,7 +16,7 @@ public class ExpansionSetBasic extends ExpansionSet {
             new HolyFalcon(), new HolyflameTiger(), new Zombie(), new Snowman(), new HeavyKnight(), new CrimsonSorcery(),
             new ClayGolem(), new Dragon(), new Ghost(), new TimeOwl(), new HolywingDragon(), new AnalyzingArtifact(),
             new AncientArtifact(), new MysticArtifact(), new RadiantArtifact(), new NotCoin(), new WhiteBreath(),
-            new BlackBreath(), new LesserLich(), new Barong(), new PrimeArtifact());
+            new BlackBreath(), new LesserLich(), new Barong(), new PrimeArtifact(), new MysterianCircle(), new MysterianMissile());
 
     public static final CardSet PLAYABLE_SET = new CardSet(new Goblin(), new Fighter(), new WoodOfBrambles(), new CursedStone(),
             new DragonOracle(), new Curate(), new PuppetRoom(), new BlackenedScripture(), new HallowedDogma(), new BeastcallAria(),
@@ -32,7 +32,8 @@ public class ExpansionSetBasic extends ExpansionSet {
             new IronforgedFighter(), new PuppeteersStrings(), new PureheartedSinger(), new DarkBladefiend(), new DeathsBreath(),
             new GaluaOfTwoBreaths(), new Conflagration(), new Siegfried(), new ForestWhispers(), new IDidThat(), new BoulderfistOgre(),
             new ItsOkToDie(), new Maahes(), new ElvenPrincessMage(), new LancerOfTheTempest(), new Meteor(), new Quickblader(),
-            new AttendantOfTheNight(), new BloodWolf(), new AcolytesLight());
+            new AttendantOfTheNight(), new BloodWolf(), new AcolytesLight(), new WaterFairy(), new TenderRabbitHealer(),
+            new MysterianKnowledge());
 
     @Override
     public CardSet getCards() {
