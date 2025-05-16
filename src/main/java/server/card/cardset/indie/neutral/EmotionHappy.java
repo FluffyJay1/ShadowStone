@@ -66,7 +66,7 @@ public class EmotionHappy extends AmuletText {
                         return new ResolverWithDescription("At the start of your turn, <b>Disarm</b> a random ally until the end of the turn.", new Resolver(true) {
                             @Override
                             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                                Effect debuff = new Effect("Attack set to 0 (from <b>" + NAME + "</b>)", EffectStats.builder()
+                                Effect debuff = new Effect("<b>Disarmed</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
                                         .set(Stat.DISARMED, 1)
                                         .build(),
                                         e -> e.untilTurnEndTeam = 0);

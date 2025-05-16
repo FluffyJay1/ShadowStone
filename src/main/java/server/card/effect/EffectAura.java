@@ -120,5 +120,6 @@ public abstract class EffectAura extends Effect {
         this.affectLeader = Boolean.parseBoolean(st.nextToken());
         this.affectUnleashPower = Boolean.parseBoolean(st.nextToken());
         this.effectToApply = Effect.fromString(b, st);
+        this.effectToApply.auraSource = this;
     }
 }
