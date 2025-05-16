@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 import client.ui.game.visualboardanimation.VisualBoardAnimation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamage;
+import client.ui.game.visualboardanimation.eventanimation.destroy.EventAnimationDestroy;
 import client.ui.game.visualboardanimation.eventgroupanimation.EventGroupAnimation;
 import client.ui.game.visualboardanimation.eventgroupanimation.EventGroupAnimationFactory;
 
@@ -32,7 +33,8 @@ import utils.PendingManager;
 public class VisualBoard extends Board implements
         PendingPlay.PendingPlayer, PendingPlayPositioner,
         PendingMinionAttack.PendingMinionAttacker, PendingUnleash.PendingUnleasher {
-    public static final double MIN_CONCURRENT_EVENT_DELAY = 0.2;
+    public static final double MIN_CONCURRENT_EVENT_DELAY = 0.1;
+    public static final double DAMAGE_CONCURRENT_EVENT_DELAY = 0.2;
 
     public final UIBoard uiBoard;
     public final ClientBoard realBoard;
@@ -222,6 +224,7 @@ public class VisualBoard extends Board implements
     }
 
     public void updateEventAnimation(double frametime) {
+        EventAnimation<?> prevEventAnimation = null;
         while ((shouldConcurrentlyAnimate() || this.currentAnimations.isEmpty())
                 && (!this.inputeventliststrings.isEmpty() || this.dequeueBurst())) {
             // current set of animations is empty, see what we have to animate
@@ -253,6 +256,14 @@ public class VisualBoard extends Board implements
             if (anim != null) {
                 // The animation will take care of when to resolve the event
                 this.currentAnimations.add(anim);
+                if (anim instanceof EventAnimation) {
+                    EventAnimation<?> eventAnim = (EventAnimation<?>) anim;
+                    if (prevEventAnimation != null) {
+                        double delayAmount = prevEventAnimation instanceof EventAnimationDamage && eventAnim instanceof EventAnimationDamage ? DAMAGE_CONCURRENT_EVENT_DELAY : MIN_CONCURRENT_EVENT_DELAY;
+                        eventAnim.delayProcess(prevEventAnimation, delayAmount);
+                    }
+                    prevEventAnimation = eventAnim;
+                }
             }
         }
         double timeUntilLatestProcess = Double.NEGATIVE_INFINITY;
@@ -263,8 +274,8 @@ public class VisualBoard extends Board implements
                 EventAnimation<?> ea = (EventAnimation<?>) vba;
                 if (ea.getTimeUntilProcess() >= timeUntilLatestProcess) {
                     ea.update(frametime);
-                    timeUntilLatestProcess = ea.getTimeUntilProcess() + MIN_CONCURRENT_EVENT_DELAY;
                 }
+                timeUntilLatestProcess = ea.getTimeUntilProcess() + MIN_CONCURRENT_EVENT_DELAY;
             } else {
                 vba.update(frametime);
             }
@@ -278,13 +289,27 @@ public class VisualBoard extends Board implements
         if (this.inputeventliststrings.isEmpty()) {
             return false;
         }
-        // try to concurrently animate damage events
-        // giga janky but it works, also will not make damage events of different event groups concurrent
         StringTokenizer st = new StringTokenizer(this.inputeventliststrings.get(0));
-        return this.peekEventGroup() != null && ((this.peekEventGroup().type.equals(EventGroupType.CONCURRENTDAMAGE)
-                && st.nextToken().equals(String.valueOf(EventDamage.ID)) && !this.currentAnimations.isEmpty()
-                && this.currentAnimations.get(this.currentAnimations.size() - 1) instanceof EventAnimationDamage)
-                || this.peekEventGroup().type.equals(EventGroupType.MINIONCOMBAT));
+        EventGroup eventGroup = this.peekEventGroup();
+        if (eventGroup == null) {
+            return false;
+        }
+        if (eventGroup.type.equals(EventGroupType.CONCURRENTDAMAGE)) {
+            // try to concurrently animate damage events
+            // giga janky but it works, also will not make damage events of different event groups concurrent
+            String nextEventId = st.nextToken();
+            if (!nextEventId.equals(String.valueOf(EventDamage.ID)) && !nextEventId.equals(String.valueOf(EventDestroy.ID))) {
+                return false;
+            }
+            if (this.currentAnimations.isEmpty()) {
+                return false;
+            }
+            VisualBoardAnimation lastAnimation = this.currentAnimations.get(this.currentAnimations.size() - 1);
+            return (lastAnimation instanceof EventAnimationDamage || lastAnimation instanceof EventAnimationDestroy);
+        } else if (eventGroup.type.equals(EventGroupType.MINIONCOMBAT)) {
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -65,8 +65,16 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
         }
     }
 
+    // delay this animation's start, such that this event processes after the other one does by a delay
+    public void delayProcess(EventAnimation<?> other, double delay) {
+        this.time = this.preTime - other.getTimeUntilProcess() - delay;
+    }
+
     public void update(double frametime) {
         this.time += frametime;
+        if (this.time < 0) {
+            return;
+        }
         if (!this.started) {
             this.onStart();
             this.started = true;
