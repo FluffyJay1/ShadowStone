@@ -12,6 +12,8 @@ import server.card.effect.EffectStats;
 import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
+import server.event.eventgroup.EventGroup;
+import server.event.eventgroup.EventGroupType;
 import server.resolver.AddEffectResolver;
 import server.resolver.DamageResolver;
 import server.resolver.Resolver;
@@ -42,6 +44,7 @@ public class LilShredder extends SpellText {
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(true) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                        b.pushEventGroup(new EventGroup(EventGroupType.CONCURRENTDAMAGE));
                         for (int i = 0; i < 6; i++) {
                             List<Minion> targets = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
                             if (!targets.isEmpty()) {
@@ -55,6 +58,7 @@ public class LilShredder extends SpellText {
                                 }
                             }
                         }
+                        b.popEventGroup();
                     }
                 });
             }

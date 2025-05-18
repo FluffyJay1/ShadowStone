@@ -12,6 +12,8 @@ import client.ui.game.visualboardanimation.eventgroupanimation.EventGroupAnimati
 
 import client.ui.game.*;
 import client.ui.game.visualboardanimation.eventanimation.*;
+import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationAddEffect;
+import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationRemoveEffect;
 import server.*;
 import server.ai.*;
 import server.card.*;
@@ -298,14 +300,20 @@ public class VisualBoard extends Board implements
             // try to concurrently animate damage events
             // giga janky but it works, also will not make damage events of different event groups concurrent
             String nextEventId = st.nextToken();
-            if (!nextEventId.equals(String.valueOf(EventDamage.ID)) && !nextEventId.equals(String.valueOf(EventDestroy.ID))) {
+            if (!nextEventId.equals(String.valueOf(EventDamage.ID))
+                    && !nextEventId.equals(String.valueOf(EventDestroy.ID))
+                    && !nextEventId.equals(String.valueOf(EventAddEffect.ID))
+                    && !nextEventId.equals(String.valueOf(EventRemoveEffect.ID))) {
                 return false;
             }
             if (this.currentAnimations.isEmpty()) {
                 return false;
             }
             VisualBoardAnimation lastAnimation = this.currentAnimations.get(this.currentAnimations.size() - 1);
-            return (lastAnimation instanceof EventAnimationDamage || lastAnimation instanceof EventAnimationDestroy);
+            return (lastAnimation instanceof EventAnimationDamage
+                    || lastAnimation instanceof EventAnimationDestroy
+                    || lastAnimation instanceof EventAnimationAddEffect
+                    || lastAnimation instanceof EventAnimationRemoveEffect);
         } else if (eventGroup.type.equals(EventGroupType.MINIONCOMBAT)) {
             return true;
         }

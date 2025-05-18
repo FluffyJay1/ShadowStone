@@ -46,7 +46,8 @@ public class CharlottaTinyJustice extends MinionText {
                         List<Minion> allies = b.getMinions(owner.team, false, true).toList();
                         Effect repel = new Effect("<b>Repel</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
                                 .set(Stat.REPEL, 1)
-                                .build());
+                                .build(),
+                                e -> e.untilTurnEndTeam = -1);
                         this.resolve(b, rq, el, new AddEffectResolver(allies, repel));
                         int m = owner.finalStats.get(Stat.MAGIC);
                         Effect buff = new Effect("+" + m + "/+0/+0 and <b>Rush</b> until the end of the turn (from <b>Unleash</b>).", EffectStats.builder()

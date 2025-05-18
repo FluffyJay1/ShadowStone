@@ -10,6 +10,7 @@ import server.event.Event;
 import server.event.EventMulliganPhaseEnd;
 import server.event.eventburst.EventBurst;
 import server.event.eventgroup.EventGroup;
+import server.event.eventgroup.EventGroupType;
 import server.playeraction.PlayerAction;
 import server.resolver.*;
 import server.resolver.util.ResolverQueue;
@@ -34,6 +35,7 @@ public class ServerBoard extends Board {
     StringBuilder currentBurst;
 
     Set<EffectAura> lastCheckedActiveAuras;
+    Set<EffectAura> lastCheckedRemovedAuras;
     Set<EffectWithDependentStats> lastCheckedActiveDependentStats;
 
     boolean enableOutput = true;
@@ -65,6 +67,7 @@ public class ServerBoard extends Board {
         this.outputStart = 0;
         this.currentBurst = new StringBuilder();
         this.lastCheckedActiveAuras = new HashSet<>();
+        this.lastCheckedRemovedAuras = new HashSet<>();
         this.lastCheckedActiveDependentStats = new HashSet<>();
         this.auras = new HashSet<>();
         this.dependentStats = new HashSet<>();
@@ -218,30 +221,26 @@ public class ServerBoard extends Board {
         Set<EffectAura> newAuras = this.getActiveAuras().collect(Collectors.toSet());
         Set<EffectAura> removedAuras = new HashSet<>(this.lastCheckedActiveAuras);
         removedAuras.removeAll(newAuras);
-        Set<EffectAura> addedAuras = new HashSet<>(newAuras);
-        addedAuras.removeAll(this.lastCheckedActiveAuras);
-        // make newAuras store the set of maintained auras, neither added nor removed
-        Set<EffectAura> retainedAuras = new HashSet<>(newAuras);
-        retainedAuras.retainAll(this.lastCheckedActiveAuras);
-        for (EffectAura aura : addedAuras) {
-            aura.lastCheckedAffectedCards = aura.findAffectedCards();
-            if (!aura.lastCheckedAffectedCards.isEmpty()) {
-                rq.add(new Resolver(false) {
-                    @Override
-                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        Set<Card> shouldApply = aura.findAffectedCards();
-                        if (!shouldApply.isEmpty()) {
-                            this.resolve(b, rq, el, new AddEffectResolver(new ArrayList<>(shouldApply), aura.effectToApply));
-                        }
-                    }
-                });
-            }
-        }
+        boolean resolveAuraUpdate = false;
         for (EffectAura aura : removedAuras) {
             if (!aura.lastCheckedAffectedCards.isEmpty()) {
-                rq.add(new Resolver(false) {
-                    @Override
-                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                resolveAuraUpdate = true;
+            }
+            aura.lastCheckedAffectedCards.clear();
+        }
+        for (EffectAura aura : newAuras) {
+            Set<Card> currentAffected = aura.findAffectedCards();
+            if (!currentAffected.equals(aura.lastCheckedAffectedCards)) {
+                resolveAuraUpdate = true;
+            }
+            aura.lastCheckedAffectedCards = currentAffected;
+        }
+        if (resolveAuraUpdate) {
+            rq.add(new Resolver(false) {
+                @Override
+                public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                    b.pushEventGroup(new EventGroup(EventGroupType.CONCURRENTDAMAGE));
+                    for (EffectAura aura : lastCheckedRemovedAuras) {
                         Set<Card> currentApplied = aura.currentActiveEffects.keySet();
                         if (!currentApplied.isEmpty()) {
                             List<Effect> effectsToRemove = currentApplied.stream()
@@ -250,17 +249,8 @@ public class ServerBoard extends Board {
                             this.resolve(b, rq, el, new RemoveEffectResolver(effectsToRemove));
                         }
                     }
-                });
-            }
-            aura.lastCheckedAffectedCards.clear();
-        }
-        for (EffectAura aura : retainedAuras) {
-            Set<Card> currentAffected = aura.findAffectedCards();
-            if (!currentAffected.equals(aura.lastCheckedAffectedCards)) {
-                // only add a resolver if something not right
-                rq.add(new Resolver(false) {
-                    @Override
-                    public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
+                    lastCheckedRemovedAuras.clear();
+                    for (EffectAura aura : lastCheckedActiveAuras) {
                         // obtain set difference
                         Set<Card> currentApplied = aura.currentActiveEffects.keySet();
                         Set<Card> shouldApply = aura.findAffectedCards();
@@ -278,11 +268,13 @@ public class ServerBoard extends Board {
                             this.resolve(b, rq, el, new RemoveEffectResolver(effectsToRemove));
                         }
                     }
-                });
-            }
-            aura.lastCheckedAffectedCards = currentAffected;
+                    b.popEventGroup();
+                }
+            });
         }
         this.lastCheckedActiveAuras = newAuras;
+        this.lastCheckedRemovedAuras.addAll(removedAuras);
+        this.lastCheckedRemovedAuras.removeAll(this.lastCheckedActiveAuras);
     }
 
     private void updateDependentStats(ResolverQueue rq) {
