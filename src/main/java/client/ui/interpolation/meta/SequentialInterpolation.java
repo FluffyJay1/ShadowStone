@@ -35,12 +35,12 @@ public class SequentialInterpolation<T> implements Interpolation<T> {
     @Override
     public T get(double t) {
         // if currInd is too small, move to right
-        while (this.getUpperTBound(this.currInd) < t) {
+        while (this.currInd < this.transitionPoints.size() && this.getUpperTBound(this.currInd) < t) {
             this.currInd++;
         }
 
         // opposite direction time
-        while (this.getLowerTBound(this.currInd) > t) {
+        while (this.currInd > 0 && this.getLowerTBound(this.currInd) > t) {
             this.currInd--;
         }
         double upper = this.getUpperTBound(this.currInd);

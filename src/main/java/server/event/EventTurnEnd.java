@@ -35,6 +35,13 @@ public class EventTurnEnd extends Event {
                     m.addEffect(false, unfreeze);
                     this.addedEffects.add(unfreeze);
                 });
+        b.getPlayer(p.team).getUnleashPower().filter(UnleashPower::shouldBeUnfrozen).ifPresent(up -> {
+            Effect unfreeze = new Effect("", EffectStats.builder()
+                    .set(Stat.FROZEN, 0)
+                    .build());
+            up.addEffect(false, unfreeze);
+            this.addedEffects.add(unfreeze);
+        });
     }
 
     @Override

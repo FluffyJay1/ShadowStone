@@ -101,7 +101,7 @@ public class EventAnimationDamageChainFrost extends EventAnimationDamage {
     @Override
     public void draw(Graphics g) {
         if (this.isPre()) {
-            drawCenteredAndScaled(g, PROJECTILE_IMAGE.get(), this.visualBoard.uiBoard.getAbsPosOfLocal(this.getProjectilePos()), 1, 1);
+            drawCenteredAndScaled(g, PROJECTILE_IMAGE.get(), this.visualBoard.uiBoard.getAbsPosOfLocal(this.getProjectilePos()), 1, 1, 0);
         } else {
             this.drawDamageNumber(g);
         }

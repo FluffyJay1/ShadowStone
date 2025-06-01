@@ -183,9 +183,8 @@ public class Player implements StringBuildable {
     }
 
     public boolean canUnleash() {
-        return this.unleashAllowed && this.unleashPower != null
-                && this.unleashPower.unleashesThisTurn < this.unleashPower.finalStats
-                        .get(Stat.ATTACKS_PER_TURN)
+        return this.unleashPower != null
+                && this.unleashPower.canUnleash()
                 && this.mana >= this.unleashPower.finalStats.get(Stat.COST)
                 && this.board.getCurrentPlayerTurn() == this.team;
     }

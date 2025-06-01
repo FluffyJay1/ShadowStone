@@ -37,7 +37,7 @@ public class Heavy extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/moba/heavy.png"),
-            CRAFT, TRAITS, RARITY, 7, 6, 1, 12, true, Heavy.class,
+            CRAFT, TRAITS, RARITY, 6, 6, 1, 10, true, Heavy.class,
             new Vector2f(), -1, new EventAnimationDamageShoot(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.FROZEN, Tooltip.STRIKE, Tooltip.BLAST),
             List.of());

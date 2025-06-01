@@ -47,7 +47,7 @@ public class Mona extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         int x = owner.spellboosts;
-                        Effect debuff = new Effect("-" + x + "<b>Armor</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
+                        Effect debuff = new Effect("-" + x + " <b>Armor</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
                                 .change(Stat.ARMOR, -x)
                                 .build());
                         List<Minion> relevant = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());

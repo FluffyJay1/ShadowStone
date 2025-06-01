@@ -31,7 +31,7 @@ public class NecroAssassin extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/necroassassin.png"),
-            CRAFT, TRAITS, RARITY, 3, 3, 2, 3, true, NecroAssassin.class,
+            CRAFT, TRAITS, RARITY, 3, 3, 1, 3, true, NecroAssassin.class,
             new Vector2f(150, 185), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());

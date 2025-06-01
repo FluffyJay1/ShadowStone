@@ -107,20 +107,23 @@ public class EventAnimationDamageOff extends EventAnimationDamage {
                 double circleTime = START_ANIMATION_RANGE_CIRCLE.get(this.normalizedPre());
                 drawCenteredAndScaled(g, CIRCLE_IMAGE.get(), drawPos,
                         START_SCALE_CIRCLE.get(circleTime).floatValue(),
-                        START_ALPHA_CIRCLE.get(circleTime).floatValue());
+                        START_ALPHA_CIRCLE.get(circleTime).floatValue(),
+                        0);
 
                 double vertTime = START_ANIMATION_RANGE_VERTICAL.get(this.normalizedPre());
                 if (vertTime > 0) {
                     drawCenteredAndScaled(g, VERTICAL_IMAGE.get(), drawPos,
                             START_SCALE_VERTICAL.get(vertTime).floatValue(),
-                            START_ALPHA_VERTICAL.get(vertTime).floatValue());
+                            START_ALPHA_VERTICAL.get(vertTime).floatValue(),
+                            0);
                 }
 
                 double horTime = START_ANIMATION_RANGE_HORIZONTAL.get(this.normalizedPre());
                 if (horTime > 0) {
                     drawCenteredAndScaled(g, HORIZONTAL_IMAGE.get(), drawPos,
                             START_SCALE_HORIZONTAL.get(horTime).floatValue(),
-                            START_ALPHA_HORIZONTAL.get(horTime).floatValue());
+                            START_ALPHA_HORIZONTAL.get(horTime).floatValue(),
+                            0);
                 }
             }
         } else {
@@ -132,22 +135,26 @@ public class EventAnimationDamageOff extends EventAnimationDamage {
                 double circleTime = END_ANIMATION_RANGE_CIRCLE.get(this.normalizedPost());
                 drawCenteredAndScaled(g, CIRCLE_IMAGE.get(), drawPos,
                         END_SCALE_CIRCLE.get(circleTime).floatValue(),
-                        END_ALPHA_CIRCLE.get(circleTime).floatValue());
+                        END_ALPHA_CIRCLE.get(circleTime).floatValue(),
+                        0);
 
                 double circle2Time = END_ANIMATION_RANGE_CIRCLE2.get(this.normalizedPost());
                 drawCenteredAndScaled(g, CIRCLE_IMAGE.get(), drawPos,
                         END_SCALE_CIRCLE2.get(circle2Time).floatValue(),
-                        END_ALPHA_CIRCLE2.get(circle2Time).floatValue());
+                        END_ALPHA_CIRCLE2.get(circle2Time).floatValue(),
+                        0);
 
                 double vertTime = END_ANIMATION_RANGE_VERTICAL.get(this.normalizedPost());
                 drawCenteredAndScaled(g, VERTICAL_IMAGE.get(), drawPos,
                         END_SCALE_VERTICAL.get(vertTime).floatValue(),
-                        END_ALPHA_VERTICAL.get(vertTime).floatValue());
+                        END_ALPHA_VERTICAL.get(vertTime).floatValue(),
+                        0);
 
                 double horTime = END_ANIMATION_RANGE_HORIZONTAL.get(this.normalizedPost());
                 drawCenteredAndScaled(g, HORIZONTAL_IMAGE.get(), drawPos,
                         END_SCALE_HORIZONTAL.get(horTime).floatValue(),
-                        END_ALPHA_HORIZONTAL.get(horTime).floatValue());
+                        END_ALPHA_HORIZONTAL.get(horTime).floatValue(),
+                        0);
             }
         }
     }

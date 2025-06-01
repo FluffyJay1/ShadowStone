@@ -158,6 +158,10 @@ public abstract class EventAnimation<T extends Event> implements VisualBoardAnim
         return (this.time - this.preTime) / this.postTime;
     }
 
+    public double normalizedWhole() {
+        return (this.time) / (this.preTime + this.postTime);
+    }
+
     @Override
     public boolean isStarted() {
         return this.started;

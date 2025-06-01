@@ -79,7 +79,7 @@ public class DamageResolver extends Resolver {
         List<Integer> processedDamage = new ArrayList<>(this.damage.size());
         for (int i = 0; i < this.targets.size(); i++) {
             Minion m = this.targets.get(i);
-            if (m.isInPlay()) {
+            if (!m.status.equals(CardStatus.GRAVEYARD) && !m.status.equals(CardStatus.BANISHED)) {
                 processedTargets.add(m);
                 processedDamage.add(this.damage.get(i) > 0 ? this.damage.get(i) : 0);
             }

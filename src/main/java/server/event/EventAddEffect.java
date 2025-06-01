@@ -82,7 +82,7 @@ public class EventAddEffect extends Event {
         for (int i = this.c.size() - 1; i >= 0; i--) {
             Card c = this.c.get(i);
             c.removeEffect(this.effects.get(i), true);
-            if (b instanceof ServerBoard) {
+            if (this.successful.get(i) && b instanceof ServerBoard) {
                 ServerBoard sb = (ServerBoard) b;
                 sb.unregisterEffect(this.effects.get(i));
             }

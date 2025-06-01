@@ -576,6 +576,11 @@ public class UICard extends UIBox {
                     (float) (UNLEASH_POWER_RADIUS * 2 * scale + READY_BORDER_PADDING * 2));
             g.setColor(org.newdawn.slick.Color.white);
         }
+        if (this.card.finalStats.get(Stat.FROZEN) > 0) {
+            Image i = Game.getImage("game/frozenunleashpower.png");
+            i = i.getScaledCopy((float) scale);
+            g.drawImage(i, pos.x - i.getWidth() / 2, pos.y - i.getHeight() / 2);
+        }
         this.drawCostStat(g, pos, scale, this.card.finalStats.get(Stat.COST),
                 this.card.finalBasicStats.get(Stat.COST), COST_POS_UNLEASHPOWER, this.getStatFontSize(Stat.COST));
     }

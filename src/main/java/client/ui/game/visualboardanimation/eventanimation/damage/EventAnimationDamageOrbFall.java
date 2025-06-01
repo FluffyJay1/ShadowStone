@@ -68,7 +68,8 @@ public class EventAnimationDamageOrbFall extends EventAnimationDamage {
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE); // major weirdchamp on you slick
                 drawCenteredAndScaled(g, ORB_IMAGE.get(), drawPos,
                         ORB_FALL_SCALE.get(this.normalizedPre()).floatValue(),
-                        ORB_FALL_ALPHA.get(this.normalizedPre()).floatValue());
+                        ORB_FALL_ALPHA.get(this.normalizedPre()).floatValue(),
+                        0);
                 g.setDrawMode(Graphics.MODE_NORMAL);
             }
         } else {

@@ -86,13 +86,13 @@ public class EventAnimationDamagePlanetBefall extends EventAnimationDamage {
     public void draw(Graphics g) {
         if (this.isPre()) {
             Vector2f shadowPos = this.visualBoard.uiBoard.getAbsPosOfLocal(this.visualBoard.uiBoard.getPosOfRel(new Vector2f(0, this.y)));
-            drawCenteredAndScaled(g, SHADOW_IMAGE.get(), shadowPos, SHADOW_SCALE.get(this.normalizedPre()).floatValue(), SHADOW_ALPHA.get(this.normalizedPre()).floatValue());
+            drawCenteredAndScaled(g, SHADOW_IMAGE.get(), shadowPos, SHADOW_SCALE.get(this.normalizedPre()).floatValue(), SHADOW_ALPHA.get(this.normalizedPre()).floatValue(), 0);
             Vector2f rockPos = this.visualBoard.uiBoard.getAbsPosOfLocal(this.visualBoard.uiBoard.getPosOfRel(ROCK_OFFSET_REL.get(this.normalizedPre()).add(new Vector2f(0, this.y))));
-            drawCenteredAndScaled(g, ROCK_IMAGE.get(), rockPos, ROCK_SCALE.get(this.normalizedPre()).floatValue(), ROCK_ALPHA.get(this.normalizedPre()).floatValue());
+            drawCenteredAndScaled(g, ROCK_IMAGE.get(), rockPos, ROCK_SCALE.get(this.normalizedPre()).floatValue(), ROCK_ALPHA.get(this.normalizedPre()).floatValue(), 0);
         } else {
             double rockTime = ROCK_ANIMATION_RANGE_POST.get(this.normalizedPost());
             Vector2f rockPos = this.visualBoard.uiBoard.getAbsPosOfLocal(this.visualBoard.uiBoard.getPosOfRel(ROCK_OFFSET_REL.get(1).add(new Vector2f(0, this.y))));
-            drawCenteredAndScaled(g, ROCK_IMAGE.get(), rockPos, ROCK_SCALE_POST.get(rockTime).floatValue(), ROCK_ALPHA_POST.get(rockTime).floatValue());
+            drawCenteredAndScaled(g, ROCK_IMAGE.get(), rockPos, ROCK_SCALE_POST.get(rockTime).floatValue(), ROCK_ALPHA_POST.get(rockTime).floatValue(), 0);
             this.drawDamageNumber(g);
         }
     }

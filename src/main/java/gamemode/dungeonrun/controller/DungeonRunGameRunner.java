@@ -2,7 +2,6 @@ package gamemode.dungeonrun.controller;
 
 import gamemode.dungeonrun.Passive;
 import gamemode.dungeonrun.model.Contestant;
-import gamemode.dungeonrun.passive.AuraLeftAttackLifesteal;
 import network.DataStream;
 import server.GameController;
 import server.ServerBoard;
@@ -57,7 +56,6 @@ public class DungeonRunGameRunner implements Runnable {
                                 this.resolve(b, rq, el, new AddEffectResolver(l, effect));
                             }
                         };
-                        this.resolve(b, rq, el, new AddEffectResolver(l, new AuraLeftAttackLifesteal().getEffects().get(0)));
                     });
                     b.getPlayer(gc.indexToTeam(1)).getLeader().ifPresent(l -> {
                         this.resolve(b, rq, el, new AddEffectResolver(l, new Effect("", EffectStats.builder()

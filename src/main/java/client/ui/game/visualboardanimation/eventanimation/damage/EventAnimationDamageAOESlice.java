@@ -86,8 +86,8 @@ public class EventAnimationDamageAOESlice extends EventAnimationDamage {
             Vector2f sliceWakePos = this.visualBoard.uiBoard.getAbsPosOfLocal(sliceWakeLocalPos);
             g.setDrawMode(Graphics.MODE_ADD);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE); // major weirdchamp on you slick
-            drawCenteredAndScaled(g, SLICE_IMAGE.get(), slicePos, SLICE_SCALE * (this.includeLeader ? INCLUDE_LEADER_SCALE_MULTIPLIER : 1), 1);
-            drawCenteredAndScaled(g, SLICE_WAKE_IMAGE.get(), sliceWakePos, SLICE_WAKE_SCALE * (this.includeLeader ? INCLUDE_LEADER_SCALE_MULTIPLIER : 1), 1);
+            drawCenteredAndScaled(g, SLICE_IMAGE.get(), slicePos, SLICE_SCALE * (this.includeLeader ? INCLUDE_LEADER_SCALE_MULTIPLIER : 1), 1, 0);
+            drawCenteredAndScaled(g, SLICE_WAKE_IMAGE.get(), sliceWakePos, SLICE_WAKE_SCALE * (this.includeLeader ? INCLUDE_LEADER_SCALE_MULTIPLIER : 1), 1, 0);
             g.setDrawMode(Graphics.MODE_NORMAL);
         } else {
             this.drawDamageNumber(g);

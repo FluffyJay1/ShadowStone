@@ -111,9 +111,28 @@ public abstract class EventAnimationDamage extends EventAnimation<EventDamage> {
         g.setDrawMode(Graphics.MODE_NORMAL);
     }
 
-    static void drawCenteredAndScaled(Graphics g, Image image, Vector2f pos, float scale, float alpha) {
+    // yeah code is duplicated, what are you gonna do about it
+    public static void drawBeam(Graphics g, double width, Color color, Vector2f start, Vector2f end) {
+        g.setDrawMode(Graphics.MODE_ADD);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        float distance = start.distance(end);
+        Shape r = new Rectangle(-distance/2, -(float) width/2, distance, (float) width); //rounded rectangle is buggy af
+        // macgyver our own rounded rectangle
+        r = r.union(new Circle(-distance/2, 0, (float) width/2))[0];
+        r = r.union(new Circle(distance/2, 0, (float) width/2))[0];
+        Vector2f diff = end.copy().sub(start);
+        double rad = Math.atan2(diff.y, diff.x);
+        Transform t = Transform.createTranslateTransform((start.x + end.x) / 2, (start.y + end.y) / 2)
+                .concatenate(Transform.createRotateTransform((float) rad));
+        g.setColor(color);
+        g.fill(r.transform(t));
+        g.setDrawMode(Graphics.MODE_NORMAL);
+    }
+
+    static void drawCenteredAndScaled(Graphics g, Image image, Vector2f pos, float scale, float alpha, float angle) {
         Image scaledCopy = image.getScaledCopy(scale);
         scaledCopy.setAlpha(alpha);
+        scaledCopy.setRotation(angle);
         g.drawImage(scaledCopy, pos.x - scaledCopy.getWidth() / 2, pos.y - scaledCopy.getHeight() / 2);
     }
 }
