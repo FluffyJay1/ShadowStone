@@ -14,6 +14,7 @@ import client.ui.game.*;
 import client.ui.game.visualboardanimation.eventanimation.*;
 import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationAddEffect;
 import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationRemoveEffect;
+import client.ui.game.visualboardanimation.eventanimation.basic.EventAnimationRestore;
 import server.*;
 import server.ai.*;
 import server.card.*;
@@ -303,7 +304,8 @@ public class VisualBoard extends Board implements
             if (!nextEventId.equals(String.valueOf(EventDamage.ID))
                     && !nextEventId.equals(String.valueOf(EventDestroy.ID))
                     && !nextEventId.equals(String.valueOf(EventAddEffect.ID))
-                    && !nextEventId.equals(String.valueOf(EventRemoveEffect.ID))) {
+                    && !nextEventId.equals(String.valueOf(EventRemoveEffect.ID))
+                    && !nextEventId.equals(String.valueOf(EventRestore.ID))) {
                 return false;
             }
             if (this.currentAnimations.isEmpty()) {
@@ -313,7 +315,8 @@ public class VisualBoard extends Board implements
             return (lastAnimation instanceof EventAnimationDamage
                     || lastAnimation instanceof EventAnimationDestroy
                     || lastAnimation instanceof EventAnimationAddEffect
-                    || lastAnimation instanceof EventAnimationRemoveEffect);
+                    || lastAnimation instanceof EventAnimationRemoveEffect
+                    || lastAnimation instanceof EventAnimationRestore);
         } else if (eventGroup.type.equals(EventGroupType.MINIONCOMBAT)) {
             return true;
         }
