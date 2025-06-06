@@ -43,11 +43,11 @@ public class DungeonRunController {
     public static Run run;
     private static final int PASSIVE_ROUNDS = 1;
     private static final int PASSIVE_NUM_OPTIONS = 3;
-    private static final List<Integer> PASSIVE_OFFER_STAGES = List.of(1, 3);
+    private static final List<Integer> PASSIVE_OFFER_STAGES = List.of(0, 2, 4);
     private static final int TREASURE_ROUNDS = 1;
     private static final int TREASURE_NUM_OPTIONS = 3;
     private static final int TREASURE_CARDS_PER_OPTION = 1;
-    private static final List<Integer> TREASURE_OFFER_STAGES = List.of(0, 2, 4);
+    private static final List<Integer> TREASURE_OFFER_STAGES = List.of(1, 3, 5);
     private static final int LOOT_ENEMY_ROUNDS = 1;
     private static final int LOOT_CLASS_ROUNDS = 2;
     private static final int LOOT_NUM_OPTIONS = 3;
