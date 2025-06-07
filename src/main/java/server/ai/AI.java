@@ -275,7 +275,7 @@ public class AI extends Thread {
         this.totalReevaluations = 0;
         List<String> actionStack = new LinkedList<>();
         long start = System.nanoTime();
-        DeterministicBoardStateNode dbsn = this.getBestTurn(this.b.getLocalteam(), 0, this.config.startSampleRate, Double.POSITIVE_INFINITY, false);
+        DeterministicBoardStateNode dbsn = this.getBestTurn(this.b.getLocalteam(), 0, this.config.startSampleRate, Double.POSITIVE_INFINITY, false, null, null);
         if (dbsn == null) {
             System.out.println("AIThink returned from a null best turn, sadge");
             return;
@@ -361,17 +361,21 @@ public class AI extends Thread {
      * @param sampleRate   The proportion of total actions to sample
      * @param maxSamples   Max number of samples to use
      * @param filterLethal Flag to only traverse actions that may result in lethal
+     * @param state        If a state string was already calculated, put er here
+     * @param stateHash    If a state hash was already calculated, put er here
      * @return A BoardStateNode object that has been populated, with data such as
      *         maxScore and maxAction, for the current board state
      */
     private DeterministicBoardStateNode getBestTurn(int team, int depth, double sampleRate, double maxSamples,
-            boolean filterLethal) {
+            boolean filterLethal, String state, UUID stateHash) {
         // no turn possible
         if (this.b.getCurrentPlayerTurn() != team || this.b.getWinner() != 0) {
             return null;
         }
-        String state = this.b.stateToString();
-        UUID stateHash = UUID.nameUUIDFromBytes(state.getBytes());
+        if (state == null) {
+            state = this.b.stateToString();
+            stateHash = UUID.nameUUIDFromBytes(state.getBytes());
+        }
         DeterministicBoardStateNode dbsn;
         boolean cacheHit = false;
         if (!this.nodeMap.containsKey(stateHash)) {
@@ -481,12 +485,14 @@ public class AI extends Thread {
             }
             nextSampleRate = sampleRate * current.getWeightedProportionOfAction(action) * this.config.sampleRateMultiplier;
         }
+        String state = null;
+        UUID stateHash = null;
         if (result.rng) {
             // the number of trials we've already done to get to this node
             int cumTrials = 0;
             if (nextRNG != null) {
-                String state = this.b.stateToString();
-                UUID stateHash = UUID.nameUUIDFromBytes(state.getBytes());
+                state = this.b.stateToString();
+                stateHash = UUID.nameUUIDFromBytes(state.getBytes());
                 cumTrials += nextRNG.getCount(this.nodeMap.get(stateHash));
             }
             nextSampleRate *= 1 - (this.config.rngPenalty * Math.pow(this.config.rngPenaltyReduction, cumTrials));
@@ -506,10 +512,10 @@ public class AI extends Thread {
                 node = this.getBestTurn(current.team * -1, depth + 1,
                         Math.max(nextSampleRate, this.config.enemySampleRate),
                         Math.max(nextMaxSamples, this.config.maxSamplesEnemy),
-                        true);
+                        true, state, stateHash);
             }
         } else {
-            DeterministicBoardStateNode dbsn = this.getBestTurn(current.team, depth + 1, nextSampleRate, nextMaxSamples, filterLethal);
+            DeterministicBoardStateNode dbsn = this.getBestTurn(current.team, depth + 1, nextSampleRate, nextMaxSamples, filterLethal, state, stateHash);
             if (dbsn == null) {
                 // something went wrong, here's a bandaid
                 node = new TerminalBoardStateNode(current.team, evaluateAdvantage(this.b, current.team));
@@ -525,9 +531,6 @@ public class AI extends Thread {
             undoStack.get(undoStack.size() - 1).undo(this.b);
             undoStack.remove(undoStack.size() - 1);
         }
-        // aura difference checking isn't updated by undoing, we have to update it ourselves
-        this.b.updateAuraLastCheck();
-        this.b.updateDependentStatsLastCheck();
         String stateAfterUndo = this.b.stateToString();
         if (!currentState.equals(stateAfterUndo)) {
             System.out.println(

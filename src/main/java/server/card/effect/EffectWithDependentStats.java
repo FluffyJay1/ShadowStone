@@ -7,8 +7,6 @@ package server.card.effect;
  * ServerBoard.
  */
 public abstract class EffectWithDependentStats extends Effect {
-    public boolean awaitingUpdate; // whether the server has issued an update resolver already for this effect
-    public EffectStats lastCheckedExpectedStats;
     public EffectStats baselineStats; // stats to use when the calculation isn't active
 
     // required for reflection
@@ -24,8 +22,6 @@ public abstract class EffectWithDependentStats extends Effect {
         this(description, bonusStats, new EffectStats());
     }
     public EffectWithDependentStats(String description, boolean bonusStats, EffectStats baselineStats) {
-        this.awaitingUpdate = false;
-        this.lastCheckedExpectedStats = new EffectStats();
         this.baselineStats = baselineStats;
         this.effectStats.copy(baselineStats);
         this.description = description;

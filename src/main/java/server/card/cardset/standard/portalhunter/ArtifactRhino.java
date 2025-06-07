@@ -60,7 +60,6 @@ public class ArtifactRhino extends MinionText {
                 new Effect(OTHER_DESCRIPTION + "\n" + STRIKE_DESCRIPTION, EffectStats.builder()
                     .set(Stat.RUSH, 1)
                     .build()) {
-                    private List<Card> cachedInstances;
                     @Override
                     public ResolverWithDescription strike(Minion target) {
                         return new ResolverWithDescription(STRIKE_DESCRIPTION, new Resolver(true) {
@@ -75,10 +74,7 @@ public class ArtifactRhino extends MinionText {
 
                     @Override
                     public double getPresenceValue(int refs) {
-                        if (this.cachedInstances == null) {
-                            this.cachedInstances = Collections.nCopies(3, new ArtifactRhino().constructInstance(this.owner.board));
-                        }
-                        return AI.valueForAddingToDeck(this.cachedInstances, refs);
+                        return 3; // nahh
                     }
                 }
         );

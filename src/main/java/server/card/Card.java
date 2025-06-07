@@ -179,7 +179,6 @@ public abstract class Card implements Indexable, StringBuildable {
             }
             if (e.auraSource != null) {
                 e.auraSource.currentActiveEffects.remove(this);
-                e.auraSource.lastCheckedAffectedCards.remove(this);
             }
             e.removed = true;
             this.updateEffectStats(false);

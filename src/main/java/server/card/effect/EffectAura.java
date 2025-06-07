@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
  */
 public abstract class EffectAura extends Effect {
     public Map<Card, Effect> currentActiveEffects;
-    public Set<Card> lastCheckedAffectedCards;
 
     // filter which cards can be affected by the aura
     boolean affectHand, affectBoard, affectLeader, affectUnleashPower;
@@ -26,7 +25,6 @@ public abstract class EffectAura extends Effect {
     // required for reflection
     public EffectAura() {
         this.currentActiveEffects = new HashMap<>();
-        this.lastCheckedAffectedCards = new HashSet<>();
     }
 
     /**
