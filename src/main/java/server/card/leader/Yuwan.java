@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Yuwan extends LeaderText {
     public static final String NAME = "Yuwan";
-    public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
+    public static final ClassCraft CRAFT = ClassCraft.PORTALSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final EmoteSet EMOTESET = EmoteSet.builder()

@@ -16,7 +16,7 @@ import java.util.List;
 public class Kurumi extends LeaderText {
     public static final String NAME = "Kurumi";
     public static final String DESCRIPTION = "The worst spirit.";
-    public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
+    public static final ClassCraft CRAFT = ClassCraft.PORTALSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final EmoteSet EMOTESET = EmoteSet.builder()

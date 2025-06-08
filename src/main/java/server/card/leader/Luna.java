@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Luna extends LeaderText {
     public static final String NAME = "Luna";
-    public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
+    public static final ClassCraft CRAFT = ClassCraft.SHADOWDEATHKNIGHT;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final EmoteSet EMOTESET = EmoteSet.builder()

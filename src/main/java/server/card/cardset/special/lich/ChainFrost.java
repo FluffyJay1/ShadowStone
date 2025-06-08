@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class ChainFrost extends SpellText {
     public static final String NAME = "Chain Frost";
     public static final String DESCRIPTION = "Deal 3 damage to an enemy minion. If there's another enemy minion, randomly choose 1 of them to repeat this effect on.";
-    public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
+    public static final ClassCraft CRAFT = ClassCraft.SHADOWDEATHKNIGHT;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/special/chainfrost.png"),

@@ -26,7 +26,7 @@ import java.util.List;
 public class Sacrifice extends UnleashPowerText {
     public static final String NAME = "Sacrifice";
     public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. Then destroy it to gain its health as mana orbs for this turn only and draw a card.";
-    public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
+    public static final ClassCraft CRAFT = ClassCraft.SHADOWDEATHKNIGHT;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, () -> new Animation("unleashpower/special/sacrifice.png"),

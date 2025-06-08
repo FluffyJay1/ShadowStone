@@ -8,12 +8,12 @@ import server.card.cardset.indie.dragondruid.Uboa;
 import server.card.cardset.indie.forestrogue.Batter;
 import server.card.cardset.indie.havenpriest.Ralsei;
 import server.card.cardset.indie.neutral.*;
+import server.card.cardset.indie.portalshaman.Judge;
 import server.card.cardset.indie.runemage.Japhet;
 import server.card.cardset.indie.runemage.LordOfTheSecondZone;
-import server.card.cardset.indie.shadowshaman.Enoch;
-import server.card.cardset.indie.shadowshaman.Sans;
-import server.card.cardset.indie.shadowshaman.TheGreatPapyrus;
-import server.card.cardset.indie.portalhunter.Judge;
+import server.card.cardset.indie.shadowdeathknight.Enoch;
+import server.card.cardset.indie.shadowdeathknight.Sans;
+import server.card.cardset.indie.shadowdeathknight.TheGreatPapyrus;
 import server.card.cardset.indie.swordpaladin.Susie;
 
 public class ExpansionSetIndie extends ExpansionSet {

@@ -16,7 +16,7 @@ import java.util.List;
 public class Lich extends LeaderText {
     public static final String NAME = "Lich";
     public static final String DESCRIPTION = "Gonna have your mana.";
-    public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
+    public static final ClassCraft CRAFT = ClassCraft.SHADOWDEATHKNIGHT;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final EmoteSet EMOTESET = EmoteSet.builder()

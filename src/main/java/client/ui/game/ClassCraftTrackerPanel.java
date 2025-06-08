@@ -36,7 +36,7 @@ public class ClassCraftTrackerPanel extends UIBox {
                 case FORESTROGUE -> String.format("Cards played: %d", p.cardsPlayedThisTurn);
                 case DRAGONDRUID -> p.overflow() ? "<b>Overflow</b>: <b>ACTIVE</b>" : String.format("<b>Overflow</b>: %d mana remaining", Player.OVERFLOW_THRESHOLD - p.maxmana);
                 case BLOODWARLOCK -> p.vengeance() ? "<b>Vengeance</b>: <b>ACTIVE</b>" : String.format("<b>Vengeance</b>: %d health remaining", l.health - Player.VENGEANCE_THRESHOLD);
-                case PORTALHUNTER -> p.resonance() ? "<b>Resonance</b>: <b>ACTIVE</b>" : "<b>Resonance</b>: inactive";
+                case PORTALSHAMAN -> p.resonance() ? "<b>Resonance</b>: <b>ACTIVE</b>" : "<b>Resonance</b>: inactive";
                 default -> null;
             };
         }

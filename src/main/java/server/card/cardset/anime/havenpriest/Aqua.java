@@ -8,7 +8,7 @@ import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
 import server.card.*;
-import server.card.cardset.basic.shadowshaman.Zombie;
+import server.card.cardset.basic.shadowdeathknight.Zombie;
 import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.effect.Stat;

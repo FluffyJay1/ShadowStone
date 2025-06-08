@@ -8,7 +8,7 @@ import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationD
 import org.newdawn.slick.geom.Vector2f;
 import server.*;
 import server.card.*;
-import server.card.cardset.basic.shadowshaman.Skeleton;
+import server.card.cardset.basic.shadowdeathknight.Skeleton;
 import server.card.effect.*;
 import server.card.effect.common.EffectLastWordsSummon;
 import server.event.*;
@@ -19,7 +19,7 @@ import server.resolver.util.ResolverQueue;
 public class UnleashBegetUndead extends UnleashPowerText {
     public static final String NAME = "Beget Undead";
     public static final String DESCRIPTION = "Give an allied minion <b>Last Words</b>: Summon a <b>Skeleton</b>. <b>Unleash</b> it. Then deal 1 damage to it.";
-    public static final ClassCraft CRAFT = ClassCraft.SHADOWSHAMAN;
+    public static final ClassCraft CRAFT = ClassCraft.SHADOWDEATHKNIGHT;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, () -> new Animation("unleashpower/basic/begetundead.png"),

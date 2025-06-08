@@ -17,7 +17,7 @@ import server.resolver.util.ResolverQueue;
 public class UnleashEchoExistence extends UnleashPowerText {
     public static final String NAME = "Echo Existence";
     public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. If it has already attacked this turn, add a copy of it to your deck and subtract 4 from its cost.";
-    public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
+    public static final ClassCraft CRAFT = ClassCraft.PORTALSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, () -> new Animation("unleashpower/basic/echoexistence.png"),

@@ -120,10 +120,10 @@ public class CardSet implements Iterable<CardText> {
             case SWORDPALADIN -> new UnleashSharpenSword();
             case RUNEMAGE -> new UnleashImbueMagic();
             case DRAGONDRUID -> new UnleashFeedFervor();
-            case SHADOWSHAMAN -> new UnleashBegetUndead();
+            case SHADOWDEATHKNIGHT -> new UnleashBegetUndead();
             case BLOODWARLOCK -> new UnleashTapSoul();
             case HAVENPRIEST -> new UnleashMendWounds();
-            case PORTALHUNTER -> new UnleashEchoExistence();
+            case PORTALSHAMAN -> new UnleashEchoExistence();
             default -> null;
         };
     }
@@ -134,10 +134,10 @@ public class CardSet implements Iterable<CardText> {
             case SWORDPALADIN -> new Erika();
             case RUNEMAGE -> new Isabelle();
             case DRAGONDRUID -> new Rowen();
-            case SHADOWSHAMAN -> new Luna();
+            case SHADOWDEATHKNIGHT -> new Luna();
             case BLOODWARLOCK -> new Urias();
             case HAVENPRIEST -> new Eris();
-            case PORTALHUNTER -> new Yuwan();
+            case PORTALSHAMAN -> new Yuwan();
             default -> null;
         };
     }

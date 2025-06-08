@@ -26,7 +26,7 @@ public class CityOfDevouringTime extends AmuletText {
     private static final String ONTURNSTART_DESCRIPTION = "At the start of your turn, deal 1 damage to all enemy minions and gain X mana orbs this turn only. " +
             "Then if X is at least 2, draw a card. X equals the number of enemy minions damaged.";
     public static final String DESCRIPTION = "<b>Countdown(4)</b>. <b>Lifesteal</b>.\n" + ONTURNSTART_DESCRIPTION;
-    public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
+    public static final ClassCraft CRAFT = ClassCraft.PORTALSHAMAN;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/special/cityofdevouringtime.png"),

@@ -6,9 +6,9 @@ import server.card.cardset.basic.dragondruid.*;
 import server.card.cardset.basic.forestrogue.*;
 import server.card.cardset.basic.havenpriest.*;
 import server.card.cardset.basic.neutral.*;
-import server.card.cardset.basic.portalhunter.*;
+import server.card.cardset.basic.portalshaman.*;
 import server.card.cardset.basic.runemage.*;
-import server.card.cardset.basic.shadowshaman.*;
+import server.card.cardset.basic.shadowdeathknight.*;
 import server.card.cardset.basic.swordpaladin.*;
 
 public class ExpansionSetBasic extends ExpansionSet {

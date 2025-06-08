@@ -23,7 +23,7 @@ import java.util.List;
 public class EighthBulletHet extends UnleashPowerText {
     public static final String NAME = "Eighth Bullet Het";
     public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. Summon a plain copy of it with <b>Countdown(1)</b>.";
-    public static final ClassCraft CRAFT = ClassCraft.PORTALHUNTER;
+    public static final ClassCraft CRAFT = ClassCraft.PORTALSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipUnleashPower TOOLTIP = new TooltipUnleashPower(NAME, DESCRIPTION, () -> new Animation("unleashpower/special/eighthbullethet.png"),
