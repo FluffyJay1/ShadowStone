@@ -1,10 +1,10 @@
-package server.card.cardset.standard.portalshaman;
+package server.card.cardset.basic.portalshaman;
 
+import client.tooltip.Tooltip;
 import client.tooltip.TooltipSpell;
 import client.ui.Animation;
 import server.ServerBoard;
 import server.card.*;
-import server.card.cardset.basic.portalshaman.Puppet;
 import server.card.effect.Effect;
 import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
@@ -24,9 +24,9 @@ public class Substitution extends SpellText {
     public static final ClassCraft CRAFT = ClassCraft.PORTALSHAMAN;
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
-    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/standard/substitution.png"),
+    public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/substitution.png"),
             CRAFT, TRAITS, RARITY, 3, Substitution.class,
-            () -> List.of(Puppet.TOOLTIP),
+            () -> List.of(Tooltip.BANISH, Puppet.TOOLTIP),
             List.of());
 
     @Override

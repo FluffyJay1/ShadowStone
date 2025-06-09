@@ -33,7 +33,7 @@ public class ExpansionSetBasic extends ExpansionSet {
             new GaluaOfTwoBreaths(), new Conflagration(), new Siegfried(), new ForestWhispers(), new IDidThat(), new BoulderfistOgre(),
             new ItsOkToDie(), new Maahes(), new ElvenPrincessMage(), new LancerOfTheTempest(), new Meteor(), new Quickblader(),
             new AttendantOfTheNight(), new BloodWolf(), new AcolytesLight(), new WaterFairy(), new TenderRabbitHealer(),
-            new MysterianKnowledge());
+            new MysterianKnowledge(), new MindControl(), new Substitution(), new Equality());
 
     @Override
     public CardSet getCards() {

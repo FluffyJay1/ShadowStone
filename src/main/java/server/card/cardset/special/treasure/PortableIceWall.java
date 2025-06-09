@@ -3,7 +3,7 @@ package server.card.cardset.special.treasure;
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.Animation;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageIceFall;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.*;
 import server.card.effect.Effect;
@@ -19,7 +19,7 @@ public class PortableIceWall extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/special/portableicewall.png"),
             CRAFT, TRAITS, RARITY, 1, 3, 1, 15, true, PortableIceWall.class,
-            new Vector2f(147, 184), 1.2, new EventAnimationDamageMagicHit(),
+            new Vector2f(147, 184), 1.2, new EventAnimationDamageIceFall(),
             () -> List.of(Tooltip.DISARMED, Tooltip.WARD, Tooltip.FREEZING_TOUCH),
             List.of());
 

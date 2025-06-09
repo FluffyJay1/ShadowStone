@@ -19,7 +19,7 @@ public class HeavyKnight extends MinionText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/heavyknight.png"),
-            CRAFT, TRAITS, RARITY, 1, 1, 0, 2, true, HeavyKnight.class,
+            CRAFT, TRAITS, RARITY, 1, 1, 0, 3, true, HeavyKnight.class,
             new Vector2f(150, 150), 1.2, new EventAnimationDamageSlash(),
             List::of,
             List.of());

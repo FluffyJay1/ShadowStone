@@ -27,7 +27,7 @@ import utils.StringBuildable;
 public abstract class Card implements Indexable, StringBuildable {
     // getValue may depend on the value of other cards, put a limit to how many
     // other cards it needs to calculate
-    private static final int VALUE_MAX_REF_DEPTH = 5;
+    private static final int VALUE_MAX_REF_DEPTH = 3;
     public final Board board;
     public Player player; // functional dependency with team but who cares
     public boolean alive = true; // alive means not marked for death

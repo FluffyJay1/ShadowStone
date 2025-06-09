@@ -3,7 +3,7 @@ package server.card.cardset.anime.runemage;
 import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.Animation;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageMagicHit;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageIceFall;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
 import server.ai.AI;
@@ -35,7 +35,7 @@ public class Yoshino extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/anime/yoshino.png"),
             CRAFT, TRAITS, RARITY, 5, 3, 0, 6, false, Yoshino.class,
-            new Vector2f(165, 143), 1.6, new EventAnimationDamageMagicHit(),
+            new Vector2f(165, 143), 1.6, new EventAnimationDamageIceFall(),
             () -> List.of(Tooltip.WARD, Tooltip.FREEZING_TOUCH, Tooltip.BATTLECRY, Tooltip.SPELLBOOST, Tooltip.UNLEASH),
             List.of());
 
@@ -79,7 +79,7 @@ public class Yoshino extends MinionText {
                             if (!choices.isEmpty()) {
                                 Minion choice = SelectRandom.from(choices);
                                 this.resolve(b, rq, el, new DamageResolver(effect, choice, 1, true,
-                                        new EventAnimationDamageMagicHit()));
+                                        new EventAnimationDamageIceFall()));
                             }
                         }
                         b.popEventGroup();

@@ -14,11 +14,12 @@ import server.card.cardset.standard.swordpaladin.*;
 
 public class ExpansionSetStandard extends ExpansionSet {
     public static final CardSet UNPLAYABLE_SET = new CardSet(new ArtifactRhino(), new Camieux(), new LeonidasResolve(),
-            new ServantOfDarkness(), new CelestialShikigami(), new DemonicShikigami(), new PaperShikigami());
+            new ServantOfDarkness(), new CelestialShikigami(), new DemonicShikigami(), new PaperShikigami(), new ScarabBeetle(),
+            new Stegodon());
 
     public static final CardSet PLAYABLE_SET = new CardSet(new Belphegor(), new DemonicRam(), new DemonKey(), new EndearingSuccubusLilith(),
             new MoltenGiant(), new PrisonOfPain(), new Revelation(), new TerrorDemon(), new AielaDragonKnight(), new CanyonOfTheDragons(),
-            new DracomancersRites(), new Fafnir(), new GriffonKnight(), new PyroxeneDragon(), new Rahab(), new VenomousPucewyrm(),
+            new DracomancersRites(), new AbyssalEnforcer(), new GriffonKnight(), new PyroxeneDragon(), new Rahab(), new VenomousPucewyrm(),
             new AncientForestDragon(), new Cassiopeia(), new DungeoncrawlFairy(), new Rhinoceroach(), new SukunaBraveAndSmall(), new Vanish(),
             new ElanasPrayer(), new IncandescentDragon(), new KelHolyMarksman(), new MoriaeEncomium(), new WhitefangTemple(),
             new BellringerAngel(), new Chronos(), new EphemeraAngelicSlacker(), new GenesisOfLegend(), new GrimnirWarCyclone(), new Urd(),
@@ -32,10 +33,11 @@ public class ExpansionSetStandard extends ExpansionSet {
             new FrostfireDragon(), new LurchingCorpse(), new Nephthys(), new DiabolusAgito(), new DarkAirjammer(), new SnarlingChains(),
             new MaelstromSerpent(), new DiabolicDrain(), new DireBond(), new Baphomet(), new RedHotBoots(), new DevourerOfHeavens(),
             new ForgottenSanctuary(), new ThemisDecree(), new LionOfTheGoldenCity(), new Tenko(), new GarudaRulerOfStorms(), new RadianceAngel(),
-            new Aegina(), new MugnierPurifyingLight(), new MechWingSwordsman(), new Substitution(), new CaptivatingConductor(), new ThatWhichErases(),
+            new Aegina(), new MugnierPurifyingLight(), new MechWingSwordsman(), new CaptivatingConductor(), new ThatWhichErases(),
             new TylleTheWorldgate(), new MiriamSyntheticBeing(), new KnowerOfHistory(), new DyneMasterSwordsman(), new SkyGladiator(),
             new InesMaidenOfClouds(), new DarkDragoonForte(), new DragonewtScholar(), new LordAtomy(), new CaptainLecia(), new ElfGirlLiza(),
-            new LeafMan(), new GravekeeperSonia(), new CharlottaTinyJustice());
+            new LeafMan(), new GravekeeperSonia(), new CharlottaTinyJustice(), new AbyssalEnforcer(), new SpreadingPlague(), new BlinkFox(),
+            new NorthshireCleric(), new Doomsayer(), new Devolve(), new Blizzard(), new ThreadsOfDespair(), new SpikeridgedSteed());
 
     @Override
     public CardSet getCards() {

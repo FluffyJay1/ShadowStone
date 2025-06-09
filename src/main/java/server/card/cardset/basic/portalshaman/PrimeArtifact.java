@@ -18,8 +18,6 @@ import server.card.effect.Effect;
 import server.event.Event;
 import server.resolver.AddEffectResolver;
 import server.resolver.CreateCardResolver;
-import server.resolver.DrawResolver;
-import server.resolver.NecromancyResolver;
 import server.resolver.RemoveEffectResolver;
 import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;

@@ -2,7 +2,7 @@ package server.card.cardset.basic.runemage;
 
 import client.tooltip.TooltipMinion;
 import client.ui.Animation;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
+import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageIceFall;
 import org.newdawn.slick.geom.Vector2f;
 import server.card.CardRarity;
 import server.card.CardTrait;
@@ -22,7 +22,7 @@ public class Snowman extends MinionText {
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/snowman.png"),
             CRAFT, TRAITS, RARITY, 1, 1, 1, 1, true, Snowman.class,
-            new Vector2f(150, 130), 1.5, new EventAnimationDamageSlash(),
+            new Vector2f(150, 130), 1.5, new EventAnimationDamageIceFall(),
             List::of,
             List.of());
 
