@@ -16,8 +16,10 @@ import server.card.cardset.anime.havenpriest.Aqua;
 import server.card.cardset.anime.neutral.HopOnAbandonedArchive;
 import server.card.cardset.anime.neutral.Jotaro;
 import server.card.cardset.anime.neutral.YareYareDaze;
+import server.card.cardset.anime.portalshaman.AdultNatsumi;
 import server.card.cardset.anime.portalshaman.EyeOfStormyJudgement;
 import server.card.cardset.anime.portalshaman.Kurumi;
+import server.card.cardset.anime.portalshaman.Natsumi;
 import server.card.cardset.anime.portalshaman.RaidenShogun;
 import server.card.cardset.anime.runemage.PhantomOfFate;
 import server.card.cardset.anime.runemage.Mona;
@@ -30,10 +32,10 @@ import server.card.cardset.anime.swordpaladin.Jean;
 public class ExpansionSetAnime extends ExpansionSet {
     public static final CardSet UNPLAYABLE_SET = new CardSet(new Guoba(), new YareYareDaze(), new GutsBerserk(), new OneHundredSitups(),
             new OneHundredSquats(), new TenKilometerRun(), new EverySingleDay(), new DandelionField(), new PhantomOfFate(),
-            new YakshasMask(), new SesshouSakura(), new EyeOfStormyJudgement());
+            new YakshasMask(), new SesshouSakura(), new EyeOfStormyJudgement(), new AdultNatsumi());
     public static final CardSet PLAYABLE_SET = new CardSet(new Kurumi(), new KingCrimson(), new BerserkerSoul(), new Xiangling(), new Yoshino(),
             new Jotaro(), new Aqua(), new Guts(), new Qiqi(), new OneHundredPushups(), new Jean(), new Mona(), new Zhongli(), new Xiao(), new YaeMiko(),
-            new RaidenShogun(), new Paimon(), new HopOnAbandonedArchive());
+            new RaidenShogun(), new Paimon(), new HopOnAbandonedArchive(), new Natsumi());
 
     @Override
     public CardSet getCards() {

@@ -28,6 +28,10 @@ public class EvolveResolver extends Resolver {
         this(minions, Collections.nCopies(minions.size(), costChange));
     }
 
+    public EvolveResolver(Minion minion, int costChange) {
+        this(List.of(minion), List.of(costChange));
+    }
+
     @Override
     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
         List<CardText> replacements = new ArrayList<>(this.minions.size());
