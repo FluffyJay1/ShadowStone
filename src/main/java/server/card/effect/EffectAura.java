@@ -105,6 +105,14 @@ public abstract class EffectAura extends Effect {
      */
     public abstract boolean applyConditions(Card cardToApply);
 
+    // if we're AddEffect'ing an Aura, the aura gets cloned, so we need to update effectToApply to reference the new cloned aura
+    @Override
+    public EffectAura clone() throws CloneNotSupportedException {
+        EffectAura e = (EffectAura) super.clone();
+        e.effectToApply.auraSource = e;
+        return e;
+    }
+
     @Override
     public String extraStateString() {
         return this.affectTeam + " " + this.affectBoard + " " + this.affectHand + " " + this.affectLeader + " " + this.affectUnleashPower + " " + this.effectToApply.toString();

@@ -51,7 +51,7 @@ public class Baphomet extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Card> relevant = owner.player.getDeck().stream()
-                                .filter(c -> c instanceof Minion && c.finalStats.get(Stat.ATTACK) >= 5)
+                                .filter(c -> c instanceof Minion && c.getTooltip().craft.equals(ClassCraft.BLOODWARLOCK) && c.finalStats.get(Stat.ATTACK) >= 5)
                                 .toList();
                         Card selection = SelectRandom.from(relevant);
                         if (selection != null) {

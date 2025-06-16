@@ -17,12 +17,30 @@ import server.card.ClassCraft;
 import server.card.cardset.CardSet;
 import server.card.cardset.ConstructedDeck;
 import server.card.cardset.ExpansionSet;
-import server.card.cardset.anime.ExpansionSetAnime;
-import server.card.cardset.basic.ExpansionSetBasic;
-import server.card.cardset.indie.ExpansionSetIndie;
-import server.card.cardset.moba.ExpansionSetMoba;
+import server.card.cardset.anime.*;
+import server.card.cardset.basic.*;
+import server.card.cardset.basic.bloodwarlock.*;
+import server.card.cardset.basic.dragondruid.*;
+import server.card.cardset.basic.forestrogue.*;
+import server.card.cardset.basic.havenpriest.*;
+import server.card.cardset.basic.neutral.*;
+import server.card.cardset.basic.portalshaman.*;
+import server.card.cardset.basic.runemage.*;
+import server.card.cardset.basic.shadowdeathknight.*;
+import server.card.cardset.basic.swordpaladin.*;
+import server.card.cardset.indie.*;
+import server.card.cardset.moba.*;
 import server.card.cardset.special.treasure.Treasures;
-import server.card.cardset.standard.ExpansionSetStandard;
+import server.card.cardset.standard.*;
+import server.card.cardset.standard.bloodwarlock.*;
+import server.card.cardset.standard.dragondruid.*;
+import server.card.cardset.standard.forestrogue.*;
+import server.card.cardset.standard.havenpriest.*;
+import server.card.cardset.standard.neutral.*;
+import server.card.cardset.standard.portalshaman.*;
+import server.card.cardset.standard.runemage.*;
+import server.card.cardset.standard.shadowdeathknight.*;
+import server.card.cardset.standard.swordpaladin.*;
 import utils.SelectRandom;
 import utils.WeightedRandomSampler;
 import utils.WeightedSampler;
@@ -51,7 +69,7 @@ public class DungeonRunController {
     private static final int LOOT_ENEMY_ROUNDS = 1;
     private static final int LOOT_CLASS_ROUNDS = 2;
     private static final int LOOT_NUM_OPTIONS = 3;
-    private static final int LOOT_CARDS_PER_OPTION = 2;
+    private static final int LOOT_CARDS_PER_OPTION = 3;
     private static final int DISCARD_ROUNDS = 1;
     private static final int DISCARD_NUM_OPTIONS = 2;
     private static final int DISCARD_CARDS_PER_OPTION = 3;
@@ -105,17 +123,28 @@ public class DungeonRunController {
         saveToFile();
     }
 
+    private static List<CardText> getStarterCards(ClassCraft craft) {
+        return switch(craft) {
+            case NEUTRAL -> List.of(new Goblin(), new Goblin(), new Fighter(), new Fighter(), new PureheartedSinger(), new IDidThat(), new GrimnirWarCyclone(), new CallOfCocytus(), new BoulderfistOgre(), new BoulderfistOgre());
+            case BLOODWARLOCK -> List.of(new AmblingWraith(), new BloodPact(), new BloodWolf(), new DarkGeneral(), new RazoryClaw(), new AbyssalEnforcer(), new ScarletSabreur(), new TemptressVampire(), new MoltenGiant(), new SnarlingChains());
+            case DRAGONDRUID -> List.of(new BlazingBreath(), new Conflagration(), new DragonOracle(), new DragoonScyther(), new GaluaOfTwoBreaths(), new IvoryDragon(), new Siegfried(), new SpreadingPlague(), new CanyonOfTheDragons(), new AielaDragonKnight());
+            case FORESTROGUE -> List.of(new SylvanJustice(), new ElvenPrincessMage(), new FairyWhisperer(), new ForestWhispers(), new NaturesGuidance(), new WaterFairy(), new WoodOfBrambles(), new BlinkFox(), new AncientForestDragon(), new Okami());
+            case HAVENPRIEST -> List.of(new AcolytesLight(), new BeastcallAria(), new BlackenedScripture(), new Curate(), new HallowedDogma(), new MindControl(), new SacredPlea(), new NorthshireCleric(), new GravekeeperSonia(), new WhitefangTemple());
+            case PORTALSHAMAN -> List.of(new DimensionCut(), new TranquilCog(), new IronforgedFighter(), new MagisteelLion(), new PuppeteersStrings(), new PuppetRoom(), new Substitution(), new Devolve(), new VengefulPuppeteerNoah(), new TylleTheWorldgate());
+            case RUNEMAGE -> List.of(new Insight(), new ConjureGolem(), new FatesHand(), new MagicMissile(), new FlameDestroyer(), new SummonSnow(), new WindBlast(), new FirelandsPortal(), new Blizzard(), new CabalistsTome(), new KuonFounderOfOnmyodo());
+            case SHADOWDEATHKNIGHT -> List.of(new BoneChimera(), new DemonEater(), new DarkBladefiend(), new LadyGreyDeathweaver(), new SkullBeast(), new SoulConversion(), new UndyingResentment(), new NecroAssassin(), new ThreadsOfDespair(), new MordecaiTheDuelist());
+            case SWORDPALADIN -> List.of(new CentaurVanguard(), new Equality(), new FrontlineCavalier(), new Jeno(), new Quickblader(), new Thief(), new WholeSouledSwing(), new SpikeridgedSteed(), new WeatheredVanguard(), new Leonidas());
+        };
+    }
+
     private static ConstructedDeck getDeckForClass(ClassCraft craft) {
         ConstructedDeck deck = new ConstructedDeck(craft);
         deck.name = "Dungeon Run Deck";
-        for (CardText ct : ExpansionSetBasic.PLAYABLE_SET.filterCraft(craft)) {
-            deck.addCard(ct, 2, false);
+        for (CardText ct : getStarterCards(craft)) {
+            deck.addCard(ct, false);
         }
-        for (CardText ct : ExpansionSetBasic.PLAYABLE_SET.filterCraft(ClassCraft.NEUTRAL)) {
-            deck.addCard(ct, 1, false);
-        }
-        for (CardText ct : ExpansionSetStandard.PLAYABLE_SET.filterCraft(craft)) {
-            deck.addCard(ct, 1, false);
+        for (CardText ct : getStarterCards(ClassCraft.NEUTRAL)) {
+            deck.addCard(ct, false);
         }
         return deck;
     }
@@ -124,11 +153,8 @@ public class DungeonRunController {
         // bruh
         ConstructedDeck deck = new ConstructedDeck(spec.leaderText.getTooltip().craft);
         deck.name = "Dungeon Run Deck";
-        for (CardText ct : new ExpansionSetBasic().getCards().filterCraft(deck.craft)) {
-            deck.addCard(ct, 1, false);
-        }
-        for (CardText ct : new ExpansionSetBasic().getCards().filterCraft(ClassCraft.NEUTRAL)) {
-            deck.addCard(ct, 1, false);
+        for (CardText ct : getStarterCards(deck.craft)) {
+            deck.addCard(ct, false);
         }
         WeightedSampler<CardText> extraCardSampler = new WeightedRandomSampler<>();
         for (CardText ct : spec.sets.filterCraft(ClassCraft.NEUTRAL, deck.craft)) {

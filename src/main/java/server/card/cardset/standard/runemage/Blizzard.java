@@ -44,7 +44,7 @@ public class Blizzard extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> targets = b.getMinions(owner.team * -1, false, true).toList();
-                        this.resolve(b, rq, el, new DamageResolver(effect, targets, 1, true, new EventAnimationDamageIceFall()));
+                        this.resolve(b, rq, el, new DamageResolver(effect, targets, 2, true, new EventAnimationDamageIceFall()));
                     }
                 });
             }

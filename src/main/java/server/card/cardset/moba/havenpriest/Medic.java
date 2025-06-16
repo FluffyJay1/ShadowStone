@@ -10,7 +10,6 @@ import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import server.ServerBoard;
 import server.ai.AI;
-import server.card.BoardObject;
 import server.card.Card;
 import server.card.CardRarity;
 import server.card.CardStatus;
@@ -44,7 +43,7 @@ public class Medic extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/moba/medic.png"),
-            CRAFT, TRAITS, RARITY, 4, 2, 3, 4, false, Medic.class,
+            CRAFT, TRAITS, RARITY, 4, 2, 2, 4, false, Medic.class,
             new Vector2f(), -1, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.UNLEASH, Tooltip.CHOOSE, Tooltip.RUSH, Tooltip.INVULNERABLE),
             List.of());

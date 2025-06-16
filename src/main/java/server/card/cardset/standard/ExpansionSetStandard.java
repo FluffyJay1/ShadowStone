@@ -37,7 +37,8 @@ public class ExpansionSetStandard extends ExpansionSet {
             new TylleTheWorldgate(), new MiriamSyntheticBeing(), new KnowerOfHistory(), new DyneMasterSwordsman(), new SkyGladiator(),
             new InesMaidenOfClouds(), new DarkDragoonForte(), new DragonewtScholar(), new LordAtomy(), new CaptainLecia(), new ElfGirlLiza(),
             new LeafMan(), new GravekeeperSonia(), new CharlottaTinyJustice(), new AbyssalEnforcer(), new SpreadingPlague(), new BlinkFox(),
-            new NorthshireCleric(), new Doomsayer(), new Devolve(), new Blizzard(), new ThreadsOfDespair(), new SpikeridgedSteed());
+            new NorthshireCleric(), new Doomsayer(), new Devolve(), new Blizzard(), new ThreadsOfDespair(), new SpikeridgedSteed(), new CabalistsTome(),
+            new FirelandsPortal());
 
     @Override
     public CardSet getCards() {
