@@ -8,7 +8,9 @@ import server.card.BoardObject;
 import server.card.CardText;
 import server.card.cardset.anime.dragondruid.KingCrimson;
 import server.card.cardset.anime.neutral.Jotaro;
+import server.card.cardset.anime.portalshaman.AdultNatsumi;
 import server.card.cardset.anime.portalshaman.Kurumi;
+import server.card.cardset.anime.portalshaman.Natsumi;
 import server.card.cardset.anime.runemage.Yoshino;
 import server.card.cardset.anime.swordpaladin.BerserkerSoul;
 import server.card.cardset.indie.bloodwarlock.Dedan;
@@ -62,9 +64,11 @@ public class MusicThemeController {
                 new Theme("music/rhapsody_flame.ogg", b -> cardIsInPlay(b, new CityOfDevouringTime())),
                 new Theme("music/king_crimson.ogg", b -> cardIsInPlay(b, new KingCrimson())),
                 new Theme("music/bonetrousle.ogg", b -> cardIsInPlay(b, new TheGreatPapyrus())),
+                new Theme("music/natsumi2.ogg", b -> cardIsInPlay(b, new AdultNatsumi())),
                 new Theme("music/rain_in_the_park.ogg", b -> cardIsInPlay(b, new Yoshino())),
                 new Theme("music/rude_buster.ogg", b -> anyCardIsInPlay(b, List.of(new Ralsei(), new Susie()))),
                 new Theme("music/pepper_steak.ogg", b -> anyCardIsInPlay(b, List.of(new Batter(), new Alpha(), new Omega(), new Epsilon()))),
+                new Theme("music/hidden_trick.ogg", b -> cardIsInPlay(b, new Natsumi())),
                 new Theme("music/fighto.ogg", b -> true)
         );
     }
