@@ -39,14 +39,9 @@ public class EventSetEffectStats extends Event {
             if (e.owner instanceof Minion) {
                 Minion m = (Minion) e.owner;
                 this.oldHealth.set(i, m.health);
-                if (m.finalStats.get(Stat.HEALTH) < m.health) {
-                    m.health = m.finalStats.get(Stat.HEALTH);
-                }
-                if (m.health <= 0 && m.alive && !this.markedForDeath.contains(m)) {
-                    m.alive = false;
-                    this.markedForDeath.add(m);
-                }
+                EventCommon.enforceMinionMaxHealth(m);
             }
+            EventCommon.markForDeathIfRequired(e.owner, markedForDeath);
         }
     }
 

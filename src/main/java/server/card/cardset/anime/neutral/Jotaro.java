@@ -43,7 +43,12 @@ public class Jotaro extends MinionText {
 
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
-                return new ResolverWithDescription(BATTLECRY_DESCRIPTION, new CreateCardResolver(new YareYareDaze(), this.owner.team, CardStatus.HAND, -1));
+                return new ResolverWithDescription(BATTLECRY_DESCRIPTION, CreateCardResolver.builder()
+                        .withCard(new YareYareDaze())
+                        .withTeam(this.owner.team)
+                        .withStatus(CardStatus.HAND)
+                        .withPos(-1)
+                        .build());
             }
 
             @Override

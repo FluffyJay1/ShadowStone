@@ -104,7 +104,12 @@ public class Spy extends MinionText {
             return new ResolverWithDescription(EFFECT_DESCRIPTION, new Resolver(true) {
                 @Override
                 public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                    this.resolve(b, rq, el, new NecromancyResolver(effect, 5, new CreateCardResolver(new Spy(), owner.team, CardStatus.BOARD, -1)));
+                    this.resolve(b, rq, el, new NecromancyResolver(effect, 5, CreateCardResolver.builder()
+                                .withCard(new Spy())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(-1)
+                                .build()));
                     this.resolve(b, rq, el, new RemoveEffectResolver(List.of(effect)));
                 }
             });

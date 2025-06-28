@@ -1,6 +1,7 @@
 package server.event;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 import client.*;
 import server.*;
@@ -22,6 +23,7 @@ public class EventCreateCard extends Event {
     public final List<Boolean> successful;
     public final List<Card> successfullyCreatedCards;
     final List<BoardObject> cardsEnteringPlay = new ArrayList<>();
+    public final List<Card> markedForDeath;
 
     public EventCreateCard(List<Card> cards, int team, CardStatus status, List<Integer> cardpos, CardVisibility visibility) {
         super(ID);
@@ -36,6 +38,7 @@ public class EventCreateCard extends Event {
             c.team = team;
             c.visibility = visibility;
         }
+        this.markedForDeath = new ArrayList<>(cards.size());
     }
 
     @Override
@@ -97,11 +100,12 @@ public class EventCreateCard extends Event {
                 }
                 default -> this.successful.add(false);
             }
-            if (this.successful.get(i) && b instanceof ServerBoard) {
-                ServerBoard sb = (ServerBoard) b;
-                for (Effect e : c.getEffects(true)) {
-                    sb.registerNewEffect(e);
+            if (this.successful.get(i)) {
+                if (b instanceof ServerBoard) {
+                    ServerBoard sb = (ServerBoard) b;
+                    c.getFinalEffects(false).forEach(sb::registerNewEffect);
                 }
+                EventCommon.markForDeathIfRequired(c, markedForDeath);
             }
             if (b instanceof ClientBoard) {
                 ((ClientBoard) b).cardsCreated.add(c);
@@ -125,9 +129,7 @@ public class EventCreateCard extends Event {
             if (this.successful.get(i)) {
                 if (b instanceof ServerBoard) {
                     ServerBoard sb = (ServerBoard) b;
-                    for (Effect e : c.getEffects(true)) {
-                        sb.unregisterEffect(e);
-                    }
+                    c.getFinalEffects(false).forEach(sb::unregisterEffect);
                 }
                 switch (status) {
                     case HAND -> p.getHand().remove(c);
@@ -171,7 +173,7 @@ public class EventCreateCard extends Event {
         StringBuilder builder = new StringBuilder();
         builder.append(this.id).append(" ").append(this.visibility.name()).append(" ").append(this.cards.size()).append(" ");
         for (Card c : this.cards) {
-            builder.append(c.getCardText().toString());
+            builder.append(c.toTemplateString());
         }
         builder.append(this.team).append(" ").append(this.status.toString());
         for (Integer i : this.cardpos) {
@@ -186,9 +188,7 @@ public class EventCreateCard extends Event {
         int numCards = Integer.parseInt(st.nextToken());
         List<Card> cards = new ArrayList<>(numCards);
         for (int i = 0; i < numCards; i++) {
-            CardText cardText = CardText.fromString(st.nextToken());
-            assert cardText != null;
-            Card c = cardText.constructInstance(b);
+            Card c = Card.fromTemplateString(b, st);
             c.visibility = visibility;
             cards.add(c);
             if (b instanceof VisualBoard) {

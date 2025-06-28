@@ -58,7 +58,12 @@ public class Beastmaster extends MinionText {
                                 .map(i -> owner.getIndex() + (i + 1) * ((i + 1) % 2)) // 1 0 3 0 5 0...
                                 .boxed()
                                 .collect(Collectors.toList());
-                        this.resolve(b, rq, el, new CreateCardResolver(summons, owner.team, CardStatus.BOARD, pos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCards(summons)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(pos)
+                                .build());
                     }
                 });
             }

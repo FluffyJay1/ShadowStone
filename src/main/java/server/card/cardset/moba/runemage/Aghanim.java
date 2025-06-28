@@ -55,9 +55,19 @@ public class Aghanim extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         if (owner.player.getPlayArea().stream().anyMatch(bo -> bo.getCardText() instanceof AghanimsScepter)) {
-                            this.resolve(b, rq, el, new CreateCardResolver(List.of(new ClayGolem(), new ClayGolem()), owner.team, CardStatus.BOARD, List.of(owner.getIndex() + 1, owner.getIndex())));
+                            this.resolve(b, rq, el, CreateCardResolver.builder()
+                                    .withCards(List.of(new ClayGolem(), new ClayGolem()))
+                                    .withTeam(owner.team)
+                                    .withStatus(CardStatus.BOARD)
+                                    .withPos(List.of(owner.getIndex() + 1, owner.getIndex()))
+                                    .build());
                         } else {
-                            this.resolve(b, rq, el, new CreateCardResolver(new AghanimsScepter(), owner.team, CardStatus.BOARD, owner.getIndex() + 1));
+                            this.resolve(b, rq, el, CreateCardResolver.builder()
+                                    .withCard(new AghanimsScepter())
+                                    .withTeam(owner.team)
+                                    .withStatus(CardStatus.BOARD)
+                                    .withPos(owner.getIndex() + 1)
+                                    .build());
                         }
                     }
                 });
@@ -75,12 +85,18 @@ public class Aghanim extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> randomCards = SelectRandom.from(CardSet.PLAYABLE_SET.get().stream().filter(ct -> ct instanceof SpellText).toList(), 2);
                         if (!randomCards.isEmpty()) {
-                            CreateCardResolver ccr = this.resolve(b, rq, el, new CreateCardResolver(randomCards, owner.team, CardStatus.HAND, Collections.nCopies(randomCards.size(), -1), CardVisibility.ALLIES));
                             int m = owner.finalStats.get(Stat.MAGIC);
                             Effect costBuff = new Effect("-" + m + " cost. (From <b>" + NAME + "</b>.)", EffectStats.builder()
                                     .change(Stat.COST, -m)
                                     .build());
-                            this.resolve(b, rq, el, new AddEffectResolver(ccr.event.successfullyCreatedCards, costBuff));
+                            this.resolve(b, rq, el, CreateCardResolver.builder()
+                                    .withCards(randomCards)
+                                    .withTeam(owner.team)
+                                    .withStatus(CardStatus.HAND)
+                                    .withPos(Collections.nCopies(randomCards.size(), -1))
+                                    .withVisibility(CardVisibility.ALLIES)
+                                    .withAdditionalEffectForAll(costBuff)
+                                    .build());
                         }
                     }
                 });

@@ -66,7 +66,12 @@ public class Rimewind extends SpellText {
                         int times = owner.spellboosts + 1;
                         List<CardText> snowmen = Collections.nCopies(times, new Snowman());
                         List<Integer> pos = Collections.nCopies(times, -1);
-                        this.resolve(b, rq, el, new CreateCardResolver(snowmen, owner.team, CardStatus.BOARD, pos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCards(snowmen)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(pos)
+                                .build());
                     }
                 });
             }

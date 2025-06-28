@@ -81,7 +81,12 @@ public class YaeMiko extends MinionText {
                             esc.effectStats.change.set(Stat.COST, -x);
                             this.resolve(b, rq, el, new AddEffectResolver(owner, esc));
                         }
-                        this.resolve(b, rq, el, new CreateCardResolver(new SesshouSakura(), owner.team, CardStatus.BOARD, oldpos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new SesshouSakura())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(oldpos)
+                                .build());
                     }
                 });
             }

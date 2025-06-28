@@ -48,7 +48,12 @@ public class AghanimsScepter extends AmuletText {
         return List.of(new Effect(DESCRIPTION){
             @Override
             public ResolverWithDescription onTurnEndAllied() {
-                return new ResolverWithDescription(ONTURNEND_DESCRIPTION, new CreateCardResolver(new MagicMissile(), owner.team, CardStatus.HAND, -1));
+                return new ResolverWithDescription(ONTURNEND_DESCRIPTION, CreateCardResolver.builder()
+                        .withCard(new MagicMissile())
+                        .withTeam(owner.team)
+                        .withStatus(CardStatus.HAND)
+                        .withPos(-1)
+                        .build());
             }
 
             @Override

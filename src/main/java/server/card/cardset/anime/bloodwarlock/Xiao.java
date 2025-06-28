@@ -50,7 +50,12 @@ public class Xiao extends MinionText {
                 return new ResolverWithDescription(BATTLECRY_DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new CreateCardResolver(new YakshasMask(), owner.team, CardStatus.BOARD, owner.getIndex() + 1));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new YakshasMask())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(owner.getIndex() + 1)
+                                .build());
                     }
                 });
             }

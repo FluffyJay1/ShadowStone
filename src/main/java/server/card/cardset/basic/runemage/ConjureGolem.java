@@ -29,7 +29,12 @@ public class ConjureGolem extends SpellText {
 
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
-                return new ResolverWithDescription(DESCRIPTION, new CreateCardResolver(new ClayGolem(), this.owner.team, CardStatus.BOARD, -1));
+                return new ResolverWithDescription(DESCRIPTION, CreateCardResolver.builder()
+                        .withCard(new ClayGolem())
+                        .withTeam(this.owner.team)
+                        .withStatus(CardStatus.BOARD)
+                        .withPos(-1)
+                        .build());
             }
 
             @Override

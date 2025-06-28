@@ -60,7 +60,12 @@ public class Engineer extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Integer> pos = SelectRandom.positionsToAdd(owner.player.getDeck().size(), 3);
                         List<CardText> cards = List.of(new EngineersBuildingSentry(), new EngineersBuildingDispenser(), new EngineersBuildingTeleporter());
-                        this.resolve(b, rq, el, new CreateCardResolver(cards, owner.team, CardStatus.DECK, pos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCards(cards)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.DECK)
+                                .withPos(pos)
+                                .build());
                     }
                 });
             }

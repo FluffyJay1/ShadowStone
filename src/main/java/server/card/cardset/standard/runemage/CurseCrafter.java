@@ -54,7 +54,12 @@ public class CurseCrafter extends MinionText {
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(true) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new CreateCardResolver(new DemonicShikigami(), owner.team, CardStatus.BOARD, owner.getIndex() + 1));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new DemonicShikigami())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(owner.getIndex() + 1)
+                                .build());
                         List<Card> relevant = owner.player.getDeck().stream()
                                 .filter(c -> c.finalStats.get(Stat.SPELLBOOSTABLE) > 0)
                                 .toList();
@@ -80,7 +85,12 @@ public class CurseCrafter extends MinionText {
                 return new ResolverWithDescription(UNLEASH_DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new CreateCardResolver(new PaperShikigami(), owner.team, CardStatus.BOARD, owner.getIndex() + 1));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new PaperShikigami())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(owner.getIndex() + 1)
+                                .build());
                         int x = owner.finalStats.get(Stat.MAGIC);
                         Effect buff = new Effect("+" + x + "/+0/+0 and <b>Rush</b> until the end of the turn (from <b>Unleash</b>).", EffectStats.builder()
                                 .change(Stat.ATTACK, x)

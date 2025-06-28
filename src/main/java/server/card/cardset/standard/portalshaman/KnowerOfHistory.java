@@ -50,7 +50,12 @@ public class KnowerOfHistory extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Integer> pos = SelectRandom.positionsToAdd(owner.player.getDeck().size(), 1);
-                        this.resolve(b, rq, el, new CreateCardResolver(List.of(new PrimeArtifact()), owner.team, CardStatus.DECK, pos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCards(List.of(new PrimeArtifact()))
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.DECK)
+                                .withPos(pos)
+                                .build());
                     }
                 });
             }

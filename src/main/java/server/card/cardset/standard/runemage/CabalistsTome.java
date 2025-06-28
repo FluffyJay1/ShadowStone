@@ -39,7 +39,13 @@ public class CabalistsTome extends SpellText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> randomCards = SelectRandom.from(CardSet.PLAYABLE_SET.get().stream().filter(ct -> ct.getTooltip().craft.equals(ClassCraft.RUNEMAGE) && ct instanceof SpellText && !(ct instanceof CabalistsTome)).toList(), 3);
                         if (!randomCards.isEmpty()) {
-                            this.resolve(b, rq, el, new CreateCardResolver(randomCards, owner.team, CardStatus.HAND, Collections.nCopies(randomCards.size(), -1), CardVisibility.ALLIES));
+                            this.resolve(b, rq, el, CreateCardResolver.builder()
+                                    .withCards(randomCards)
+                                    .withTeam(owner.team)
+                                    .withStatus(CardStatus.HAND)
+                                    .withPos(Collections.nCopies(randomCards.size(), -1))
+                                    .withVisibility(CardVisibility.ALLIES)
+                                    .build());
                         }
                     }
                 });

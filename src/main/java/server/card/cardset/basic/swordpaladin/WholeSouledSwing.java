@@ -53,7 +53,12 @@ public class WholeSouledSwing extends SpellText {
                         int enemySize = (int) b.getMinions(owner.team * -1, false, true).count();
                         int alliedSize = (int) b.getMinions(owner.team, false, true).count();
                         if (enemySize > alliedSize) {
-                            this.resolve(b, rq, el, new CreateCardResolver(new Knight(), owner.team, CardStatus.BOARD, -1));
+                            this.resolve(b, rq, el, CreateCardResolver.builder()
+                                    .withCard(new Knight())
+                                    .withTeam(owner.team)
+                                    .withStatus(CardStatus.BOARD)
+                                    .withPos(-1)
+                                    .build());
                         }
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 4, true, new EventAnimationDamageDoubleSlice()));

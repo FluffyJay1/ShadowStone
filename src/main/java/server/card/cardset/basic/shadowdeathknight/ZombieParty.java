@@ -55,7 +55,12 @@ public class ZombieParty extends SpellText {
                         });
                         List<CardText> zombies = Collections.nCopies(3, new Zombie());
                         List<Integer> pos = Collections.nCopies(3, -1);
-                        this.resolve(b, rq, el, new SpendResolver(effect, 5, new CreateCardResolver(zombies, owner.team, CardStatus.BOARD, pos)));
+                        this.resolve(b, rq, el, new SpendResolver(effect, 5, CreateCardResolver.builder()
+                                    .withCards(zombies)
+                                    .withTeam(owner.team)
+                                    .withStatus(CardStatus.BOARD)
+                                    .withPos(pos)
+                                    .build()));
                     }
                 });
             }

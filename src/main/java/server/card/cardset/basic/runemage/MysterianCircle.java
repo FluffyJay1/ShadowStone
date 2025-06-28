@@ -40,7 +40,12 @@ public class MysterianCircle extends SpellText {
                 return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new CreateCardResolver(new ClayGolem(), owner.team, CardStatus.BOARD, -1));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new ClayGolem())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(-1)
+                                .build());
                         List<Minion> clayGolems = b.getMinions(owner.team, false, true)
                                 .filter(m -> m.getCardText() instanceof ClayGolem)
                                 .toList();

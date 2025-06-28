@@ -52,7 +52,12 @@ public class Urd extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             this.resolve(b, rq, el, new DestroyResolver(c));
-                            this.resolve(b, rq, el, new CreateCardResolver(c.getCardText(), c.team, CardStatus.BOARD, ((BoardObject) c).getRelevantBoardPos()));
+                            this.resolve(b, rq, el, CreateCardResolver.builder()
+                                    .withCard(c.getCardText())
+                                    .withTeam(c.team)
+                                    .withStatus(CardStatus.BOARD)
+                                    .withPos(((BoardObject) c).getRelevantBoardPos())
+                                    .build());
                         });
                     }
                 });

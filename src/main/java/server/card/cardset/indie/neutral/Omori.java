@@ -76,7 +76,12 @@ public class Omori extends MinionText {
                         if (!options.isEmpty()) {
                             int option = (int) options.get(0);
                             CardText ct = List.of(new EmotionSad(), new EmotionAngry(), new EmotionHappy()).get(option);
-                            this.resolve(b, rq, el, new CreateCardResolver(ct, owner.team, CardStatus.BOARD, owner.getIndex() + 1));
+                            this.resolve(b, rq, el, CreateCardResolver.builder()
+                                    .withCard(ct)
+                                    .withTeam(owner.team)
+                                    .withStatus(CardStatus.BOARD)
+                                    .withPos(owner.getIndex() + 1)
+                                    .build());
                         }
                     }
                 });

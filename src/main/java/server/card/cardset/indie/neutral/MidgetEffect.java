@@ -11,7 +11,6 @@ import server.card.target.CardTargetingScheme;
 import server.card.target.TargetList;
 import server.card.target.TargetingScheme;
 import server.event.Event;
-import server.resolver.AddEffectResolver;
 import server.resolver.CreateCardResolver;
 import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
@@ -22,7 +21,7 @@ import java.util.List;
 
 public class MidgetEffect extends SpellText {
     public static final String NAME = "Midget Effect";
-    public static final String DESCRIPTION = "Choose an allied minion. Summon 2 plain copies of it and set their stats to 1/1/1.";
+    public static final String DESCRIPTION = "Choose an allied minion. Summon 2 copies of it with 1/1/1.";
     public static final ClassCraft CRAFT = ClassCraft.NEUTRAL;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
@@ -50,17 +49,20 @@ public class MidgetEffect extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
-                            List<CardText> ct = Collections.nCopies(2, c.getCardText());
+                            List<Card> cards = Collections.nCopies(2, c);
                             List<Integer> pos = List.of(c.getIndex() + 1, c.getIndex());
-                            CreateCardResolver ccr = this.resolve(b, rq, el, new CreateCardResolver(ct, c.team, CardStatus.BOARD, pos));
-                            if (!ccr.event.successfullyCreatedCards.isEmpty()) {
-                                Effect stats = new Effect("Stats set to 1/1/1 (from <b>" + NAME + "</b>).", EffectStats.builder()
-                                        .set(Stat.ATTACK, 1)
-                                        .set(Stat.MAGIC, 1)
-                                        .set(Stat.HEALTH, 1)
-                                        .build());
-                                this.resolve(b, rq, el, new AddEffectResolver(ccr.event.successfullyCreatedCards, stats));
-                            }
+                            Effect statEffect = new Effect("Stats set to 1/1/1 (from <b>" + NAME + "</b>).", EffectStats.builder()
+                                    .set(Stat.ATTACK, 1)
+                                    .set(Stat.MAGIC, 1)
+                                    .set(Stat.HEALTH, 1)
+                                    .build());
+                            this.resolve(b, rq, el, CreateCardResolver.builder()
+                                    .withCardsToCopy(cards)
+                                    .withTeam(c.team)
+                                    .withStatus(CardStatus.BOARD)
+                                    .withPos(pos)
+                                    .withAdditionalEffectForAll(statEffect)
+                                    .build());
                         });
                     }
                 });

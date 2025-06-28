@@ -49,7 +49,12 @@ public class OneHundredSquats extends SpellText {
                                     Effect buff = new EffectStatChange("+1/+2/+2 (from <b>" + NAME + "</b>).", 1, 2, 2);
                                     this.resolve(b, rq, el, new AddEffectResolver(c, buff));
                                 });
-                        this.resolve(b, rq, el, new CreateCardResolver(new TenKilometerRun(), owner.team, CardStatus.HAND, -1));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new TenKilometerRun())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.HAND)
+                                .withPos(-1)
+                                .build());
                     }
                 });
             }

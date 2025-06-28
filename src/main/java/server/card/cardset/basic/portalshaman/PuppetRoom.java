@@ -35,7 +35,12 @@ public class PuppetRoom extends AmuletText {
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
                 String resolverDescription = "<b>Battlecry</b>: put a <b>Puppet</b> in your hand.";
-                return new ResolverWithDescription(resolverDescription, new CreateCardResolver(new Puppet(), this.owner.team, CardStatus.HAND, -1));
+                return new ResolverWithDescription(resolverDescription, CreateCardResolver.builder()
+                        .withCard(new Puppet())
+                        .withTeam(this.owner.team)
+                        .withStatus(CardStatus.HAND)
+                        .withPos(-1)
+                        .build());
             }
 
             @Override
@@ -49,7 +54,12 @@ public class PuppetRoom extends AmuletText {
             @Override
             public ResolverWithDescription onTurnEndAllied() {
                 String resolverDescription = "At the end of your turn, put a <b>Puppet</b> in your hand.";
-                return new ResolverWithDescription(resolverDescription, new CreateCardResolver(new Puppet(), this.owner.team, CardStatus.HAND, -1));
+                return new ResolverWithDescription(resolverDescription, CreateCardResolver.builder()
+                        .withCard(new Puppet())
+                        .withTeam(this.owner.team)
+                        .withStatus(CardStatus.HAND)
+                        .withPos(-1)
+                        .build());
             }
 
             @Override

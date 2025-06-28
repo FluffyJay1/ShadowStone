@@ -48,7 +48,13 @@ public class GaluaOfTwoBreaths extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         int option = (int) targetList.get(0).targeted.get(0);
                         CardText ct = option == 0 ? new WhiteBreath() : new BlackBreath();
-                        this.resolve(b, rq, el, new CreateCardResolver(ct, owner.team, CardStatus.HAND, -1, CardVisibility.ALLIES));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(ct)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.HAND)
+                                .withPos(-1)
+                                .withVisibility(CardVisibility.ALLIES)
+                                .build());
                     }
                 });
             }

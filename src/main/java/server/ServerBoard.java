@@ -393,7 +393,12 @@ public class ServerBoard extends Board {
             @Override
             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                 b.processEvent(rq, el, new EventMulliganPhaseEnd());
-                this.resolve(b, rq, el, new CreateCardResolver(new NotCoin(), -1, CardStatus.HAND, -1));
+                this.resolve(b, rq, el, CreateCardResolver.builder()
+                        .withCard(new NotCoin())
+                        .withTeam(-1)
+                        .withStatus(CardStatus.HAND)
+                        .withPos(-1)
+                        .build());
             }
         }, 0);
         result.concat(this.resolve(new TurnStartResolver(this.getPlayer(1)), 1));

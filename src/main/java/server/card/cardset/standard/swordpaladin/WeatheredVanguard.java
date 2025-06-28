@@ -42,7 +42,12 @@ public class WeatheredVanguard extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> knights = Collections.nCopies(3, new HeavyKnight());
                         List<Integer> pos = Collections.nCopies(3, owner.getIndex() + 1);
-                        this.resolve(b, rq, el, new CreateCardResolver(knights, owner.team, CardStatus.BOARD, pos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCards(knights)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(pos)
+                                .build());
                     }
                 }));
             }

@@ -56,7 +56,12 @@ public class DevourerOfHeavens extends AmuletText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         int pos = ((BoardObject) effect.owner).getRelevantBoardPos(); // startpos
-                        this.resolve(b, rq, el, new CreateCardResolver(new HolywingDragon(), effect.owner.team, CardStatus.BOARD, pos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new HolywingDragon())
+                                .withTeam(effect.owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(pos)
+                                .build());
                         List<Minion> relevant = b.getMinions(owner.team * -1, false, false).toList();
                         this.resolve(b, rq, el, new DamageResolver(effect, relevant, 2, true, new EventAnimationDamageAOEFire(owner.team * -1, false)));
                     }

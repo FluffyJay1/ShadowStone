@@ -51,7 +51,12 @@ public class ColdGuard extends SpellText {
                         }
                         List<CardText> summons = Collections.nCopies(3, new Snowman());
                         List<Integer> pos = Collections.nCopies(3, -1);
-                        this.resolve(b, rq, el, new CreateCardResolver(summons, owner.team, CardStatus.BOARD, pos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCards(summons)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(pos)
+                                .build());
                         List<Minion> snowmen = b.getMinions(owner.team, false, true)
                                 .filter(m -> m.getCardText() instanceof Snowman)
                                 .toList();

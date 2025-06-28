@@ -86,7 +86,12 @@ public class SpikeridgedSteed extends SpellText {
                 @Override
                 public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                     int pos = ((BoardObject) effect.owner).getRelevantBoardPos();
-                    this.resolve(b, rq, el, new CreateCardResolver(new Stegodon(), owner.team, CardStatus.BOARD, pos));
+                    this.resolve(b, rq, el, CreateCardResolver.builder()
+                            .withCard(new Stegodon())
+                            .withTeam(owner.team)
+                            .withStatus(CardStatus.BOARD)
+                            .withPos(pos)
+                            .build());
                 }
             });
         }

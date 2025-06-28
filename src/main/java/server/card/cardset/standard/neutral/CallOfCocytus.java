@@ -55,7 +55,12 @@ public class CallOfCocytus extends SpellText {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             this.resolve(b, rq, el, new DestroyResolver(c, new EventAnimationDestroyDarkElectro()));
                         });
-                        this.resolve(b, rq, el, new SpendResolver(effect, 3, new CreateCardResolver(new ServantOfDarkness(), owner.team, CardStatus.HAND, -1)));
+                        this.resolve(b, rq, el, new SpendResolver(effect, 3, CreateCardResolver.builder()
+                                    .withCard(new ServantOfDarkness())
+                                    .withTeam(owner.team)
+                                    .withStatus(CardStatus.HAND)
+                                    .withPos(-1)
+                                    .build()));
                     }
                 });
             }

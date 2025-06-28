@@ -41,7 +41,12 @@ public class MischievousSpirit extends MinionText {
                 return new ResolverWithDescription(DESCRIPTION, new NecromancyResolver(this, 3, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new CreateCardResolver(new Ghost(), owner.team, CardStatus.BOARD, owner.getIndex() + 1));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new Ghost())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(owner.getIndex() + 1)
+                                .build());
                     }
                 }));
             }

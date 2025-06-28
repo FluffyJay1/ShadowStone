@@ -74,7 +74,12 @@ public class TenKilometerRun extends SpellText {
                                     Effect buff = SelectRandom.from(choices);
                                     this.resolve(b, rq, el, new AddEffectResolver(c, buff));
                                 });
-                        this.resolve(b, rq, el, new CreateCardResolver(new EverySingleDay(), owner.team, CardStatus.HAND, -1));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new EverySingleDay())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.HAND)
+                                .withTeam(-1)
+                                .build());
                     }
                 });
             }

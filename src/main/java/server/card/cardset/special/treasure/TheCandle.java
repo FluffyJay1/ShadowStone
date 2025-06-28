@@ -44,7 +44,12 @@ public class TheCandle extends SpellText {
                         this.resolve(b, rq, el, new DamageResolver(effect, targets, 4, true,
                                 new EventAnimationDamageAOEFire(owner.team * -1, false)));
                         int shufflePos = SelectRandom.positionsToAdd(owner.player.getDeck().size(), 1).get(0);
-                        this.resolve(b, rq, el, new CreateCardResolver(new TheCandle(), owner.team, CardStatus.DECK, shufflePos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new TheCandle())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.DECK)
+                                .withPos(shufflePos)
+                                .build());
                     }
                 });
             }

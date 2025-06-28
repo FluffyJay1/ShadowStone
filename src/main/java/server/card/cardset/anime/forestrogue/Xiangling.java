@@ -64,12 +64,17 @@ public class Xiangling extends MinionText {
                 return new ResolverWithDescription(UNLEASH_DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        CreateCardResolver ccr = this.resolve(b, rq, el, new CreateCardResolver(new Guoba(), owner.team, CardStatus.BOARD, owner.getIndex() + 1));
                         int x = owner.finalStats.get(Stat.MAGIC);
                         Effect countdown = new Effect("<b>Countdown(" + x + ")</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
                                 .set(Stat.COUNTDOWN, x)
                                 .build());
-                        this.resolve(b, rq, el, new AddEffectResolver(ccr.event.successfullyCreatedCards, countdown));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new Guoba())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(owner.getIndex() + 1)
+                                .withAdditionalEffectForAll(countdown)
+                                .build());
                     }
                 });
             }

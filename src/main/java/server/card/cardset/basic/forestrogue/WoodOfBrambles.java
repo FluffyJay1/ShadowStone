@@ -46,7 +46,12 @@ public class WoodOfBrambles extends AmuletText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> cards = List.of(new Fairy(), new Fairy());
                         List<Integer> pos = List.of(-1, -1);
-                        this.resolve(b, rq, el, new CreateCardResolver(cards, effect.owner.team, CardStatus.HAND, pos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCards(cards)
+                                .withTeam(effect.owner.team)
+                                .withStatus(CardStatus.HAND)
+                                .withPos(pos)
+                                .build());
                     }
                 });
             }

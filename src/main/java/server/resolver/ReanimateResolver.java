@@ -39,7 +39,12 @@ public class ReanimateResolver extends Resolver {
                             .filter(c -> c.finalBasicStats.get(Stat.COST) == cost)
                             .collect(Collectors.toList());
                     MinionText selected = ((Minion) SelectRandom.from(highest)).getCardText();
-                    CreateCardResolver ccr = this.resolve(b, rq, el, new CreateCardResolver(selected, this.p.team, CardStatus.BOARD, this.pos));
+                    CreateCardResolver ccr = this.resolve(b, rq, el, CreateCardResolver.builder()
+                            .withCard(selected)
+                            .withTeam(this.p.team)
+                            .withStatus(CardStatus.BOARD)
+                            .withPos(this.pos)
+                            .build());
                     if (ccr.event.successful.get(0)) {
                         this.reanimated = (Minion) ccr.event.cards.get(0);
                     }

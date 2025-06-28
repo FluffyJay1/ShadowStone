@@ -49,7 +49,12 @@ public class OneHundredSitups extends SpellText {
                                     Effect buff = new EffectStatChange("+2/+2/+1 (from <b>" + NAME + "</b>).", 2, 2, 1);
                                     this.resolve(b, rq, el, new AddEffectResolver(c, buff));
                                 });
-                        this.resolve(b, rq, el, new CreateCardResolver(new OneHundredSquats(), owner.team, CardStatus.HAND, -1));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new OneHundredSquats())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.HAND)
+                                .withPos(-1)
+                                .build());
                     }
                 });
             }

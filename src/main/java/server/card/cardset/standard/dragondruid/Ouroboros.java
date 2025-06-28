@@ -79,7 +79,12 @@ public class Ouroboros extends MinionText {
                         owner.player.getLeader().ifPresent(leader -> {
                             this.resolve(b, rq, el, new RestoreResolver(effect, leader, 4));
                         });
-                        this.resolve(b, rq, el, new CreateCardResolver(new Ouroboros(), owner.team, CardStatus.HAND, -1));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new Ouroboros())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.HAND)
+                                .withPos(-1)
+                                .build());
                     }
                 });
             }

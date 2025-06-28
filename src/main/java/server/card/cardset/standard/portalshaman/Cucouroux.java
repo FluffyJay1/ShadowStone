@@ -44,7 +44,12 @@ public class Cucouroux extends MinionText {
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new SpendResolver(effect, 2, new CreateCardResolver(new Camieux(), owner.team, CardStatus.BOARD, owner.getIndex() + 1)));
+                        this.resolve(b, rq, el, new SpendResolver(effect, 2, CreateCardResolver.builder()
+                                    .withCard(new Camieux())
+                                    .withTeam(owner.team)
+                                    .withStatus(CardStatus.BOARD)
+                                    .withPos(owner.getIndex() + 1)
+                                    .build()));
                     }
                 });
             }

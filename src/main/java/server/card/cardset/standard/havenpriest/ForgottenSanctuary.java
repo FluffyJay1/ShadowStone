@@ -52,7 +52,12 @@ public class ForgottenSanctuary extends AmuletText {
                 return new ResolverWithDescription(BATTLECRY_DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new CreateCardResolver(new Barong(), owner.team, CardStatus.BOARD, owner.getIndex() + 1));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new Barong())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(owner.getIndex() + 1)
+                                .build());
                     }
                 });
             }
@@ -71,7 +76,12 @@ public class ForgottenSanctuary extends AmuletText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         int pos = ((BoardObject) owner).getRelevantBoardPos(); // startpos
-                        this.resolve(b, rq, el, new CreateCardResolver(new Barong(), owner.team, CardStatus.BOARD, pos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new Barong())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(pos)
+                                .build());
                     }
                 });
             }

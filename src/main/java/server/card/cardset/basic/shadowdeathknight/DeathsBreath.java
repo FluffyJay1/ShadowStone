@@ -46,7 +46,12 @@ public class DeathsBreath extends SpellText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> cardTexts = Collections.nCopies(3, new Zombie());
                         List<Integer> pos = Collections.nCopies(3, -1);
-                        this.resolve(b, rq, el, new CreateCardResolver(cardTexts, owner.team, CardStatus.BOARD, pos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCards(cardTexts)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(pos)
+                                .build());
                         this.resolve(b, rq, el, new NecromancyResolver(effect, 6, new Resolver(false) {
                             @Override
                             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {

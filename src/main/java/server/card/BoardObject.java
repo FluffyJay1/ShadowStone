@@ -10,7 +10,7 @@ import utils.HistoricalList;
 
 import java.util.List;
 
-public class BoardObject extends Card {
+public abstract class BoardObject extends Card {
     public int lastBoardPos = 0; // After leaving board (e.g. to graveyard), keep a record of where it was last
     public int lastBoardEpoch = 0; // see HistoricalList.java
 

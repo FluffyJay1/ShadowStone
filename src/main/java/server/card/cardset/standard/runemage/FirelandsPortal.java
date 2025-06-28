@@ -56,7 +56,12 @@ public class FirelandsPortal extends SpellText {
                         });
                         CardText randomCard = SelectRandom.from(CardSet.PLAYABLE_SET.get().stream().filter(ct -> ct instanceof MinionText && ct.getTooltip().cost == 6).toList());
                         if (randomCard != null) {
-                            this.resolve(b, rq, el, new CreateCardResolver(randomCard, owner.team, CardStatus.BOARD, -1));
+                            this.resolve(b, rq, el, CreateCardResolver.builder()
+                                    .withCard(randomCard)
+                                    .withTeam(owner.team)
+                                    .withStatus(CardStatus.BOARD)
+                                    .withPos(-1)
+                                    .build());
                         }
                     }
                 });

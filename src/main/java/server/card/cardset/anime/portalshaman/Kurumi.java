@@ -50,7 +50,12 @@ public class Kurumi extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> texts = Collections.nCopies(2, new Kurumi());
                         List<Integer> pos = List.of(owner.getIndex(), owner.getIndex() + 2);
-                        this.resolve(b, rq, el, new CreateCardResolver(texts, owner.team, CardStatus.BOARD, pos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCards(texts)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(pos)
+                                .build());
                     }
                 });
             }

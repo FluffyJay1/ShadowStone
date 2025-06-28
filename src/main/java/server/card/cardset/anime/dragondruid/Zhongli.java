@@ -69,7 +69,12 @@ public class Zhongli extends MinionText {
                 return new ResolverWithDescription(UNLEASH_DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new CreateCardResolver(new StoneStele(), owner.team, CardStatus.BOARD, owner.getIndex() + 1));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new StoneStele())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(owner.getIndex() + 1)
+                                .build());
                         int x = owner.finalStats.get(Stat.MAGIC);
                         Effect shield = new Effect("<b>Shield(" + x + ")</b> until the end of the opponent's turn (from <b>" + NAME + "</b>).", EffectStats.builder()
                                 .change(Stat.SHIELD, x)

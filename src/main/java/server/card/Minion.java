@@ -245,6 +245,17 @@ public class Minion extends BoardObject {
     }
 
     @Override
+    public void appendToTemplateStringBuilder(StringBuilder builder) {
+        super.appendToTemplateStringBuilder(builder);
+        builder.append(this.health).append(" ");
+    }
+
+    @Override
+    public void loadExtraTemplateStringParams(Board b, StringTokenizer st) {
+        this.health = Integer.parseInt(st.nextToken());
+    }
+
+    @Override
     public TooltipMinion getTooltip() {
         return (TooltipMinion) super.getTooltip();
     }

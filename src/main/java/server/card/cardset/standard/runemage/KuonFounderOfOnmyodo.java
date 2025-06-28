@@ -58,7 +58,12 @@ public class KuonFounderOfOnmyodo extends MinionText {
                             public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                                 List<CardText> summons = List.of(new CelestialShikigami(), new DemonicShikigami(), new PaperShikigami());
                                 List<Integer> pos = IntStream.range(owner.getIndex() + 1, owner.getIndex() + 1 + summons.size()).boxed().toList();
-                                this.resolve(b, rq, el, new CreateCardResolver(summons, owner.team, CardStatus.BOARD, pos));
+                                this.resolve(b, rq, el, CreateCardResolver.builder()
+                                        .withCards(summons)
+                                        .withTeam(owner.team)
+                                        .withStatus(CardStatus.BOARD)
+                                        .withPos(pos)
+                                        .build());
                             }
                         });
                     }

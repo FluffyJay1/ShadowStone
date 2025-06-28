@@ -402,7 +402,7 @@ public abstract class Card implements Indexable, StringBuildable {
     @Override
     public void appendStringToBuilder(StringBuilder builder) {
         builder.append(this.getRef()).append(" ").append(this.getClass().getName()).append(" ").append(this.team).append(" ")
-                .append(this.alive).append(" ").append(this.cardPosToString()).append(this.basicEffects.size()).append(" ");
+                .append(this.alive).append(" ").append(this.cardPosToString()).append(this.spellboosts).append(" ").append(this.basicEffects.size()).append(" ");
         for (Effect e : this.basicEffects) {
             e.appendStringToBuilder(builder);
         }
@@ -410,6 +410,39 @@ public abstract class Card implements Indexable, StringBuildable {
         for (Effect e : this.effects) {
             e.appendStringToBuilder(builder);
         }
+    }
+
+    // for "summon a copy of x" effects
+    // things like cardpos and basic effects don't matter
+    public String toTemplateString() {
+        StringBuilder builder = new StringBuilder();
+        this.appendToTemplateStringBuilder(builder);
+        return builder.toString();
+    }
+
+    public void appendToTemplateStringBuilder(StringBuilder builder) {
+        builder.append(this.cardText.toString()).append(this.spellboosts).append(" ");
+        builder.append(this.effects.size()).append(" ");
+        for (Effect e : this.effects) {
+            e.appendStringToBuilder(builder);
+        }
+    }
+
+    public static Card fromTemplateString(Board b, StringTokenizer st) {
+        CardText cardText = CardText.fromString(st.nextToken());
+        Card c = cardText.constructInstance(b);
+        c.spellboosts = Integer.parseInt(st.nextToken());
+        int numEffects = Integer.parseInt(st.nextToken());
+        for (int i = 0; i < numEffects; i++) {
+            Effect e = Effect.fromString(b, st);
+            c.addEffect(false, e);
+        }
+        c.loadExtraTemplateStringParams(b, st);
+        return c;
+    }
+
+    public void loadExtraTemplateStringParams(Board b, StringTokenizer st) {
+        
     }
 
     public String toReference() {

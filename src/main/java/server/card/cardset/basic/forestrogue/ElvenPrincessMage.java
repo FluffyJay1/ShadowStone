@@ -46,12 +46,16 @@ public class ElvenPrincessMage extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> c = Collections.nCopies(2, new Fairy());
                         List<Integer> pos = Collections.nCopies(2, -1);
-                        CreateCardResolver ccr = new CreateCardResolver(c, owner.team, CardStatus.HAND, pos);
-                        this.resolve(b, rq, el, ccr);
                         Effect costBuff = new Effect("Cost set to 0 (from <b>Elven Princess Mage</b>).", EffectStats.builder()
                                 .set(Stat.COST, 0)
                                 .build());
-                        this.resolve(b, rq, el, new AddEffectResolver(ccr.event.successfullyCreatedCards, costBuff));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                            .withCards(c)
+                            .withTeam(owner.team)
+                            .withStatus(CardStatus.HAND)
+                            .withPos(pos)
+                            .withAdditionalEffectForAll(costBuff)
+                            .build());
                         int x = owner.finalStats.get(Stat.MAGIC);
                         Effect buff = new Effect("+" + x + "/+0/+0 and <b>Rush</b> until the end of the turn (from <b>Unleash</b>).", EffectStats.builder()
                                 .change(Stat.ATTACK, x)

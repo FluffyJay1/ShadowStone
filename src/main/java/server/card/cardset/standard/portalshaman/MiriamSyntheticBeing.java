@@ -64,7 +64,12 @@ public class MiriamSyntheticBeing extends MinionText {
                                 if (selection == 0) {
                                     List<CardText> cards = List.of(new RadiantArtifact(), new PrimeArtifact());
                                     List<Integer> pos = SelectRandom.positionsToAdd(owner.player.getDeck().size(), 2);
-                                    this.resolve(b, rq, el, new CreateCardResolver(cards, owner.team, CardStatus.DECK, pos));
+                                    this.resolve(b, rq, el, CreateCardResolver.builder()
+                                            .withCards(cards)
+                                            .withTeam(owner.team)
+                                            .withStatus(CardStatus.DECK)
+                                            .withPos(pos)
+                                            .build());
                                 } else {
                                     Card artifact = SelectRandom.from(owner.player.getDeck().stream()
                                             .filter(c -> c.finalTraits.contains(CardTrait.ARTIFACT))

@@ -44,7 +44,13 @@ public class BlinkFox extends MinionText {
                             ClassCraft craft = l.getCardText().getTooltip().craft;
                             CardText randomCard = SelectRandom.from(CardSet.PLAYABLE_SET.get().stream().filter(ct -> ct.getTooltip().craft.equals(craft)).toList());
                             if (randomCard != null) {
-                                this.resolve(b, rq, el, new CreateCardResolver(randomCard, owner.team, CardStatus.HAND, -1, CardVisibility.ALLIES));
+                                this.resolve(b, rq, el, CreateCardResolver.builder()
+                                        .withCard(randomCard)
+                                        .withTeam(owner.team)
+                                        .withStatus(CardStatus.HAND)
+                                        .withPos(-1)
+                                        .withVisibility(CardVisibility.ALLIES)
+                                        .build());
                             }
                         });
                     }

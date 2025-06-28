@@ -42,7 +42,12 @@ public class EffectLastWordsSummon extends Effect {
                     cardpos.add(pos);
                     pos++;
                 }
-                this.resolve(b, rq, el, new CreateCardResolver(boardObjectTexts, effect.owner.team * effect.teamMultiplier, CardStatus.BOARD, cardpos));
+                this.resolve(b, rq, el, CreateCardResolver.builder()
+                        .withCards(boardObjectTexts)
+                        .withTeam(effect.owner.team * effect.teamMultiplier)
+                        .withStatus(CardStatus.BOARD)
+                        .withPos(cardpos)
+                        .build());
             }
         });
     }

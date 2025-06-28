@@ -92,7 +92,12 @@ public class LathamHonorableKnight extends MinionText {
             return new ResolverWithDescription(EFFECT_DESCRIPTION, new Resolver(false) {
                 @Override
                 public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                    this.resolve(b, rq, el, new CreateCardResolver(new Knight(), owner.team, CardStatus.BOARD, ema.m1.getIndex() + 1));
+                    this.resolve(b, rq, el, CreateCardResolver.builder()
+                            .withCard(new Knight())
+                            .withTeam(owner.team)
+                            .withStatus(CardStatus.BOARD)
+                            .withPos(ema.m1.getIndex() + 1)
+                            .build());
                 }
             });
         }

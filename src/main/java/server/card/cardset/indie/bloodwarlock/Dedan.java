@@ -49,7 +49,12 @@ public class Dedan extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> m = Collections.nCopies(2, new Elsen());
                         List<Integer> pos = List.of(owner.getIndex(), owner.getIndex() + 2);
-                        this.resolve(b, rq, el, new CreateCardResolver(m, owner.team, CardStatus.BOARD, pos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCards(m)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(pos)
+                                .build());
                     }
                 });
             }

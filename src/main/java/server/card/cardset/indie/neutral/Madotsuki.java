@@ -57,7 +57,13 @@ public class Madotsuki extends MinionText {
                         int x = owner.finalStats.get(Stat.MAGIC);
                         List<CardText> selected = SelectRandom.from(poss, x);
                         List<Integer> pos = Collections.nCopies(x, -1);
-                        this.resolve(b, rq, el, new CreateCardResolver(selected, owner.team, CardStatus.HAND, pos, CardVisibility.ALLIES));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCards(selected)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.HAND)
+                                .withPos(pos)
+                                .withVisibility(CardVisibility.ALLIES)
+                                .build());
                     }
                 });
             }
@@ -81,7 +87,13 @@ public class Madotsuki extends MinionText {
                         int x = owner.finalStats.get(Stat.MAGIC);
                         List<CardText> selected = SelectRandom.from(poss, x);
                         List<Integer> pos = Collections.nCopies(x, -1);
-                        this.resolve(b, rq, el, new CreateCardResolver(selected, owner.team, CardStatus.HAND, pos, CardVisibility.ALLIES));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCards(selected)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.HAND)
+                                .withPos(pos)
+                                .withVisibility(CardVisibility.ALLIES)
+                                .build());
                     }
                 });
             }

@@ -51,7 +51,12 @@ public class Substitution extends SpellText {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             this.resolve(b, rq, el, new BanishResolver((c)));
                         });
-                        this.resolve(b, rq, el, new CreateCardResolver(new Puppet(), owner.team, CardStatus.HAND, -1));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new Puppet())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.HAND)
+                                .withPos(-1)
+                                .build());
                     }
                 });
             }

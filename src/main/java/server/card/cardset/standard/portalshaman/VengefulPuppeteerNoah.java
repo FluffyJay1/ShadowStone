@@ -49,7 +49,12 @@ public class VengefulPuppeteerNoah extends MinionText {
                 return new ResolverWithDescription(BATTLECRY_DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        this.resolve(b, rq, el, new CreateCardResolver(List.of(new Puppet(), new Puppet()), owner.team, CardStatus.HAND, List.of(-1, -1)));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCards(List.of(new Puppet(), new Puppet()))
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.HAND)
+                                .withPos(List.of(-1, -1))
+                                .build());
                         List<Card> buffTargets = owner.player.getHand().stream()
                                 .filter(c -> c.getCardText() instanceof Puppet)
                                 .collect(Collectors.toList());

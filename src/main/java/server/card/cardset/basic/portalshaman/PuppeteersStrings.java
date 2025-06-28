@@ -42,7 +42,12 @@ public class PuppeteersStrings extends SpellText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> cards = Collections.nCopies(3, new Puppet());
                         List<Integer> pos = Collections.nCopies(3, -1);
-                        this.resolve(b, rq, el, new CreateCardResolver(cards, owner.team, CardStatus.HAND, pos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCards(cards)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.HAND)
+                                .withPos(pos)
+                                .build());
                         List<Minion> targets = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
                         this.resolve(b, rq, el, new DamageResolver(effect, targets, 1, true, new EventAnimationDamageAOESlice(owner.team * -1, false)));
                     }

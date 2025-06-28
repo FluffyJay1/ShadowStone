@@ -54,7 +54,12 @@ public class DemonlordEachtar extends MinionText {
                         int lastPos = owner.getIndex() + 1;
                         while (p.getPlayArea().size() < p.maxPlayAreaSize
                                 && this.resolve(b, rq, el,
-                                new NecromancyResolver(effect, 3, new CreateCardResolver(new Zombie(), owner.team, CardStatus.BOARD, lastPos)))
+                                new NecromancyResolver(effect, 3, CreateCardResolver.builder()
+                                    .withCard(new Zombie())
+                                    .withTeam(owner.team)
+                                    .withStatus(CardStatus.BOARD)
+                                    .withPos(lastPos)
+                                    .build()))
                                 .wasSuccessful()) {
                             lastPos++;
                         }

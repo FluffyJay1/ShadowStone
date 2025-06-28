@@ -49,7 +49,12 @@ public class MechWingSwordsman extends MinionText {
                             selected.add(SelectRandom.from(List.of(new AncientArtifact(), new AnalyzingArtifact(), new MysticArtifact(), new RadiantArtifact())));
                         }
                         List<Integer> pos = SelectRandom.positionsToAdd(owner.player.getDeck().size(), 2);
-                        this.resolve(b, rq, el, new CreateCardResolver(selected, owner.team, CardStatus.DECK, pos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCards(selected)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.DECK)
+                                .withPos(pos)
+                                .build());
                     }
                 });
             }

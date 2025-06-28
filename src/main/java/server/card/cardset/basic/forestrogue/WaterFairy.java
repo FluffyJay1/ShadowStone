@@ -32,7 +32,12 @@ public class WaterFairy extends MinionText {
 
             @Override
             public ResolverWithDescription lastWords() {
-                return new ResolverWithDescription(DESCRIPTION, new CreateCardResolver(List.of(new Fairy()), owner.team, CardStatus.HAND, List.of(-1)));
+                return new ResolverWithDescription(DESCRIPTION, CreateCardResolver.builder()
+                        .withCard(new Fairy())
+                        .withTeam(owner.team)
+                        .withStatus(CardStatus.HAND)
+                        .withPos(-1)
+                        .build());
             }
 
             @Override

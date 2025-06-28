@@ -42,7 +42,13 @@ public class MysterianKnowledge extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         CardText choice = SelectRandom.from(List.of(new MysterianMissile(), new MysterianCircle()));
-                        this.resolve(b, rq, el, new CreateCardResolver(choice, owner.team, CardStatus.HAND, -1, CardVisibility.ALLIES));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(choice)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.HAND)
+                                .withPos(-1)
+                                .withVisibility(CardVisibility.ALLIES)
+                                .build());
                     }
                 });
             }

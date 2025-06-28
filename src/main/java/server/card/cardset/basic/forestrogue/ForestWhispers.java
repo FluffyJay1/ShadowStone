@@ -53,7 +53,12 @@ public class ForestWhispers extends SpellText {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             this.resolve(b, rq, el, new TransformResolver(c, new Fairy()));
                         });
-                        this.resolve(b, rq, el, new CreateCardResolver(new Fairy(), owner.team, CardStatus.HAND, -1));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new Fairy())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.HAND)
+                                .withPos(-1)
+                                .build());
                     }
                 });
             }

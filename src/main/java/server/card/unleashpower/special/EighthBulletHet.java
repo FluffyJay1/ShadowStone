@@ -22,7 +22,7 @@ import java.util.List;
 
 public class EighthBulletHet extends UnleashPowerText {
     public static final String NAME = "Eighth Bullet Het";
-    public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. Summon a plain copy of it with <b>Countdown(1)</b>.";
+    public static final String DESCRIPTION = "<b>Unleash</b> an allied minion. Summon an exact copy of it with <b>Countdown(1)</b>.";
     public static final ClassCraft CRAFT = ClassCraft.PORTALSHAMAN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
@@ -41,14 +41,16 @@ public class EighthBulletHet extends UnleashPowerText {
                 return new ResolverWithDescription(resolverDescription, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        CreateCardResolver ccr = this.resolve(b, rq, el, new CreateCardResolver(target.getCardText(), owner.team, CardStatus.BOARD,
-                                target.getRelevantBoardPos() + 1));
                         Effect debuff = new Effect("<b>Countdown(1)</b> (from <b>" + NAME + "</b>)", EffectStats.builder()
                                 .set(Stat.COUNTDOWN, 1)
                                 .build());
-                        for (Card c : ccr.event.successfullyCreatedCards) {
-                            this.resolve(b, rq, el, new AddEffectResolver(c, debuff));
-                        }
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCardToCopy(target)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(target.getRelevantBoardPos() + 1)
+                                .withAdditionalEffectForAll(debuff)
+                                .build());
                     }
                 });
             }

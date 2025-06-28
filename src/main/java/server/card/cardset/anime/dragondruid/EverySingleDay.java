@@ -44,7 +44,12 @@ public class EverySingleDay extends SpellText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<BoardObject> relevant = owner.board.getBoardObjects(owner.team * -1, false, true, true, true).collect(Collectors.toList());
                         this.resolve(b, rq, el, new MuteResolver(relevant, true));
-                        this.resolve(b, rq, el, new CreateCardResolver(new OneHundredPushups(), owner.team, CardStatus.HAND, -1));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new OneHundredPushups())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.HAND)
+                                .withPos(-1)
+                                .build());
                     }
                 });
             }

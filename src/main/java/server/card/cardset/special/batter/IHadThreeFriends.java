@@ -18,6 +18,7 @@ import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
 import server.resolver.util.ResolverQueue;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -63,17 +64,25 @@ public class IHadThreeFriends extends SpellText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> toCreate = List.of(new Alpha(), new Omega(), new Epsilon());
                         List<Integer> pos = Collections.nCopies(3, -1);
-                        CreateCardResolver ccr = new CreateCardResolver(toCreate, owner.team, CardStatus.BOARD, pos);
-                        this.resolve(b, rq, el, ccr);
+                        Effect rush = new Effect("", EffectStats.builder()
+                                .set(Stat.RUSH, 1)
+                                .build());
                         int option = ((ModalTargetList) targetList.get(0)).targeted.get(0);
-                        if (ccr.event.successful.get(option)) {
-                            // give it rush
-                            Effect rush = new Effect("", EffectStats.builder()
-                                    .set(Stat.RUSH, 1)
-                                    .build()
-                            );
-                            this.resolve(b, rq, el, new AddEffectResolver(ccr.event.cards.get(option), rush));
+                        List<List<Effect>> buffs = new ArrayList<>();
+                        for (int i = 0; i < option; i++) {
+                            buffs.add(List.of());
                         }
+                        buffs.add(List.of(rush));
+                        for (int i = option + 1; i < 3; i++) {
+                            buffs.add(List.of());
+                        }
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                            .withCards(toCreate)
+                            .withTeam(owner.team)
+                            .withStatus(CardStatus.BOARD)
+                            .withPos(pos)
+                            .withAdditionalEffects(buffs)
+                            .build());
                     }
                 });
             }

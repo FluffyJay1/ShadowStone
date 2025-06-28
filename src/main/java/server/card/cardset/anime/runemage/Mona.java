@@ -66,13 +66,18 @@ public class Mona extends MinionText {
                 return new ResolverWithDescription(UNLEASH_DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        CreateCardResolver ccr = this.resolve(b, rq, el, new CreateCardResolver(new PhantomOfFate(), owner.team, CardStatus.BOARD, owner.getIndex() + 1));
                         int x = owner.finalStats.get(Stat.MAGIC);
                         Effect buff = new Effect("+0/+" + x + "/+" + x + " (from <b>Mona</b>).", EffectStats.builder()
                                 .change(Stat.MAGIC, x)
                                 .change(Stat.HEALTH, x)
                                 .build());
-                        this.resolve(b, rq, el, new AddEffectResolver(ccr.event.successfullyCreatedCards, buff));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new PhantomOfFate())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(owner.getIndex() + 1)
+                                .withAdditionalEffectForAll(buff)
+                                .build());
                     }
                 });
             }

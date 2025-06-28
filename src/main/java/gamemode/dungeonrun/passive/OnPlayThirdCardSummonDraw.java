@@ -43,7 +43,12 @@ public class OnPlayThirdCardSummonDraw extends Passive {
                     return new ResolverWithDescription(DESCRIPTION, new Resolver(false) {
                         @Override
                         public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                            this.resolve(b, rq, el, new CreateCardResolver(new HolyflameTiger(), owner.team, CardStatus.BOARD, -1));
+                            this.resolve(b, rq, el, CreateCardResolver.builder()
+                                    .withCard(new HolyflameTiger())
+                                    .withTeam(owner.team)
+                                    .withStatus(CardStatus.BOARD)
+                                    .withPos(-1)
+                                    .build());
                             this.resolve(b, rq, el, new DrawResolver(owner.player, 1));
                         }
                     });

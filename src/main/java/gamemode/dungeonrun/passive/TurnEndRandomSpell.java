@@ -14,7 +14,6 @@ import server.card.effect.Effect;
 import server.card.effect.EffectStats;
 import server.card.effect.Stat;
 import server.event.Event;
-import server.resolver.AddEffectResolver;
 import server.resolver.CreateCardResolver;
 import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;
@@ -47,11 +46,17 @@ public class TurnEndRandomSpell extends Passive {
                 public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                     if (owner.player.getHand().size() <= 5) {
                         CardText randomCard = SelectRandom.from(CardSet.PLAYABLE_SET.get().stream().filter(ct -> ct instanceof SpellText).toList());
-                        CreateCardResolver ccr = this.resolve(b, rq, el, new CreateCardResolver(randomCard, owner.team, CardStatus.HAND, -1, CardVisibility.ALLIES));
                         Effect costBuff = new Effect("-2 cost (from passive).", EffectStats.builder()
                                 .change(Stat.COST, -2)
                                 .build());
-                        this.resolve(b, rq, el, new AddEffectResolver(ccr.event.successfullyCreatedCards, costBuff));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(randomCard)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.HAND)
+                                .withPos(-1)
+                                .withVisibility(CardVisibility.ALLIES)
+                                .withAdditionalEffectForAll(costBuff)
+                                .build());
                     }
                 }
             });

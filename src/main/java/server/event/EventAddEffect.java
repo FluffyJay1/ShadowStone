@@ -54,26 +54,9 @@ public class EventAddEffect extends Event {
             if (c instanceof Minion) {
                 Minion m = ((Minion) c);
                 this.oldHealth.set(i, m.health);
-                EffectStats es = e.effectStats;
-                if (es.set.contains(Stat.HEALTH)) {
-                    m.health = es.set.get(Stat.HEALTH);
-                }
-                if (es.change.contains(Stat.HEALTH) && es.change.get(Stat.HEALTH) > 0) {
-                    m.health += es.change.get(Stat.HEALTH);
-                }
-                if (c.finalStats.get(Stat.HEALTH) < m.health) {
-                    m.health = m.finalStats.get(Stat.HEALTH);
-                }
-                if (m.health <= 0 && m.alive) {
-                    m.alive = false;
-                    this.markedForDeath.add(m);
-                }
+                EventCommon.adjustMinionHealthAfterAddingEffect(m, clonede);
             }
-            if (c.finalStats.contains(Stat.COUNTDOWN)
-                    && c.finalStats.get(Stat.COUNTDOWN) <= 0 && c.alive) {
-                c.alive = false;
-                this.markedForDeath.add(c);
-            }
+            EventCommon.markForDeathIfRequired(c, markedForDeath);
         }
     }
 

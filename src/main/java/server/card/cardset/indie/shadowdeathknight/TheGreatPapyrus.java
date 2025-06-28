@@ -55,7 +55,12 @@ public class TheGreatPapyrus extends MinionText {
 
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
-                return new ResolverWithDescription(BATTLECRY_DESCRIPTION, new CreateCardResolver(new Mercy(), owner.team * -1, CardStatus.HAND, -1));
+                return new ResolverWithDescription(BATTLECRY_DESCRIPTION, CreateCardResolver.builder()
+                        .withCard(new Mercy())
+                        .withTeam(owner.team * -1)
+                        .withStatus(CardStatus.HAND)
+                        .withPos(-1)
+                        .build());
             }
 
             @Override
@@ -98,12 +103,17 @@ public class TheGreatPapyrus extends MinionText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         int pos = ((BoardObject) effect.owner).getRelevantBoardPos();
-                        CreateCardResolver ccr = this.resolve(b, rq, el, new CreateCardResolver(new Sans(), owner.team, CardStatus.BOARD, pos));
                         int x = owner.finalStats.get(Stat.MAGIC);
                         Effect buff = new Effect("+0/+" + x + "/+0 (from <b>" + NAME + "</b>).", EffectStats.builder()
                                 .change(Stat.MAGIC, x)
                                 .build());
-                        this.resolve(b, rq, el, new AddEffectResolver(ccr.event.successfullyCreatedCards, buff));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new Sans())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(pos)
+                                .withAdditionalEffectForAll(buff)
+                                .build());
                     }
                 });
             }

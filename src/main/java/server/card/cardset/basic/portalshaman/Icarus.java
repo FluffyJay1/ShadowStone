@@ -52,7 +52,12 @@ public class Icarus extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Integer> pos = SelectRandom.positionsToAdd(owner.player.getDeck().size(), 2);
                         List<CardText> cards = List.of(new AncientArtifact(), new AncientArtifact());
-                        this.resolve(b, rq, el, new CreateCardResolver(cards, owner.team, CardStatus.DECK, pos));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCards(cards)
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.DECK)
+                                .withPos(pos)
+                                .build());
                     }
                 });
             }

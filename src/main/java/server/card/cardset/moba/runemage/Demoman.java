@@ -70,12 +70,17 @@ public class Demoman extends MinionText {
                 return new ResolverWithDescription(UNLEASH_DESCRIPTION, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
-                        CreateCardResolver ccr = this.resolve(b, rq, el, new CreateCardResolver(new StickyTrap(), owner.team, CardStatus.BOARD, owner.getIndex() + 1));
                         int x = owner.finalStats.get(Stat.MAGIC);
                         Effect buff = new Effect("+0/+0/+" + x + " (from <b>" + NAME + "</b>).", EffectStats.builder()
                                 .change(Stat.HEALTH, x)
                                 .build());
-                        this.resolve(b, rq, el, new AddEffectResolver(ccr.event.successfullyCreatedCards, buff));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new StickyTrap())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(owner.getIndex() + 1)
+                                .withAdditionalEffectForAll(buff)
+                                .build());
                         Effect rush = new Effect("<b>Rush</b> (from <b>" + NAME + "</b>).", EffectStats.builder()
                                 .set(Stat.RUSH, 1)
                                 .build());

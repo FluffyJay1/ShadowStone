@@ -43,19 +43,9 @@ public class EventMuteEffect extends Event {
             if (c instanceof Minion) {
                 Minion m = ((Minion) c);
                 this.prevHealth.set(i, m.health);
-                if (m.finalStats.get(Stat.HEALTH) < m.health) {
-                    m.health = m.finalStats.get(Stat.HEALTH);
-                }
-                if (m.health <= 0 && m.alive) {
-                    m.alive = false;
-                    this.markedForDeath.add(m);
-                }
+                EventCommon.enforceMinionMaxHealth(m);
             }
-            if (c.finalStats.contains(Stat.COUNTDOWN)
-                    && c.finalStats.get(Stat.COUNTDOWN) <= 0 && c.alive) {
-                c.alive = false;
-                this.markedForDeath.add(c);
-            }
+            EventCommon.markForDeathIfRequired(c, markedForDeath);
         }
     }
 

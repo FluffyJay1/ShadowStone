@@ -36,7 +36,12 @@ public class SpreadingPlague extends SpellText {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         for (int i = 0; i < 6; i++) {
-                            this.resolve(b, rq, el, new CreateCardResolver(new ScarabBeetle(), owner.team, CardStatus.BOARD, -1));
+                            this.resolve(b, rq, el, CreateCardResolver.builder()
+                                    .withCard(new ScarabBeetle())
+                                    .withTeam(owner.team)
+                                    .withStatus(CardStatus.BOARD)
+                                    .withPos(-1)
+                                    .build());
                             int enemySize = (int) b.getMinions(owner.team * -1, false, true).count();
                             int alliedSize = (int) b.getMinions(owner.team, false, true).count();
                             if (enemySize <= alliedSize || owner.player.getPlayArea().size() == owner.player.maxPlayAreaSize) {

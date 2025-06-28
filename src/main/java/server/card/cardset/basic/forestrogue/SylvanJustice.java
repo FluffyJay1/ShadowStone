@@ -54,7 +54,12 @@ public class SylvanJustice extends SpellText {
                         getStillTargetableCards(Effect::getBattlecryTargetingSchemes, targetList, 0).findFirst().ifPresent(c -> {
                             this.resolve(b, rq, el, new DamageResolver(effect, (Minion) c, 3, true, new EventAnimationDamageArrow()));
                         });
-                        this.resolve(b, rq, el, new CreateCardResolver(new Fairy(), owner.team, CardStatus.HAND, -1));
+                        this.resolve(b, rq, el, CreateCardResolver.builder()
+                                .withCard(new Fairy())
+                                .withTeam(owner.team)
+                                .withStatus(CardStatus.HAND)
+                                .withPos(-1)
+                                .build());
                     }
                 });
             }

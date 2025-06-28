@@ -87,7 +87,12 @@ public class Aqua extends MinionText {
             @Override
             public ResolverWithDescription onTurnEndAllied() {
                 return new ResolverWithDescription(ONTURNEND_DESCRIPTION,
-                        new CreateCardResolver(new Zombie(), this.owner.team * -1, CardStatus.BOARD, -1));
+                        CreateCardResolver.builder()
+                                .withCard(new Zombie())
+                                .withTeam(this.owner.team * -1)
+                                .withStatus(CardStatus.BOARD)
+                                .withPos(-1)
+                                .build());
             }
 
             @Override
