@@ -3,7 +3,7 @@ package client.ui.interpolation.realvalue;
 import client.ui.interpolation.Interpolation;
 
 public class QuadraticInterpolationB implements Interpolation<Double> {
-    // model with a quadratic, setting the a in ax^2 + bx + c
+    // model with a quadratic, setting the b in ax^2 + bx + c
     final double a;
     final double b;
     final double c;

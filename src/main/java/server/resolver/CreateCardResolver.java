@@ -1,12 +1,10 @@
 package server.resolver;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import server.*;
 import server.card.*;
 import server.card.effect.Effect;
-import server.card.effect.Stat;
 import server.event.*;
 import server.resolver.util.ResolverQueue;
 
@@ -22,7 +20,7 @@ public class CreateCardResolver extends Resolver {
     private List<List<Effect>> effectsToAdd;
 
     // cards provided should be freshly constructed
-    public CreateCardResolver() {
+    private CreateCardResolver() {
         super(false);
     }
 
@@ -98,6 +96,10 @@ public class CreateCardResolver extends Resolver {
                 try {
                     Effect clonedEffect = e.clone();
                     card.addEffect(false, clonedEffect);
+                    if (card instanceof Minion) {
+                        Minion m = (Minion) card;
+                        EventCommon.adjustMinionHealthAfterAddingEffect(m, e);
+                    }
                 } catch (CloneNotSupportedException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();

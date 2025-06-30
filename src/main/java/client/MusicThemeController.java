@@ -11,6 +11,7 @@ import server.card.cardset.anime.neutral.Jotaro;
 import server.card.cardset.anime.portalshaman.AdultNatsumi;
 import server.card.cardset.anime.portalshaman.Kurumi;
 import server.card.cardset.anime.portalshaman.Natsumi;
+import server.card.cardset.anime.runemage.Megumin;
 import server.card.cardset.anime.runemage.Yoshino;
 import server.card.cardset.anime.swordpaladin.BerserkerSoul;
 import server.card.cardset.indie.bloodwarlock.Dedan;
@@ -28,6 +29,8 @@ import server.card.cardset.special.batter.Epsilon;
 import server.card.cardset.special.batter.Omega;
 import server.card.cardset.special.kurumi.CityOfDevouringTime;
 import server.card.cardset.special.omori.OmoriDidNotSuccumb;
+import server.card.effect.Stat;
+import server.event.eventgroup.EventGroupType;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -49,6 +52,13 @@ public class MusicThemeController {
     public static void initThemes() throws SlickException {
         // higher on the list = higher priority
         THEMES = List.of(
+                new Theme("music/explosion.ogg",
+                        b -> b.peekEventGroup() != null && b.peekEventGroup().type.equals(EventGroupType.UNLEASH)
+                                && b.peekEventGroup().cards.stream()
+                                        .anyMatch(c -> c.getCardText() instanceof Megumin
+                                                && c.finalStats.get(Stat.MAGIC) >= Megumin.MAGIC_THRESHOLD
+                                                && b.getPlayer(c.team).mana >= Megumin.MANA_THRESHOLD),
+                        false),
                 new Theme("music/fang_of_critias.ogg", b -> b.getMinions(0, false, true)
                         .anyMatch(m -> m.getFinalEffects(true).anyMatch(e -> e instanceof BerserkerSoul.EffectBerserkerSoul))),
                 new Theme("music/omori_omega.ogg", b -> cardInPlayMatches(b, bo -> bo.getCardText().equals(new OmoriDidNotSuccumb()) && b.getPlayerCard(bo.team, Player::getLeader).anyMatch(l -> l.health == 1))),
@@ -121,11 +131,16 @@ public class MusicThemeController {
     private static class Theme {
         private final Predicate<Board> playCondition;
         private final Music music;
+        private final boolean shouldLoop;
 
-        public Theme(String path, Predicate<Board> playCondition) throws SlickException {
+        public Theme(String path, Predicate<Board> playCondition, boolean shouldLoop) throws SlickException {
             // streaming works only if we don't seek
             this.music = new Music(path, true);
             this.playCondition = playCondition;
+            this.shouldLoop = shouldLoop;
+        }
+        public Theme(String path, Predicate<Board> playCondition) throws SlickException {
+            this(path, playCondition, true);
         }
 
         public boolean shouldPlay(Board b) {
@@ -141,7 +156,11 @@ public class MusicThemeController {
         }
 
         public void beginFadeIn() {
-            this.music.loop();
+            if (this.shouldLoop) {
+                this.music.loop();
+            } else {
+                this.music.play();
+            }
             this.music.setVolume(0);
             this.music.fade((int) (FADE_IN_TIME * 1000), 1, false);
         }

@@ -135,10 +135,10 @@ public class EventPutCard extends Event {
                     sourceP.getDeck().remove(card);
                 }
             }
-            // goes against flow
             for (Effect be : card.getEffects(true)) {
                 this.prevMute.get(i).add(be.mute);
             }
+            // goes against flow
             if (card.status.ordinal() < this.status.ordinal()) {
                 List<Effect> removedEffects = card.removeAdditionalEffects();
                 if (b instanceof ServerBoard) {
@@ -148,6 +148,9 @@ public class EventPutCard extends Event {
                     }
                 }
                 this.prevEffects.set(i, removedEffects);
+                for (Effect be : card.getEffects(true)) {
+                    be.mute = false;
+                }
                 card.spellboosts = 0;
                 if (card instanceof Minion) {
                     ((Minion) card).health = card.finalStats.get(Stat.HEALTH);

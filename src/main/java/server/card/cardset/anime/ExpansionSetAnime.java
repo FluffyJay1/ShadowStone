@@ -22,6 +22,7 @@ import server.card.cardset.anime.portalshaman.Kurumi;
 import server.card.cardset.anime.portalshaman.Natsumi;
 import server.card.cardset.anime.portalshaman.RaidenShogun;
 import server.card.cardset.anime.runemage.PhantomOfFate;
+import server.card.cardset.anime.runemage.Megumin;
 import server.card.cardset.anime.runemage.Mona;
 import server.card.cardset.anime.runemage.Yoshino;
 import server.card.cardset.anime.shadowdeathknight.Qiqi;
@@ -35,7 +36,7 @@ public class ExpansionSetAnime extends ExpansionSet {
             new YakshasMask(), new SesshouSakura(), new EyeOfStormyJudgement(), new AdultNatsumi());
     public static final CardSet PLAYABLE_SET = new CardSet(new Kurumi(), new KingCrimson(), new BerserkerSoul(), new Xiangling(), new Yoshino(),
             new Jotaro(), new Aqua(), new Guts(), new Qiqi(), new OneHundredPushups(), new Jean(), new Mona(), new Zhongli(), new Xiao(), new YaeMiko(),
-            new RaidenShogun(), new Paimon(), new HopOnAbandonedArchive(), new Natsumi());
+            new RaidenShogun(), new Paimon(), new HopOnAbandonedArchive(), new Natsumi(), new Megumin());
 
     @Override
     public CardSet getCards() {
