@@ -10,6 +10,7 @@ import server.card.cardset.anime.dragondruid.*;
 import server.card.cardset.anime.havenpriest.SesshouSakura;
 import server.card.cardset.anime.havenpriest.YaeMiko;
 import server.card.cardset.anime.neutral.Paimon;
+import server.card.cardset.anime.neutral.WhiteWhistle;
 import server.card.cardset.anime.forestrogue.Guoba;
 import server.card.cardset.anime.forestrogue.Xiangling;
 import server.card.cardset.anime.havenpriest.Aqua;
@@ -36,7 +37,7 @@ public class ExpansionSetAnime extends ExpansionSet {
             new YakshasMask(), new SesshouSakura(), new EyeOfStormyJudgement(), new AdultNatsumi());
     public static final CardSet PLAYABLE_SET = new CardSet(new Kurumi(), new KingCrimson(), new BerserkerSoul(), new Xiangling(), new Yoshino(),
             new Jotaro(), new Aqua(), new Guts(), new Qiqi(), new OneHundredPushups(), new Jean(), new Mona(), new Zhongli(), new Xiao(), new YaeMiko(),
-            new RaidenShogun(), new Paimon(), new HopOnAbandonedArchive(), new Natsumi(), new Megumin());
+            new RaidenShogun(), new Paimon(), new HopOnAbandonedArchive(), new Natsumi(), new Megumin(), new WhiteWhistle());
 
     @Override
     public CardSet getCards() {

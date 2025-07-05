@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import server.card.Card;
 import server.card.effect.*;
+import utils.SelectRandom;
 
 public abstract class CardTargetingScheme implements TargetingScheme<Card> {
     private final Effect creator;
@@ -44,13 +45,11 @@ public abstract class CardTargetingScheme implements TargetingScheme<Card> {
     }
 
     @Override
-    public void fillRandom(TargetList<Card> targetsToFill) {
-        List<Card> cards = this.creator.owner.board.getTargetableCards(this)
-                .filter(c -> this.canTarget(c) && !targetsToFill.targeted.contains(c))
-                .collect(Collectors.toCollection(ArrayList::new));
-        for (int i = targetsToFill.targeted.size(); i < this.maxtargets && cards.size() > 0; i++) {
-            targetsToFill.targeted.add(cards.remove((int) (Math.random() * cards.size())));
-        }
+    public TargetList<Card> generateRandomTargets() {
+        List<Card> targetable = this.creator.owner.board.getTargetableCards(this).toList();
+        TargetList<Card> ret = this.makeList();
+        ret.targeted = SelectRandom.from(targetable, this.maxtargets);
+        return ret;
     }
 
     @Override

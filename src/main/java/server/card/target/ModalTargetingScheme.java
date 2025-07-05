@@ -2,6 +2,7 @@ package server.card.target;
 
 import server.card.effect.Effect;
 import utils.PositionedList;
+import utils.SelectRandom;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,14 +60,11 @@ public class ModalTargetingScheme implements TargetingScheme<Integer> {
     }
 
     @Override
-    public void fillRandom(TargetList<Integer> targetsToFill) {
-        List<Integer> remaining = IntStream.range(0, this.options.size())
-                .filter(i -> !targetsToFill.targeted.contains(i))
-                .boxed()
-                .collect(Collectors.toCollection(ArrayList::new));
-        for (int i = targetsToFill.targeted.size(); i < this.numTargets && remaining.size() > 0; i++) {
-            targetsToFill.targeted.add(remaining.remove((int) (Math.random() * remaining.size())));
-        }
+    public TargetList<Integer> generateRandomTargets() {
+        List<Integer> targetable = this.getPossibleChoices();
+        TargetList<Integer> ret = this.makeList();
+        ret.targeted = SelectRandom.from(targetable, this.numTargets);
+        return ret;
     }
 
     @Override

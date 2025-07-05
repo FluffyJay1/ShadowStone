@@ -11,7 +11,7 @@ public interface TargetingScheme<T> {
     int getMaxTargets();
     boolean isFullyTargeted(TargetList<T> targets);
     boolean isValid(TargetList<T> targets);
-    void fillRandom(TargetList<T> targetsToFill);
+    TargetList<T> generateRandomTargets();
     List<T> getPossibleChoices();
     boolean isApplicable(List<TargetList<?>> alreadyTargeted);
     boolean conditions();
