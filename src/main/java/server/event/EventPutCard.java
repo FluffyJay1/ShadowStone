@@ -135,9 +135,8 @@ public class EventPutCard extends Event {
                     sourceP.getDeck().remove(card);
                 }
             }
-            for (Effect be : card.getEffects(true)) {
-                this.prevMute.get(i).add(be.mute);
-            }
+            List<Boolean> prevMuteForThisCard = this.prevMute.get(i);
+            card.getEffects(true).forEach(be -> prevMuteForThisCard.add(be.mute));
             // goes against flow
             if (card.status.ordinal() < this.status.ordinal()) {
                 List<Effect> removedEffects = card.removeAdditionalEffects();
@@ -148,9 +147,7 @@ public class EventPutCard extends Event {
                     }
                 }
                 this.prevEffects.set(i, removedEffects);
-                for (Effect be : card.getEffects(true)) {
-                    be.mute = false;
-                }
+                card.getEffects(true).forEach(be -> be.mute = false);
                 card.spellboosts = 0;
                 if (card instanceof Minion) {
                     ((Minion) card).health = card.finalStats.get(Stat.HEALTH);
@@ -208,7 +205,7 @@ public class EventPutCard extends Event {
                         sb.registerNewEffect(e);
                     }
                 }
-                List<Effect> basicEffects = card.getEffects(true);
+                List<Effect> basicEffects = card.getEffects(true).toList();
                 for (int j = 0; j < basicEffects.size(); j++) {
                     basicEffects.get(j).mute = this.prevMute.get(i).get(j);
                 }

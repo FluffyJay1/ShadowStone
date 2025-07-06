@@ -89,7 +89,7 @@ public class CardSelectPanel extends UIBox {
                 this.info.setVisible(false);
             }
             StringBuilder effectstext = new StringBuilder("Effects:\n");
-            for (Effect e : this.uib.selectedCard.getCard().getEffects(false)) {
+            this.uib.selectedCard.getCard().getEffects(false).forEach(e -> {
                 if (!e.description.isEmpty()) {
                     effectstext.append("<b>></b> ").append(e.description);
                     if (e.untilTurnEndTeam != null) {
@@ -112,7 +112,7 @@ public class CardSelectPanel extends UIBox {
                     }
                     effectstext.append("\n");
                 }
-            }
+            });
             this.effects.setText(effectstext.toString());
             this.effects.setPos(new Vector2f(-this.getWidth(true) / 2,
                     lastBottom + 10), 0.99);

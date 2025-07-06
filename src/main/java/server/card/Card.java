@@ -49,13 +49,11 @@ public abstract class Card implements Indexable, StringBuildable {
      * basic effects can't get removed unlike additional effects (e.g. bounce
      * effects), but they can be muted
      */
-    private final PositionedList<Effect> effects = new PositionedList<>(new ArrayList<>(), e -> e.basic = false),
-            basicEffects = new PositionedList<>(new ArrayList<>(), e -> e.basic = true),
-            removedEffects = new PositionedList<>(new ArrayList<>(), e -> e.removed = true);
+    public final PositionedList<Effect> effects = new PositionedList<>(new ArrayList<>());
 
-    public final Set<Effect> listeners = new TreeSet<>(Comparator.comparing((Effect l) -> l.basic ? 0 : 1).thenComparingInt(Effect::getIndex));
-    public final Set<Effect> whileInPlayListeners = new TreeSet<>(Comparator.comparing((Effect l) -> l.basic ? 0 : 1).thenComparingInt(Effect::getIndex));
-    public final Set<Effect> whileInPlayStateTrackers = new TreeSet<>(Comparator.comparing((Effect l) -> l.basic ? 0 : 1).thenComparingInt(Effect::getIndex));
+    public final Set<Effect> listeners = new TreeSet<>(Comparator.comparing(Effect::getIndex));
+    public final Set<Effect> whileInPlayListeners = new TreeSet<>(Comparator.comparing(Effect::getIndex));
+    public final Set<Effect> whileInPlayStateTrackers = new TreeSet<>(Comparator.comparing(Effect::getIndex));
 
     public Card(Board board, CardText cardText) {
         this.board = board;
@@ -114,25 +112,15 @@ public abstract class Card implements Indexable, StringBuildable {
                 .reduce(0., Double::sum);
     }
 
-    public List<Effect> getEffects(boolean basic) {
-        return basic ? this.basicEffects : this.effects;
-    }
-
-    public List<Effect> getRemovedEffects() {
-        return this.removedEffects;
-    }
-
-    public Stream<Effect> getUnmutedEffects(boolean basic) {
-        return this.getEffects(basic).stream()
-                .filter(e -> !e.mute);
+    public Stream<Effect> getEffects(boolean basic) {
+        return this.effects.stream().filter(e -> e.basic == basic && !e.removed);
     }
 
     public Stream<Effect> getFinalEffects(boolean unmutedOnly) {
-        Stream<Effect> ret = Stream.concat(this.getEffects(true).stream(), this.getEffects(false).stream());
         if (unmutedOnly) {
-            return ret.filter(e -> !e.mute);
+            return this.effects.stream().filter(e -> !e.mute && !e.removed);
         } else {
-            return ret;
+            return this.effects.stream().filter(e -> !e.removed);
         }
     }
 
@@ -141,24 +129,20 @@ public abstract class Card implements Indexable, StringBuildable {
      * there is already an instance of the effect.
      * 
      * @param basic Whether the effect is a basic effect of the card
-     * @param pos   The position to add the effect to
      * @param e     The effect
      * @return Whether the effect as added successfully
      */
-    public boolean addEffect(boolean basic, int pos, Effect e) {
+    public boolean addEffect(boolean basic, Effect e) {
         if (!e.stackable) {
             // check if another instance is already on this card
-            for (Effect presentEffect : this.getEffects(basic)) {
-                if (presentEffect.getClass().equals(e.getClass())) {
-                    return false;
-                }
+            if (this.getEffects(basic).anyMatch(presentEffect -> presentEffect.getClass().equals(e.getClass()))) {
+                return false;
             }
         }
         e.basic = basic;
         e.owner = this;
         e.removed = false;
-        this.removedEffects.remove(e);
-        this.getEffects(basic).add(pos, e);
+        this.effects.add(e);
         if (e.auraSource != null) {
             e.auraSource.currentActiveEffects.put(this, e);
         }
@@ -166,38 +150,32 @@ public abstract class Card implements Indexable, StringBuildable {
         return true;
     }
 
-    public boolean addEffect(boolean basic, Effect e) {
-        return this.addEffect(basic, this.getEffects(basic).size(), e);
-    }
-
     // purge: clean remove, don't even put it in the removedEffects
     public void removeEffect(Effect e, boolean purge) {
-        if (this.effects.contains(e)) {
+        if (purge) {
             this.effects.remove(e);
-            if (!purge) {
-                this.removedEffects.add(e);
-            }
-            if (e.auraSource != null) {
-                e.auraSource.currentActiveEffects.remove(this);
-            }
-            e.removed = true;
-            this.updateEffectStats(false);
         }
+        if (e.auraSource != null) {
+            e.auraSource.currentActiveEffects.remove(this);
+        }
+        e.removed = true;
+        this.updateEffectStats(e.basic);
+    }
+
+    // lol
+    public void unremoveEffect(Effect e) {
+        e.removed = false;
+        this.updateEffectStats(e.basic);
     }
 
     public List<Effect> removeAdditionalEffects() {
-        List<Effect> ret = new LinkedList<>();
-        while (!this.effects.isEmpty()) {
-            ret.add(this.effects.get(0));
-            this.removeEffect(this.effects.get(0), false);
-        }
+        List<Effect> ret = this.getEffects(false).toList();
+        this.getEffects(false).forEach(effect -> this.removeEffect(effect, false));
         return ret;
     }
 
     public void muteEffect(Effect e, boolean mute) {
-        if (this.effects.contains(e) || this.basicEffects.contains(e)) {
-            e.mute = mute;
-        }
+        e.mute = mute;
         if (this.uiCard != null) {
             this.uiCard.updateIconList();
         }
@@ -215,7 +193,7 @@ public abstract class Card implements Indexable, StringBuildable {
             stats.reset();
             traits = this.finalBasicTraits;
             traits.clear();
-            relevant = this.getEffects(true).stream().filter(e -> !e.bonusStats);
+            relevant = this.getEffects(true).filter(e -> !e.bonusStats);
         } else {
             stats = this.finalStats;
             stats.copy(this.finalBasicStats);
@@ -223,8 +201,8 @@ public abstract class Card implements Indexable, StringBuildable {
             traits.clear();
             traits.addAll(this.finalBasicTraits);
             relevant = Stream.concat(
-                    this.getEffects(true).stream().filter(e -> e.bonusStats),
-                    this.getEffects(false).stream()
+                    this.getEffects(true).filter(e -> e.bonusStats),
+                    this.getEffects(false)
             );
         }
         relevant.forEachOrdered(e -> {
@@ -402,13 +380,10 @@ public abstract class Card implements Indexable, StringBuildable {
     @Override
     public void appendStringToBuilder(StringBuilder builder) {
         builder.append(this.getRef()).append(" ").append(this.getClass().getName()).append(" ").append(this.team).append(" ")
-                .append(this.alive).append(" ").append(this.cardPosToString()).append(this.spellboosts).append(" ").append(this.basicEffects.size()).append(" ");
-        for (Effect e : this.basicEffects) {
-            e.appendStringToBuilder(builder);
-        }
-        builder.append(this.effects.size()).append(" ");
+                .append(this.alive).append(" ").append(this.cardPosToString()).append(this.spellboosts).append(" ").append(this.effects.size()).append(" ");
         for (Effect e : this.effects) {
             e.appendStringToBuilder(builder);
+            builder.append(e.basic).append(" ").append(e.removed).append(" ");
         }
     }
 
@@ -422,8 +397,9 @@ public abstract class Card implements Indexable, StringBuildable {
 
     public void appendToTemplateStringBuilder(StringBuilder builder) {
         builder.append(this.cardText.toString()).append(this.spellboosts).append(" ");
-        builder.append(this.effects.size()).append(" ");
-        for (Effect e : this.effects) {
+        List<Effect> additionalEffects = this.getEffects(false).toList();
+        builder.append(additionalEffects.size()).append(" ");
+        for (Effect e : additionalEffects) {
             e.appendStringToBuilder(builder);
         }
     }

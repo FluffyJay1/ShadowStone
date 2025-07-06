@@ -78,7 +78,7 @@ public class TenKilometerRun extends SpellText {
                                 .withCard(new EverySingleDay())
                                 .withTeam(owner.team)
                                 .withStatus(CardStatus.HAND)
-                                .withTeam(-1)
+                                .withPos(-1)
                                 .build());
                     }
                 });

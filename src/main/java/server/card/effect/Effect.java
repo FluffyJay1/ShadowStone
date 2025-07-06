@@ -378,7 +378,7 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
         if (this.owner == null) {
             return "null ";
         }
-        return this.owner.toReference() + this.basic + " " + this.removed + " " + this.getIndex() + " ";
+        return this.owner.toReference() + this.getIndex() + " ";
     }
 
     public static String referenceOrNull(Effect effect) {
@@ -391,13 +391,8 @@ public class Effect implements Indexable, StringBuildable, Cloneable {
         if (c == null) {
             return null;
         }
-        boolean basic = Boolean.parseBoolean(st.nextToken());
-        boolean removed = Boolean.parseBoolean(st.nextToken());
-        int pos = Integer.parseInt(st.nextToken());
-        if (removed) {
-            return c.getRemovedEffects().get(pos);
-        }
-        return c.getEffects(basic).get(pos);
+        int ind = Integer.parseInt(st.nextToken());
+        return c.effects.get(ind);
     }
 
     @Override

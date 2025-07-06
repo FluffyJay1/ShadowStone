@@ -5,6 +5,7 @@ import server.card.cardset.ExpansionSet;
 import server.card.cardset.moba.bloodwarlock.Soldier;
 import server.card.cardset.moba.dragondruid.Pyro;
 import server.card.cardset.moba.dragondruid.SiegeTank;
+import server.card.cardset.moba.forestrogue.BountyHunter;
 import server.card.cardset.moba.forestrogue.Sniper;
 import server.card.cardset.moba.havenpriest.Medic;
 import server.card.cardset.moba.neutral.LilShredder;
@@ -34,7 +35,7 @@ public class ExpansionSetMoba extends ExpansionSet {
             new AghanimsScepter());
     public static final CardSet PLAYABLE_SET = new CardSet(new SiegeTank(), new Tiny(), new Immortal(), new LochnLoad(), new Baneling(),
             new BanelingBust(), new Beastmaster(), new Lich(), new Ultralisk(), new Timbersaw(), new LilShredder(), new Scout(), new Sniper(),
-            new Heavy(), new Demoman(), new Pyro(), new Soldier(), new Spy(), new Medic(), new Engineer(), new Aghanim());
+            new Heavy(), new Demoman(), new Pyro(), new Soldier(), new Spy(), new Medic(), new Engineer(), new Aghanim(), new BountyHunter());
     @Override
     public CardSet getCards() {
         return PLAYABLE_SET;

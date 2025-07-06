@@ -62,12 +62,8 @@ public class EventTransform extends Event {
             replacement.team = c.team;
             if (b instanceof ServerBoard) {
                 ServerBoard sb = (ServerBoard) b;
-                for (Effect e : c.getEffects(true)) {
-                    sb.unregisterEffect(e);
-                }
-                for (Effect e : replacement.getEffects(true)) {
-                    sb.registerNewEffect(e);
-                }
+                c.getFinalEffects(false).forEach(sb::unregisterEffect);
+                replacement.getFinalEffects(false).forEach(sb::registerNewEffect);
             }
             if (!c.status.equals(CardStatus.GRAVEYARD)) {
                 c.alive = false;
@@ -108,12 +104,8 @@ public class EventTransform extends Event {
             Card replacement = this.into.get(i);
             if (b instanceof ServerBoard) {
                 ServerBoard sb = (ServerBoard) b;
-                for (Effect e : replacement.getEffects(true)) {
-                    sb.unregisterEffect(e);
-                }
-                for (Effect e : c.getEffects(true)) {
-                    sb.registerNewEffect(e);
-                }
+                replacement.getFinalEffects(false).forEach(sb::unregisterEffect);
+                c.getFinalEffects(false).forEach(sb::registerNewEffect);
             }
             Player p = b.getPlayer(c.team);
             c.alive = this.alive.get(i);

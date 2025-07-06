@@ -50,7 +50,7 @@ public class Sniper extends MinionText {
         return List.of(new Effect(DESCRIPTION) {
             @Override
             public List<TargetingScheme<?>> getBattlecryTargetingSchemes() {
-                return List.of(new CardTargetingScheme(this, 0, 1, DESCRIPTION) {
+                return List.of(new CardTargetingScheme(this, 0, 1, "Deal 15 damage to an enemy minion.") {
                     @Override
                     protected boolean criteria(Card c) {
                         return c.status.equals(CardStatus.BOARD) && c instanceof Minion && c.team != this.getCreator().owner.team;

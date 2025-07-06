@@ -34,7 +34,7 @@ public class ServerBoard extends Board {
     int outputStart;
     StringBuilder currentBurst;
 
-    Set<EffectAura> lastCheckedActiveAuras;
+    List<EffectAura> lastCheckedActiveAuras;
     Set<EffectWithDependentStats> lastCheckedActiveDependentStats;
 
     boolean enableOutput = true;
@@ -67,9 +67,9 @@ public class ServerBoard extends Board {
         this.history = new ArrayList<>();
         this.outputStart = 0;
         this.currentBurst = new StringBuilder();
-        this.lastCheckedActiveAuras = new HashSet<>();
+        this.lastCheckedActiveAuras = new ArrayList<>();
         this.lastCheckedActiveDependentStats = new HashSet<>();
-        this.auras = new HashSet<>();
+        this.auras = new TreeSet<>(Comparator.comparing((Effect e) -> e.owner.getRef()).thenComparing(Effect::getIndex));
         this.dependentStats = new HashSet<>();
         this.listeners = new TreeSet<>(Comparator.comparing(Card::getRef));
         this.effectsToRemoveAtEndOfTurn = new ArrayList<>();
@@ -224,11 +224,13 @@ public class ServerBoard extends Board {
                 public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                     b.pushEventGroup(new EventGroup(EventGroupType.CONCURRENTDAMAGE));
                     // AURAS
-                    Set<EffectAura> currentAuras = getActiveAuras().collect(Collectors.toSet());
-                    Set<EffectAura> removedAuras = new HashSet<>(lastCheckedActiveAuras);
-                    removedAuras.removeAll(currentAuras);
-                    lastCheckedActiveAuras = currentAuras;
-                    for (EffectAura aura : removedAuras) {
+                    List<EffectAura> currentAuras = getActiveAuras().toList(); // do things this way to ensure consistent ordering of events
+                    Set<EffectAura> currentAurasSet = new HashSet<>(currentAuras);
+                    for (EffectAura aura : lastCheckedActiveAuras) {
+                        // remove effects from removed auras
+                        if (currentAurasSet.contains(aura)) {
+                            continue;
+                        }
                         Set<Card> currentApplied = aura.currentActiveEffects.keySet();
                         if (!currentApplied.isEmpty()) {
                             List<Effect> effectsToRemove = currentApplied.stream()
@@ -237,6 +239,7 @@ public class ServerBoard extends Board {
                             this.resolve(b, rq, el, new RemoveEffectResolver(effectsToRemove));
                         }
                     }
+                    lastCheckedActiveAuras = currentAuras;
                     for (EffectAura aura : currentAuras) {
                         // obtain set difference
                         Set<Card> currentApplied = aura.currentActiveEffects.keySet();
@@ -244,6 +247,7 @@ public class ServerBoard extends Board {
                         Set<Card> newAffected = new HashSet<>(shouldApply);
                         newAffected.removeAll(currentApplied);
                         if (!newAffected.isEmpty()) {
+                            aura.effectToApply.auraSource = aura; // pain
                             this.resolve(b, rq, el, new AddEffectResolver(new ArrayList<>(newAffected), aura.effectToApply));
                         }
                         Set<Card> newUnaffected = new HashSet<>(currentApplied);
@@ -306,6 +310,20 @@ public class ServerBoard extends Board {
         if (this.enableOutput && this.logEvents) {
             this.history.addAll(bursts);
         }
+        // we must have gotten kira queened, keep auras consistent
+        this.updateAuraLastCheck();
+        this.updateDependentStatsLastCheck();
+    }
+
+    // changing board state all willy nilly outside of the resolver can mess
+    // things up with aura checking optimizations, explicity sync here
+    public void updateAuraLastCheck() {
+        this.lastCheckedActiveAuras = this.getActiveAuras().toList();
+    }
+
+    // same but for effects with dependent stats
+    public void updateDependentStatsLastCheck() {
+        this.lastCheckedActiveDependentStats = this.getActiveDependentStats().collect(Collectors.toSet());
     }
 
     @Override

@@ -10,7 +10,6 @@ import server.card.effect.*;
 public class EventRemoveEffect extends Event {
     public static final int ID = 22;
     public final List<? extends Effect> effects;
-    private List<Integer> prevPos;
     private List<Integer> oldHealth;
     private List<Boolean> oldRemoved;
     private List<Boolean> oldAlive;
@@ -24,13 +23,11 @@ public class EventRemoveEffect extends Event {
 
     @Override
     public void resolve(Board b) {
-        this.prevPos = new ArrayList<>(this.effects.size());
         this.oldHealth = new ArrayList<>(this.effects.size());
         this.oldRemoved = new ArrayList<>(this.effects.size());
         this.oldAlive = new ArrayList<>(this.effects.size());
         for (int i = 0; i < this.effects.size(); i++) {
             Effect e = this.effects.get(i);
-            this.prevPos.add(e.getIndex());
             this.oldHealth.add(0);
             this.oldRemoved.add(e.removed);
             this.oldAlive.add(e.owner.alive);
@@ -57,7 +54,7 @@ public class EventRemoveEffect extends Event {
             Effect e = this.effects.get(i);
             Card c = e.owner;
             if (!this.oldRemoved.get(i)) {
-                c.addEffect(false, this.prevPos.get(i), e);
+                c.unremoveEffect(e);
                 if (b instanceof ServerBoard) {
                     ServerBoard sb = (ServerBoard) b;
                     sb.registerNewEffect(e);
