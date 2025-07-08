@@ -199,7 +199,7 @@ public class EventPutCard extends Event {
                 }
                 // goes against flow
                 for (Effect e : this.prevEffects.get(i)) {
-                    card.addEffect(false, e);
+                    card.unremoveEffect(e);
                     if (b instanceof ServerBoard) {
                         ServerBoard sb = (ServerBoard) b;
                         sb.registerNewEffect(e);
