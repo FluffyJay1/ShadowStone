@@ -150,7 +150,7 @@ public abstract class Card implements Indexable, StringBuildable {
         return true;
     }
 
-    // purge: clean remove, don't even put it in the removedEffects
+    // purge: clean remove
     public void removeEffect(Effect e, boolean purge) {
         if (purge) {
             this.effects.remove(e);
@@ -165,6 +165,9 @@ public abstract class Card implements Indexable, StringBuildable {
     // lol
     public void unremoveEffect(Effect e) {
         e.removed = false;
+        if (e.auraSource != null) {
+            e.auraSource.currentActiveEffects.put(this, e);
+        }
         this.updateEffectStats(e.basic);
     }
 

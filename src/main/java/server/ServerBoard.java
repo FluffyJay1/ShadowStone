@@ -43,11 +43,11 @@ public class ServerBoard extends Board {
     // The following are subsets of all effects, and are updated in Card's addEffect and removeEffect
     // however for basic effects created upon card creation, we must rely on EventCreateCard's undo
     // for convenience, a subset of all effects that are also auras
-    public Set<EffectAura> auras;
+    public List<EffectAura> auras;
     // like above but for effects with dependent stats
     public Set<EffectWithDependentStats> dependentStats;
     // same but for cards that have eventlisteners effects, may be muted tho (also for optimization)
-    public Set<Card> listeners;
+    public List<Card> listeners;
 
     // see Card, TurnEndResolver
     public List<Effect> effectsToRemoveAtEndOfTurn;
@@ -69,9 +69,9 @@ public class ServerBoard extends Board {
         this.currentBurst = new StringBuilder();
         this.lastCheckedActiveAuras = new ArrayList<>();
         this.lastCheckedActiveDependentStats = new HashSet<>();
-        this.auras = new TreeSet<>(Comparator.comparing((Effect e) -> e.owner.getRef()).thenComparing(Effect::getIndex));
+        this.auras = new ArrayList<>(); // do not use treeset worst mistake of my life
         this.dependentStats = new HashSet<>();
-        this.listeners = new TreeSet<>(Comparator.comparing(Card::getRef));
+        this.listeners = new ArrayList<>();
         this.effectsToRemoveAtEndOfTurn = new ArrayList<>();
         this.effectsWithPerTurnCounters = new HashSet<>();
         this.updateCheckersResolverAdded = false;
@@ -83,8 +83,9 @@ public class ServerBoard extends Board {
     public void registerNewEffect(Effect e) {
         // because these types of effects are rare but need to be checked frequently,
         // register these to the ServerBoard to optimize lookup
-        if (e instanceof EffectAura) {
+        if (e instanceof EffectAura && !this.auras.contains(e)) {
             this.auras.add((EffectAura) e);
+            Collections.sort(this.auras, Comparator.comparing((Effect effect) -> effect.owner.getRef()).thenComparing(Effect::getIndex));
         }
         if (e instanceof EffectWithDependentStats) {
             this.dependentStats.add((EffectWithDependentStats) e);
@@ -94,7 +95,10 @@ public class ServerBoard extends Board {
         }
         if (e.onListenEvent(null) != Effect.UNIMPLEMENTED_RESOLVER) {
             e.owner.listeners.add(e);
-            this.listeners.add(e.owner);
+            if (!this.listeners.contains(e.owner)) {
+                this.listeners.add(e.owner);
+                Collections.sort(this.listeners, Comparator.comparing(Card::getRef));
+            }
         }
         if (e.onListenEventWhileInPlay(null) != Effect.UNIMPLEMENTED_RESOLVER) {
             e.owner.whileInPlayListeners.add(e);
