@@ -30,7 +30,9 @@ public class EventAnimationDamageBonePapyrus extends EventAnimationDamage {
             if (prevClip != null) {
                 prevClipCloned = new Rectangle(prevClip.getX(), prevClip.getY(), prevClip.getWidth(), prevClip.getHeight());
             }
-            g.setClip((int) (cardPos.x - CLIP_WIDTH / 2 * uic.getScale()), 0, (int) (CLIP_WIDTH * uic.getScale()), Config.WINDOW_HEIGHT);
+            float scaleX = Config.instance.getDisplayScaleX();
+            float scaleY = Config.instance.getDisplayScaleY();
+            g.setClip((int) ((cardPos.x - CLIP_WIDTH / 2 * uic.getScale()) * scaleX), 0, (int) (CLIP_WIDTH * uic.getScale() * scaleX), (int) (Config.WINDOW_HEIGHT * scaleY));
             drawCenteredAndScaled(g, boneImage, drawPos, uic.getScale(), 1, 0);
             if (prevClipCloned != null) {
                 g.setClip(prevClipCloned);

@@ -64,13 +64,13 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
 
     public void setAnimation(Animation animation) {
         this.animation = animation;
-        this.finalImage = animation.getCurrentFrame().getScaledCopy(this.scale);
+        this.finalImage = animation.getCurrentFrame().getScaledCopy(this.getScale());
     }
 
     public void setAnimation(String imagepath, Vector2f framedim, int spacing, int margin) {
         if (imagepath != null && !imagepath.isEmpty()) {
             this.animation = new Animation(imagepath, framedim, spacing, margin);
-            this.finalImage = this.animation.getCurrentFrame().getScaledCopy(this.scale);
+            this.finalImage = this.animation.getCurrentFrame().getScaledCopy(this.getScale());
         }
     }
 
@@ -415,7 +415,7 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
 
     public void draw(Graphics g) {
         if (this.animation != null) {
-            this.finalImage = this.animation.getCurrentFrame().getScaledCopy(this.scale);
+            this.finalImage = this.animation.getCurrentFrame().getScaledCopy(this.getScale());
             this.finalImage.rotate(this.angle);
             this.finalImage.setAlpha(this.alpha);
             if (this.visible) {
@@ -431,21 +431,23 @@ public class UIElement implements DefaultInputListener, UIEventListener, Compara
         Rectangle prevClip = g.getClip(); // did u know that the rectangle returned is mutable by future calls to setClip
         Rectangle prevClipCloned = null;
         if (this.clip) {
+            float scaleX = Config.instance.getDisplayScaleX();
+            float scaleY = Config.instance.getDisplayScaleY();
             if (prevClip != null) {
                 prevClipCloned = new Rectangle(prevClip.getX(), prevClip.getY(), prevClip.getWidth(), prevClip.getHeight());
-                int left = (int) Math.max(prevClip.getMinX(), this.getLeft(true, true));
-                int top = (int) Math.max(prevClip.getMinY(), this.getTop(true, true));
-                int right = (int) Math.min(prevClip.getMaxX(), this.getRight(true, true));
-                int bot = (int) Math.min(prevClip.getMaxY(), this.getBottom(true, true));
+                int left = (int) Math.max(prevClip.getMinX(), this.getLeft(true, true) * scaleX);
+                int top = (int) Math.max(prevClip.getMinY(), this.getTop(true, true) * scaleY);
+                int right = (int) Math.min(prevClip.getMaxX(), this.getRight(true, true) * scaleX);
+                int bot = (int) Math.min(prevClip.getMaxY(), this.getBottom(true, true) * scaleY);
                 if (bot < top || right < left) {
                     return;
                 }
                 g.setClip(left, top, right - left, bot - top);
             } else {
-                g.setClip((int) (this.getLeft(true, true)),
-                        (int) (this.getTop(true, true)),
-                        (int) this.getWidth(true),
-                        (int) this.getHeight(true));
+                g.setClip((int) (this.getLeft(true, true) * scaleX),
+                        (int) (this.getTop(true, true) * scaleY),
+                        (int) (this.getWidth(true) * scaleX),
+                        (int) (this.getHeight(true) * scaleY));
             }
         }
         for (UIElement u : this.getChildren()) {

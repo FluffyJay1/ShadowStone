@@ -49,7 +49,8 @@ public class Game extends StateBasedGame {
 
     public static void main(String[] args) throws SlickException {
         app = new AppGameContainer(new Game("ShadowStone"));
-        app.setDisplayMode(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT, Config.instance.fullscreen);
+        Config.loadFromFile();
+        applyConfig();
         // app.setTargetFrameRate(15);
         Log.setVerbose(true);
         app.start();
@@ -64,7 +65,6 @@ public class Game extends StateBasedGame {
     @Override
     public void initStatesList(GameContainer container) {
         // TODO Auto-generated method stub
-        applyConfig();
         addState(new StateMenu());
         addState(new StateGame());
         addState(new StateHelp());
@@ -149,11 +149,21 @@ public class Game extends StateBasedGame {
     }
 
     private static void applyConfig() {
+        int width = Config.instance.displayWidth;
+        int height = Config.instance.displayHeight;
         try {
-            app.setFullscreen(Config.instance.fullscreen);
+            System.out.println("Trying to set display to " + width + "x" + height + ", fullscreen=" + Config.instance.fullscreen);
+            app.setDisplayMode(width, height, Config.instance.fullscreen);
         } catch (SlickException e) {
-            // TODO Auto-generated catch block
+            System.out.println("Failure to apply display settings, maybe this fullscreen mode doesn't exist, falling back to no fullscreen");
             e.printStackTrace();
+            Config.instance.fullscreen = false;
+            try {
+                app.setDisplayMode(width, height, false);
+            } catch (SlickException e1) {
+                System.out.println("fallback failed, good luck lol");
+                e1.printStackTrace();
+            }
         }
         app.setMusicVolume(Config.instance.music ? 1 : 0);
     }
@@ -178,4 +188,10 @@ public class Game extends StateBasedGame {
         return Config.instance.music;
     }
 
+    public static void setDisplaySize(int width, int height) {
+        Config.instance.displayWidth = width;
+        Config.instance.displayHeight = height;
+        Config.instance.saveToFile();
+        applyConfig();
+    }
 }

@@ -4,6 +4,7 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.*;
 
+import client.Config;
 import client.Game;
 import client.ui.*;
 import client.ui.game.*;

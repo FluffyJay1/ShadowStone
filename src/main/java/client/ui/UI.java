@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
 
+import client.Config;
 import utils.*;
 
 public class UI implements DefaultInputListener { // lets do this right this time
@@ -41,6 +42,7 @@ public class UI implements DefaultInputListener { // lets do this right this tim
     }
 
     public void draw(Graphics g) {
+        g.scale(Config.instance.getDisplayScaleX(), Config.instance.getDisplayScaleY());
         for (UIElement u : this.parentList) {
             u.draw(g);
         }
@@ -130,6 +132,8 @@ public class UI implements DefaultInputListener { // lets do this right this tim
 
     @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
+        x = (int) (x / Config.instance.getDisplayScaleX());
+        y = (int) (y / Config.instance.getDisplayScaleY());
         if (DEBUG) {
             for (UIElement u : this.parentList) {
                 u.debugPrint(0);
@@ -150,6 +154,8 @@ public class UI implements DefaultInputListener { // lets do this right this tim
 
     @Override
     public void mousePressed(int button, int x, int y) {
+        x = (int) (x / Config.instance.getDisplayScaleX());
+        y = (int) (y / Config.instance.getDisplayScaleY());
         UIElement top = this.getTopUIElement(x, y, true, false, false);
         this.pressedElement = top;
         this.focusElement(top);
@@ -171,6 +177,8 @@ public class UI implements DefaultInputListener { // lets do this right this tim
 
     @Override
     public void mouseReleased(int button, int x, int y) {
+        x = (int) (x / Config.instance.getDisplayScaleX());
+        y = (int) (y / Config.instance.getDisplayScaleY());
         if (this.onRelease != null) {
             this.onRelease.accept(this.pressedElement);
         }
@@ -188,6 +196,12 @@ public class UI implements DefaultInputListener { // lets do this right this tim
 
     @Override
     public void mouseMoved(int oldx, int oldy, int newx, int newy) {
+        float scaleX = Config.instance.getDisplayScaleX();
+        float scaleY = Config.instance.getDisplayScaleY();
+        oldx = (int) (oldx / scaleX);
+        oldy = (int) (oldy / scaleY);
+        newx = (int) (newx / scaleX);
+        newy = (int) (newy / scaleY);
         LinkedList<UIElement> temp = new LinkedList<>(this.parentList);
         while (!temp.isEmpty()) { // who needs recursion
             temp.getFirst().mouseMoved(oldx, oldy, newx, newy);
@@ -199,6 +213,12 @@ public class UI implements DefaultInputListener { // lets do this right this tim
 
     @Override
     public void mouseDragged(int oldx, int oldy, int newx, int newy) {
+        float scaleX = Config.instance.getDisplayScaleX();
+        float scaleY = Config.instance.getDisplayScaleY();
+        oldx = (int) (oldx / scaleX);
+        oldy = (int) (oldy / scaleY);
+        newx = (int) (newx / scaleX);
+        newy = (int) (newy / scaleY);
         if (this.pressedElement != null) {
             this.pressedElement.mouseDragged(oldx, oldy, newx, newy);
         }

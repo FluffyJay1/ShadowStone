@@ -15,12 +15,22 @@ import java.io.Serializable;
  *
  */
 public class Config implements Serializable {
-    public static Config instance = loadFromFile();
+    public static Config instance;
     public static int WINDOW_WIDTH = 1920;
     public static int WINDOW_HEIGHT = 1080;
 
     public boolean fullscreen;
     public boolean music;
+    public int displayWidth;
+    public int displayHeight;
+
+    public float getDisplayScaleX() {
+        return (float) this.displayWidth / WINDOW_WIDTH;
+    }
+
+    public float getDisplayScaleY() {
+        return (float) this.displayHeight / WINDOW_HEIGHT;
+    }
 
     /**
      * Serializes and saves the config to file
@@ -50,7 +60,7 @@ public class Config implements Serializable {
     /**
      * Deserializes the config from file and loads them
      */
-    public static Config loadFromFile() {
+    public static void loadFromFile() {
         File f = new File("config.dat");
         if (f.exists()) {
             try {
@@ -59,20 +69,17 @@ public class Config implements Serializable {
                 Config config = (Config) obj.readObject();
                 obj.close();
                 file.close();
-                return config;
+                instance = config;
+                return;
             } catch (IOException | ClassNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
-        } else {
-            try {
-                f.createNewFile();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
-        return new Config();
+        Config config = new Config();
+        config.displayWidth = WINDOW_WIDTH;
+        config.displayHeight = WINDOW_HEIGHT;
+        config.saveToFile();
+        instance = config;
     }
 }

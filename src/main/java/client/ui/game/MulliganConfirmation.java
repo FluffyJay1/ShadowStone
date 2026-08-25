@@ -1,11 +1,12 @@
 package client.ui.game;
 
+import client.Config;
 import client.ui.*;
 import org.newdawn.slick.geom.Vector2f;
 
 public class MulliganConfirmation extends UIElement {
-    private static final float WIDTH = 1200;
-    private static final float HEIGHT = 860;
+    private static final float WIDTH = Config.WINDOW_WIDTH * 0.625f;
+    private static final float HEIGHT = Config.WINDOW_HEIGHT * 0.8f;
     private static final float MIDDLE_GAP = 80;
     private static final float BOX_ALPHA = 0.9f;
 

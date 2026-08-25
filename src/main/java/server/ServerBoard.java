@@ -405,7 +405,15 @@ public class ServerBoard extends Board {
 
     public ResolutionResult executePlayerAction(StringTokenizer st) {
         PlayerAction pa = PlayerAction.createFromString(this, st);
-        return pa.perform(this);
+        try {
+            return pa.perform(this);
+        } catch (Exception e) {
+            System.out.println("Error when attempting to perform player action: " + pa.toString());
+            System.out.println("Saving board state for reproducibility...");
+            saveBoardState();
+            System.out.println(this.stateToString());
+            throw e;
+        }
     }
 
     // this is done in its own function and not in the mulligan resolver because

@@ -58,7 +58,9 @@ public class EventAnimationDamageBoneSansArray extends EventAnimationDamage {
                 if (prevClip != null) {
                     prevClipCloned = new Rectangle(prevClip.getX(), prevClip.getY(), prevClip.getWidth(), prevClip.getHeight());
                 }
-                g.setClip(0, 0, Config.WINDOW_WIDTH, (int) (cardPos.y + CLIP_Y_OFFSET * uic.getScale()));
+                float scaleX = Config.instance.getDisplayScaleX();
+                float scaleY = Config.instance.getDisplayScaleY();
+                g.setClip(0, 0, (int) (Config.WINDOW_WIDTH * scaleX), (int) ((cardPos.y + CLIP_Y_OFFSET * uic.getScale()) * scaleY));
                 g.drawImage(scaledImage, drawPos.x, drawPos.y);
                 if (prevClipCloned != null) {
                     g.setClip(prevClipCloned);

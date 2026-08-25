@@ -1,5 +1,6 @@
 package client.ui.menu;
 
+import client.Config;
 import client.Game;
 import client.ui.Animation;
 import client.ui.Checkbox;
@@ -19,15 +20,18 @@ public class SettingsButton extends UIElement {
         super(ui, new Vector2f(-0.5f, -0.5f));
         this.setZ(100);
         this.relpos = true;
-        UIBox panel = new UIBox(ui, new Vector2f(-0.5f, -0.5f), new Vector2f(250, 250), "ui/uiboxborder.png");
+        UIBox panel = new UIBox(ui, new Vector2f(-0.5f, -0.5f), new Vector2f(250, 500), "ui/uiboxborder.png");
         panel.relpos = true;
         panel.alignh = -1;
         panel.alignv = -1;
         panel.margins = new Vector2f(16, 16);
         panel.setVisible(false);
         this.addChild(panel);
-        this.addOption(ui, panel, -0.1f, "Fullscreen", Game::getFullscreen, Game::setFullscreen);
-        this.addOption(ui, panel, 0.2f, "Music", Game::getMusic, Game::setMusic);
+        this.addOption(ui, panel, -0.3f, "Fullscreen", Game::getFullscreen, Game::setFullscreen);
+        this.addOption(ui, panel, -0.15f, "Music", Game::getMusic, Game::setMusic);
+        this.addResolutionOption(ui, panel, 0f, 1920, 1080);
+        this.addResolutionOption(ui, panel, 0.15f, 2560, 1440);
+        this.addResolutionOption(ui, panel, 0.3f, 3840, 2160);
         GenericButton visibilityButton = new GenericButton(ui, new Vector2f(-0.5f, -0.5f), new Vector2f(64, 64), new Animation("ui/settings.png", new Vector2f(1, 1), 0, 0), () -> panel.setVisible(!panel.isVisible()));
         visibilityButton.relpos = true;
         visibilityButton.alignh = -1;
@@ -42,5 +46,13 @@ public class SettingsButton extends UIElement {
         panel.addChild(checkbox);
         Text text = new Text(ui, new Vector2f(checkbox.getRight(false, false), checkbox.getCenterPos().y), message, 200, 20, 24, -1, 0);
         panel.addChild(text);
+    }
+
+    private void addResolutionOption(UI ui, UIBox panel, float y, int width, int height) {
+        this.addOption(ui, panel, y, width + "x" + height, () -> Config.instance.displayWidth == width && Config.instance.displayHeight == height, (checked) -> {
+            if (checked) {
+                Game.setDisplaySize(width, height);
+            }
+        });
     }
 }

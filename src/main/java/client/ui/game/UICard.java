@@ -43,9 +43,9 @@ public class UICard extends UIBox {
     private static final float MINION_STAT_POS_CENTER_HAND = 0.2f;
     private static final float MINION_STAT_POS_OFFSET_HAND = 0.22f;
     private static final float UNLEASH_POWER_RADIUS = 50;
-    private static final double NAME_FONT_SIZE = 30;
-    private static final double TRAITS_FONT_SIZE = 20;
-    private static final double STAT_DEFAULT_SIZE = 30;
+    private static final double NAME_FONT_SIZE =  30;
+    private static final double TRAITS_FONT_SIZE =  20;
+    private static final double STAT_DEFAULT_SIZE =  30;
     public static final float SCALE_DEFAULT = 1, SCALE_HAND = 0.75f, SCALE_HAND_EXPAND = 1.2f,
             SCALE_BOARD = 1f, SCALE_TARGETING = 1.3f, SCALE_POTENTIAL_TARGET = 1.15f, SCALE_ORDERING_ATTACK = 1.3f,
             SCALE_COMBAT = 1.2f, SCALE_PLAY = 2.5f, SCALE_MOVE = 2, SCALE_MULLIGAN = 1.5f, SCALE_PLAY_PENDING = 1.25f;
