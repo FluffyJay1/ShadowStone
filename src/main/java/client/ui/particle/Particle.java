@@ -22,6 +22,7 @@ public class Particle {
     public Vector2f pos, vel, accel;
     public Animation animation;
     public int drawMode;
+    public float baseScale;
 
     public Particle() {
         this.time = 0;
@@ -33,6 +34,7 @@ public class Particle {
         this.vel = new Vector2f();
         this.accel = new Vector2f();
         this.drawMode = Graphics.MODE_NORMAL;
+        this.baseScale = 1;
     }
 
     public void update(double frametime) {
@@ -51,7 +53,7 @@ public class Particle {
     public void draw(Graphics g, Vector2f parentAbsPos, float parentScale) {
         Image image = this.animation.getCurrentFrame();
         image.setAlpha(this.opacityInterpolation.get(this.normalizedTime()).floatValue());
-        float scale = this.scaleInterpolation.get(this.normalizedTime()).floatValue() * parentScale;
+        float scale = this.scaleInterpolation.get(this.normalizedTime()).floatValue() * parentScale * this.baseScale;
         float scaledWidth = scale * image.getWidth();
         float scaledHeight = scale * image.getHeight();
         image.setCenterOfRotation(scaledWidth/2, scaledHeight/2);

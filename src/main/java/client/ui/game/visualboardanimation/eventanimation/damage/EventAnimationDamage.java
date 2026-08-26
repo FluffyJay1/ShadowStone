@@ -81,13 +81,25 @@ public abstract class EventAnimationDamage extends EventAnimation<EventDamage> {
                 .add(this.event.cardSource.uiCard.getPos());
     }
 
+    public void drawSingleProjectile(Graphics g, Image projectile, Vector2f start, Vector2f end, float time) {
+        Vector2f diff = end.copy().sub(start);
+        double rad = Math.atan2(diff.y, diff.x);
+        projectile.setRotation((float) (rad * 180 / Math.PI));
+        Vector2f pos = diff.scale(time).add(start);
+        g.drawImage(projectile, pos.x - projectile.getWidth()/2, pos.y - projectile.getHeight()/2);
+    }
+
+    public void drawSingleProjectile(Graphics g, Image projectile, float time, int i) {
+        projectile.setRotation((float) (this.anglesRad.get(i) * 180 / Math.PI));
+        Vector2f pos = this.event.m.get(i).uiCard.getAbsPos()
+                .sub(this.event.cardSource.uiCard.getAbsPos()).scale(time)
+                .add(this.event.cardSource.uiCard.getAbsPos());
+        g.drawImage(projectile, pos.x - projectile.getWidth()/2, pos.y - projectile.getHeight()/2);
+    }
+
     public void drawProjectile(Graphics g, Image projectile, float time) {
         for (int i = 0; i < this.event.m.size(); i++) {
-            projectile.setRotation((float) (this.anglesRad.get(i) * 180 / Math.PI));
-            Vector2f pos = this.event.m.get(i).uiCard.getAbsPos()
-                    .sub(this.event.cardSource.uiCard.getAbsPos()).scale(time)
-                    .add(this.event.cardSource.uiCard.getAbsPos());
-            g.drawImage(projectile, pos.x - projectile.getWidth()/2, pos.y - projectile.getHeight()/2);
+            this.drawSingleProjectile(g, projectile, time, i);
         }
     }
 

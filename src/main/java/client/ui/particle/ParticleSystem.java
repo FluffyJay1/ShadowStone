@@ -21,6 +21,7 @@ public class ParticleSystem extends UIElement {
     private boolean killed;
     private boolean paused;
     private boolean moveWithParticles;
+    private float emissionScale;
 
     public ParticleSystem(UI ui, Vector2f pos, EmissionStrategy strategy, boolean paused) {
         super(ui, pos, "");
@@ -31,6 +32,7 @@ public class ParticleSystem extends UIElement {
         this.ignorehitbox = true;
         this.killed = false;
         this.setPaused(paused);
+        this.emissionScale = 1;
         this.updateEmission(0);
         this.setMoveWithParticles(true);
     }
@@ -81,6 +83,7 @@ public class ParticleSystem extends UIElement {
     private void emit(double lateness) {
         Particle p = new Particle();
         this.propertyStrategy.applyProperties(p);
+        p.baseScale = this.emissionScale;
         this.particles.add(p);
         p.update(lateness);
     }
@@ -123,5 +126,9 @@ public class ParticleSystem extends UIElement {
                 p.pos.sub(delta);
             }
         }
+    }
+
+    public void setEmissionScale(float scale) {
+        this.emissionScale = scale;
     }
 }

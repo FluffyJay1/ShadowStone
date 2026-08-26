@@ -65,6 +65,7 @@ public class Game extends StateBasedGame {
     @Override
     public void initStatesList(GameContainer container) {
         // TODO Auto-generated method stub
+        applyConfig();
         addState(new StateMenu());
         addState(new StateGame());
         addState(new StateHelp());
