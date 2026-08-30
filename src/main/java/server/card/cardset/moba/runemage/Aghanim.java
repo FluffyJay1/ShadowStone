@@ -25,7 +25,6 @@ import server.card.effect.EffectStats;
 import server.card.effect.Stat;
 import server.card.target.TargetList;
 import server.event.Event;
-import server.resolver.AddEffectResolver;
 import server.resolver.CreateCardResolver;
 import server.resolver.Resolver;
 import server.resolver.meta.ResolverWithDescription;

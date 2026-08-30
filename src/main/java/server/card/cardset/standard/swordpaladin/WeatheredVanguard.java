@@ -20,7 +20,7 @@ import server.resolver.util.ResolverQueue;
 
 public class WeatheredVanguard extends MinionText {
     public static final String NAME = "Weathered Vanguard";
-    public static final String DESCRIPTION = "<b>Battlecry</b>: <b>Spend(3)</b> to summon 3 <b>Heavy Knights</b>.";
+    public static final String DESCRIPTION = "<b>Battlecry</b>: <b>Spend(2)</b> to summon 3 <b>Heavy Knights</b>.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.COMMANDER);
@@ -37,7 +37,7 @@ public class WeatheredVanguard extends MinionText {
 
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
-                return new ResolverWithDescription(DESCRIPTION, new SpendResolver(this, 3, new Resolver(false) {
+                return new ResolverWithDescription(DESCRIPTION, new SpendResolver(this, 2, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<CardText> knights = Collections.nCopies(3, new HeavyKnight());
@@ -62,7 +62,7 @@ public class WeatheredVanguard extends MinionText {
 
             @Override
             public boolean battlecrySpecialConditions() {
-                return this.owner.canSpendAfterPlayed(3);
+                return this.owner.canSpendAfterPlayed(2);
             }
         });
     }

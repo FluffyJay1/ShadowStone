@@ -38,7 +38,7 @@ public class GarudaRulerOfStorms extends MinionText {
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/garudarulerofstorms.png"),
-            CRAFT, TRAITS, RARITY, 9, 6, 3, 6, true, GarudaRulerOfStorms.class,
+            CRAFT, TRAITS, RARITY, 8, 6, 3, 6, true, GarudaRulerOfStorms.class,
             new Vector2f(150, 120), 1.5, new EventAnimationDamageWind(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.COUNTDOWN),
             List.of());

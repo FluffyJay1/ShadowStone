@@ -28,7 +28,7 @@ import server.resolver.util.ResolverQueue;
 
 public class ForestArchelon extends MinionText {
     public static final String NAME = "Forest Archelon";
-    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: If at least 2 other cards were played this turn, <b>Disarm</b> them until the end of the opponent's turn.";
+    private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: If at least 2 other cards were played this turn, <b>Disarm</b> all enemy minions until the end of the opponent's turn.";
     public static final String DESCRIPTION = BATTLECRY_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.SILVER;

@@ -29,7 +29,7 @@ public class DyneMasterSwordsman extends MinionText {
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/dynemasterswordsman.png"),
-            CRAFT, TRAITS, RARITY, 5, 4, 2, 5, true, DyneMasterSwordsman.class,
+            CRAFT, TRAITS, RARITY, 5, 5, 2, 5, true, DyneMasterSwordsman.class,
             new Vector2f(150, 140), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.RUSH, Tooltip.BATTLECRY),
             List.of(card -> String.format("(Sum of costs of Artifacts in graveyard: %d)",

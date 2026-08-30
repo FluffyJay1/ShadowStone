@@ -31,7 +31,7 @@ public class GravekeeperSonia extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/gravekeepersonia.png"),
-            CRAFT, TRAITS, RARITY, 5, 3, 2, 6, true, GravekeeperSonia.class,
+            CRAFT, TRAITS, RARITY, 5, 4, 2, 6, true, GravekeeperSonia.class,
             new Vector2f(120, 157), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.WARD, Tooltip.BATTLECRY, Tooltip.REPEL),
             List.of());

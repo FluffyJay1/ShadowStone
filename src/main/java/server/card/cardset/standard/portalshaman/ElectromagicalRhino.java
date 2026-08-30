@@ -6,7 +6,6 @@ import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 import org.newdawn.slick.geom.Vector2f;
 import server.ServerBoard;
-import server.ai.AI;
 import server.card.*;
 import server.card.cardset.basic.portalshaman.Icarus;
 import server.card.effect.Effect;
@@ -33,7 +32,7 @@ public class ElectromagicalRhino extends MinionText {
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/electromagicalrhino.png"),
-            CRAFT, TRAITS, RARITY, 7, 0, 3, 8, true, Icarus.class,
+            CRAFT, TRAITS, RARITY, 7, 0, 3, 9, true, Icarus.class,
             new Vector2f(152, 190), 1.2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.RUSH, Tooltip.BATTLECRY, Tooltip.STRIKE, ArtifactRhino.TOOLTIP),
             List.of(card -> String.format("(Artifacts in deck: %d)", card.player.getDeck().stream().filter(c -> c.finalTraits.contains(CardTrait.ARTIFACT)).count())));

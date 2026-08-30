@@ -28,7 +28,7 @@ public class CallOfCocytus extends SpellText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/standard/callofcocytus.png"),
-            CRAFT, TRAITS, RARITY, 5, CallOfCocytus.class,
+            CRAFT, TRAITS, RARITY, 4, CallOfCocytus.class,
             () -> List.of(Tooltip.SPEND, ServantOfDarkness.TOOLTIP),
             List.of());
 

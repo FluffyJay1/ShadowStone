@@ -24,12 +24,12 @@ import java.util.List;
 
 public class FrostfireDragon extends MinionText {
     public static final String NAME = "Frostfire Dragon";
-    public static final String DESCRIPTION = "<b>Battlecry</b>: Deal 3 damage to a random enemy minion, then <b>Freeze</b> a random enemy minion.";
+    public static final String DESCRIPTION = "<b>Battlecry</b>: Deal 6 damage to a random enemy minion, then <b>Freeze</b> a random enemy minion.";
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/frostfiredragon.png"),
-            CRAFT, TRAITS, RARITY, 7, 4, 3, 6, true, FrostfireDragon.class,
+            CRAFT, TRAITS, RARITY, 7, 6, 3, 7, true, FrostfireDragon.class,
             new Vector2f(160, 150), 1.3, new EventAnimationDamageFire(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.FROZEN),
             List.of());
@@ -45,7 +45,7 @@ public class FrostfireDragon extends MinionText {
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         Minion damageChoice = SelectRandom.from(b.getMinions(owner.team * -1, false, true).toList());
                         if (damageChoice != null) {
-                            this.resolve(b, rq, el, new DamageResolver(effect, damageChoice, 3, true, new EventAnimationDamageFire()));
+                            this.resolve(b, rq, el, new DamageResolver(effect, damageChoice, 6, true, new EventAnimationDamageFire()));
                         }
                         Minion freezeChoice = SelectRandom.from(b.getMinions(owner.team * -1, false, true).toList());
                         if (freezeChoice != null) {
@@ -60,7 +60,7 @@ public class FrostfireDragon extends MinionText {
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.valueOfMinionDamage(3) + AI.VALUE_OF_FREEZE;
+                return AI.valueOfMinionDamage(6) + AI.VALUE_OF_FREEZE;
             }
         });
     }

@@ -26,13 +26,13 @@ import java.util.stream.Collectors;
 
 public class Magnolia extends MinionText {
     public static final String NAME = "Magnolia, Battlefield Muse";
-    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Put a random M-cost minion and (M-1)-cost minion from your deck into play.";
+    private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Put a random M-cost minion and (M+1)-cost minion from your deck into play.";
     public static final String DESCRIPTION = UNLEASH_DESCRIPTION + "\nAt the end of your turn, give +1/+1/+1 to all allied Officer minions.";
     public static final ClassCraft CRAFT = ClassCraft.SWORDPALADIN;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.COMMANDER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/magnolia.png"),
-            CRAFT, TRAITS, RARITY, 3, 1, 2, 5, false, Magnolia.class,
+            CRAFT, TRAITS, RARITY, 3, 1, 1, 6, false, Magnolia.class,
             new Vector2f(140, 144), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.UNLEASH),
             List.of());
@@ -49,7 +49,7 @@ public class Magnolia extends MinionText {
                         List<Integer> pos = new ArrayList<>(2);
                         int x = owner.finalStats.get(Stat.MAGIC);
                         for (int i = 0; i < 2; i++) {
-                            int cost = x - 1 + i;
+                            int cost = x + i;
                             List<Card> eligible = owner.player.getDeck().stream()
                                     .filter(c -> c instanceof Minion && c.finalStats.get(Stat.COST) == cost)
                                     .collect(Collectors.toList());

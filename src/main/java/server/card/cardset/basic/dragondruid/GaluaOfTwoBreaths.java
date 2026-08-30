@@ -25,7 +25,7 @@ public class GaluaOfTwoBreaths extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/galuaoftwobreaths.png"),
-            CRAFT, TRAITS, RARITY, 5, 4, 2, 5, true, GaluaOfTwoBreaths.class,
+            CRAFT, TRAITS, RARITY, 5, 5, 2, 5, true, GaluaOfTwoBreaths.class,
             new Vector2f(156, 179), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.CHOOSE, WhiteBreath.TOOLTIP, BlackBreath.TOOLTIP),
             List.of());

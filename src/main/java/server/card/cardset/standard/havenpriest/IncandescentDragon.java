@@ -21,12 +21,12 @@ import java.util.List;
 
 public class IncandescentDragon extends MinionText {
     public static final String NAME = "Incandescent Dragon";
-    public static final String DESCRIPTION = "Whenever an enemy minion attacks, give it -2/-0/-0.";
+    public static final String DESCRIPTION = "Whenever an enemy minion attacks, give it -M/-0/-0.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/incandescentdragon.png"),
-            CRAFT, TRAITS, RARITY, 8, 8, 2, 6, true, IncandescentDragon.class,
+            CRAFT, TRAITS, RARITY, 8, 8, 2, 8, true, IncandescentDragon.class,
             new Vector2f(142, 160), 1.3, new EventAnimationDamageEnergyBeam(),
             List::of,
             List.of());
@@ -39,8 +39,9 @@ public class IncandescentDragon extends MinionText {
                 if (event instanceof EventMinionAttack) {
                     EventMinionAttack ema = (EventMinionAttack) event;
                     if (ema.m1.team != this.owner.team) {
-                        Effect debuff = new Effect("-2/-0/-0 (from <b>Incandescent Dragon</b>).", EffectStats.builder()
-                                .change(Stat.ATTACK, -2)
+                        int m = owner.finalStats.get(Stat.MAGIC);
+                        Effect debuff = new Effect("-" + m + "/-0/-0 (from <b>Incandescent Dragon</b>).", EffectStats.builder()
+                                .change(Stat.ATTACK, -m)
                                 .build());
                         return new ResolverWithDescription(DESCRIPTION, new AddEffectResolver(ema.m1, debuff));
                     }
@@ -50,7 +51,7 @@ public class IncandescentDragon extends MinionText {
 
             @Override
             public double getPresenceValue(int refs) {
-                return -AI.valueForBuff(-2, 0, 0) * 2;
+                return -AI.valueForBuff(-owner.finalStats.get(Stat.MAGIC), 0, 0) * 2;
             }
         });
     }

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class Ralsei extends MinionText {
     public static final String NAME = "Ralsei";
-    public static final String DESCRIPTION = "<b>Unleash</b>: Restore M health to all allies. Give all enemy minions -M/-0/-0.";
+    public static final String DESCRIPTION = "<b>Unleash</b>: Restore M health to all allies. Give all enemy minions -M/-0/-0 until the end of your opponent's turn.";
     public static final ClassCraft CRAFT = ClassCraft.HAVENPRIEST;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
@@ -49,7 +49,8 @@ public class Ralsei extends MinionText {
                         List<Minion> enemyTargets = b.getMinions(owner.team * -1, false, true).collect(Collectors.toList());
                         Effect debuff = new Effect("-" + x + "/-0/-0 (from <b>" + NAME + "</b>).", EffectStats.builder()
                                 .change(Stat.ATTACK, -x)
-                                .build());
+                                .build(),
+                                e -> e.setUntilTurnEnd(1, 1));
                         this.resolve(b, rq, el, new AddEffectResolver(enemyTargets, debuff));
                     }
                 });

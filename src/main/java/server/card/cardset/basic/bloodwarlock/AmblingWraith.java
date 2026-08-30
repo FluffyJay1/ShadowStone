@@ -28,7 +28,7 @@ public class AmblingWraith extends MinionText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/amblingwraith.png"),
-            CRAFT, TRAITS, RARITY, 1, 1, 1, 1, true, AmblingWraith.class,
+            CRAFT, TRAITS, RARITY, 1, 2, 1, 1, true, AmblingWraith.class,
             new Vector2f(159, 160), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());

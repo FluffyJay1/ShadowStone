@@ -33,7 +33,7 @@ public class FrontlineCavalier extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.COMMANDER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/frontlinecavalier.png"),
-            CRAFT, TRAITS, RARITY, 4, 3, 2, 5, false, FrontlineCavalier.class,
+            CRAFT, TRAITS, RARITY, 3, 3, 2, 4, false, FrontlineCavalier.class,
             new Vector2f(163, 160), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.UNLEASH, HeavyKnight.TOOLTIP),
             List.of());

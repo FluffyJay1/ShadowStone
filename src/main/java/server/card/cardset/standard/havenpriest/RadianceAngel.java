@@ -31,7 +31,7 @@ public class RadianceAngel extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/radianceangel.png"),
-            CRAFT, TRAITS, RARITY, 5, 3, 2, 4, true, RadianceAngel.class,
+            CRAFT, TRAITS, RARITY, 5, 3, 2, 5, true, RadianceAngel.class,
             new Vector2f(143, 130), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());

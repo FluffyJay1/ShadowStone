@@ -27,7 +27,7 @@ public class TylleTheWorldgate extends MinionText {
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/tylletheworldgate.png"),
-            CRAFT, TRAITS, RARITY, 9, 2, 3, 2, true, TylleTheWorldgate.class,
+            CRAFT, TRAITS, RARITY, 9, 3, 3, 3, true, TylleTheWorldgate.class,
             new Vector2f(130, 150), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());

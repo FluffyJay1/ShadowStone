@@ -40,7 +40,7 @@ public class Sniper extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/moba/sniper.png"),
-            CRAFT, TRAITS, RARITY, 6, 2, 2, 3, true, Sniper.class,
+            CRAFT, TRAITS, RARITY, 7, 3, 2, 3, true, Sniper.class,
             new Vector2f(), -1, new EventAnimationDamageShoot(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());

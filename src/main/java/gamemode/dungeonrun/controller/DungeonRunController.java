@@ -80,9 +80,9 @@ public class DungeonRunController {
     private static final Map<ExpansionSet, Double> EXPANSION_LOOT_WEIGHTS = new HashMap<>() {{
         put(new ExpansionSetBasic(), 1.);
         put(new ExpansionSetStandard(), 1.);
-        put(new ExpansionSetIndie(), 1.5);
-        put(new ExpansionSetMoba(), 1.5);
-        put(new ExpansionSetAnime(), 1.5);
+        put(new ExpansionSetIndie(), 1.25);
+        put(new ExpansionSetMoba(), 1.25);
+        put(new ExpansionSetAnime(), 1.25);
     }};
 
     public static void generateRun(ClassCraft starterCraft) {
@@ -284,7 +284,7 @@ public class DungeonRunController {
         for (Map.Entry<ExpansionSet, Double> expansionWeightEntry : EXPANSION_LOOT_WEIGHTS.entrySet()) {
             CardSet classCards = expansionWeightEntry.getKey().getCards().filterCraft(ClassCraft.NEUTRAL, run.player.deck.craft);
             for (CardText ct : classCards) {
-                classLootSampler.add(ct, getClassLootRarityWeight(ct.getTooltip().rarity) * expansionWeightEntry.getValue());
+                classLootSampler.add(ct, getClassLootRarityWeight(ct.getTooltip().rarity) * getClassLootCraftWeight(ct.getTooltip().craft) * expansionWeightEntry.getValue());
             }
         }
         for (int i = 0; i < LOOT_CLASS_ROUNDS; i++) {
@@ -360,6 +360,13 @@ public class DungeonRunController {
             case SILVER -> 4;
             case GOLD -> 3;
             case LEGENDARY -> 2;
+        };
+    }
+
+    private static double getClassLootCraftWeight(ClassCraft craft) {
+        return switch (craft) {
+            case NEUTRAL -> 0.25;
+            default -> 1;
         };
     }
 

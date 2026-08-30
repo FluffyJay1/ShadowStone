@@ -23,7 +23,7 @@ public class MindControl extends SpellText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipSpell TOOLTIP = new TooltipSpell(NAME, DESCRIPTION, () -> new Animation("card/basic/mindcontrol.png"),
-            CRAFT, TRAITS, RARITY, 10, MindControl.class,
+            CRAFT, TRAITS, RARITY, 8, MindControl.class,
             List::of,
             List.of());
 

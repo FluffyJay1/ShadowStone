@@ -30,7 +30,7 @@ public class Jean extends MinionText {
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.COMMANDER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/anime/jean.png"),
-            CRAFT, TRAITS, RARITY, 5, 3, 1, 6, false, Jean.class,
+            CRAFT, TRAITS, RARITY, 5, 4, 1, 6, false, Jean.class,
             new Vector2f(133, 149), 1.4, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Tooltip.UNLEASH, DandelionField.TOOLTIP),
             List.of());

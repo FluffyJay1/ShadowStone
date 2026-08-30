@@ -18,7 +18,7 @@ import java.util.List;
 
 public class TerrorDemon extends MinionText {
     public static final String NAME = "Terror Demon";
-    public static final String DESCRIPTION = "<b>Lifesteal</b>.\nWhenever an allied minion is <b>Unleashed</b> while this is in your hand, gain +1/+1/+0.";
+    public static final String DESCRIPTION = "<b>Lifesteal</b>.\nWhenever an allied minion is <b>Unleashed</b> while this is in your hand, gain +1/+1/+1.";
     public static final ClassCraft CRAFT = ClassCraft.BLOODWARLOCK;
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
@@ -40,10 +40,11 @@ public class TerrorDemon extends MinionText {
                     return null;
                 }
                 // it's an unleash on our team
-                String resolverDescription = "Whenever an allied minion is <b>Unleashed</b> while this is in your hand, gain +1/+1/+0.";
+                String resolverDescription = "Whenever an allied minion is <b>Unleashed</b> while this is in your hand, gain +1/+1/+1.";
                 Effect e = new Effect("", EffectStats.builder()
                         .change(Stat.ATTACK, 1)
                         .change(Stat.MAGIC, 1)
+                        .change(Stat.HEALTH, 1)
                         .build());
                 return new ResolverWithDescription(resolverDescription, new AddEffectResolver(this.owner, e));
             }

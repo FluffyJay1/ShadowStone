@@ -33,7 +33,7 @@ public class DemonKey extends AmuletText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipAmulet TOOLTIP = new TooltipAmulet(NAME, DESCRIPTION, () -> new Animation("card/standard/demonkey.png"),
-            CRAFT, TRAITS, RARITY, 3, DemonKey.class,
+            CRAFT, TRAITS, RARITY, 2, DemonKey.class,
             new Vector2f(), -1,
             () -> List.of(Tooltip.COUNTDOWN, Tooltip.LASTWORDS),
             List.of());

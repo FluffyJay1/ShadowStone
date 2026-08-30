@@ -22,12 +22,12 @@ import java.util.stream.Collectors;
 
 public class Fafnir extends MinionText {
     public static final String NAME = "Fafnir";
-    public static final String DESCRIPTION = "<b>Battlecry</b>: Deal 2 damage to all other minions.";
+    public static final String DESCRIPTION = "<b>Battlecry</b>: Deal 4 damage to all other minions.";
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/fafnir.png"),
-            CRAFT, TRAITS, RARITY, 9, 8, 4, 10, true, Fafnir.class,
+            CRAFT, TRAITS, RARITY, 9, 10, 4, 12, true, Fafnir.class,
             new Vector2f(136, 203), 1.2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());
@@ -44,14 +44,14 @@ public class Fafnir extends MinionText {
                         List<Minion> relevant = b.getMinions(0, false, true)
                                 .filter(m -> m != owner)
                                 .collect(Collectors.toList());
-                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, 2, true, new EventAnimationDamageAOEFire(0, false)));
+                        this.resolve(b, rq, el, new DamageResolver(effect, relevant, 4, true, new EventAnimationDamageAOEFire(0, false)));
                     }
                 });
             }
 
             @Override
             public double getBattlecryValue(int refs) {
-                return AI.valueOfMinionDamage(2) * 3;
+                return AI.valueOfMinionDamage(4) * 3;
             }
         });
     }

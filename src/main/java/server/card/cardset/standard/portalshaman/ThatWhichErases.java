@@ -27,7 +27,7 @@ public class ThatWhichErases extends MinionText {
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/thatwhicherases.png"),
-            CRAFT, TRAITS, RARITY, 6, 6, 2, 4, true, ThatWhichErases.class,
+            CRAFT, TRAITS, RARITY, 6, 6, 2, 6, true, ThatWhichErases.class,
             new Vector2f(160, 142), 1.3, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BANISH),
             List.of());

@@ -24,7 +24,7 @@ import java.util.List;
 
 public class LeafMan extends MinionText {
     public static final String NAME = "Leaf Man";
-    public static final String DESCRIPTION = "<b>Battlecry</b>: <b>Spend(3)</b> to give all allied minions +1/+0/+0 and <b>Repel</b> until the end of the opponent's turn.";
+    public static final String DESCRIPTION = "<b>Battlecry</b>: <b>Spend(2)</b> to give all allied minions +1/+0/+0 and <b>Repel</b> until the end of the opponent's turn.";
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
@@ -39,7 +39,7 @@ public class LeafMan extends MinionText {
         return List.of(new Effect(DESCRIPTION) {
             @Override
             public ResolverWithDescription battlecry(List<TargetList<?>> targetList) {
-                return new ResolverWithDescription(DESCRIPTION, new SpendResolver(this, 3, new Resolver(false) {
+                return new ResolverWithDescription(DESCRIPTION, new SpendResolver(this, 2, new Resolver(false) {
                     @Override
                     public void onResolve(ServerBoard b, ResolverQueue rq, List<Event> el) {
                         List<Minion> targets = b.getMinions(owner.team, false, true).toList();
@@ -60,7 +60,7 @@ public class LeafMan extends MinionText {
 
             @Override
             public boolean battlecrySpecialConditions() {
-                return owner.canSpendAfterPlayed(3);
+                return owner.canSpendAfterPlayed(2);
             }
         });
     }

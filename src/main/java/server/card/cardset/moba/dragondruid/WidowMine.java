@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 public class WidowMine extends MinionText {
     public static final String NAME = "Widow Mine";
-    public static final String ONTURNSTART_DESCRIPTION = "At the start of your turn, deal <b>M</b> + 3 damage to a random enemy minion and <b>M</b> damage to its neighbors.";
+    public static final String ONTURNSTART_DESCRIPTION = "At the start of your turn, deal M + 3 damage to a random enemy minion and M damage to its neighbors.";
     public static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: Gain <b>Stealth</b>.";
     public static final String DESCRIPTION = "<b>Stealth</b>.\n" + ONTURNSTART_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.DRAGONDRUID;

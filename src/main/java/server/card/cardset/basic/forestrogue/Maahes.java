@@ -30,7 +30,7 @@ public class Maahes extends MinionText {
     public static final CardRarity RARITY = CardRarity.GOLD;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/maahes.png"),
-            CRAFT, TRAITS, RARITY, 5, 5, 2, 5, true, Maahes.class,
+            CRAFT, TRAITS, RARITY, 4, 4, 2, 5, true, Maahes.class,
             new Vector2f(150, 145), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY),
             List.of());

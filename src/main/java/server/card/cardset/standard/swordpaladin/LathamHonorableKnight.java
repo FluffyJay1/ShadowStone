@@ -36,7 +36,7 @@ public class LathamHonorableKnight extends MinionText {
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.COMMANDER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/lathamhonorableknight.png"),
-            CRAFT, TRAITS, RARITY, 8, 8, 2, 7, true, LathamHonorableKnight.class,
+            CRAFT, TRAITS, RARITY, 8, 8, 2, 8, true, LathamHonorableKnight.class,
             new Vector2f(145, 131), 2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.BATTLECRY, Knight.TOOLTIP, Tooltip.STORM),
             List.of());

@@ -26,7 +26,7 @@ public class EphemeraAngelicSlacker extends MinionText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/ephemeraangelicslacker.png"),
-            CRAFT, TRAITS, RARITY, 5, 1, 1, 3, true, EphemeraAngelicSlacker.class,
+            CRAFT, TRAITS, RARITY, 4, 1, 1, 3, true, EphemeraAngelicSlacker.class,
             new Vector2f(103, 133), 1.6, new EventAnimationDamageArrow(),
             () -> List.of(Tooltip.STEALTH),
             List.of());

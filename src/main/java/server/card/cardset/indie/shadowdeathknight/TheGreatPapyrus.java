@@ -31,24 +31,24 @@ public class TheGreatPapyrus extends MinionText {
     public static final String NAME = "The Great Papyrus";
     private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Put a <b>Mercy</b> into your opponent's hand.";
     private static final String UNLEASH_DESCRIPTION = "<b>Unleash</b>: <b>Freeze</b> the enemy leader and Unleash Power, and deal 2 damage to the enemy leader.";
+    private static final String ONTURNEND_DESCRIPTION = "At the end of your turn, gain +0/+5/+0 until the end of your opponent's turn.";
     private static final String LASTWORDS_DESCRIPTION = "<b>Last Words</b>: Summon a <b>Sans</b> and give it +0/+M/+0.";
-    private static final String OTHER_DESCRIPTION = "<b>Ward</b>. <b>Stalwart</b>.";
-    public static final String DESCRIPTION = OTHER_DESCRIPTION + "\n" + BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION + "\n" + LASTWORDS_DESCRIPTION;
+    private static final String OTHER_DESCRIPTION = "<b>Ward</b>.";
+    public static final String DESCRIPTION = OTHER_DESCRIPTION + "\n" + BATTLECRY_DESCRIPTION + "\n" + UNLEASH_DESCRIPTION + "\n" + ONTURNEND_DESCRIPTION + "\n" + LASTWORDS_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.SHADOWDEATHKNIGHT;
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION,
             () -> new Animation("card/indie/thegreatpapyrus.png", new Vector2f(1, 1), 0, 0, Image.FILTER_NEAREST),
-            CRAFT, TRAITS, RARITY, 8, 1, 5, 8, false, TheGreatPapyrus.class,
+            CRAFT, TRAITS, RARITY, 8, 1, 0, 10, false, TheGreatPapyrus.class,
             new Vector2f(100, 120), 1.2, new EventAnimationDamageBonePapyrus(),
-            () -> List.of(Tooltip.WARD, Tooltip.STALWART, Tooltip.BATTLECRY, Mercy.TOOLTIP, Tooltip.UNLEASH, Tooltip.FROZEN, Tooltip.LASTWORDS, Sans.TOOLTIP),
+            () -> List.of(Tooltip.WARD, Tooltip.BATTLECRY, Mercy.TOOLTIP, Tooltip.UNLEASH, Tooltip.FROZEN, Tooltip.LASTWORDS, Sans.TOOLTIP),
             List.of());
 
     @Override
     protected List<Effect> getSpecialEffects() {
         return List.of(new Effect(DESCRIPTION, EffectStats.builder()
                 .set(Stat.WARD, 1)
-                .set(Stat.STALWART, 1)
                 .build()) {
             private List<Card> cachedInstancesBattlecry;
             private List<Card> cachedInstancesLastWords;
@@ -124,6 +124,13 @@ public class TheGreatPapyrus extends MinionText {
                     this.cachedInstancesLastWords = List.of(new Sans().constructInstance(owner.board));
                 }
                 return AI.valueForSummoning(cachedInstancesLastWords, refs) + AI.valueForBuff(0, owner.finalStats.get(Stat.MAGIC), 0);
+            }
+
+            @Override
+            public ResolverWithDescription onTurnEndAllied() {
+                return new ResolverWithDescription(ONTURNEND_DESCRIPTION,
+                        new AddEffectResolver(owner, new Effect("+0/+5/+0.",
+                                EffectStats.builder().change(Stat.MAGIC, 5).build(), e -> e.setUntilTurnEnd(-1, 1))));
             }
         });
     }

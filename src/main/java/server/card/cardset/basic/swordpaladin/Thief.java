@@ -29,7 +29,7 @@ public class Thief extends MinionText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.OFFICER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/thief.png"),
-            CRAFT, TRAITS, RARITY, 3, 2, 1, 3, false, Thief.class,
+            CRAFT, TRAITS, RARITY, 3, 3, 1, 3, false, Thief.class,
             new Vector2f(162, 151), 1.22, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.CLASH),
             List.of());

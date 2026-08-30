@@ -19,7 +19,7 @@ public class HolywingDragon extends MinionText {
     public static final CardRarity RARITY = CardRarity.BRONZE;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/holywingdragon.png"),
-            CRAFT, TRAITS, RARITY, 6, 6, 2, 6, true, HolywingDragon.class,
+            CRAFT, TRAITS, RARITY, 6, 7, 2, 7, true, HolywingDragon.class,
             new Vector2f(141, 160), 1.3, new EventAnimationDamageEnergyBeam(),
             List::of,
             List.of());

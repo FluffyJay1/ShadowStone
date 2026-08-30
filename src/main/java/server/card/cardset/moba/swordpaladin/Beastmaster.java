@@ -31,7 +31,7 @@ public class Beastmaster extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of(CardTrait.COMMANDER);
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/moba/beastmaster.png"),
-            CRAFT, TRAITS, RARITY, 5, 2, 2, 4, false, Beastmaster.class,
+            CRAFT, TRAITS, RARITY, 6, 5, 2, 5, false, Beastmaster.class,
             new Vector2f(140, 100), 2, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.AURA, Tooltip.UNLEASH, StonetuskBoar.TOOLTIP),
             List.of());

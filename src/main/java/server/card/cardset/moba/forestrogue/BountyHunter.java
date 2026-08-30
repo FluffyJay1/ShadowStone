@@ -29,7 +29,7 @@ public class BountyHunter extends MinionText {
     public static final String NAME = "Bounty Hunter";
     private static final String GIVEN_EFFECT_DESCRIPTION = "<b>Last Words</b>: Put 2 <b>Not Coins</b> into your opponent's hand.";
     private static final String BATTLECRY_DESCRIPTION = "<b>Battlecry</b>: Give an enemy minion \"" + GIVEN_EFFECT_DESCRIPTION + "\"";
-    private static final String DEPENDENT_STATS_DESCRIPTION = "Has +2/+0/+0 while <b>Stealthed</b>.";
+    private static final String DEPENDENT_STATS_DESCRIPTION = "Has +3/+0/+0 while <b>Stealthed</b>.";
     private static final String OTHER_DESCRIPTION = "<b>Stealth</b>.";
     public static final String DESCRIPTION = OTHER_DESCRIPTION + "\n" + DEPENDENT_STATS_DESCRIPTION + "\n" + BATTLECRY_DESCRIPTION;
     public static final ClassCraft CRAFT = ClassCraft.FORESTROGUE;
@@ -49,7 +49,7 @@ public class BountyHunter extends MinionText {
                     public EffectStats calculateStats() {
                         if (owner.finalStats.get(Stat.STEALTH) > 0) {
                             return EffectStats.builder()
-                                    .change(Stat.ATTACK, 2)
+                                    .change(Stat.ATTACK, 3)
                                     .build();
                         }
                         return this.baselineStats;

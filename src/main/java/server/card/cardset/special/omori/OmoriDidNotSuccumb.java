@@ -45,7 +45,7 @@ public class OmoriDidNotSuccumb extends AmuletText {
                     }),
             CRAFT, TRAITS, RARITY, 2, OmoriDidNotSuccumb.class,
             new Vector2f(), -1,
-            () -> List.of(Tooltip.COUNTDOWN, Tooltip.UNYIELDING),
+            () -> List.of(Tooltip.COUNTDOWN, Tooltip.AURA, Tooltip.UNYIELDING),
             List.of());
 
     @Override

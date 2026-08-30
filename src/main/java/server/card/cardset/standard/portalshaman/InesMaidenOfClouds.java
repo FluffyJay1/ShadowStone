@@ -4,7 +4,6 @@ import client.tooltip.Tooltip;
 import client.tooltip.TooltipMinion;
 import client.ui.Animation;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageAOEDarkFire;
-import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageAOESlice;
 import client.ui.game.visualboardanimation.eventanimation.damage.EventAnimationDamageSlash;
 
 import org.jetbrains.annotations.Nullable;

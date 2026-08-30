@@ -31,7 +31,7 @@ public class ScarletSabreur extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/basic/scarletsabreur.png"),
-            CRAFT, TRAITS, RARITY, 5, 2, 2, 4, true, ScarletSabreur.class,
+            CRAFT, TRAITS, RARITY, 5, 4, 2, 4, true, ScarletSabreur.class,
             new Vector2f(169, 130), 1.5, new EventAnimationDamageDoubleSlice(),
             () -> List.of(Tooltip.BANE, Tooltip.LIFESTEAL, Tooltip.BATTLECRY),
             List.of());

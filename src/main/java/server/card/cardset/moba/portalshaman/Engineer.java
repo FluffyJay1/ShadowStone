@@ -43,7 +43,7 @@ public class Engineer extends MinionText {
                     "<b>" + EngineersBuildingSentry.NAME + "</b>, <b>" + EngineersBuildingDispenser.NAME + "</b>, and <b>" + EngineersBuildingTeleporter.NAME + "</b>.",
                     () -> List.of(EngineersBuildingSentry.TOOLTIP, EngineersBuildingDispenser.TOOLTIP, EngineersBuildingTeleporter.TOOLTIP));
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/moba/engineer.png"),
-            CRAFT, TRAITS, RARITY, 3, 2, 2, 3, false, Engineer.class,
+            CRAFT, TRAITS, RARITY, 3, 3, 2, 3, false, Engineer.class,
             new Vector2f(), -1, new EventAnimationDamageShoot(),
             () -> List.of(Tooltip.BATTLECRY, ENGINEERS_BUILDINGS_TOOLTIP, Tooltip.UNLEASH),
             List.of());

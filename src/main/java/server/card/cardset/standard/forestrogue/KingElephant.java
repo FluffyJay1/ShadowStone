@@ -31,7 +31,7 @@ public class KingElephant extends MinionText {
     public static final CardRarity RARITY = CardRarity.LEGENDARY;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/standard/kingelephant.png"),
-            CRAFT, TRAITS, RARITY, 10, 1, 1, 1, true, KingElephant.class,
+            CRAFT, TRAITS, RARITY, 8, 2, 2, 2, true, KingElephant.class,
             new Vector2f(150, 160), 1.5, new EventAnimationDamageSlash(),
             () -> List.of(Tooltip.STORM, Tooltip.WARD, Tooltip.BATTLECRY),
             List.of());

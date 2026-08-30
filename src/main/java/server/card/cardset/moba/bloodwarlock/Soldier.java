@@ -33,7 +33,7 @@ public class Soldier extends MinionText {
     public static final CardRarity RARITY = CardRarity.SILVER;
     public static final List<CardTrait> TRAITS = List.of();
     public static final TooltipMinion TOOLTIP = new TooltipMinion(NAME, DESCRIPTION, () -> new Animation("card/moba/soldier.png"),
-            CRAFT, TRAITS, RARITY, 6, 3, 1, 5, true, Soldier.class,
+            CRAFT, TRAITS, RARITY, 5, 3, 1, 5, true, Soldier.class,
             new Vector2f(), -1, new EventAnimationDamageSmallExplosion(),
             () -> List.of(Tooltip.RUSH, Tooltip.CLEAVE, Tooltip.BATTLECRY),
             List.of());
